@@ -1,10 +1,12 @@
 {
   AbstractUndoableEdit undo=null;
+  TreePath[] selectionPaths=groupsTree.getSelectionPaths();
+  Enumeration expandedPaths=getExpandedPaths();
   if (!node.canMoveUp() || (undo=node.moveUp(GroupSelector.this)) == null) {
-    frame.output(Globals.lang("Cannot move group") + " '" + node.getGroup().getName()+ "' up.");
+    frame.output(Globals.lang("Cannot move group") + " '" + node.getGroup().getName()+ "' "+ Globals.lang("up."));
     return false;
   }
-  revalidateGroups(groupsTree.getSelectionPaths(),getExpandedPaths());
+  revalidateGroups(selectionPaths,expandedPaths);
   panel.undoManager.addEdit(undo);
   panel.markBaseChanged();
   frame.output(Globals.lang("Moved group") + " '" + node.getGroup().getName()+ "'.");
