@@ -1,0 +1,27 @@
+{
+  String[] lines=fieldsArea.getText().split("\n");
+  int i=0;
+  for (; i < lines.length; i++) {
+    String[] parts=lines[i].split(":");
+    if (parts.length != 2) {
+      String field=Globals.lang("field");
+      JOptionPane.showMessageDialog(this,Globals.lang("Each line must be on the following form") + " '" + Globals.lang("Tabname")+ ":"+ field+ "1;"+ field+ "2;...;"+ field+ "N'",Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    String testString=Util.checkLegalKey(parts[1]);
+    if (!testString.equals(parts[1]) || (parts[1].indexOf('&') >= 0)) {
+      JOptionPane.showMessageDialog(this,Globals.lang("Field names are not allowed to contain white space or the following " + "characters") + ": # { } ~ , ^ &",Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    Globals.prefs.put((Globals.prefs.CUSTOM_TAB_NAME + i),parts[0]);
+    Globals.prefs.put((Globals.prefs.CUSTOM_TAB_FIELDS + i),parts[1].toLowerCase());
+  }
+  Globals.prefs.purgeSeries(Globals.prefs.CUSTOM_TAB_NAME,i);
+  Globals.prefs.purgeSeries(Globals.prefs.CUSTOM_TAB_FIELDS,i);
+  Globals.prefs.updateEntryEditorTabList();
+  for (int j=0; j < parent.getTabbedPane().getTabCount(); j++) {
+    BasePanel bp=(BasePanel)parent.getTabbedPane().getComponentAt(j);
+    bp.entryEditors.clear();
+  }
+  dispose();
+}

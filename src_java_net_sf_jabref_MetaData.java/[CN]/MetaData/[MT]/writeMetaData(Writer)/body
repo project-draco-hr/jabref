@@ -1,18 +1,24 @@
 {
   for (Iterator i=metaData.keySet().iterator(); i.hasNext(); ) {
     String key=(String)i.next();
+    StringBuffer sb=new StringBuffer();
     Vector orderedData=(Vector)metaData.get(key);
     if (orderedData.size() > 0) {
-      out.write("@comment{" + GUIGlobals.META_FLAG + key+ ":");
+      sb.append("@comment{" + GUIGlobals.META_FLAG + key+ ":");
       for (int j=0; j < orderedData.size(); j++) {
-        out.write(Util.quote((String)orderedData.elementAt(j),";",'\\') + ";");
+        sb.append(Util.quote((String)orderedData.elementAt(j),";",'\\') + ";");
       }
-      out.write("}\n\n");
+      sb.append("}\n\n");
     }
+    wrapStringBuffer(sb,Globals.METADATA_LINE_LENGTH);
+    out.write(sb.toString());
   }
   if (groupsRoot != null && groupsRoot.getChildCount() > 0) {
-    out.write("@comment{" + GUIGlobals.META_FLAG + "groupstree:");
-    out.write(Util.quote(groupsRoot.toString(),";",'\\'));
-    out.write("}\n\n");
+    StringBuffer sb=new StringBuffer();
+    sb.append("@comment{" + GUIGlobals.META_FLAG + "groupstree:");
+    sb.append(Util.quote(groupsRoot.toString(),";",'\\'));
+    sb.append("}\n\n");
+    wrapStringBuffer(sb,Globals.METADATA_LINE_LENGTH);
+    out.write(sb.toString());
   }
 }

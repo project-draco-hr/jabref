@@ -12,7 +12,9 @@
         String id=tableModel.getNameFromNumber(clickedOn);
         BibtexEntry be=database.getEntryById(id);
         showEntry(be);
-        if (splitPane.getBottomComponent() != null)         new FocusRequester(splitPane.getBottomComponent());
+        if (splitPane.getBottomComponent() != null) {
+          new FocusRequester(splitPane.getBottomComponent());
+        }
       }
       frame.unblock();
     }
@@ -617,7 +619,7 @@ catch (            Throwable ex) {
   actions.put("replaceAll",new BaseAction(){
     public void action(){
       ReplaceStringDialog rsd=new ReplaceStringDialog(frame);
-      rsd.show();
+      rsd.setVisible(true);
       if (!rsd.okPressed())       return;
       int counter=0;
       NamedCompound ce=new NamedCompound("Replace string");
@@ -656,14 +658,14 @@ catch (            Throwable ex) {
     public void action(){
       EntryTypeDialog etd=new EntryTypeDialog(frame);
       Util.placeDialog(etd,ths);
-      etd.show();
+      etd.setVisible(true);
       BibtexEntryType tp=etd.getChoice();
       if (tp == null)       return;
       String id=Util.createId(tp,database);
       BibtexEntry bibEntry=new BibtexEntry(id,tp);
       TextInputDialog tidialog=new TextInputDialog(frame,"import",true,bibEntry);
       Util.placeDialog(tidialog,ths);
-      tidialog.show();
+      tidialog.setVisible(true);
       if (tidialog.okPressed()) {
         insertEntry(bibEntry);
       }
@@ -679,7 +681,7 @@ catch (            Throwable ex) {
         undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,ths));
         TextInputDialog tidialog=new TextInputDialog(frame,"import",true,bibEntry);
         Util.placeDialog(tidialog,ths);
-        tidialog.show();
+        tidialog.setVisible(true);
         if (tidialog.okPressed()) {
           output(Globals.lang("changed ") + " '" + bibEntry.getType().getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
           refreshTable();
@@ -695,20 +697,26 @@ catch (            Throwable ex) {
     }
   }
 );
-  actions.put("markEntries",new BaseAction(){
-    public void action(){
+  actions.put("markEntries",new AbstractWorker(){
+    private int besLength=-1;
+    public void run(){
       NamedCompound ce=new NamedCompound("Mark entries");
       BibtexEntry[] bes=entryTable.getSelectedEntries();
+      besLength=bes.length;
       if (bes == null)       return;
       for (int i=0; i < bes.length; i++) {
+        Object o=bes[i].getField(Globals.MARKED);
+        if ((o != null) && (o.toString().equals("0")))         continue;
         ce.addEdit(new UndoableFieldChange(bes[i],Globals.MARKED,bes[i].getField(Globals.MARKED),"0"));
         bes[i].setField(Globals.MARKED,"0");
       }
       ce.end();
       undoManager.addEdit(ce);
+    }
+    public void update(){
       markBaseChanged();
       refreshTable();
-      output(Globals.lang("Marked selected") + " " + Globals.lang(bes.length > 0 ? "entry" : "entries"));
+      output(Globals.lang("Marked selected") + " " + Globals.lang(besLength > 0 ? "entry" : "entries"));
     }
   }
 );
@@ -776,7 +784,7 @@ catch (            Throwable ex) {
     public void action(){
       ContentSelectorDialog2 csd=new ContentSelectorDialog2(frame,ths,false,metaData,null);
       Util.placeDialog(csd,frame);
-      csd.show();
+      csd.setVisible(true);
     }
   }
 );
@@ -832,11 +840,15 @@ catch (            Throwable ex) {
     String filename=null, formatName=null;
     java.util.List entries=null;
     public void init(){
-      output("Extracting file.");
+      output("Storing.");
     }
     public void run(){
-      ResourceExtractor re=new ResourceExtractor(frame,"/images/JabRef-splash.png",new File("/home/alver/splash.png"));
-      re.run();
+      try {
+        OpenOfficeDocumentCreator.exportOpenOfficeCalc(new File("/home/alver/export.sxc"),database);
+      }
+ catch (      Exception ex) {
+        ex.printStackTrace();
+      }
     }
   }
 );

@@ -143,12 +143,23 @@
   if (forceLower) {
     _label=_label.toLowerCase();
   }
-  if (_db.setCiteKeyForEntry(_entry.getId(),_label)) {
+  String oldKey=_entry.getCiteKey();
+  int occurences=_db.getNumberOfKeyOccurences(_label);
+  if ((oldKey != null) && oldKey.equals(_label))   occurences--;
+  if (occurences == 0) {
+    if (!_label.equals(oldKey))     _db.setCiteKeyForEntry(_entry.getId(),_label);
+  }
+ else {
     char c='b';
     String modKey=_label + "a";
-    while (_db.setCiteKeyForEntry(_entry.getId(),modKey)) {
+    occurences=_db.getNumberOfKeyOccurences(modKey);
+    if ((oldKey != null) && oldKey.equals(modKey))     occurences--;
+    while (occurences > 0) {
       modKey=_label + ((char)(c++));
+      occurences=_db.getNumberOfKeyOccurences(modKey);
+      if ((oldKey != null) && oldKey.equals(modKey))       occurences--;
     }
+    if (!modKey.equals(oldKey))     _db.setCiteKeyForEntry(_entry.getId(),modKey);
   }
   return _entry;
 }

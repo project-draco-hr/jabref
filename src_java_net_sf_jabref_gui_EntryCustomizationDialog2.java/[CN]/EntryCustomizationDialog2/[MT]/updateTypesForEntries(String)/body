@@ -1,0 +1,15 @@
+{
+  if (frame.getTabbedPane().getTabCount() == 0)   return;
+  BibtexDatabase base;
+  Iterator iter;
+  for (int i=0; i < frame.getTabbedPane().getTabCount(); i++) {
+    BasePanel bp=(BasePanel)frame.getTabbedPane().getComponentAt(i);
+    boolean anyChanges=false;
+    bp.entryEditors.remove(typeName);
+    base=bp.database();
+    iter=base.getKeySet().iterator();
+    while (iter.hasNext()) {
+      anyChanges=anyChanges | !(base.getEntryById((String)iter.next())).updateType();
+    }
+  }
+}

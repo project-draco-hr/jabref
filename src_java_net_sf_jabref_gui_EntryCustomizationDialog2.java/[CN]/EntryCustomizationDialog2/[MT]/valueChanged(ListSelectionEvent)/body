@@ -1,0 +1,40 @@
+{
+  if (e.getValueIsAdjusting()) {
+    return;
+  }
+  if (lastSelected != null) {
+    reqLists.put(lastSelected,reqComp.getFields());
+    optLists.put(lastSelected,optComp.getFields());
+  }
+  String s=typeComp.getFirstSelected();
+  if (s == null)   return;
+  Object rl=reqLists.get(s);
+  if (rl == null) {
+    BibtexEntryType type=BibtexEntryType.getType(s);
+    if (type != null) {
+      String[] rf=type.getRequiredFields(), of=type.getOptionalFields();
+      List req, opt;
+      if (rf != null)       req=java.util.Arrays.asList(rf);
+ else       req=new ArrayList();
+      if (of != null)       opt=java.util.Arrays.asList(of);
+ else       opt=new ArrayList();
+      reqComp.setFields(req);
+      reqComp.setEnabled(true);
+      optComp.setFields(opt);
+      optComp.setEnabled(true);
+    }
+ else {
+      reqComp.setFields(new ArrayList());
+      reqComp.setEnabled(true);
+      optComp.setFields(new ArrayList());
+      optComp.setEnabled(true);
+      new FocusRequester(reqComp);
+    }
+  }
+ else {
+    reqComp.setFields((List)rl);
+    optComp.setFields((List)optLists.get(s));
+  }
+  lastSelected=s;
+  typeComp.enable(s,changed.contains(lastSelected) && !defaulted.contains(lastSelected));
+}

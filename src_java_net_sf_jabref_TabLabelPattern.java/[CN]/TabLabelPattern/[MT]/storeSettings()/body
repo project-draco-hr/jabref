@@ -1,11 +1,12 @@
 {
+  Globals.prefs.put("defaultLabelPattern",defaultPat.getText());
   LabelPattern defKeyPattern=_keypatterns.getParent();
   _keypatterns=new LabelPattern(defKeyPattern);
   Iterator i=textFields.keySet().iterator();
   String defa=(String)LabelPatternUtil.DEFAULT_LABELPATTERN.get(0);
   while (i.hasNext()) {
     String s=(String)i.next(), text=((JTextField)textFields.get(s)).getText();
-    if (!defa.equals(text))     _keypatterns.addLabelPattern(s,text);
+    if (!"".equals(text.trim()))     _keypatterns.addLabelPattern(s,text);
   }
   _prefs.putKeyPattern(_keypatterns);
 }

@@ -1,6 +1,6 @@
 {
   this.setModal(true);
-  this.setResizable(false);
+  getContentPane().setLayout(new BorderLayout());
   String typeStr=Globals.lang("for");
   if (entry != null) {
     if (entry.getType() != null) {
@@ -8,7 +8,7 @@
     }
   }
   this.setTitle(Globals.lang("Plain_text_import") + " " + typeStr);
-  getContentPane().add(panel1);
+  getContentPane().add(panel1,BorderLayout.CENTER);
   initRawPanel();
   initButtonPanel();
   initSourcePanel();
@@ -26,15 +26,15 @@
   tabbed.add(warnPanel,Globals.lang("Messages_and_Hints"));
   GridBagLayout gbl=new GridBagLayout();
   GridBagConstraints con=new GridBagConstraints();
-  con.weightx=0;
+  con.weightx=1;
+  con.weighty=1;
   con.insets=new Insets(5,10,0,10);
   con.fill=GridBagConstraints.HORIZONTAL;
-  panel1.setLayout(gbl);
+  panel1.setLayout(new BorderLayout());
   con.gridwidth=GridBagConstraints.REMAINDER;
-  gbl.setConstraints(tabbed,con);
-  panel1.add(tabbed);
-  gbl.setConstraints(buttonPanel,con);
-  panel1.add(buttonPanel);
+  con.fill=GridBagConstraints.BOTH;
+  panel1.add(tabbed,BorderLayout.CENTER);
+  panel1.add(buttonPanel,BorderLayout.SOUTH);
   ActionMap am=buttonPanel.getActionMap();
   InputMap im=buttonPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(parent.prefs().getKey("Close dialog"),"close");

@@ -53,7 +53,7 @@
   if (!disableGui.isInvoked()) {
     try {
       ss=new SplashScreen();
-      ss.show();
+      ss.setVisible(true);
     }
  catch (    Throwable ex) {
       graphicFailure=true;
@@ -91,7 +91,6 @@
         if (entries != null) {
           BibtexDatabase base=ImportFormatReader.createDatabase(entries);
           ParserResult pr=new ParserResult(base,null,new HashMap());
-          pr.setFile(new File(data[0]));
           loaded.add(pr);
         }
       }
@@ -238,6 +237,9 @@ catch (          Exception ex) {
       if (lnf != null) {
         try {
           UIManager.setLookAndFeel(lnf);
+          if (!Globals.ON_WIN) {
+            UIManager.put("SimpleInternalFrame.activeTitleBackground",GUIGlobals.gradientBlue);
+          }
         }
  catch (        Throwable ex) {
           ex.printStackTrace();
@@ -257,7 +259,7 @@ catch (          Exception ex) {
         File fileToOpen=new File(names[i]);
         for (int j=0; j < loaded.size(); j++) {
           ParserResult pr=(ParserResult)loaded.elementAt(j);
-          if (pr.getFile().equals(fileToOpen))           continue lastEdLoop;
+          if ((pr.getFile() != null) && pr.getFile().equals(fileToOpen))           continue lastEdLoop;
         }
         if (fileToOpen.exists()) {
           ParserResult pr=openBibFile(names[i]);

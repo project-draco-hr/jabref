@@ -1,5 +1,5 @@
 {
-  super(manager);
+  super(manager,GUIGlobals.groupsIconFile,Globals.lang("Groups"));
   this.prefs=prefs;
   this.groupsRoot=groupsRoot;
   final JabRefPreferences _prefs=prefs;
@@ -41,6 +41,18 @@
     }
   }
 );
+  groupModeIndependent.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      _prefs.putBoolean("groupSubgroupIndependent",groupModeIndependent.isSelected());
+    }
+  }
+);
+  groupModeIntersection.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      _prefs.putBoolean("groupSubgroupIntersection",groupModeIntersection.isSelected());
+    }
+  }
+);
   if (prefs.getBoolean("groupFloatSelections")) {
     floatCb.setSelected(true);
     highlCb.setSelected(false);
@@ -56,6 +68,22 @@
  else {
     orCb.setSelected(true);
     andCb.setSelected(false);
+  }
+  if (prefs.getBoolean("groupSubgroupIndependent")) {
+    groupModeIndependent.setSelected(true);
+    groupModeIntersection.setSelected(false);
+    groupModeUnion.setSelected(false);
+  }
+ else {
+    groupModeIndependent.setSelected(false);
+    if (prefs.getBoolean("groupSubgroupIntersection")) {
+      groupModeIntersection.setSelected(true);
+      groupModeUnion.setSelected(false);
+    }
+ else {
+      groupModeIntersection.setSelected(false);
+      groupModeUnion.setSelected(true);
+    }
   }
   invCb.setSelected(prefs.getBoolean("groupInvertSelections"));
   select.setSelected(prefs.getBoolean("groupSelectMatches"));
@@ -114,10 +142,22 @@
 );
   Dimension butDim=new Dimension(20,20);
   Dimension butDim2=new Dimension(40,20);
+  newButton.setPreferredSize(butDim);
+  newButton.setMinimumSize(butDim);
+  refresh.setPreferredSize(butDim);
+  refresh.setMinimumSize(butDim);
+  helpButton.setPreferredSize(butDim);
+  helpButton.setMinimumSize(butDim);
+  autoGroup.setPreferredSize(butDim);
+  autoGroup.setMinimumSize(butDim);
   openset.setPreferredSize(butDim2);
+  openset.setMinimumSize(butDim2);
   expand.setPreferredSize(butDim);
+  expand.setMinimumSize(butDim);
   reduce.setPreferredSize(butDim);
+  reduce.setMinimumSize(butDim);
   Insets butIns=new Insets(0,0,0,0);
+  helpButton.setMargin(butIns);
   reduce.setMargin(butIns);
   expand.setMargin(butIns);
   openset.setMargin(butIns);
@@ -145,28 +185,23 @@
   bgr.add(orCb);
   visMode.add(floatCb);
   visMode.add(highlCb);
-  setLayout(gbl);
-  SidePaneHeader header=new SidePaneHeader("Groups",GUIGlobals.groupsIconFile,this);
-  con.gridwidth=GridBagConstraints.REMAINDER;
+  JPanel main=new JPanel();
+  main.setLayout(gbl);
   con.fill=GridBagConstraints.BOTH;
-  con.insets=new Insets(0,0,2,0);
   con.weightx=1;
-  gbl.setConstraints(header,con);
-  add(header);
   con.gridwidth=1;
-  con.insets=new Insets(0,0,0,0);
   gbl.setConstraints(newButton,con);
-  add(newButton);
+  main.add(newButton);
   gbl.setConstraints(refresh,con);
-  add(refresh);
+  main.add(refresh);
   gbl.setConstraints(autoGroup,con);
-  add(autoGroup);
+  main.add(autoGroup);
   con.gridwidth=GridBagConstraints.REMAINDER;
   HelpAction helpAction=new HelpAction(frame.helpDiag,GUIGlobals.groupsHelp,"Help on groups");
   helpButton.addActionListener(helpAction);
   helpButton.setToolTipText(Globals.lang("Help on groups"));
   gbl.setConstraints(helpButton,con);
-  add(helpButton);
+  main.add(helpButton);
   groupsTree=new JTree();
   groupsTree.setShowsRootHandles(true);
   groupsTree.setCellRenderer(new GroupTreeCellRenderer());
@@ -188,7 +223,7 @@
   con.gridwidth=GridBagConstraints.REMAINDER;
   con.weighty=1;
   gbl.setConstraints(sp,con);
-  add(sp);
+  main.add(sp);
   JPanel pan=new JPanel();
   GridBagLayout gb=new GridBagLayout();
   con.weighty=0;
@@ -204,6 +239,8 @@
   con.gridwidth=GridBagConstraints.REMAINDER;
   gb.setConstraints(reduce,con);
   pan.add(reduce);
-  add(pan);
+  main.add(pan);
+  main.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+  add(main,BorderLayout.CENTER);
   definePopup();
 }
