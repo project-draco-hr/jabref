@@ -1,0 +1,100 @@
+{
+  if (localName.equals("PubmedArticle")) {
+    if (year.equals("")) {
+      if (!MedlineDate.equals("")) {
+        year=MedlineDate.substring(0,4);
+      }
+    }
+    title=Globals.putBracesAroundCapitals(title);
+    keyword=descriptorName + pubmedid;
+    BibtexEntry b=new BibtexEntry(Globals.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType("article"));
+    b.setField("author",author);
+    b.setField("title",title);
+    b.setField("journal",journal);
+    b.setField("year",year);
+    b.setField("pages",page);
+    b.setField("volume",volume);
+    b.setField("abstract",abstractText.replaceAll("%","\\\\%"));
+    b.setField("keywords",keyword);
+    b.setField("month",month);
+    b.setField("url",url);
+    b.setField("number",number);
+    bibitems.add(b);
+    abstractText="";
+    author="";
+    title="";
+    journal="";
+    keyword="";
+    year="";
+    forename="";
+    abstractText="";
+    pubmedid="";
+    month="";
+    volume="";
+    lastname="";
+    initials="";
+    number="";
+    page="";
+    medlineID="";
+    url="";
+    MedlineDate="";
+  }
+ else   if (localName.equals("ArticleTitle")) {
+    inTitle=false;
+  }
+ else   if (localName.equals("PubDate")) {
+    inPubDate=false;
+  }
+ else   if (localName.equals("Year")) {
+    inYear=false;
+  }
+ else   if (localName.equals("PMID")) {
+    inPubMedID=false;
+  }
+ else   if (localName.equals("MedlineDate")) {
+    inMedlineDate=false;
+  }
+ else   if (localName.equals("MedlineTA")) {
+    inJournal=false;
+  }
+ else   if (localName.equals("Month")) {
+    inMonth=false;
+  }
+ else   if (localName.equals("Volume")) {
+    inVolume=false;
+  }
+ else   if (localName.equals("AuthorList")) {
+    author=join(authors.toArray()," and ");
+    inAuthorList=false;
+  }
+ else   if (localName.equals("Author")) {
+    if (forename.length() == 3 && forename.charAt(1) == ' ') {
+      forename=initials;
+    }
+    author=forename + " " + lastname;
+    authors.add(author);
+    inAuthor=false;
+  }
+ else   if (localName.equals("DescriptorName"))   inDescriptorName=false;
+ else   if (localName.equals("LastName")) {
+    inLastName=false;
+  }
+ else   if (localName.equals("ForeName")) {
+    inForename=false;
+  }
+ else   if (localName.equals("Issue")) {
+    inIssue=false;
+  }
+ else   if (localName.equals("MedlinePgn")) {
+    inMedlinePgn=false;
+  }
+ else   if (localName.equals("URL")) {
+    inUrl=false;
+  }
+ else   if (localName.equals("Initials")) {
+    inInitials=false;
+  }
+ else   if (localName.equals("AbstractText")) {
+    inAbstractText=false;
+  }
+}

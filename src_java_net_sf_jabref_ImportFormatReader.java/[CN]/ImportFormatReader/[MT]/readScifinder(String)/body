@@ -1,0 +1,46 @@
+{
+  ArrayList bibitems=new ArrayList();
+  File f=new File(filename);
+  if (!f.exists() && !f.canRead() && !f.isFile()) {
+    System.err.println("Error " + filename + " is not a valid file and|or is not readable.");
+    return null;
+  }
+  StringBuffer sb=new StringBuffer();
+  try {
+    BufferedReader in=new BufferedReader(new FileReader(filename));
+    String str;
+    while ((str=in.readLine()) != null) {
+      sb.append(str);
+    }
+    in.close();
+  }
+ catch (  IOException e) {
+    return null;
+  }
+  String[] entries=sb.toString().split("START_RECORD");
+  int rowNum=0;
+  HashMap hm=new HashMap();
+  for (int i=1; i < entries.length; i++) {
+    String[] fields=entries[i].split("FIELD ");
+    String Type="";
+    hm.clear();
+    for (int j=0; j < fields.length; j++) {
+      String tmp[]=fields[j].split(":");
+      if (tmp.length > 1) {
+        if (tmp[0].equals("Author"))         hm.put("author",tmp[1].replaceAll(";"," and "));
+ else         if (tmp[0].equals("Title"))         hm.put("title",tmp[1]);
+ else         if (tmp[0].equals("Journal Title"))         hm.put("journal",tmp[1]);
+ else         if (tmp[0].equals("Volume"))         hm.put("volume",tmp[1]);
+ else         if (tmp[0].equals("Page"))         hm.put("pages",tmp[1]);
+ else         if (tmp[0].equals("Publication Year"))         hm.put("year",tmp[1]);
+ else         if (tmp[0].equals("Abstract"))         hm.put("abstract",tmp[1]);
+ else         if (tmp[0].equals("Supplementary Terms"))         hm.put("keywords",tmp[1]);
+ else         if (tmp[0].equals("Document Type"))         Type=tmp[1].replaceAll("Journal","article");
+      }
+    }
+    BibtexEntry b=new BibtexEntry(Globals.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
+    b.setField(hm);
+    bibitems.add(b);
+  }
+  return bibitems;
+}

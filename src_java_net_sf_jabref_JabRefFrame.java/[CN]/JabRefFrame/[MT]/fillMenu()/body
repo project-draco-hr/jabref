@@ -1,12 +1,19 @@
 {
   JMenu file=new JMenu(Globals.lang("File")), edit=new JMenu(Globals.lang("Edit")), bibtex=new JMenu(Globals.lang("BibTeX")), view=new JMenu(Globals.lang("View")), tools=new JMenu(Globals.lang("Tools")), options=new JMenu(Globals.lang("Options")), newSpec=new JMenu(Globals.lang("New entry..."));
+  JMenu importMenu=new JMenu(Globals.lang("Import"));
+  setUpImportMenu(importMenu);
   file.add(newDatabaseAction);
   file.add(open);
+  file.add(importMenu);
   file.add(save);
   file.add(saveAs);
   file.add(new FileHistory(prefs));
   file.addSeparator();
   file.add(close);
+  JMenuItem exit_mItem=new JMenuItem(Globals.lang("Exit"));
+  exit_mItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q,KeyEvent.CTRL_MASK));
+  exit_mItem.addActionListener(new CloseAction());
+  file.add(exit_mItem);
   file.add(quit);
   mb.add(file);
   edit.add(undo);

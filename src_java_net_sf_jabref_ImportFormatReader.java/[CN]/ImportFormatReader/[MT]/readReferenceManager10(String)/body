@@ -1,0 +1,66 @@
+{
+  ArrayList bibitems=new ArrayList();
+  File f=new File(filename);
+  if (!f.exists() && !f.canRead() && !f.isFile()) {
+    System.err.println("Error " + filename + " is not a valid file and|or is not readable.");
+    return null;
+  }
+  StringBuffer sb=new StringBuffer();
+  try {
+    BufferedReader in=new BufferedReader(new FileReader(filename));
+    String str;
+    while ((str=in.readLine()) != null) {
+      sb.append(str);
+      sb.append("\n");
+    }
+    in.close();
+  }
+ catch (  IOException e) {
+    return null;
+  }
+  String[] entries=sb.toString().split("ER  -");
+  int rowNum=0;
+  HashMap hm=new HashMap();
+  for (int i=0; i < entries.length - 1; i++) {
+    String Type="", Author="", StartPage="", EndPage="";
+    hm.clear();
+    String[] fields=entries[i].split("\n");
+    for (int j=0; j < fields.length; j++) {
+      if (fields[j].length() < 2)       continue;
+ else {
+        String lab=fields[j].substring(0,2);
+        String val=fields[j].substring(6).trim();
+        if (lab.equals("TY")) {
+          if (val.equals("BOOK"))           Type="book";
+ else           if (val.equals("JOUR"))           Type="article";
+ else           Type="other";
+        }
+ else         if (lab.equals("T1"))         hm.put("title",val);
+ else         if (lab.equals("A1") || lab.equals("AU")) {
+          val=val.substring(0,val.length() - 1);
+          if (Author.equals(""))           Author=val;
+ else           Author+=" and " + val;
+        }
+ else         if (lab.equals("JA") || lab.equals("JF") || lab.equals("JO"))         hm.put("journal",val);
+ else         if (lab.equals("SP"))         StartPage=val;
+ else         if (lab.equals("EP"))         EndPage=val;
+ else         if (lab.equals("VL"))         hm.put("volume",val);
+ else         if (lab.equals("N2"))         hm.put("abstract",val);
+ else         if (lab.equals("UR"))         hm.put("url",val);
+ else         if ((lab.equals("Y1") || lab.equals("PY")) && val.length() >= 4)         hm.put("year",val.substring(0,4));
+      }
+    }
+    Author=fixAuthor(Author);
+    if (Author.indexOf(" and ") < 0)     try {
+      hm.put("author",Author.substring(0,Author.length() - 1));
+    }
+ catch (    java.lang.StringIndexOutOfBoundsException ex) {
+    }
+ else     hm.put("author",Author);
+    hm.put("pages",StartPage + "--" + EndPage);
+    BibtexEntry b=new BibtexEntry(Globals.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
+    b.setField(hm);
+    bibitems.add(b);
+  }
+  return bibitems;
+}

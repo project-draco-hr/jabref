@@ -1,0 +1,14 @@
+{
+  JFileChooser fc;
+  if (prefs.get("workingDirectory") == null)   fc=new JabRefFileChooser(new File(System.getProperty("user.home")));
+ else {
+    fc=new JabRefFileChooser(new File(prefs.get("workingDirectory")));
+  }
+  fc.addChoosableFileFilter(new OpenFileFilter());
+  fc.setDialogType(JFileChooser.OPEN_DIALOG);
+  fc.showOpenDialog(null);
+  File selectedFile=fc.getSelectedFile();
+  if (selectedFile == null)   return null;
+  prefs.put("workingDirectory",selectedFile.getPath());
+  return selectedFile.getAbsolutePath();
+}

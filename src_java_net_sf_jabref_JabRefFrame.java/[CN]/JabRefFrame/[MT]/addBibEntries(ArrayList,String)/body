@@ -1,0 +1,14 @@
+{
+  BibtexDatabase database=new BibtexDatabase();
+  Iterator it=bibentries.iterator();
+  while (it.hasNext()) {
+    BibtexEntry entry=(BibtexEntry)it.next();
+    try {
+      entry.setId(Util.createId(entry.getType(),database));
+      database.insertEntry(entry);
+    }
+ catch (    KeyCollisionException ex) {
+      System.err.println("KeyCollisionException [ addBibEntries(...) ]");
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  ArrayList bibitems=new ArrayList();
+  File f=new File(filename);
+  int rowNum=0;
+  if (!f.exists() && !f.canRead() && !f.isFile()) {
+    System.err.println("Error: " + filename + " is not a valid file and|or is not readable.");
+    return null;
+  }
+  try {
+    BufferedReader in=new BufferedReader(new FileReader(filename));
+    String line;
+    StringBuffer sb=new StringBuffer();
+    while ((line=in.readLine()) != null) {
+      if (line.length() > 0 && line.charAt(0) != ' ')       sb.append("__NEWFIELD__");
+      sb.append(line);
+    }
+    in.close();
+    String items[]=sb.toString().split("<[0-9]+>");
+    String key="";
+    String BibManKey="";
+    for (int i=1; i < items.length; i++) {
+      HashMap h=new HashMap();
+      String[] fields=items[i].split("__NEWFIELD__");
+      for (int j=0; j < fields.length; j++) {
+        fields[j]=fields[j].trim();
+        if (fields[j].indexOf("Author") == 0 && fields[j].indexOf("Author Keywords") == -1 && fields[j].indexOf("Author e-mail") == -1) {
+          String author;
+          boolean isComma=false;
+          if (fields[j].indexOf(";") > 0) {
+            author=fields[j].substring(7,fields[j].length()).replaceAll("[^\\.A-Za-z,;\\- ]","").replaceAll(";"," and ");
+          }
+ else {
+            isComma=true;
+            author=fields[j].substring(7,fields[j].length()).replaceAll("\\."," and").replaceAll(" and$","");
+          }
+          if (author.split(" and ").length > 1) {
+            if (isComma == false)             h.put("author",fixAuthor(author));
+ else             h.put("author",fixAuthor_nocomma(author));
+          }
+ else           h.put("author",author);
+        }
+ else         if (fields[j].indexOf("Title") == 0)         h.put("title",fields[j].substring(6,fields[j].length()).replaceAll("\\[.+\\]",""));
+ else         if (fields[j].indexOf("Source") == 0) {
+          String s=fields[j];
+          Matcher matcher=ovid_src_pat.matcher(s);
+          boolean matchfound=matcher.find();
+          if (matchfound) {
+            h.put("journal",matcher.group(1));
+            h.put("volume",matcher.group(2));
+            h.put("issue",matcher.group(3));
+            h.put("pages",matcher.group(4));
+            h.put("year",matcher.group(5));
+          }
+ else {
+            matcher=ovid_src_pat_no_issue.matcher(s);
+            matchfound=matcher.find();
+            if (matchfound) {
+              h.put("journal",matcher.group(1));
+              h.put("volume",matcher.group(2));
+              h.put("pages",matcher.group(3));
+              h.put("year",matcher.group(4));
+            }
+          }
+        }
+ else         if (fields[j].indexOf("Abstract") == 0)         h.put("abstract",fields[j].substring(9,fields[j].length()));
+      }
+      BibtexEntry b=new BibtexEntry(Globals.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType("article"));
+      b.setField(h);
+      bibitems.add(b);
+    }
+  }
+ catch (  IOException ex) {
+    return null;
+  }
+  return bibitems;
+}

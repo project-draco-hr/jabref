@@ -1,0 +1,70 @@
+{
+  ArrayList bibitems=new ArrayList();
+  File f=new File(filename);
+  if (!f.exists() && !f.canRead() && !f.isFile()) {
+    System.err.println("Error " + filename + " is not a valid file and|or is not readable.");
+    return null;
+  }
+  StringBuffer sb=new StringBuffer();
+  try {
+    BufferedReader in=new BufferedReader(new FileReader(filename));
+    String str;
+    while ((str=in.readLine()) != null) {
+      if (str.length() < 3)       continue;
+      if (str.substring(0,3).equals("PT ")) {
+        sb.append("::" + str);
+      }
+ else {
+        String beg=str.substring(0,3).trim();
+        if (beg.length() == 2) {
+          sb.append(" ## ");
+          sb.append(str);
+        }
+ else {
+          sb.append("EOLEOL");
+          sb.append(str.substring(2,str.length()));
+        }
+      }
+    }
+    in.close();
+  }
+ catch (  IOException e) {
+    System.err.println("Error reading file: " + filename);
+    return null;
+  }
+  String[] entries=sb.toString().split("::");
+  int rowNum=0;
+  HashMap hm=new HashMap();
+  for (int i=1; i < entries.length; i++) {
+    String[] fields=entries[i].split(" ## ");
+    String Type="", PT="";
+    hm.clear();
+    for (int j=0; j < fields.length; j++) {
+      String beg=fields[j].substring(0,2);
+      if (beg.equals("PT")) {
+        PT=fields[j].substring(2,fields[j].length()).trim().replaceAll("Journal","article");
+        Type="article";
+      }
+ else       if (beg.equals("AU"))       hm.put("author",fixAuthor(fields[j].substring(2,fields[j].length()).trim().replaceAll("EOLEOL"," and ")));
+ else       if (beg.equals("TI"))       hm.put("title",fields[j].substring(2,fields[j].length()).trim().replaceAll("EOLEOL"," "));
+ else       if (beg.equals("SO")) {
+        hm.put("journal",fields[j].substring(2,fields[j].length()).trim());
+      }
+ else       if (beg.equals("ID"))       hm.put("keywords",fields[j].substring(2,fields[j].length()).trim().replaceAll("EOLEOL"," "));
+ else       if (beg.equals("AB"))       hm.put("abstract",fields[j].substring(2,fields[j].length()).trim().replaceAll("EOLEOL"," "));
+ else       if (beg.equals("BP"))       hm.put("pages",fields[j].substring(2,fields[j].length()).trim());
+ else       if (beg.equals("PY"))       hm.put("year",fields[j].substring(2,fields[j].length()).trim());
+ else       if (beg.equals("VL"))       hm.put("volume",fields[j].substring(2,fields[j].length()).trim());
+ else       if (beg.equals("DT")) {
+        Type=fields[j].substring(2,fields[j].length()).trim();
+        if (!Type.equals("Article") && !PT.equals("Journal"))         Type="misc";
+ else         Type="article";
+      }
+ else       if (beg.equals("CR"))       hm.put("CitedReferences",fields[j].substring(2,fields[j].length()).replaceAll("EOLEOL"," ; ").trim());
+    }
+    BibtexEntry b=new BibtexEntry(Globals.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
+    b.setField(hm);
+    bibitems.add(b);
+  }
+  return bibitems;
+}
