@@ -18,9 +18,19 @@
   gbl.setConstraints(sp1,con);
   p1.add(sp1);
   con.weighty=0;
+  con.gridwidth=1;
+  con.weightx=0;
   con.fill=GridBagConstraints.NONE;
+  con.anchor=GridBagConstraints.WEST;
+  gbl.setConstraints(test1,con);
+  p1.add(test1);
   gbl.setConstraints(def1,con);
   p1.add(def1);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  JPanel pan=new JPanel();
+  con.weightx=1;
+  gbl.setConstraints(pan,con);
+  p1.add(pan);
   lab=new JLabel(Globals.lang("Preview") + " 2");
   gbl.setConstraints(lab,con);
   con.weighty=1;
@@ -28,9 +38,18 @@
   gbl.setConstraints(sp2,con);
   p2.add(sp2);
   con.weighty=0;
+  con.weightx=0;
   con.fill=GridBagConstraints.NONE;
+  con.gridwidth=1;
+  gbl.setConstraints(test2,con);
+  p2.add(test2);
   gbl.setConstraints(def2,con);
   p2.add(def2);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  pan=new JPanel();
+  con.weightx=1;
+  gbl.setConstraints(pan,con);
+  p2.add(pan);
   add(p1);
   add(p2);
   def1.addActionListener(new ActionListener(){
@@ -48,6 +67,22 @@
       _prefs.remove("preview1");
       layout2.setText(_prefs.get("preview1").replaceAll("__NEWLINE__","\n"));
       _prefs.put("preview1",tmp);
+    }
+  }
+);
+  test1.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      initTestEntry();
+      PreviewPanel testPanel=new PreviewPanel(entry,layout1.getText());
+      JOptionPane.showMessageDialog(null,testPanel);
+    }
+  }
+);
+  test2.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      initTestEntry();
+      PreviewPanel testPanel=new PreviewPanel(entry,layout2.getText());
+      JOptionPane.showMessageDialog(null,testPanel);
     }
   }
 );
