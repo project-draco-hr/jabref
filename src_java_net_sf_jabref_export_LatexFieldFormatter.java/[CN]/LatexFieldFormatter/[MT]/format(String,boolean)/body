@@ -1,5 +1,18 @@
 {
   if (!standardBibtex) {
+    int brc=0;
+    boolean ok=true;
+    for (int i=0; i < text.length(); i++) {
+      char c=text.charAt(i);
+      if (c == '{')       brc++;
+      if (c == '}')       brc--;
+      if (brc < 0) {
+        ok=false;
+        break;
+      }
+    }
+    if (brc > 0)     ok=false;
+    if (!ok)     throw new IllegalArgumentException("Curly braces { and } must be balanced.");
     return "{" + Util.wrap2(text,GUIGlobals.LINE_LENGTH) + "}";
   }
   sb=new StringBuffer();

@@ -3,19 +3,20 @@
   int oldPos=0;
   String author;
   StringBuffer sb=new StringBuffer(100);
-  sb.append("<author>");
   if (fieldText.indexOf(" and ") == -1) {
+    sb.append("<author>");
     singleAuthor(sb,fieldText);
+    sb.append("</author>");
   }
  else {
-    while ((index=fieldText.indexOf(" and ",index + 1)) != -1) {
-      author=fieldText.substring(oldPos,index);
-      singleAuthor(sb,author);
-      sb.append("\n");
-      oldPos=index + 4;
+    String[] names=fieldText.split(" and ");
+    for (int i=0; i < names.length; i++) {
+      sb.append("<author>");
+      singleAuthor(sb,names[i]);
+      sb.append("</author>");
+      if (i < names.length - 1)       sb.append("\n       ");
     }
   }
-  sb.append("</author>");
   fieldText=sb.toString();
   return fieldText;
 }
