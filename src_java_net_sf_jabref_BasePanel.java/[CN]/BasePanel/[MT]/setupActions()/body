@@ -104,20 +104,38 @@
 );
   actions.put("delete",new BaseAction(){
     public void action(){
+      Util.pr("eeeeee");
+      boolean cancelled=false;
       BibtexEntry[] bes=entryTable.getSelectedEntries();
       int row0=entryTable.getSelectedRow();
       if ((bes != null) && (bes.length > 0)) {
-        NamedCompound ce=new NamedCompound(bes.length > 1 ? Globals.lang("delete entries") : Globals.lang("delete entry"));
-        for (int i=0; i < bes.length; i++) {
-          database.removeEntry(bes[i].getId());
-          ce.addEdit(new UndoableRemoveEntry(database,bes[i],ths));
+        if (prefs.getBoolean("confirmDelete")) {
+          String msg=Globals.lang("Really delete the selected") + " " + Globals.lang("entry")+ "?", title=Globals.lang("Delete entry");
+          if (bes.length > 1) {
+            msg=Globals.lang("Really delete the selected") + " " + bes.length+ " "+ Globals.lang("entries")+ "?";
+            title=Globals.lang("Delete multiple entries");
+          }
+          CheckBoxMessage cb=new CheckBoxMessage(msg,Globals.lang("Disable this confirmation dialog"),false);
+          int answer=JOptionPane.showConfirmDialog(frame,cb,title,JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+          if (answer == JOptionPane.NO_OPTION) {
+            entryTable.clearSelection();
+            cancelled=true;
+          }
+          if (cb.isSelected())           prefs.putBoolean("confirmDelete",false);
         }
-        frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
-        ce.end();
-        undoManager.addEdit(ce);
-        entryTable.clearSelection();
-        refreshTable();
-        markBaseChanged();
+        if (!cancelled) {
+          NamedCompound ce=new NamedCompound(bes.length > 1 ? Globals.lang("delete entries") : Globals.lang("delete entry"));
+          for (int i=0; i < bes.length; i++) {
+            database.removeEntry(bes[i].getId());
+            ce.addEdit(new UndoableRemoveEntry(database,bes[i],ths));
+          }
+          frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
+          ce.end();
+          undoManager.addEdit(ce);
+          entryTable.clearSelection();
+          refreshTable();
+          markBaseChanged();
+        }
       }
     }
   }
