@@ -15,6 +15,7 @@
         citeseerHttpClient.executeMethod(citeseerMethod);
         saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerImportHandler(newEntry));
         citeseerMethod.releaseConnection();
+        database.insertEntry(newEntry);
         citationHashTable.put(key,newEntry);
         citationCounter++;
         UpdateProgressBarValue updateValue=new UpdateProgressBarValue(citationCounter);
@@ -33,6 +34,9 @@ catch (  SAXException e) {
 catch (  IOException e) {
     ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
     SwingUtilities.invokeLater(dialog);
+  }
+catch (  KeyCollisionException e) {
+    e.printStackTrace();
   }
   return citationHashTable;
 }
