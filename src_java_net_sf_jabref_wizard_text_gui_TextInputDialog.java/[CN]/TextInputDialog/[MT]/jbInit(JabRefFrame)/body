@@ -8,9 +8,17 @@
   initRawPanel();
   initButtonPanel();
   initSourcePanel();
+  initWarnPanel();
   JTabbedPane tabbed=new JTabbedPane();
+  tabbed.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent e){
+      if (inputChanged)       checkInput();
+    }
+  }
+);
   tabbed.add(rawPanel,Globals.lang("Raw_source"));
   tabbed.add(sourcePanel,Globals.lang("BibTeX_source"));
+  tabbed.add(warnPanel,Globals.lang("Messages_and_Hints"));
   GridBagLayout gbl=new GridBagLayout();
   GridBagConstraints con=new GridBagConstraints();
   con.weightx=0;
