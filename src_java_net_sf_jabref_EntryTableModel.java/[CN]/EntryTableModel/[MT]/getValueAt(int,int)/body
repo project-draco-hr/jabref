@@ -2,19 +2,17 @@
   Object o;
   BibtexEntry be=db.getEntryById(getNameFromNumber(row));
   if (col == 0)   o="" + (row + 1);
+ else   if (columns[col - PADLEFT].equals(GUIGlobals.TYPE_HEADER)) {
+    o=be.getType().getName();
+  }
  else {
-    if (columns[col - PADLEFT].equals(GUIGlobals.TYPE_HEADER)) {
-      o=be.getType().getName();
-    }
+    o=be.getField(columns[col - PADLEFT]);
+    for (int i=0; i < nameCols.length; i++)     if (col - PADLEFT == nameCols[i]) {
+      if (o == null)       return null;
+      if (namesAsIs)       return o;
  else {
-      o=be.getField(columns[col - PADLEFT]);
-      for (int i=0; i < nameCols.length; i++)       if (col - PADLEFT == nameCols[i]) {
-        if (o == null)         return null;
-        if (namesAsIs)         return o;
- else {
-          if (namesFf)           return ImportFormatReader.fixAuthor((String)o);
- else           return ImportFormatReader.fixAuthor_lastnameFirst((String)o);
-        }
+        if (namesFf)         return ImportFormatReader.fixAuthor((String)o);
+ else         return ImportFormatReader.fixAuthor_lastnameFirst((String)o);
       }
     }
   }

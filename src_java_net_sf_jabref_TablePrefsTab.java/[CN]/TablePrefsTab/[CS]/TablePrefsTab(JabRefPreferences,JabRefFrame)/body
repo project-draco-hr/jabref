@@ -26,6 +26,7 @@
  else     tableRows.add(new TableRow(names[i]));
   }
   rowCount=tableRows.size() + 5;
+  ncWidth=prefs.getInt("numberColWidth");
   TableModel tm=new AbstractTableModel(){
     public int getRowCount(){
       return rowCount;
@@ -34,6 +35,8 @@
       return 2;
     }
     public Object getValueAt(    int row,    int column){
+      if (row == 0)       return (column == 0 ? GUIGlobals.NUMBER_COL : "" + ncWidth);
+      row--;
       if (row >= tableRows.size())       return "";
       Object rowContent=tableRows.elementAt(row);
       if (rowContent == null)       return "";
@@ -54,12 +57,16 @@ public Class getColumnClass(int column){
  else   return Integer.class;
 }
 public boolean isCellEditable(int row,int col){
-  return true;
+  return !((row == 0) && (col == 0));
 }
 public void setValueAt(Object value,int row,int col){
   tableChanged=true;
   while (row >= tableRows.size())   tableRows.add(new TableRow("",-1));
-  TableRow rowContent=(TableRow)tableRows.elementAt(row);
+  if ((row == 0) && (col == 1)) {
+    ncWidth=Integer.parseInt(value.toString());
+    return;
+  }
+  TableRow rowContent=(TableRow)tableRows.elementAt(row - 1);
   if (col == 0) {
     rowContent.name=value.toString();
     if (((String)getValueAt(row,1)).equals(""))     setValueAt("" + GUIGlobals.DEFAULT_FIELD_LENGTH,row,1);

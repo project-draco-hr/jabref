@@ -3,6 +3,7 @@
   ArrayList _al;
   String _spacer, _label;
   StringBuffer _sb=new StringBuffer();
+  boolean forceUpper=false, forceLower=false;
   try {
     String _type=_entry.getType().getName().toLowerCase();
     _al=table.getValue(_type);
@@ -10,11 +11,21 @@
     boolean field=false;
     for (int i=1; i < _alSize; i++) {
       String val=_al.get(i).toString();
-      if (val.equals("["))       field=true;
- else       if (val.equals("]"))       field=false;
+      if (val.equals("[")) {
+        field=true;
+      }
+ else       if (val.equals("]")) {
+        field=false;
+      }
  else       if (field) {
         try {
-          if (val.equals("auth")) {
+          if (val.equals("uppercase")) {
+            forceUpper=true;
+          }
+ else           if (val.equals("lowercase")) {
+            forceLower=true;
+          }
+ else           if (val.equals("auth")) {
             _sb.append(firstAuthor(_entry.getField("author").toString()));
           }
  else           if (val.equals("edtr")) {
@@ -42,9 +53,22 @@
             String ss=_entry.getField("title").toString();
             int piv=0, wrd=0;
             while ((piv < ss.length()) && (wrd < 3)) {
-              if (Character.isWhitespace(ss.charAt(piv)))               wrd++;
- else               _sb.append(ss.charAt(piv));
+              if (Character.isWhitespace(ss.charAt(piv))) {
+                wrd++;
+              }
+ else {
+                _sb.append(ss.charAt(piv));
+              }
               piv++;
+            }
+          }
+ else           if (val.equals("yy")) {
+            String ss=_entry.getField("year").toString();
+            if (ss.length() > 2) {
+              _sb.append(ss.substring(ss.length() - 2));
+            }
+ else {
+              _sb.append(ss);
             }
           }
  else {
@@ -64,10 +88,18 @@
     System.err.println(e);
   }
   _label=Util.checkLegalKey(_sb.toString());
+  if (forceUpper) {
+    _label=_label.toUpperCase();
+  }
+  if (forceLower) {
+    _label=_label.toLowerCase();
+  }
   if (_db.setCiteKeyForEntry(_entry.getId(),_label)) {
     char c='b';
     String modKey=_label + "a";
-    while (_db.setCiteKeyForEntry(_entry.getId(),modKey))     modKey=_label + ((char)(c++));
+    while (_db.setCiteKeyForEntry(_entry.getId(),modKey)) {
+      modKey=_label + ((char)(c++));
+    }
   }
   return _entry;
 }
