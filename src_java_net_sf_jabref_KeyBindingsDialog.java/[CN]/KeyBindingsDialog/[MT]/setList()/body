@@ -1,24 +1,24 @@
 {
   DefaultListModel listModel=new DefaultListModel();
-  TreeMap sorted=new TreeMap(bindHM);
-  Iterator it=sorted.keySet().iterator();
-  String[][] tableData=new String[sorted.size()][2];
+  Iterator it=bindHM.keySet().iterator();
+  String[][] tableData=new String[bindHM.size()][3];
   int i=0;
   while (it.hasNext()) {
     String s=(String)it.next();
-    tableData[i][0]=s;
+    tableData[i][2]=s;
     tableData[i][1]=(String)bindHM.get(s);
+    tableData[i][0]=Globals.lang(s);
     i++;
   }
-  tableModel=new KeystrokeTableModel(tableData);
-  table=new JTable(tableModel){
-    public boolean isCellEditable(    int row,    int col){
-      return false;
-    }
-  }
-;
+  TreeMap sorted=new TreeMap();
+  for (i=0; i < tableData.length; i++)   sorted.put(tableData[i][0],tableData[i]);
+  tableModel=new KeystrokeTableModel(sorted);
+  table=new KeystrokeTable(tableModel);
   table.setRowSelectionAllowed(true);
   table.setColumnSelectionAllowed(false);
   table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  TableColumnModel cm=table.getColumnModel();
+  cm.getColumn(0).setPreferredWidth(GUIGlobals.KEYBIND_COL_0);
+  cm.getColumn(1).setPreferredWidth(GUIGlobals.KEYBIND_COL_1);
   table.setRowSelectionInterval(0,0);
 }
