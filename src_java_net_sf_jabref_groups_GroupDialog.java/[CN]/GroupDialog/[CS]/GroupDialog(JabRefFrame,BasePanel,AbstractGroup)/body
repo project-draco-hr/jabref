@@ -2,6 +2,7 @@
   super(jabrefFrame,Globals.lang("Edit group"),true);
   m_basePanel=basePanel;
   m_parent=jabrefFrame;
+  m_editedGroup=editedGroup;
   m_searchField.setText(jabrefFrame.prefs().get("groupsDefaultField"));
   m_types.addElement("Keywords");
   m_types.addElement("Search Expression");
@@ -85,7 +86,13 @@
       m_okPressed=true;
 switch (m_typeSelector.getSelectedIndex()) {
 case INDEX_EXPLICITGROUP:
-        m_resultingGroup=new ExplicitGroup(m_name.getText().trim(),m_basePanel.database());
+        if (m_editedGroup instanceof ExplicitGroup) {
+          m_resultingGroup=m_editedGroup.deepCopy();
+          m_resultingGroup.setName(m_name.getText().trim());
+        }
+ else {
+          m_resultingGroup=new ExplicitGroup(m_name.getText().trim(),m_basePanel.database());
+        }
       break;
 case INDEX_KEYWORDGROUP:
     m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_searchField.getText().trim(),m_kgSearchExpression.getText().trim());
