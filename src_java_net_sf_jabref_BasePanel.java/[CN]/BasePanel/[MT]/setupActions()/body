@@ -90,7 +90,7 @@
       runCommand("copy");
       BibtexEntry[] bes=entryTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
-        NamedCompound ce=new NamedCompound(bes.length > 1 ? Globals.lang("cut entries") : Globals.lang("cut entry"));
+        NamedCompound ce=new NamedCompound(bes.length > 1 ? "cut entries" : "cut entry");
         for (int i=0; i < bes.length; i++) {
           database.removeEntry(bes[i].getId());
           ensureNotShowing(bes[i]);
@@ -163,8 +163,15 @@ catch (          IOException ex) {
             markBaseChanged();
           }
         }
+        Util.pr(flavor.length + "");
+        Util.pr(flavor[0].toString());
+        Util.pr(flavor[1].toString());
+        Util.pr(flavor[2].toString());
+        Util.pr(flavor[3].toString());
+        Util.pr(flavor[4].toString());
         if ((flavor != null) && (flavor.length > 0) && flavor[0].equals(DataFlavor.stringFlavor)) {
           int[] rows=entryTable.getSelectedRows(), cols=entryTable.getSelectedColumns();
+          Util.pr(rows.length + " x " + cols.length);
           if ((cols != null) && (cols.length == 1) && (cols[0] != 0)&& (rows != null)&& (rows.length == 1)) {
             try {
               tableModel.setValueAt((String)(content.getTransferData(DataFlavor.stringFlavor)),rows[0],cols[0]);
