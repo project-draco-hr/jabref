@@ -53,9 +53,11 @@
   insertButton.setText(Globals.lang("Insert"));
   insertButton.addActionListener(new TextInputDialog_insert_actionAdapter(this));
   appRadio=new JRadioButton(Globals.lang("Append"));
+  appRadio.setToolTipText("append the selected text to bibtex key");
   appRadio.setMnemonic(KeyEvent.VK_A);
   appRadio.setSelected(true);
   overRadio=new JRadioButton(Globals.lang("Override"));
+  overRadio.setToolTipText("override the bibtex key by the selected text");
   overRadio.setMnemonic(KeyEvent.VK_O);
   overRadio.setSelected(false);
   ButtonGroup group=new ButtonGroup();
@@ -80,4 +82,17 @@
   inputPanel.add(insertButton);
   rawPanel.add(leftPanel,BorderLayout.CENTER);
   rawPanel.add(inputPanel,BorderLayout.EAST);
+  JEditorPane infoText=new JEditorPane();
+  infoText.setEditable(false);
+  URL infoURL=JabRef.class.getResource(GUIGlobals.helpPre + GUIGlobals.shortPlainImport);
+  if (infoURL != null)   try {
+    infoText.setPage(infoURL);
+    infoText.setBackground(GUIGlobals.infoField);
+    infoText.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+    infoText.setPreferredSize(new Dimension(220,50));
+    infoText.setMinimumSize(new Dimension(180,50));
+    rawPanel.add(infoText,BorderLayout.SOUTH);
+  }
+ catch (  IOException e) {
+  }
 }
