@@ -1,0 +1,12 @@
+{
+  if (searchMode == GROUP_ITSELF)   return getGroup().getSearchRule();
+  AndOrSearchRuleSet searchRule=new AndOrSearchRuleSet(searchMode == GROUP_INTERSECTION_PARENT,false);
+  searchRule.addRule(getGroup().getSearchRule());
+  if (searchMode == GROUP_UNION_CHILDREN) {
+    for (int i=0; i < getChildCount(); ++i)     searchRule.addRule(((GroupTreeNode)getChildAt(i)).getSearchRule(searchMode));
+  }
+ else   if (searchMode == GROUP_INTERSECTION_PARENT && !isRoot()) {
+    searchRule.addRule(((GroupTreeNode)getParent()).getSearchRule(searchMode));
+  }
+  return searchRule;
+}
