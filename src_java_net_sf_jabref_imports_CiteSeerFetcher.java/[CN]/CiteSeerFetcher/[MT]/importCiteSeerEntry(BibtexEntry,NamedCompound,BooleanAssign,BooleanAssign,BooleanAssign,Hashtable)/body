@@ -1,6 +1,6 @@
 {
+  boolean abortOperation=false;
   SAXParserFactory factory=SAXParserFactory.newInstance();
-  BooleanAssign newValue=new BooleanAssign(false);
   String identifier=generateCanonicalIdentifier(be);
   try {
     if (identifier != null) {
@@ -22,14 +22,17 @@
  catch (  HttpException e) {
     System.out.println("HttpException: " + e.getReason());
     e.printStackTrace();
+    abortOperation=true;
   }
 catch (  IOException e) {
     ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
     SwingUtilities.invokeLater(dialog);
+    abortOperation=true;
   }
 catch (  SAXException e) {
     System.out.println("SAXException: " + e.getLocalizedMessage());
     e.printStackTrace();
+    abortOperation=true;
   }
-  return newValue.getValue();
+  return abortOperation;
 }
