@@ -345,14 +345,12 @@ catch (            Throwable ex) {
               if (first)               output(Globals.lang("Please define BibTeX key first"));
  else {
                 toSend.append("}');]\"");
-                Util.pr(toSend.toString());
                 Runtime.getRuntime().exec(winEdt + " " + toSend.toString());
                 output(Globals.lang("Pushed the citations for the following rows to") + "WinEdt: " + message);
               }
             }
  catch (            IOException excep) {
               output(Globals.lang("Error") + ": " + Globals.lang("Could not call executable")+ " '"+ winEdt+ "'.");
-              excep.printStackTrace();
             }
           }
         }
@@ -390,10 +388,9 @@ catch (            Throwable ex) {
 );
   actions.put("search",new BaseAction(){
     public void action(){
-      sidePaneManager.togglePanel("search");
-      boolean on=sidePaneManager.isPanelVisible("search");
-      frame.searchToggle.setSelected(on);
-      if (on)       searchManager.startSearch();
+      sidePaneManager.ensureVisible("search");
+      frame.searchToggle.setSelected(true);
+      if (true)       searchManager.startSearch();
     }
   }
 );
