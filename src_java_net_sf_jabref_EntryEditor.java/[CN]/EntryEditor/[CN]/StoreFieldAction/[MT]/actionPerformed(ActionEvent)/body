@@ -17,11 +17,9 @@
       Object oldValue=entry.getField(fe.getFieldName());
       entry.setField(fe.getFieldName(),toSet);
       if ((toSet != null) && (toSet.length() > 0)) {
-        fe.setLabelColor(GUIGlobals.validFieldColor);
         fe.setBackground(GUIGlobals.validFieldBackground);
       }
  else {
-        fe.setLabelColor(GUIGlobals.nullFieldColor);
         fe.setBackground(GUIGlobals.validFieldBackground);
       }
       panel.undoManager.addEdit(new UndoableFieldChange(entry,fe.getFieldName(),oldValue,toSet));
@@ -31,12 +29,10 @@
     }
  catch (    IllegalArgumentException ex) {
       JOptionPane.showMessageDialog(frame,"Error: " + ex.getMessage(),Globals.lang("Error setting field"),JOptionPane.ERROR_MESSAGE);
-      fe.setLabelColor(GUIGlobals.invalidFieldColor);
       fe.setBackground(GUIGlobals.invalidFieldBackground);
     }
  else {
       fe.setBackground(GUIGlobals.validFieldBackground);
-      fe.setLabelColor((toSet == null) ? GUIGlobals.nullFieldColor : GUIGlobals.validFieldColor);
     }
   }
  else   if (e.getSource() instanceof FieldTextField) {
@@ -48,11 +44,9 @@
  else     panel.output(Globals.lang("Bibtex key is unique."));
     panel.undoManager.addEdit(new UndoableKeyChange(panel.database,entry.getId(),oldValue,newValue));
     if ((newValue != null) && (newValue.length() > 0)) {
-      fe.setLabelColor(GUIGlobals.validFieldColor);
       fe.setBackground(GUIGlobals.validFieldBackground);
     }
  else {
-      fe.setLabelColor(GUIGlobals.nullFieldColor);
       fe.setBackground(GUIGlobals.validFieldBackground);
     }
     panel.refreshTable();
