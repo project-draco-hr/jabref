@@ -1,0 +1,22 @@
+{
+  generateButton.setEnabled(false);
+  BasePanel bp=(BasePanel)parentTabbedPane.getComponentAt(dbChooser.getSelectedIndex());
+  notFoundList.removeAll();
+  statusInfos.setText(null);
+  BibtexDatabase refBase=bp.getDatabase();
+  String auxName=auxFileField.getText();
+  if (auxName != null)   if ((refBase != null) && (auxName.length() > 0)) {
+    auxParser.clear();
+    notFoundList.setListData(auxParser.generate(auxName,refBase));
+    statusInfos.append(Globals.lang("keys_in_database") + " " + refBase.getEntryCount());
+    statusInfos.append("\n" + Globals.lang("found_in_aux_file") + " "+ auxParser.getFoundKeysInAux());
+    statusInfos.append("\n" + Globals.lang("resolved") + " "+ auxParser.getResolvedKeysCount());
+    statusInfos.append("\n" + Globals.lang("not_found") + " "+ auxParser.getNotResolvedKeysCount());
+    okButton.setEnabled(true);
+  }
+  if (auxParser.getGeneratedDatabase().getEntryCount() < 1) {
+    statusInfos.append("\n" + Globals.lang("empty database"));
+    okButton.setEnabled(false);
+  }
+  generateButton.setEnabled(true);
+}

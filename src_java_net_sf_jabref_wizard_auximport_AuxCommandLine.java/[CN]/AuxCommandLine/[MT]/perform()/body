@@ -1,0 +1,16 @@
+{
+  BibtexDatabase back=null;
+  if ((auxName.length() > 0) && (bib != null)) {
+    AuxSubGenerator auxParser=new AuxSubGenerator(bib);
+    Vector returnValue=auxParser.generate(auxName,bib);
+    back=auxParser.getGeneratedDatabase();
+    System.out.println(Globals.lang("keys_in_database") + " " + bib.getEntryCount());
+    System.out.println(Globals.lang("found_in_aux_file") + " " + auxParser.getFoundKeysInAux());
+    System.out.println(Globals.lang("resolved") + " " + auxParser.getResolvedKeysCount());
+    if (auxParser.getNotResolvedKeysCount() > 0) {
+      System.out.println(Globals.lang("not_found") + " " + auxParser.getNotResolvedKeysCount());
+      System.out.println(returnValue);
+    }
+  }
+  return back;
+}

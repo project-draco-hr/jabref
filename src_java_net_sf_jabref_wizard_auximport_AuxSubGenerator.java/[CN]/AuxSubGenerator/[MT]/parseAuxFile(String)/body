@@ -1,0 +1,45 @@
+{
+  Pattern pattern;
+  Matcher matcher;
+  boolean weiter=false;
+  boolean back=true;
+  pattern=Pattern.compile("\\\\citation\\{.+\\}");
+  BufferedReader br=null;
+  try {
+    br=new BufferedReader(new FileReader(filename));
+    weiter=true;
+  }
+ catch (  FileNotFoundException fnfe) {
+    System.out.println("Cannot locate input file! " + fnfe.getMessage());
+    back=false;
+  }
+  while (weiter) {
+    String line;
+    try {
+      line=br.readLine();
+    }
+ catch (    IOException ioe) {
+      line=null;
+      weiter=false;
+    }
+    if (line != null) {
+      matcher=pattern.matcher(line);
+      while (matcher.find()) {
+        int len=matcher.end() - matcher.start();
+        if (len > 11) {
+          String str=matcher.group().substring(matcher.start() + 10,matcher.end() - 1);
+          mySet.add(str);
+        }
+      }
+    }
+ else     weiter=false;
+  }
+  if (back) {
+    try {
+      br.close();
+    }
+ catch (    IOException ioe) {
+    }
+  }
+  return back;
+}
