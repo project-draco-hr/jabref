@@ -1,0 +1,156 @@
+{
+  Token a=null;
+  Token d=null;
+  String doc=null;
+  try {
+{
+switch (LA(1)) {
+case ACTION:
+{
+          a=LT(1);
+          match(ACTION);
+          if (inputState.guessing == 0) {
+            behavior.refPreambleAction(a);
+          }
+          break;
+        }
+case DOC_COMMENT:
+case LITERAL_lexclass:
+case LITERAL_class:
+{
+        break;
+      }
+default :
+{
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+}
+}
+{
+switch (LA(1)) {
+case DOC_COMMENT:
+{
+    d=LT(1);
+    match(DOC_COMMENT);
+    if (inputState.guessing == 0) {
+      doc=d.getText();
+    }
+    break;
+  }
+case LITERAL_lexclass:
+case LITERAL_class:
+{
+  break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+{
+boolean synPredMatched13=false;
+if (((LA(1) == LITERAL_lexclass || LA(1) == LITERAL_class) && (LA(2) == TOKEN_REF || LA(2) == RULE_REF))) {
+int _m13=mark();
+synPredMatched13=true;
+inputState.guessing++;
+try {
+{
+switch (LA(1)) {
+case LITERAL_lexclass:
+{
+    match(LITERAL_lexclass);
+    break;
+  }
+case LITERAL_class:
+{
+  match(LITERAL_class);
+  id();
+  match(LITERAL_extends);
+  match(LITERAL_Lexer);
+  break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+}
+ catch (RecognitionException pe) {
+synPredMatched13=false;
+}
+rewind(_m13);
+inputState.guessing--;
+}
+if (synPredMatched13) {
+lexerSpec(doc);
+}
+ else {
+boolean synPredMatched15=false;
+if (((LA(1) == LITERAL_class) && (LA(2) == TOKEN_REF || LA(2) == RULE_REF))) {
+int _m15=mark();
+synPredMatched15=true;
+inputState.guessing++;
+try {
+{
+match(LITERAL_class);
+id();
+match(LITERAL_extends);
+match(LITERAL_TreeParser);
+}
+}
+ catch (RecognitionException pe) {
+synPredMatched15=false;
+}
+rewind(_m15);
+inputState.guessing--;
+}
+if (synPredMatched15) {
+treeParserSpec(doc);
+}
+ else if ((LA(1) == LITERAL_class) && (LA(2) == TOKEN_REF || LA(2) == RULE_REF)) {
+parserSpec(doc);
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+rules();
+if (inputState.guessing == 0) {
+behavior.endGrammar();
+}
+}
+ catch (RecognitionException ex) {
+if (inputState.guessing == 0) {
+if (ex instanceof NoViableAltException) {
+NoViableAltException e=(NoViableAltException)ex;
+if (e.token.getType() == DOC_COMMENT) {
+reportError("line " + ex.line + ": JAVADOC comments may only prefix rules and grammars");
+}
+ else {
+reportError("rule classDef trapped: " + ex.toString());
+}
+}
+ else {
+reportError("rule classDef trapped: " + ex.toString());
+}
+behavior.abortGrammar();
+boolean consuming=true;
+while (consuming) {
+consume();
+switch (LA(1)) {
+case LITERAL_class:
+case LITERAL_lexclass:
+case EOF:
+consuming=false;
+break;
+}
+}
+}
+ else {
+throw ex;
+}
+}
+}

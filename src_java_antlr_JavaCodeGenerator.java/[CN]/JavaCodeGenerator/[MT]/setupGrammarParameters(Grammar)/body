@@ -1,0 +1,59 @@
+{
+  if (g instanceof ParserGrammar) {
+    labeledElementASTType="AST";
+    if (g.hasOption("ASTLabelType")) {
+      Token tsuffix=g.getOption("ASTLabelType");
+      if (tsuffix != null) {
+        String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+        if (suffix != null) {
+          labeledElementASTType=suffix;
+        }
+      }
+    }
+    labeledElementType="Token ";
+    labeledElementInit="null";
+    commonExtraArgs="";
+    commonExtraParams="";
+    commonLocalVars="";
+    lt1Value="LT(1)";
+    exceptionThrown="RecognitionException";
+    throwNoViable="throw new NoViableAltException(LT(1), getFilename());";
+  }
+ else   if (g instanceof LexerGrammar) {
+    labeledElementType="char ";
+    labeledElementInit="'\\0'";
+    commonExtraArgs="";
+    commonExtraParams="boolean _createToken";
+    commonLocalVars="int _ttype; Token _token=null; int _begin=text.length();";
+    lt1Value="LA(1)";
+    exceptionThrown="RecognitionException";
+    throwNoViable="throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine());";
+  }
+ else   if (g instanceof TreeWalkerGrammar) {
+    labeledElementASTType="AST";
+    labeledElementType="AST";
+    if (g.hasOption("ASTLabelType")) {
+      Token tsuffix=g.getOption("ASTLabelType");
+      if (tsuffix != null) {
+        String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+        if (suffix != null) {
+          labeledElementASTType=suffix;
+          labeledElementType=suffix;
+        }
+      }
+    }
+    if (!g.hasOption("ASTLabelType")) {
+      g.setOption("ASTLabelType",new Token(ANTLRTokenTypes.STRING_LITERAL,"AST"));
+    }
+    labeledElementInit="null";
+    commonExtraArgs="_t";
+    commonExtraParams="AST _t";
+    commonLocalVars="";
+    lt1Value="(" + labeledElementASTType + ")_t";
+    exceptionThrown="RecognitionException";
+    throwNoViable="throw new NoViableAltException(_t);";
+  }
+ else {
+    tool.panic("Unknown grammar type");
+  }
+}

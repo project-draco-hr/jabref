@@ -1,0 +1,17 @@
+{
+  if (DEBUG_ANALYZER)   System.out.println("look(" + k + ","+ wc+ ")");
+  if (k > 1) {
+    return wc.next.look(k - 1);
+  }
+  BitSet b;
+  if (lexicalAnalysis) {
+    b=(BitSet)((LexerGrammar)grammar).charVocabulary.clone();
+  }
+ else {
+    b=new BitSet(1);
+    int maxToken=grammar.tokenManager.maxTokenType();
+    b.notInPlace(Token.MIN_USER_TYPE,maxToken);
+    if (DEBUG_ANALYZER)     System.out.println("look(" + k + ","+ wc+ ") after not: "+ b);
+  }
+  return new Lookahead(b);
+}

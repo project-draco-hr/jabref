@@ -1,0 +1,149 @@
+{
+  boolean hasPublicRules=false;
+  for (int i=0; i < grammar.rules.size(); i++) {
+    RuleSymbol rs=(RuleSymbol)grammar.rules.elementAt(i);
+    if (rs.isDefined() && rs.access.equals("public")) {
+      hasPublicRules=true;
+      break;
+    }
+  }
+  if (!hasPublicRules) {
+    println("");
+    println("public Token nextToken() throws TokenStreamException {");
+    println("\ttry {uponEOF();}");
+    println("\tcatch(CharStreamIOException csioe) {");
+    println("\t\tthrow new TokenStreamIOException(csioe.io);");
+    println("\t}");
+    println("\tcatch(CharStreamException cse) {");
+    println("\t\tthrow new TokenStreamException(cse.getMessage());");
+    println("\t}");
+    println("\treturn new CommonToken(Token.EOF_TYPE, \"\");");
+    println("}");
+    println("");
+    return;
+  }
+  RuleBlock nextTokenBlk=MakeGrammar.createNextTokenRule(grammar,grammar.rules,"nextToken");
+  RuleSymbol nextTokenRs=new RuleSymbol("mnextToken");
+  nextTokenRs.setDefined();
+  nextTokenRs.setBlock(nextTokenBlk);
+  nextTokenRs.access="private";
+  grammar.define(nextTokenRs);
+  boolean ok=grammar.theLLkAnalyzer.deterministic(nextTokenBlk);
+  String filterRule=null;
+  if (((LexerGrammar)grammar).filterMode) {
+    filterRule=((LexerGrammar)grammar).filterRule;
+  }
+  println("");
+  println("public Token nextToken() throws TokenStreamException {");
+  tabs++;
+  println("Token theRetToken=null;");
+  _println("tryAgain:");
+  println("for (;;) {");
+  tabs++;
+  println("Token _token = null;");
+  println("int _ttype = Token.INVALID_TYPE;");
+  if (((LexerGrammar)grammar).filterMode) {
+    println("setCommitToPath(false);");
+    if (filterRule != null) {
+      if (!grammar.isDefined(CodeGenerator.lexerRuleName(filterRule))) {
+        grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+      }
+ else {
+        RuleSymbol rs=(RuleSymbol)grammar.getSymbol(CodeGenerator.lexerRuleName(filterRule));
+        if (!rs.isDefined()) {
+          grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+        }
+ else         if (rs.access.equals("public")) {
+          grammar.tool.error("Filter rule " + filterRule + " must be protected");
+        }
+      }
+      println("int _m;");
+      println("_m = mark();");
+    }
+  }
+  println("resetText();");
+  println("try {   // for char stream error handling");
+  tabs++;
+  println("try {   // for lexical error handling");
+  tabs++;
+  for (int i=0; i < nextTokenBlk.getAlternatives().size(); i++) {
+    Alternative a=nextTokenBlk.getAlternativeAt(i);
+    if (a.cache[1].containsEpsilon()) {
+      tool.warning("found optional path in nextToken()");
+    }
+  }
+  String newline=System.getProperty("line.separator");
+  JavaBlockFinishingInfo howToFinish=genCommonBlock(nextTokenBlk,false);
+  String errFinish="if (LA(1)==EOF_CHAR) {uponEOF(); _returnToken = makeToken(Token.EOF_TYPE);}";
+  errFinish+=newline + "\t\t\t\t";
+  if (((LexerGrammar)grammar).filterMode) {
+    if (filterRule == null) {
+      errFinish+="else {consume(); continue tryAgain;}";
+    }
+ else {
+      errFinish+="else {" + newline + "\t\t\t\t\tcommit();"+ newline+ "\t\t\t\t\ttry {m"+ filterRule+ "(false);}"+ newline+ "\t\t\t\t\tcatch(RecognitionException e) {"+ newline+ "\t\t\t\t\t	// catastrophic failure"+ newline+ "\t\t\t\t\t	reportError(e);"+ newline+ "\t\t\t\t\t	consume();"+ newline+ "\t\t\t\t\t}"+ newline+ "\t\t\t\t\tcontinue tryAgain;"+ newline+ "\t\t\t\t}";
+    }
+  }
+ else {
+    errFinish+="else {" + throwNoViable + "}";
+  }
+  genBlockFinish(howToFinish,errFinish);
+  if (((LexerGrammar)grammar).filterMode && filterRule != null) {
+    println("commit();");
+  }
+  println("if ( _returnToken==null ) continue tryAgain; // found SKIP token");
+  println("_ttype = _returnToken.getType();");
+  if (((LexerGrammar)grammar).getTestLiterals()) {
+    genLiteralsTest();
+  }
+  println("_returnToken.setType(_ttype);");
+  println("return _returnToken;");
+  tabs--;
+  println("}");
+  println("catch (RecognitionException e) {");
+  tabs++;
+  if (((LexerGrammar)grammar).filterMode) {
+    if (filterRule == null) {
+      println("if ( !getCommitToPath() ) {consume(); continue tryAgain;}");
+    }
+ else {
+      println("if ( !getCommitToPath() ) {");
+      tabs++;
+      println("rewind(_m);");
+      println("resetText();");
+      println("try {m" + filterRule + "(false);}");
+      println("catch(RecognitionException ee) {");
+      println("	// horrendous failure: error in filter rule");
+      println("	reportError(ee);");
+      println("	consume();");
+      println("}");
+      println("continue tryAgain;");
+      tabs--;
+      println("}");
+    }
+  }
+  if (nextTokenBlk.getDefaultErrorHandler()) {
+    println("reportError(e);");
+    println("consume();");
+  }
+ else {
+    println("throw new TokenStreamRecognitionException(e);");
+  }
+  tabs--;
+  println("}");
+  tabs--;
+  println("}");
+  println("catch (CharStreamException cse) {");
+  println("	if ( cse instanceof CharStreamIOException ) {");
+  println("		throw new TokenStreamIOException(((CharStreamIOException)cse).io);");
+  println("	}");
+  println("	else {");
+  println("		throw new TokenStreamException(cse.getMessage());");
+  println("	}");
+  println("}");
+  tabs--;
+  println("}");
+  tabs--;
+  println("}");
+  println("");
+}

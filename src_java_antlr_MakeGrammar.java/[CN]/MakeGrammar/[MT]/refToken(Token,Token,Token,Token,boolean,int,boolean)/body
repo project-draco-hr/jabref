@@ -1,0 +1,27 @@
+{
+  if (grammar instanceof LexerGrammar) {
+    if (autoGenType == GrammarElement.AUTO_GEN_CARET) {
+      tool.error("AST specification ^ not allowed in lexer",grammar.getFilename(),t.getLine());
+    }
+    if (inverted) {
+      tool.error("~TOKEN is not allowed in lexer",grammar.getFilename(),t.getLine());
+    }
+    refRule(idAssign,t,label,args,autoGenType);
+    String ignore=ruleBlock.getIgnoreRule();
+    if (!lastInRule && ignore != null) {
+      addElementToCurrentAlt(createOptionalRuleRef(ignore,t.getLine()));
+    }
+  }
+ else {
+    if (idAssign != null) {
+      tool.error("Assignment from token reference only allowed in lexer",grammar.getFilename(),idAssign.getLine());
+    }
+    if (args != null) {
+      tool.error("Token reference arguments only allowed in lexer",grammar.getFilename(),args.getLine());
+    }
+    super.refToken(idAssign,t,label,args,inverted,autoGenType,lastInRule);
+    TokenRefElement te=new TokenRefElement(grammar,t,inverted,autoGenType);
+    addElementToCurrentAlt(te);
+    labelElement(te,label);
+  }
+}

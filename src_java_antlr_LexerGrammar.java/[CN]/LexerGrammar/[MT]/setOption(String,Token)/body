@@ -1,0 +1,80 @@
+{
+  String s=value.getText();
+  if (key.equals("buildAST")) {
+    tool.warning("buildAST option is not valid for lexer",getFilename(),value.getLine());
+    return true;
+  }
+  if (key.equals("testLiterals")) {
+    if (s.equals("true")) {
+      testLiterals=true;
+    }
+ else     if (s.equals("false")) {
+      testLiterals=false;
+    }
+ else {
+      tool.warning("testLiterals option must be true or false",getFilename(),value.getLine());
+    }
+    return true;
+  }
+  if (key.equals("interactive")) {
+    if (s.equals("true")) {
+      interactive=true;
+    }
+ else     if (s.equals("false")) {
+      interactive=false;
+    }
+ else {
+      tool.error("interactive option must be true or false",getFilename(),value.getLine());
+    }
+    return true;
+  }
+  if (key.equals("caseSensitive")) {
+    if (s.equals("true")) {
+      caseSensitive=true;
+    }
+ else     if (s.equals("false")) {
+      caseSensitive=false;
+    }
+ else {
+      tool.warning("caseSensitive option must be true or false",getFilename(),value.getLine());
+    }
+    return true;
+  }
+  if (key.equals("caseSensitiveLiterals")) {
+    if (s.equals("true")) {
+      caseSensitiveLiterals=true;
+    }
+ else     if (s.equals("false")) {
+      caseSensitiveLiterals=false;
+    }
+ else {
+      tool.warning("caseSensitiveLiterals option must be true or false",getFilename(),value.getLine());
+    }
+    return true;
+  }
+  if (key.equals("filter")) {
+    if (s.equals("true")) {
+      filterMode=true;
+    }
+ else     if (s.equals("false")) {
+      filterMode=false;
+    }
+ else     if (value.getType() == ANTLRTokenTypes.TOKEN_REF) {
+      filterMode=true;
+      filterRule=s;
+    }
+ else {
+      tool.warning("filter option must be true, false, or a lexer rule name",getFilename(),value.getLine());
+    }
+    return true;
+  }
+  if (key.equals("longestPossible")) {
+    tool.warning("longestPossible option has been deprecated; ignoring it...",getFilename(),value.getLine());
+    return true;
+  }
+  if (super.setOption(key,value)) {
+    return true;
+  }
+  tool.error("Invalid option: " + key,getFilename(),value.getLine());
+  return false;
+}

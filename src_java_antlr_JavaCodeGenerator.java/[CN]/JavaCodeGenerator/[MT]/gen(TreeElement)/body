@@ -1,0 +1,27 @@
+{
+  println("AST __t" + t.ID + " = _t;");
+  if (t.root.getLabel() != null) {
+    println(t.root.getLabel() + " = _t==ASTNULL ? null :(" + labeledElementASTType+ ")_t;");
+  }
+  genElementAST(t.root);
+  if (grammar.buildAST) {
+    println("ASTPair __currentAST" + t.ID + " = currentAST.copy();");
+    println("currentAST.root = currentAST.child;");
+    println("currentAST.child = null;");
+  }
+  genMatch(t.root);
+  println("_t = _t.getFirstChild();");
+  for (int i=0; i < t.getAlternatives().size(); i++) {
+    Alternative a=t.getAlternativeAt(i);
+    AlternativeElement e=a.head;
+    while (e != null) {
+      e.generate();
+      e=e.next;
+    }
+  }
+  if (grammar.buildAST) {
+    println("currentAST = __currentAST" + t.ID + ";");
+  }
+  println("_t = __t" + t.ID + ";");
+  println("_t = _t.getNextSibling();");
+}

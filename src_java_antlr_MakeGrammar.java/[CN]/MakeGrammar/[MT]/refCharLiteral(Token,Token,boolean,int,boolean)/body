@@ -1,0 +1,17 @@
+{
+  if (!(grammar instanceof LexerGrammar)) {
+    tool.error("Character literal only valid in lexer",grammar.getFilename(),lit.getLine());
+    return;
+  }
+  super.refCharLiteral(lit,label,inverted,autoGenType,lastInRule);
+  CharLiteralElement cl=new CharLiteralElement((LexerGrammar)grammar,lit,inverted,autoGenType);
+  if (!((LexerGrammar)grammar).caseSensitive && cl.getType() < 128 && Character.toLowerCase((char)cl.getType()) != (char)cl.getType()) {
+    tool.warning("Character literal must be lowercase when caseSensitive=false",grammar.getFilename(),lit.getLine());
+  }
+  addElementToCurrentAlt(cl);
+  labelElement(cl,label);
+  String ignore=ruleBlock.getIgnoreRule();
+  if (!lastInRule && ignore != null) {
+    addElementToCurrentAlt(createOptionalRuleRef(ignore,lit.getLine()));
+  }
+}

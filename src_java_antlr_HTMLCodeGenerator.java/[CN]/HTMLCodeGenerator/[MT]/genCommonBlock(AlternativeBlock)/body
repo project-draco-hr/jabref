@@ -1,0 +1,22 @@
+{
+  for (int i=0; i < blk.alternatives.size(); i++) {
+    Alternative alt=blk.getAlternativeAt(i);
+    AlternativeElement elem=alt.head;
+    if (i > 0 && blk.alternatives.size() > 1) {
+      _println("");
+      print("|\t");
+    }
+    boolean save=firstElementInAlt;
+    firstElementInAlt=true;
+    tabs++;
+    if (alt.semPred != null) {
+      println("{" + alt.semPred + "}?");
+    }
+    if (alt.synPred != null) {
+      genSynPred(alt.synPred);
+    }
+    genAlt(alt);
+    tabs--;
+    firstElementInAlt=save;
+  }
+}

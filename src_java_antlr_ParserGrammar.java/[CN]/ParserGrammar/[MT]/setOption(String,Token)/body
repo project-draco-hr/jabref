@@ -1,0 +1,36 @@
+{
+  String s=value.getText();
+  if (key.equals("buildAST")) {
+    if (s.equals("true")) {
+      buildAST=true;
+    }
+ else     if (s.equals("false")) {
+      buildAST=false;
+    }
+ else {
+      tool.error("buildAST option must be true or false",getFilename(),value.getLine());
+    }
+    return true;
+  }
+  if (key.equals("interactive")) {
+    if (s.equals("true")) {
+      interactive=true;
+    }
+ else     if (s.equals("false")) {
+      interactive=false;
+    }
+ else {
+      tool.error("interactive option must be true or false",getFilename(),value.getLine());
+    }
+    return true;
+  }
+  if (key.equals("ASTLabelType")) {
+    super.setOption(key,value);
+    return true;
+  }
+  if (super.setOption(key,value)) {
+    return true;
+  }
+  tool.error("Invalid option: " + key,getFilename(),value.getLine());
+  return false;
+}

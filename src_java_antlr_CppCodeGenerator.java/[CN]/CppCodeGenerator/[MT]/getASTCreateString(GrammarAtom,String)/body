@@ -1,0 +1,11 @@
+{
+  if (atom != null && atom.getASTNodeType() != null) {
+    return "Ref" + atom.getASTNodeType() + "(new "+ atom.getASTNodeType()+ "("+ str+ "))";
+  }
+ else {
+    boolean is_constructor=false;
+    if (str.indexOf(',') != -1)     is_constructor=grammar.tokenManager.tokenDefined(str.substring(0,str.indexOf(',')));
+    if (usingCustomAST && (grammar instanceof TreeWalkerGrammar) && !(grammar.tokenManager.tokenDefined(str))&& !is_constructor)     return "astFactory.create(static_cast<" + namespaceAntlr + "RefAST>("+ str+ "))";
+ else     return "astFactory.create(" + str + ")";
+  }
+}

@@ -1,0 +1,38 @@
+{
+  String fName=tm.getName() + TokenTypesFileSuffix + TokenTypesFileExt;
+  currentOutput=antlr.Tool.openOutputFile(fName);
+  println("// $ANTLR " + Tool.version + ": "+ Tool.fileMinusPath(tool.grammarFile)+ " -> "+ fName+ "$");
+  tabs=0;
+  println(tm.getName() + "    // output token vocab name");
+  Vector v=tm.getVocabulary();
+  for (int i=Token.MIN_USER_TYPE; i < v.size(); i++) {
+    String s=(String)v.elementAt(i);
+    if (DEBUG_CODE_GENERATOR) {
+      System.out.println("gen persistence file entry for: " + s);
+    }
+    if (s != null && !s.startsWith("<")) {
+      if (s.startsWith("\"")) {
+        StringLiteralSymbol sl=(StringLiteralSymbol)tm.getTokenSymbol(s);
+        if (sl != null && sl.label != null) {
+          print(sl.label + "=");
+        }
+        println(s + "=" + i);
+      }
+ else {
+        print(s);
+        TokenSymbol ts=(TokenSymbol)tm.getTokenSymbol(s);
+        if (ts == null) {
+          tool.warning("undefined token symbol: " + s);
+        }
+ else {
+          if (ts.getParaphrase() != null) {
+            print("(" + ts.getParaphrase() + ")");
+          }
+        }
+        println("=" + i);
+      }
+    }
+  }
+  currentOutput.close();
+  currentOutput=null;
+}

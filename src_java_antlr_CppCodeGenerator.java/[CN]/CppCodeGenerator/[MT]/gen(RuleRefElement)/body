@@ -1,0 +1,65 @@
+{
+  if (DEBUG_CODE_GENERATOR)   System.out.println("genRR(" + rr + ")");
+  RuleSymbol rs=(RuleSymbol)grammar.getSymbol(rr.targetRule);
+  if (rs == null || !rs.isDefined()) {
+    tool.error("Rule '" + rr.targetRule + "' is not defined",grammar.getFilename(),rr.getLine());
+    return;
+  }
+  if (!(rs instanceof RuleSymbol)) {
+    tool.error("'" + rr.targetRule + "' does not name a grammar rule",grammar.getFilename(),rr.getLine());
+    return;
+  }
+  genErrorTryForElement(rr);
+  if (grammar instanceof TreeWalkerGrammar && rr.getLabel() != null && syntacticPredLevel == 0) {
+    println(rr.getLabel() + " = (_t == ASTNULL) ? " + labeledElementASTInit+ " : "+ lt1Value+ ";");
+  }
+  if (grammar instanceof LexerGrammar && (!saveText || rr.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)) {
+    println("_saveIndex = text.length();");
+  }
+  printTabs();
+  if (rr.idAssign != null) {
+    if (rs.block.returnAction == null) {
+      tool.warning("Rule '" + rr.targetRule + "' has no return type",grammar.getFilename(),rr.getLine());
+    }
+    _print(rr.idAssign + "=");
+  }
+ else {
+    if (!(grammar instanceof LexerGrammar) && syntacticPredLevel == 0 && rs.block.returnAction != null) {
+      tool.warning("Rule '" + rr.targetRule + "' returns a value",grammar.getFilename(),rr.getLine());
+    }
+  }
+  GenRuleInvocation(rr);
+  if (grammar instanceof LexerGrammar && (!saveText || rr.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)) {
+    println("text.erase(_saveIndex);");
+  }
+  if (syntacticPredLevel == 0) {
+    boolean doNoGuessTest=(grammar.hasSyntacticPredicate && (grammar.buildAST && rr.getLabel() != null || (genAST && rr.getAutoGenType() == GrammarElement.AUTO_GEN_NONE)));
+    if (doNoGuessTest) {
+      println("if (inputState->guessing==0) {");
+      tabs++;
+    }
+    if (grammar.buildAST && rr.getLabel() != null) {
+      println(rr.getLabel() + "_AST = " + labeledElementASTType+ "(returnAST);");
+    }
+    if (genAST) {
+switch (rr.getAutoGenType()) {
+case GrammarElement.AUTO_GEN_NONE:
+        println("astFactory.addASTChild(currentAST, " + namespaceAntlr + "RefAST(returnAST));");
+      break;
+case GrammarElement.AUTO_GEN_CARET:
+    tool.error("Internal: encountered ^ after rule reference");
+  break;
+default :
+break;
+}
+}
+if (grammar instanceof LexerGrammar && rr.getLabel() != null) {
+println(rr.getLabel() + "=_returnToken;");
+}
+if (doNoGuessTest) {
+tabs--;
+println("}");
+}
+}
+genErrorCatchForElement(rr);
+}

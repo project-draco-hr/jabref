@@ -1,0 +1,164 @@
+{
+  boolean hasPublicRules=false;
+  for (int i=0; i < grammar.rules.size(); i++) {
+    RuleSymbol rs=(RuleSymbol)grammar.rules.elementAt(i);
+    if (rs.isDefined() && rs.access.equals("public")) {
+      hasPublicRules=true;
+      break;
+    }
+  }
+  if (!hasPublicRules) {
+    println("");
+    println("next_token : TOKEN is ");
+    tabs++;
+    println("protect");
+    tabs++;
+    println("upon_eof;");
+    tabs--;
+    println("when $ANTLR_CHAR_STREAM_EXCEPTION then");
+    tabs++;
+    println("raise #ANTLR_TOKEN_STREAM_EXCEPTION( exception.str );");
+    tabs--;
+    println("end; -- protect");
+    println("return #ANTLR_COMMON_TOKEN( ANTLR_COMMON_TOKEN::EOF_TYPE, \"\");");
+    tabs--;
+    println("end;");
+    println("");
+    return;
+  }
+  RuleBlock nextTokenBlk=MakeGrammar.createNextTokenRule(grammar,grammar.rules,"nextToken");
+  RuleSymbol nextTokenRs=new RuleSymbol("mnextToken");
+  nextTokenRs.setDefined();
+  nextTokenRs.setBlock(nextTokenBlk);
+  nextTokenRs.access="private";
+  grammar.define(nextTokenRs);
+  boolean ok=grammar.theLLkAnalyzer.deterministic(nextTokenBlk);
+  String filterRule=null;
+  if (((LexerGrammar)grammar).filterMode) {
+    filterRule=((LexerGrammar)grammar).filterRule;
+  }
+  println("");
+  println("next_token : TOKEN is");
+  tabs++;
+  println("theRetToken : TOKEN;");
+  println("continue : BOOL := true;");
+  println("loop");
+  tabs++;
+  println("sa_ttype : INT := ANTLR_COMMON_TOKEN::INVALID_TYPE;");
+  if (((LexerGrammar)grammar).filterMode) {
+    println("commit_to_path := false;");
+    println("continue := true;");
+    if (filterRule != null) {
+      if (!grammar.isDefined(CodeGenerator.lexerRuleName(filterRule))) {
+        grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+      }
+ else {
+        RuleSymbol rs=(RuleSymbol)grammar.getSymbol(CodeGenerator.lexerRuleName(filterRule));
+        if (!rs.isDefined()) {
+          grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+        }
+ else         if (rs.access.equals("public")) {
+          grammar.tool.error("Filter rule " + filterRule + " must be protected");
+        }
+      }
+      println("sa_m : INT := mark;");
+    }
+  }
+  println("reset_text;");
+  println("protect   -- for char stream error handling");
+  tabs++;
+  println("protect   -- for lexical error handling");
+  tabs++;
+  for (int i=0; i < nextTokenBlk.getAlternatives().size(); i++) {
+    Alternative a=nextTokenBlk.getAlternativeAt(i);
+    if (a.cache[1].containsEpsilon()) {
+      tool.warning("found optional path in nextToken()");
+    }
+  }
+  String newline=System.getProperty("line.separator");
+  JavaBlockFinishingInfo howToFinish=genCommonBlock(nextTokenBlk,false);
+  String errFinish="if ( LA(1) = EOF_CHAR ) then upon_eof; sa_return_token := make_token( ANTLR_COMMON_TOKEN::EOF_TYPE);";
+  errFinish+=newline + "\t\t\t\t";
+  if (((LexerGrammar)grammar).filterMode) {
+    if (filterRule == null) {
+      errFinish+="\telse consume; continue := false; end; -- if";
+    }
+ else {
+      errFinish+="\telse" + newline + "\t\t\t\t\t\tcommit;"+ newline+ "\t\t\t\t\t\tprotect"+ newline+ "\t\t\t\t\t\t\tm"+ filterRule+ "(false);"+ newline+ "\t\t\t\t\t\twhen $ANTLR_RECOGNITION_EXCEPTION then"+ newline+ "\t\t\t\t\t\t\t-- catastrophic failure"+ newline+ "\t\t\t\t\t\t\treport_error( exception );"+ newline+ "\t\t\t\t\t\t\tconsume;"+ newline+ "\t\t\t\t\t\tend; -- protect"+ newline+ "\t\t\t\t\t\tcontinue := false;"+ newline+ "\t\t\t\t\tend; -- if";
+    }
+  }
+ else {
+    errFinish+="\t\telse " + throwNoViable + " end; -- if";
+  }
+  genBlockFinish(howToFinish,errFinish);
+  if (((LexerGrammar)grammar).filterMode && filterRule != null) {
+    println("if continue then");
+    tabs++;
+    println("commit;");
+    tabs--;
+    println("end; -- if");
+  }
+  println("if ( ~void(sa_return_token) and continue ) then;");
+  tabs++;
+  println("sa_ttype := sa_return_token.ttype;");
+  if (((LexerGrammar)grammar).getTestLiterals()) {
+    genLiteralsTest();
+  }
+  println("sa_return_token.ttype := sa_ttype;");
+  println("return sa_return_token;");
+  tabs--;
+  println("end; -- if");
+  tabs--;
+  println("when $ANTLR_RECOGNITION_EXCEPTION then");
+  tabs++;
+  if (((LexerGrammar)grammar).filterMode) {
+    if (filterRule == null) {
+      println("if ( ~commit_to_path ) then");
+      tabs++;
+      println("consume;");
+      tabs--;
+      println("end; -- if");
+    }
+ else {
+      println("if ( ~commit_to_path ) then");
+      tabs++;
+      println("rewind( sa_m );");
+      println("reset_text;");
+      println("protect");
+      tabs++;
+      println("m" + filterRule + "(false);");
+      tabs--;
+      println("when $ANTLR_RECOGNITION_EXCEPTION then");
+      tabs++;
+      println("-- horrendous failure: error in filter rule");
+      println("report_error( exception );");
+      println("consume;");
+      tabs--;
+      println("end; -- protect");
+      tabs--;
+      println("end; -- if");
+    }
+  }
+ else {
+    if (nextTokenBlk.getDefaultErrorHandler()) {
+      println("report_error( exception );");
+      println("consume;");
+    }
+ else {
+      println("raise #ANTLR_TOKEN_STREAM_RECOGNITION_EXCEPTION( exception.str );");
+    }
+  }
+  tabs--;
+  println("end; -- protect");
+  tabs--;
+  println("when $ANTLR_CHAR_STREAM_EXCEPTION then");
+  tabs++;
+  println("raise #ANTLR_TOKEN_STREAM_EXCEPTION( exception.message );");
+  tabs--;
+  println("end; -- protect");
+  tabs--;
+  println("end; -- loop");
+  tabs--;
+  println("end; -- next_token");
+  println("");
+}

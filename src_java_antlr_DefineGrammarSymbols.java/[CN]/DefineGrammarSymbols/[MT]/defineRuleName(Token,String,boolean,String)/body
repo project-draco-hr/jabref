@@ -1,0 +1,26 @@
+{
+  String id=r.getText();
+  if (r.type == ANTLRTokenTypes.TOKEN_REF) {
+    id=CodeGenerator.lexerRuleName(id);
+    if (!grammar.tokenManager.tokenDefined(r.getText())) {
+      int tt=grammar.tokenManager.nextTokenType();
+      TokenSymbol ts=new TokenSymbol(r.getText());
+      ts.setTokenType(tt);
+      grammar.tokenManager.define(ts);
+    }
+  }
+  RuleSymbol rs;
+  if (grammar.isDefined(id)) {
+    rs=(RuleSymbol)grammar.getSymbol(id);
+    if (rs.isDefined()) {
+      tool.error("redefinition of rule " + id,grammar.getFilename(),r.getLine());
+    }
+  }
+ else {
+    rs=new RuleSymbol(id);
+    grammar.define(rs);
+  }
+  rs.setDefined();
+  rs.access=access;
+  rs.comment=docComment;
+}

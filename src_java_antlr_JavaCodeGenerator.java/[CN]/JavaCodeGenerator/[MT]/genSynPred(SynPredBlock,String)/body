@@ -1,0 +1,45 @@
+{
+  if (DEBUG_CODE_GENERATOR)   System.out.println("gen=>(" + blk + ")");
+  println("boolean synPredMatched" + blk.ID + " = false;");
+  println("if (" + lookaheadExpr + ") {");
+  tabs++;
+  if (grammar instanceof TreeWalkerGrammar) {
+    println("AST __t" + blk.ID + " = _t;");
+  }
+ else {
+    println("int _m" + blk.ID + " = mark();");
+  }
+  println("synPredMatched" + blk.ID + " = true;");
+  println("inputState.guessing++;");
+  if (grammar.debuggingOutput && ((grammar instanceof ParserGrammar) || (grammar instanceof LexerGrammar))) {
+    println("fireSyntacticPredicateStarted();");
+  }
+  syntacticPredLevel++;
+  println("try {");
+  tabs++;
+  gen((AlternativeBlock)blk);
+  tabs--;
+  println("}");
+  println("catch (" + exceptionThrown + " pe) {");
+  tabs++;
+  println("synPredMatched" + blk.ID + " = false;");
+  tabs--;
+  println("}");
+  if (grammar instanceof TreeWalkerGrammar) {
+    println("_t = __t" + blk.ID + ";");
+  }
+ else {
+    println("rewind(_m" + blk.ID + ");");
+  }
+  println("inputState.guessing--;");
+  if (grammar.debuggingOutput && ((grammar instanceof ParserGrammar) || (grammar instanceof LexerGrammar))) {
+    println("if (synPredMatched" + blk.ID + ")");
+    println("  fireSyntacticPredicateSucceeded();");
+    println("else");
+    println("  fireSyntacticPredicateFailed();");
+  }
+  syntacticPredLevel--;
+  tabs--;
+  println("}");
+  println("if ( synPredMatched" + blk.ID + " ) {");
+}

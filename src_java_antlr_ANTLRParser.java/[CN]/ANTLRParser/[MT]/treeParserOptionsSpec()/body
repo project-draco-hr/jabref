@@ -1,0 +1,23 @@
+{
+  Token idTok;
+  Token value;
+  match(OPTIONS);
+{
+    _loop24:     do {
+      if ((LA(1) == TOKEN_REF || LA(1) == RULE_REF)) {
+        idTok=id();
+        match(ASSIGN);
+        value=optionValue();
+        if (inputState.guessing == 0) {
+          behavior.setGrammarOption(idTok,value);
+        }
+        match(SEMI);
+      }
+ else {
+        break _loop24;
+      }
+    }
+ while (true);
+  }
+  match(RCURLY);
+}

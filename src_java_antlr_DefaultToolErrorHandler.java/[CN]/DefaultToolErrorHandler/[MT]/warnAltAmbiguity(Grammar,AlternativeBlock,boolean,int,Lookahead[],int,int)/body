@@ -1,0 +1,18 @@
+{
+  String fileline=FileLineFormatter.getFormatter().getFormatString(grammar.getFilename(),blk.getLine());
+  if (blk instanceof RuleBlock && ((RuleBlock)blk).isLexerAutoGenRule()) {
+    System.out.print("warning: lexical nondeterminism between rules ");
+    Alternative ai=blk.getAlternativeAt(altIdx1);
+    Alternative aj=blk.getAlternativeAt(altIdx2);
+    RuleRefElement rri=(RuleRefElement)ai.head;
+    RuleRefElement rrj=(RuleRefElement)aj.head;
+    String ri=CodeGenerator.reverseLexerRuleName(rri.targetRule);
+    String rj=CodeGenerator.reverseLexerRuleName(rrj.targetRule);
+    System.out.println(ri + " and " + rj+ " upon");
+    dumpSets(grammar,lexicalAnalysis,depth,sets,fileline);
+    return;
+  }
+  System.out.println(fileline + "warning: " + (lexicalAnalysis ? "lexical " : "")+ "nondeterminism upon");
+  dumpSets(grammar,lexicalAnalysis,depth,sets,fileline);
+  System.out.println(fileline + "\tbetween alts " + (altIdx1 + 1)+ " and "+ (altIdx2 + 1)+ " of block");
+}

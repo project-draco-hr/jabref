@@ -1,0 +1,19 @@
+{
+  if (blk instanceof ZeroOrMoreBlock || blk instanceof OneOrMoreBlock || blk instanceof SynPredBlock) {
+    return false;
+  }
+  if (blk.alternatives.size() == 0) {
+    return false;
+  }
+  for (int i=0; i < blk.alternatives.size(); i++) {
+    Alternative alt=blk.getAlternativeAt(i);
+    if (alt.synPred != null || alt.semPred != null || alt.exceptionSpec != null) {
+      return false;
+    }
+    AlternativeElement elt=alt.head;
+    if (!(elt instanceof CharLiteralElement || elt instanceof TokenRefElement || elt instanceof CharRangeElement|| elt instanceof TokenRangeElement|| (elt instanceof StringLiteralElement && !forLexer)) || !(elt.next instanceof BlockEndElement) || elt.getAutoGenType() != GrammarElement.AUTO_GEN_NONE) {
+      return false;
+    }
+  }
+  return true;
+}

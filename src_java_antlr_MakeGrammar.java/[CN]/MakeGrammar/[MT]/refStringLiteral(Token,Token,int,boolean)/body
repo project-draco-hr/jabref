@@ -1,0 +1,22 @@
+{
+  super.refStringLiteral(lit,label,autoGenType,lastInRule);
+  if (grammar instanceof TreeWalkerGrammar && autoGenType == GrammarElement.AUTO_GEN_CARET) {
+    tool.error("^ not allowed in here for tree-walker",grammar.getFilename(),lit.getLine());
+  }
+  StringLiteralElement sl=new StringLiteralElement(grammar,lit,autoGenType);
+  if (grammar instanceof LexerGrammar && !((LexerGrammar)grammar).caseSensitive) {
+    for (int i=1; i < lit.getText().length() - 1; i++) {
+      char c=lit.getText().charAt(i);
+      if (c < 128 && Character.toLowerCase(c) != c) {
+        tool.warning("Characters of string literal must be lowercase when caseSensitive=false",grammar.getFilename(),lit.getLine());
+        break;
+      }
+    }
+  }
+  addElementToCurrentAlt(sl);
+  labelElement(sl,label);
+  String ignore=ruleBlock.getIgnoreRule();
+  if (!lastInRule && ignore != null) {
+    addElementToCurrentAlt(createOptionalRuleRef(ignore,lit.getLine()));
+  }
+}

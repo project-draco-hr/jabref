@@ -1,0 +1,41 @@
+{
+  setGrammar(g);
+  System.out.println("Generating " + grammar.getClassName() + TokenTypesFileExt);
+  currentOutput=antlr.Tool.openOutputFile(grammar.getClassName() + TokenTypesFileExt);
+  tabs=0;
+  genHeader();
+  println("");
+  println("*** Parser Preamble Action.");
+  println("This action will appear before the declaration of your parser class:");
+  tabs++;
+  println(grammar.preambleAction.getText());
+  tabs--;
+  println("*** End of Parser Preamble Action");
+  println("");
+  println("*** Your parser class is called '" + grammar.getClassName() + "' and is a subclass of '"+ grammar.getSuperClass()+ "'.");
+  println("");
+  println("*** User-defined parser class members:");
+  println("These are the member declarations that you defined for your class:");
+  tabs++;
+  printAction(grammar.classMemberAction.getText());
+  tabs--;
+  println("*** End of user-defined parser class members");
+  println("");
+  println("*** Parser rules:");
+  tabs++;
+  Enumeration rules=grammar.rules.elements();
+  while (rules.hasMoreElements()) {
+    println("");
+    GrammarSymbol sym=(GrammarSymbol)rules.nextElement();
+    if (sym instanceof RuleSymbol) {
+      genRule((RuleSymbol)sym);
+    }
+  }
+  tabs--;
+  println("");
+  println("*** End of parser rules");
+  println("");
+  println("*** End of parser");
+  currentOutput.close();
+  currentOutput=null;
+}

@@ -1,0 +1,35 @@
+{
+  if (DEBUG_CODE_GENERATOR)   System.out.println("genAction(" + action + ")");
+  if (action.isSemPred) {
+    genSemPred(action.actionText,action.line);
+  }
+ else {
+    if (grammar.hasSyntacticPredicate) {
+      println("if ( input_state.guessing = 0 ) then");
+      tabs++;
+    }
+    ActionTransInfo tInfo=new ActionTransInfo();
+    String actionStr=processActionForTreeSpecifiers(action.actionText,action.getLine(),currentRule,tInfo);
+    if (tInfo.refRuleRoot != null) {
+      println(tInfo.refRuleRoot + " := current_ast.root;");
+    }
+    printAction(actionStr);
+    if (tInfo.assignToRoot) {
+      println("current_ast.root := " + tInfo.refRuleRoot + ";");
+      println("if ( ~void( " + tInfo.refRuleRoot + " ) and ~void( "+ tInfo.refRuleRoot+ ".first_child ) ) then");
+      tabs++;
+      println("current_ast.child := " + tInfo.refRuleRoot + ".first_child");
+      tabs--;
+      println("else");
+      tabs++;
+      println("current_ast.child := " + tInfo.refRuleRoot + ";");
+      tabs--;
+      println("end; -- if");
+      println("current_ast.advance_child_to_end;");
+    }
+    if (grammar.hasSyntacticPredicate) {
+      tabs--;
+      println("end; -- if");
+    }
+  }
+}

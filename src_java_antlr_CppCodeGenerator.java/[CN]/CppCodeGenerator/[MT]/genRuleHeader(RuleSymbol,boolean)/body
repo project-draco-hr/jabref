@@ -1,0 +1,39 @@
+{
+  tabs=1;
+  if (DEBUG_CODE_GENERATOR)   System.out.println("genRuleHeader(" + s.getId() + ")");
+  if (!s.isDefined()) {
+    tool.error("undefined rule: " + s.getId());
+    return;
+  }
+  RuleBlock rblk=s.getBlock();
+  currentRule=rblk;
+  currentASTResult=s.getId();
+  boolean savegenAST=genAST;
+  genAST=genAST && rblk.getAutoGen();
+  saveText=rblk.getAutoGen();
+  print(s.access + ": ");
+  if (rblk.returnAction != null) {
+    _print(extractTypeOfAction(rblk.returnAction,rblk.getLine()) + " ");
+  }
+ else {
+    _print("void ");
+  }
+  _print(s.getId() + "(");
+  _print(commonExtraParams);
+  if (commonExtraParams.length() != 0 && rblk.argAction != null) {
+    _print(",");
+  }
+  if (rblk.argAction != null) {
+    _println("");
+    tabs++;
+    println(rblk.argAction);
+    tabs--;
+    print(")");
+  }
+ else {
+    _print(")");
+  }
+  _println(";");
+  tabs--;
+  genAST=savegenAST;
+}

@@ -1,0 +1,11 @@
+{
+  ActionTransInfo tInfo=new ActionTransInfo();
+  pred=processActionForTreeSpecifiers(pred,line,currentRule,tInfo);
+  String escapedPred=charFormatter.escapeString(pred);
+  if (grammar.debuggingOutput && ((grammar instanceof ParserGrammar) || (grammar instanceof LexerGrammar)))   pred="fireSemanticPredicateEvaluated(antlr.debug.SemanticPredicateEvent.VALIDATING," + addSemPred(escapedPred) + ","+ pred+ ")";
+  println("if (~(" + pred + ")) then");
+  tabs++;
+  println("raise #ANTLR_SEMANTIC_EXCEPTION(\"" + escapedPred + "\");");
+  tabs--;
+  println("end;");
+}

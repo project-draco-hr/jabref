@@ -1,0 +1,248 @@
+{
+  Token d=null;
+  Token p1=null;
+  Token p2=null;
+  Token p3=null;
+  Token aa=null;
+  Token rt=null;
+  Token a=null;
+  String access="public";
+  Token idTok;
+  String doc=null;
+  boolean ruleAutoGen=true;
+  blockNesting=-1;
+{
+switch (LA(1)) {
+case DOC_COMMENT:
+{
+        d=LT(1);
+        match(DOC_COMMENT);
+        if (inputState.guessing == 0) {
+          doc=d.getText();
+        }
+        break;
+      }
+case TOKEN_REF:
+case RULE_REF:
+case LITERAL_protected:
+case LITERAL_public:
+case LITERAL_private:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+{
+switch (LA(1)) {
+case LITERAL_protected:
+{
+  p1=LT(1);
+  match(LITERAL_protected);
+  if (inputState.guessing == 0) {
+    access=p1.getText();
+  }
+  break;
+}
+case LITERAL_public:
+{
+p2=LT(1);
+match(LITERAL_public);
+if (inputState.guessing == 0) {
+  access=p2.getText();
+}
+break;
+}
+case LITERAL_private:
+{
+p3=LT(1);
+match(LITERAL_private);
+if (inputState.guessing == 0) {
+access=p3.getText();
+}
+break;
+}
+case TOKEN_REF:
+case RULE_REF:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+idTok=id();
+{
+switch (LA(1)) {
+case BANG:
+{
+match(BANG);
+if (inputState.guessing == 0) {
+ruleAutoGen=false;
+}
+break;
+}
+case ACTION:
+case OPTIONS:
+case ARG_ACTION:
+case LITERAL_returns:
+case COLON:
+case LITERAL_throws:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+if (inputState.guessing == 0) {
+behavior.defineRuleName(idTok,access,ruleAutoGen,doc);
+}
+{
+switch (LA(1)) {
+case ARG_ACTION:
+{
+aa=LT(1);
+match(ARG_ACTION);
+if (inputState.guessing == 0) {
+behavior.refArgAction(aa);
+}
+break;
+}
+case ACTION:
+case OPTIONS:
+case LITERAL_returns:
+case COLON:
+case LITERAL_throws:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+{
+switch (LA(1)) {
+case LITERAL_returns:
+{
+match(LITERAL_returns);
+rt=LT(1);
+match(ARG_ACTION);
+if (inputState.guessing == 0) {
+behavior.refReturnAction(rt);
+}
+break;
+}
+case ACTION:
+case OPTIONS:
+case COLON:
+case LITERAL_throws:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+{
+switch (LA(1)) {
+case LITERAL_throws:
+{
+throwsSpec();
+break;
+}
+case ACTION:
+case OPTIONS:
+case COLON:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+{
+switch (LA(1)) {
+case OPTIONS:
+{
+ruleOptionsSpec();
+break;
+}
+case ACTION:
+case COLON:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+{
+switch (LA(1)) {
+case ACTION:
+{
+a=LT(1);
+match(ACTION);
+if (inputState.guessing == 0) {
+behavior.refInitAction(a);
+}
+break;
+}
+case COLON:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+match(COLON);
+block();
+match(SEMI);
+{
+switch (LA(1)) {
+case LITERAL_exception:
+{
+exceptionGroup();
+break;
+}
+case EOF:
+case ACTION:
+case DOC_COMMENT:
+case LITERAL_lexclass:
+case LITERAL_class:
+case TOKEN_REF:
+case RULE_REF:
+case LITERAL_protected:
+case LITERAL_public:
+case LITERAL_private:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+if (inputState.guessing == 0) {
+behavior.endRule(idTok.getText());
+}
+}

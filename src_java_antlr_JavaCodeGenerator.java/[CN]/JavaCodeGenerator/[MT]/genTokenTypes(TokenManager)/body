@@ -1,0 +1,43 @@
+{
+  setupOutput(tm.getName() + TokenTypesFileSuffix);
+  tabs=0;
+  genHeader();
+  println(behavior.getHeaderAction(""));
+  println("public interface " + tm.getName() + TokenTypesFileSuffix+ " {");
+  tabs++;
+  Vector v=tm.getVocabulary();
+  println("int EOF = " + Token.EOF_TYPE + ";");
+  println("int NULL_TREE_LOOKAHEAD = " + Token.NULL_TREE_LOOKAHEAD + ";");
+  for (int i=Token.MIN_USER_TYPE; i < v.size(); i++) {
+    String s=(String)v.elementAt(i);
+    if (s != null) {
+      if (s.startsWith("\"")) {
+        StringLiteralSymbol sl=(StringLiteralSymbol)tm.getTokenSymbol(s);
+        if (sl == null) {
+          antlr.Tool.panic("String literal " + s + " not in symbol table");
+        }
+ else         if (sl.label != null) {
+          println("int " + sl.label + " = "+ i+ ";");
+        }
+ else {
+          String mangledName=mangleLiteral(s);
+          if (mangledName != null) {
+            println("int " + mangledName + " = "+ i+ ";");
+            sl.label=mangledName;
+          }
+ else {
+            println("// " + s + " = "+ i);
+          }
+        }
+      }
+ else       if (!s.startsWith("<")) {
+        println("int " + s + " = "+ i+ ";");
+      }
+    }
+  }
+  tabs--;
+  println("}");
+  currentOutput.close();
+  currentOutput=null;
+  exitIfError();
+}

@@ -1,0 +1,15 @@
+{
+  println("");
+  println("/** Lexer nextToken rule:");
+  println(" *  The lexer nextToken rule is synthesized from all of the user-defined");
+  println(" *  lexer rules.  It logically consists of one big alternative block with");
+  println(" *  each user-defined rule being an alternative.");
+  println(" */");
+  RuleBlock blk=MakeGrammar.createNextTokenRule(grammar,grammar.rules,"nextToken");
+  RuleSymbol nextTokenRs=new RuleSymbol("mnextToken");
+  nextTokenRs.setDefined();
+  nextTokenRs.setBlock(blk);
+  nextTokenRs.access="private";
+  grammar.define(nextTokenRs);
+  genCommonBlock(blk);
+}

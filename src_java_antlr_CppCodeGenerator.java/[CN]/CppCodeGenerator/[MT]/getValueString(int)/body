@@ -1,0 +1,31 @@
+{
+  String cs;
+  if (grammar instanceof LexerGrammar) {
+    cs=charFormatter.literalChar(value);
+  }
+ else {
+    TokenSymbol ts=grammar.tokenManager.getTokenSymbolAt(value);
+    if (ts == null) {
+      return "" + value;
+    }
+    String tId=ts.getId();
+    if (ts instanceof StringLiteralSymbol) {
+      StringLiteralSymbol sl=(StringLiteralSymbol)ts;
+      String label=sl.getLabel();
+      if (label != null) {
+        cs=label;
+      }
+ else {
+        cs=mangleLiteral(tId);
+        if (cs == null) {
+          cs=String.valueOf(value);
+        }
+      }
+    }
+ else {
+      if (tId.equals("EOF"))       cs=namespaceAntlr + "Token::EOF_TYPE";
+ else       cs=tId;
+    }
+  }
+  return cs;
+}

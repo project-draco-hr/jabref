@@ -1,0 +1,42 @@
+{
+  if (s == null) {
+    return;
+  }
+  int start=0;
+  while (start < s.length() && Character.isSpaceChar(s.charAt(start))) {
+    start++;
+  }
+  int end=s.length() - 1;
+  while (end > start && Character.isSpaceChar(s.charAt(end))) {
+    end--;
+  }
+  char c=0;
+  for (int i=start; i <= end; ) {
+    c=s.charAt(i);
+    i++;
+    boolean newline=false;
+switch (c) {
+case '\n':
+      newline=true;
+    break;
+case '\r':
+  if (i <= end && s.charAt(i) == '\n') {
+    i++;
+  }
+newline=true;
+break;
+default :
+currentOutput.print(c);
+break;
+}
+if (newline) {
+currentOutput.println();
+printTabs();
+while (i <= end && Character.isSpaceChar(s.charAt(i))) {
+i++;
+}
+newline=false;
+}
+}
+currentOutput.println();
+}

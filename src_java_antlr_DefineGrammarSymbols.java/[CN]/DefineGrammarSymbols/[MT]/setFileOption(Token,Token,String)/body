@@ -1,0 +1,56 @@
+{
+  if (key.getText().equals("language")) {
+    if (value.getType() == ANTLRParser.STRING_LITERAL) {
+      language=Tool.stripBack(Tool.stripFront(value.getText(),'"'),'"');
+    }
+ else     if (value.getType() == ANTLRParser.TOKEN_REF || value.getType() == ANTLRParser.RULE_REF) {
+      language=value.getText();
+    }
+ else {
+      tool.error("language option must be string or identifier",filename,value.getLine());
+    }
+  }
+ else   if (key.getText().equals("mangleLiteralPrefix")) {
+    if (value.getType() == ANTLRParser.STRING_LITERAL) {
+      tool.literalsPrefix=tool.stripFrontBack(value.getText(),"\"","\"");
+    }
+ else {
+      tool.error("mangleLiteralPrefix option must be string",filename,value.getLine());
+    }
+  }
+ else   if (key.getText().equals("upperCaseMangledLiterals")) {
+    if (value.getText().equals("true")) {
+      tool.upperCaseMangledLiterals=true;
+    }
+ else     if (value.getText().equals("false")) {
+      tool.upperCaseMangledLiterals=false;
+    }
+ else {
+      grammar.tool.error("Value for upperCaseMangledLiterals must be true or false",filename,key.getLine());
+    }
+  }
+ else   if (key.getText().equals("namespace") || key.getText().equals("namespaceStd") || key.getText().equals("namespaceAntlr")|| key.getText().equals("genHashLines")) {
+    if (!language.equals("Cpp")) {
+      tool.error(key.getText() + " option only valid for C++",filename,key.getLine());
+    }
+ else {
+      if (key.getText().equals("genHashLines")) {
+        if (!(value.getText().equals("true") || value.getText().equals("false")))         tool.error("genHashLines option must be true or false",filename,value.getLine());
+        tool.genHashLines=value.getText().equals("true");
+      }
+ else {
+        if (value.getType() != ANTLRParser.STRING_LITERAL) {
+          tool.error(key.getText() + " option must be a string",filename,value.getLine());
+        }
+ else {
+          if (key.getText().equals("namespace"))           tool.setNameSpace(value.getText());
+ else           if (key.getText().equals("namespaceStd"))           tool.namespaceStd=value.getText();
+ else           if (key.getText().equals("namespaceAntlr"))           tool.namespaceAntlr=value.getText();
+        }
+      }
+    }
+  }
+ else {
+    tool.error("Invalid file-level option: " + key.getText(),filename,key.getLine());
+  }
+}

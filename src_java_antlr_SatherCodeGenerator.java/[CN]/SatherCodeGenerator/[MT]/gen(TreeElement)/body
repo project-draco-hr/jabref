@@ -1,0 +1,32 @@
+{
+  println("sa__t" + t.ID + " : "+ labeledElementASTType+ " := sa_t;");
+  if (t.root.getLabel() != null) {
+    println("if ( SYS::is_eq( sa_t , AST::ASTNULL ) ) then");
+    tabs++;
+    println(t.root.getLabel() + " := void;");
+    println("else");
+    println(t.root.getLabel() + " := sa_t;");
+    println("end; -- if");
+  }
+  genElementAST(t.root);
+  if (grammar.buildAST) {
+    println("sa__current_ast" + t.ID + " : ANTLR_AST_PAIR{AST} := current_ast.copy;");
+    println("current_ast.root := current_ast.child;");
+    println("current_ast.child := void;");
+  }
+  genMatch(t.root);
+  println("sa_t := sa_t.first_child;");
+  for (int i=0; i < t.getAlternatives().size(); i++) {
+    Alternative a=t.getAlternativeAt(i);
+    AlternativeElement e=a.head;
+    while (e != null) {
+      e.generate();
+      e=e.next;
+    }
+  }
+  if (grammar.buildAST) {
+    println("current_ast := sa__current_ast" + t.ID + ";");
+  }
+  println("sa_t := sa__t" + t.ID + ";");
+  println("sa_t := sa_t.next_sibling;");
+}

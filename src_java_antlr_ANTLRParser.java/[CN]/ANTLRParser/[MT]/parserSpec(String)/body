@@ -1,0 +1,125 @@
+{
+  Token a=null;
+  Token idTok;
+  String sup=null;
+  match(LITERAL_class);
+  idTok=id();
+{
+switch (LA(1)) {
+case LITERAL_extends:
+{
+        match(LITERAL_extends);
+        match(LITERAL_Parser);
+{
+switch (LA(1)) {
+case LPAREN:
+{
+              sup=superClass();
+              break;
+            }
+case SEMI:
+{
+            break;
+          }
+default :
+{
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+    }
+  }
+  break;
+}
+case SEMI:
+{
+if (inputState.guessing == 0) {
+  System.out.println("warning: line " + idTok.getLine() + ": use 'class X extends Parser'");
+}
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+if (inputState.guessing == 0) {
+behavior.startParser(getFilename(),idTok,sup,doc);
+}
+match(SEMI);
+{
+switch (LA(1)) {
+case OPTIONS:
+{
+parserOptionsSpec();
+break;
+}
+case ACTION:
+case DOC_COMMENT:
+case TOKENS:
+case TOKEN_REF:
+case RULE_REF:
+case LITERAL_protected:
+case LITERAL_public:
+case LITERAL_private:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+if (inputState.guessing == 0) {
+behavior.endOptions();
+}
+{
+switch (LA(1)) {
+case TOKENS:
+{
+tokensSpec();
+break;
+}
+case ACTION:
+case DOC_COMMENT:
+case TOKEN_REF:
+case RULE_REF:
+case LITERAL_protected:
+case LITERAL_public:
+case LITERAL_private:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+{
+switch (LA(1)) {
+case ACTION:
+{
+a=LT(1);
+match(ACTION);
+if (inputState.guessing == 0) {
+behavior.refMemberAction(a);
+}
+break;
+}
+case DOC_COMMENT:
+case TOKEN_REF:
+case RULE_REF:
+case LITERAL_protected:
+case LITERAL_public:
+case LITERAL_private:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+}

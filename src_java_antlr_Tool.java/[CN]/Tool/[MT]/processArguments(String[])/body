@@ -1,0 +1,33 @@
+{
+  for (int i=0; i < args.length; i++) {
+    if (args[i].equals("-diagnostic")) {
+      genDiagnostics=true;
+      genHTML=false;
+      Tool.setArgOK(i);
+    }
+ else {
+      if (args[i].equals("-o")) {
+        Tool.setArgOK(i);
+        if (i + 1 >= args.length) {
+          error("missing output directory with -o option; ignoring");
+        }
+ else {
+          i++;
+          setOutputDirectory(args[i]);
+          Tool.setArgOK(i);
+        }
+      }
+ else       if (args[i].equals("-html")) {
+        genHTML=true;
+        genDiagnostics=false;
+        Tool.setArgOK(i);
+      }
+ else {
+        if (args[i].charAt(0) != '-') {
+          grammarFile=args[i];
+          Tool.setArgOK(i);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  if (g.debuggingOutput)   semPreds=new Vector();
+  setGrammar(g);
+  if (!(grammar instanceof LexerGrammar)) {
+    tool.panic("Internal error generating lexer");
+  }
+  setupOutput(grammar.getClassName());
+  genAST=false;
+  saveText=true;
+  tabs=0;
+  genHeader();
+  println(behavior.getHeaderAction(""));
+  println(grammar.preambleAction.getText());
+  String sup=null;
+  if (grammar.superClass != null) {
+    sup=grammar.superClass;
+  }
+ else {
+    sup="ANTLR_CHAR_SCANNER{TOKEN}";
+  }
+  if (grammar.comment != null) {
+    _println(grammar.comment);
+  }
+  println("class " + grammar.getClassName() + "{TOKEN} < $ANTLR_TOKEN_STREAM{TOKEN} , $ANTLR_FILE_CURSOR is ");
+  tabs++;
+  println("include " + sup + " create -> private char_scanner_create;");
+  println("include " + grammar.tokenManager.getName() + "_TOKENTYPES;");
+  println("");
+  print(processActionForTreeSpecifiers(grammar.classMemberAction.getText(),0,currentRule,null));
+  println("create ( istr : $ISTREAM ) : SAME is");
+  tabs++;
+  println("inp : ANTLR_BYTE_BUFFER := #ANTLR_BYTE_BUFFER( istr );");
+  println("res : SAME := #SAME( inp );");
+  println("res.EOF_CHAR := istr.eof_char;");
+  println("return res;");
+  tabs--;
+  println("end; -- create");
+  println("");
+  println("create ( bb : ANTLR_BYTE_BUFFER ) : SAME is");
+  tabs++;
+  println("state : ANTLR_LEXER_SHARED_INPUT_STATE := #ANTLR_LEXER_SHARED_INPUT_STATE( bb );");
+  println("res: SAME := #SAME( state );");
+  println("return res;");
+  tabs--;
+  println("end; -- create");
+  println("");
+  println("create ( state : ANTLR_LEXER_SHARED_INPUT_STATE ) : SAME is ");
+  tabs++;
+  println("res : SAME := char_scanner_create( state );");
+  println("res.literals := #MAP{STR,INT};");
+  Enumeration keys=grammar.tokenManager.getTokenSymbolKeys();
+  while (keys.hasMoreElements()) {
+    String key=(String)keys.nextElement();
+    if (key.charAt(0) != '"') {
+      continue;
+    }
+    TokenSymbol sym=grammar.tokenManager.getTokenSymbol(key);
+    if (sym instanceof StringLiteralSymbol) {
+      StringLiteralSymbol s=(StringLiteralSymbol)sym;
+      println("res.literals[ " + s.getId() + " ] := "+ s.getTokenType()+ ";");
+    }
+  }
+  Enumeration ids;
+  println("res.case_sensitive_literals := " + g.caseSensitiveLiterals + ";");
+  println("res.case_sensitive := " + g.caseSensitive + ";");
+  println("return res;");
+  tabs--;
+  println("end; -- create");
+  println("");
+  if (grammar.debuggingOutput) {
+    println("private const sa_rule_names : ARRAY{STR} := |");
+    ids=grammar.rules.elements();
+    int ruleNum=0;
+    while (ids.hasMoreElements()) {
+      GrammarSymbol sym=(GrammarSymbol)ids.nextElement();
+      if (sym instanceof RuleSymbol)       println("  \"" + ((RuleSymbol)sym).getId() + "\",");
+    }
+    println("|;");
+  }
+  genNextToken();
+  ids=grammar.rules.elements();
+  int ruleNum=0;
+  while (ids.hasMoreElements()) {
+    RuleSymbol sym=(RuleSymbol)ids.nextElement();
+    if (!sym.getId().equals("mnextToken")) {
+      genRule(sym,false,ruleNum++);
+    }
+    exitIfError();
+  }
+  if (grammar.debuggingOutput)   genSemPredMap();
+  genBitsets(bitsetsUsed,((LexerGrammar)grammar).charVocabulary.size());
+  println("");
+  tabs--;
+  println("end; -- class");
+  currentOutput.close();
+  currentOutput=null;
+}

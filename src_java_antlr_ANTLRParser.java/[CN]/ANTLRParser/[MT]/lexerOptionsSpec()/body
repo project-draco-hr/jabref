@@ -1,0 +1,41 @@
+{
+  Token idTok;
+  Token value;
+  BitSet b;
+  match(OPTIONS);
+{
+    _loop27:     do {
+switch (LA(1)) {
+case LITERAL_charVocabulary:
+{
+          match(LITERAL_charVocabulary);
+          match(ASSIGN);
+          b=charSet();
+          match(SEMI);
+          if (inputState.guessing == 0) {
+            behavior.setCharVocabulary(b);
+          }
+          break;
+        }
+case TOKEN_REF:
+case RULE_REF:
+{
+        idTok=id();
+        match(ASSIGN);
+        value=optionValue();
+        if (inputState.guessing == 0) {
+          behavior.setGrammarOption(idTok,value);
+        }
+        match(SEMI);
+        break;
+      }
+default :
+{
+      break _loop27;
+    }
+}
+}
+ while (true);
+}
+match(RCURLY);
+}

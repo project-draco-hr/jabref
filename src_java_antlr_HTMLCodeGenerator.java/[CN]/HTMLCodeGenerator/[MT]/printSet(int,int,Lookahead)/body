@@ -1,0 +1,39 @@
+{
+  int numCols=5;
+  int[] elems=lookahead.fset.toArray();
+  if (depth != 1) {
+    print("k==" + k + ": {");
+  }
+ else {
+    print("{ ");
+  }
+  if (elems.length > numCols) {
+    _println("");
+    tabs++;
+    print("");
+  }
+  int column=0;
+  for (int i=0; i < elems.length; i++) {
+    column++;
+    if (column > numCols) {
+      _println("");
+      print("");
+      column=0;
+    }
+    if (doingLexRules) {
+      _print(charFormatter.literalChar(elems[i]));
+    }
+ else {
+      _print((String)grammar.tokenManager.getVocabulary().elementAt(elems[i]));
+    }
+    if (i != elems.length - 1) {
+      _print(", ");
+    }
+  }
+  if (elems.length > numCols) {
+    _println("");
+    tabs--;
+    print("");
+  }
+  _println(" }");
+}

@@ -1,0 +1,60 @@
+{
+  setGrammar(g);
+  System.out.println("Generating " + grammar.getClassName() + TokenTypesFileExt);
+  currentOutput=antlr.Tool.openOutputFile(grammar.getClassName() + TokenTypesFileExt);
+  tabs=0;
+  doingLexRules=true;
+  genHeader();
+  println("");
+  println("*** Lexer Preamble Action.");
+  println("This action will appear before the declaration of your lexer class:");
+  tabs++;
+  println(grammar.preambleAction.getText());
+  tabs--;
+  println("*** End of Lexer Preamble Action");
+  println("");
+  println("*** Your lexer class is called '" + grammar.getClassName() + "' and is a subclass of '"+ grammar.getSuperClass()+ "'.");
+  println("");
+  println("*** User-defined lexer  class members:");
+  println("These are the member declarations that you defined for your class:");
+  tabs++;
+  printAction(grammar.classMemberAction.getText());
+  tabs--;
+  println("*** End of user-defined lexer class members");
+  println("");
+  println("*** String literals used in the parser");
+  println("The following string literals were used in the parser.");
+  println("An actual code generator would arrange to place these literals");
+  println("into a table in the generated lexer, so that actions in the");
+  println("generated lexer could match token text against the literals.");
+  println("String literals used in the lexer are not listed here, as they");
+  println("are incorporated into the mainstream lexer processing.");
+  tabs++;
+  Enumeration ids=grammar.getSymbols();
+  while (ids.hasMoreElements()) {
+    GrammarSymbol sym=(GrammarSymbol)ids.nextElement();
+    if (sym instanceof StringLiteralSymbol) {
+      StringLiteralSymbol s=(StringLiteralSymbol)sym;
+      println(s.getId() + " = " + s.getTokenType());
+    }
+  }
+  tabs--;
+  println("*** End of string literals used by the parser");
+  genNextToken();
+  println("");
+  println("*** User-defined Lexer rules:");
+  tabs++;
+  ids=grammar.rules.elements();
+  while (ids.hasMoreElements()) {
+    RuleSymbol rs=(RuleSymbol)ids.nextElement();
+    if (!rs.id.equals("mnextToken")) {
+      genRule(rs);
+    }
+  }
+  tabs--;
+  println("");
+  println("*** End User-defined Lexer rules:");
+  currentOutput.close();
+  currentOutput=null;
+  doingLexRules=false;
+}

@@ -1,0 +1,26 @@
+{
+  if (DEBUG_ANALYZER)   System.out.println("lookBlockEnd(" + k + ", "+ end.block+ "); lock is "+ end.lock[k]);
+  if (end.lock[k]) {
+    return new Lookahead();
+  }
+  Lookahead p;
+  if (end.block instanceof ZeroOrMoreBlock || end.block instanceof OneOrMoreBlock) {
+    end.lock[k]=true;
+    p=look(k,end.block);
+    end.lock[k]=false;
+  }
+ else {
+    p=new Lookahead();
+  }
+  if (end.block instanceof TreeElement) {
+    p.combineWith(Lookahead.of(Token.NULL_TREE_LOOKAHEAD));
+  }
+ else   if (end.block instanceof SynPredBlock) {
+    p.setEpsilon();
+  }
+ else {
+    Lookahead q=end.block.next.look(k);
+    p.combineWith(q);
+  }
+  return p;
+}

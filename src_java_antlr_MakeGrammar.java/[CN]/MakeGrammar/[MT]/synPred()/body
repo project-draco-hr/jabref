@@ -1,0 +1,12 @@
+{
+  if (context().block.not) {
+    tool.error("'~' cannot be applied to syntactc predicate",grammar.getFilename(),context().block.getLine());
+  }
+  SynPredBlock b=new SynPredBlock(grammar);
+  setBlock(b,context().block);
+  BlockContext old=(BlockContext)blocks.pop();
+  blocks.push(new BlockContext());
+  context().block=b;
+  context().blockEnd=old.blockEnd;
+  context().blockEnd.block=b;
+}

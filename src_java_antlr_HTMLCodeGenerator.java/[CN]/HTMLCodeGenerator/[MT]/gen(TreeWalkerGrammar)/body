@@ -1,0 +1,44 @@
+{
+  setGrammar(g);
+  System.out.println("Generating " + grammar.getClassName() + ".txt");
+  currentOutput=antlr.Tool.openOutputFile(grammar.getClassName() + ".txt");
+  tabs=0;
+  genHeader();
+  println("");
+  println("*** Tree-walker Preamble Action.");
+  println("This action will appear before the declaration of your tree-walker class:");
+  tabs++;
+  println(grammar.preambleAction.getText());
+  tabs--;
+  println("*** End of tree-walker Preamble Action");
+  println("");
+  if (grammar.comment != null) {
+    _println(grammar.comment);
+  }
+  println("class " + grammar.getClassName() + " extends "+ grammar.getSuperClass()+ "{");
+  println("");
+  println("*** User-defined tree-walker class members:");
+  println("These are the member declarations that you defined for your class:");
+  tabs++;
+  printAction(grammar.classMemberAction.getText());
+  tabs--;
+  println("*** End of user-defined tree-walker class members");
+  println("");
+  println("*** tree-walker rules:");
+  tabs++;
+  Enumeration rules=grammar.rules.elements();
+  while (rules.hasMoreElements()) {
+    println("");
+    GrammarSymbol sym=(GrammarSymbol)rules.nextElement();
+    if (sym instanceof RuleSymbol) {
+      genRule((RuleSymbol)sym);
+    }
+  }
+  tabs--;
+  println("");
+  println("*** End of tree-walker rules");
+  println("");
+  println("*** End of tree-walker");
+  currentOutput.close();
+  currentOutput=null;
+}

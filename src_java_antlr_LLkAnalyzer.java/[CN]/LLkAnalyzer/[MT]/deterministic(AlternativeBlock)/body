@@ -1,0 +1,84 @@
+{
+  int k=1;
+  if (DEBUG_ANALYZER)   System.out.println("deterministic(" + blk + ")");
+  boolean det=true;
+  int nalts=blk.alternatives.size();
+  AlternativeBlock saveCurrentBlock=currentBlock;
+  Alternative wildcardAlt=null;
+  currentBlock=blk;
+  if (blk.greedy == false && !(blk instanceof OneOrMoreBlock) && !(blk instanceof ZeroOrMoreBlock)) {
+    tool.warning("Being nongreedy only makes sense for (...)+ and (...)*",grammar.getFilename(),blk.getLine());
+  }
+  if (nalts == 1) {
+    AlternativeElement e=blk.getAlternativeAt(0).head;
+    currentBlock.alti=0;
+    blk.getAlternativeAt(0).cache[1]=e.look(1);
+    blk.getAlternativeAt(0).lookaheadDepth=1;
+    currentBlock=saveCurrentBlock;
+    return true;
+  }
+  outer:   for (int i=0; i < nalts - 1; i++) {
+    currentBlock.alti=i;
+    currentBlock.analysisAlt=i;
+    currentBlock.altj=i + 1;
+    inner:     for (int j=i + 1; j < nalts; j++) {
+      currentBlock.altj=j;
+      if (DEBUG_ANALYZER)       System.out.println("comparing " + i + " against alt "+ j);
+      currentBlock.analysisAlt=j;
+      k=1;
+      Lookahead[] r=new Lookahead[grammar.maxk + 1];
+      boolean haveAmbiguity;
+      do {
+        haveAmbiguity=false;
+        if (DEBUG_ANALYZER)         System.out.println("checking depth " + k + "<="+ grammar.maxk);
+        Lookahead p, q;
+        p=getAltLookahead(blk,i,k);
+        q=getAltLookahead(blk,j,k);
+        if (DEBUG_ANALYZER)         System.out.println("p is " + p.toString(",",charFormatter,grammar));
+        if (DEBUG_ANALYZER)         System.out.println("q is " + q.toString(",",charFormatter,grammar));
+        r[k]=p.intersection(q);
+        if (DEBUG_ANALYZER)         System.out.println("intersection at depth " + k + " is "+ r[k].toString());
+        if (!r[k].nil()) {
+          haveAmbiguity=true;
+          k++;
+        }
+      }
+ while (haveAmbiguity && k <= grammar.maxk);
+      Alternative ai=blk.getAlternativeAt(i);
+      Alternative aj=blk.getAlternativeAt(j);
+      if (haveAmbiguity) {
+        det=false;
+        ai.lookaheadDepth=NONDETERMINISTIC;
+        aj.lookaheadDepth=NONDETERMINISTIC;
+        if (ai.synPred != null) {
+          if (DEBUG_ANALYZER) {
+            System.out.println("alt " + i + " has a syn pred");
+          }
+        }
+ else         if (ai.semPred != null) {
+          if (DEBUG_ANALYZER) {
+            System.out.println("alt " + i + " has a sem pred");
+          }
+        }
+ else         if (altUsesWildcardDefault(aj)) {
+          wildcardAlt=aj;
+        }
+ else         if (!blk.warnWhenFollowAmbig && (ai.head instanceof BlockEndElement || aj.head instanceof BlockEndElement)) {
+        }
+ else         if (!blk.generateAmbigWarnings) {
+        }
+ else         if (blk.greedySet && blk.greedy && ((ai.head instanceof BlockEndElement && !(aj.head instanceof BlockEndElement)) || (aj.head instanceof BlockEndElement && !(ai.head instanceof BlockEndElement)))) {
+        }
+ else {
+          tool.errorHandler.warnAltAmbiguity(grammar,blk,lexicalAnalysis,grammar.maxk,r,i,j);
+        }
+      }
+ else {
+        ai.lookaheadDepth=Math.max(ai.lookaheadDepth,k);
+        aj.lookaheadDepth=Math.max(aj.lookaheadDepth,k);
+      }
+    }
+  }
+  currentBlock=saveCurrentBlock;
+  return det;
+}

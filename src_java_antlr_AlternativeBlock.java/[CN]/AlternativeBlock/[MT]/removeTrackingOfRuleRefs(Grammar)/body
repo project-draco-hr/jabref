@@ -1,0 +1,22 @@
+{
+  for (int i=0; i < alternatives.size(); i++) {
+    Alternative alt=getAlternativeAt(i);
+    AlternativeElement elem=alt.head;
+    while (elem != null) {
+      if (elem instanceof RuleRefElement) {
+        RuleRefElement rr=(RuleRefElement)elem;
+        RuleSymbol rs=(RuleSymbol)g.getSymbol(rr.targetRule);
+        if (rs == null) {
+          grammar.tool.error("rule " + rr.targetRule + " referenced in (...)=>, but not defined");
+        }
+ else {
+          rs.references.removeElement(rr);
+        }
+      }
+ else       if (elem instanceof AlternativeBlock) {
+        ((AlternativeBlock)elem).removeTrackingOfRuleRefs(g);
+      }
+      elem=elem.next;
+    }
+  }
+}

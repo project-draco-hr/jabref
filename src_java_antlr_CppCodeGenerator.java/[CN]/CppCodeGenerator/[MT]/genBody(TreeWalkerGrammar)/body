@@ -1,0 +1,60 @@
+{
+  outputFile=grammar.getClassName() + ".cpp";
+  outputLine=1;
+  currentOutput=antlr.Tool.openOutputFile(outputFile);
+  genAST=grammar.buildAST;
+  tabs=0;
+  genHeader(outputFile);
+  printHeaderAction(preIncludeCpp);
+  println("#include \"" + grammar.getClassName() + ".hpp\"");
+  println("#include \"antlr/Token.hpp\"");
+  println("#include \"antlr/AST.hpp\"");
+  println("#include \"antlr/NoViableAltException.hpp\"");
+  println("#include \"antlr/MismatchedTokenException.hpp\"");
+  println("#include \"antlr/SemanticException.hpp\"");
+  println("#include \"antlr/BitSet.hpp\"");
+  printHeaderAction(postIncludeCpp);
+  if (nameSpace != null)   nameSpace.emitDeclarations(currentOutput);
+  printAction(grammar.preambleAction);
+  String sup=null;
+  if (grammar.superClass != null) {
+    sup=grammar.superClass;
+  }
+ else {
+    sup=grammar.getSuperClass();
+    if (sup.lastIndexOf('.') != -1)     sup=sup.substring(sup.lastIndexOf('.') + 1);
+    sup=namespaceAntlr + sup;
+  }
+  println(grammar.getClassName() + "::" + grammar.getClassName()+ "()");
+  println("\t: " + namespaceAntlr + "TreeParser() {");
+  tabs++;
+  println("setTokenNames(_tokenNames);");
+  tabs--;
+  println("}");
+  println("");
+  Enumeration ids=grammar.rules.elements();
+  int ruleNum=0;
+  String ruleNameInits="";
+  while (ids.hasMoreElements()) {
+    GrammarSymbol sym=(GrammarSymbol)ids.nextElement();
+    if (sym instanceof RuleSymbol) {
+      RuleSymbol rs=(RuleSymbol)sym;
+      genRule(rs,rs.references.size() == 0,ruleNum++,grammar.getClassName() + "::");
+    }
+    exitIfError();
+  }
+  if (usingCustomAST) {
+    println(labeledElementASTType + " " + grammar.getClassName()+ "::getAST()");
+    println("{");
+    println("\treturn returnAST;");
+    println("}");
+    println("");
+  }
+  genTokenStrings(grammar.getClassName() + "::");
+  genBitsets(bitsetsUsed,grammar.tokenManager.maxTokenType(),grammar.getClassName() + "::",true);
+  println("");
+  println("");
+  if (nameSpace != null)   nameSpace.emitClosures(currentOutput);
+  currentOutput.close();
+  currentOutput=null;
+}

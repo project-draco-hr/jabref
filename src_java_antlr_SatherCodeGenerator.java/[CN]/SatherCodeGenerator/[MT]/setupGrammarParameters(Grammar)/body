@@ -1,0 +1,40 @@
+{
+  if (g instanceof ParserGrammar) {
+    labeledElementASTType="AST";
+    labeledElementType="$ANTLR_TOKEN";
+    labeledElementInit="void";
+    commonExtraArgs="";
+    commonExtraParams="";
+    commonLocalVars="";
+    lt1Value="LT(1)";
+    exceptionThrown="$ANTLR_RECOGNITION_EXCEPTION";
+    throwNoViable="raise ANTLR_NO_VIABLE_ALT_EXCEPTION{AST}::create_from_token(LT(1), file_name );";
+  }
+ else   if (g instanceof LexerGrammar) {
+    labeledElementType="CHAR ";
+    labeledElementInit="'\\0'";
+    commonExtraArgs="";
+    commonExtraParams="sa_create_token : BOOL";
+    commonLocalVars="sa_ttype : INT; sa_token : TOKEN; sa_begin : INT := text.length;";
+    lt1Value="LA(1)";
+    exceptionThrown="$ANTLR_RECOGNITION_EXCEPTION";
+    throwNoViable="raise #ANTLR_NO_VIABLE_ALT_FOR_CHAR_EXCEPTION( LA(1), file_name, line );";
+  }
+ else   if (g instanceof TreeWalkerGrammar) {
+    labeledElementASTType="AST";
+    labeledElementType=labeledElementASTType;
+    if (!g.hasOption("ASTLabelType")) {
+      g.setOption("ASTLabelType",new Token(ANTLRTokenTypes.STRING_LITERAL,"AST"));
+    }
+    labeledElementInit="void";
+    commonExtraArgs="sa_t";
+    commonExtraParams="sa_t : " + labeledElementASTType;
+    commonLocalVars="";
+    lt1Value="sa_t";
+    exceptionThrown="$ANTLR_RECOGNITION_EXCEPTION";
+    throwNoViable="raise #ANTLR_NO_VIABLE_ALT_EXCEPTION{AST}(sa_t);";
+  }
+ else {
+    tool.panic("Unknown grammar type");
+  }
+}

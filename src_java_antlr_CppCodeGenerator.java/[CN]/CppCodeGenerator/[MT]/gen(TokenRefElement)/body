@@ -1,0 +1,16 @@
+{
+  if (DEBUG_CODE_GENERATOR)   System.out.println("genTokenRef(" + atom + ")");
+  if (grammar instanceof LexerGrammar) {
+    tool.panic("Token reference found in lexer");
+  }
+  genErrorTryForElement(atom);
+  if (atom.getLabel() != null && syntacticPredLevel == 0) {
+    println(atom.getLabel() + " = " + lt1Value+ ";");
+  }
+  genElementAST(atom);
+  genMatch(atom);
+  genErrorCatchForElement(atom);
+  if (grammar instanceof TreeWalkerGrammar) {
+    println("_t = _t->getNextSibling();");
+  }
+}

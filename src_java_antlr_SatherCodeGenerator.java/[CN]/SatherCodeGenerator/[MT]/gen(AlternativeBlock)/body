@@ -1,0 +1,13 @@
+{
+  if (DEBUG_CODE_GENERATOR)   System.out.println("gen(" + blk + ")");
+  genBlockPreamble(blk);
+  String saveCurrentASTResult=currentASTResult;
+  if (blk.getLabel() != null) {
+    currentASTResult=blk.getLabel();
+  }
+  boolean ok=grammar.theLLkAnalyzer.deterministic(blk);
+  JavaBlockFinishingInfo howToFinish=genCommonBlock(blk,true);
+  genBlockFinish(howToFinish,throwNoViable);
+  println("");
+  currentASTResult=saveCurrentASTResult;
+}

@@ -1,0 +1,34 @@
+{
+  if (DEBUG_ANALYZER)   System.out.println("lookAltBlk(" + k + ","+ blk+ ")");
+  AlternativeBlock saveCurrentBlock=currentBlock;
+  currentBlock=blk;
+  Lookahead p=new Lookahead();
+  for (int i=0; i < blk.alternatives.size(); i++) {
+    if (DEBUG_ANALYZER)     System.out.println("alt " + i + " of "+ blk);
+    currentBlock.analysisAlt=i;
+    Alternative alt=blk.getAlternativeAt(i);
+    AlternativeElement elem=alt.head;
+    if (DEBUG_ANALYZER) {
+      if (alt.head == alt.tail) {
+        System.out.println("alt " + i + " is empty");
+      }
+    }
+    Lookahead q=elem.look(k);
+    p.combineWith(q);
+  }
+  if (k == 1 && blk.not && subruleCanBeInverted(blk,lexicalAnalysis)) {
+    if (lexicalAnalysis) {
+      BitSet b=(BitSet)((LexerGrammar)grammar).charVocabulary.clone();
+      int[] elems=p.fset.toArray();
+      for (int j=0; j < elems.length; j++) {
+        b.remove(elems[j]);
+      }
+      p.fset=b;
+    }
+ else {
+      p.fset.notInPlace(Token.MIN_USER_TYPE,grammar.tokenManager.maxTokenType());
+    }
+  }
+  currentBlock=saveCurrentBlock;
+  return p;
+}

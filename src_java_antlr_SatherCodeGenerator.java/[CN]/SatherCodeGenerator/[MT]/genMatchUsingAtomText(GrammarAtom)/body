@@ -1,0 +1,21 @@
+{
+  String astArgs="";
+  if (grammar instanceof TreeWalkerGrammar) {
+    astArgs="sa_t,";
+  }
+  if (grammar instanceof LexerGrammar && (!saveText || atom.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)) {
+    println("sa_save_index := text.length;");
+  }
+  print(atom.not ? "match_not(" : "match(");
+  _print(astArgs);
+  if (atom.atomText.equals("EOF")) {
+    _print("ANTLR_COMMON_TOKEN::EOF_TYPE");
+  }
+ else {
+    _print(atom.atomText);
+  }
+  _println(");");
+  if (grammar instanceof LexerGrammar && (!saveText || atom.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)) {
+    println("text := text.substring( 0 , sa_save_index);");
+  }
+}

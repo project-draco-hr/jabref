@@ -1,0 +1,16 @@
+{
+  AST sibling;
+  if (sub == null) {
+    return true;
+  }
+  for (sibling=this; sibling != null && sub != null; sibling=sibling.getNextSibling(), sub=sub.getNextSibling()) {
+    if (!sibling.equals(sub))     return false;
+    if (sibling.getFirstChild() != null) {
+      if (!sibling.getFirstChild().equalsListPartial(sub.getFirstChild()))       return false;
+    }
+  }
+  if (sibling == null && sub != null) {
+    return false;
+  }
+  return true;
+}

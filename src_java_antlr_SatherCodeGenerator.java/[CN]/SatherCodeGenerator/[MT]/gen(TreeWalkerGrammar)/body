@@ -1,0 +1,57 @@
+{
+  setGrammar(g);
+  if (!(grammar instanceof TreeWalkerGrammar)) {
+    tool.panic("Internal error generating tree-walker");
+  }
+  setupOutput(grammar.getClassName());
+  genAST=grammar.buildAST;
+  tabs=0;
+  genHeader();
+  println(behavior.getHeaderAction(""));
+  println(grammar.preambleAction.getText());
+  String sup=null;
+  if (grammar.superClass != null) {
+    sup=grammar.superClass.toUpperCase();
+  }
+ else {
+    sup="ANTLR_TREE_PARSER";
+  }
+  if (grammar.comment != null) {
+    _println(grammar.comment);
+  }
+  println("class " + grammar.getClassName() + "{AST < $ANTLR_AST{AST} } is");
+  println("");
+  tabs++;
+  println("include " + sup + "{"+ labeledElementASTType+ "} create -> tree_parser_create;");
+  println("include " + grammar.tokenManager.getName() + "_"+ TokenTypesFileSuffix.toUpperCase()+ ";");
+  println("");
+  print(processActionForTreeSpecifiers(grammar.classMemberAction.getText(),0,currentRule,null));
+  println("attr token_names : ARRAY{STR};");
+  println("");
+  println("create : SAME is");
+  tabs++;
+  println("res : SAME := tree_parser_create;");
+  println("res.token_names := sa_token_names;");
+  println("return res;");
+  tabs--;
+  println("end; -- create");
+  println("");
+  Enumeration ids=grammar.rules.elements();
+  int ruleNum=0;
+  String ruleNameInits="";
+  while (ids.hasMoreElements()) {
+    GrammarSymbol sym=(GrammarSymbol)ids.nextElement();
+    if (sym instanceof RuleSymbol) {
+      RuleSymbol rs=(RuleSymbol)sym;
+      genRule(rs,rs.references.size() == 0,ruleNum++);
+    }
+    exitIfError();
+  }
+  genTokenStrings();
+  genBitsets(bitsetsUsed,grammar.tokenManager.maxTokenType());
+  tabs--;
+  println("end; -- class");
+  println("");
+  currentOutput.close();
+  currentOutput=null;
+}

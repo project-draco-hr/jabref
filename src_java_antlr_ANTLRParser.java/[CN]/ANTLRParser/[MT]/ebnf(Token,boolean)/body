@@ -1,0 +1,179 @@
+{
+  Token lp=null;
+  Token aa=null;
+  Token ab=null;
+  lp=LT(1);
+  match(LPAREN);
+  if (inputState.guessing == 0) {
+    behavior.beginSubRule(label,lp.getLine(),not);
+  }
+{
+    if ((LA(1) == OPTIONS)) {
+      subruleOptionsSpec();
+{
+switch (LA(1)) {
+case ACTION:
+{
+            aa=LT(1);
+            match(ACTION);
+            if (inputState.guessing == 0) {
+              behavior.refInitAction(aa);
+            }
+            break;
+          }
+case COLON:
+{
+          break;
+        }
+default :
+{
+        throw new NoViableAltException(LT(1),getFilename());
+      }
+  }
+}
+match(COLON);
+}
+ else if ((LA(1) == ACTION) && (LA(2) == COLON)) {
+ab=LT(1);
+match(ACTION);
+if (inputState.guessing == 0) {
+  behavior.refInitAction(ab);
+}
+match(COLON);
+}
+ else if ((_tokenSet_9.member(LA(1))) && (_tokenSet_10.member(LA(2)))) {
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+block();
+match(RPAREN);
+{
+switch (LA(1)) {
+case STRING_LITERAL:
+case ACTION:
+case SEMI:
+case CHAR_LITERAL:
+case OR:
+case TOKEN_REF:
+case OPEN_ELEMENT_OPTION:
+case LPAREN:
+case RULE_REF:
+case RPAREN:
+case BANG:
+case LITERAL_exception:
+case NOT_OP:
+case SEMPRED:
+case TREE_BEGIN:
+case QUESTION:
+case STAR:
+case PLUS:
+case WILDCARD:
+{
+{
+switch (LA(1)) {
+case QUESTION:
+{
+        match(QUESTION);
+        if (inputState.guessing == 0) {
+          behavior.optionalSubRule();
+        }
+        break;
+      }
+case STAR:
+{
+      match(STAR);
+      if (inputState.guessing == 0) {
+        behavior.zeroOrMoreSubRule();
+        ;
+      }
+      break;
+    }
+case PLUS:
+{
+    match(PLUS);
+    if (inputState.guessing == 0) {
+      behavior.oneOrMoreSubRule();
+    }
+    break;
+  }
+case STRING_LITERAL:
+case ACTION:
+case SEMI:
+case CHAR_LITERAL:
+case OR:
+case TOKEN_REF:
+case OPEN_ELEMENT_OPTION:
+case LPAREN:
+case RULE_REF:
+case RPAREN:
+case BANG:
+case LITERAL_exception:
+case NOT_OP:
+case SEMPRED:
+case TREE_BEGIN:
+case WILDCARD:
+{
+  break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+{
+switch (LA(1)) {
+case BANG:
+{
+match(BANG);
+if (inputState.guessing == 0) {
+behavior.noASTSubRule();
+}
+break;
+}
+case STRING_LITERAL:
+case ACTION:
+case SEMI:
+case CHAR_LITERAL:
+case OR:
+case TOKEN_REF:
+case OPEN_ELEMENT_OPTION:
+case LPAREN:
+case RULE_REF:
+case RPAREN:
+case LITERAL_exception:
+case NOT_OP:
+case SEMPRED:
+case TREE_BEGIN:
+case WILDCARD:
+{
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+break;
+}
+case IMPLIES:
+{
+match(IMPLIES);
+if (inputState.guessing == 0) {
+behavior.synPred();
+}
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+if (inputState.guessing == 0) {
+behavior.endSubRule();
+}
+}

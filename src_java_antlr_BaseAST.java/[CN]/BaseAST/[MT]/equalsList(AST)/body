@@ -1,0 +1,23 @@
+{
+  AST sibling;
+  if (t == null) {
+    return false;
+  }
+  for (sibling=this; sibling != null && t != null; sibling=sibling.getNextSibling(), t=t.getNextSibling()) {
+    if (!sibling.equals(t)) {
+      return false;
+    }
+    if (sibling.getFirstChild() != null) {
+      if (!sibling.getFirstChild().equalsList(t.getFirstChild())) {
+        return false;
+      }
+    }
+ else     if (t.getFirstChild() != null) {
+      return false;
+    }
+  }
+  if (sibling == null && t == null) {
+    return true;
+  }
+  return false;
+}

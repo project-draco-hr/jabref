@@ -1,0 +1,33 @@
+{
+  RuleSymbol rs=(RuleSymbol)grammar.getSymbol(rr.targetRule);
+  print("Rule Reference: " + rr.targetRule);
+  if (rr.idAssign != null) {
+    _print(", assigned to '" + rr.idAssign + "'");
+  }
+  if (rr.args != null) {
+    _print(", arguments = " + rr.args);
+  }
+  _println("");
+  if (rs == null || !rs.isDefined()) {
+    println("Rule '" + rr.targetRule + "' is referenced, but that rule is not defined.");
+    println("\tPerhaps the rule is misspelled, or you forgot to define it.");
+    return;
+  }
+  if (!(rs instanceof RuleSymbol)) {
+    println("Rule '" + rr.targetRule + "' is referenced, but that is not a grammar rule.");
+    return;
+  }
+  if (rr.idAssign != null) {
+    if (rs.block.returnAction == null) {
+      println("Error: You assigned from Rule '" + rr.targetRule + "', but that rule has no return type.");
+    }
+  }
+ else {
+    if (!(grammar instanceof LexerGrammar) && syntacticPredLevel == 0 && rs.block.returnAction != null) {
+      println("Warning: Rule '" + rr.targetRule + "' returns a value");
+    }
+  }
+  if (rr.args != null && rs.block.argAction == null) {
+    println("Error: Rule '" + rr.targetRule + "' accepts no arguments.");
+  }
+}

@@ -1,0 +1,43 @@
+{
+  BitSet b;
+  Token c1=null;
+  Token c2=null;
+  b=null;
+  int rangeMin=0;
+  c1=LT(1);
+  match(CHAR_LITERAL);
+  if (inputState.guessing == 0) {
+    rangeMin=ANTLRLexer.tokenTypeForCharLiteral(c1.getText());
+    b=BitSet.of(rangeMin);
+  }
+{
+switch (LA(1)) {
+case RANGE:
+{
+        match(RANGE);
+        c2=LT(1);
+        match(CHAR_LITERAL);
+        if (inputState.guessing == 0) {
+          int rangeMax=ANTLRLexer.tokenTypeForCharLiteral(c2.getText());
+          if (rangeMax < rangeMin) {
+            tool.error("Malformed range line " + c1.getLine());
+          }
+          for (int i=rangeMin + 1; i <= rangeMax; i++) {
+            b.add(i);
+          }
+        }
+        break;
+      }
+case SEMI:
+case OR:
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+return b;
+}

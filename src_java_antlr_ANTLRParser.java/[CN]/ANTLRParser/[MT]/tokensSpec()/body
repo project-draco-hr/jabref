@@ -1,0 +1,108 @@
+{
+  Token t1=null;
+  Token s1=null;
+  Token s3=null;
+  match(TOKENS);
+{
+    int _cnt43=0;
+    _loop43:     do {
+      if ((LA(1) == STRING_LITERAL || LA(1) == TOKEN_REF)) {
+{
+switch (LA(1)) {
+case TOKEN_REF:
+{
+              if (inputState.guessing == 0) {
+                s1=null;
+              }
+              t1=LT(1);
+              match(TOKEN_REF);
+{
+switch (LA(1)) {
+case ASSIGN:
+{
+                    match(ASSIGN);
+                    s1=LT(1);
+                    match(STRING_LITERAL);
+                    break;
+                  }
+case SEMI:
+case OPEN_ELEMENT_OPTION:
+{
+                  break;
+                }
+default :
+{
+                throw new NoViableAltException(LT(1),getFilename());
+              }
+          }
+        }
+        if (inputState.guessing == 0) {
+          behavior.defineToken(t1,s1);
+        }
+{
+switch (LA(1)) {
+case OPEN_ELEMENT_OPTION:
+{
+              tokensSpecOptions(t1);
+              break;
+            }
+case SEMI:
+{
+            break;
+          }
+default :
+{
+          throw new NoViableAltException(LT(1),getFilename());
+        }
+    }
+  }
+  break;
+}
+case STRING_LITERAL:
+{
+s3=LT(1);
+match(STRING_LITERAL);
+if (inputState.guessing == 0) {
+  behavior.defineToken(null,s3);
+}
+{
+switch (LA(1)) {
+case OPEN_ELEMENT_OPTION:
+{
+      tokensSpecOptions(s3);
+      break;
+    }
+case SEMI:
+{
+    break;
+  }
+default :
+{
+  throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+match(SEMI);
+}
+ else {
+if (_cnt43 >= 1) {
+break _loop43;
+}
+ else {
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+_cnt43++;
+}
+ while (true);
+}
+match(RCURLY);
+}

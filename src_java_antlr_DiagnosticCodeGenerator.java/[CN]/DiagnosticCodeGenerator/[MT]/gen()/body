@@ -1,0 +1,26 @@
+{
+  try {
+    Enumeration grammarIter=behavior.grammars.elements();
+    while (grammarIter.hasMoreElements()) {
+      Grammar g=(Grammar)grammarIter.nextElement();
+      g.setGrammarAnalyzer(analyzer);
+      g.setCodeGenerator(this);
+      analyzer.setGrammar(g);
+      g.generate();
+      if (tool.hasError) {
+        System.out.println("Exiting due to errors.");
+        System.exit(1);
+      }
+    }
+    Enumeration tmIter=behavior.tokenManagers.elements();
+    while (tmIter.hasMoreElements()) {
+      TokenManager tm=(TokenManager)tmIter.nextElement();
+      if (!tm.isReadOnly()) {
+        genTokenTypes(tm);
+      }
+    }
+  }
+ catch (  IOException e) {
+    System.out.println(e.getMessage());
+  }
+}

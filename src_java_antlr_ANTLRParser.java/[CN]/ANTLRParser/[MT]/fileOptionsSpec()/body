@@ -1,0 +1,23 @@
+{
+  Token idTok;
+  Token value;
+  match(OPTIONS);
+{
+    _loop18:     do {
+      if ((LA(1) == TOKEN_REF || LA(1) == RULE_REF)) {
+        idTok=id();
+        match(ASSIGN);
+        value=optionValue();
+        if (inputState.guessing == 0) {
+          behavior.setFileOption(idTok,value,getInputState().filename);
+        }
+        match(SEMI);
+      }
+ else {
+        break _loop18;
+      }
+    }
+ while (true);
+  }
+  match(RCURLY);
+}

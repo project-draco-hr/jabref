@@ -1,0 +1,135 @@
+{
+  outputFile=grammar.getClassName() + ".cpp";
+  outputLine=1;
+  currentOutput=antlr.Tool.openOutputFile(outputFile);
+  genAST=false;
+  saveText=true;
+  tabs=0;
+  genHeader(outputFile);
+  printHeaderAction(preIncludeCpp);
+  println("#include \"" + grammar.getClassName() + ".hpp\"");
+  println("#include \"antlr/CharBuffer.hpp\"");
+  println("#include \"antlr/TokenStreamException.hpp\"");
+  println("#include \"antlr/TokenStreamIOException.hpp\"");
+  println("#include \"antlr/TokenStreamRecognitionException.hpp\"");
+  println("#include \"antlr/CharStreamException.hpp\"");
+  println("#include \"antlr/CharStreamIOException.hpp\"");
+  println("#include \"antlr/NoViableAltForCharException.hpp\"");
+  if (grammar.debuggingOutput)   println("#include \"antlr/DebuggingInputBuffer.hpp\"");
+  println("");
+  printHeaderAction(postIncludeCpp);
+  if (nameSpace != null)   nameSpace.emitDeclarations(currentOutput);
+  printAction(grammar.preambleAction);
+  String sup=null;
+  if (grammar.superClass != null) {
+    sup=grammar.superClass;
+  }
+ else {
+    sup=grammar.getSuperClass();
+    if (sup.lastIndexOf('.') != -1)     sup=sup.substring(sup.lastIndexOf('.') + 1);
+    sup=namespaceAntlr + sup;
+  }
+  println(grammar.getClassName() + "::" + grammar.getClassName()+ "("+ namespaceStd+ "istream& in)");
+  tabs++;
+  if (grammar.debuggingOutput)   println(": " + sup + "(new "+ namespaceAntlr+ "DebuggingInputBuffer(new "+ namespaceAntlr+ "CharBuffer(in)))");
+ else   println(": " + sup + "(new "+ namespaceAntlr+ "CharBuffer(in))");
+  tabs--;
+  println("{");
+  tabs++;
+  if (grammar.debuggingOutput) {
+    println("setRuleNames(_ruleNames);");
+    println("setSemPredNames(_semPredNames);");
+    println("setupDebugging();");
+  }
+  println("setCaseSensitive(" + g.caseSensitive + ");");
+  println("initLiterals();");
+  tabs--;
+  println("}");
+  println("");
+  println(grammar.getClassName() + "::" + grammar.getClassName()+ "("+ namespaceAntlr+ "InputBuffer& ib)");
+  tabs++;
+  if (grammar.debuggingOutput)   println(": " + sup + "(new "+ namespaceAntlr+ "DebuggingInputBuffer(ib))");
+ else   println(": " + sup + "(ib)");
+  tabs--;
+  println("{");
+  tabs++;
+  if (grammar.debuggingOutput) {
+    println("setRuleNames(_ruleNames);");
+    println("setSemPredNames(_semPredNames);");
+    println("setupDebugging();");
+  }
+  println("setCaseSensitive(" + g.caseSensitive + ");");
+  println("initLiterals();");
+  tabs--;
+  println("}");
+  println("");
+  println(grammar.getClassName() + "::" + grammar.getClassName()+ "(const "+ namespaceAntlr+ "LexerSharedInputState& state)");
+  tabs++;
+  println(": " + sup + "(state)");
+  tabs--;
+  println("{");
+  tabs++;
+  if (grammar.debuggingOutput) {
+    println("setRuleNames(_ruleNames);");
+    println("setSemPredNames(_semPredNames);");
+    println("setupDebugging();");
+  }
+  println("setCaseSensitive(" + g.caseSensitive + ");");
+  println("initLiterals();");
+  tabs--;
+  println("}");
+  println("");
+  println("void " + grammar.getClassName() + "::initLiterals()");
+  println("{");
+  tabs++;
+  Enumeration keys=grammar.tokenManager.getTokenSymbolKeys();
+  while (keys.hasMoreElements()) {
+    String key=(String)keys.nextElement();
+    if (key.charAt(0) != '"') {
+      continue;
+    }
+    TokenSymbol sym=grammar.tokenManager.getTokenSymbol(key);
+    if (sym instanceof StringLiteralSymbol) {
+      StringLiteralSymbol s=(StringLiteralSymbol)sym;
+      println("literals[" + s.getId() + "] = "+ s.getTokenType()+ ";");
+    }
+  }
+  tabs--;
+  println("}");
+  println("bool " + grammar.getClassName() + "::getCaseSensitiveLiterals() const");
+  println("{");
+  tabs++;
+  println("return " + g.caseSensitiveLiterals + ";");
+  tabs--;
+  println("}");
+  Enumeration ids;
+  if (grammar.debuggingOutput) {
+    println("const char* " + grammar.getClassName() + "::_ruleNames[] = {");
+    tabs++;
+    ids=grammar.rules.elements();
+    int ruleNum=0;
+    while (ids.hasMoreElements()) {
+      GrammarSymbol sym=(GrammarSymbol)ids.nextElement();
+      if (sym instanceof RuleSymbol)       println("\"" + ((RuleSymbol)sym).getId() + "\",");
+    }
+    println("0");
+    tabs--;
+    println("};");
+  }
+  genNextToken();
+  ids=grammar.rules.elements();
+  int ruleNum=0;
+  while (ids.hasMoreElements()) {
+    RuleSymbol sym=(RuleSymbol)ids.nextElement();
+    if (!sym.getId().equals("mnextToken")) {
+      genRule(sym,false,ruleNum++,grammar.getClassName() + "::");
+    }
+    exitIfError();
+  }
+  if (grammar.debuggingOutput)   genSemPredMap(grammar.getClassName() + "::");
+  genBitsets(bitsetsUsed,((LexerGrammar)grammar).charVocabulary.size(),grammar.getClassName() + "::",false);
+  println("");
+  if (nameSpace != null)   nameSpace.emitClosures(currentOutput);
+  currentOutput.close();
+  currentOutput=null;
+}

@@ -1,0 +1,28 @@
+{
+  String sup;
+  sup=null;
+  match(LPAREN);
+  if (inputState.guessing == 0) {
+    sup=LT(1).getText();
+  }
+{
+switch (LA(1)) {
+case TOKEN_REF:
+{
+        match(TOKEN_REF);
+        break;
+      }
+case RULE_REF:
+{
+      match(RULE_REF);
+      break;
+    }
+default :
+{
+    throw new NoViableAltException(LT(1),getFilename());
+  }
+}
+}
+match(RPAREN);
+return sup;
+}

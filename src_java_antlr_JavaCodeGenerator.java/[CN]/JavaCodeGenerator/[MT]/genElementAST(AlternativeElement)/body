@@ -1,0 +1,84 @@
+{
+  if (grammar instanceof TreeWalkerGrammar && !grammar.buildAST) {
+    String elementRef;
+    String astName;
+    if (el.getLabel() == null) {
+      elementRef=lt1Value;
+      astName="tmp" + astVarNumber + "_AST";
+      astVarNumber++;
+      mapTreeVariable(el,astName);
+      println(labeledElementASTType + " " + astName+ "_in = "+ elementRef+ ";");
+    }
+    return;
+  }
+  if (grammar.buildAST && syntacticPredLevel == 0) {
+    boolean doNoGuessTest=(grammar.hasSyntacticPredicate && (el.getLabel() != null || el.getAutoGenType() != GrammarElement.AUTO_GEN_BANG));
+    String elementRef;
+    String astName;
+    if (el.getLabel() != null) {
+      elementRef=el.getLabel();
+      astName=el.getLabel() + "_AST";
+    }
+ else {
+      elementRef=lt1Value;
+      astName="tmp" + astVarNumber + "_AST";
+      astVarNumber++;
+      if (el instanceof GrammarAtom) {
+        GrammarAtom ga=(GrammarAtom)el;
+        if (ga.getASTNodeType() != null) {
+          println(ga.getASTNodeType() + " " + astName+ " = null;");
+        }
+ else {
+          println(labeledElementASTType + " " + astName+ " = null;");
+        }
+      }
+ else {
+        println(labeledElementASTType + " " + astName+ " = null;");
+      }
+      mapTreeVariable(el,astName);
+      if (grammar instanceof TreeWalkerGrammar) {
+        println(labeledElementASTType + " " + astName+ "_in = null;");
+      }
+    }
+    if (doNoGuessTest) {
+      println("if (inputState.guessing==0) {");
+      tabs++;
+    }
+    if (el.getLabel() != null) {
+      if (el instanceof GrammarAtom) {
+        println(astName + " = " + getASTCreateString((GrammarAtom)el,elementRef)+ ";");
+      }
+ else {
+        println(astName + " = " + getASTCreateString(elementRef)+ ";");
+      }
+    }
+ else {
+      elementRef=lt1Value;
+      if (el instanceof GrammarAtom) {
+        println(astName + " = " + getASTCreateString((GrammarAtom)el,elementRef)+ ";");
+      }
+ else {
+        println(astName + " = " + getASTCreateString(elementRef)+ ";");
+      }
+      if (grammar instanceof TreeWalkerGrammar) {
+        println(astName + "_in = " + elementRef+ ";");
+      }
+    }
+    if (genAST) {
+switch (el.getAutoGenType()) {
+case GrammarElement.AUTO_GEN_NONE:
+        println("astFactory.addASTChild(currentAST, " + astName + ");");
+      break;
+case GrammarElement.AUTO_GEN_CARET:
+    println("astFactory.makeASTRoot(currentAST, " + astName + ");");
+  break;
+default :
+break;
+}
+}
+if (doNoGuessTest) {
+tabs--;
+println("}");
+}
+}
+}

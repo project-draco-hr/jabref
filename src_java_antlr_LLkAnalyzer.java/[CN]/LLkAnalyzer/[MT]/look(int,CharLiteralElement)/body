@@ -1,0 +1,23 @@
+{
+  if (DEBUG_ANALYZER)   System.out.println("lookCharLiteral(" + k + ","+ atom+ ")");
+  if (k > 1) {
+    return atom.next.look(k - 1);
+  }
+  if (lexicalAnalysis) {
+    if (atom.not) {
+      BitSet b=(BitSet)((LexerGrammar)grammar).charVocabulary.clone();
+      if (DEBUG_ANALYZER)       System.out.println("charVocab is " + b.toString());
+      removeCompetingPredictionSets(b,atom);
+      if (DEBUG_ANALYZER)       System.out.println("charVocab after removal of prior alt lookahead " + b.toString());
+      b.clear(atom.getType());
+      return new Lookahead(b);
+    }
+ else {
+      return Lookahead.of(atom.getType());
+    }
+  }
+ else {
+    tool.panic("Character literal reference found in parser");
+    return Lookahead.of(atom.getType());
+  }
+}

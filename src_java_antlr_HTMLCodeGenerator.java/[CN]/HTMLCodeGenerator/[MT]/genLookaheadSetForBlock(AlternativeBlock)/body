@@ -1,0 +1,17 @@
+{
+  int depth=0;
+  for (int i=0; i < blk.alternatives.size(); i++) {
+    Alternative alt=blk.getAlternativeAt(i);
+    if (alt.lookaheadDepth == GrammarAnalyzer.NONDETERMINISTIC) {
+      depth=grammar.maxk;
+      break;
+    }
+ else     if (depth < alt.lookaheadDepth) {
+      depth=alt.lookaheadDepth;
+    }
+  }
+  for (int i=1; i <= depth; i++) {
+    Lookahead lookahead=grammar.theLLkAnalyzer.look(i,blk);
+    printSet(depth,i,lookahead);
+  }
+}

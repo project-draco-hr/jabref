@@ -1,0 +1,15 @@
+{
+  GrammarElement head=currentBlock.getAlternativeAt(currentBlock.analysisAlt).head;
+  if (head instanceof TreeElement) {
+    if (((TreeElement)head).root != el) {
+      return;
+    }
+  }
+ else   if (el != head) {
+    return;
+  }
+  for (int i=0; i < currentBlock.analysisAlt; i++) {
+    AlternativeElement e=currentBlock.getAlternativeAt(i).head;
+    b.subtractInPlace(e.look(1).fset);
+  }
+}

@@ -1,0 +1,22 @@
+{
+  if (DEBUG_ANALYZER)   System.out.println("lookStringLiteral(" + k + ","+ atom+ ")");
+  if (lexicalAnalysis) {
+    if (k > atom.processedAtomText.length()) {
+      return atom.next.look(k - atom.processedAtomText.length());
+    }
+ else {
+      return Lookahead.of(atom.processedAtomText.charAt(k - 1));
+    }
+  }
+ else {
+    if (k > 1) {
+      return atom.next.look(k - 1);
+    }
+    Lookahead l=Lookahead.of(atom.getType());
+    if (atom.not) {
+      int maxToken=grammar.tokenManager.maxTokenType();
+      l.fset.notInPlace(Token.MIN_USER_TYPE,maxToken);
+    }
+    return l;
+  }
+}

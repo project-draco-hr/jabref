@@ -1,0 +1,24 @@
+{
+  setGrammar(g);
+  System.out.println("Generating " + grammar.getClassName() + TokenTypesFileExt);
+  currentOutput=antlr.Tool.openOutputFile(grammar.getClassName() + TokenTypesFileExt);
+  tabs=0;
+  doingLexRules=true;
+  genHeader();
+  println("");
+  if (grammar.comment != null) {
+    _println(grammar.comment);
+  }
+  println("class " + grammar.getClassName() + " extends "+ grammar.getSuperClass()+ " {");
+  genNextToken();
+  Enumeration ids=grammar.rules.elements();
+  while (ids.hasMoreElements()) {
+    RuleSymbol rs=(RuleSymbol)ids.nextElement();
+    if (!rs.id.equals("mnextToken")) {
+      genRule(rs);
+    }
+  }
+  currentOutput.close();
+  currentOutput=null;
+  doingLexRules=false;
+}

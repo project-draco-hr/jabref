@@ -1,0 +1,70 @@
+{
+  println("");
+  String ruleType=(doingLexRules ? "Lexer" : "Parser");
+  println("*** " + ruleType + " Rule: "+ s.getId());
+  if (!s.isDefined()) {
+    println("This rule is undefined.");
+    println("This means that the rule was referenced somewhere in the grammar,");
+    println("but a definition for the rule was not encountered.");
+    println("It is also possible that syntax errors during the parse of");
+    println("your grammar file prevented correct processing of the rule.");
+    println("*** End " + ruleType + " Rule: "+ s.getId());
+    return;
+  }
+  tabs++;
+  if (s.access.length() != 0) {
+    println("Access: " + s.access);
+  }
+  RuleBlock rblk=s.getBlock();
+  if (rblk.returnAction != null) {
+    println("Return value(s): " + rblk.returnAction);
+    if (doingLexRules) {
+      println("Error: you specified return value(s) for a lexical rule.");
+      println("\tLexical rules have an implicit return type of 'int'.");
+    }
+  }
+ else {
+    if (doingLexRules) {
+      println("Return value: lexical rule returns an implicit token type");
+    }
+ else {
+      println("Return value: none");
+    }
+  }
+  if (rblk.argAction != null) {
+    println("Arguments: " + rblk.argAction);
+  }
+  genBlockPreamble(rblk);
+  boolean ok=grammar.theLLkAnalyzer.deterministic(rblk);
+  if (!ok) {
+    println("Error: This rule is non-deterministic");
+  }
+  genCommonBlock(rblk);
+  ExceptionSpec unlabeledUserSpec=rblk.findExceptionSpec("");
+  if (unlabeledUserSpec != null) {
+    println("You specified error-handler(s) for this rule:");
+    tabs++;
+    for (int i=0; i < unlabeledUserSpec.handlers.size(); i++) {
+      if (i != 0) {
+        println("");
+      }
+      ExceptionHandler handler=(ExceptionHandler)unlabeledUserSpec.handlers.elementAt(i);
+      println("Error-handler(" + (i + 1) + ") catches ["+ handler.exceptionTypeAndName.getText()+ "] and executes:");
+      printAction(handler.action.getText());
+    }
+    tabs--;
+    println("End error-handlers.");
+  }
+ else   if (!doingLexRules) {
+    println("Default error-handling will be generated, which catches all");
+    println("parser exceptions and consumes tokens until the follow-set is seen.");
+  }
+  if (!doingLexRules) {
+    println("The follow set for this rule is:");
+    tabs++;
+    genFollowSetForRuleBlock(rblk);
+    tabs--;
+  }
+  tabs--;
+  println("*** End " + ruleType + " Rule: "+ s.getId());
+}

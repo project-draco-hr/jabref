@@ -1,0 +1,63 @@
+{
+  RuleBlock rb=(RuleBlock)end.block;
+  String rule;
+  if (lexicalAnalysis) {
+    rule=CodeGenerator.lexerRuleName(rb.getRuleName());
+  }
+ else {
+    rule=rb.getRuleName();
+  }
+  if (DEBUG_ANALYZER)   System.out.println("FOLLOW(" + k + ","+ rule+ ")");
+  if (end.lock[k]) {
+    if (DEBUG_ANALYZER)     System.out.println("FOLLOW cycle to " + rule);
+    return new Lookahead(rule);
+  }
+  if (end.cache[k] != null) {
+    if (DEBUG_ANALYZER) {
+      System.out.println("cache entry FOLLOW(" + k + ") for "+ rule+ ": "+ end.cache[k].toString(",",charFormatter,grammar));
+    }
+    if (end.cache[k].cycle == null) {
+      return (Lookahead)end.cache[k].clone();
+    }
+    RuleSymbol rs=(RuleSymbol)grammar.getSymbol(end.cache[k].cycle);
+    RuleEndElement re=rs.getBlock().endNode;
+    if (re.cache[k] == null) {
+      return (Lookahead)end.cache[k].clone();
+    }
+ else {
+      end.cache[k]=re.cache[k];
+      return (Lookahead)re.cache[k].clone();
+    }
+  }
+  end.lock[k]=true;
+  Lookahead p=new Lookahead();
+  RuleSymbol rs=(RuleSymbol)grammar.getSymbol(rule);
+  for (int i=0; i < rs.numReferences(); i++) {
+    RuleRefElement rr=rs.getReference(i);
+    if (DEBUG_ANALYZER)     System.out.println("next[" + rule + "] is "+ rr.next.toString());
+    Lookahead q=rr.next.look(k);
+    if (DEBUG_ANALYZER)     System.out.println("FIRST of next[" + rule + "] ptr is "+ q.toString());
+    if (q.cycle != null && q.cycle.equals(rule)) {
+      q.cycle=null;
+    }
+    p.combineWith(q);
+    if (DEBUG_ANALYZER)     System.out.println("combined FOLLOW[" + rule + "] is "+ p.toString());
+  }
+  end.lock[k]=false;
+  if (p.fset.nil() && p.cycle == null) {
+    if (grammar instanceof TreeWalkerGrammar) {
+      p.fset.add(Token.NULL_TREE_LOOKAHEAD);
+    }
+ else     if (grammar instanceof LexerGrammar) {
+      p.setEpsilon();
+    }
+ else {
+      p.fset.add(Token.EOF_TYPE);
+    }
+  }
+  if (DEBUG_ANALYZER) {
+    System.out.println("saving FOLLOW(" + k + ") for "+ rule+ ": "+ p.toString(",",charFormatter,grammar));
+  }
+  end.cache[k]=(Lookahead)p.clone();
+  return p;
+}

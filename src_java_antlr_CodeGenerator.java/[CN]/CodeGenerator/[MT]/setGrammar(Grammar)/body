@@ -1,0 +1,32 @@
+{
+  reset();
+  grammar=g;
+  if (grammar.hasOption("codeGenMakeSwitchThreshold")) {
+    try {
+      makeSwitchThreshold=grammar.getIntegerOption("codeGenMakeSwitchThreshold");
+    }
+ catch (    NumberFormatException e) {
+      tool.error("option 'codeGenMakeSwitchThreshold' must be an integer",grammar.getClassName(),grammar.getOption("codeGenMakeSwitchThreshold").getLine());
+    }
+  }
+  if (grammar.hasOption("codeGenBitsetTestThreshold")) {
+    try {
+      bitsetTestThreshold=grammar.getIntegerOption("codeGenBitsetTestThreshold");
+    }
+ catch (    NumberFormatException e) {
+      tool.error("option 'codeGenBitsetTestThreshold' must be an integer",grammar.getClassName(),grammar.getOption("codeGenBitsetTestThreshold").getLine());
+    }
+  }
+  if (grammar.hasOption("codeGenDebug")) {
+    Token t=grammar.getOption("codeGenDebug");
+    if (t.getText().equals("true")) {
+      DEBUG_CODE_GENERATOR=true;
+    }
+ else     if (t.getText().equals("false")) {
+      DEBUG_CODE_GENERATOR=false;
+    }
+ else {
+      tool.error("option 'codeGenDebug' must be true or false",grammar.getClassName(),t.getLine());
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  Token crLeft=null;
+  Token crRight=null;
+  Token t=null;
+  Token u=null;
+  Token v=null;
+  Token w=null;
+  Token trLeft=null;
+  Token trRight=null;
+  int autoGen=GrammarElement.AUTO_GEN_NONE;
+switch (LA(1)) {
+case CHAR_LITERAL:
+{
+      crLeft=LT(1);
+      match(CHAR_LITERAL);
+      match(RANGE);
+      crRight=LT(1);
+      match(CHAR_LITERAL);
+{
+switch (LA(1)) {
+case BANG:
+{
+            match(BANG);
+            if (inputState.guessing == 0) {
+              autoGen=GrammarElement.AUTO_GEN_BANG;
+            }
+            break;
+          }
+case STRING_LITERAL:
+case ACTION:
+case SEMI:
+case CHAR_LITERAL:
+case OR:
+case TOKEN_REF:
+case OPEN_ELEMENT_OPTION:
+case LPAREN:
+case RULE_REF:
+case RPAREN:
+case LITERAL_exception:
+case NOT_OP:
+case SEMPRED:
+case TREE_BEGIN:
+case WILDCARD:
+{
+          break;
+        }
+default :
+{
+        throw new NoViableAltException(LT(1),getFilename());
+      }
+  }
+}
+if (inputState.guessing == 0) {
+  behavior.refCharRange(crLeft,crRight,label,autoGen,lastInRule());
+}
+break;
+}
+case STRING_LITERAL:
+case TOKEN_REF:
+{
+{
+switch (LA(1)) {
+case TOKEN_REF:
+{
+    t=LT(1);
+    match(TOKEN_REF);
+    if (inputState.guessing == 0) {
+      trLeft=t;
+    }
+    break;
+  }
+case STRING_LITERAL:
+{
+  u=LT(1);
+  match(STRING_LITERAL);
+  if (inputState.guessing == 0) {
+    trLeft=u;
+  }
+  break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+match(RANGE);
+{
+switch (LA(1)) {
+case TOKEN_REF:
+{
+v=LT(1);
+match(TOKEN_REF);
+if (inputState.guessing == 0) {
+trRight=v;
+}
+break;
+}
+case STRING_LITERAL:
+{
+w=LT(1);
+match(STRING_LITERAL);
+if (inputState.guessing == 0) {
+trRight=w;
+}
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}
+autoGen=ast_type_spec();
+if (inputState.guessing == 0) {
+behavior.refTokenRange(trLeft,trRight,label,autoGen,lastInRule());
+}
+break;
+}
+default :
+{
+throw new NoViableAltException(LT(1),getFilename());
+}
+}
+}

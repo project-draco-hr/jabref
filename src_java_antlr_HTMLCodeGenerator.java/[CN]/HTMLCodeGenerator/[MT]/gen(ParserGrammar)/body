@@ -1,0 +1,25 @@
+{
+  setGrammar(g);
+  System.out.println("Generating " + grammar.getClassName() + ".html");
+  currentOutput=antlr.Tool.openOutputFile(grammar.getClassName() + ".html");
+  tabs=0;
+  genHeader();
+  println("");
+  if (grammar.comment != null) {
+    _println(grammar.comment);
+  }
+  println("class " + grammar.getClassName() + " extends "+ grammar.getSuperClass());
+  Enumeration rules=grammar.rules.elements();
+  while (rules.hasMoreElements()) {
+    println("");
+    GrammarSymbol sym=(GrammarSymbol)rules.nextElement();
+    if (sym instanceof RuleSymbol) {
+      genRule((RuleSymbol)sym);
+    }
+  }
+  tabs--;
+  println("");
+  genTail();
+  currentOutput.close();
+  currentOutput=null;
+}

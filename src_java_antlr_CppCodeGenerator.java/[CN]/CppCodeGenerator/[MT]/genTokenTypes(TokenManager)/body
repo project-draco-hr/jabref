@@ -1,0 +1,54 @@
+{
+  outputFile=tm.getName() + TokenTypesFileSuffix + ".hpp";
+  outputLine=1;
+  currentOutput=antlr.Tool.openOutputFile(outputFile);
+  tabs=0;
+  println("#ifndef INC_" + tm.getName() + TokenTypesFileSuffix+ "_hpp_");
+  println("#define INC_" + tm.getName() + TokenTypesFileSuffix+ "_hpp_");
+  println("");
+  if (nameSpace != null)   nameSpace.emitDeclarations(currentOutput);
+  genHeader(outputFile);
+  println("struct " + tm.getName() + TokenTypesFileSuffix+ " {");
+  tabs++;
+  println("enum {");
+  tabs++;
+  Vector v=tm.getVocabulary();
+  println("EOF_ = " + Token.EOF_TYPE + ",");
+  for (int i=Token.MIN_USER_TYPE; i < v.size(); i++) {
+    String s=(String)v.elementAt(i);
+    if (s != null) {
+      if (s.startsWith("\"")) {
+        StringLiteralSymbol sl=(StringLiteralSymbol)tm.getTokenSymbol(s);
+        if (sl == null) {
+          antlr.Tool.panic("String literal " + s + " not in symbol table");
+        }
+ else         if (sl.label != null) {
+          println(sl.label + " = " + i+ ",");
+        }
+ else {
+          String mangledName=mangleLiteral(s);
+          if (mangledName != null) {
+            println(mangledName + " = " + i+ ",");
+            sl.label=mangledName;
+          }
+ else {
+            println("// " + s + " = "+ i);
+          }
+        }
+      }
+ else       if (!s.startsWith("<")) {
+        println(s + " = " + i+ ",");
+      }
+    }
+  }
+  println("NULL_TREE_LOOKAHEAD = " + Token.NULL_TREE_LOOKAHEAD);
+  tabs--;
+  println("};");
+  tabs--;
+  println("};");
+  if (nameSpace != null)   nameSpace.emitClosures(currentOutput);
+  println("#endif /*INC_" + tm.getName() + TokenTypesFileSuffix+ "_hpp_*/");
+  currentOutput.close();
+  currentOutput=null;
+  exitIfError();
+}

@@ -1,0 +1,14 @@
+{
+  if (grammar instanceof LexerGrammar) {
+    tool.error("Token range not allowed in lexer",grammar.getFilename(),t1.getLine());
+    return;
+  }
+  super.refTokenRange(t1,t2,label,autoGenType,lastInRule);
+  TokenRangeElement tr=new TokenRangeElement(grammar,t1,t2,autoGenType);
+  if (tr.end < tr.begin) {
+    tool.error("Malformed range.",grammar.getFilename(),t1.getLine());
+    return;
+  }
+  addElementToCurrentAlt(tr);
+  labelElement(tr,label);
+}

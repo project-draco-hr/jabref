@@ -1,0 +1,68 @@
+{
+  setGrammar(g);
+  if (!(grammar instanceof TreeWalkerGrammar)) {
+    tool.panic("Internal error generating tree-walker");
+  }
+  setupOutput(grammar.getClassName());
+  genAST=grammar.buildAST;
+  tabs=0;
+  genHeader();
+  println(behavior.getHeaderAction(""));
+  println("import antlr." + grammar.getSuperClass() + ";");
+  println("import antlr.Token;");
+  println("import antlr.collections.AST;");
+  println("import antlr.RecognitionException;");
+  println("import antlr.ANTLRException;");
+  println("import antlr.NoViableAltException;");
+  println("import antlr.MismatchedTokenException;");
+  println("import antlr.SemanticException;");
+  println("import antlr.collections.impl.BitSet;");
+  println("import antlr.ASTPair;");
+  println("import antlr.collections.impl.ASTArray;");
+  println(grammar.preambleAction.getText());
+  String sup=null;
+  if (grammar.superClass != null) {
+    sup=grammar.superClass;
+  }
+ else {
+    sup="antlr." + grammar.getSuperClass();
+  }
+  println("");
+  if (grammar.comment != null) {
+    _println(grammar.comment);
+  }
+  println("public class " + grammar.getClassName() + " extends "+ sup);
+  println("       implements " + grammar.tokenManager.getName() + TokenTypesFileSuffix);
+  Token tsuffix=(Token)grammar.options.get("classHeaderSuffix");
+  if (tsuffix != null) {
+    String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+    if (suffix != null) {
+      print(", " + suffix);
+    }
+  }
+  println(" {");
+  print(processActionForTreeSpecifiers(grammar.classMemberAction.getText(),0,currentRule,null));
+  println("public " + grammar.getClassName() + "() {");
+  tabs++;
+  println("tokenNames = _tokenNames;");
+  tabs--;
+  println("}");
+  println("");
+  Enumeration ids=grammar.rules.elements();
+  int ruleNum=0;
+  String ruleNameInits="";
+  while (ids.hasMoreElements()) {
+    GrammarSymbol sym=(GrammarSymbol)ids.nextElement();
+    if (sym instanceof RuleSymbol) {
+      RuleSymbol rs=(RuleSymbol)sym;
+      genRule(rs,rs.references.size() == 0,ruleNum++);
+    }
+    exitIfError();
+  }
+  genTokenStrings();
+  genBitsets(bitsetsUsed,grammar.tokenManager.maxTokenType());
+  println("}");
+  println("");
+  currentOutput.close();
+  currentOutput=null;
+}

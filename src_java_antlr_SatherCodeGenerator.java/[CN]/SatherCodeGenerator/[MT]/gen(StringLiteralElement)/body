@@ -1,0 +1,14 @@
+{
+  if (DEBUG_CODE_GENERATOR)   System.out.println("genString(" + atom + ")");
+  if (atom.getLabel() != null && syntacticPredLevel == 0) {
+    println(atom.getLabel() + " := " + lt1Value+ ";");
+  }
+  genElementAST(atom);
+  boolean oldsaveText=saveText;
+  saveText=saveText && atom.getAutoGenType() == GrammarElement.AUTO_GEN_NONE;
+  genMatch(atom);
+  saveText=oldsaveText;
+  if (grammar instanceof TreeWalkerGrammar) {
+    println("sa_t := sa_t.next_sibling;");
+  }
+}

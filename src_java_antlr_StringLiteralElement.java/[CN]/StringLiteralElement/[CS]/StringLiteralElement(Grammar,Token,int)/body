@@ -1,0 +1,38 @@
+{
+  super(g,t,autoGenType);
+  if (!(g instanceof LexerGrammar)) {
+    TokenSymbol ts=grammar.tokenManager.getTokenSymbol(atomText);
+    if (ts == null) {
+      g.tool.error("Undefined literal: " + atomText,grammar.getFilename(),t.getLine());
+    }
+ else {
+      tokenType=ts.getTokenType();
+    }
+  }
+  line=t.getLine();
+  processedAtomText=new String();
+  for (int i=1; i < atomText.length() - 1; i++) {
+    char c=atomText.charAt(i);
+    if (c == '\\') {
+      if (i + 1 < atomText.length() - 1) {
+        i++;
+        c=atomText.charAt(i);
+switch (c) {
+case 'n':
+          c='\n';
+        break;
+case 'r':
+      c='\r';
+    break;
+case 't':
+  c='\t';
+break;
+}
+}
+}
+if (g instanceof LexerGrammar) {
+((LexerGrammar)g).charVocabulary.add(c);
+}
+processedAtomText+=c;
+}
+}

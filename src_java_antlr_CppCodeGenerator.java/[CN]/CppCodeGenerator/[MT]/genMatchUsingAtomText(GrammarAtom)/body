@@ -1,0 +1,22 @@
+{
+  String astArgs="";
+  if (grammar instanceof TreeWalkerGrammar) {
+    if (usingCustomAST)     astArgs="static_cast<" + namespaceAntlr + "RefAST"+ ">(_t),";
+ else     astArgs="_t,";
+  }
+  if (grammar instanceof LexerGrammar && (!saveText || atom.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)) {
+    println("_saveIndex=text.length();");
+  }
+  print(atom.not ? "matchNot(" : "match(");
+  _print(astArgs);
+  if (atom.atomText.equals("EOF")) {
+    _print(namespaceAntlr + "Token::EOF_TYPE");
+  }
+ else {
+    _print(textOrChar(atom.atomText));
+  }
+  _println(");");
+  if (grammar instanceof LexerGrammar && (!saveText || atom.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)) {
+    println("text.erase(_saveIndex);");
+  }
+}

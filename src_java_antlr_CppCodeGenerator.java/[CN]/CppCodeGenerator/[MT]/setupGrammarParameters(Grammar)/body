@@ -1,0 +1,108 @@
+{
+  if (g instanceof ParserGrammar || g instanceof LexerGrammar || g instanceof TreeWalkerGrammar) {
+    if (Tool.nameSpace != null)     nameSpace=Tool.nameSpace;
+    if (Tool.namespaceStd != null)     namespaceStd=fixNameSpaceOption(Tool.namespaceStd);
+    if (Tool.namespaceAntlr != null)     namespaceAntlr=fixNameSpaceOption(Tool.namespaceAntlr);
+    genHashLines=Tool.genHashLines;
+    if (g.hasOption("namespace")) {
+      Token t=g.getOption("namespace");
+      if (t != null) {
+        nameSpace=new NameSpace(t.getText());
+      }
+    }
+    if (g.hasOption("namespaceAntlr")) {
+      Token t=g.getOption("namespaceAntlr");
+      if (t != null) {
+        String ns=Tool.stripFrontBack(t.getText(),"\"","\"");
+        if (ns != null) {
+          if (ns.length() > 2 && !ns.substring(ns.length() - 2,ns.length()).equals("::"))           ns+="::";
+          namespaceAntlr=ns;
+        }
+      }
+    }
+    if (g.hasOption("namespaceStd")) {
+      Token t=g.getOption("namespaceStd");
+      if (t != null) {
+        String ns=Tool.stripFrontBack(t.getText(),"\"","\"");
+        if (ns != null) {
+          if (ns.length() > 2 && !ns.substring(ns.length() - 2,ns.length()).equals("::"))           ns+="::";
+          namespaceStd=ns;
+        }
+      }
+    }
+    if (g.hasOption("genHashLines")) {
+      Token t=g.getOption("genHashLines");
+      if (t != null) {
+        String val=Tool.stripFrontBack(t.getText(),"\"","\"");
+        genHashLines=val.equals("true");
+      }
+    }
+  }
+  if (g instanceof ParserGrammar) {
+    labeledElementASTType=namespaceAntlr + "RefAST";
+    labeledElementASTInit=namespaceAntlr + "nullAST";
+    if (g.hasOption("ASTLabelType")) {
+      Token tsuffix=g.getOption("ASTLabelType");
+      if (tsuffix != null) {
+        String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+        if (suffix != null) {
+          usingCustomAST=true;
+          labeledElementASTType=suffix;
+          labeledElementASTInit="static_cast<" + suffix + ">("+ namespaceAntlr+ "nullAST)";
+        }
+      }
+    }
+    labeledElementType=namespaceAntlr + "RefToken ";
+    labeledElementInit=namespaceAntlr + "nullToken";
+    commonExtraArgs="";
+    commonExtraParams="";
+    commonLocalVars="";
+    lt1Value="LT(1)";
+    exceptionThrown=namespaceAntlr + "RecognitionException";
+    throwNoViable="throw " + namespaceAntlr + "NoViableAltException(LT(1), getFilename());";
+  }
+ else   if (g instanceof LexerGrammar) {
+    labeledElementType="char ";
+    labeledElementInit="'\\0'";
+    commonExtraArgs="";
+    commonExtraParams="bool _createToken";
+    commonLocalVars="int _ttype; " + namespaceAntlr + "RefToken _token; int _begin=text.length();";
+    lt1Value="LA(1)";
+    exceptionThrown=namespaceAntlr + "RecognitionException";
+    throwNoViable="throw " + namespaceAntlr + "NoViableAltForCharException(LA(1), getFilename(), getLine());";
+  }
+ else   if (g instanceof TreeWalkerGrammar) {
+    labeledElementInit=namespaceAntlr + "nullAST";
+    labeledElementASTInit=namespaceAntlr + "nullAST";
+    labeledElementASTType=namespaceAntlr + "RefAST";
+    labeledElementType=namespaceAntlr + "RefAST";
+    commonExtraParams=namespaceAntlr + "RefAST _t";
+    throwNoViable="throw " + namespaceAntlr + "NoViableAltException(_t);";
+    lt1Value="_t";
+    if (g.hasOption("ASTLabelType")) {
+      Token tsuffix=g.getOption("ASTLabelType");
+      if (tsuffix != null) {
+        String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+        if (suffix != null) {
+          usingCustomAST=true;
+          labeledElementASTType=suffix;
+          labeledElementType=suffix;
+          labeledElementInit="static_cast<" + suffix + ">("+ namespaceAntlr+ "nullAST)";
+          labeledElementASTInit=labeledElementInit;
+          commonExtraParams=suffix + " _t";
+          throwNoViable="throw " + namespaceAntlr + "NoViableAltException(static_cast<"+ namespaceAntlr+ "RefAST>(_t));";
+          lt1Value="_t";
+        }
+      }
+    }
+    if (!g.hasOption("ASTLabelType")) {
+      g.setOption("ASTLabelType",new Token(ANTLRTokenTypes.STRING_LITERAL,namespaceAntlr + "RefAST"));
+    }
+    commonExtraArgs="_t";
+    commonLocalVars="";
+    exceptionThrown=namespaceAntlr + "RecognitionException";
+  }
+ else {
+    tool.panic("Unknown grammar type");
+  }
+}

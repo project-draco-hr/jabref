@@ -1,0 +1,30 @@
+{
+  Token qidTok=null;
+  StringBuffer buf=new StringBuffer(30);
+  Token a;
+  a=id();
+  if (inputState.guessing == 0) {
+    buf.append(a.getText());
+  }
+{
+    _loop144:     do {
+      if ((LA(1) == WILDCARD)) {
+        match(WILDCARD);
+        a=id();
+        if (inputState.guessing == 0) {
+          buf.append('.');
+          buf.append(a.getText());
+        }
+      }
+ else {
+        break _loop144;
+      }
+    }
+ while (true);
+  }
+  if (inputState.guessing == 0) {
+    qidTok=new CommonToken(TOKEN_REF,buf.toString());
+    qidTok.setLine(a.getLine());
+  }
+  return qidTok;
+}

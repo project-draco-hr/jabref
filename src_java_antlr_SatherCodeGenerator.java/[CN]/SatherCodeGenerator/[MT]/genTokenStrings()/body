@@ -1,0 +1,25 @@
+{
+  println("");
+  println("const sa_token_names : ARRAY{STR} := |");
+  tabs++;
+  Vector v=grammar.tokenManager.getVocabulary();
+  for (int i=0; i < v.size(); i++) {
+    String s=(String)v.elementAt(i);
+    if (s == null) {
+      s="<" + String.valueOf(i) + ">";
+    }
+    if (!s.startsWith("\"") && !s.startsWith("<")) {
+      TokenSymbol ts=(TokenSymbol)grammar.tokenManager.getTokenSymbol(s);
+      if (ts != null && ts.getParaphrase() != null) {
+        s=antlr.Tool.stripFrontBack(ts.getParaphrase(),"\"","\"");
+      }
+    }
+    print(charFormatter.literalString(s));
+    if (i != v.size() - 1) {
+      _print(",");
+    }
+    _println("");
+  }
+  tabs--;
+  println("|;");
+}

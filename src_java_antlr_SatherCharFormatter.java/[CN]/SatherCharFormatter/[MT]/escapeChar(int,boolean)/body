@@ -1,0 +1,29 @@
+{
+switch (c) {
+case '\n':
+    return "\\n";
+case '\t':
+  return "\\t";
+case '\r':
+return "\\r";
+case '\\':
+return "\\\\";
+case '\'':
+return forCharLiteral ? "\\'" : "'";
+case '"':
+return forCharLiteral ? "\"" : "\\\"";
+default :
+if (c < ' ' || c > 126) {
+if (c > 255) {
+System.out.println("warning: Sather does not support 16-bit characters (..yet).");
+return "\\u" + Integer.toString(c,16);
+}
+ else {
+return "\\" + Integer.toString(c,8);
+}
+}
+ else {
+return String.valueOf((char)c);
+}
+}
+}

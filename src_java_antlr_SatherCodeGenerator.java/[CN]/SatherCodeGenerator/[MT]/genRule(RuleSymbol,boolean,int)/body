@@ -1,0 +1,180 @@
+{
+  tabs=1;
+  if (DEBUG_CODE_GENERATOR)   System.out.println("genRule(" + s.getId() + ")");
+  if (!s.isDefined()) {
+    tool.error("undefined rule: " + s.getId());
+    return;
+  }
+  labeledElementASTType="AST";
+  RuleBlock rblk=s.getBlock();
+  currentRule=rblk;
+  currentASTResult=s.getId();
+  boolean savegenAST=genAST;
+  genAST=genAST && rblk.getAutoGen();
+  saveText=rblk.getAutoGen();
+  if (s.comment != null) {
+    _println(s.comment);
+  }
+  print(s.getId());
+  boolean hasArgs=false;
+  if (commonExtraParams.length() != 0) {
+    hasArgs=true;
+    _print("( " + commonExtraParams);
+    if (rblk.argAction != null)     _print(",");
+  }
+  if (rblk.argAction != null)   if (!hasArgs) {
+    hasArgs=true;
+    _print("( ");
+  }
+  if (rblk.argAction != null) {
+    print(rblk.argAction);
+  }
+  if (hasArgs)   _print(" )");
+  if (rblk.returnAction != null) {
+    _print(" : " + extractSatherTypeOfAction(rblk.returnAction));
+  }
+  _println(" is");
+  tabs++;
+  if (rblk.returnAction != null)   println(rblk.returnAction + ";");
+  println(commonLocalVars);
+  if (grammar.traceRules) {
+    if (grammar instanceof TreeWalkerGrammar) {
+      println("trace_in(\"" + s.getId() + "\",sa_t);");
+    }
+ else {
+      println("trace_in(\"" + s.getId() + "\");");
+    }
+  }
+  if (grammar instanceof LexerGrammar) {
+    if (s.getId().equals("mEOF"))     println("sa_ttype := ANTLR_COMMON_TOKEN::EOF_TYPE;");
+ else     println("sa_ttype := " + s.getId().substring(1) + ";");
+    println("sa_save_index : INT;");
+  }
+  if (grammar.debuggingOutput)   if (grammar instanceof ParserGrammar)   println("fire_enter_rule( " + ruleNum + ", 0 );");
+ else   if (grammar instanceof LexerGrammar)   println("fire_enter_rule( " + ruleNum + ", sa_ttype );");
+  if (grammar.debuggingOutput || grammar.traceRules) {
+    println("protect -- debugging output");
+    tabs++;
+  }
+  if (grammar instanceof TreeWalkerGrammar) {
+    println(s.getId() + "_ast_in : " + labeledElementASTType+ " := sa_t;");
+  }
+  if (grammar.buildAST) {
+    println("return_ast := void;");
+    println("current_ast ::= #ANTLR_AST_PAIR{AST};");
+    println(s.getId() + "_ast : " + labeledElementASTType+ ";");
+  }
+  genBlockPreamble(rblk);
+  println("");
+  ExceptionSpec unlabeledUserSpec=rblk.findExceptionSpec("");
+  if (unlabeledUserSpec != null || rblk.getDefaultErrorHandler()) {
+    println("protect -- for error handling");
+    tabs++;
+  }
+  if (rblk.alternatives.size() == 1) {
+    Alternative alt=rblk.getAlternativeAt(0);
+    String pred=alt.semPred;
+    if (pred != null)     genSemPred(pred,currentRule.line);
+    if (alt.synPred != null) {
+      tool.warning("Syntactic predicate ignored for single alternative",grammar.getFilename(),alt.synPred.getLine());
+    }
+    genAlt(alt,rblk);
+  }
+ else {
+    boolean ok=grammar.theLLkAnalyzer.deterministic(rblk);
+    JavaBlockFinishingInfo howToFinish=genCommonBlock(rblk,false);
+    genBlockFinish(howToFinish,throwNoViable);
+  }
+  if (unlabeledUserSpec != null || rblk.getDefaultErrorHandler()) {
+    tabs--;
+  }
+  if (unlabeledUserSpec != null) {
+    genErrorHandler(unlabeledUserSpec);
+  }
+ else   if (rblk.getDefaultErrorHandler()) {
+    println("when " + exceptionThrown + " then");
+    tabs++;
+    if (grammar.hasSyntacticPredicate) {
+      println("if ( input_state.guessing = 0 ) then");
+      tabs++;
+    }
+    println("report_error( exception );");
+    if (!(grammar instanceof TreeWalkerGrammar)) {
+      Lookahead follow=grammar.theLLkAnalyzer.FOLLOW(1,rblk.endNode);
+      String followSetName="sa" + getBitsetName(markBitsetForGen(follow.fset));
+      println("consume;");
+      println("consume_until( " + followSetName + " );");
+    }
+ else {
+      println("if ( ~void(sa_t) ) then");
+      tabs++;
+      println("sa_t := sa_t.next_sibling;");
+      tabs--;
+      println("end; -- if");
+    }
+    if (grammar.hasSyntacticPredicate) {
+      tabs--;
+      println("else");
+      tabs++;
+      println("raise exception;");
+      tabs--;
+      println("end; -- if");
+    }
+    tabs--;
+    println("end; -- protect");
+  }
+  if (grammar.buildAST) {
+    println("return_ast := " + s.getId() + "_ast;");
+  }
+  if (grammar instanceof TreeWalkerGrammar) {
+    println("sa_ret_tree := sa_t;");
+  }
+  if (rblk.getTestLiterals()) {
+    if (s.access.equals("protected")) {
+      genLiteralsTestForPartialToken();
+    }
+ else {
+      genLiteralsTest();
+    }
+  }
+  if (grammar instanceof LexerGrammar) {
+    println("if ( sa_create_token and void(sa_token) and sa_ttype /= ANTLR_COMMON_TOKEN::SKIP ) then");
+    tabs++;
+    println("sa_token := make_token( sa_ttype );");
+    println("sa_token.text := text.substring( sa_begin, text.length - sa_begin );");
+    tabs--;
+    println("end; -- if");
+    println("sa_return_token := sa_token;");
+  }
+  if (rblk.returnAction != null) {
+    println("return " + extractSatherIdOfAction(rblk.returnAction,rblk.getLine()) + ";");
+  }
+  if (grammar.debuggingOutput || grammar.traceRules) {
+    tabs--;
+    println("when $STR then -- assume this will catch everything");
+    tabs++;
+    String fire=null;
+    String trace=null;
+    if (grammar.debuggingOutput)     if (grammar instanceof ParserGrammar)     fire="fire_exit_rule(" + ruleNum + ",0);";
+ else     if (grammar instanceof LexerGrammar)     fire="fire_exit_rule(" + ruleNum + ", sa_ttype);";
+    if (grammar.traceRules) {
+      if (grammar instanceof TreeWalkerGrammar) {
+        trace="trace_out(\"" + s.getId() + "\", sa_t);";
+      }
+ else {
+        trace="trace_out(\"" + s.getId() + "\");";
+      }
+    }
+    if (fire != null)     println(fire);
+    if (trace != null)     println(trace);
+    println("raise exception;");
+    tabs--;
+    println("end; -- protect");
+    if (fire != null)     println(fire);
+    if (trace != null)     println(trace);
+  }
+  tabs--;
+  println("end; -- rule");
+  println("");
+  genAST=savegenAST;
+}

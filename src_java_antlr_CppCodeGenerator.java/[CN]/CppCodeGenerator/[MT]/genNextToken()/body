@@ -1,0 +1,139 @@
+{
+  boolean hasPublicRules=false;
+  for (int i=0; i < grammar.rules.size(); i++) {
+    RuleSymbol rs=(RuleSymbol)grammar.rules.elementAt(i);
+    if (rs.isDefined() && rs.access.equals("public")) {
+      hasPublicRules=true;
+      break;
+    }
+  }
+  if (!hasPublicRules) {
+    println("");
+    println(namespaceAntlr + "RefToken " + grammar.getClassName()+ "::nextToken() { return "+ namespaceAntlr+ "RefToken(new "+ namespaceAntlr+ "CommonToken("+ namespaceAntlr+ "Token::EOF_TYPE, \"\")); }");
+    println("");
+    return;
+  }
+  RuleBlock nextTokenBlk=MakeGrammar.createNextTokenRule(grammar,grammar.rules,"nextToken");
+  RuleSymbol nextTokenRs=new RuleSymbol("mnextToken");
+  nextTokenRs.setDefined();
+  nextTokenRs.setBlock(nextTokenBlk);
+  nextTokenRs.access="private";
+  grammar.define(nextTokenRs);
+  boolean ok=grammar.theLLkAnalyzer.deterministic(nextTokenBlk);
+  String filterRule=null;
+  if (((LexerGrammar)grammar).filterMode) {
+    filterRule=((LexerGrammar)grammar).filterRule;
+  }
+  println("");
+  println(namespaceAntlr + "RefToken " + grammar.getClassName()+ "::nextToken()");
+  println("{");
+  tabs++;
+  println(namespaceAntlr + "RefToken theRetToken;");
+  println("for (;;) {");
+  tabs++;
+  println(namespaceAntlr + "RefToken theRetToken;");
+  println("int _ttype = " + namespaceAntlr + "Token::INVALID_TYPE;");
+  if (((LexerGrammar)grammar).filterMode) {
+    println("setCommitToPath(false);");
+    if (filterRule != null) {
+      if (!grammar.isDefined(CodeGenerator.lexerRuleName(filterRule))) {
+        grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+      }
+ else {
+        RuleSymbol rs=(RuleSymbol)grammar.getSymbol(CodeGenerator.lexerRuleName(filterRule));
+        if (!rs.isDefined()) {
+          grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+        }
+ else         if (rs.access.equals("public")) {
+          grammar.tool.error("Filter rule " + filterRule + " must be protected");
+        }
+      }
+      println("int _m;");
+      println("_m = mark();");
+    }
+  }
+  println("resetText();");
+  println("try {   // for char stream error handling");
+  tabs++;
+  println("try {   // for lexical error handling");
+  tabs++;
+  for (int i=0; i < nextTokenBlk.getAlternatives().size(); i++) {
+    Alternative a=nextTokenBlk.getAlternativeAt(i);
+    if (a.cache[1].containsEpsilon()) {
+      tool.warning("found optional path in nextToken()");
+    }
+  }
+  String newline=System.getProperty("line.separator");
+  CppBlockFinishingInfo howToFinish=genCommonBlock(nextTokenBlk,false);
+  String errFinish="if (LA(1)==EOF_CHAR) {uponEOF(); _returnToken = makeToken(" + namespaceAntlr + "Token::EOF_TYPE);}";
+  errFinish+=newline + "\t\t\t\t";
+  if (((LexerGrammar)grammar).filterMode) {
+    if (filterRule == null) {
+      errFinish+="else {consume(); goto tryAgain;}";
+    }
+ else {
+      errFinish+="else {" + newline + "\t\t\t\t\tcommit();"+ newline+ "\t\t\t\t\ttry {m"+ filterRule+ "(false);}"+ newline+ "\t\t\t\t\tcatch("+ namespaceAntlr+ "RecognitionException& e) {"+ newline+ "\t\t\t\t\t	// catastrophic failure"+ newline+ "\t\t\t\t\t	reportError(e);"+ newline+ "\t\t\t\t\t	consume();"+ newline+ "\t\t\t\t\t}"+ newline+ "\t\t\t\t\tgoto tryAgain;"+ newline+ "\t\t\t\t}";
+    }
+  }
+ else {
+    errFinish+="else {" + throwNoViable + "}";
+  }
+  genBlockFinish(howToFinish,errFinish);
+  if (((LexerGrammar)grammar).filterMode && filterRule != null) {
+    println("commit();");
+  }
+  println("if ( !_returnToken ) goto tryAgain; // found SKIP token");
+  println("_ttype = _returnToken->getType();");
+  if (((LexerGrammar)grammar).getTestLiterals()) {
+    genLiteralsTest();
+  }
+  println("_returnToken->setType(_ttype);");
+  println("return _returnToken;");
+  tabs--;
+  println("}");
+  println("catch (" + namespaceAntlr + "RecognitionException& e) {");
+  tabs++;
+  if (((LexerGrammar)grammar).filterMode) {
+    if (filterRule == null) {
+      println("if ( !getCommitToPath() ) {consume(); goto tryAgain;}");
+    }
+ else {
+      println("if ( !getCommitToPath() ) {");
+      tabs++;
+      println("rewind(_m);");
+      println("resetText();");
+      println("try {m" + filterRule + "(false);}");
+      println("catch(" + namespaceAntlr + "RecognitionException& ee) {");
+      println("	// horrendous failure: error in filter rule");
+      println("	reportError(ee);");
+      println("	consume();");
+      println("}");
+      println("goto tryAgain;");
+      tabs--;
+      println("}");
+    }
+  }
+  if (nextTokenBlk.getDefaultErrorHandler()) {
+    println("reportError(e);");
+    println("consume();");
+  }
+ else {
+    println("throw " + namespaceAntlr + "TokenStreamRecognitionException(e);");
+  }
+  tabs--;
+  println("}");
+  tabs--;
+  println("}");
+  println("catch (" + namespaceAntlr + "CharStreamIOException& csie) {");
+  println("   throw " + namespaceAntlr + "TokenStreamIOException(csie.io);");
+  println("}");
+  println("catch (" + namespaceAntlr + "CharStreamException& cse) {");
+  println("   throw " + namespaceAntlr + "TokenStreamException(cse.getMessage());");
+  println("}");
+  _println("tryAgain:;");
+  tabs--;
+  println("}");
+  tabs--;
+  println("}");
+  println("");
+}
