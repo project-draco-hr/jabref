@@ -21,9 +21,12 @@
       dtde.rejectDrop();
       return;
     }
+    Enumeration expandedPaths=groupSelector.getExpandedPaths();
+    UndoableMoveGroup undo=new UndoableMoveGroup(groupSelector,groupSelector.getGroupTreeRoot(),source,target,target.getChildCount());
     target.add(source);
     dtde.getDropTargetContext().dropComplete(true);
-    groupSelector.revalidateGroups();
+    groupSelector.revalidateGroups(new TreePath[]{new TreePath(source.getPath())},refreshPaths(expandedPaths));
+    groupSelector.concludeMoveGroup(undo,source);
   }
  catch (  IOException ioe) {
   }
