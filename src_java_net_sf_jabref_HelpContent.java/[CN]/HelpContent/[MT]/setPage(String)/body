@@ -1,0 +1,18 @@
+{
+  String middle=prefs.get("language") + "/";
+  if (middle.equals("en/"))   middle="";
+  URL old=getPage(), translatedFile=JabRef.class.getResource(GUIGlobals.helpPre + middle + filename);
+  try {
+    super.setPage(translatedFile);
+  }
+ catch (  IOException ex) {
+    System.err.println("Could not load '" + prefs.get("language") + "' translated version of "+ filename+ ".");
+    URL file=HelpContent.class.getResource(GUIGlobals.helpPre + filename);
+    setPageOnly(file);
+    forw.removeAllElements();
+    if (old != null)     history.push(old);
+    return;
+  }
+  forw.removeAllElements();
+  if (old != null)   history.push(old);
+}
