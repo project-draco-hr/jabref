@@ -7,6 +7,10 @@
   this.manager=manager;
   this.frame=frame;
   this.panel=panel;
+  hideNonHits=new JRadioButtonMenuItem(Globals.lang("Hide non-hits"),!prefs.getBoolean("grayOutNonHits"));
+  grayOut=new JRadioButtonMenuItem(Globals.lang("Gray out non-hits"),prefs.getBoolean("grayOutNonHits"));
+  nonHits.add(hideNonHits);
+  nonHits.add(grayOut);
   floatCb.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
       _prefs.putBoolean("groupFloatSelections",floatCb.isSelected());
@@ -28,6 +32,12 @@
   select.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
       _prefs.putBoolean("groupSelectMatches",select.isSelected());
+    }
+  }
+);
+  grayOut.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      _prefs.putBoolean("grayOutNonHits",grayOut.isSelected());
     }
   }
 );
@@ -64,6 +74,8 @@
   settings.addSeparator();
   settings.add(select);
   settings.addSeparator();
+  settings.add(grayOut);
+  settings.add(hideNonHits);
   openset.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       if (settings.isVisible()) {
