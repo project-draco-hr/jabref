@@ -14,12 +14,15 @@
       return field;
     }
   }
- else   if (type == LayoutHelper.IS_FIELD_START) {
+ else   if ((type == LayoutHelper.IS_FIELD_START) || (type == LayoutHelper.IS_GROUP_START)) {
     String field=(String)bibtex.getField(text);
-    if (field == null) {
+    if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && (field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())))) {
       return null;
     }
  else {
+      if (type == LayoutHelper.IS_GROUP_START) {
+        LayoutHelper.setCurrentGroup(field);
+      }
       StringBuffer sb=new StringBuffer(100);
       String fieldText;
       boolean previousSkipped=false;
@@ -53,7 +56,7 @@
       return sb.toString();
     }
   }
- else   if (type == LayoutHelper.IS_FIELD_END) {
+ else   if ((type == LayoutHelper.IS_FIELD_END) || (type == LayoutHelper.IS_GROUP_END)) {
   }
  else   if (type == LayoutHelper.IS_OPTION_FIELD) {
     String fieldEntry;
