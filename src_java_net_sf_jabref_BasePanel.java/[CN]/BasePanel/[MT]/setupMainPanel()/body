@@ -11,7 +11,6 @@
  else     splitPane.setBottomComponent(null);
   }
  else   showEntry(showing);
-  setRightComponent(splitPane);
   sidePaneManager=new SidePaneManager(frame,this,prefs,metaData);
   medlineFetcher=new MedlineFetcher(this,sidePaneManager);
   citeSeerFetcher=new CiteSeerFetcher(this,sidePaneManager);
@@ -20,7 +19,14 @@
   sidePaneManager.add("search",searchManager);
   sidePaneManager.register("CiteSeerProgress",citeSeerFetcher);
   sidePaneManager.populatePanel();
-  setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);
-  setResizeWeight(0);
+  setLayout(gbl);
+  con.fill=GridBagConstraints.BOTH;
+  con.weighty=1;
+  con.weightx=0;
+  gbl.setConstraints(sidePaneManager.getPanel(),con);
+  add(sidePaneManager.getPanel());
+  con.weightx=1;
+  gbl.setConstraints(splitPane,con);
+  add(splitPane);
   revalidate();
 }
