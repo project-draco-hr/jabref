@@ -1,6 +1,6 @@
 {
   SAXParserFactory factory=SAXParserFactory.newInstance();
-  BooleanAssign newValue=new BooleanAssign();
+  BooleanAssign newValue=new BooleanAssign(false);
   String identifier=generateCanonicalIdentifier(be);
   try {
     if (identifier != null) {
@@ -11,7 +11,7 @@
       citeseerURLString.append("&" + "identifier=" + identifier);
       GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
       int response=citeseerHttpClient.executeMethod(citeseerMethod);
-      saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(citeseerNC,be,panel,newValue));
+      saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(citeseerNC,be,panel,newValue,overwriteAll,overwriteNone));
       citeseerMethod.releaseConnection();
       if (newValue.getValue() == false) {
         int row=panel.getTableModel().getNumberFromName(be.getId());
