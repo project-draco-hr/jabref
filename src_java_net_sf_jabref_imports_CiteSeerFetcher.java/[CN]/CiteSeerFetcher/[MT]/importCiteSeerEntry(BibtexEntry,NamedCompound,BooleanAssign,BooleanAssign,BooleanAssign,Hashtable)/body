@@ -11,7 +11,9 @@
       citeseerURLString.append("&" + "identifier=" + identifier);
       GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
       int response=citeseerHttpClient.executeMethod(citeseerMethod);
-      saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(citeseerNC,be,panel,newValue,overwriteAll,overwriteNone));
+      InputStream inputStream=citeseerMethod.getResponseBodyAsStream();
+      DefaultHandler handlerBase=new CiteSeerUndoHandler(citeseerNC,be,panel,newValue,overwriteAll,overwriteNone);
+      saxParser.parse(inputStream,handlerBase);
       citeseerMethod.releaseConnection();
     }
  else {

@@ -1,4 +1,5 @@
 {
+  int errorCode=0;
   Iterator targetIterator=targetDatabase.getKeySet().iterator();
   boolean abortOperation=false;
   String currentKey;
@@ -24,6 +25,7 @@
     SwingUtilities.invokeLater(updateValue);
   }
   if (rejectedEntries.size() > 0) {
+    errorCode=-1;
     ShowBadIdentifiersDialog badIdentifiersDialog=new ShowBadIdentifiersDialog(rejectedEntries);
     SwingUtilities.invokeLater(badIdentifiersDialog);
   }
@@ -37,4 +39,6 @@
   newEntryEnum=citationHashTable.elements();
   progressStatus=new UpdateProgressStatus(Globals.lang("Done"));
   SwingUtilities.invokeLater(progressStatus);
+  if (abortOperation)   errorCode=-2;
+  return (errorCode);
 }
