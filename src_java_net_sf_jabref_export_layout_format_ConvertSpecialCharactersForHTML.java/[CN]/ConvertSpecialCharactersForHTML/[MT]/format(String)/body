@@ -1,8 +1,9 @@
 {
-  if (!pattern.matcher(fieldText).matches())   return fieldText;
+  fieldText=firstFormat(fieldText);
+  if (!pattern.matcher(fieldText).matches())   return restFormat(fieldText);
   for (Iterator i=Globals.HTML_CHARS.keySet().iterator(); i.hasNext(); ) {
     String s=(String)i.next();
     fieldText=fieldText.replaceAll(s,(String)Globals.HTML_CHARS.get(s));
   }
-  return fieldText.replaceAll("\\}","").replaceAll("\\{","");
+  return restFormat(fieldText);
 }
