@@ -1,0 +1,28 @@
+{
+  validChecker=new IntegrityCheck();
+  warningData=new HintListModel();
+  warnings=new JList(warningData);
+  warnings.setCellRenderer(new IntegrityListRenderer());
+  warnings.addListSelectionListener(this);
+  JScrollPane paneScrollPane=new JScrollPane(warnings);
+  paneScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+  paneScrollPane.setPreferredSize(new Dimension(540,255));
+  paneScrollPane.setMinimumSize(new Dimension(10,10));
+  JPanel fixPanel=new JPanel();
+  BoxLayout box=new BoxLayout(fixPanel,BoxLayout.LINE_AXIS);
+  JLabel label1=new JLabel(Globals.lang("Field_content"));
+  content=new JTextField(40);
+  content.addKeyListener(this);
+  applyButton=new JButton(Globals.lang("Apply"));
+  applyButton.addActionListener(this);
+  applyButton.setEnabled(false);
+  fixButton=new JButton(Globals.lang("Suggest"));
+  fixButton.setEnabled(false);
+  fixPanel.add(label1);
+  fixPanel.add(content);
+  fixPanel.add(applyButton);
+  fixPanel.add(fixButton);
+  this.setLayout(new BorderLayout());
+  this.add(paneScrollPane,BorderLayout.CENTER);
+  this.add(fixPanel,BorderLayout.SOUTH);
+}

@@ -1,0 +1,32 @@
+{
+  int len=title.length();
+  int mode=0;
+  int upLowCounter=0;
+  for (int t=0; t < len; t++) {
+    char ch=title.charAt(t);
+switch (ch) {
+case '}':
+      if (mode == 0) {
+        messages.add(new IntegrityMessage(IntegrityMessage.UNEXPECTED_CLOSING_BRACE_FAILURE,entry,fieldName,null));
+      }
+ else {
+        mode--;
+      }
+    break;
+case '{':
+  mode++;
+break;
+case ' ':
+break;
+default :
+if (mode == 0) {
+if (Character.isUpperCase(ch) && (t > 1)) {
+upLowCounter++;
+}
+}
+}
+}
+if (upLowCounter > 0) {
+messages.add(new IntegrityMessage(IntegrityMessage.UPPER_AND_LOWER_HINT,entry,fieldName,null));
+}
+}
