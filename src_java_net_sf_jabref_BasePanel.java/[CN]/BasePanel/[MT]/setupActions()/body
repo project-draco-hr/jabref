@@ -229,7 +229,7 @@ catch (            IllegalArgumentException ex) {
       BibtexEntry bes=null;
       output("Pushing " + numSelected + (numSelected > 1 ? " entries" : "entry")+ " to LyX");
       Object citekey;
-      File lyxpipe=new File(System.getProperty("user.home") + File.separator + ".lyx/lyxpipe"+ ".in");
+      File lyxpipe=new File(prefs.get("lyxpipe") + ".in");
       if (!lyxpipe.exists() || !lyxpipe.canWrite()) {
         output("ERROR: verify that LyX is running and that the lyxpipe is valid. [" + prefs.get("lyxpipe") + "]");
         return;
@@ -242,6 +242,7 @@ catch (            IllegalArgumentException ex) {
           for (int i=1; i < numSelected; i++) {
             bes=database.getEntryById(tableModel.getNameFromNumber(rows[i]));
             citekey=bes.getField(GUIGlobals.KEY_FIELD);
+            if (citekey == null || citekey.equals(""))             continue;
             citeStr+="," + citekey;
             message+=", " + rows[i];
           }
