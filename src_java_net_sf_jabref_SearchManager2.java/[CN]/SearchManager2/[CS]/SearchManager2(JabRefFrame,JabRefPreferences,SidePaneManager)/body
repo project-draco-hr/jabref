@@ -37,10 +37,14 @@
   searchField.addActionListener(this);
   search.addActionListener(this);
   searchField.addFocusListener(new FocusAdapter(){
+    public void focusGained(    FocusEvent e){
+      if (increment.isSelected())       searchField.setText("");
+    }
     public void focusLost(    FocusEvent e){
       incSearch=false;
       incSearchPos=-1;
-      if (increment.isSelected())       searchField.setText("");
+      if (increment.isSelected()) {
+      }
     }
   }
 );
@@ -92,14 +96,18 @@
   add(highlight);
   gbl.setConstraints(reorder,con);
   add(reorder);
-  con.gridwidth=2;
+  JPanel pan=new JPanel();
+  GridBagLayout gb=new GridBagLayout();
+  gbl.setConstraints(pan,con);
+  pan.setLayout(gb);
   con.weightx=1;
-  gbl.setConstraints(openset,con);
-  add(openset);
-  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.gridwidth=1;
+  gb.setConstraints(openset,con);
+  pan.add(openset);
   con.weightx=0;
-  gbl.setConstraints(help,con);
-  add(help);
+  gb.setConstraints(help,con);
+  pan.add(help);
+  add(pan);
   searchField.getInputMap().put(prefs.getKey("Repeat incremental search"),"repeat");
   searchField.getActionMap().put("repeat",new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
