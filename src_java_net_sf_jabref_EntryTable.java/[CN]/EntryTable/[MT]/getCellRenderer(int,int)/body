@@ -1,25 +1,28 @@
 {
   int score=-3;
-  if (!showingSearchResults || tableModel.nonZeroField(row,Globals.SEARCH))   score++;
-  if (!showingGroup || tableModel.nonZeroField(row,Globals.GROUPSEARCH))   score+=2;
-  if (score < -1)   return veryGrayedOutRenderer;
-  if (score == -1)   return grayedOutRenderer;
-  if (!prefs.getBoolean("tableColorCodesOn"))   return defRenderer;
-  if (column == 0) {
-    if (tableModel.isComplete(row))     return defRenderer;
- else {
-      if (tableModel.hasCrossRef(row))       return maybeIncRenderer;
- else       return incRenderer;
-    }
-  }
+  Renderer renderer;
   int status;
   try {
     status=tableModel.getCellStatus(row,column);
   }
  catch (  ArrayIndexOutOfBoundsException ex) {
+    Globals.logger("Error happened in getCellRenderer method of EntryTable.");
     return defRenderer;
   }
-  if (status == EntryTableModel.REQUIRED)   return reqRenderer;
- else   if (status == EntryTableModel.OPTIONAL)   return optRenderer;
- else   return defRenderer;
+  if (!showingSearchResults || tableModel.nonZeroField(row,Globals.SEARCH))   score++;
+  if (!showingGroup || tableModel.nonZeroField(row,Globals.GROUPSEARCH))   score+=2;
+  if (score < -1)   renderer=veryGrayedOutRenderer;
+ else   if (score == -1)   renderer=grayedOutRenderer;
+ else   if (!prefs.getBoolean("tableColorCodesOn"))   renderer=defRenderer;
+ else   if (column == 0) {
+    if (tableModel.isComplete(row))     renderer=defRenderer;
+ else {
+      if (tableModel.hasCrossRef(row))       renderer=maybeIncRenderer;
+ else       renderer=incRenderer;
+    }
+  }
+ else   if (status == EntryTableModel.REQUIRED)   renderer=reqRenderer;
+ else   if (status == EntryTableModel.OPTIONAL)   renderer=optRenderer;
+ else   renderer=defRenderer;
+  return renderer;
 }
