@@ -1,39 +1,6 @@
 {
-  String entryType=entry.getType().getName().toLowerCase();
-  if (layouts.get(entryType) != null) {
-    layout=(Layout)layouts.get(entryType);
-    return;
-  }
   LayoutHelper layoutHelper=null;
-  URL reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + "."+ entryType+ ".layout");
-  try {
-    if (reso == null)     reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + ".layout");
-    layoutHelper=new LayoutHelper(new InputStreamReader(reso.openStream()));
-  }
- catch (  IOException ex) {
-  }
+  StringReader sr=new StringReader(layoutFile.replaceAll("__NEWLINE__","\n"));
+  layoutHelper=new LayoutHelper(sr);
   layout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
-  layouts.put(entryType,layout);
-  reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + ".begin.layout");
-  StringWriter stw=new StringWriter();
-  InputStreamReader reader;
-  int c;
-  if (reso != null) {
-    reader=new InputStreamReader(reso.openStream());
-    while ((c=reader.read()) != -1) {
-      stw.write((char)c);
-    }
-    reader.close();
-  }
-  prefix=stw.toString();
-  reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + ".end.layout");
-  stw=new StringWriter();
-  if (reso != null) {
-    reader=new InputStreamReader(reso.openStream());
-    while ((c=reader.read()) != -1) {
-      stw.write((char)c);
-    }
-    reader.close();
-  }
-  postfix=stw.toString();
 }

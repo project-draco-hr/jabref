@@ -20,6 +20,10 @@
     public void action() throws Throwable {
       if (file == null)       runCommand("saveAs");
  else {
+        if (updatedExternally) {
+          int choice=JOptionPane.showConfirmDialog(frame,Globals.lang("File has been updated externally. " + "Are you sure you want to save?"),Globals.lang("File updated externally"),JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+          if (choice == JOptionPane.NO_OPTION)           return;
+        }
         saving=true;
         saveDatabase(file,false);
         try {
@@ -31,6 +35,7 @@
         undoManager.markUnchanged();
         nonUndoableChange=false;
         baseChanged=false;
+        updatedExternally=false;
         frame.setTabTitle(ths,file.getName());
         frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
       }
@@ -144,7 +149,6 @@
           frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
           ce.end();
           undoManager.addEdit(ce);
-          entryTable.clearSelection();
           refreshTable();
           markBaseChanged();
         }
@@ -710,7 +714,14 @@ catch (            Throwable ex) {
 );
   actions.put("togglePreview",new BaseAction(){
     public void action(){
-      previewEnabled=!previewEnabled;
+      if (!previewEnabled) {
+        previewEnabled=true;
+        activePreview=0;
+      }
+ else {
+        if (activePreview < previewPanel.length - 1)         activePreview++;
+ else         previewEnabled=false;
+      }
       if (!previewEnabled)       hidePreview();
  else {
         updateViewToSelected();

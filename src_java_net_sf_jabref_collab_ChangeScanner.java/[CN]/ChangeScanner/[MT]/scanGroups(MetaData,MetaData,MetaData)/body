@@ -1,0 +1,45 @@
+{
+  Vector vInMem=inMem.getData("groups");
+  Vector vOnTmp=onTmp.getData("groups");
+  Vector vOnDisk=onDisk.getData("groups");
+  if (((vOnTmp == null) || (vOnTmp.size() == 0)) && ((vOnDisk == null) || (vOnDisk.size() == 0))) {
+    return;
+  }
+  if (vOnDisk == null)   vOnDisk=new Vector(0);
+ else   vOnDisk=(Vector)vOnDisk.clone();
+  if (vOnTmp == null)   vOnTmp=new Vector(0);
+ else   vOnTmp=(Vector)vOnTmp.clone();
+  if (vInMem == null)   vInMem=new Vector(0);
+ else   vInMem=(Vector)vInMem.clone();
+  while (vOnTmp.size() >= GroupSelector.OFFSET + GroupSelector.DIM) {
+    String field=(String)vOnTmp.elementAt(GroupSelector.OFFSET);
+    vOnTmp.removeElementAt(GroupSelector.OFFSET);
+    String name=(String)vOnTmp.elementAt(GroupSelector.OFFSET);
+    vOnTmp.removeElementAt(GroupSelector.OFFSET);
+    String regexp=(String)vOnTmp.elementAt(GroupSelector.OFFSET);
+    vOnTmp.removeElementAt(GroupSelector.OFFSET);
+    int pos=Util.findGroup(name,vOnDisk);
+    if (pos == -1) {
+      changes.add(new GroupAddOrRemove(field,name,regexp,false));
+    }
+ else {
+      String diskField=(String)vOnDisk.elementAt(pos);
+      String diskRegexp=(String)vOnDisk.elementAt(pos + 2);
+      if (!diskField.equals(field) || !diskRegexp.equals(regexp)) {
+        changes.add(new GroupChange(inMem,name,field,diskField,regexp,diskRegexp));
+      }
+      vOnDisk.remove(pos);
+      vOnDisk.remove(pos);
+      vOnDisk.remove(pos);
+    }
+  }
+  while (vOnDisk.size() >= GroupSelector.OFFSET + GroupSelector.DIM) {
+    String field=(String)vOnDisk.elementAt(GroupSelector.OFFSET);
+    vOnDisk.removeElementAt(GroupSelector.OFFSET);
+    String name=(String)vOnDisk.elementAt(GroupSelector.OFFSET);
+    vOnDisk.removeElementAt(GroupSelector.OFFSET);
+    String regexp=(String)vOnDisk.elementAt(GroupSelector.OFFSET);
+    vOnDisk.removeElementAt(GroupSelector.OFFSET);
+    changes.add(new GroupAddOrRemove(field,name,regexp,true));
+  }
+}

@@ -1,0 +1,13 @@
+{
+  if (panel.database().hasStringLabel(string.getName())) {
+    Globals.logger("Cannot add string '" + string.getName() + "' because the name "+ "is already in use.");
+  }
+  try {
+    int goodPos=Math.min(pos,panel.database().getStringCount());
+    panel.database().addString(string,goodPos);
+    undoEdit.addEdit(new UndoableInsertString(panel,panel.database(),string,goodPos));
+  }
+ catch (  KeyCollisionException ex) {
+    Globals.logger("Error: could not add string '" + string.getName() + "': "+ ex.getMessage());
+  }
+}

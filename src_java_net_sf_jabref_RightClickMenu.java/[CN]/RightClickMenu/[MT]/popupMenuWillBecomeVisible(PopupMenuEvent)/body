@@ -1,17 +1,39 @@
 {
+  BibtexEntry[] bes=panel.entryTable.getSelectedEntries();
   Vector groups=metaData.getData("groups");
-  if (groups == null) {
+  if ((groups == null) || (groups.size() == 0)) {
     groupMenu.setEnabled(false);
     groupRemoveMenu.setEnabled(false);
     return;
   }
-  groupMenu.setEnabled(true);
-  groupRemoveMenu.setEnabled(true);
+ else {
+    groupMenu.setEnabled(true);
+    groupRemoveMenu.setEnabled(true);
+  }
   groupMenu.removeAll();
   groupRemoveMenu.removeAll();
+  setGroups.removeAll();
+  if (bes == null)   return;
+ else   if (bes.length < 2) {
+    forOneEntryOnly=true;
+    add(setGroups);
+  }
+ else {
+    forOneEntryOnly=false;
+    add(groupMenu);
+    add(groupRemoveMenu);
+  }
   for (int i=GroupSelector.OFFSET; i < groups.size() - 2; i+=GroupSelector.DIM) {
     String name=(String)groups.elementAt(i + 1), regexp=(String)groups.elementAt(i + 2), field=(String)groups.elementAt(i);
-    groupMenu.add(new AddToGroupAction(name,regexp,field));
-    groupRemoveMenu.add(new RemoveFromGroupAction(name,regexp,field));
+    if (forOneEntryOnly) {
+      QuickSearchRule qsr=new QuickSearchRule(field,regexp);
+      int score=qsr.applyRule(null,bes[0]);
+      ToggleGroupAction item=new ToggleGroupAction(name,regexp,field,(score > 0));
+      setGroups.add(item);
+    }
+ else {
+      groupMenu.add(new AddToGroupAction(name,regexp,field));
+      groupRemoveMenu.add(new RemoveFromGroupAction(name,regexp,field));
+    }
   }
 }

@@ -3,8 +3,12 @@
   splitPane.setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);
   setupTable();
   if (showing == null) {
-    splitPane.setBottomComponent(previewPanel);
-    if (previewPanel != null)     splitPane.setDividerLocation(splitPane.getHeight() - GUIGlobals.PREVIEW_HEIGHT);
+    splitPane.setBottomComponent(previewPanel[activePreview].getPane());
+    if ((previewPanel[activePreview] != null) && previewPanel[activePreview].hasEntry()) {
+      final int prevSize=Math.min(splitPane.getHeight() / 2,previewPanel[activePreview].getPreferredSize().height + GUIGlobals.PREVIEW_PANEL_PADDING);
+      splitPane.setDividerLocation(splitPane.getHeight() - prevSize);
+    }
+ else     splitPane.setBottomComponent(null);
   }
  else   showEntry(showing);
   setRightComponent(splitPane);

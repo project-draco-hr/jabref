@@ -11,7 +11,9 @@
     String line;
     StringBuffer sb=new StringBuffer();
     while ((line=in.readLine()) != null) {
-      if (line.length() > 0 && line.charAt(0) != ' ')       sb.append("__NEWFIELD__");
+      if (line.length() > 0 && line.charAt(0) != ' ') {
+        sb.append("__NEWFIELD__");
+      }
       sb.append(line);
     }
     in.close();
@@ -32,13 +34,13 @@
             author=fields[j].substring(7,fields[j].length()).replaceAll("\\."," and").replaceAll(" and$","");
           }
           if (author.split(" and ").length > 1) {
-            if (isComma == false)             h.put("author",fixAuthor(author));
- else             h.put("author",fixAuthor_nocomma(author));
+            h.put("author",fixAuthor_lastnameFirst(author));
           }
  else           h.put("author",author);
         }
  else         if (fields[j].indexOf("Title") == 0)         h.put("title",fields[j].substring(6,fields[j].length()).replaceAll("\\[.+\\]",""));
  else         if (fields[j].indexOf("Source") == 0) {
+          System.out.println(fields[j]);
           String s=fields[j];
           Matcher matcher=ovid_src_pat.matcher(s);
           boolean matchfound=matcher.find();

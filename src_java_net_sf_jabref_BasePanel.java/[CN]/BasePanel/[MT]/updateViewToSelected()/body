@@ -11,11 +11,11 @@
     splitPane.setBottomComponent(null);
     return;
   }
-  if (previewPanel == null) {
-    previewPanel=new PreviewPanel(be);
+  if (previewPanel[activePreview] == null) {
+    previewPanel[activePreview]=new PreviewPanel(be,prefs.get("preview" + activePreview));
   }
- else   previewPanel.setEntry(be);
-  splitPane.setBottomComponent(previewPanel);
-  splitPane.setDividerLocation(splitPane.getHeight() - GUIGlobals.PREVIEW_HEIGHT);
-  previewPanel.repaint();
+ else   previewPanel[activePreview].setEntry(be);
+  splitPane.setBottomComponent(previewPanel[activePreview].getPane());
+  int prevSize=Math.min(splitPane.getHeight() / 2,previewPanel[activePreview].getPane().getPreferredSize().height + GUIGlobals.PREVIEW_PANEL_PADDING);
+  splitPane.setDividerLocation(splitPane.getHeight() - prevSize);
 }

@@ -35,6 +35,16 @@
   }
 );
   addMouseListener(new TableClickListener());
+  setSelectionModel(new javax.swing.DefaultListSelectionModel(){
+    public void setSelectionInterval(    int index0,    int index1){
+      if (panel.entryEditorAllowsChange() == false) {
+        panel.moveFocusToEntryEditor();
+        return;
+      }
+      super.setSelectionInterval(index0,index1);
+    }
+  }
+);
   addSelectionListener();
   setWidths();
   sp.getViewport().setBackground(GUIGlobals.tableBackground);

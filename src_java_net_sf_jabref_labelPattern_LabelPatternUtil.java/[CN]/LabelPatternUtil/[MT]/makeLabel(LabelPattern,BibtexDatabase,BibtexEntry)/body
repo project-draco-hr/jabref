@@ -26,23 +26,59 @@
         }
         StringBuffer _sbvalue=new StringBuffer();
         try {
-          if (val.equals("auth")) {
-            _sbvalue.append(firstAuthor(_entry.getField("author").toString()));
+          if (val.startsWith("auth")) {
+            if (val.equals("auth")) {
+              _sbvalue.append(firstAuthor(_entry.getField("author").toString()));
+            }
+ else             if (val.equals("authors")) {
+              _sbvalue.append(allAuthors(_entry.getField("author").toString()));
+            }
+ else             if (val.equals("authorIni")) {
+              _sbvalue.append(oneAuthorPlusIni(_entry.getField("author").toString()));
+            }
+ else             if (val.equals("auth.auth.ea")) {
+              _sbvalue.append(authAuthEa(_entry.getField("author").toString()));
+            }
+ else             if (val.matches("auth[\\d]+_[\\d]+")) {
+              String[] nums=val.substring(4).split("_");
+              _sbvalue.append(authN_M(_entry.getField("author").toString(),Integer.parseInt(nums[0]),Integer.parseInt(nums[1]) - 1));
+            }
+ else             if (val.matches("auth\\d+")) {
+              int num=Integer.parseInt(val.substring(4));
+              String fa=firstAuthor(_entry.getField("author").toString());
+              if (num > fa.length())               num=fa.length();
+              _sbvalue.append(fa.substring(0,num));
+            }
+ else {
+              _sbvalue.append(_entry.getField(val).toString());
+            }
           }
- else           if (val.equals("edtr")) {
-            _sbvalue.append(firstAuthor(_entry.getField("editor").toString()));
-          }
- else           if (val.equals("authors")) {
-            _sbvalue.append(allAuthors(_entry.getField("author").toString()));
-          }
- else           if (val.equals("editors")) {
-            _sbvalue.append(allAuthors(_entry.getField("editor").toString()));
-          }
- else           if (val.equals("authorIni")) {
-            _sbvalue.append(oneAuthorPlusIni(_entry.getField("author").toString()));
-          }
- else           if (val.equals("editorIni")) {
-            _sbvalue.append(oneAuthorPlusIni(_entry.getField("editor").toString()));
+ else           if (val.startsWith("ed")) {
+            if (val.equals("edtr")) {
+              _sbvalue.append(firstAuthor(_entry.getField("editor").toString()));
+            }
+ else             if (val.equals("editors")) {
+              _sbvalue.append(allAuthors(_entry.getField("editor").toString()));
+            }
+ else             if (val.equals("editorIni")) {
+              _sbvalue.append(oneAuthorPlusIni(_entry.getField("editor").toString()));
+            }
+ else             if (val.matches("edtr[\\d]+_[\\d]+")) {
+              String[] nums=val.substring(4).split("_");
+              _sbvalue.append(authN_M(_entry.getField("editor").toString(),Integer.parseInt(nums[0]),Integer.parseInt(nums[1]) - 1));
+            }
+ else             if (val.equals("edtr.edtr.ea")) {
+              _sbvalue.append(authAuthEa(_entry.getField("editor").toString()));
+            }
+ else             if (val.matches("edtr\\d+")) {
+              int num=Integer.parseInt(val.substring(4));
+              String fa=firstAuthor(_entry.getField("editor").toString());
+              if (num > fa.length())               num=fa.length();
+              _sbvalue.append(fa.substring(0,num));
+            }
+ else {
+              _sbvalue.append(_entry.getField(val).toString());
+            }
           }
  else           if (val.equals("firstpage")) {
             _sbvalue.append(firstPage(_entry.getField("pages").toString()));
@@ -51,17 +87,7 @@
             _sbvalue.append(lastPage(_entry.getField("pages").toString()));
           }
  else           if (val.equals("shorttitle")) {
-            String ss=_entry.getField("title").toString();
-            int piv=0, wrd=0;
-            while ((piv < ss.length()) && (wrd < 3)) {
-              if (Character.isWhitespace(ss.charAt(piv))) {
-                wrd++;
-              }
- else {
-                _sbvalue.append(ss.charAt(piv));
-              }
-              piv++;
-            }
+            _sbvalue.append(getTitleWords(3,_entry));
           }
  else           if (val.equals("shortyear")) {
             String ss=_entry.getField("year").toString();
@@ -73,39 +99,7 @@
             }
           }
  else           if (val.equals("veryshorttitle")) {
-            String ss=_entry.getField("title").toString();
-            int piv=0;
-            String[] skipWords={"a","an","the"};
-            for (int _i=0; _i < skipWords.length; _i++) {
-              if (ss.toLowerCase().startsWith(skipWords[_i] + " ")) {
-                piv=skipWords[_i].length() + 1;
-              }
-            }
-            while ((piv < ss.length()) && Character.isWhitespace(ss.charAt(piv))) {
-              piv++;
-            }
-            while ((piv < ss.length()) && !Character.isWhitespace(ss.charAt(piv))) {
-              _sbvalue.append(ss.charAt(piv));
-              piv++;
-            }
-          }
- else           if (Pattern.matches("^auth\\d+$",val)) {
-            Pattern p=Pattern.compile("^auth(\\d+)$");
-            Matcher m=p.matcher(val);
-            m.matches();
-            int num=Integer.parseInt(m.group(1));
-            String fa=firstAuthor(_entry.getField("author").toString());
-            if (num > fa.length())             num=fa.length();
-            _sbvalue.append(fa.substring(0,num));
-          }
- else           if (Pattern.matches("^edtr\\d+$",val)) {
-            Pattern p=Pattern.compile("^edtr(\\d+)$");
-            Matcher m=p.matcher(val);
-            m.matches();
-            int num=Integer.parseInt(m.group(1));
-            String fa=firstAuthor(_entry.getField("editor").toString());
-            if (num > fa.length())             num=fa.length();
-            _sbvalue.append(fa.substring(0,num));
+            _sbvalue.append(getTitleWords(1,_entry));
           }
  else {
             _sbvalue.append(_entry.getField(val).toString());

@@ -1,17 +1,15 @@
 {
-  File file=new File(link);
+  File file;
   if (fieldName.equals("pdf")) {
     String dir=prefs.get("pdfDirectory");
-    if (!file.exists() && (dir != null)) {
-      if (dir.endsWith(System.getProperty("file.separator")))       link=dir + link;
- else       link=dir + System.getProperty("file.separator") + link;
-      file=new File(link);
-    }
+    file=expandFilename(link,dir);
   }
+ else   file=new File(link);
   if (fieldName.equals("ps") || fieldName.equals("pdf")) {
-    if (!file.exists()) {
+    if ((file == null) || !file.exists()) {
       throw new IOException(Globals.lang("File not found") + ": '" + link+ "'.");
     }
+    link=file.getPath();
     String[] split=file.getName().split("\\.");
     if ((split.length >= 2) && (split[split.length - 1].equalsIgnoreCase("pdf")))     fieldName="pdf";
  else     if ((split.length >= 2) && (split[split.length - 1].equalsIgnoreCase("ps")))     fieldName="ps";

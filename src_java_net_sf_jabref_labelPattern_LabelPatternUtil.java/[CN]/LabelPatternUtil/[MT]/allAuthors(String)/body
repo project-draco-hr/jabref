@@ -1,13 +1,10 @@
 {
   String author="";
-  String[] tokens=authorField.split("\\band\\b");
+  String[] tokens=ImportFormatReader.fixAuthor_lastnameFirst(authorField).split("\\band\\b");
   int i=0;
   while (tokens.length > i) {
-    if (tokens[i].indexOf(",") > 0) {
-      tokens[i]=ImportFormatReader.fixAuthor(tokens[i]);
-    }
-    String[] firstAuthor=tokens[i].replaceAll("\\s+"," ").split(" ");
-    author+=firstAuthor[firstAuthor.length - 1];
+    String[] firstAuthor=tokens[i].replaceAll("\\s+"," ").trim().split(" ");
+    author+=firstAuthor[0];
     i++;
   }
   return author;
