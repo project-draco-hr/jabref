@@ -474,7 +474,7 @@ catch (            Throwable ex) {
           String encoding=Globals.prefs.get("defaultEncoding");
           ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen,encoding);
           BibtexDatabase db=pr.getDatabase();
-          MetaData meta=new MetaData(pr.getMetaData());
+          MetaData meta=new MetaData(pr.getMetaData(),database());
           NamedCompound ce=new NamedCompound("Append database");
           if (importEntries) {
             Iterator i=db.getKeySet().iterator();
@@ -500,7 +500,7 @@ catch (            Throwable ex) {
           if (importGroups) {
             GroupTreeNode newGroups=meta.getGroups();
             if (newGroups != null) {
-              if (newGroups.getGroup() instanceof AllEntriesGroup)               newGroups.setGroup(new ExplicitGroup("Imported Groups"));
+              if (newGroups.getGroup() instanceof AllEntriesGroup)               newGroups.setGroup(new ExplicitGroup("Imported Groups",database));
               groupSelector.addGroups(newGroups,ce);
               groupSelector.revalidateGroups();
             }
