@@ -24,16 +24,10 @@
   con.fill=GridBagConstraints.HORIZONTAL;
   con.insets=new Insets(4,4,4,4);
   int col=0;
-  TreeSet buttons=new TreeSet();
-  Iterator iter=BibtexEntryType.ALL_TYPES.iterator();
+  Iterator iter=BibtexEntryType.ALL_TYPES.keySet().iterator();
   for (; iter.hasNext(); ) {
-    BibtexEntryType type=(BibtexEntryType)(iter.next());
-    TypeButton b=new TypeButton(type.getName(),type);
-    buttons.add(b);
-  }
-  iter=buttons.iterator();
-  for (; iter.hasNext(); ) {
-    TypeButton b=(TypeButton)(iter.next());
+    BibtexEntryType tp=BibtexEntryType.getType((String)iter.next());
+    TypeButton b=new TypeButton(tp.getName(),tp);
     b.setAlignmentX(SwingConstants.LEFT);
     b.addActionListener(this);
     col++;

@@ -1,0 +1,20 @@
+{
+  StringBuffer token=new StringBuffer(20);
+  while (true) {
+    int c=read();
+    if (c == -1) {
+      _eof=true;
+      return token.toString();
+    }
+    if (Character.isLetterOrDigit((char)c) || ((c != '#') && (c != '{') && (c != '}')&& (c != '?')&& (c != '~')&& (c != '?')&& (c != ','))) {
+      token.append((char)c);
+    }
+ else {
+      if (c == ',') {
+        unread(c);
+        return token.toString();
+      }
+ else       throw new IOException("Error in line " + line + ":"+ "Character '"+ (char)c+ "' is not "+ "allowed in bibtex keys.");
+    }
+  }
+}
