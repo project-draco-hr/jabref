@@ -51,7 +51,9 @@
 );
   options.add(new AbstractAction("Font"){
     public void actionPerformed(    ActionEvent e){
-      GUIGlobals.CURRENTFONT=new FontSelectorDialog(ths,GUIGlobals.CURRENTFONT).getSelectedFont();
+      Font f=new FontSelectorDialog(ths,GUIGlobals.CURRENTFONT).getSelectedFont();
+      if (f == null)       return;
+ else       GUIGlobals.CURRENTFONT=f;
       prefs.put("fontFamily",GUIGlobals.CURRENTFONT.getFamily());
       prefs.putInt("fontStyle",GUIGlobals.CURRENTFONT.getStyle());
       prefs.putInt("fontSize",GUIGlobals.CURRENTFONT.getSize());
