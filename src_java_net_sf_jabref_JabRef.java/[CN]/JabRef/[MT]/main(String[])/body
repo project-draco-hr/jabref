@@ -227,8 +227,15 @@ catch (          Exception ex) {
         try {
           UIManager.setLookAndFeel(lnf);
         }
- catch (        UnsupportedLookAndFeelException ex) {
+ catch (        Throwable ex) {
           ex.printStackTrace();
+          System.err.println("Trying to set system default Look&Feel...");
+          try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          }
+ catch (          Throwable e) {
+            e.printStackTrace();
+          }
         }
       }
     }
