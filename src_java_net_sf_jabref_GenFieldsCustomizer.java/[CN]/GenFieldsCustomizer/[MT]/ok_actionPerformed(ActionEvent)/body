@@ -1,8 +1,16 @@
 {
-  String delimStr=fieldsArea.getText().replaceAll("\\s+","").replaceAll("\\n+","").trim();
-  parent.prefs.putStringArray("generalFields",Util.delimToStringArray(delimStr,";"));
-  for (int i=0; i < parent.tabbedPane.getTabCount(); i++) {
-    BasePanel bp=(BasePanel)parent.tabbedPane.getComponentAt(i);
+  String[] lines=fieldsArea.getText().split("\n");
+  int i=0;
+  for (; i < lines.length; i++) {
+    String[] parts=lines[i].split(":");
+    Globals.prefs.put((Globals.prefs.CUSTOM_TAB_NAME + i),parts[0]);
+    Globals.prefs.put((Globals.prefs.CUSTOM_TAB_FIELDS + i),parts[1]);
+  }
+  Globals.prefs.purgeSeries(Globals.prefs.CUSTOM_TAB_NAME,i);
+  Globals.prefs.purgeSeries(Globals.prefs.CUSTOM_TAB_FIELDS,i);
+  Globals.prefs.updateEntryEditorTabList();
+  for (int j=0; j < parent.tabbedPane.getTabCount(); j++) {
+    BasePanel bp=(BasePanel)parent.tabbedPane.getComponentAt(j);
     bp.entryEditors.clear();
   }
   dispose();

@@ -9,15 +9,12 @@
     tabbed.addTab(Globals.lang("Optional fields"),new ImageIcon(GUIGlobals.showOptIconFile),optPan.getPane(),Globals.lang("Show optional fields"));
     tabs.add(optPan);
   }
-  if ((entry.getGeneralFields() != null) && (entry.getGeneralFields().length >= 1)) {
-    genPan=new EntryEditorTab(java.util.Arrays.asList(entry.getGeneralFields()),this,false);
-    tabbed.addTab(Globals.lang("General fields"),new ImageIcon(GUIGlobals.showGenIconFile),genPan.getPane(),Globals.lang("Show general fields"));
-    tabs.add(genPan);
+  EntryEditorTabList tabList=Globals.prefs.getEntryEditorTabList();
+  for (int i=0; i < tabList.getTabCount(); i++) {
+    EntryEditorTab newTab=new EntryEditorTab(tabList.getTabFields(i),this,false);
+    tabbed.addTab(tabList.getTabName(i),new ImageIcon(GUIGlobals.showGenIconFile),newTab.getPane());
+    tabs.add(newTab);
   }
-  String[] absFields=new String[]{"abstract","annote"};
-  absPan=new EntryEditorTab(java.util.Arrays.asList(absFields),this,false);
-  tabbed.addTab("Abstract",new ImageIcon(GUIGlobals.showAbsIconFile),absPan.getPane(),Globals.lang("Show abstract"));
-  tabs.add(absPan);
   tabbed.addTab(Globals.lang("BibTeX source"),new ImageIcon(GUIGlobals.sourceIconFile),srcPanel,Globals.lang("Show/edit BibTeX source"));
   tabs.add(srcPanel);
   sourceIndex=tabs.size() - 1;
