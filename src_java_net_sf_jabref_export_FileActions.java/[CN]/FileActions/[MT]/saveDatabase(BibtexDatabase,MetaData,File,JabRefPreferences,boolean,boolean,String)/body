@@ -1,5 +1,6 @@
 {
   BibtexEntry be=null;
+  TreeMap types=new TreeMap();
   try {
     initFile(file,prefs.getBoolean("backup"));
     Writer fw=getWriter(file,encoding);
@@ -10,6 +11,10 @@
     FieldFormatter ff=new LatexFieldFormatter();
     for (Iterator i=sorter.iterator(); i.hasNext(); ) {
       be=(BibtexEntry)(i.next());
+      BibtexEntryType tp=be.getType();
+      if (BibtexEntryType.getStandardType(tp.getName()) == null) {
+        types.put(tp.getName(),tp);
+      }
       boolean write=true;
       if (checkSearch && !nonZeroField(be,Globals.SEARCH)) {
         write=false;
@@ -25,9 +30,17 @@
     if (metaData != null) {
       metaData.writeMetaData(fw);
     }
+    if (types.size() > 0) {
+      for (Iterator i=types.keySet().iterator(); i.hasNext(); ) {
+        CustomEntryType tp=(CustomEntryType)types.get(i.next());
+        tp.save(fw);
+        fw.write("\n");
+      }
+    }
     fw.close();
   }
  catch (  Throwable ex) {
+    ex.printStackTrace();
     repairAfterError(file);
     throw new SaveException(ex.getMessage(),be);
   }

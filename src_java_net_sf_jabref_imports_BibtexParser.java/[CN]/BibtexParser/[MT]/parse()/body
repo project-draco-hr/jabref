@@ -1,6 +1,7 @@
 {
   _db=new BibtexDatabase();
   _meta=new HashMap();
+  entryTypes=new HashMap();
   ParserResult _pr=new ParserResult(_db,_meta);
   skipWhitespace();
   try {
@@ -9,35 +10,47 @@
       skipWhitespace();
       String entryType=parseTextToken();
       BibtexEntryType tp=BibtexEntryType.getType(entryType);
-      if (tp != null) {
+      boolean isEntry=(tp != null);
+      if (!isEntry) {
+        if (entryType.toLowerCase().equals("preamble")) {
+          _db.setPreamble(parsePreamble());
+        }
+ else         if (entryType.toLowerCase().equals("string")) {
+          BibtexString bs=parseString();
+          try {
+            _db.addString(bs);
+          }
+ catch (          KeyCollisionException ex) {
+            _pr.addWarning(Globals.lang("Duplicate string name") + ": " + bs.getName());
+          }
+        }
+ else         if (entryType.toLowerCase().equals("comment")) {
+          StringBuffer comment=parseBracketedText();
+          if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG) || comment.substring(0,GUIGlobals.META_FLAG_OLD.length()).equals(GUIGlobals.META_FLAG_OLD)) {
+            String rest;
+            if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG))             rest=comment.substring(GUIGlobals.META_FLAG.length());
+ else             rest=comment.substring(GUIGlobals.META_FLAG_OLD.length());
+            int pos=rest.indexOf(':');
+            if (pos > 0)             _meta.put(rest.substring(0,pos),rest.substring(pos + 1));
+          }
+          if (comment.substring(0,GUIGlobals.ENTRYTYPE_FLAG.length()).equals(GUIGlobals.ENTRYTYPE_FLAG)) {
+            CustomEntryType typ=CustomEntryType.parseEntryType(comment.toString());
+            entryTypes.put(typ.getName(),typ);
+          }
+        }
+ else {
+          tp=new UnknownEntryType(entryType.toLowerCase());
+          isEntry=true;
+        }
+      }
+      if (isEntry) {
         BibtexEntry be=parseEntry(tp);
         boolean duplicateKey=_db.insertEntry(be);
         if (duplicateKey)         _pr.addWarning(Globals.lang("Duplicate BibTeX key") + ": " + be.getCiteKey());
       }
- else       if (entryType.toLowerCase().equals("preamble")) {
-        _db.setPreamble(parsePreamble());
-      }
- else       if (entryType.toLowerCase().equals("string")) {
-        BibtexString bs=parseString();
-        try {
-          _db.addString(bs);
-        }
- catch (        KeyCollisionException ex) {
-          _pr.addWarning(Globals.lang("Duplicate string name") + ": " + bs.getName());
-        }
-      }
- else       if (entryType.toLowerCase().equals("comment")) {
-        StringBuffer comment=parseBracketedText();
-        if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG) || comment.substring(0,GUIGlobals.META_FLAG_OLD.length()).equals(GUIGlobals.META_FLAG_OLD)) {
-          String rest;
-          if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG))           rest=comment.substring(GUIGlobals.META_FLAG.length());
- else           rest=comment.substring(GUIGlobals.META_FLAG_OLD.length());
-          int pos=rest.indexOf(':');
-          if (pos > 0)           _meta.put(rest.substring(0,pos),rest.substring(pos + 1));
-        }
-      }
       skipWhitespace();
     }
+    checkEntryTypes();
     return _pr;
   }
  catch (  KeyCollisionException kce) {

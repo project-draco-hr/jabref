@@ -1,6 +1,7 @@
 {
   ArrayList bibitems=new ArrayList();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
+  boolean isChapter=false;
   String str;
   StringBuffer sb=new StringBuffer();
   while ((str=in.readLine()) != null) {
@@ -73,15 +74,19 @@
  else         if (frest.toLowerCase().indexOf("journal") >= 0)         Type="article";
  else         if (frest.equals("Contribution") || frest.equals("Chapter")) {
           Type="incollection";
-          String title=((String)h.get("title")).trim();
-          if (title != null) {
-            int inPos=title.indexOf("\" in ");
-            int pgPos=title.lastIndexOf(" ");
-            if (inPos > 1)             h.put("title",title.substring(1,inPos));
-            if (pgPos > inPos)             h.put("pages",title.substring(pgPos).replaceAll("-","--"));
-          }
+          isChapter=true;
         }
  else         Type=frest.replaceAll(" ","");
+      }
+    }
+    if (isChapter) {
+      Object titleO=h.get("title");
+      if (titleO != null) {
+        String title=((String)titleO).trim();
+        int inPos=title.indexOf("\" in ");
+        int pgPos=title.lastIndexOf(" ");
+        if (inPos > 1)         h.put("title",title.substring(1,inPos));
+        if (pgPos > inPos)         h.put("pages",title.substring(pgPos).replaceAll("-","--"));
       }
     }
     BibtexEntry b=new BibtexEntry(Globals.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
