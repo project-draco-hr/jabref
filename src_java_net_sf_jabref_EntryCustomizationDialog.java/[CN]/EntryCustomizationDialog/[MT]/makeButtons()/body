@@ -1,7 +1,9 @@
 {
-  ok=new JButton(Globals.lang("Ok"));
-  cancel=new JButton(Globals.lang("Cancel"));
+  ok=new JButton(Globals.lang("Store"));
+  cancel=new JButton(Globals.lang("Close"));
+  delete=new JButton(Globals.lang("Delete custom"));
   buttonPanel.add(ok);
+  buttonPanel.add(delete);
   buttonPanel.add(cancel);
   ok.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
@@ -12,6 +14,18 @@
   cancel.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       dispose();
+    }
+  }
+);
+  delete.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      BibtexEntryType type=BibtexEntryType.getType(name.getText());
+      if (type == null)       messageLabel.setText(Globals.lang("There is no entry type") + " '" + Util.nCase(name.getText())+ "' "+ Globals.lang("defined."));
+ else       if (!(type instanceof CustomEntryType))       messageLabel.setText("'" + type.getName() + "' "+ Globals.lang("is a standard type."));
+ else {
+        BibtexEntryType.removeType(name.getText());
+        setTypeSelection();
+      }
     }
   }
 );

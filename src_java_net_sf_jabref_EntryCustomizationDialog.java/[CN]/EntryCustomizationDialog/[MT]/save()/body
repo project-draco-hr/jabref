@@ -2,11 +2,12 @@
   String reqStr=req_ta.getText().replaceAll("\\s+","").replaceAll("\\n+","").trim(), optStr=opt_ta.getText().replaceAll("\\s+","").replaceAll("\\n+","").trim();
   String typeName=name.getText().trim();
   if (!typeName.equals("")) {
-    Util.pr("Save entry definition.");
-    CustomEntryType typ=new CustomEntryType(typeName,reqStr,optStr);
-    BibtexEntryType.ALL_TYPES.put(typeName,typ);
+    CustomEntryType typ=new CustomEntryType(typeName.toLowerCase(),reqStr,optStr);
+    BibtexEntryType.ALL_TYPES.put(typ.getName(),typ);
+    setTypeSelection();
+    messageLabel.setText(Globals.lang("Stored definition for type" + " '" + Util.nCase(typ.getName()) + "'."));
   }
  else {
-    Util.pr("No name.");
+    messageLabel.setText(Globals.lang("You must fill in a name for the entry type."));
   }
 }

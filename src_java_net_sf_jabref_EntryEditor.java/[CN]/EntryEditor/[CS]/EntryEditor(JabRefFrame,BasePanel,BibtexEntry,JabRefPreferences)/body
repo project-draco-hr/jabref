@@ -16,14 +16,15 @@
   setupFieldPanels(reqPanel,optPanel,genPanel);
   setupSourcePanel();
   tabbed.addTab("Required fields",new ImageIcon(GUIGlobals.showReqIconFile),reqPanel.getPane(),"Show required fields");
-  tabbed.addTab("Optional fields",new ImageIcon(GUIGlobals.showOptIconFile),optPanel.getPane(),"Show optional fields");
-  tabbed.addTab("General fields",new ImageIcon(GUIGlobals.showGenIconFile),genPanel.getPane(),"Show general fields");
+  if ((entry.getOptionalFields() != null) && (entry.getOptionalFields().length >= 1))   tabbed.addTab("Optional fields",new ImageIcon(GUIGlobals.showOptIconFile),optPanel.getPane(),"Show optional fields");
+  if ((entry.getGeneralFields() != null) && (entry.getGeneralFields().length >= 1))   tabbed.addTab("General fields",new ImageIcon(GUIGlobals.showGenIconFile),genPanel.getPane(),"Show general fields");
   tabbed.addTab("Bibtex source",new ImageIcon(GUIGlobals.sourceIconFile),srcPanel,"Show/edit bibtex source");
+  sourceIndex=tabbed.getTabCount() - 1;
   tabbed.addChangeListener(new TabListener());
   add(tabbed,BorderLayout.CENTER);
   int prefHeight=(int)(Math.max(genW,Math.max(optW,reqW)) * GUIGlobals.FORM_HEIGHT[prefs.getInt("entryTypeFormHeightFactor")]);
   setSize(GUIGlobals.FORM_WIDTH[prefs.getInt("entryTypeFormWidth")],prefHeight);
   if (prefs.getBoolean("defaultShowSource")) {
-    tabbed.setSelectedIndex(3);
+    tabbed.setSelectedIndex(sourceIndex);
   }
 }
