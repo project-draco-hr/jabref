@@ -15,17 +15,15 @@
   }
  catch (  IOException ex) {
   }
-  String pri=prefs.get("priSort"), sec=prefs.get("secSort"), ter=prefs.get("terSort");
-  EntrySorter sorter=database.getSorter(new EntryComparator(prefs.getBoolean("priDescending"),prefs.getBoolean("secDescending"),prefs.getBoolean("terDescending"),pri,sec,ter));
+  TreeSet sorted=getSortedEntries(database);
   reader=getReader(prefix + lfName + ".layout");
   LayoutHelper layoutHelper=new LayoutHelper(reader);
   Layout defLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
   reader.close();
   HashMap layouts=new HashMap();
   Layout layout;
-  for (int i=0; i < sorter.getEntryCount(); i++) {
-    key=(String)sorter.getIdAt(i);
-    BibtexEntry entry=database.getEntryById(key);
+  for (Iterator i=sorted.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=(BibtexEntry)(i.next());
     type=entry.getType().getName().toLowerCase();
     if (layouts.containsKey(type))     layout=(Layout)layouts.get(type);
  else {

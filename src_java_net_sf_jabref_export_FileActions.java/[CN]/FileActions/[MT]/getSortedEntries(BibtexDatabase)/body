@@ -1,0 +1,29 @@
+{
+  String pri, sec, ter;
+  boolean priD, secD, terD;
+  if (!Globals.prefs.getBoolean("saveInStandardOrder")) {
+    pri=Globals.prefs.get("priSort");
+    sec=Globals.prefs.get("secSort");
+    ter=Globals.prefs.get("terSort");
+    priD=Globals.prefs.getBoolean("priDescending");
+    secD=Globals.prefs.getBoolean("secDescending");
+    terD=Globals.prefs.getBoolean("terDescending");
+  }
+ else {
+    pri="author";
+    sec="editor";
+    ter="year";
+    priD=false;
+    secD=false;
+    terD=true;
+  }
+  TreeSet sorter=new TreeSet(new CrossRefEntryComparator(new EntryComparator(priD,secD,terD,pri,sec,ter)));
+  Set keySet=database.getKeySet();
+  if (keySet != null) {
+    Iterator i=keySet.iterator();
+    for (; i.hasNext(); ) {
+      sorter.add(database.getEntryById((String)(i.next())));
+    }
+  }
+  return sorter;
+}
