@@ -1,0 +1,23 @@
+{
+  File outFile=null;
+  String chosenFile=Globals.getNewFile(ths,prefs,new File(prefs.get("workingDirectory")),extension,JFileChooser.SAVE_DIALOG,false);
+  if (chosenFile != null)   outFile=new File(chosenFile);
+ else {
+    return;
+  }
+  final String lfName=lfFileName;
+  final File oFile=outFile;
+  (new Thread(){
+    public void run(){
+      try {
+        FileActions.exportDatabase(basePanel().database,directory,lfName,oFile,prefs);
+        output(Globals.lang("Exported database to file") + " '" + oFile.getPath()+ "'.");
+      }
+ catch (      IOException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(ths,ex.getMessage(),Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
+      }
+    }
+  }
+).start();
+}

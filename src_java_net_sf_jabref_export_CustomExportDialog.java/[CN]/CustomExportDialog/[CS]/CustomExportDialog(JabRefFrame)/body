@@ -1,0 +1,96 @@
+{
+  super(parent_,Globals.lang("Edit custom export"),true);
+  parent=parent_;
+  ActionListener okListener=new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      if ((layoutFile.getText().equals("")) || (name.getText().equals("")) || (extension.getText().equals(""))|| (!layoutFile.getText().endsWith(".layout"))) {
+        return;
+      }
+      ok_pressed=true;
+      dispose();
+    }
+  }
+;
+  ok.addActionListener(okListener);
+  name.addActionListener(okListener);
+  layoutFile.addActionListener(okListener);
+  extension.addActionListener(okListener);
+  AbstractAction cancelAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+;
+  cancel.addActionListener(cancelAction);
+  browse.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      File directory=new File(Globals.prefs.get("exportWorkingDirectory"));
+      String chosenStr=Globals.getNewFile(parent,Globals.prefs,directory,".layout",JFileChooser.OPEN_DIALOG,false);
+      if (chosenStr == null)       return;
+      File chosen=new File(chosenStr);
+      Globals.prefs.put("exportWorkingDirectory",chosen.getParent());
+      layoutFile.setText(chosen.getPath());
+    }
+  }
+);
+  ActionMap am=main.getActionMap();
+  InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(parent.prefs().getKey("Close dialog"),"close");
+  am.put("close",cancelAction);
+  main.setLayout(gbl);
+  opt.setLayout(gbl);
+  main.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Export properties")));
+  con.weightx=0;
+  con.gridwidth=1;
+  con.insets=new Insets(3,5,3,5);
+  con.anchor=GridBagConstraints.EAST;
+  con.fill=GridBagConstraints.NONE;
+  con.gridx=0;
+  con.gridy=0;
+  gbl.setConstraints(nl,con);
+  main.add(nl);
+  con.gridy=1;
+  gbl.setConstraints(nr,con);
+  main.add(nr);
+  con.gridy=2;
+  gbl.setConstraints(nf,con);
+  main.add(nf);
+  con.gridwidth=2;
+  con.weightx=1;
+  con.anchor=GridBagConstraints.WEST;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  con.gridy=0;
+  con.gridx=1;
+  gbl.setConstraints(name,con);
+  main.add(name);
+  con.gridy=1;
+  con.gridwidth=1;
+  gbl.setConstraints(layoutFile,con);
+  main.add(layoutFile);
+  con.gridx=2;
+  con.weightx=0;
+  gbl.setConstraints(browse,con);
+  main.add(browse);
+  con.weightx=1;
+  con.gridwidth=2;
+  con.gridx=1;
+  con.gridy=2;
+  gbl.setConstraints(extension,con);
+  main.add(extension);
+  con.gridx=GridBagConstraints.RELATIVE;
+  con.gridy=GridBagConstraints.RELATIVE;
+  con.weightx=1;
+  con.gridwidth=1;
+  con.anchor=GridBagConstraints.EAST;
+  con.fill=GridBagConstraints.NONE;
+  gbl.setConstraints(ok,con);
+  opt.add(ok);
+  con.anchor=GridBagConstraints.WEST;
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(cancel,con);
+  opt.add(cancel);
+  getContentPane().add(main,BorderLayout.CENTER);
+  getContentPane().add(opt,BorderLayout.SOUTH);
+  setSize(600,170);
+  Util.placeDialog(this,parent);
+}
