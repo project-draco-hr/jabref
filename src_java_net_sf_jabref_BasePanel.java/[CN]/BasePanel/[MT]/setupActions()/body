@@ -11,6 +11,7 @@
         String id=tableModel.getNameFromNumber(clickedOn);
         BibtexEntry be=database.getEntryById(id);
         showEntry(be);
+        if (splitPane.getBottomComponent() != null)         new FocusRequester(splitPane.getBottomComponent());
       }
     }
   }
@@ -316,14 +317,17 @@ catch (            Throwable ex) {
 );
   actions.put("search",new BaseAction(){
     public void action(){
-      sidePaneManager.ensureVisible("search");
-      searchManager.startSearch();
+      sidePaneManager.togglePanel("search");
+      boolean on=sidePaneManager.isPanelVisible("search");
+      frame.searchToggle.setSelected(on);
+      if (on)       searchManager.startSearch();
     }
   }
 );
   actions.put("incSearch",new BaseAction(){
     public void action(){
       sidePaneManager.ensureVisible("search");
+      frame.searchToggle.setSelected(true);
       searchManager.startIncrementalSearch();
     }
   }

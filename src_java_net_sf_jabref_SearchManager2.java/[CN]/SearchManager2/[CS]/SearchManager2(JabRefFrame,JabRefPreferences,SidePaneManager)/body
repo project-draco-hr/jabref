@@ -8,9 +8,9 @@
   searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),prefs.getBoolean("searchGen"));
   searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),prefs.getBoolean("searchAll"));
   regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),prefs.getBoolean("regExpSearch"));
-  increment=new JCheckBox(Globals.lang("Incremental"),false);
-  select=new JCheckBox(Globals.lang("Highlight"),true);
-  reorder=new JCheckBox(Globals.lang("Float"),false);
+  increment=new JRadioButton(Globals.lang("Incremental"),false);
+  select=new JRadioButton(Globals.lang("Highlight"),true);
+  reorder=new JRadioButton(Globals.lang("Float"),false);
   increment.addItemListener(this);
   reorder.addItemListener(this);
   searchField.addFocusListener(Globals.focusListener);
@@ -41,8 +41,12 @@
   escape.addActionListener(this);
   openset.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      JButton src=(JButton)e.getSource();
-      settings.show(src,0,0);
+      if (settings.isVisible()) {
+      }
+ else {
+        JButton src=(JButton)e.getSource();
+        settings.show(src,0,openset.getHeight());
+      }
     }
   }
 );
