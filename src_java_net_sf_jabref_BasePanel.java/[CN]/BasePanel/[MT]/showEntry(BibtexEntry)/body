@@ -1,6 +1,20 @@
 {
-  EntryEditor form=new EntryEditor(frame,ths,be,prefs);
-  splitPane.setBottomComponent(form);
-  splitPane.setDividerLocation(GUIGlobals.VERTICAL_DIVIDER_LOCATION);
+  if (showing == be)   return;
+  EntryEditor form;
+  int divLoc=-1;
+  if (showing != null)   divLoc=splitPane.getDividerLocation();
+  if (entryEditors.containsKey(be.getType().getName())) {
+    form=(EntryEditor)entryEditors.get((be.getType().getName()));
+    form.switchTo(be);
+    splitPane.setBottomComponent(form);
+  }
+ else {
+    form=new EntryEditor(frame,ths,be,prefs);
+    splitPane.setBottomComponent(form);
+    entryEditors.put(be.getType().getName(),form);
+  }
+  if (showing != null)   splitPane.setDividerLocation(divLoc);
+ else   splitPane.setDividerLocation(GUIGlobals.VERTICAL_DIVIDER_LOCATION);
   form.requestFocus();
+  showing=be;
 }
