@@ -1,10 +1,21 @@
 {
-  StringInt si;
-  Vector tmpEntries=new Vector(parsedEntries.size());
-  Vector blockEntries=null;
-  LayoutEntry le;
+  classPrefix=classPrefix_;
   String blockStart=null;
-  for (int i=0; i < parsedEntries.size(); i++) {
+  String blockEnd=null;
+  StringInt si;
+  Vector blockEntries=null;
+  Vector tmpEntries=new Vector();
+  LayoutEntry le;
+  si=(StringInt)parsedEntries.get(0);
+  blockStart=si.s;
+  si=(StringInt)parsedEntries.get(parsedEntries.size() - 1);
+  blockEnd=si.s;
+  if (!blockStart.equals(blockEnd)) {
+    System.err.println("Field start and end entry must be equal.");
+  }
+  type=LayoutHelper.IS_FIELD_START;
+  text=si.s;
+  for (int i=1; i < (parsedEntries.size() - 1); i++) {
     si=(StringInt)parsedEntries.get(i);
     if (si.i == LayoutHelper.IS_LAYOUT_TEXT) {
     }
@@ -17,7 +28,7 @@
  else     if (si.i == LayoutHelper.IS_FIELD_END) {
       if (blockStart.equals(si.s)) {
         blockEntries.add(si);
-        le=new LayoutEntry(blockEntries);
+        le=new LayoutEntry(blockEntries,classPrefix);
         tmpEntries.add(le);
         blockEntries=null;
       }
@@ -28,7 +39,7 @@
  else     if (si.i == LayoutHelper.IS_OPTION_FIELD) {
     }
     if (blockEntries == null) {
-      tmpEntries.add(new LayoutEntry(si));
+      tmpEntries.add(new LayoutEntry(si,classPrefix));
     }
  else {
       blockEntries.add(si);

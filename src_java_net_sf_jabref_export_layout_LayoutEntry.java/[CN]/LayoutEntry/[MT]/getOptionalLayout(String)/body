@@ -1,10 +1,15 @@
 {
   LayoutFormatter formatter;
   try {
-    formatter=(LayoutFormatter)Class.forName(formatterName).newInstance();
+    try {
+      formatter=(LayoutFormatter)Class.forName(classPrefix + formatterName).newInstance();
+    }
+ catch (    Throwable ex2) {
+      formatter=(LayoutFormatter)Class.forName(formatterName).newInstance();
+    }
   }
  catch (  ClassNotFoundException ex) {
-    throw new Exception(formatterName + " not found.");
+    throw new Exception(Globals.lang("Formatter not found") + ": " + formatterName);
   }
 catch (  InstantiationException ex) {
     throw new Exception(formatterName + " can not be instantiated.");
@@ -13,7 +18,7 @@ catch (  IllegalAccessException ex) {
     throw new Exception(formatterName + " can't be accessed.");
   }
   if (formatter == null) {
-    throw new Exception(formatterName + " not found.");
+    throw new Exception(Globals.lang("Formatter not found") + ": " + formatterName);
   }
   return formatter;
 }

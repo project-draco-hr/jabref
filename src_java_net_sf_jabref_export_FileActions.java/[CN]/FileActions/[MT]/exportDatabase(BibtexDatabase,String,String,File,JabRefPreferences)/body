@@ -5,16 +5,20 @@
   Reader reader;
   int c;
   ps=new OutputStreamWriter(new FileOutputStream(outFile),"iso-8859-1");
-  reader=getReader(prefix + lfName + ".begin.layout");
-  while ((c=reader.read()) != -1) {
-    ps.write((char)c);
+  try {
+    reader=getReader(prefix + lfName + ".begin.layout");
+    while ((c=reader.read()) != -1) {
+      ps.write((char)c);
+    }
+    reader.close();
   }
-  reader.close();
+ catch (  IOException ex) {
+  }
   String pri=prefs.get("priSort"), sec=prefs.get("secSort"), ter=prefs.get("terSort");
   EntrySorter sorter=database.getSorter(new EntryComparator(prefs.getBoolean("priDescending"),prefs.getBoolean("secDescending"),prefs.getBoolean("terDescending"),pri,sec,ter));
   reader=getReader(prefix + lfName + ".layout");
   LayoutHelper layoutHelper=new LayoutHelper(reader);
-  Layout defLayout=layoutHelper.getLayoutFromText();
+  Layout defLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
   reader.close();
   HashMap layouts=new HashMap();
   Layout layout;
@@ -27,7 +31,7 @@
       try {
         reader=getReader(prefix + lfName + "."+ type+ ".layout");
         layoutHelper=new LayoutHelper(reader);
-        layout=layoutHelper.getLayoutFromText();
+        layout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
         layouts.put(type,layout);
         reader.close();
       }
@@ -37,11 +41,15 @@
     }
     ps.write(layout.doLayout(entry));
   }
-  reader=getReader(prefix + lfName + ".end.layout");
-  while ((c=reader.read()) != -1) {
-    ps.write((char)c);
+  try {
+    reader=getReader(prefix + lfName + ".end.layout");
+    while ((c=reader.read()) != -1) {
+      ps.write((char)c);
+    }
+    reader.close();
   }
-  reader.close();
+ catch (  IOException ex) {
+  }
   ps.flush();
   ps.close();
 }
