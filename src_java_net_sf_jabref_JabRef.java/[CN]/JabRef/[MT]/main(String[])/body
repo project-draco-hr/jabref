@@ -158,9 +158,12 @@ catch (          Exception ex) {
   if (!graphicFailure && !disableGui.isInvoked()) {
     System.setProperty("apple.laf.useScreenMenuBar","true");
     System.setProperty("swing.aatext","true");
+    int fontSizes=prefs.getInt("menuFontSize");
     if (Globals.ON_WIN) {
       try {
-        UIManager.setLookAndFeel(new com.jgoodies.plaf.windows.ExtWindowsLookAndFeel());
+        ExtWindowsLookAndFeel lnf=new ExtWindowsLookAndFeel();
+        lnf.setFontSizeHints(new FontSizeHints(fontSizes,fontSizes,fontSizes,fontSizes));
+        UIManager.setLookAndFeel(lnf);
       }
  catch (      UnsupportedLookAndFeelException ex) {
       }
@@ -168,9 +171,8 @@ catch (          Exception ex) {
  else     if (!Globals.ON_MAC) {
       try {
         PlasticLookAndFeel lnf=new com.jgoodies.plaf.plastic.Plastic3DLookAndFeel();
-        MetalLookAndFeel.setCurrentTheme(new com.jgoodies.plaf.plastic.theme.SkyBlue());
-        int fontSizes=prefs.getInt("menuFontSize");
         lnf.setFontSizeHints(new FontSizeHints(fontSizes,fontSizes,fontSizes,fontSizes));
+        MetalLookAndFeel.setCurrentTheme(new com.jgoodies.plaf.plastic.theme.SkyBlue());
         UIManager.setLookAndFeel(lnf);
       }
  catch (      UnsupportedLookAndFeelException ex) {
