@@ -15,8 +15,9 @@
  catch (    NoLabelException ex) {
       char c=(char)peek();
       if (Character.isWhitespace(c) || (c == '{') || (c == '\"')) {
-        String cont=parseFieldContent();
-        result.setField(ex.getMessage().trim().toLowerCase(),cont);
+        String fieldName=ex.getMessage().trim().toLowerCase();
+        String cont=parseFieldContent(GUIGlobals.isStandardField(fieldName));
+        result.setField(fieldName,cont);
       }
  else {
         if (key != null)         key=key + ex.getMessage() + "=";
