@@ -1,0 +1,75 @@
+{
+  Node result=null;
+  try {
+    Element mods=d.createElement("mods");
+    mods.setAttribute("version","3.0");
+    mods.setAttribute("xmlns:xlink:","http://www.w3.org/1999/xlink");
+    mods.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+    mods.setAttribute("xsi:schemaLocation","http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-0.xsd");
+    mods.setAttribute("ID",id);
+    Element titleInfo=d.createElement("titleInfo");
+    Element mainTitle=d.createElement("title");
+    mainTitle.setTextContent(title);
+    titleInfo.appendChild(mainTitle);
+    mods.appendChild(titleInfo);
+    if (authors != null) {
+      for (Iterator iter=authors.iterator(); iter.hasNext(); ) {
+        PersonName name=(PersonName)iter.next();
+        Element modsName=d.createElement("name");
+        modsName.setAttribute("type","personal");
+        if (name.getSurname() != null) {
+          Element namePart=d.createElement("namePart");
+          namePart.setAttribute("type","family");
+          namePart.setTextContent(name.getSurname());
+          modsName.appendChild(namePart);
+        }
+        if (name.getGivenNames() != null) {
+          Element namePart=d.createElement("namePart");
+          namePart.setAttribute("type","given");
+          namePart.setTextContent(name.getGivenNames());
+          modsName.appendChild(namePart);
+        }
+        Element role=d.createElement("name");
+        Element roleTerm=d.createElement("roleTerm");
+        roleTerm.setAttribute("type","text");
+        roleTerm.setTextContent("author");
+        role.appendChild(roleTerm);
+        modsName.appendChild(role);
+        mods.appendChild(modsName);
+      }
+    }
+    Element originInfo=d.createElement("originInfo");
+    mods.appendChild(originInfo);
+    if (this.publisher != null) {
+      Element publisher=d.createElement("publisher");
+      publisher.setTextContent(this.publisher);
+      originInfo.appendChild(publisher);
+    }
+    if (date != null) {
+      Element dateIssued=d.createElement("dateIssued");
+      dateIssued.setTextContent(date);
+      originInfo.appendChild(dateIssued);
+    }
+    Element issuance=d.createElement("issuance");
+    issuance.setTextContent(this.issuance);
+    originInfo.appendChild(issuance);
+    Element idref=d.createElement("identifier");
+    idref.setTextContent(id);
+    mods.appendChild(idref);
+    Element typeOfResource=d.createElement("typeOfResource");
+    typeOfResource.setTextContent(type);
+    mods.appendChild(typeOfResource);
+    if (genre != null) {
+      Element genreElement=d.createElement("genre");
+      genreElement.setAttribute("authority","marc");
+      genreElement.setTextContent(genre);
+      mods.appendChild(genreElement);
+    }
+    return mods;
+  }
+ catch (  Exception e) {
+    System.out.println("Exception caught..." + e);
+    e.printStackTrace();
+  }
+  return result;
+}

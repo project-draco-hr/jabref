@@ -1,0 +1,19 @@
+{
+  Document result=null;
+  try {
+    DocumentBuilder dbuild=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    result=dbuild.newDocument();
+    Element modsCollection=result.createElement("modsCollection");
+    for (Iterator iter=entries.iterator(); iter.hasNext(); ) {
+      MODSEntry entry=(MODSEntry)iter.next();
+      Node node=entry.getDOMrepresentation(result);
+      modsCollection.appendChild(node);
+    }
+    result.appendChild(modsCollection);
+  }
+ catch (  Exception e) {
+    System.out.println("Exception caught..." + e);
+    e.printStackTrace();
+  }
+  return result;
+}
