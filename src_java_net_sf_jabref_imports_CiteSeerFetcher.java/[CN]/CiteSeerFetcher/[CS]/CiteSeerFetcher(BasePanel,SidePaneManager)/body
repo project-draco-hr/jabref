@@ -30,32 +30,10 @@
   gbl.setConstraints(citeSeerProgress,con);
   add(citeSeerProgress);
   try {
-    HostConfiguration hostConfiguration=new HostConfiguration();
     citationFetcherActive=false;
     importFetcherActive=false;
     parserFactory=SAXParserFactory.newInstance();
     saxParser=parserFactory.newSAXParser();
-    Properties properties=new Properties();
-    ResourceBundle bundle=ResourceBundle.getBundle("resource/log4j");
-    Enumeration enum=bundle.getKeys();
-    String key=null;
-    while (enum.hasMoreElements()) {
-      key=(String)enum.nextElement();
-      properties.put(key,bundle.getObject(key));
-    }
-    PropertyConfigurator.configure(properties);
-    citeseerHttpClient=new HttpClient();
-    if (System.getProperty("proxySet") != null) {
-      String proxyHost;
-      int proxyPort=8080;
-      if (System.getProperty("proxyHost") != null) {
-        proxyHost=System.getProperty("proxyHost");
-        if (System.getProperty("proxyPort") != null)         proxyPort=Integer.parseInt(System.getProperty("proxyPort"));
-        hostConfiguration.setProxy(proxyHost,proxyPort);
-        citeseerHttpClient.setHostConfiguration(hostConfiguration);
-      }
-    }
-    citeseerHttpClient.setConnectionTimeout(10000);
   }
  catch (  ParserConfigurationException e) {
     e.printStackTrace();

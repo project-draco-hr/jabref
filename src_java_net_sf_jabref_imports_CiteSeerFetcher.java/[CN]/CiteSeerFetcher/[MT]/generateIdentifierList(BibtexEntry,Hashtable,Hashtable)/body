@@ -8,21 +8,16 @@
       citeseerURLString.append(OAI_ACTION);
       citeseerURLString.append("&" + OAI_METADATAPREFIX);
       citeseerURLString.append("&" + "identifier=" + identifier);
-      GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
-      citeseerHttpClient.executeMethod(citeseerMethod);
-      saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerCitationHandler(citationHashTable));
-      citeseerMethod.releaseConnection();
+      URL citeseerUrl=new URL(citeseerURLString.toString());
+      HttpURLConnection citeseerConnection=(HttpURLConnection)citeseerUrl.openConnection();
+      saxParser.parse(citeseerConnection.getInputStream(),new CiteSeerCitationHandler(citationHashTable));
     }
  else {
       int row=panel.getTableModel().getNumberFromName(currentEntry.getId());
       rejectedEntries.put(new Integer(row + 1),currentEntry);
     }
   }
- catch (  HttpException e) {
-    System.out.println("HttpException: " + e.getReason());
-    e.printStackTrace();
-  }
-catch (  SAXException e) {
+ catch (  SAXException e) {
     System.out.println("SAXException: " + e.getLocalizedMessage());
     e.printStackTrace();
   }

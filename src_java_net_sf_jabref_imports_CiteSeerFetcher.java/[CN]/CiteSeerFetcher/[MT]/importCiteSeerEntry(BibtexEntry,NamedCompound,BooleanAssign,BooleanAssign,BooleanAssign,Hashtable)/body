@@ -9,24 +9,18 @@
       citeseerURLString.append(OAI_ACTION);
       citeseerURLString.append("&" + OAI_METADATAPREFIX);
       citeseerURLString.append("&" + "identifier=" + identifier);
-      GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
-      int response=citeseerHttpClient.executeMethod(citeseerMethod);
-      InputStream inputStream=citeseerMethod.getResponseBodyAsStream();
+      URL citeseerUrl=new URL(citeseerURLString.toString());
+      HttpURLConnection citeseerConnection=(HttpURLConnection)citeseerUrl.openConnection();
+      InputStream inputStream=citeseerConnection.getInputStream();
       DefaultHandler handlerBase=new CiteSeerUndoHandler(citeseerNC,be,panel,newValue,overwriteAll,overwriteNone);
       saxParser.parse(inputStream,handlerBase);
-      citeseerMethod.releaseConnection();
     }
  else {
       int row=panel.getTableModel().getNumberFromName(be.getId());
       rejectedEntries.put(new Integer(row + 1),be);
     }
   }
- catch (  HttpException e) {
-    System.out.println("HttpException: " + e.getReason());
-    e.printStackTrace();
-    abortOperation=true;
-  }
-catch (  IOException e) {
+ catch (  IOException e) {
     ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
     SwingUtilities.invokeLater(dialog);
     abortOperation=true;

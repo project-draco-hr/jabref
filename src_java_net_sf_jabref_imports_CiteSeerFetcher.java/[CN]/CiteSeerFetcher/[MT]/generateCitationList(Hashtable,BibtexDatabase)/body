@@ -13,10 +13,9 @@
         citeseerURLString.append(OAI_ACTION);
         citeseerURLString.append("&" + OAI_METADATAPREFIX);
         citeseerURLString.append("&" + "identifier=" + key);
-        GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
-        citeseerHttpClient.executeMethod(citeseerMethod);
-        saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(dummyNamedCompound,newEntry,panel,dummyBoolean));
-        citeseerMethod.releaseConnection();
+        URL citeseerUrl=new URL(citeseerURLString.toString());
+        HttpURLConnection citeseerConnection=(HttpURLConnection)citeseerUrl.openConnection();
+        saxParser.parse(citeseerConnection.getInputStream(),new CiteSeerUndoHandler(dummyNamedCompound,newEntry,panel,dummyBoolean));
         database.insertEntry(newEntry);
         citationCounter++;
         UpdateProgressBarTwoValue updateValue=new UpdateProgressBarTwoValue(citationCounter);
@@ -24,11 +23,7 @@
       }
     }
   }
- catch (  HttpException e) {
-    System.out.println("HttpException: " + e.getReason());
-    e.printStackTrace();
-  }
-catch (  SAXException e) {
+ catch (  SAXException e) {
     System.out.println("SAXException: " + e.getLocalizedMessage());
     e.printStackTrace();
   }
@@ -37,6 +32,7 @@ catch (  IOException e) {
     SwingUtilities.invokeLater(dialog);
   }
 catch (  KeyCollisionException e) {
+    System.out.println("KeyCollisionException: " + e.getLocalizedMessage());
     e.printStackTrace();
   }
   return citationHashTable;
