@@ -16,10 +16,13 @@
       }
     }
   }
-  panel.output(Globals.lang("Duplicates removed") + ": " + toRemove.size());
   if (toRemove.size() == 0) {
+    panel.output(Globals.lang("No duplicates found") + ".");
     return;
   }
+  int answer=JOptionPane.showConfirmDialog(panel.frame(),Globals.lang("Duplicates found") + ": " + toRemove.size()+ ". "+ Globals.lang("Remove all?"),Globals.lang("Remove duplicates"),JOptionPane.OK_CANCEL_OPTION);
+  if (answer == JOptionPane.CANCEL_OPTION)   return;
+  panel.output(Globals.lang("Duplicates removed") + ": " + toRemove.size());
   for (Iterator i=toRemove.iterator(); i.hasNext(); ) {
     BibtexEntry entry=(BibtexEntry)i.next();
     panel.database.removeEntry(entry.getId());
@@ -27,7 +30,6 @@
   }
   ce.end();
   panel.undoManager.addEdit(ce);
-  dispose();
   SwingUtilities.invokeLater(new Runnable(){
     public void run(){
       panel.markBaseChanged();
