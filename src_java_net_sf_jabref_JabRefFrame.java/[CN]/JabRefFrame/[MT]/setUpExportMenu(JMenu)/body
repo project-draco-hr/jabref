@@ -12,16 +12,8 @@
         extension=".xml";
       }
       File outFile=null;
-      JFileChooser chooser=(prefs.get("workingDirectory") == null) ? new JabRefFileChooser((File)null) : new JabRefFileChooser(new File(prefs.get("workingDirectory")));
-      OpenFileFilter off=new OpenFileFilter(extension);
-      chooser.addChoosableFileFilter(off);
-      int returnVal=chooser.showSaveDialog(ths);
-      if (returnVal == JFileChooser.APPROVE_OPTION) {
-        outFile=chooser.getSelectedFile();
-        if ((chooser.getFileFilter() == off) && !outFile.getPath().endsWith(extension)) {
-          outFile=new File(outFile.getPath() + extension);
-        }
-      }
+      String chosenFile=Globals.getNewFile(ths,prefs,new File(prefs.get("workingDirectory")),extension,JFileChooser.SAVE_DIALOG,false);
+      if (chosenFile != null)       outFile=new File(chosenFile);
  else {
         return;
       }

@@ -1,0 +1,21 @@
+{
+  OpenFileFilter off=null;
+  if (extension == null)   off=new OpenFileFilter();
+ else   if (!extension.equals(NONE))   off=new OpenFileFilter(extension);
+  if (ON_MAC)   return getNewFileForMac(owner,prefs,directory,extension,dialogType,updateWorkingDirectory,dirOnly,off);
+  JFileChooser fc;
+  fc=new JabRefFileChooser(directory);
+  if (dirOnly)   fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+  fc.addChoosableFileFilter(off);
+  fc.setDialogType(dialogType);
+  fc.showOpenDialog(null);
+  File selectedFile=fc.getSelectedFile();
+  if (selectedFile == null) {
+    return null;
+  }
+  if ((dialogType == JFileChooser.SAVE_DIALOG) && (fc.getFileFilter() == off) && !selectedFile.getPath().endsWith(extension)) {
+    selectedFile=new File(selectedFile.getPath() + extension);
+  }
+  if (updateWorkingDirectory)   prefs.put("workingDirectory",selectedFile.getPath());
+  return selectedFile.getAbsolutePath();
+}

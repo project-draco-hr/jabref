@@ -1,9 +1,9 @@
 {
-  JabRefFileChooser chooser=new JabRefFileChooser(new File(comp.getText()));
-  if (dir)   chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-  int returnVal=chooser.showOpenDialog(null);
-  if (returnVal == JFileChooser.APPROVE_OPTION) {
-    File newFile=chooser.getSelectedFile();
+  String chosen=null;
+  if (dir)   chosen=Globals.getNewDir(_frame,_prefs,new File(comp.getText()),Globals.NONE,JFileChooser.OPEN_DIALOG,false);
+ else   chosen=Globals.getNewFile(_frame,_prefs,new File(comp.getText()),Globals.NONE,JFileChooser.OPEN_DIALOG,false);
+  if (chosen != null) {
+    File newFile=new File(chosen);
     comp.setText(newFile.getPath());
   }
 }

@@ -31,16 +31,12 @@
 );
   actions.put("saveAs",new BaseAction(){
     public void action() throws Throwable {
-      JFileChooser chooser=new JFileChooser(prefs.get("workingDirectory"));
-      chooser.setFileFilter(new OpenFileFilter());
-      int returnVal=chooser.showSaveDialog(frame);
-      if (returnVal == JFileChooser.APPROVE_OPTION) {
-        String name=chooser.getSelectedFile().getName(), path=chooser.getSelectedFile().getParent();
-        if (!name.endsWith(".bib"))         name=name + ".bib";
-        file=new File(path,name);
-        if (!file.exists() || (JOptionPane.showConfirmDialog(frame,"'" + name + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
+      String chosenFile=Globals.getNewFile(frame,prefs,new File(prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
+      if (chosenFile != null) {
+        file=new File(chosenFile);
+        if (!file.exists() || (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
           runCommand("save");
-          prefs.put("workingDirectory",path);
+          prefs.put("workingDirectory",file.getParent());
           frame.fileHistory.newFile(file.getPath());
         }
  else         file=null;
@@ -50,14 +46,10 @@
 );
   actions.put("saveSelectedAs",new BaseAction(){
     public void action() throws Throwable {
-      JFileChooser chooser=new JFileChooser(prefs.get("workingDirectory"));
-      chooser.setFileFilter(new OpenFileFilter());
-      int returnVal=chooser.showSaveDialog(frame);
-      if (returnVal == JFileChooser.APPROVE_OPTION) {
-        String name=chooser.getSelectedFile().getName(), path=chooser.getSelectedFile().getParent();
-        if (!name.endsWith(".bib"))         name=name + ".bib";
-        File expFile=new File(path,name);
-        if (!expFile.exists() || (JOptionPane.showConfirmDialog(frame,"'" + name + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
+      String chosenFile=Globals.getNewFile(frame,prefs,new File(prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
+      if (chosenFile != null) {
+        File expFile=new File(chosenFile);
+        if (!expFile.exists() || (JOptionPane.showConfirmDialog(frame,"'" + expFile.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
           saveDatabase(expFile,true);
           frame.fileHistory.newFile(expFile.getPath());
           frame.output(Globals.lang("Saved selected to") + " '" + expFile.getPath()+ "'.");
@@ -317,6 +309,7 @@ catch (            Throwable ex) {
       undoManager.addEdit(ce);
       markBaseChanged();
       refreshTable();
+      output(Globals.lang("Generated BibTeX key for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry")));
     }
   }
 );
@@ -386,11 +379,9 @@ catch (            Throwable ex) {
       Util.placeDialog(md,ths);
       md.setVisible(true);
       if (md.okPressed) {
-        JFileChooser chooser=(prefs.get("workingDirectory") == null) ? new JabRefFileChooser((File)null) : new JabRefFileChooser(new File(prefs.get("workingDirectory")));
-        chooser.addChoosableFileFilter(new OpenFileFilter());
-        int returnVal=chooser.showOpenDialog(ths);
-        if (returnVal != JFileChooser.APPROVE_OPTION)         return;
-        fileToOpen=chooser.getSelectedFile();
+        String chosenFile=Globals.getNewFile(frame,prefs,new File(prefs.get("workingDirectory")),null,JFileChooser.OPEN_DIALOG,false);
+        if (chosenFile == null)         return;
+        fileToOpen=new File(chosenFile);
         if (fileToOpen != null) {
           (new Thread(){
             public void run(){
