@@ -133,9 +133,8 @@
     public void action(){
       Transferable content=Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
       if (content != null) {
-        DataFlavor[] flavor=content.getTransferDataFlavors();
-        if ((flavor != null) && (flavor.length > 0) && flavor[0].equals(TransferableBibtexEntry.entryFlavor)) {
-          BibtexEntry[] bes=null;
+        BibtexEntry[] bes=null;
+        if (content.isDataFlavorSupported(TransferableBibtexEntry.entryFlavor)) {
           try {
             bes=(BibtexEntry[])(content.getTransferData(TransferableBibtexEntry.entryFlavor));
           }
@@ -145,30 +144,8 @@
 catch (          IOException ex) {
             ex.printStackTrace();
           }
-          if ((bes != null) && (bes.length > 0)) {
-            NamedCompound ce=new NamedCompound(bes.length > 1 ? "paste entries" : "paste entry");
-            for (int i=0; i < bes.length; i++) {
-              try {
-                BibtexEntry be=(BibtexEntry)(bes[i].clone());
-                be.setId(Util.createId(be.getType(),database));
-                database.insertEntry(be);
-                ce.addEdit(new UndoableInsertEntry(database,be,ths));
-              }
- catch (              KeyCollisionException ex) {
-                Util.pr("KeyCollisionException... this shouldn't happen.");
-              }
-            }
-            ce.end();
-            undoManager.addEdit(ce);
-            tableModel.remap();
-            entryTable.clearSelection();
-            entryTable.revalidate();
-            output(Globals.lang("Pasted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry"))+ ".");
-            refreshTable();
-            markBaseChanged();
-          }
         }
-        if ((flavor != null) && (flavor.length > 0) && flavor[0].equals(DataFlavor.stringFlavor)) {
+ else         if (content.isDataFlavorSupported(DataFlavor.stringFlavor)) {
           int[] rows=entryTable.getSelectedRows(), cols=entryTable.getSelectedColumns();
           Util.pr(rows.length + " x " + cols.length);
           if ((cols != null) && (cols.length == 1) && (cols[0] != 0)&& (rows != null)&& (rows.length == 1)) {
@@ -188,6 +165,54 @@ catch (            IllegalArgumentException ex) {
               output("Can't paste.");
             }
           }
+ else {
+            try {
+              BibtexParser bp=new BibtexParser(new java.io.StringReader((String)(content.getTransferData(DataFlavor.stringFlavor))));
+              BibtexDatabase db=bp.parse().getDatabase();
+              Util.pr("Parsed " + db.getEntryCount() + " entries from clipboard text");
+              if (db.getEntryCount() > 0) {
+                Set keySet=db.getKeySet();
+                if (keySet != null) {
+                  bes=new BibtexEntry[db.getEntryCount()];
+                  Iterator it=keySet.iterator();
+                  for (int i=0; it.hasNext(); i++) {
+                    bes[i]=db.getEntryById((String)(it.next()));
+                  }
+                }
+              }
+ else {
+                output(Globals.lang("Unable to parse clipboard text as Bibtex entries."));
+              }
+            }
+ catch (            UnsupportedFlavorException ex) {
+              ex.printStackTrace();
+            }
+catch (            Throwable ex) {
+              ex.printStackTrace();
+            }
+          }
+        }
+        if ((bes != null) && (bes.length > 0)) {
+          NamedCompound ce=new NamedCompound(bes.length > 1 ? "paste entries" : "paste entry");
+          for (int i=0; i < bes.length; i++) {
+            try {
+              BibtexEntry be=(BibtexEntry)(bes[i].clone());
+              be.setId(Util.createId(be.getType(),database));
+              database.insertEntry(be);
+              ce.addEdit(new UndoableInsertEntry(database,be,ths));
+            }
+ catch (            KeyCollisionException ex) {
+              Util.pr("KeyCollisionException... this shouldn't happen.");
+            }
+          }
+          ce.end();
+          undoManager.addEdit(ce);
+          tableModel.remap();
+          entryTable.clearSelection();
+          entryTable.revalidate();
+          output(Globals.lang("Pasted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry"))+ ".");
+          refreshTable();
+          markBaseChanged();
         }
       }
     }
@@ -525,7 +550,7 @@ catch (            IllegalArgumentException ex) {
       DuplicateResolverDialog drd=null;
       for (int i=0; i < bes.length - 1; i++)       for (int j=i + 1; j < bes.length; j++) {
         boolean eq=Util.isDuplicate(bes[i],bes[j],Globals.duplicateThreshold);
-        if (eq) {
+        if (eq && (database.getEntryById(bes[i].getId()) != null) && (database.getEntryById(bes[j].getId()) != null)) {
           if (drd == null)           drd=new DuplicateResolverDialog(frame,bes[i],bes[j]);
  else           drd.setEntries(bes[i],bes[j]);
           drd.show();

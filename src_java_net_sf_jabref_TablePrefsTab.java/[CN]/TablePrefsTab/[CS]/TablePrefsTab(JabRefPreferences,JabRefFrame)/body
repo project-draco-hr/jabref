@@ -8,6 +8,30 @@
   namesAsIs=new JCheckBox(Globals.lang("Show names unchanged"));
   namesFf=new JCheckBox(Globals.lang("Show 'Firstname Lastname'"));
   namesFl=new JCheckBox(Globals.lang("Show 'Lastname, Firstname'"));
+  secField=new JTextField(_prefs.get("secSort"),10);
+  terField=new JTextField(_prefs.get("terSort"),10);
+  secSort.insertItemAt(Globals.lang("<select>"),0);
+  terSort.insertItemAt(Globals.lang("<select>"),0);
+  secSort.setSelectedIndex(0);
+  terSort.setSelectedIndex(0);
+  secSort.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      if (secSort.getSelectedIndex() > 0) {
+        secField.setText(GUIGlobals.ALL_FIELDS[secSort.getSelectedIndex() - 1]);
+        secSort.setSelectedIndex(0);
+      }
+    }
+  }
+);
+  terSort.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      if (terSort.getSelectedIndex() > 0) {
+        terField.setText(GUIGlobals.ALL_FIELDS[terSort.getSelectedIndex() - 1]);
+        terSort.setSelectedIndex(0);
+      }
+    }
+  }
+);
   ButtonGroup bg=new ButtonGroup();
   bg.add(namesAsIs);
   bg.add(namesFf);
@@ -119,11 +143,6 @@ namesp.add(namesFl);
 con.fill=GridBagConstraints.BOTH;
 gbl.setConstraints(namesp,con);
 add(namesp);
-String sec=prefs.get("secSort"), ter=prefs.get("terSort");
-for (int i=0; i < GUIGlobals.ALL_FIELDS.length; i++) {
-if (sec.equals(GUIGlobals.ALL_FIELDS[i])) secSort.setSelectedIndex(i);
-if (ter.equals(GUIGlobals.ALL_FIELDS[i])) terSort.setSelectedIndex(i);
-}
 lab=new JLabel(Globals.lang("Secondary sort criterion"));
 con.gridwidth=1;
 con.insets=new Insets(0,5,0,0);
@@ -132,6 +151,8 @@ sort.add(lab);
 con.weightx=1;
 gbl.setConstraints(secSort,con);
 sort.add(secSort);
+gbl.setConstraints(secField,con);
+sort.add(secField);
 con.gridwidth=GridBagConstraints.REMAINDER;
 gbl.setConstraints(secDesc,con);
 sort.add(secDesc);
@@ -142,6 +163,8 @@ sort.add(lab);
 con.weightx=0;
 gbl.setConstraints(terSort,con);
 sort.add(terSort);
+gbl.setConstraints(terField,con);
+sort.add(terField);
 con.weightx=1;
 con.gridwidth=GridBagConstraints.REMAINDER;
 gbl.setConstraints(terDesc,con);
