@@ -1,0 +1,14 @@
+{
+  File f=new File(dir,file);
+  if (f.exists())   return f.getPath();
+  f=new File(dir);
+  File[] all=f.listFiles();
+  if (all == null)   return null;
+  String found=null;
+  int i=0;
+  while ((i < all.length) && (found == null)) {
+    if (all[i].isDirectory())     found=findInDir(file,all[i].getPath());
+    i++;
+  }
+  return found;
+}

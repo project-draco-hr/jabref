@@ -4,6 +4,9 @@
   while (e.hasMoreElements()) {
     score+=(((SearchRule)e.nextElement()).applyRule(searchString,bibtexEntry) > 0 ? 1 : 0);
   }
-  if (and)   return ((score == ruleSet.size()) ? 1 : 0);
- else   return ((score > 0) ? 1 : 0);
+  boolean res;
+  if (and)   res=(score == ruleSet.size());
+ else   res=(score > 0);
+  if (invert)   return (res ? 0 : 1);
+ else   return (res ? 1 : 0);
 }
