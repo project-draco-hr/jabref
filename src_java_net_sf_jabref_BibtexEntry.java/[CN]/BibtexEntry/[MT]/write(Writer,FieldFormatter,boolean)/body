@@ -14,12 +14,12 @@
     writeField(s[i],out,ff);
     written.put(s[i],null);
   }
-  for (java.util.Iterator i=_fields.keySet().iterator(); i.hasNext(); ) {
+  TreeSet remainingFields=new TreeSet();
+  for (Iterator i=_fields.keySet().iterator(); i.hasNext(); ) {
     String key=(String)i.next();
     boolean writeIt=(write ? GUIGlobals.isWriteableField(key) : GUIGlobals.isDisplayableField(key));
-    if (!written.containsKey(key) && writeIt) {
-      writeField(key,out,ff);
-    }
+    if (!written.containsKey(key) && writeIt)     remainingFields.add(key);
   }
+  for (Iterator i=remainingFields.iterator(); i.hasNext(); )   writeField((String)i.next(),out,ff);
   out.write("}\n");
 }
