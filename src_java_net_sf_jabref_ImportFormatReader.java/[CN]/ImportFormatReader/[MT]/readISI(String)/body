@@ -37,7 +37,7 @@
   HashMap hm=new HashMap();
   for (int i=1; i < entries.length; i++) {
     String[] fields=entries[i].split(" ## ");
-    String Type="", PT="";
+    String Type="", PT="", pages="";
     hm.clear();
     for (int j=0; j < fields.length; j++) {
       String beg=fields[j].substring(0,2);
@@ -52,7 +52,10 @@
       }
  else       if (beg.equals("ID"))       hm.put("keywords",fields[j].substring(2,fields[j].length()).trim().replaceAll("EOLEOL"," "));
  else       if (beg.equals("AB"))       hm.put("abstract",fields[j].substring(2,fields[j].length()).trim().replaceAll("EOLEOL"," "));
- else       if (beg.equals("BP"))       hm.put("pages",fields[j].substring(2,fields[j].length()).trim());
+ else       if (beg.equals("BP"))       pages=fields[j].substring(2,fields[j].length()).trim();
+ else       if (beg.equals("EP")) {
+        pages=pages + "--" + fields[j].substring(2,fields[j].length()).trim();
+      }
  else       if (beg.equals("PY"))       hm.put("year",fields[j].substring(2,fields[j].length()).trim());
  else       if (beg.equals("VL"))       hm.put("volume",fields[j].substring(2,fields[j].length()).trim());
  else       if (beg.equals("DT")) {
@@ -62,6 +65,7 @@
       }
  else       if (beg.equals("CR"))       hm.put("CitedReferences",fields[j].substring(2,fields[j].length()).replaceAll("EOLEOL"," ; ").trim());
     }
+    hm.put("pages",pages);
     BibtexEntry b=new BibtexEntry(Globals.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
     b.setField(hm);
     bibitems.add(b);
