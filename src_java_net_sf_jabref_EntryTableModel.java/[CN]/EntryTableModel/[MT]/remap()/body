@@ -1,10 +1,18 @@
 {
+  iconCols.clear();
+  iconCols.put(new Integer(1),PDF);
+  iconCols.put(new Integer(2),URL_);
+  padleft=1 + iconCols.size();
   Vector tmp=new Vector(2,1);
   for (int i=0; i < columns.length; i++) {
-    if (columns[i].equals("author") || columns[i].equals("editor"))     tmp.add(new Integer(i));
+    if (columns[i].equals("author") || columns[i].equals("editor")) {
+      tmp.add(new Integer(i));
+    }
   }
   nameCols=new int[tmp.size()];
-  for (int i=0; i < nameCols.length; i++)   nameCols[i]=((Integer)tmp.elementAt(i)).intValue();
+  for (int i=0; i < nameCols.length; i++) {
+    nameCols[i]=((Integer)tmp.elementAt(i)).intValue();
+  }
   namesAsIs=panel.prefs.getBoolean("namesAsIs");
   namesFf=panel.prefs.getBoolean("namesFf");
   Vector fields=new Vector(5,1), directions=new Vector(5,1);
@@ -24,6 +32,10 @@
   fields.add(frame.prefs.get("priSort"));
   fields.add(frame.prefs.get("secSort"));
   fields.add(frame.prefs.get("terSort"));
-  if (directions.size() < 4)   sorter=db.getSorter(new EntryComparator(((Boolean)directions.elementAt(0)).booleanValue(),((Boolean)directions.elementAt(1)).booleanValue(),((Boolean)directions.elementAt(2)).booleanValue(),(String)fields.elementAt(0),(String)fields.elementAt(1),(String)fields.elementAt(2)));
- else   sorter=db.getSorter(new EntryComparator(((Boolean)directions.elementAt(0)).booleanValue(),((Boolean)directions.elementAt(1)).booleanValue(),((Boolean)directions.elementAt(2)).booleanValue(),((Boolean)directions.elementAt(3)).booleanValue(),(String)fields.elementAt(0),(String)fields.elementAt(1),(String)fields.elementAt(2),(String)fields.elementAt(3)));
+  if (directions.size() < 4) {
+    sorter=db.getSorter(new EntryComparator(((Boolean)directions.elementAt(0)).booleanValue(),((Boolean)directions.elementAt(1)).booleanValue(),((Boolean)directions.elementAt(2)).booleanValue(),(String)fields.elementAt(0),(String)fields.elementAt(1),(String)fields.elementAt(2)));
+  }
+ else {
+    sorter=db.getSorter(new EntryComparator(((Boolean)directions.elementAt(0)).booleanValue(),((Boolean)directions.elementAt(1)).booleanValue(),((Boolean)directions.elementAt(2)).booleanValue(),((Boolean)directions.elementAt(3)).booleanValue(),(String)fields.elementAt(0),(String)fields.elementAt(1),(String)fields.elementAt(2),(String)fields.elementAt(3)));
+  }
 }

@@ -1,18 +1,35 @@
 {
   Object o;
   BibtexEntry be=db.getEntryById(getNameFromNumber(row));
-  if (col == 0)   o="" + (row + 1);
- else   if (columns[col - PADLEFT].equals(GUIGlobals.TYPE_HEADER)) {
+  String iconType=getIconTypeForColumn(col);
+  if (col == 0) {
+    o="" + (row + 1);
+  }
+ else   if (iconType != null) {
+    if (!hasField(row,iconType))     return null;
+    return GUIGlobals.getTableIcon(iconType);
+  }
+ else   if (columns[col - padleft].equals(GUIGlobals.TYPE_HEADER)) {
     o=be.getType().getName();
   }
  else {
-    o=be.getField(columns[col - PADLEFT]);
-    for (int i=0; i < nameCols.length; i++)     if (col - PADLEFT == nameCols[i]) {
-      if (o == null)       return null;
-      if (namesAsIs)       return o;
+    o=be.getField(columns[col - padleft]);
+    for (int i=0; i < nameCols.length; i++) {
+      if (col - padleft == nameCols[i]) {
+        if (o == null) {
+          return null;
+        }
+        if (namesAsIs) {
+          return o;
+        }
  else {
-        if (namesFf)         return ImportFormatReader.fixAuthor((String)o);
- else         return ImportFormatReader.fixAuthor_lastnameFirst((String)o);
+          if (namesFf) {
+            return ImportFormatReader.fixAuthor((String)o);
+          }
+ else {
+            return ImportFormatReader.fixAuthor_lastnameFirst((String)o);
+          }
+        }
       }
     }
   }

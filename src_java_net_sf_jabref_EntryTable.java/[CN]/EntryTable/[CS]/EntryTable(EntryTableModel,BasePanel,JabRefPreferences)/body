@@ -7,6 +7,7 @@
   antialiasing=prefs.getBoolean("antialias");
   ctrlClick=prefs.getBoolean("ctrlClick");
   getTableHeader().setReorderingAllowed(false);
+  setGridColor(GUIGlobals.gridColor);
   setShowVerticalLines(true);
   setShowHorizontalLines(true);
   setColumnSelectionAllowed(false);
@@ -18,7 +19,7 @@
   getTableHeader().addMouseListener(new MouseAdapter(){
     public void mouseClicked(    MouseEvent e){
       int col=getTableHeader().columnAtPoint(e.getPoint());
-      if (col > 0) {
+      if (col >= tableModel.padleft) {
         String s=tableModel.getColumnName(col).toLowerCase();
         if (!s.equals(prefs.get("priSort")))         prefs.put("priSort",s);
  else         prefs.putBoolean("priDescending",!prefs.getBoolean("priDescending"));
@@ -28,15 +29,7 @@
     }
   }
 );
-  addMouseListener(new MouseAdapter(){
-    public void mouseClicked(    MouseEvent e){
-      if ((e.getButton() == MouseEvent.BUTTON3) || (ctrlClick && (e.getButton() == MouseEvent.BUTTON1) && e.isControlDown())) {
-        rightClickMenu=new RightClickMenu(panel,panel.metaData);
-        rightClickMenu.show(ths,e.getX(),e.getY());
-      }
-    }
-  }
-);
+  addMouseListener(new TableClickListener());
   setWidths();
   sp.getViewport().setBackground(GUIGlobals.tableBackground);
   updateFont();

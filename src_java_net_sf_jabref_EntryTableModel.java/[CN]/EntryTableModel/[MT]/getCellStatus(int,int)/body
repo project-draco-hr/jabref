@@ -1,7 +1,16 @@
 {
-  if (col == 0)   return OTHER;
+  if (col == 0) {
+    return OTHER;
+  }
+  if (getIconTypeForColumn(col) != null) {
+    return ICON_COL;
+  }
   BibtexEntryType type=(db.getEntryById(getNameFromNumber(row))).getType();
-  if (columns[col - 1].equals(GUIGlobals.KEY_FIELD) || type.isRequired(columns[col - PADLEFT]))   return REQUIRED;
-  if (type.isOptional(columns[col - PADLEFT]))   return OPTIONAL;
+  if (columns[col - padleft].equals(GUIGlobals.KEY_FIELD) || type.isRequired(columns[col - padleft])) {
+    return REQUIRED;
+  }
+  if (type.isOptional(columns[col - padleft])) {
+    return OPTIONAL;
+  }
   return OTHER;
 }

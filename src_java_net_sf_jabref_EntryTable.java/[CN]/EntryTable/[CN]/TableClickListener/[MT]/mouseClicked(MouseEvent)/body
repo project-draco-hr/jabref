@@ -1,0 +1,41 @@
+{
+  int col=columnAtPoint(e.getPoint());
+  if ((col == 0) && (e.getClickCount() == 2)) {
+    try {
+      panel.runCommand("edit");
+    }
+ catch (    Throwable ex) {
+      ex.printStackTrace();
+    }
+  }
+  if ((e.getButton() == MouseEvent.BUTTON3) || (ctrlClick && (e.getButton() == MouseEvent.BUTTON1) && e.isControlDown())) {
+    rightClickMenu=new RightClickMenu(panel,panel.metaData);
+    rightClickMenu.show(ths,e.getX(),e.getY());
+  }
+  if (tableModel.getCellStatus(0,col) == EntryTableModel.ICON_COL) {
+    final int row=rowAtPoint(e.getPoint());
+    if (getValueAt(row,col) == null)     return;
+    final String iconType=tableModel.getIconTypeForColumn(col);
+    (new Thread(){
+      public void run(){
+        panel.output(Globals.lang("External viewer called") + ".");
+        BibtexEntry be=panel.database().getEntryById(tableModel.getNameFromNumber(row));
+        if (be == null) {
+          Globals.logger("Error: could not find entry.");
+          return;
+        }
+        Object link=be.getField(iconType);
+        if (iconType == null) {
+          Globals.logger("Error: no link to " + iconType + ".");
+          return;
+        }
+        try {
+          Util.openExternalViewer((String)link,iconType,prefs);
+        }
+ catch (        IOException ex) {
+        }
+      }
+    }
+).start();
+  }
+}

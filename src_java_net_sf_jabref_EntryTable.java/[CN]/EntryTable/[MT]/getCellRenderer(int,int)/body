@@ -1,12 +1,12 @@
 {
   int score=-3;
-  Renderer renderer;
+  TableCellRenderer renderer;
   int status;
   try {
     status=tableModel.getCellStatus(row,column);
   }
  catch (  ArrayIndexOutOfBoundsException ex) {
-    Globals.logger("Error happened in getCellRenderer method of EntryTable.");
+    Globals.logger("Error happened in getCellRenderer method of EntryTable, for cell (" + row + ","+ column+ ").");
     return defRenderer;
   }
   if (tableModel.hasField(row,Globals.MARKED)) {
@@ -24,6 +24,7 @@
  else       renderer=incRenderer;
     }
   }
+ else   if (status == EntryTableModel.ICON_COL)   renderer=iconRenderer;
  else   if (status == EntryTableModel.REQUIRED)   renderer=reqRenderer;
  else   if (status == EntryTableModel.OPTIONAL)   renderer=optRenderer;
  else   renderer=defRenderer;
