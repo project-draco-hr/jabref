@@ -20,13 +20,7 @@
       }
       BasePanel bp=new BasePanel(ths,db,fileToOpen,meta,prefs);
       bp.encoding=pr.getEncoding();
-      tabbedPane.add(fileToOpen.getName(),bp);
-      if (raisePanel) {
-        tabbedPane.setSelectedComponent(bp);
-      }
-      if (tabbedPane.getTabCount() == 1) {
-        setNonEmptyState();
-      }
+      SwingUtilities.invokeLater(new openItSwingHelper(bp,raisePanel));
       output(Globals.lang("Opened database") + " '" + fileToOpen.getPath()+ "' "+ Globals.lang("with")+ " "+ db.getEntryCount()+ " "+ Globals.lang("entries")+ ".");
       fileToOpen=null;
     }
