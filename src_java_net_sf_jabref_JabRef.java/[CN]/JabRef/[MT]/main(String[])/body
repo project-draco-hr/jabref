@@ -10,8 +10,6 @@
   StringOption exportFile=new StringOption("");
   NotifyOption helpO=new NotifyOption("");
   NotifyOption disableGui=new NotifyOption("");
-  exportFile.setHelpDescriptionSize(80);
-  exportFile.setFileCompleteOptionSize(12);
   NotifyOption loadSess=new NotifyOption("");
   StringOption exportPrefs=new StringOption("");
   StringOption importPrefs=new StringOption("");
@@ -26,8 +24,21 @@
   String[] leftOver=options.process(args);
   if (helpO.isInvoked()) {
     System.out.println(options.getHelp());
-    System.out.println(Globals.lang("Available import formats") + ": biblioscape, bibtexml, endnote, inspec, isi, medline, ovid, ris, scifinder, sixpack.");
-    System.out.println(Globals.lang("Available export formats") + ": bibtexml, docbook, html, simplehtml.\n");
+    System.out.println(Globals.lang("Available import formats") + ": biblioscape, bibtexml, endnote, inspec,\n\tisi, medline, ovid, ris, scifinder, sixpack.");
+    String outFormats=": bibtexml, docbook, html, simplehtml";
+    int length=outFormats.length();
+    for (int i=0; i < prefs.customExports.size(); i++) {
+      String[] format=prefs.customExports.getElementAt(i);
+      if (length + format[0].length() > 50) {
+        outFormats=outFormats + ",\n\t" + format[0];
+        length=format[0].length();
+      }
+ else {
+        outFormats=outFormats + ", " + format[0];
+        length+=1 + format[0].length();
+      }
+    }
+    System.out.println(Globals.lang("Available export formats") + outFormats + ".");
     System.exit(0);
   }
   SplashScreen ss=null;
@@ -131,7 +142,7 @@
         boolean foundCustom=false;
         for (int i=0; i < prefs.customExports.size(); i++) {
           String[] format=prefs.customExports.getElementAt(i);
-          if (format[0].toLowerCase().equals(data[1])) {
+          if (format[0].equals(data[1])) {
             try {
               File lfFile=new File(format[1]);
               String fname=(lfFile.getName().split("\\."))[0];
