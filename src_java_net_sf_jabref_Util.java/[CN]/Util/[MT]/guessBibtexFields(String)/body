@@ -1,0 +1,43 @@
+{
+  text="  " + text + "  ";
+  String[] split=null;
+  String year=null;
+  String yearRx="\\s\\d\\d\\d\\d";
+  String[] cand=getMatches(text,yearRx);
+  if (cand.length == 1) {
+    year=cand[0].trim();
+    Util.pr("Guessing 'year': '" + year + "'");
+  }
+ else   if (cand.length > 1) {
+    int good=-1, yearFound=-1;
+    find:     for (int i=0; i < cand.length; i++) {
+      int number=Integer.parseInt(cand[i].trim());
+      if (number == yearFound)       continue find;
+      if (number < 2500) {
+        if (good == -1) {
+          good=i;
+          yearFound=number;
+        }
+ else {
+          if ((yearFound < Globals.FUTURE_YEAR) && (number < Globals.FUTURE_YEAR)) {
+            good=-1;
+            break find;
+          }
+ else           if ((yearFound >= Globals.FUTURE_YEAR) && (number < Globals.FUTURE_YEAR)) {
+            good=i;
+            yearFound=number;
+          }
+        }
+      }
+    }
+    if (good >= 0) {
+      year=cand[good].trim();
+      Util.pr("Guessing 'year': '" + year + "'");
+    }
+  }
+  Util.pr("'" + text + "'");
+  String pages=null;
+  String pagesRx="\\s(\\d{1,4})( ??)-( ??)(\\d{1,4})(\\.|,|\\s)";
+  cand=getMatches(text,pagesRx);
+  if (cand.length > 0)   Util.pr(cand[0]);
+}

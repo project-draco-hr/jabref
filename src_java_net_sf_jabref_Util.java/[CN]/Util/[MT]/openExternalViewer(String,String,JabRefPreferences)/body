@@ -1,4 +1,13 @@
 {
+  if (fieldName.equals("ps") || fieldName.equals("pdf")) {
+    File file=new File(link);
+    if (!file.exists()) {
+      throw new IOException(Globals.lang("File not found") + ": '" + link+ "'.");
+    }
+    String[] split=file.getName().split("\\.");
+    if ((split.length >= 2) && (split[split.length - 1].equalsIgnoreCase("pdf")))     fieldName="pdf";
+ else     if ((split.length >= 2) && (split[split.length - 1].equalsIgnoreCase("ps")))     fieldName="ps";
+  }
   String cmdArray[]=new String[2];
   if (fieldName.equals("doi")) {
     cmdArray[0]=prefs.get("htmlviewer");
@@ -8,7 +17,6 @@
  else   if (fieldName.equals("url")) {
     try {
       if (link.startsWith("\\url{") && link.endsWith("}"))       link=link.substring(5,link.length() - 1);
-      System.err.println("Starting HTML browser: " + prefs.get("htmlviewer") + " "+ link);
       if (Globals.ON_MAC) {
         String[] cmd={"/usr/bin/open","-a",prefs.get("htmlviewer"),link};
         Process child=Runtime.getRuntime().exec(cmd);
@@ -25,7 +33,6 @@
   }
  else   if (fieldName.equals("ps")) {
     try {
-      System.err.println("Starting external viewer: " + prefs.get("psviewer") + " "+ link);
       if (Globals.ON_MAC) {
         String[] cmd={"/usr/bin/open","-a",prefs.get("psviewer"),link};
         Process child=Runtime.getRuntime().exec(cmd);
