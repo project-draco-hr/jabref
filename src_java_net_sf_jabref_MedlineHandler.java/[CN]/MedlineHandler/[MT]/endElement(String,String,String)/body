@@ -17,14 +17,20 @@
     b.setField("abstract",abstractText.replaceAll("%","\\\\%"));
     b.setField("keywords",keyword);
     b.setField("month",month);
-    b.setField("url",url);
     b.setField("number",number);
+    if (!doi.equals("")) {
+      b.setField("doi",doi);
+      b.setField("url","http://dx.doi.org/" + doi);
+    }
+    if (!pii.equals(""))     b.setField("pii",pii);
     bibitems.add(b);
     abstractText="";
     author="";
     title="";
     journal="";
     keyword="";
+    doi="";
+    pii="";
     year="";
     forename="";
     abstractText="";
@@ -96,5 +102,9 @@
   }
  else   if (localName.equals("AbstractText")) {
     inAbstractText=false;
+  }
+ else   if (localName.equals("ArticleId")) {
+    if (inDoi)     inDoi=false;
+ else     if (inPii)     inPii=false;
   }
 }
