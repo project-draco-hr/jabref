@@ -1,0 +1,61 @@
+{
+  BibtexEntry be=null;
+  try {
+    String name=file.getName(), path=file.getParent();
+    File temp=new File(path,name + GUIGlobals.tempExt);
+    if (prefs.getBoolean("backup")) {
+      File back=new File(path,name + GUIGlobals.backupExt);
+      if (back.exists())       back.renameTo(temp);
+      if (file.exists())       file.renameTo(back);
+      if (temp.exists())       temp.delete();
+    }
+ else {
+      if (file.exists())       file.renameTo(temp);
+    }
+    FileWriter fw=new FileWriter(file);
+    fw.write(Globals.lang(GUIGlobals.SIGNATURE));
+    String preamble=database.getPreamble();
+    if (preamble != null) {
+      fw.write("@PREAMBLE{");
+      fw.write(preamble);
+      fw.write("}\n\n");
+    }
+    for (int i=0; i < database.getStringCount(); i++) {
+      BibtexString bs=database.getString(i);
+      fw.write("@STRING{" + bs.getName() + " = ");
+      fw.write((new LatexFieldFormatter()).format(bs.getContent()));
+      fw.write("}\n\n");
+    }
+    String pri=prefs.get("priSort"), sec=prefs.get("secSort"), ter=prefs.get("terSort");
+    TreeSet sorter=new TreeSet(new CrossRefEntryComparator(new EntryComparator(prefs.getBoolean("priDescending"),prefs.getBoolean("secDescending"),prefs.getBoolean("terDescending"),pri,sec,ter)));
+    Set keySet=database.getKeySet();
+    if (keySet != null) {
+      Iterator i=keySet.iterator();
+      for (; i.hasNext(); ) {
+        sorter.add(database.getEntryById((String)(i.next())));
+      }
+    }
+    FieldFormatter ff=new LatexFieldFormatter();
+    for (Iterator i=sorter.iterator(); i.hasNext(); ) {
+      be=(BibtexEntry)(i.next());
+      boolean write=true;
+      if (checkSearch && !nonZeroField(be,Globals.SEARCH))       write=false;
+      if (checkGroup && !nonZeroField(be,Globals.GROUPSEARCH))       write=false;
+      if (write) {
+        be.write(fw,ff);
+        fw.write("\n");
+      }
+    }
+    if (metaData != null)     metaData.writeMetaData(fw);
+    fw.close();
+  }
+ catch (  Throwable ex) {
+    ex.printStackTrace();
+    String name=file.getName(), path=file.getParent();
+    File temp=new File(path,name + GUIGlobals.tempExt), back=new File(path,name + GUIGlobals.backupExt);
+    if (file.exists())     file.delete();
+    if (temp.exists())     temp.renameTo(file);
+ else     back.renameTo(file);
+    throw new SaveException(ex.getMessage(),be);
+  }
+}

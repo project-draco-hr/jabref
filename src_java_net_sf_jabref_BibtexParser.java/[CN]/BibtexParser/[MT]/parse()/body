@@ -1,0 +1,35 @@
+{
+  _db=new BibtexDatabase();
+  _meta=new HashMap();
+  skipWhitespace();
+  try {
+    while (!_eof) {
+      consumeUncritically('@');
+      skipWhitespace();
+      String entryType=parseTextToken();
+      BibtexEntryType tp=(BibtexEntryType)types.get(entryType.toLowerCase());
+      if (tp != null) {
+        _db.insertEntry(parseEntry(tp));
+      }
+ else       if (entryType.toLowerCase().equals("preamble")) {
+        _db.setPreamble(parsePreamble());
+      }
+ else       if (entryType.toLowerCase().equals("string")) {
+        _db.addString(parseString(),_db.getStringCount());
+      }
+ else       if (entryType.toLowerCase().equals("comment")) {
+        StringBuffer comment=parseBracketedText();
+        if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG)) {
+          String rest=comment.substring(GUIGlobals.META_FLAG.length());
+          int pos=rest.indexOf(':');
+          if (pos > 0)           _meta.put(rest.substring(0,pos),rest.substring(pos + 1));
+        }
+      }
+      skipWhitespace();
+    }
+    return new ParserResult(_db,_meta);
+  }
+ catch (  KeyCollisionException kce) {
+    throw new IOException("Duplicate ID in bibtex file: " + kce.toString());
+  }
+}

@@ -1,0 +1,18 @@
+{
+  if ((fileToOpen != null) && (fileToOpen.exists())) {
+    try {
+      prefs.put("workingDirectory",fileToOpen.getPath());
+      ParserResult pr=loadDatabase(fileToOpen);
+      BibtexDatabase db=pr.getDatabase();
+      HashMap meta=pr.getMetaData();
+      BasePanel bp=new BasePanel(ths,db,fileToOpen,meta,prefs);
+      tabbedPane.add(fileToOpen.getName(),bp);
+      tabbedPane.setSelectedComponent(bp);
+      output("Opened database '" + fileToOpen.getPath() + "' with "+ db.getEntryCount()+ " entries.");
+      fileToOpen=null;
+    }
+ catch (    Throwable ex) {
+      JOptionPane.showMessageDialog(ths,ex.getMessage(),"Open database",JOptionPane.ERROR_MESSAGE);
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  for (Iterator i=inData.keySet().iterator(); i.hasNext(); ) {
+    String key=(String)i.next();
+    data=new StringReader((String)inData.get(key));
+    String unit;
+    Vector orderedData=new Vector();
+    try {
+      while ((unit=getNextUnit(data)) != null) {
+        orderedData.add(unit);
+      }
+    }
+ catch (    IOException ex) {
+      System.err.println("Weird error while parsing meta data.");
+    }
+    metaData.put(key,orderedData);
+  }
+}

@@ -1,0 +1,41 @@
+{
+  skipWhitespace();
+  consume('=');
+  skipWhitespace();
+  StringBuffer value=new StringBuffer();
+  int c, j='.';
+  while (((c=peek()) != ',') && (c != '}') && (c != ')')) {
+    if (_eof) {
+      throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
+    }
+    if (c == '"') {
+      consume('"');
+      while (!((peek() == '"') && (j != '\\'))) {
+        j=read();
+        if (_eof || (j == -1) || (j == 65535)) {
+          throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
+        }
+        value.append((char)j);
+      }
+      consume('"');
+    }
+ else     if (c == '{') {
+      value.append(parseBracketedText());
+    }
+ else     if (Character.isDigit((char)c)) {
+      String numString=parseTextToken();
+      int numVal=Integer.parseInt(numString);
+      value.append((new Integer(numVal)).toString());
+    }
+ else     if (c == '#') {
+      consume('#');
+    }
+ else {
+      String textToken=parseTextToken();
+      if (textToken.length() == 0)       throw new IOException("Error in line " + line + " or above: "+ "Empty text token.\nThis could be caused "+ "by a missing comma between two fields.");
+      value.append("#" + textToken + "#");
+    }
+    skipWhitespace();
+  }
+  return value.toString();
+}

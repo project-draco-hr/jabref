@@ -1,0 +1,18 @@
+{
+  Vector fields=new Vector(5,1), directions=new Vector(5,1);
+  if (panel.showingGroup) {
+    fields.add(Globals.GROUPSEARCH);
+    directions.add(new Boolean(true));
+  }
+  if (panel.showingSearchResults) {
+    fields.add(Globals.SEARCH);
+    directions.add(new Boolean(true));
+  }
+  directions.add(new Boolean(frame.prefs.getBoolean("priDescending")));
+  directions.add(new Boolean(frame.prefs.getBoolean("secDescending")));
+  directions.add(new Boolean(frame.prefs.getBoolean("terDescending")));
+  fields.add(frame.prefs.get("priSort"));
+  fields.add(frame.prefs.get("secSort"));
+  fields.add(frame.prefs.get("terSort"));
+  sorter=db.getSorter(new EntryComparator(((Boolean)directions.elementAt(0)).booleanValue(),((Boolean)directions.elementAt(1)).booleanValue(),((Boolean)directions.elementAt(2)).booleanValue(),(String)fields.elementAt(0),(String)fields.elementAt(1),(String)fields.elementAt(2)));
+}

@@ -1,0 +1,24 @@
+{
+  BibtexEntry be=db.getEntryById(getNameFromNumber(row));
+  boolean set=false;
+  String toSet=null, fieldName=getColumnName(col), text;
+  if (value != null) {
+    text=value.toString();
+    if (text.length() > 0) {
+      toSet=text;
+      Object o;
+      if (((o=be.getField(fieldName.toLowerCase())) == null) || ((o != null) && !o.toString().equals(toSet)))       set=true;
+    }
+ else     if (be.getField(fieldName.toLowerCase()) != null)     set=true;
+  }
+  if (set)   try {
+    if (toSet != null)     (new LatexFieldFormatter()).format(toSet);
+    Object oldVal=be.getField(fieldName.toLowerCase());
+    panel.undoManager.addEdit(new net.sf.jabref.undo.UndoableFieldChange(be,fieldName.toLowerCase(),oldVal,toSet));
+    be.setField(fieldName.toLowerCase(),toSet);
+    panel.markBaseChanged();
+  }
+ catch (  IllegalArgumentException ex) {
+    frame.output("Invalid field format: " + ex.getMessage());
+  }
+}

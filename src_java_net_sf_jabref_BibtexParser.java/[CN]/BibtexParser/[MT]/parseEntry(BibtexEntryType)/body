@@ -1,0 +1,24 @@
+{
+  skipWhitespace();
+  consume('{','(');
+  skipWhitespace();
+  String key=parseTextToken(), id=Util.createId(tp,_db);
+  BibtexEntry result=new BibtexEntry(id,tp);
+  result.setField(GUIGlobals.KEY_FIELD,key);
+  skipWhitespace();
+  while (true) {
+    int c=peek();
+    if ((c == '}') || (c == ')')) {
+      break;
+    }
+    consume(',');
+    skipWhitespace();
+    c=peek();
+    if ((c == '}') || (c == ')')) {
+      break;
+    }
+    parseField(result);
+  }
+  consume('}',')');
+  return result;
+}

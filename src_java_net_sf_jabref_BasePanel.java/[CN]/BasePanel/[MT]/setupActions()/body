@@ -1,0 +1,49 @@
+{
+  actions.put("undo",undoAction);
+  actions.put("redo",redoAction);
+  actions.put("save",new BaseAction(){
+    public void action(){
+      if (file == null)       runCommand("saveAs");
+ else {
+        try {
+          FileActions.saveDatabase(database,metaData,file,prefs,false,false);
+          undoManager.markUnchanged();
+          baseChanged=false;
+          frame.setTabTitle(ths,file.getName());
+          frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
+        }
+ catch (        SaveException ex) {
+          if (ex.specificEntry()) {
+            int row=tableModel.getNumberFromName(ex.getEntry().getId()), topShow=Math.max(0,row - 3);
+            entryTable.setRowSelectionInterval(row,row);
+            entryTable.setColumnSelectionInterval(0,entryTable.getColumnCount() - 1);
+            entryTable.scrollTo(topShow);
+          }
+          ex.printStackTrace();
+          JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file") + ".\n" + ex.getMessage(),Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    }
+  }
+);
+  actions.put("saveAs",new BaseAction(){
+    public void action(){
+      JFileChooser chooser=new JFileChooser(prefs.get("workingDirectory"));
+      Util.pr("BasePanel: must set file filter");
+      int returnVal=chooser.showSaveDialog(frame);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        String name=chooser.getSelectedFile().getName(), path=chooser.getSelectedFile().getParent();
+        if (!name.endsWith(".bib"))         name=name + ".bib";
+        file=new File(path,name);
+        if (!file.exists() || (JOptionPane.showConfirmDialog(frame,"File '" + name + "' exists. Overwrite?","Save database",JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
+          runCommand("save");
+          prefs.put("workingDirectory",path);
+        }
+ else         file=null;
+      }
+ else {
+      }
+    }
+  }
+);
+}

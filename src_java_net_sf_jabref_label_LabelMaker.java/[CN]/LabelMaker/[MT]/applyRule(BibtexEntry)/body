@@ -1,0 +1,11 @@
+{
+  if (ruleTable.containsKey(newEntry.getType().getName())) {
+    newEntry=((LabelRule)ruleTable.get(newEntry.getType().getName())).applyRule(newEntry);
+  }
+ else {
+    newEntry=applyDefaultRule(newEntry);
+  }
+  String key=(String)newEntry.getField(GUIGlobals.KEY_FIELD), newKey=Util.checkLegalKey(key);
+  if (!newKey.equals(key))   newEntry.setField(GUIGlobals.KEY_FIELD,newKey);
+  return newEntry;
+}

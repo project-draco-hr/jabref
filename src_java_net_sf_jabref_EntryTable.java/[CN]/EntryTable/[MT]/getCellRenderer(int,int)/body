@@ -1,0 +1,25 @@
+{
+  int score=-3;
+  if (!showingSearchResults || tableModel.nonZeroField(row,Globals.SEARCH))   score++;
+  if (!showingGroup || tableModel.nonZeroField(row,Globals.GROUPSEARCH))   score+=2;
+  if (score < -1)   return veryGrayedOutRenderer;
+  if (score == -1)   return grayedOutRenderer;
+  if (!prefs.getBoolean("tableColorCodesOn"))   return defRenderer;
+  if (column == 0) {
+    if (tableModel.isComplete(row))     return defRenderer;
+ else {
+      if (tableModel.hasCrossRef(row))       return maybeIncRenderer;
+ else       return incRenderer;
+    }
+  }
+  int status;
+  try {
+    status=tableModel.getCellStatus(row,column);
+  }
+ catch (  ArrayIndexOutOfBoundsException ex) {
+    return defRenderer;
+  }
+  if (status == EntryTableModel.REQUIRED)   return reqRenderer;
+ else   if (status == EntryTableModel.OPTIONAL)   return optRenderer;
+ else   return defRenderer;
+}

@@ -1,0 +1,36 @@
+{
+  super(tm_);
+  this.tableModel=tm_;
+  prefs=prefs_;
+  getTableHeader().setReorderingAllowed(false);
+  setShowVerticalLines(true);
+  setShowHorizontalLines(true);
+  setColumnSelectionAllowed(true);
+  setAutoResizeMode(prefs.getInt("autoResizeMode"));
+  DefaultCellEditor dce=new DefaultCellEditor(new JTextField());
+  dce.setClickCountToStart(2);
+  setDefaultEditor(String.class,dce);
+  getTableHeader().addMouseListener(new MouseAdapter(){
+    public void mouseClicked(    MouseEvent e){
+      int col=getTableHeader().columnAtPoint(e.getPoint());
+      if (col > 0) {
+        String s=tableModel.getColumnName(col).toLowerCase();
+        if (!s.equals(prefs.get("priSort")))         prefs.put("priSort",s);
+ else         prefs.putBoolean("priDescending",!prefs.getBoolean("priDescending"));
+        tableModel.remap();
+        repaint();
+      }
+    }
+  }
+);
+  addMouseListener(new MouseAdapter(){
+    public void mouseClicked(    MouseEvent e){
+      if (e.getButton() == MouseEvent.BUTTON3) {
+        if (rightClickMenu != null)         rightClickMenu.show(ths,e.getX(),e.getY());
+      }
+    }
+  }
+);
+  setWidths();
+  sp.getViewport().setBackground(GUIGlobals.tableBackground);
+}

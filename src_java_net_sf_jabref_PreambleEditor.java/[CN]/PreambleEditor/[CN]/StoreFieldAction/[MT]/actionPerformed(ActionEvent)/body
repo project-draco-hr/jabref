@@ -1,0 +1,26 @@
+{
+  String toSet=null;
+  boolean set;
+  if (ed.getText().length() > 0)   toSet=ed.getText();
+  if (toSet == null) {
+    if (base.getPreamble() == null)     set=false;
+ else     set=true;
+  }
+ else {
+    if ((base.getPreamble() != null) && toSet.equals(base.getPreamble().toString()))     set=false;
+ else     set=true;
+  }
+  if (set) {
+    panel.undoManager.addEdit(new UndoablePreambleChange(base,panel,base.getPreamble(),toSet));
+    base.setPreamble(toSet);
+    if ((toSet != null) && (toSet.length() > 0)) {
+      ed.setLabelColor(GUIGlobals.validFieldColor);
+      ed.setBackground(GUIGlobals.validFieldBackground);
+    }
+ else {
+      ed.setLabelColor(GUIGlobals.nullFieldColor);
+      ed.setBackground(GUIGlobals.validFieldBackground);
+    }
+    panel.markBaseChanged();
+  }
+}
