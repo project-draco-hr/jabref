@@ -4,12 +4,14 @@
   searchString=(String)strings.nextElement();
   int searchScore=0;
   BibtexEntry bes=null;
-  int numRows=thisDatabase.getEntryCount();
+  int numRows=thisDatabase.getEntryCount(), hits=0;
   for (int row=0; row < numRows; row++) {
     bes=thisDatabase.getEntryById(thisTableModel.getNameFromNumber(row));
     searchScore=thisRuleSet.applyRules(thisSearchOptions,bes);
     bes.setField(searchValueField,String.valueOf(searchScore));
+    if (searchScore > 0)     hits++;
   }
   if (reorder)   panel.showSearchResults(searchValueField);
  else   panel.selectSearchResults();
+  if ((searchValueField == null) || (searchValueField == Globals.SEARCH))   panel.output(Globals.lang("Searched database. Number of hits") + ": " + hits);
 }
