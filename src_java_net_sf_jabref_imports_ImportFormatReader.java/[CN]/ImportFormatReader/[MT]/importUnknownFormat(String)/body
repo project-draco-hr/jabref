@@ -1,20 +1,20 @@
 {
-  BibtexDatabase database=null;
+  List entryList=null;
   String usedFormat=null;
   int bestResult=0;
-  String[] formats=new String[]{"endnote","medline","biblioscape","bibtexml","inspec","isi","ovid","ris","scifinder","jstor","silverplatter","sixpack"};
-  for (int i=0; i < formats.length; i++) {
+  for (Iterator i=getImportFormats().iterator(); i.hasNext(); ) {
+    ImportFormat imFo=(ImportFormat)((Map.Entry)i.next()).getValue();
     try {
-      BibtexDatabase base=importFile(formats[i],filename);
-      int entries=(base != null ? base.getEntryCount() : 0);
-      if (entries > bestResult) {
-        bestResult=entries;
-        usedFormat=formats[i];
-        database=base;
+      List entries=importFromFile(imFo,filename);
+      int entryCount=(entries != null ? entries.size() : 0);
+      if (entryCount > bestResult) {
+        bestResult=entryCount;
+        usedFormat=imFo.getFormatName();
+        entryList=entries;
       }
     }
  catch (    IOException ex) {
     }
   }
-  return new Object[]{usedFormat,database};
+  return new Object[]{usedFormat,entryList};
 }

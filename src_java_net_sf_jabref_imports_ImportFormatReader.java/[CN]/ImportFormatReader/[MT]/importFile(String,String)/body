@@ -1,21 +1,14 @@
 {
   BibtexDatabase database=null;
-  ArrayList bibentries=null;
+  List bibentries=null;
   File f=new File(filename);
   if (!f.exists())   throw new IOException(Globals.lang("File not found") + ": " + filename);
-  if (format.equals("endnote"))   bibentries=readEndnote(filename);
- else   if (format.equals("medline"))   bibentries=fetchMedline(filename);
- else   if (format.equals("biblioscape"))   bibentries=readBiblioscapeTagFile(filename);
- else   if (format.equals("sixpack"))   bibentries=readSixpack(filename);
- else   if (format.equals("bibtexml"))   bibentries=readBibTeXML(filename);
- else   if (format.equals("inspec"))   bibentries=readINSPEC(filename);
- else   if (format.equals("isi"))   bibentries=readISI(filename);
- else   if (format.equals("ovid"))   bibentries=readOvid(filename);
- else   if (format.equals("ris"))   bibentries=readReferenceManager10(filename);
- else   if (format.equals("scifinder"))   bibentries=readScifinder(filename);
- else   if (format.equals("jstor"))   bibentries=readJStorFile(filename);
- else   if (format.equals("silverplatter"))   bibentries=readSilverPlatter(filename);
- else   throw new IOException(Globals.lang("Could not resolve import format") + " '" + format+ "'");
+  try {
+    bibentries=Globals.importFormatReader.importFromFile(format,filename);
+  }
+ catch (  IllegalArgumentException ex) {
+    throw new IOException(Globals.lang("Could not resolve import format") + " '" + format+ "'");
+  }
   if (bibentries == null)   throw new IOException(Globals.lang("Import failed"));
   purgeEmptyEntries(bibentries);
   database=new BibtexDatabase();

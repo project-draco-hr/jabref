@@ -1,0 +1,19 @@
+{
+  SAXParserFactory parserFactory=SAXParserFactory.newInstance();
+  parserFactory.setValidating(true);
+  parserFactory.setNamespaceAware(true);
+  ArrayList bibItems=null;
+  try {
+    SAXParser parser=parserFactory.newSAXParser();
+    MedlineHandler handler=new MedlineHandler();
+    parser.parse(stream,handler);
+    bibItems=handler.getItems();
+  }
+ catch (  javax.xml.parsers.ParserConfigurationException e1) {
+  }
+catch (  org.xml.sax.SAXException e2) {
+  }
+catch (  java.io.IOException e3) {
+  }
+  return bibItems;
+}

@@ -1,0 +1,18 @@
+{
+  SAXParserFactory parserFactory=SAXParserFactory.newInstance();
+  parserFactory.setNamespaceAware(true);
+  ArrayList bibItems=new ArrayList();
+  try {
+    SAXParser parser=parserFactory.newSAXParser();
+    BibTeXMLHandler handler=new BibTeXMLHandler();
+    parser.parse(stream,handler);
+    bibItems=handler.getItems();
+  }
+ catch (  javax.xml.parsers.ParserConfigurationException e1) {
+  }
+catch (  org.xml.sax.SAXException e2) {
+  }
+catch (  java.io.IOException e3) {
+  }
+  return bibItems;
+}
