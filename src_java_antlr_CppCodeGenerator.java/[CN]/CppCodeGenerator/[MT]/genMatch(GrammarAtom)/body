@@ -8,14 +8,12 @@
     }
   }
  else   if (atom instanceof CharLiteralElement) {
-    if (grammar instanceof LexerGrammar) {
-      genMatchUsingAtomText(atom);
-    }
- else {
-      tool.error("cannot ref character literals in grammar: " + atom);
-    }
+    antlrTool.error("cannot ref character literals in grammar: " + atom);
   }
  else   if (atom instanceof TokenRefElement) {
-    genMatchUsingAtomText(atom);
+    genMatchUsingAtomTokenType(atom);
+  }
+ else   if (atom instanceof WildcardElement) {
+    gen((WildcardElement)atom);
   }
 }

@@ -1,0 +1,27 @@
+{
+  if (actionStr == null || actionStr.length() == 0)   return null;
+  if (grammar == null)   return actionStr;
+  if ((grammar.buildAST && actionStr.indexOf('#') != -1) || grammar instanceof TreeWalkerGrammar || ((grammar instanceof LexerGrammar || grammar instanceof ParserGrammar) && actionStr.indexOf('$') != -1)) {
+    antlr.actions.csharp.ActionLexer lexer=new antlr.actions.csharp.ActionLexer(actionStr,currentRule,this,tInfo);
+    lexer.setLineOffset(line);
+    lexer.setFilename(grammar.getFilename());
+    lexer.setTool(antlrTool);
+    try {
+      lexer.mACTION(true);
+      actionStr=lexer.getTokenObject().getText();
+    }
+ catch (    RecognitionException ex) {
+      lexer.reportError(ex);
+      return actionStr;
+    }
+catch (    TokenStreamException tex) {
+      antlrTool.panic("Error reading action:" + actionStr);
+      return actionStr;
+    }
+catch (    CharStreamException io) {
+      antlrTool.panic("Error reading action:" + actionStr);
+      return actionStr;
+    }
+  }
+  return actionStr;
+}

@@ -1,8 +1,9 @@
 {
   if (g.debuggingOutput)   semPreds=new Vector();
+  if (g.charVocabulary.size() > 256)   antlrTool.warning(g.getFilename() + ": C++ mode does not support more than 8 bit characters (vocabulary size now: " + g.charVocabulary.size()+ ")");
   setGrammar(g);
   if (!(grammar instanceof LexerGrammar)) {
-    tool.panic("Internal error generating lexer");
+    antlrTool.panic("Internal error generating lexer");
   }
   genBody(g);
   genInclude(g);

@@ -1,10 +1,15 @@
 {
-  if (DEBUG_CODE_GENERATOR)   System.out.println("genChar(" + atom + ")");
+  if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)   System.out.println("genChar(" + atom + ")");
+  if (!(grammar instanceof LexerGrammar))   antlrTool.error("cannot ref character literals in grammar: " + atom);
   if (atom.getLabel() != null) {
     println(atom.getLabel() + " = " + lt1Value+ ";");
   }
   boolean oldsaveText=saveText;
   saveText=saveText && atom.getAutoGenType() == GrammarElement.AUTO_GEN_NONE;
-  genMatch(atom);
+  if (!saveText || atom.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)   println("_saveIndex = text.length();");
+  print(atom.not ? "matchNot(" : "match(");
+  _print(convertJavaToCppString(atom.atomText,true));
+  _println(");");
+  if (!saveText || atom.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)   println("text.erase(_saveIndex);");
   saveText=oldsaveText;
 }

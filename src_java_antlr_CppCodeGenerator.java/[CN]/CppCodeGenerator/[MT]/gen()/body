@@ -3,6 +3,9 @@
     Enumeration grammarIter=behavior.grammars.elements();
     while (grammarIter.hasMoreElements()) {
       Grammar g=(Grammar)grammarIter.nextElement();
+      if (g.debuggingOutput) {
+        antlrTool.error(g.getFilename() + ": C++ mode does not support -debug");
+      }
       g.setGrammarAnalyzer(analyzer);
       g.setCodeGenerator(this);
       analyzer.setGrammar(g);
@@ -21,6 +24,6 @@
     }
   }
  catch (  IOException e) {
-    System.out.println(e.getMessage());
+    antlrTool.reportException(e,null);
   }
 }

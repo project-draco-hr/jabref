@@ -1,8 +1,8 @@
 {
   tabs=1;
-  if (DEBUG_CODE_GENERATOR)   System.out.println("genRuleHeader(" + s.getId() + ")");
+  if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)   System.out.println("genRuleHeader(" + s.getId() + ")");
   if (!s.isDefined()) {
-    tool.error("undefined rule: " + s.getId());
+    antlrTool.error("undefined rule: " + s.getId());
     return;
   }
   RuleBlock rblk=s.getBlock();
@@ -13,7 +13,7 @@
   saveText=rblk.getAutoGen();
   print(s.access + ": ");
   if (rblk.returnAction != null) {
-    _print(extractTypeOfAction(rblk.returnAction,rblk.getLine()) + " ");
+    _print(extractTypeOfAction(rblk.returnAction,rblk.getLine(),rblk.getColumn()) + " ");
   }
  else {
     _print("void ");

@@ -36,16 +36,16 @@
   if (((LexerGrammar)grammar).filterMode) {
     println("setCommitToPath(false);");
     if (filterRule != null) {
-      if (!grammar.isDefined(CodeGenerator.lexerRuleName(filterRule))) {
-        grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+      if (!grammar.isDefined(CodeGenerator.encodeLexerRuleName(filterRule))) {
+        grammar.antlrTool.error("Filter rule " + filterRule + " does not exist in this lexer");
       }
  else {
-        RuleSymbol rs=(RuleSymbol)grammar.getSymbol(CodeGenerator.lexerRuleName(filterRule));
+        RuleSymbol rs=(RuleSymbol)grammar.getSymbol(CodeGenerator.encodeLexerRuleName(filterRule));
         if (!rs.isDefined()) {
-          grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+          grammar.antlrTool.error("Filter rule " + filterRule + " does not exist in this lexer");
         }
  else         if (rs.access.equals("public")) {
-          grammar.tool.error("Filter rule " + filterRule + " must be protected");
+          grammar.antlrTool.error("Filter rule " + filterRule + " must be protected");
         }
       }
       println("int _m;");
@@ -53,19 +53,17 @@
     }
   }
   println("resetText();");
-  println("try {   // for char stream error handling");
-  tabs++;
-  println("try {   // for lexical error handling");
+  println("try {   // for lexical and char stream error handling");
   tabs++;
   for (int i=0; i < nextTokenBlk.getAlternatives().size(); i++) {
     Alternative a=nextTokenBlk.getAlternativeAt(i);
     if (a.cache[1].containsEpsilon()) {
-      tool.warning("found optional path in nextToken()");
+      antlrTool.warning("found optional path in nextToken()");
     }
   }
   String newline=System.getProperty("line.separator");
   CppBlockFinishingInfo howToFinish=genCommonBlock(nextTokenBlk,false);
-  String errFinish="if (LA(1)==EOF_CHAR) {uponEOF(); _returnToken = makeToken(" + namespaceAntlr + "Token::EOF_TYPE);}";
+  String errFinish="if (LA(1)==EOF_CHAR)" + newline + "\t\t\t\t{"+ newline+ "\t\t\t\t\tuponEOF();"+ newline+ "\t\t\t\t\t_returnToken = makeToken("+ namespaceAntlr+ "Token::EOF_TYPE);"+ newline+ "\t\t\t\t}";
   errFinish+=newline + "\t\t\t\t";
   if (((LexerGrammar)grammar).filterMode) {
     if (filterRule == null) {
@@ -82,7 +80,7 @@
   if (((LexerGrammar)grammar).filterMode && filterRule != null) {
     println("commit();");
   }
-  println("if ( !_returnToken ) goto tryAgain; // found SKIP token");
+  println("if ( !_returnToken )" + newline + "\t\t\t\tgoto tryAgain; // found SKIP token"+ newline);
   println("_ttype = _returnToken->getType();");
   if (((LexerGrammar)grammar).getTestLiterals()) {
     genLiteralsTest();
@@ -95,7 +93,12 @@
   tabs++;
   if (((LexerGrammar)grammar).filterMode) {
     if (filterRule == null) {
-      println("if ( !getCommitToPath() ) {consume(); goto tryAgain;}");
+      println("if ( !getCommitToPath() ) {");
+      tabs++;
+      println("consume();");
+      println("goto tryAgain;");
+      tabs--;
+      println("}");
     }
  else {
       println("if ( !getCommitToPath() ) {");
@@ -108,27 +111,31 @@
       println("	reportError(ee);");
       println("	consume();");
       println("}");
-      println("goto tryAgain;");
       tabs--;
       println("}");
+      println("else");
     }
   }
   if (nextTokenBlk.getDefaultErrorHandler()) {
+    println("{");
+    tabs++;
     println("reportError(e);");
     println("consume();");
+    tabs--;
+    println("}");
   }
  else {
+    tabs++;
     println("throw " + namespaceAntlr + "TokenStreamRecognitionException(e);");
+    tabs--;
   }
-  tabs--;
-  println("}");
   tabs--;
   println("}");
   println("catch (" + namespaceAntlr + "CharStreamIOException& csie) {");
-  println("   throw " + namespaceAntlr + "TokenStreamIOException(csie.io);");
+  println("\tthrow " + namespaceAntlr + "TokenStreamIOException(csie.io);");
   println("}");
   println("catch (" + namespaceAntlr + "CharStreamException& cse) {");
-  println("   throw " + namespaceAntlr + "TokenStreamException(cse.getMessage());");
+  println("\tthrow " + namespaceAntlr + "TokenStreamException(cse.getMessage());");
   println("}");
   _println("tryAgain:;");
   tabs--;

@@ -1,15 +1,15 @@
 {
   setGrammar(g);
-  System.out.println("Generating " + grammar.getClassName() + TokenTypesFileExt);
-  currentOutput=antlr.Tool.openOutputFile(grammar.getClassName() + TokenTypesFileExt);
+  antlrTool.reportProgress("Generating " + grammar.getClassName() + TokenTypesFileExt);
+  currentOutput=antlrTool.openOutputFile(grammar.getClassName() + TokenTypesFileExt);
   tabs=0;
   doingLexRules=true;
   genHeader();
   println("");
   if (grammar.comment != null) {
-    _println(grammar.comment);
+    _println(HTMLEncode(grammar.comment));
   }
-  println("class " + grammar.getClassName() + " extends "+ grammar.getSuperClass()+ " {");
+  println("Definition of lexer " + grammar.getClassName() + ", which is a subclass of "+ grammar.getSuperClass()+ ".");
   genNextToken();
   Enumeration ids=grammar.rules.elements();
   while (ids.hasMoreElements()) {

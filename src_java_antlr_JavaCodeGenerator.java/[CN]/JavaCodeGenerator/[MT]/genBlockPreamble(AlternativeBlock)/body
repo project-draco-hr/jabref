@@ -8,12 +8,12 @@
           if (!(a instanceof RuleRefElement) && ((AlternativeBlock)a).not && analyzer.subruleCanBeInverted(((AlternativeBlock)a),grammar instanceof LexerGrammar)) {
             println(labeledElementType + " " + a.getLabel()+ " = "+ labeledElementInit+ ";");
             if (grammar.buildAST) {
-              println(labeledElementASTType + " " + a.getLabel()+ "_AST = null;");
+              genASTDeclaration(a);
             }
           }
  else {
             if (grammar.buildAST) {
-              println(labeledElementASTType + " " + a.getLabel()+ "_AST = null;");
+              genASTDeclaration(a);
             }
             if (grammar instanceof LexerGrammar) {
               println("Token " + a.getLabel() + "=null;");
@@ -28,17 +28,14 @@
           if (grammar.buildAST) {
             if (a instanceof GrammarAtom && ((GrammarAtom)a).getASTNodeType() != null) {
               GrammarAtom ga=(GrammarAtom)a;
-              println(ga.getASTNodeType() + " " + a.getLabel()+ "_AST = null;");
+              genASTDeclaration(a,ga.getASTNodeType());
             }
  else {
-              println(labeledElementASTType + " " + a.getLabel()+ "_AST = null;");
+              genASTDeclaration(a);
             }
           }
         }
       }
     }
-  }
-  if (blk.initAction != null) {
-    printAction(processActionForTreeSpecifiers(blk.initAction,0,currentRule,null));
   }
 }

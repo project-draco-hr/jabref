@@ -1,25 +1,32 @@
 {
   outputFile=grammar.getClassName() + ".hpp";
   outputLine=1;
-  currentOutput=antlr.Tool.openOutputFile(outputFile);
+  currentOutput=antlrTool.openOutputFile(outputFile);
   genAST=grammar.buildAST;
   tabs=0;
   println("#ifndef INC_" + grammar.getClassName() + "_hpp_");
   println("#define INC_" + grammar.getClassName() + "_hpp_");
   println("");
   printHeaderAction(preIncludeHpp);
-  println("#include \"antlr/config.hpp\"");
+  println("#include <antlr/config.hpp>");
   println("#include \"" + grammar.tokenManager.getName() + TokenTypesFileSuffix+ ".hpp\"");
   genHeader(outputFile);
   String sup=null;
   if (grammar.superClass != null) {
     sup=grammar.superClass;
-    println("#include \"" + sup + ".hpp\"");
+    println("\n// Include correct superclass header with a header statement for example:");
+    println("// header \"post_include_hpp\" {");
+    println("// #include \"" + sup + ".hpp\"");
+    println("// }");
+    println("// Or....");
+    println("// header {");
+    println("// #include \"" + sup + ".hpp\"");
+    println("// }\n");
   }
  else {
     sup=grammar.getSuperClass();
     if (sup.lastIndexOf('.') != -1)     sup=sup.substring(sup.lastIndexOf('.') + 1);
-    println("#include \"antlr/" + sup + ".hpp\"");
+    println("#include <antlr/" + sup + ".hpp>");
     sup=namespaceAntlr + sup;
   }
   println("");
@@ -29,25 +36,54 @@
   if (grammar.comment != null) {
     _println(grammar.comment);
   }
-  print("class " + grammar.getClassName() + " : public "+ sup);
+  print("class CUSTOM_API " + grammar.getClassName() + " : public "+ sup);
   println(", public " + grammar.tokenManager.getName() + TokenTypesFileSuffix);
   Token tsuffix=(Token)grammar.options.get("classHeaderSuffix");
   if (tsuffix != null) {
-    String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+    String suffix=StringUtils.stripFrontBack(tsuffix.getText(),"\"","\"");
     if (suffix != null) {
       print(", " + suffix);
     }
   }
-  println(" {");
+  println("{");
   if (grammar.classMemberAction != null) {
     genLineNo(grammar.classMemberAction.getLine());
-    print(processActionForTreeSpecifiers(grammar.classMemberAction.getText(),0,currentRule,null));
+    print(processActionForSpecialSymbols(grammar.classMemberAction.getText(),grammar.classMemberAction.getLine(),currentRule,null));
     genLineNo2();
   }
   tabs=0;
   println("public:");
+  if (noConstructors) {
+    println("#if 0");
+    println("// constructor creation turned of with 'noConstructor' option");
+  }
   tabs=1;
   println(grammar.getClassName() + "();");
+  if (noConstructors) {
+    tabs=0;
+    println("#endif");
+    tabs=1;
+  }
+  println("static void initializeASTFactory( " + namespaceAntlr + "ASTFactory& factory );");
+  println("int getNumTokens() const");
+  println("{");
+  tabs++;
+  println("return " + grammar.getClassName() + "::NUM_TOKENS;");
+  tabs--;
+  println("}");
+  println("const char* getTokenName( int type ) const");
+  println("{");
+  tabs++;
+  println("if( type > getNumTokens() ) return 0;");
+  println("return " + grammar.getClassName() + "::tokenNames[type];");
+  tabs--;
+  println("}");
+  println("const char* const* getTokenNames() const");
+  println("{");
+  tabs++;
+  println("return " + grammar.getClassName() + "::tokenNames;");
+  tabs--;
+  println("}");
   Enumeration ids=grammar.rules.elements();
   String ruleNameInits="";
   while (ids.hasMoreElements()) {
@@ -58,22 +94,39 @@
     }
     exitIfError();
   }
+  tabs=0;
+  println("public:");
+  tabs=1;
+  println(namespaceAntlr + "RefAST getAST()");
+  println("{");
   if (usingCustomAST) {
-    tabs=0;
-    println("public:");
-    tabs=1;
-    println(labeledElementASTType + " getAST();");
-    println("");
-    tabs=0;
-    println("protected:");
-    tabs=1;
-    println(labeledElementASTType + " returnAST;");
-    println(labeledElementASTType + " _retTree;");
+    tabs++;
+    println("return " + namespaceAntlr + "RefAST(returnAST);");
+    tabs--;
   }
+ else {
+    tabs++;
+    println("return returnAST;");
+    tabs--;
+  }
+  println("}");
+  println("");
+  tabs=0;
+  println("protected:");
+  tabs=1;
+  println(labeledElementASTType + " returnAST;");
+  println(labeledElementASTType + " _retTree;");
   tabs=0;
   println("private:");
   tabs=1;
-  println("static const char* _tokenNames[];");
+  println("static const char* tokenNames[];");
+  _println("#ifndef NO_STATIC_CONSTS");
+  println("static const int NUM_TOKENS = " + grammar.tokenManager.getVocabulary().size() + ";");
+  _println("#else");
+  println("enum {");
+  println("\tNUM_TOKENS = " + grammar.tokenManager.getVocabulary().size());
+  println("};");
+  _println("#endif");
   genBitsetsHeader(bitsetsUsed,grammar.tokenManager.maxTokenType());
   tabs=0;
   println("};");

@@ -2,7 +2,7 @@
   RuleBlock rb=(RuleBlock)end.block;
   String rule;
   if (lexicalAnalysis) {
-    rule=CodeGenerator.lexerRuleName(rb.getRuleName());
+    rule=CodeGenerator.encodeLexerRuleName(rb.getRuleName());
   }
  else {
     rule=rb.getRuleName();
@@ -25,8 +25,22 @@
       return (Lookahead)end.cache[k].clone();
     }
  else {
-      end.cache[k]=re.cache[k];
-      return (Lookahead)re.cache[k].clone();
+      if (DEBUG_ANALYZER) {
+        System.out.println("combining FOLLOW(" + k + ") for "+ rule+ ": from "+ end.cache[k].toString(",",charFormatter,grammar)+ " with FOLLOW for "+ ((RuleBlock)re.block).getRuleName()+ ": "+ re.cache[k].toString(",",charFormatter,grammar));
+      }
+      if (re.cache[k].cycle == null) {
+        end.cache[k].combineWith(re.cache[k]);
+        end.cache[k].cycle=null;
+      }
+ else {
+        Lookahead refFOLLOW=FOLLOW(k,re);
+        end.cache[k].combineWith(refFOLLOW);
+        end.cache[k].cycle=refFOLLOW.cycle;
+      }
+      if (DEBUG_ANALYZER) {
+        System.out.println("saving FOLLOW(" + k + ") for "+ rule+ ": from "+ end.cache[k].toString(",",charFormatter,grammar));
+      }
+      return (Lookahead)end.cache[k].clone();
     }
   }
   end.lock[k]=true;

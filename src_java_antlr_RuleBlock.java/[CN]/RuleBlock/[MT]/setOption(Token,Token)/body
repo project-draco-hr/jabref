@@ -7,12 +7,12 @@
       defaultErrorHandler=false;
     }
  else {
-      grammar.tool.error("Value for defaultErrorHandler must be true or false",grammar.getFilename(),key.getLine());
+      grammar.antlrTool.error("Value for defaultErrorHandler must be true or false",grammar.getFilename(),key.getLine(),key.getColumn());
     }
   }
  else   if (key.getText().equals("testLiterals")) {
     if (!(grammar instanceof LexerGrammar)) {
-      grammar.tool.error("testLiterals option only valid for lexer rules",grammar.getFilename(),key.getLine());
+      grammar.antlrTool.error("testLiterals option only valid for lexer rules",grammar.getFilename(),key.getLine(),key.getColumn());
     }
  else {
       if (value.getText().equals("true")) {
@@ -22,13 +22,13 @@
         testLiterals=false;
       }
  else {
-        grammar.tool.error("Value for testLiterals must be true or false",grammar.getFilename(),key.getLine());
+        grammar.antlrTool.error("Value for testLiterals must be true or false",grammar.getFilename(),key.getLine(),key.getColumn());
       }
     }
   }
  else   if (key.getText().equals("ignore")) {
     if (!(grammar instanceof LexerGrammar)) {
-      grammar.tool.error("ignore option only valid for lexer rules",grammar.getFilename(),key.getLine());
+      grammar.antlrTool.error("ignore option only valid for lexer rules",grammar.getFilename(),key.getLine(),key.getColumn());
     }
  else {
       ignoreRule=value.getText();
@@ -36,17 +36,17 @@
   }
  else   if (key.getText().equals("paraphrase")) {
     if (!(grammar instanceof LexerGrammar)) {
-      grammar.tool.error("paraphrase option only valid for lexer rules",grammar.getFilename(),key.getLine());
+      grammar.antlrTool.error("paraphrase option only valid for lexer rules",grammar.getFilename(),key.getLine(),key.getColumn());
     }
  else {
       TokenSymbol ts=grammar.tokenManager.getTokenSymbol(ruleName);
       if (ts == null) {
-        antlr.Tool.panic("cannot find token associated with rule " + ruleName);
+        grammar.antlrTool.panic("cannot find token associated with rule " + ruleName);
       }
       ts.setParaphrase(value.getText());
     }
   }
- else   if (key.equals("generateAmbigWarnings")) {
+ else   if (key.getText().equals("generateAmbigWarnings")) {
     if (value.getText().equals("true")) {
       generateAmbigWarnings=true;
     }
@@ -54,10 +54,10 @@
       generateAmbigWarnings=false;
     }
  else {
-      grammar.tool.error("Value for generateAmbigWarnings must be true or false",grammar.getFilename(),key.getLine());
+      grammar.antlrTool.error("Value for generateAmbigWarnings must be true or false",grammar.getFilename(),key.getLine(),key.getColumn());
     }
   }
  else {
-    grammar.tool.error("Invalid rule option: " + key.getText(),grammar.getFilename(),key.getLine());
+    grammar.antlrTool.error("Invalid rule option: " + key.getText(),grammar.getFilename(),key.getLine(),key.getColumn());
   }
 }

@@ -2,11 +2,11 @@
   if (DEBUG_CODE_GENERATOR)   System.out.println("genRR(" + rr + ")");
   RuleSymbol rs=(RuleSymbol)grammar.getSymbol(rr.targetRule);
   if (rs == null || !rs.isDefined()) {
-    tool.error("Rule '" + rr.targetRule + "' is not defined",grammar.getFilename(),rr.getLine());
+    antlrTool.error("Rule '" + rr.targetRule + "' is not defined",grammar.getFilename(),rr.getLine(),rr.getColumn());
     return;
   }
   if (!(rs instanceof RuleSymbol)) {
-    tool.error("'" + rr.targetRule + "' does not name a grammar rule",grammar.getFilename(),rr.getLine());
+    antlrTool.error("'" + rr.targetRule + "' does not name a grammar rule",grammar.getFilename(),rr.getLine(),rr.getColumn());
     return;
   }
   genErrorTryForElement(rr);
@@ -19,13 +19,13 @@
   printTabs();
   if (rr.idAssign != null) {
     if (rs.block.returnAction == null) {
-      tool.warning("Rule '" + rr.targetRule + "' has no return type",grammar.getFilename(),rr.getLine());
+      antlrTool.warning("Rule '" + rr.targetRule + "' has no return type",grammar.getFilename(),rr.getLine(),rr.getColumn());
     }
     _print(rr.idAssign + "=");
   }
  else {
     if (!(grammar instanceof LexerGrammar) && syntacticPredLevel == 0 && rs.block.returnAction != null) {
-      tool.warning("Rule '" + rr.targetRule + "' returns a value",grammar.getFilename(),rr.getLine());
+      antlrTool.warning("Rule '" + rr.targetRule + "' returns a value",grammar.getFilename(),rr.getLine(),rr.getColumn());
     }
   }
   GenRuleInvocation(rr);
@@ -35,8 +35,6 @@
   if (syntacticPredLevel == 0) {
     boolean doNoGuessTest=(grammar.hasSyntacticPredicate && (grammar.buildAST && rr.getLabel() != null || (genAST && rr.getAutoGenType() == GrammarElement.AUTO_GEN_NONE)));
     if (doNoGuessTest) {
-      println("if (inputState.guessing==0) {");
-      tabs++;
     }
     if (grammar.buildAST && rr.getLabel() != null) {
       println(rr.getLabel() + "_AST = (" + labeledElementASTType+ ")returnAST;");
@@ -47,7 +45,7 @@ case GrammarElement.AUTO_GEN_NONE:
         println("astFactory.addASTChild(currentAST, returnAST);");
       break;
 case GrammarElement.AUTO_GEN_CARET:
-    tool.error("Internal: encountered ^ after rule reference");
+    antlrTool.error("Internal: encountered ^ after rule reference");
   break;
 default :
 break;
@@ -57,8 +55,6 @@ if (grammar instanceof LexerGrammar && rr.getLabel() != null) {
 println(rr.getLabel() + "=_returnToken;");
 }
 if (doNoGuessTest) {
-tabs--;
-println("}");
 }
 }
 genErrorCatchForElement(rr);

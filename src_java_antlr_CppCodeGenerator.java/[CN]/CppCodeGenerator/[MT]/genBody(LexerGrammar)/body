@@ -1,21 +1,21 @@
 {
   outputFile=grammar.getClassName() + ".cpp";
   outputLine=1;
-  currentOutput=antlr.Tool.openOutputFile(outputFile);
+  currentOutput=antlrTool.openOutputFile(outputFile);
   genAST=false;
   saveText=true;
   tabs=0;
   genHeader(outputFile);
   printHeaderAction(preIncludeCpp);
   println("#include \"" + grammar.getClassName() + ".hpp\"");
-  println("#include \"antlr/CharBuffer.hpp\"");
-  println("#include \"antlr/TokenStreamException.hpp\"");
-  println("#include \"antlr/TokenStreamIOException.hpp\"");
-  println("#include \"antlr/TokenStreamRecognitionException.hpp\"");
-  println("#include \"antlr/CharStreamException.hpp\"");
-  println("#include \"antlr/CharStreamIOException.hpp\"");
-  println("#include \"antlr/NoViableAltForCharException.hpp\"");
-  if (grammar.debuggingOutput)   println("#include \"antlr/DebuggingInputBuffer.hpp\"");
+  println("#include <antlr/CharBuffer.hpp>");
+  println("#include <antlr/TokenStreamException.hpp>");
+  println("#include <antlr/TokenStreamIOException.hpp>");
+  println("#include <antlr/TokenStreamRecognitionException.hpp>");
+  println("#include <antlr/CharStreamException.hpp>");
+  println("#include <antlr/CharStreamIOException.hpp>");
+  println("#include <antlr/NoViableAltForCharException.hpp>");
+  if (grammar.debuggingOutput)   println("#include <antlr/DebuggingInputBuffer.hpp>");
   println("");
   printHeaderAction(postIncludeCpp);
   if (nameSpace != null)   nameSpace.emitDeclarations(currentOutput);
@@ -29,10 +29,14 @@
     if (sup.lastIndexOf('.') != -1)     sup=sup.substring(sup.lastIndexOf('.') + 1);
     sup=namespaceAntlr + sup;
   }
+  if (noConstructors) {
+    println("#if 0");
+    println("// constructor creation turned of with 'noConstructor' option");
+  }
   println(grammar.getClassName() + "::" + grammar.getClassName()+ "("+ namespaceStd+ "istream& in)");
   tabs++;
-  if (grammar.debuggingOutput)   println(": " + sup + "(new "+ namespaceAntlr+ "DebuggingInputBuffer(new "+ namespaceAntlr+ "CharBuffer(in)))");
- else   println(": " + sup + "(new "+ namespaceAntlr+ "CharBuffer(in))");
+  if (grammar.debuggingOutput)   println(": " + sup + "(new "+ namespaceAntlr+ "DebuggingInputBuffer(new "+ namespaceAntlr+ "CharBuffer(in)),"+ g.caseSensitive+ ")");
+ else   println(": " + sup + "(new "+ namespaceAntlr+ "CharBuffer(in),"+ g.caseSensitive+ ")");
   tabs--;
   println("{");
   tabs++;
@@ -41,15 +45,14 @@
     println("setSemPredNames(_semPredNames);");
     println("setupDebugging();");
   }
-  println("setCaseSensitive(" + g.caseSensitive + ");");
   println("initLiterals();");
   tabs--;
   println("}");
   println("");
   println(grammar.getClassName() + "::" + grammar.getClassName()+ "("+ namespaceAntlr+ "InputBuffer& ib)");
   tabs++;
-  if (grammar.debuggingOutput)   println(": " + sup + "(new "+ namespaceAntlr+ "DebuggingInputBuffer(ib))");
- else   println(": " + sup + "(ib)");
+  if (grammar.debuggingOutput)   println(": " + sup + "(new "+ namespaceAntlr+ "DebuggingInputBuffer(ib),"+ g.caseSensitive+ ")");
+ else   println(": " + sup + "(ib,"+ g.caseSensitive+ ")");
   tabs--;
   println("{");
   tabs++;
@@ -58,14 +61,13 @@
     println("setSemPredNames(_semPredNames);");
     println("setupDebugging();");
   }
-  println("setCaseSensitive(" + g.caseSensitive + ");");
   println("initLiterals();");
   tabs--;
   println("}");
   println("");
   println(grammar.getClassName() + "::" + grammar.getClassName()+ "(const "+ namespaceAntlr+ "LexerSharedInputState& state)");
   tabs++;
-  println(": " + sup + "(state)");
+  println(": " + sup + "(state,"+ g.caseSensitive+ ")");
   tabs--;
   println("{");
   tabs++;
@@ -74,11 +76,14 @@
     println("setSemPredNames(_semPredNames);");
     println("setupDebugging();");
   }
-  println("setCaseSensitive(" + g.caseSensitive + ");");
   println("initLiterals();");
   tabs--;
   println("}");
   println("");
+  if (noConstructors) {
+    println("// constructor creation turned of with 'noConstructor' option");
+    println("#endif");
+  }
   println("void " + grammar.getClassName() + "::initLiterals()");
   println("{");
   tabs++;
@@ -94,12 +99,6 @@
       println("literals[" + s.getId() + "] = "+ s.getTokenType()+ ";");
     }
   }
-  tabs--;
-  println("}");
-  println("bool " + grammar.getClassName() + "::getCaseSensitiveLiterals() const");
-  println("{");
-  tabs++;
-  println("return " + g.caseSensitiveLiterals + ";");
   tabs--;
   println("}");
   Enumeration ids;
@@ -127,7 +126,7 @@
     exitIfError();
   }
   if (grammar.debuggingOutput)   genSemPredMap(grammar.getClassName() + "::");
-  genBitsets(bitsetsUsed,((LexerGrammar)grammar).charVocabulary.size(),grammar.getClassName() + "::",false);
+  genBitsets(bitsetsUsed,((LexerGrammar)grammar).charVocabulary.size(),grammar.getClassName() + "::");
   println("");
   if (nameSpace != null)   nameSpace.emitClosures(currentOutput);
   currentOutput.close();

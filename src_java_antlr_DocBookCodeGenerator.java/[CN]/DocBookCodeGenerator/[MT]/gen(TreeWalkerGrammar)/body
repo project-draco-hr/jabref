@@ -1,0 +1,27 @@
+{
+  setGrammar(g);
+  antlrTool.reportProgress("Generating " + grammar.getClassName() + ".sgml");
+  currentOutput=antlrTool.openOutputFile(grammar.getClassName() + ".sgml");
+  tabs=0;
+  genHeader();
+  println("");
+  println("");
+  if (grammar.comment != null) {
+    _println(HTMLEncode(grammar.comment));
+  }
+  println("<para>Definition of tree parser " + grammar.getClassName() + ", which is a subclass of "+ grammar.getSuperClass()+ ".</para>");
+  println("");
+  tabs++;
+  Enumeration rules=grammar.rules.elements();
+  while (rules.hasMoreElements()) {
+    println("");
+    GrammarSymbol sym=(GrammarSymbol)rules.nextElement();
+    if (sym instanceof RuleSymbol) {
+      genRule((RuleSymbol)sym);
+    }
+  }
+  tabs--;
+  println("");
+  currentOutput.close();
+  currentOutput=null;
+}

@@ -2,7 +2,7 @@
   if (DEBUG_ANALYZER)   System.out.println("lookRuleRef(" + k + ","+ rr+ ")");
   RuleSymbol rs=(RuleSymbol)grammar.getSymbol(rr.targetRule);
   if (rs == null || !rs.defined) {
-    tool.error("no definition of rule " + rr.targetRule,grammar.getFilename(),rr.getLine());
+    tool.error("no definition of rule " + rr.targetRule,grammar.getFilename(),rr.getLine(),rr.getColumn());
     return new Lookahead();
   }
   RuleBlock rb=rs.getBlock();
@@ -13,7 +13,7 @@
   if (DEBUG_ANALYZER)   System.out.println("back from rule ref to " + rr.targetRule);
   end.noFOLLOW=saveEnd;
   if (p.cycle != null) {
-    tool.error("infinite recursion to rule " + p.cycle + " from rule "+ rr.enclosingRuleName,grammar.getFilename(),rr.getLine());
+    tool.error("infinite recursion to rule " + p.cycle + " from rule "+ rr.enclosingRuleName,grammar.getFilename(),rr.getLine(),rr.getColumn());
   }
   if (p.containsEpsilon()) {
     if (DEBUG_ANALYZER)     System.out.println("rule ref to " + rr.targetRule + " has eps, depth: "+ p.epsilonDepth);

@@ -1,7 +1,7 @@
 {
   setGrammar(g);
   if (!(grammar instanceof TreeWalkerGrammar)) {
-    tool.panic("Internal error generating tree-walker");
+    antlrTool.panic("Internal error generating tree-walker");
   }
   setupOutput(grammar.getClassName());
   genAST=grammar.buildAST;
@@ -31,17 +31,26 @@
   if (grammar.comment != null) {
     _println(grammar.comment);
   }
-  println("public class " + grammar.getClassName() + " extends "+ sup);
+  String prefix="public";
+  Token tprefix=(Token)grammar.options.get("classHeaderPrefix");
+  if (tprefix != null) {
+    String p=StringUtils.stripFrontBack(tprefix.getText(),"\"","\"");
+    if (p != null) {
+      prefix=p;
+    }
+  }
+  print(prefix + " ");
+  print("class " + grammar.getClassName() + " extends "+ sup);
   println("       implements " + grammar.tokenManager.getName() + TokenTypesFileSuffix);
   Token tsuffix=(Token)grammar.options.get("classHeaderSuffix");
   if (tsuffix != null) {
-    String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+    String suffix=StringUtils.stripFrontBack(tsuffix.getText(),"\"","\"");
     if (suffix != null) {
       print(", " + suffix);
     }
   }
   println(" {");
-  print(processActionForTreeSpecifiers(grammar.classMemberAction.getText(),0,currentRule,null));
+  print(processActionForSpecialSymbols(grammar.classMemberAction.getText(),grammar.classMemberAction.getLine(),currentRule,null));
   println("public " + grammar.getClassName() + "() {");
   tabs++;
   println("tokenNames = _tokenNames;");

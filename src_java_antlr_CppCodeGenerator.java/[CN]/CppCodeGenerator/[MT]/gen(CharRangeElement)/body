@@ -1,6 +1,11 @@
 {
+  if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)   System.out.println("genCharRangeElement(" + r.beginText + ".."+ r.endText+ ")");
+  if (!(grammar instanceof LexerGrammar))   antlrTool.error("cannot ref character range in grammar: " + r);
   if (r.getLabel() != null && syntacticPredLevel == 0) {
     println(r.getLabel() + " = " + lt1Value+ ";");
   }
-  println("matchRange(" + textOrChar(r.beginText) + ","+ textOrChar(r.endText)+ ");");
+  boolean save=(grammar instanceof LexerGrammar && (!saveText || r.getAutoGenType() == GrammarElement.AUTO_GEN_BANG));
+  if (save)   println("_saveIndex=text.length();");
+  println("matchRange(" + convertJavaToCppString(r.beginText,true) + ","+ convertJavaToCppString(r.endText,true)+ ");");
+  if (save)   println("text.setLength(_saveIndex);");
 }

@@ -7,14 +7,15 @@
       println("if (inputState->guessing==0) {");
       tabs++;
     }
+    ActionTransInfo tInfo=new ActionTransInfo();
     genLineNo(handler.action);
-    printAction(processActionForTreeSpecifiers(handler.action.getText(),0,currentRule,null));
+    printAction(processActionForSpecialSymbols(handler.action.getText(),handler.action.getLine(),currentRule,tInfo));
     genLineNo2();
     if (grammar.hasSyntacticPredicate) {
       tabs--;
       println("} else {");
       tabs++;
-      println("throw " + extractIdOfAction(handler.exceptionTypeAndName) + ";");
+      println("throw;");
       tabs--;
       println("}");
     }

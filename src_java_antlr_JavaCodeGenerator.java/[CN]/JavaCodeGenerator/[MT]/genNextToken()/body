@@ -45,16 +45,16 @@
   if (((LexerGrammar)grammar).filterMode) {
     println("setCommitToPath(false);");
     if (filterRule != null) {
-      if (!grammar.isDefined(CodeGenerator.lexerRuleName(filterRule))) {
-        grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+      if (!grammar.isDefined(CodeGenerator.encodeLexerRuleName(filterRule))) {
+        grammar.antlrTool.error("Filter rule " + filterRule + " does not exist in this lexer");
       }
  else {
-        RuleSymbol rs=(RuleSymbol)grammar.getSymbol(CodeGenerator.lexerRuleName(filterRule));
+        RuleSymbol rs=(RuleSymbol)grammar.getSymbol(CodeGenerator.encodeLexerRuleName(filterRule));
         if (!rs.isDefined()) {
-          grammar.tool.error("Filter rule " + filterRule + " does not exist in this lexer");
+          grammar.antlrTool.error("Filter rule " + filterRule + " does not exist in this lexer");
         }
  else         if (rs.access.equals("public")) {
-          grammar.tool.error("Filter rule " + filterRule + " must be protected");
+          grammar.antlrTool.error("Filter rule " + filterRule + " must be protected");
         }
       }
       println("int _m;");
@@ -69,7 +69,9 @@
   for (int i=0; i < nextTokenBlk.getAlternatives().size(); i++) {
     Alternative a=nextTokenBlk.getAlternativeAt(i);
     if (a.cache[1].containsEpsilon()) {
-      tool.warning("found optional path in nextToken()");
+      RuleRefElement rr=(RuleRefElement)a.head;
+      String r=CodeGenerator.decodeLexerRuleName(rr.targetRule);
+      antlrTool.warning("public lexical rule " + r + " is optional (can match \"nothing\")");
     }
   }
   String newline=System.getProperty("line.separator");

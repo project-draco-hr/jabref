@@ -18,18 +18,18 @@
   RuleSymbol rs=(RuleSymbol)grammar.getSymbol(rr.targetRule);
   if (rr.args != null) {
     ActionTransInfo tInfo=new ActionTransInfo();
-    String args=processActionForTreeSpecifiers(rr.args,0,currentRule,tInfo);
+    String args=processActionForSpecialSymbols(rr.args,0,currentRule,tInfo);
     if (tInfo.assignToRoot || tInfo.refRuleRoot != null) {
-      tool.error("Arguments of rule reference '" + rr.targetRule + "' cannot set or ref #"+ currentRule.getRuleName()+ " on line "+ rr.getLine());
+      antlrTool.error("Arguments of rule reference '" + rr.targetRule + "' cannot set or ref #"+ currentRule.getRuleName(),grammar.getFilename(),rr.getLine(),rr.getColumn());
     }
     _print(args);
     if (rs.block.argAction == null) {
-      tool.warning("Rule '" + rr.targetRule + "' accepts no arguments",grammar.getFilename(),rr.getLine());
+      antlrTool.warning("Rule '" + rr.targetRule + "' accepts no arguments",grammar.getFilename(),rr.getLine(),rr.getColumn());
     }
   }
  else {
     if (rs.block.argAction != null) {
-      tool.warning("Missing parameters on reference to rule " + rr.targetRule,grammar.getFilename(),rr.getLine());
+      antlrTool.warning("Missing parameters on reference to rule " + rr.targetRule,grammar.getFilename(),rr.getLine(),rr.getColumn());
     }
   }
   _println(");");

@@ -1,29 +1,30 @@
 {
   super(name_,tool_);
   this.grammar=grammar;
-  File grammarFile=new File(filename_);
+  this.filename=filename_;
+  File grammarFile=new File(filename);
   if (!grammarFile.exists()) {
-    grammarFile=new File(Tool.getOutputDirectory(),filename_);
+    grammarFile=new File(antlrTool.getOutputDirectory(),filename);
     if (!grammarFile.exists()) {
-      tool.panic("Cannot find importVocab file '" + filename);
+      antlrTool.panic("Cannot find importVocab file '" + filename + "'");
     }
   }
-  filename=filename_;
   setReadOnly(true);
   try {
-    FileReader fileIn=new FileReader(grammarFile);
+    Reader fileIn=new BufferedReader(new FileReader(grammarFile));
     ANTLRTokdefLexer tokdefLexer=new ANTLRTokdefLexer(fileIn);
     ANTLRTokdefParser tokdefParser=new ANTLRTokdefParser(tokdefLexer);
+    tokdefParser.setTool(antlrTool);
     tokdefParser.setFilename(filename);
     tokdefParser.file(this);
   }
  catch (  FileNotFoundException fnf) {
-    tool.panic("Cannot find importVocab file '" + filename);
+    antlrTool.panic("Cannot find importVocab file '" + filename + "'");
   }
 catch (  RecognitionException ex) {
-    tool.panic("Error parsing importVocab file '" + filename + "': "+ ex.toString());
+    antlrTool.panic("Error parsing importVocab file '" + filename + "': "+ ex.toString());
   }
 catch (  TokenStreamException ex) {
-    tool.panic("Error reading importVocab file '" + filename + "'");
+    antlrTool.panic("Error reading importVocab file '" + filename + "'");
   }
 }

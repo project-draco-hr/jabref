@@ -1,14 +1,14 @@
 {
   setGrammar(g);
-  System.out.println("Generating " + grammar.getClassName() + ".html");
-  currentOutput=antlr.Tool.openOutputFile(grammar.getClassName() + ".html");
+  antlrTool.reportProgress("Generating " + grammar.getClassName() + ".html");
+  currentOutput=antlrTool.openOutputFile(grammar.getClassName() + ".html");
   tabs=0;
   genHeader();
   println("");
   if (grammar.comment != null) {
-    _println(grammar.comment);
+    _println(HTMLEncode(grammar.comment));
   }
-  println("class " + grammar.getClassName() + " extends "+ grammar.getSuperClass());
+  println("Definition of parser " + grammar.getClassName() + ", which is a subclass of "+ grammar.getSuperClass()+ ".");
   Enumeration rules=grammar.rules.elements();
   while (rules.hasMoreElements()) {
     println("");

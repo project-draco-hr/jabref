@@ -1,7 +1,7 @@
 {
   String s=value.getText();
   if (key.equals("buildAST")) {
-    tool.warning("buildAST option is not valid for lexer",getFilename(),value.getLine());
+    antlrTool.warning("buildAST option is not valid for lexer",getFilename(),value.getLine(),value.getColumn());
     return true;
   }
   if (key.equals("testLiterals")) {
@@ -12,7 +12,7 @@
       testLiterals=false;
     }
  else {
-      tool.warning("testLiterals option must be true or false",getFilename(),value.getLine());
+      antlrTool.warning("testLiterals option must be true or false",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -24,7 +24,7 @@
       interactive=false;
     }
  else {
-      tool.error("interactive option must be true or false",getFilename(),value.getLine());
+      antlrTool.error("interactive option must be true or false",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -36,7 +36,7 @@
       caseSensitive=false;
     }
  else {
-      tool.warning("caseSensitive option must be true or false",getFilename(),value.getLine());
+      antlrTool.warning("caseSensitive option must be true or false",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -48,7 +48,7 @@
       caseSensitiveLiterals=false;
     }
  else {
-      tool.warning("caseSensitiveLiterals option must be true or false",getFilename(),value.getLine());
+      antlrTool.warning("caseSensitiveLiterals option must be true or false",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -64,17 +64,17 @@
       filterRule=s;
     }
  else {
-      tool.warning("filter option must be true, false, or a lexer rule name",getFilename(),value.getLine());
+      antlrTool.warning("filter option must be true, false, or a lexer rule name",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
   if (key.equals("longestPossible")) {
-    tool.warning("longestPossible option has been deprecated; ignoring it...",getFilename(),value.getLine());
+    antlrTool.warning("longestPossible option has been deprecated; ignoring it...",getFilename(),value.getLine(),value.getColumn());
     return true;
   }
   if (super.setOption(key,value)) {
     return true;
   }
-  tool.error("Invalid option: " + key,getFilename(),value.getLine());
+  antlrTool.error("Invalid option: " + key,getFilename(),value.getLine(),value.getColumn());
   return false;
 }

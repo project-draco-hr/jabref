@@ -1,0 +1,19 @@
+{
+  setupOutput(tm.getName() + TokenTypesFileSuffix);
+  tabs=0;
+  genHeader();
+  println(behavior.getHeaderAction(""));
+  if (nameSpace != null)   nameSpace.emitDeclarations(currentOutput);
+  tabs++;
+  println("public class " + tm.getName() + TokenTypesFileSuffix);
+  println("{");
+  tabs++;
+  genTokenDefinitions(tm);
+  tabs--;
+  println("}");
+  tabs--;
+  if (nameSpace != null)   nameSpace.emitClosures(currentOutput);
+  currentOutput.close();
+  currentOutput=null;
+  exitIfError();
+}

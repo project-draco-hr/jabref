@@ -3,7 +3,7 @@
   boolean createdLL1Switch=false;
   int closingBracesOfIFSequence=0;
   CppBlockFinishingInfo finishingInfo=new CppBlockFinishingInfo();
-  if (DEBUG_CODE_GENERATOR)   System.out.println("genCommonBlk(" + blk + ")");
+  if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)   System.out.println("genCommonBlk(" + blk + ")");
   boolean savegenAST=genAST;
   genAST=genAST && blk.getAutoGen();
   boolean oldsaveTest=saveText;
@@ -16,7 +16,7 @@
     genElementAST(blk);
     String astArgs="";
     if (grammar instanceof TreeWalkerGrammar) {
-      if (usingCustomAST)       astArgs="static_cast<" + namespaceAntlr + "RefAST"+ ">(_t),";
+      if (usingCustomAST)       astArgs=namespaceAntlr + "RefAST" + "(_t),";
  else       astArgs="_t,";
     }
     println("match(" + astArgs + getBitsetName(markBitsetForGen(p.fset))+ ");");
@@ -28,7 +28,7 @@
   if (blk.getAlternatives().size() == 1) {
     Alternative alt=blk.getAlternativeAt(0);
     if (alt.synPred != null) {
-      tool.warning("Syntactic predicate superfluous for single alternative",grammar.getFilename(),blk.getAlternativeAt(0).synPred.getLine());
+      antlrTool.warning("Syntactic predicate superfluous for single alternative",grammar.getFilename(),blk.getAlternativeAt(0).synPred.getLine(),blk.getAlternativeAt(0).synPred.getColumn());
     }
     if (noTestForSingle) {
       if (alt.semPred != null) {
@@ -41,9 +41,7 @@
   int nLL1=0;
   for (int i=0; i < blk.getAlternatives().size(); i++) {
     Alternative a=blk.getAlternativeAt(i);
-    if (suitableForCaseExpression(a)) {
-      nLL1++;
-    }
+    if (suitableForCaseExpression(a))     nLL1++;
   }
   if (nLL1 >= makeSwitchThreshold) {
     String testExpr=lookaheadString(1);
@@ -62,7 +60,7 @@
       }
       Lookahead p=alt.cache[1];
       if (p.fset.degree() == 0 && !p.containsEpsilon()) {
-        tool.warning("Alternate omitted due to empty prediction set",grammar.getFilename(),alt.head.getLine());
+        antlrTool.warning("Alternate omitted due to empty prediction set",grammar.getFilename(),alt.head.getLine(),alt.head.getColumn());
       }
  else {
         genCases(p.fset);
@@ -79,12 +77,12 @@
   }
   int startDepth=(grammar instanceof LexerGrammar) ? grammar.maxk : 0;
   for (int altDepth=startDepth; altDepth >= 0; altDepth--) {
-    if (DEBUG_CODE_GENERATOR)     System.out.println("checking depth " + altDepth);
+    if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)     System.out.println("checking depth " + altDepth);
     for (int i=0; i < blk.alternatives.size(); i++) {
       Alternative alt=blk.getAlternativeAt(i);
-      if (DEBUG_CODE_GENERATOR)       System.out.println("genAlt: " + i);
+      if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)       System.out.println("genAlt: " + i);
       if (createdLL1Switch && suitableForCaseExpression(alt)) {
-        if (DEBUG_CODE_GENERATOR)         System.out.println("ignoring alt because it was in the switch");
+        if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)         System.out.println("ignoring alt because it was in the switch");
         continue;
       }
       String e;
@@ -98,7 +96,7 @@
           effectiveDepth--;
         }
         if (effectiveDepth != altDepth) {
-          if (DEBUG_CODE_GENERATOR)           System.out.println("ignoring alt because effectiveDepth!=altDepth;" + effectiveDepth + "!="+ altDepth);
+          if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)           System.out.println("ignoring alt because effectiveDepth!=altDepth;" + effectiveDepth + "!="+ altDepth);
           continue;
         }
         unpredicted=lookaheadIsEmpty(alt,effectiveDepth);
@@ -108,7 +106,7 @@
         unpredicted=lookaheadIsEmpty(alt,grammar.maxk);
         e=getLookaheadTestExpression(alt,grammar.maxk);
       }
-      if (alt.cache[1].fset.degree() > caseSizeThreshold) {
+      if (alt.cache[1].fset.degree() > caseSizeThreshold && suitableForCaseExpression(alt)) {
         if (nIF == 0) {
           if (grammar instanceof TreeWalkerGrammar) {
             println("if (_t == " + labeledElementASTInit + " )");
@@ -132,8 +130,8 @@
  else {
         if (alt.semPred != null) {
           ActionTransInfo tInfo=new ActionTransInfo();
-          String actionStr=processActionForTreeSpecifiers(alt.semPred,blk.line,currentRule,tInfo);
-          if (((grammar instanceof ParserGrammar) || (grammar instanceof LexerGrammar)) && grammar.debuggingOutput)           e="(" + e + "&& fireSemanticPredicateEvaluated(antlr.debug.SemanticPredicateEvent.PREDICTING,"+ addSemPred(charFormatter.escapeString(actionStr))+ ","+ actionStr+ "))";
+          String actionStr=processActionForSpecialSymbols(alt.semPred,blk.line,currentRule,tInfo);
+          if (grammar.debuggingOutput && ((grammar instanceof ParserGrammar) || (grammar instanceof LexerGrammar)))           e="(" + e + "&& fireSemanticPredicateEvaluated(antlr.debug.SemanticPredicateEvent.PREDICTING,"+ addSemPred(charFormatter.escapeString(actionStr))+ ","+ actionStr+ "))";
  else           e="(" + e + "&&("+ actionStr+ "))";
         }
         if (nIF > 0) {

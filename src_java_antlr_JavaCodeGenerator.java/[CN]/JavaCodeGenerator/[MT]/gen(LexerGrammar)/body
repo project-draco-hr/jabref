@@ -2,7 +2,7 @@
   if (g.debuggingOutput)   semPreds=new Vector();
   setGrammar(g);
   if (!(grammar instanceof LexerGrammar)) {
-    tool.panic("Internal error generating lexer");
+    antlrTool.panic("Internal error generating lexer");
   }
   setupOutput(grammar.getClassName());
   genAST=false;
@@ -44,17 +44,26 @@
   if (grammar.comment != null) {
     _println(grammar.comment);
   }
-  print("public class " + grammar.getClassName() + " extends "+ sup);
+  String prefix="public";
+  Token tprefix=(Token)grammar.options.get("classHeaderPrefix");
+  if (tprefix != null) {
+    String p=StringUtils.stripFrontBack(tprefix.getText(),"\"","\"");
+    if (p != null) {
+      prefix=p;
+    }
+  }
+  print(prefix + " ");
+  print("class " + grammar.getClassName() + " extends "+ sup);
   println(" implements " + grammar.tokenManager.getName() + TokenTypesFileSuffix+ ", TokenStream");
   Token tsuffix=(Token)grammar.options.get("classHeaderSuffix");
   if (tsuffix != null) {
-    String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+    String suffix=StringUtils.stripFrontBack(tsuffix.getText(),"\"","\"");
     if (suffix != null) {
       print(", " + suffix);
     }
   }
   println(" {");
-  print(processActionForTreeSpecifiers(grammar.classMemberAction.getText(),0,currentRule,null));
+  print(processActionForSpecialSymbols(grammar.classMemberAction.getText(),grammar.classMemberAction.getLine(),currentRule,null));
   println("public " + grammar.getClassName() + "(InputStream in) {");
   tabs++;
   println("this(new ByteBuffer(in));");
@@ -79,6 +88,8 @@
     println("  semPredNames = _semPredNames;");
     println("  setupDebugging();");
   }
+  println("caseSensitiveLiterals = " + g.caseSensitiveLiterals + ";");
+  println("setCaseSensitive(" + g.caseSensitive + ");");
   println("literals = new Hashtable();");
   Enumeration keys=grammar.tokenManager.getTokenSymbolKeys();
   while (keys.hasMoreElements()) {
@@ -94,8 +105,6 @@
   }
   tabs--;
   Enumeration ids;
-  println("caseSensitiveLiterals = " + g.caseSensitiveLiterals + ";");
-  println("setCaseSensitive(" + g.caseSensitive + ");");
   println("}");
   if (grammar.debuggingOutput) {
     println("private static final String _ruleNames[] = {");

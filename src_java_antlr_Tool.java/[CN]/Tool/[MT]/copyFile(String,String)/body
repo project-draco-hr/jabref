@@ -1,8 +1,8 @@
 {
   File source_file=new File(source_name);
   File destination_file=new File(dest_name);
-  FileReader source=null;
-  FileWriter destination=null;
+  Reader source=null;
+  Writer destination=null;
   char[] buffer;
   int bytes_read;
   try {
@@ -23,8 +23,8 @@
       if (!parentdir.exists())       throw new FileCopyException("FileCopy: destination " + "directory doesn't exist: " + dest_name);
       if (!parentdir.canWrite())       throw new FileCopyException("FileCopy: destination " + "directory is unwriteable: " + dest_name);
     }
-    source=new FileReader(source_file);
-    destination=new FileWriter(destination_file);
+    source=new BufferedReader(new FileReader(source_file));
+    destination=new BufferedWriter(new FileWriter(destination_file));
     buffer=new char[1024];
     while (true) {
       bytes_read=source.read(buffer,0,1024);
@@ -33,17 +33,21 @@
     }
   }
   finally {
-    if (source != null)     try {
-      source.close();
+    if (source != null) {
+      try {
+        source.close();
+      }
+ catch (      IOException e) {
+        ;
+      }
     }
- catch (    IOException e) {
-      ;
-    }
-    if (destination != null)     try {
-      destination.close();
-    }
- catch (    IOException e) {
-      ;
+    if (destination != null) {
+      try {
+        destination.close();
+      }
+ catch (      IOException e) {
+        ;
+      }
     }
   }
 }

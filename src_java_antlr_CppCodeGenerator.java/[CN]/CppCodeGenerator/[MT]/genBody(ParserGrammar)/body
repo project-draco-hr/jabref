@@ -1,14 +1,15 @@
 {
   outputFile=grammar.getClassName() + ".cpp";
   outputLine=1;
-  currentOutput=antlr.Tool.openOutputFile(outputFile);
+  currentOutput=antlrTool.openOutputFile(outputFile);
   genAST=grammar.buildAST;
   tabs=0;
   genHeader(outputFile);
   printHeaderAction(preIncludeCpp);
   println("#include \"" + grammar.getClassName() + ".hpp\"");
-  println("#include \"antlr/NoViableAltException.hpp\"");
-  println("#include \"antlr/SemanticException.hpp\"");
+  println("#include <antlr/NoViableAltException.hpp>");
+  println("#include <antlr/SemanticException.hpp>");
+  println("#include <antlr/ASTFactory.hpp>");
   printHeaderAction(postIncludeCpp);
   if (nameSpace != null)   nameSpace.emitDeclarations(currentOutput);
   printAction(grammar.preambleAction);
@@ -32,76 +33,45 @@
     tabs--;
     println("};");
   }
+  if (noConstructors) {
+    println("#if 0");
+    println("// constructor creation turned of with 'noConstructor' option");
+  }
   print(grammar.getClassName() + "::" + grammar.getClassName());
   println("(" + namespaceAntlr + "TokenBuffer& tokenBuf, int k)");
   println(": " + sup + "(tokenBuf,k)");
   println("{");
-  tabs++;
-  println("setTokenNames(_tokenNames);");
-  if (grammar.debuggingOutput) {
-    println("setRuleNames(_ruleNames);");
-    println("setSemPredNames(_semPredNames);");
-    println("setupDebugging();");
-  }
-  tabs--;
   println("}");
   println("");
   print(grammar.getClassName() + "::" + grammar.getClassName());
   println("(" + namespaceAntlr + "TokenBuffer& tokenBuf)");
   println(": " + sup + "(tokenBuf,"+ grammar.maxk+ ")");
   println("{");
-  tabs++;
-  println("setTokenNames(_tokenNames);");
-  if (grammar.debuggingOutput) {
-    println("setRuleNames(_ruleNames);");
-    println("setSemPredNames(_semPredNames);");
-    println("setupDebugging();");
-  }
-  tabs--;
   println("}");
   println("");
   print(grammar.getClassName() + "::" + grammar.getClassName());
   println("(" + namespaceAntlr + "TokenStream& lexer, int k)");
   println(": " + sup + "(lexer,k)");
   println("{");
-  tabs++;
-  println("setTokenNames(_tokenNames);");
-  if (grammar.debuggingOutput) {
-    println("setRuleNames(_ruleNames);");
-    println("setSemPredNames(_semPredNames);");
-    println("setupDebugging(&lexer);");
-  }
-  tabs--;
   println("}");
   println("");
   print(grammar.getClassName() + "::" + grammar.getClassName());
   println("(" + namespaceAntlr + "TokenStream& lexer)");
   println(": " + sup + "(lexer,"+ grammar.maxk+ ")");
   println("{");
-  tabs++;
-  println("setTokenNames(_tokenNames);");
-  if (grammar.debuggingOutput) {
-    println("setRuleNames(_ruleNames);");
-    println("setSemPredNames(_semPredNames);");
-    println("setupDebugging(&lexer);");
-  }
-  tabs--;
   println("}");
   println("");
   print(grammar.getClassName() + "::" + grammar.getClassName());
   println("(const " + namespaceAntlr + "ParserSharedInputState& state)");
   println(": " + sup + "(state,"+ grammar.maxk+ ")");
   println("{");
-  tabs++;
-  println("setTokenNames(_tokenNames);");
-  if (grammar.debuggingOutput) {
-    println("setRuleNames(_ruleNames);");
-    println("setSemPredNames(_semPredNames);");
-    println("setupDebugging(&lexer);");
-  }
-  tabs--;
   println("}");
   println("");
+  if (noConstructors) {
+    println("// constructor creation turned of with 'noConstructor' option");
+    println("#endif");
+  }
+  astTypes=new Vector();
   Enumeration ids=grammar.rules.elements();
   int ruleNum=0;
   while (ids.hasMoreElements()) {
@@ -112,15 +82,9 @@
     }
     exitIfError();
   }
-  if (usingCustomAST) {
-    println(labeledElementASTType + " " + grammar.getClassName()+ "::getAST()");
-    println("{");
-    println("\treturn returnAST;");
-    println("}");
-    println("");
-  }
+  genInitFactory(g);
   genTokenStrings(grammar.getClassName() + "::");
-  genBitsets(bitsetsUsed,grammar.tokenManager.maxTokenType(),grammar.getClassName() + "::",true);
+  genBitsets(bitsetsUsed,grammar.tokenManager.maxTokenType(),grammar.getClassName() + "::");
   if (grammar.debuggingOutput)   genSemPredMap(grammar.getClassName() + "::");
   println("");
   println("");

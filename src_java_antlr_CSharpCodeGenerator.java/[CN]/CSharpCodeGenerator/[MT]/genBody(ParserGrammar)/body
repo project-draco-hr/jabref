@@ -1,0 +1,165 @@
+{
+  setupOutput(grammar.getClassName());
+  genAST=grammar.buildAST;
+  tabs=0;
+  genHeader();
+  println(behavior.getHeaderAction(""));
+  if (nameSpace != null)   nameSpace.emitDeclarations(currentOutput);
+  tabs++;
+  println("// Generate the header common to all output files.");
+  println("using System;");
+  println("");
+  println("using TokenBuffer              = antlr.TokenBuffer;");
+  println("using TokenStreamException     = antlr.TokenStreamException;");
+  println("using TokenStreamIOException   = antlr.TokenStreamIOException;");
+  println("using ANTLRException           = antlr.ANTLRException;");
+  println("using " + grammar.getSuperClass() + " = antlr."+ grammar.getSuperClass()+ ";");
+  println("using Token                    = antlr.Token;");
+  println("using TokenStream              = antlr.TokenStream;");
+  println("using RecognitionException     = antlr.RecognitionException;");
+  println("using NoViableAltException     = antlr.NoViableAltException;");
+  println("using MismatchedTokenException = antlr.MismatchedTokenException;");
+  println("using SemanticException        = antlr.SemanticException;");
+  println("using ParserSharedInputState   = antlr.ParserSharedInputState;");
+  println("using BitSet                   = antlr.collections.impl.BitSet;");
+  if (genAST) {
+    println("using AST                      = antlr.collections.AST;");
+    println("using ASTPair                  = antlr.ASTPair;");
+    println("using ASTFactory               = antlr.ASTFactory;");
+    println("using ASTArray                 = antlr.collections.impl.ASTArray;");
+  }
+  println(grammar.preambleAction.getText());
+  String sup=null;
+  if (grammar.superClass != null)   sup=grammar.superClass;
+ else   sup="antlr." + grammar.getSuperClass();
+  if (grammar.comment != null) {
+    _println(grammar.comment);
+  }
+  Token tprefix=(Token)grammar.options.get("classHeaderPrefix");
+  if (tprefix == null) {
+    print("public ");
+  }
+ else {
+    String p=StringUtils.stripFrontBack(tprefix.getText(),"\"","\"");
+    if (p == null) {
+      print("public ");
+    }
+ else {
+      print(p + " ");
+    }
+  }
+  println("class " + grammar.getClassName() + " : "+ sup);
+  Token tsuffix=(Token)grammar.options.get("classHeaderSuffix");
+  if (tsuffix != null) {
+    String suffix=StringUtils.stripFrontBack(tsuffix.getText(),"\"","\"");
+    if (suffix != null)     print("              , " + suffix);
+  }
+  println("{");
+  tabs++;
+  genTokenDefinitions(grammar.tokenManager);
+  if (grammar.debuggingOutput) {
+    println("private const string[] _ruleNames = {");
+    tabs++;
+    Enumeration ids=grammar.rules.elements();
+    int ruleNum=0;
+    while (ids.hasMoreElements()) {
+      GrammarSymbol sym=(GrammarSymbol)ids.nextElement();
+      if (sym instanceof RuleSymbol)       println("  \"" + ((RuleSymbol)sym).getId() + "\",");
+    }
+    tabs--;
+    println("};");
+  }
+  print(processActionForSpecialSymbols(grammar.classMemberAction.getText(),grammar.classMemberAction.getLine(),currentRule,null));
+  println("");
+  println("protected void initialize()");
+  println("{");
+  tabs++;
+  println("tokenNames = tokenNames_;");
+  if (grammar.buildAST)   println("initializeFactory();");
+  if (grammar.debuggingOutput) {
+    println("ruleNames  = _ruleNames;");
+    println("semPredNames = _semPredNames;");
+    println("setupDebugging(tokenBuf);");
+  }
+  tabs--;
+  println("}");
+  println("");
+  println("");
+  println("protected " + grammar.getClassName() + "(TokenBuffer tokenBuf, int k) : base(tokenBuf, k)");
+  println("{");
+  tabs++;
+  println("initialize();");
+  tabs--;
+  println("}");
+  println("");
+  println("public " + grammar.getClassName() + "(TokenBuffer tokenBuf) : this(tokenBuf,"+ grammar.maxk+ ")");
+  println("{");
+  println("}");
+  println("");
+  println("protected " + grammar.getClassName() + "(TokenStream lexer, int k) : base(lexer,k)");
+  println("{");
+  tabs++;
+  println("initialize();");
+  tabs--;
+  println("}");
+  println("");
+  println("public " + grammar.getClassName() + "(TokenStream lexer) : this(lexer,"+ grammar.maxk+ ")");
+  println("{");
+  println("}");
+  println("");
+  println("public " + grammar.getClassName() + "(ParserSharedInputState state) : base(state,"+ grammar.maxk+ ")");
+  println("{");
+  tabs++;
+  println("initialize();");
+  tabs--;
+  println("}");
+  println("");
+  astTypes=new java.util.Vector(100);
+  Enumeration ids=grammar.rules.elements();
+  int ruleNum=0;
+  while (ids.hasMoreElements()) {
+    GrammarSymbol sym=(GrammarSymbol)ids.nextElement();
+    if (sym instanceof RuleSymbol) {
+      RuleSymbol rs=(RuleSymbol)sym;
+      genRule(rs,rs.references.size() == 0,ruleNum++,grammar.tokenManager);
+    }
+    exitIfError();
+  }
+  if (usingCustomAST) {
+    println("public new " + labeledElementASTType + " getAST()");
+    println("{");
+    tabs++;
+    println("return (" + labeledElementASTType + ") returnAST;");
+    tabs--;
+    println("}");
+    println("");
+  }
+  println("private void initializeFactory()");
+  println("{");
+  tabs++;
+  if (grammar.buildAST) {
+    println("if (astFactory == null)");
+    println("{");
+    tabs++;
+    if (usingCustomAST) {
+      println("astFactory = new ASTFactory(\"" + labeledElementASTType + "\");");
+    }
+ else     println("astFactory = new ASTFactory();");
+    tabs--;
+    println("}");
+    println("initializeASTFactory( astFactory );");
+  }
+  tabs--;
+  println("}");
+  genInitFactory(g);
+  genTokenStrings();
+  genBitsets(bitsetsUsed,grammar.tokenManager.maxTokenType());
+  if (grammar.debuggingOutput)   genSemPredMap();
+  println("");
+  tabs--;
+  println("}");
+  tabs--;
+  if (nameSpace != null)   nameSpace.emitClosures(currentOutput);
+  currentOutput.close();
+  currentOutput=null;
+}

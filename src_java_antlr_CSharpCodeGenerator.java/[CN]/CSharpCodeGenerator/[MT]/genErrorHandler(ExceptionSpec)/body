@@ -1,0 +1,27 @@
+{
+  for (int i=0; i < ex.handlers.size(); i++) {
+    ExceptionHandler handler=(ExceptionHandler)ex.handlers.elementAt(i);
+    println("catch (" + handler.exceptionTypeAndName.getText() + ")");
+    println("{");
+    tabs++;
+    if (grammar.hasSyntacticPredicate) {
+      println("if (0 == inputState.guessing)");
+      println("{");
+      tabs++;
+    }
+    ActionTransInfo tInfo=new ActionTransInfo();
+    printAction(processActionForSpecialSymbols(handler.action.getText(),handler.action.getLine(),currentRule,tInfo));
+    if (grammar.hasSyntacticPredicate) {
+      tabs--;
+      println("}");
+      println("else");
+      println("{");
+      tabs++;
+      println("throw;");
+      tabs--;
+      println("}");
+    }
+    tabs--;
+    println("}");
+  }
+}

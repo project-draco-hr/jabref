@@ -11,7 +11,7 @@
     StringLiteralSymbol sl=(StringLiteralSymbol)grammar.tokenManager.getTokenSymbol(literal);
     if (sl != null) {
       if (name == null || sl.getLabel() != null) {
-        tool.warning("Redefinition of literal in tokens {...}: " + literal,grammar.getFilename(),tokliteral.getLine());
+        tool.warning("Redefinition of literal in tokens {...}: " + literal,grammar.getFilename(),tokliteral.getLine(),tokliteral.getColumn());
         return;
       }
  else       if (name != null) {
@@ -23,7 +23,7 @@
       TokenSymbol ts=(TokenSymbol)grammar.tokenManager.getTokenSymbol(name);
       if (ts != null) {
         if (ts instanceof StringLiteralSymbol) {
-          tool.warning("Redefinition of token in tokens {...}: " + name,grammar.getFilename(),tokliteral.getLine());
+          tool.warning("Redefinition of token in tokens {...}: " + name,grammar.getFilename(),tokliteral.getLine(),tokliteral.getColumn());
           return;
         }
         int ttype=ts.getTokenType();
@@ -46,7 +46,7 @@
   }
  else {
     if (grammar.tokenManager.tokenDefined(name)) {
-      tool.warning("Redefinition of token in tokens {...}: " + name,grammar.getFilename(),tokname.getLine());
+      tool.warning("Redefinition of token in tokens {...}: " + name,grammar.getFilename(),tokname.getLine(),tokname.getColumn());
       return;
     }
     int tt=grammar.tokenManager.nextTokenType();

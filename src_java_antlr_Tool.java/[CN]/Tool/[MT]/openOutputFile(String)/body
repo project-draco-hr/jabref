@@ -1,3 +1,7 @@
 {
-  return new PrintWriter(new FileWriter(outputDir + System.getProperty("file.separator") + f));
+  if (outputDir != ".") {
+    File out_dir=new File(outputDir);
+    if (!out_dir.exists())     out_dir.mkdirs();
+  }
+  return new PrintWriter(new PreservingFileWriter(outputDir + System.getProperty("file.separator") + f));
 }

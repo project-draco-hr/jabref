@@ -1,12 +1,13 @@
 {
-  if (DEBUG_CODE_GENERATOR)   System.out.println("genRule(" + s.getId() + ")");
+  if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)   System.out.println("genRule(" + s.getId() + ")");
   if (!s.isDefined()) {
-    tool.error("undefined rule: " + s.getId());
+    antlrTool.error("undefined rule: " + s.getId());
     return;
   }
   RuleBlock rblk=s.getBlock();
   currentRule=rblk;
   currentASTResult=s.getId();
+  declaredASTVariables.clear();
   boolean savegenAST=genAST;
   genAST=genAST && rblk.getAutoGen();
   saveText=rblk.getAutoGen();
@@ -14,7 +15,7 @@
     _println(s.comment);
   }
   if (rblk.returnAction != null) {
-    _print(extractTypeOfAction(rblk.returnAction,rblk.getLine()) + " ");
+    _print(extractTypeOfAction(rblk.returnAction,rblk.getLine(),rblk.getColumn()) + " ");
   }
  else {
     _print("void ");
@@ -27,30 +28,47 @@
   if (rblk.argAction != null) {
     _println("");
     tabs++;
-    println(rblk.argAction);
+    String oldarg=rblk.argAction;
+    String newarg="";
+    String comma="";
+    int eqpos=oldarg.indexOf('=');
+    if (eqpos != -1) {
+      int cmpos=0;
+      while (cmpos != -1) {
+        newarg=newarg + comma + oldarg.substring(0,eqpos).trim();
+        comma=", ";
+        cmpos=oldarg.indexOf(',',eqpos);
+        if (cmpos != -1) {
+          oldarg=oldarg.substring(cmpos + 1).trim();
+          eqpos=oldarg.indexOf('=');
+        }
+      }
+    }
+ else     newarg=oldarg;
+    println(newarg);
     tabs--;
-    print(")");
+    print(") ");
   }
  else {
-    _print(")");
+    _print(") ");
   }
-  _println(" {");
+  _println("{");
   tabs++;
-  if (rblk.returnAction != null) {
-    genLineNo(rblk);
-    println(rblk.returnAction + ";");
-    genLineNo2();
-  }
-  if (!commonLocalVars.equals(""))   println(commonLocalVars);
   if (grammar.traceRules) {
     if (grammar instanceof TreeWalkerGrammar) {
-      if (usingCustomAST)       println("Tracer traceInOut(this,\"" + s.getId() + "\",static_cast<"+ namespaceAntlr+ "RefAST"+ ">(_t));");
+      if (usingCustomAST)       println("Tracer traceInOut(this,\"" + s.getId() + "\","+ namespaceAntlr+ "RefAST"+ "(_t));");
  else       println("Tracer traceInOut(this,\"" + s.getId() + "\",_t);");
     }
  else {
       println("Tracer traceInOut(this, \"" + s.getId() + "\");");
     }
   }
+  if (rblk.returnAction != null) {
+    genLineNo(rblk);
+    println(rblk.returnAction + ";");
+    genLineNo2();
+  }
+  if (!commonLocalVars.equals(""))   println(commonLocalVars);
   if (grammar instanceof LexerGrammar) {
     if (s.getId().equals("mEOF"))     println("_ttype = " + namespaceAntlr + "Token::EOF_TYPE;");
  else     println("_ttype = " + s.getId().substring(1) + ";");
@@ -59,7 +77,7 @@
   if (grammar.debuggingOutput)   if (grammar instanceof ParserGrammar)   println("fireEnterRule(" + ruleNum + ",0);");
  else   if (grammar instanceof LexerGrammar)   println("fireEnterRule(" + ruleNum + ",_ttype);");
   if (grammar instanceof TreeWalkerGrammar) {
-    println(labeledElementASTType + " " + s.getId()+ "_AST_in = _t;");
+    println(labeledElementASTType + " " + s.getId()+ "_AST_in = (_t == ASTNULL) ? "+ labeledElementASTInit+ " : _t;");
   }
   if (grammar.buildAST) {
     println("returnAST = " + labeledElementASTInit + ";");
@@ -67,6 +85,7 @@
     println(labeledElementASTType + " " + s.getId()+ "_AST = "+ labeledElementASTInit+ ";");
   }
   genBlockPreamble(rblk);
+  genBlockInitAction(rblk);
   println("");
   ExceptionSpec unlabeledUserSpec=rblk.findExceptionSpec("");
   if (unlabeledUserSpec != null || rblk.getDefaultErrorHandler()) {
@@ -78,7 +97,7 @@
     String pred=alt.semPred;
     if (pred != null)     genSemPred(pred,currentRule.line);
     if (alt.synPred != null) {
-      tool.warning("Syntactic predicate ignored for single alternative",grammar.getFilename(),alt.synPred.getLine());
+      antlrTool.warning("Syntactic predicate ignored for single alternative",grammar.getFilename(),alt.synPred.getLine(),alt.synPred.getColumn());
     }
     genAlt(alt,rblk);
   }
@@ -118,7 +137,7 @@
       tabs--;
       println("} else {");
       tabs++;
-      println("throw ex;");
+      println("throw;");
       tabs--;
       println("}");
     }
@@ -148,7 +167,7 @@
     println("_saveIndex=0;");
   }
   if (rblk.returnAction != null) {
-    println("return " + extractIdOfAction(rblk.returnAction,rblk.getLine()) + ";");
+    println("return " + extractIdOfAction(rblk.returnAction,rblk.getLine(),rblk.getColumn()) + ";");
   }
   tabs--;
   println("}");

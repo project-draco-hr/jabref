@@ -8,16 +8,14 @@
           if (!(a instanceof RuleRefElement) && ((AlternativeBlock)a).not && analyzer.subruleCanBeInverted(((AlternativeBlock)a),grammar instanceof LexerGrammar)) {
             println(labeledElementType + " " + a.getLabel()+ " = "+ labeledElementInit+ ";");
             if (grammar.buildAST) {
-              println(labeledElementASTType + " " + a.getLabel()+ "_AST = "+ labeledElementASTInit+ ";");
+              genASTDeclaration(a);
             }
           }
  else {
             if (grammar.buildAST) {
-              println(labeledElementASTType + " " + a.getLabel()+ "_AST = "+ labeledElementASTInit+ ";");
+              genASTDeclaration(a);
             }
-            if (grammar instanceof LexerGrammar) {
-              println(namespaceAntlr + "RefToken " + a.getLabel()+ ";");
-            }
+            if (grammar instanceof LexerGrammar)             println(namespaceAntlr + "RefToken " + a.getLabel()+ ";");
             if (grammar instanceof TreeWalkerGrammar) {
               println(labeledElementType + " " + a.getLabel()+ " = "+ labeledElementInit+ ";");
             }
@@ -26,15 +24,16 @@
  else {
           println(labeledElementType + " " + a.getLabel()+ " = "+ labeledElementInit+ ";");
           if (grammar.buildAST) {
-            println(labeledElementASTType + " " + a.getLabel()+ "_AST = "+ labeledElementASTInit+ ";");
+            if (a instanceof GrammarAtom && ((GrammarAtom)a).getASTNodeType() != null) {
+              GrammarAtom ga=(GrammarAtom)a;
+              genASTDeclaration(a,"Ref" + ga.getASTNodeType());
+            }
+ else {
+              genASTDeclaration(a);
+            }
           }
         }
       }
     }
-  }
-  if (blk.initAction != null) {
-    genLineNo(blk);
-    printAction(processActionForTreeSpecifiers(blk.initAction,0,currentRule,null));
-    genLineNo2();
   }
 }

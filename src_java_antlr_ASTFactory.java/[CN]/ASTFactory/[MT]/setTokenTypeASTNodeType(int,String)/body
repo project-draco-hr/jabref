@@ -1,0 +1,17 @@
+{
+  if (tokenTypeToASTClassMap == null) {
+    tokenTypeToASTClassMap=new Hashtable();
+  }
+  if (className == null) {
+    tokenTypeToASTClassMap.remove(new Integer(tokenType));
+    return;
+  }
+  Class c=null;
+  try {
+    c=Class.forName(className);
+    tokenTypeToASTClassMap.put(new Integer(tokenType),c);
+  }
+ catch (  Exception e) {
+    throw new IllegalArgumentException("Invalid class, " + className);
+  }
+}

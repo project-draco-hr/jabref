@@ -1,21 +1,22 @@
 {
   antlr.preprocessor.Tool preTool=new antlr.preprocessor.Tool(this,args);
-  if (!preTool.preprocess()) {
-    System.exit(1);
-  }
+  boolean preprocess_ok=preTool.preprocess();
   String[] modifiedArgs=preTool.preprocessedArgList();
   processArguments(modifiedArgs);
+  if (!preprocess_ok) {
+    return 1;
+  }
   f=getGrammarReader();
-  TokenBuffer tokenBuf=new TokenBuffer(new ANTLRLexer(f));
+  ANTLRLexer lexer=new ANTLRLexer(f);
+  TokenBuffer tokenBuf=new TokenBuffer(lexer);
   LLkAnalyzer analyzer=new LLkAnalyzer(this);
   MakeGrammar behavior=new MakeGrammar(this,args,analyzer);
   try {
     ANTLRParser p=new ANTLRParser(tokenBuf,behavior,this);
     p.setFilename(grammarFile);
     p.grammar();
-    if (hasError) {
-      System.err.println("Exiting due to errors.");
-      System.exit(1);
+    if (hasError()) {
+      fatalError("Exiting due to errors.");
     }
     checkForInvalidArguments(modifiedArgs,cmdLineArgValid);
     CodeGenerator codeGen;
@@ -42,12 +43,10 @@ catch (    IllegalAccessException iae) {
     }
   }
  catch (  RecognitionException pe) {
-    System.err.println("Unhandled parser error: " + pe.getMessage());
-    System.exit(1);
+    fatalError("Unhandled parser error: " + pe.getMessage());
   }
 catch (  TokenStreamException io) {
-    System.err.println("TokenStreamException: " + io.getMessage());
-    System.exit(1);
+    fatalError("TokenStreamException: " + io.getMessage());
   }
-  System.exit(0);
+  return 0;
 }

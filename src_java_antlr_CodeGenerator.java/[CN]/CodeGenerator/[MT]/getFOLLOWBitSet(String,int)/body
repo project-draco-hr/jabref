@@ -1,0 +1,10 @@
+{
+  GrammarSymbol rs=grammar.getSymbol(ruleName);
+  if (!(rs instanceof RuleSymbol)) {
+    return null;
+  }
+  RuleBlock blk=((RuleSymbol)rs).getBlock();
+  Lookahead follow=grammar.theLLkAnalyzer.FOLLOW(k,blk.endNode);
+  String followSetName=getBitsetName(markBitsetForGen(follow.fset));
+  return followSetName;
+}

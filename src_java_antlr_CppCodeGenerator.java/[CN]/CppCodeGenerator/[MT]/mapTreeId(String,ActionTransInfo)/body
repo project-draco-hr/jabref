@@ -6,7 +6,7 @@
     if (!grammar.buildAST) {
       in_var=true;
     }
- else     if (id.length() > 3 && id.lastIndexOf("_in") == id.length() - 3) {
+    if (id.length() > 3 && id.lastIndexOf("_in") == id.length() - 3) {
       id=id.substring(0,id.length() - 3);
       in_var=true;
     }
@@ -20,9 +20,11 @@
   String s=(String)treeVariableMap.get(id);
   if (s != null) {
     if (s == NONUNIQUE) {
+      antlrTool.error("Ambiguous reference to AST element " + id + " in rule "+ currentRule.getRuleName());
       return null;
     }
  else     if (s.equals(currentRule.getRuleName())) {
+      antlrTool.error("Ambiguous reference to AST element " + id + " in rule "+ currentRule.getRuleName());
       return null;
     }
  else {

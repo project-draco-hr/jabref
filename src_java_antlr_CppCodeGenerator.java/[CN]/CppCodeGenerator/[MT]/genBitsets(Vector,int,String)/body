@@ -1,0 +1,25 @@
+{
+  TokenManager tm=grammar.tokenManager;
+  println("");
+  for (int i=0; i < bitsetList.size(); i++) {
+    BitSet p=(BitSet)bitsetList.elementAt(i);
+    p.growToInclude(maxVocabulary);
+    println("const unsigned long " + prefix + getBitsetName(i)+ "_data_"+ "[] = { "+ p.toStringOfHalfWords()+ " };");
+    String t="// ";
+    for (int j=0; j < tm.getVocabulary().size(); j++) {
+      if (p.member(j)) {
+        if ((grammar instanceof LexerGrammar)) {
+          if ((0x20 <= j) && (j < 0x7F))           t+=charFormatter.escapeChar(j,true) + " ";
+ else           t+="0x" + Integer.toString(j,16) + " ";
+        }
+ else         t+=tm.getTokenStringAt(j) + " ";
+        if (t.length() > 70) {
+          println(t);
+          t="// ";
+        }
+      }
+    }
+    if (t != "// ")     println(t);
+    println("const " + namespaceAntlr + "BitSet "+ prefix+ getBitsetName(i)+ "("+ getBitsetName(i)+ "_data_,"+ p.size() / 32 + ");");
+  }
+}

@@ -1,0 +1,39 @@
+{
+  _print(rr.targetRule + "(");
+  if (grammar instanceof LexerGrammar) {
+    if (rr.getLabel() != null) {
+      _print("true");
+    }
+ else {
+      _print("false");
+    }
+    if (commonExtraArgs.length() != 0 || rr.args != null) {
+      _print(",");
+    }
+  }
+  _print(commonExtraArgs);
+  if (commonExtraArgs.length() != 0 && rr.args != null) {
+    _print(",");
+  }
+  RuleSymbol rs=(RuleSymbol)grammar.getSymbol(rr.targetRule);
+  if (rr.args != null) {
+    ActionTransInfo tInfo=new ActionTransInfo();
+    String args=processActionForSpecialSymbols(rr.args,0,currentRule,tInfo);
+    if (tInfo.assignToRoot || tInfo.refRuleRoot != null) {
+      antlrTool.error("Arguments of rule reference '" + rr.targetRule + "' cannot set or ref #"+ currentRule.getRuleName(),grammar.getFilename(),rr.getLine(),rr.getColumn());
+    }
+    _print(args);
+    if (rs.block.argAction == null) {
+      antlrTool.warning("Rule '" + rr.targetRule + "' accepts no arguments",grammar.getFilename(),rr.getLine(),rr.getColumn());
+    }
+  }
+ else {
+    if (rs.block.argAction != null) {
+      antlrTool.warning("Missing parameters on reference to rule " + rr.targetRule,grammar.getFilename(),rr.getLine(),rr.getColumn());
+    }
+  }
+  _println(");");
+  if (grammar instanceof TreeWalkerGrammar) {
+    println("_t = retTree_;");
+  }
+}

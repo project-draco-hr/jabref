@@ -5,9 +5,13 @@
   if (key.equals("k")) {
     try {
       maxk=getIntegerOption("k");
+      if (maxk <= 0) {
+        antlrTool.error("option 'k' must be greater than 0 (was " + value.getText() + ")",getFilename(),value.getLine(),value.getColumn());
+        maxk=1;
+      }
     }
  catch (    NumberFormatException e) {
-      tool.error("option 'k' must be an integer (was " + value.getText() + ")",getFilename(),value.getLine());
+      antlrTool.error("option 'k' must be an integer (was " + value.getText() + ")",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -16,7 +20,7 @@
       i=getIntegerOption("codeGenMakeSwitchThreshold");
     }
  catch (    NumberFormatException e) {
-      tool.error("option 'codeGenMakeSwitchThreshold' must be an integer",getFilename(),value.getLine());
+      antlrTool.error("option 'codeGenMakeSwitchThreshold' must be an integer",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -25,7 +29,7 @@
       i=getIntegerOption("codeGenBitsetTestThreshold");
     }
  catch (    NumberFormatException e) {
-      tool.error("option 'codeGenBitsetTestThreshold' must be an integer",getFilename(),value.getLine());
+      antlrTool.error("option 'codeGenBitsetTestThreshold' must be an integer",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -37,7 +41,7 @@
       defaultErrorHandler=false;
     }
  else {
-      tool.error("Value for defaultErrorHandler must be true or false",getFilename(),value.getLine());
+      antlrTool.error("Value for defaultErrorHandler must be true or false",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -49,7 +53,7 @@
       analyzerDebug=false;
     }
  else {
-      tool.error("option 'analyzerDebug' must be true or false",getFilename(),value.getLine());
+      antlrTool.error("option 'analyzerDebug' must be true or false",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
@@ -61,11 +65,14 @@
       analyzerDebug=false;
     }
  else {
-      tool.error("option 'codeGenDebug' must be true or false",getFilename(),value.getLine());
+      antlrTool.error("option 'codeGenDebug' must be true or false",getFilename(),value.getLine(),value.getColumn());
     }
     return true;
   }
   if (key.equals("classHeaderSuffix")) {
+    return true;
+  }
+  if (key.equals("classHeaderPrefix")) {
     return true;
   }
   if (key.equals("namespaceAntlr")) {
@@ -75,6 +82,9 @@
     return true;
   }
   if (key.equals("genHashLines")) {
+    return true;
+  }
+  if (key.equals("noConstructors")) {
     return true;
   }
   return false;

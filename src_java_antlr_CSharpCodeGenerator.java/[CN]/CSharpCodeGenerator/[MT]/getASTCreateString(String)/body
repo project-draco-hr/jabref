@@ -1,0 +1,23 @@
+{
+  if (astCtorArgs == null) {
+    astCtorArgs="";
+  }
+  String astCreateString="astFactory.create(" + astCtorArgs + ")";
+  String ctorID=astCtorArgs;
+  String ctorText=null;
+  int commaIndex;
+  boolean ctorIncludesCustomType=false;
+  commaIndex=astCtorArgs.indexOf(',');
+  if (commaIndex != -1) {
+    ctorID=astCtorArgs.substring(0,commaIndex);
+    ctorText=astCtorArgs.substring(commaIndex + 1,astCtorArgs.length());
+    commaIndex=ctorText.indexOf(',');
+    if (commaIndex != -1) {
+      ctorIncludesCustomType=true;
+    }
+  }
+  TokenSymbol ts=grammar.tokenManager.getTokenSymbol(ctorID);
+  if ((null != ts) && (null != ts.getASTNodeType()))   astCreateString="(" + ts.getASTNodeType() + ") "+ astCreateString;
+ else   if (usingCustomAST)   astCreateString="(" + labeledElementASTType + ") "+ astCreateString;
+  return astCreateString;
+}

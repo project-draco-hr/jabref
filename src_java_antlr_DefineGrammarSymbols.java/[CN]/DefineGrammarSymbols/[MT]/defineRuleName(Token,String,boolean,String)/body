@@ -1,7 +1,7 @@
 {
   String id=r.getText();
   if (r.type == ANTLRTokenTypes.TOKEN_REF) {
-    id=CodeGenerator.lexerRuleName(id);
+    id=CodeGenerator.encodeLexerRuleName(id);
     if (!grammar.tokenManager.tokenDefined(r.getText())) {
       int tt=grammar.tokenManager.nextTokenType();
       TokenSymbol ts=new TokenSymbol(r.getText());
@@ -13,7 +13,7 @@
   if (grammar.isDefined(id)) {
     rs=(RuleSymbol)grammar.getSymbol(id);
     if (rs.isDefined()) {
-      tool.error("redefinition of rule " + id,grammar.getFilename(),r.getLine());
+      tool.error("redefinition of rule " + id,grammar.getFilename(),r.getLine(),r.getColumn());
     }
   }
  else {

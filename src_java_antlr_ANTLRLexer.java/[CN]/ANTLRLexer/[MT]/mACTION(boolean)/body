@@ -5,28 +5,26 @@
   _ttype=ACTION;
   int _saveIndex;
   int actionLine=getLine();
+  int actionColumn=getColumn();
   mNESTED_ACTION(false);
 {
     if ((LA(1) == '?')) {
       match('?');
-      if (inputState.guessing == 0) {
-        _ttype=SEMPRED;
-      }
+      _ttype=SEMPRED;
     }
  else {
     }
   }
-  if (inputState.guessing == 0) {
-    if (_ttype == ACTION) {
-      setText(Tool.stripFrontBack(getText(),"{","}"));
-    }
- else {
-      setText(Tool.stripFrontBack(getText(),"{","}?"));
-    }
-    CommonToken t=new CommonToken(_ttype,new String(text.getBuffer(),_begin,text.length() - _begin));
-    t.setLine(actionLine);
-    _token=t;
+  if (_ttype == ACTION) {
+    setText(StringUtils.stripFrontBack(getText(),"{","}"));
   }
+ else {
+    setText(StringUtils.stripFrontBack(getText(),"{","}?"));
+  }
+  CommonToken t=new CommonToken(_ttype,new String(text.getBuffer(),_begin,text.length() - _begin));
+  t.setLine(actionLine);
+  t.setColumn(actionColumn);
+  _token=t;
   if (_createToken && _token == null && _ttype != Token.SKIP) {
     _token=makeToken(_ttype);
     _token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));

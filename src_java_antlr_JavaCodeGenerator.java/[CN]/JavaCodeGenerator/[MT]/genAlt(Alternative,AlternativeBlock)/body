@@ -17,9 +17,14 @@
   if (genAST) {
     if (blk instanceof RuleBlock) {
       RuleBlock rblk=(RuleBlock)blk;
+      if (grammar.hasSyntacticPredicate) {
+      }
       println(rblk.getRuleName() + "_AST = (" + labeledElementASTType+ ")currentAST.root;");
+      if (grammar.hasSyntacticPredicate) {
+      }
     }
  else     if (blk.getLabel() != null) {
+      antlrTool.warning("Labeled subrules not yet supported",grammar.getFilename(),blk.getLine(),blk.getColumn());
     }
   }
   if (alt.exceptionSpec != null) {

@@ -3,13 +3,26 @@
   if (t.root.getLabel() != null) {
     println(t.root.getLabel() + " = _t==ASTNULL ? null :(" + labeledElementASTType+ ")_t;");
   }
+  if (t.root.getAutoGenType() == GrammarElement.AUTO_GEN_BANG) {
+    antlrTool.error("Suffixing a root node with '!' is not implemented",grammar.getFilename(),t.getLine(),t.getColumn());
+    t.root.setAutoGenType(GrammarElement.AUTO_GEN_NONE);
+  }
+  if (t.root.getAutoGenType() == GrammarElement.AUTO_GEN_CARET) {
+    antlrTool.warning("Suffixing a root node with '^' is redundant; already a root",grammar.getFilename(),t.getLine(),t.getColumn());
+    t.root.setAutoGenType(GrammarElement.AUTO_GEN_NONE);
+  }
   genElementAST(t.root);
   if (grammar.buildAST) {
     println("ASTPair __currentAST" + t.ID + " = currentAST.copy();");
     println("currentAST.root = currentAST.child;");
     println("currentAST.child = null;");
   }
-  genMatch(t.root);
+  if (t.root instanceof WildcardElement) {
+    println("if ( _t==null ) throw new MismatchedTokenException();");
+  }
+ else {
+    genMatch(t.root);
+  }
   println("_t = _t.getFirstChild();");
   for (int i=0; i < t.getAlternatives().size(); i++) {
     Alternative a=t.getAlternativeAt(i);

@@ -1,0 +1,19 @@
+{
+  if (blk.alternatives.size() > 1)   println("<itemizedlist mark=\"none\">");
+  for (int i=0; i < blk.alternatives.size(); i++) {
+    Alternative alt=blk.getAlternativeAt(i);
+    AlternativeElement elem=alt.head;
+    if (blk.alternatives.size() > 1)     print("<listitem><para>");
+    if (i > 0 && blk.alternatives.size() > 1) {
+      _print("| ");
+    }
+    boolean save=firstElementInAlt;
+    firstElementInAlt=true;
+    tabs++;
+    genAlt(alt);
+    tabs--;
+    firstElementInAlt=save;
+    if (blk.alternatives.size() > 1)     _println("</para></listitem>");
+  }
+  if (blk.alternatives.size() > 1)   println("</itemizedlist>");
+}

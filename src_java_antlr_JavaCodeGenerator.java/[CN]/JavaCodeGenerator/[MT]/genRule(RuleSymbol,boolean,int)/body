@@ -2,12 +2,13 @@
   tabs=1;
   if (DEBUG_CODE_GENERATOR)   System.out.println("genRule(" + s.getId() + ")");
   if (!s.isDefined()) {
-    tool.error("undefined rule: " + s.getId());
+    antlrTool.error("undefined rule: " + s.getId());
     return;
   }
   RuleBlock rblk=s.getBlock();
   currentRule=rblk;
   currentASTResult=s.getId();
+  declaredASTVariables.clear();
   boolean savegenAST=genAST;
   genAST=genAST && rblk.getAutoGen();
   saveText=rblk.getAutoGen();
@@ -16,7 +17,7 @@
   }
   print(s.access + " final ");
   if (rblk.returnAction != null) {
-    _print(extractTypeOfAction(rblk.returnAction,rblk.getLine()) + " ");
+    _print(extractTypeOfAction(rblk.returnAction,rblk.getLine(),rblk.getColumn()) + " ");
   }
  else {
     _print("void ");
@@ -45,7 +46,7 @@
   }
   if (rblk.throwsSpec != null) {
     if (grammar instanceof LexerGrammar) {
-      tool.error("user-defined throws spec not allowed (yet) for lexer rule " + rblk.ruleName);
+      antlrTool.error("user-defined throws spec not allowed (yet) for lexer rule " + rblk.ruleName);
     }
  else {
       _print(", " + rblk.throwsSpec);
@@ -75,7 +76,7 @@
     tabs++;
   }
   if (grammar instanceof TreeWalkerGrammar) {
-    println(labeledElementASTType + " " + s.getId()+ "_AST_in = ("+ labeledElementASTType+ ")_t;");
+    println(labeledElementASTType + " " + s.getId()+ "_AST_in = (_t == ASTNULL) ? null : ("+ labeledElementASTType+ ")_t;");
   }
   if (grammar.buildAST) {
     println("returnAST = null;");
@@ -83,6 +84,7 @@
     println(labeledElementASTType + " " + s.getId()+ "_AST = null;");
   }
   genBlockPreamble(rblk);
+  genBlockInitAction(rblk);
   println("");
   ExceptionSpec unlabeledUserSpec=rblk.findExceptionSpec("");
   if (unlabeledUserSpec != null || rblk.getDefaultErrorHandler()) {
@@ -94,7 +96,7 @@
     String pred=alt.semPred;
     if (pred != null)     genSemPred(pred,currentRule.line);
     if (alt.synPred != null) {
-      tool.warning("Syntactic predicate ignored for single alternative",grammar.getFilename(),alt.synPred.getLine());
+      antlrTool.warning("Syntactic predicate ignored for single alternative",grammar.getFilename(),alt.synPred.getLine(),alt.synPred.getColumn());
     }
     genAlt(alt,rblk);
   }
@@ -158,7 +160,7 @@
     println("_returnToken = _token;");
   }
   if (rblk.returnAction != null) {
-    println("return " + extractIdOfAction(rblk.returnAction,rblk.getLine()) + ";");
+    println("return " + extractIdOfAction(rblk.returnAction,rblk.getLine(),rblk.getColumn()) + ";");
   }
   if (grammar.debuggingOutput || grammar.traceRules) {
     tabs--;

@@ -1,14 +1,21 @@
 {
   outputFile=tm.getName() + TokenTypesFileSuffix + ".hpp";
   outputLine=1;
-  currentOutput=antlr.Tool.openOutputFile(outputFile);
+  currentOutput=antlrTool.openOutputFile(outputFile);
   tabs=0;
   println("#ifndef INC_" + tm.getName() + TokenTypesFileSuffix+ "_hpp_");
   println("#define INC_" + tm.getName() + TokenTypesFileSuffix+ "_hpp_");
   println("");
   if (nameSpace != null)   nameSpace.emitDeclarations(currentOutput);
   genHeader(outputFile);
-  println("struct " + tm.getName() + TokenTypesFileSuffix+ " {");
+  println("");
+  println("#ifndef CUSTOM_API");
+  println("# define CUSTOM_API");
+  println("#endif");
+  println("");
+  println("#ifdef __cplusplus");
+  println("struct CUSTOM_API " + tm.getName() + TokenTypesFileSuffix+ " {");
+  println("#endif");
   tabs++;
   println("enum {");
   tabs++;
@@ -20,7 +27,7 @@
       if (s.startsWith("\"")) {
         StringLiteralSymbol sl=(StringLiteralSymbol)tm.getTokenSymbol(s);
         if (sl == null) {
-          antlr.Tool.panic("String literal " + s + " not in symbol table");
+          antlrTool.panic("String literal " + s + " not in symbol table");
         }
  else         if (sl.label != null) {
           println(sl.label + " = " + i+ ",");
@@ -45,7 +52,9 @@
   tabs--;
   println("};");
   tabs--;
+  println("#ifdef __cplusplus");
   println("};");
+  println("#endif");
   if (nameSpace != null)   nameSpace.emitClosures(currentOutput);
   println("#endif /*INC_" + tm.getName() + TokenTypesFileSuffix+ "_hpp_*/");
   currentOutput.close();

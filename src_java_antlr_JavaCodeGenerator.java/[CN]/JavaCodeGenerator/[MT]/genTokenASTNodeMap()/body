@@ -1,0 +1,27 @@
+{
+  println("");
+  println("protected void buildTokenTypeASTClassMap() {");
+  tabs++;
+  boolean generatedNewHashtable=false;
+  int n=0;
+  Vector v=grammar.tokenManager.getVocabulary();
+  for (int i=0; i < v.size(); i++) {
+    String s=(String)v.elementAt(i);
+    if (s != null) {
+      TokenSymbol ts=grammar.tokenManager.getTokenSymbol(s);
+      if (ts != null && ts.getASTNodeType() != null) {
+        n++;
+        if (!generatedNewHashtable) {
+          println("tokenTypeToASTClassMap = new Hashtable();");
+          generatedNewHashtable=true;
+        }
+        println("tokenTypeToASTClassMap.put(new Integer(" + ts.getTokenType() + "), "+ ts.getASTNodeType()+ ".class);");
+      }
+    }
+  }
+  if (n == 0) {
+    println("tokenTypeToASTClassMap=null;");
+  }
+  tabs--;
+  println("};");
+}

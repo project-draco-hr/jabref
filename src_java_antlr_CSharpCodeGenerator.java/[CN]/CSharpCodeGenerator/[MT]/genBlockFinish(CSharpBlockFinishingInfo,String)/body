@@ -1,0 +1,30 @@
+{
+  if (howToFinish.needAnErrorClause && (howToFinish.generatedAnIf || howToFinish.generatedSwitch)) {
+    if (howToFinish.generatedAnIf) {
+      println("else");
+      println("{");
+    }
+ else {
+      println("{");
+    }
+    tabs++;
+    println(noViableAction);
+    tabs--;
+    println("}");
+  }
+  if (howToFinish.postscript != null) {
+    if (howToFinish.needAnErrorClause && howToFinish.generatedSwitch && !howToFinish.generatedAnIf&& noViableAction != null) {
+      if (noViableAction.indexOf("throw") == 0 || noViableAction.indexOf("goto") == 0) {
+        int endOfBreak=howToFinish.postscript.indexOf("break;") + 6;
+        String newPostScript=howToFinish.postscript.substring(endOfBreak);
+        println(newPostScript);
+      }
+ else {
+        println(howToFinish.postscript);
+      }
+    }
+ else {
+      println(howToFinish.postscript);
+    }
+  }
+}

@@ -1,3 +1,10 @@
 {
-  headerActions.put((name == null) ? "" : Tool.stripFrontBack(name.getText(),"\"","\""),act);
+  String key;
+  if (name == null)   key="";
+ else   key=StringUtils.stripFrontBack(name.getText(),"\"","\"");
+  if (headerActions.containsKey(key)) {
+    if (key.equals(""))     tool.error(act.getLine() + ": header action already defined");
+ else     tool.error(act.getLine() + ": header action '" + key+ "' already defined");
+  }
+  headerActions.put(key,act);
 }

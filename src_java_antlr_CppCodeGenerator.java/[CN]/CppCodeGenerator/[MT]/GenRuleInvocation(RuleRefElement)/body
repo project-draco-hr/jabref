@@ -18,13 +18,13 @@
   RuleSymbol rs=(RuleSymbol)grammar.getSymbol(rr.targetRule);
   if (rr.args != null) {
     ActionTransInfo tInfo=new ActionTransInfo();
-    String args=processActionForTreeSpecifiers(rr.args,0,currentRule,tInfo);
+    String args=processActionForSpecialSymbols(rr.args,rr.line,currentRule,tInfo);
     if (tInfo.assignToRoot || tInfo.refRuleRoot != null) {
-      tool.error("Arguments of rule reference '" + rr.targetRule + "' cannot set or ref #"+ currentRule.getRuleName()+ " on line "+ rr.getLine());
+      antlrTool.error("Arguments of rule reference '" + rr.targetRule + "' cannot set or ref #"+ currentRule.getRuleName()+ " on line "+ rr.getLine());
     }
     _print(args);
     if (rs.block.argAction == null) {
-      tool.warning("Rule '" + rr.targetRule + "' accepts no arguments",grammar.getFilename(),rr.getLine());
+      antlrTool.warning("Rule '" + rr.targetRule + "' accepts no arguments",grammar.getFilename(),rr.getLine(),rr.getColumn());
     }
   }
  else {

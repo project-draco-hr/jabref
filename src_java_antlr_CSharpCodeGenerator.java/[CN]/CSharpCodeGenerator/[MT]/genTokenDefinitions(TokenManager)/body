@@ -1,0 +1,33 @@
+{
+  Vector v=tm.getVocabulary();
+  println("public const int EOF = " + Token.EOF_TYPE + ";");
+  println("public const int NULL_TREE_LOOKAHEAD = " + Token.NULL_TREE_LOOKAHEAD + ";");
+  for (int i=Token.MIN_USER_TYPE; i < v.size(); i++) {
+    String s=(String)v.elementAt(i);
+    if (s != null) {
+      if (s.startsWith("\"")) {
+        StringLiteralSymbol sl=(StringLiteralSymbol)tm.getTokenSymbol(s);
+        if (sl == null) {
+          antlrTool.panic("String literal " + s + " not in symbol table");
+        }
+ else         if (sl.label != null) {
+          println("public const int " + sl.label + " = "+ i+ ";");
+        }
+ else {
+          String mangledName=mangleLiteral(s);
+          if (mangledName != null) {
+            println("public const int " + mangledName + " = "+ i+ ";");
+            sl.label=mangledName;
+          }
+ else {
+            println("// " + s + " = "+ i);
+          }
+        }
+      }
+ else       if (!s.startsWith("<")) {
+        println("public const int " + s + " = "+ i+ ";");
+      }
+    }
+  }
+  println("");
+}

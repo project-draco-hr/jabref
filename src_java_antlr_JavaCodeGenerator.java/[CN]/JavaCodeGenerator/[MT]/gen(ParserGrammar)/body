@@ -2,7 +2,7 @@
   if (g.debuggingOutput)   semPreds=new Vector();
   setGrammar(g);
   if (!(grammar instanceof ParserGrammar)) {
-    tool.panic("Internal error generating parser");
+    antlrTool.panic("Internal error generating parser");
   }
   setupOutput(grammar.getClassName());
   genAST=grammar.buildAST;
@@ -22,9 +22,13 @@
   println("import antlr.SemanticException;");
   println("import antlr.ParserSharedInputState;");
   println("import antlr.collections.impl.BitSet;");
-  println("import antlr.collections.AST;");
-  println("import antlr.ASTPair;");
-  println("import antlr.collections.impl.ASTArray;");
+  if (genAST) {
+    println("import antlr.collections.AST;");
+    println("import java.util.Hashtable;");
+    println("import antlr.ASTFactory;");
+    println("import antlr.ASTPair;");
+    println("import antlr.collections.impl.ASTArray;");
+  }
   println(grammar.preambleAction.getText());
   String sup=null;
   if (grammar.superClass != null)   sup=grammar.superClass;
@@ -32,11 +36,20 @@
   if (grammar.comment != null) {
     _println(grammar.comment);
   }
-  println("public class " + grammar.getClassName() + " extends "+ sup);
+  String prefix="public";
+  Token tprefix=(Token)grammar.options.get("classHeaderPrefix");
+  if (tprefix != null) {
+    String p=StringUtils.stripFrontBack(tprefix.getText(),"\"","\"");
+    if (p != null) {
+      prefix=p;
+    }
+  }
+  print(prefix + " ");
+  print("class " + grammar.getClassName() + " extends "+ sup);
   println("       implements " + grammar.tokenManager.getName() + TokenTypesFileSuffix);
   Token tsuffix=(Token)grammar.options.get("classHeaderSuffix");
   if (tsuffix != null) {
-    String suffix=Tool.stripFrontBack(tsuffix.getText(),"\"","\"");
+    String suffix=StringUtils.stripFrontBack(tsuffix.getText(),"\"","\"");
     if (suffix != null)     print(", " + suffix);
   }
   println(" {");
@@ -50,7 +63,7 @@
     }
     println("};");
   }
-  print(processActionForTreeSpecifiers(grammar.classMemberAction.getText(),0,currentRule,null));
+  print(processActionForSpecialSymbols(grammar.classMemberAction.getText(),grammar.classMemberAction.getLine(),currentRule,null));
   println("");
   println("protected " + grammar.getClassName() + "(TokenBuffer tokenBuf, int k) {");
   println("  super(tokenBuf,k);");
@@ -59,6 +72,10 @@
     println("  ruleNames  = _ruleNames;");
     println("  semPredNames = _semPredNames;");
     println("  setupDebugging(tokenBuf);");
+  }
+  if (grammar.buildAST) {
+    println("  buildTokenTypeASTClassMap();");
+    println("  astFactory = new ASTFactory(getTokenTypeToASTClassMap());");
   }
   println("}");
   println("");
@@ -74,6 +91,10 @@
     println("  semPredNames = _semPredNames;");
     println("  setupDebugging(lexer);");
   }
+  if (grammar.buildAST) {
+    println("  buildTokenTypeASTClassMap();");
+    println("  astFactory = new ASTFactory(getTokenTypeToASTClassMap());");
+  }
   println("}");
   println("");
   println("public " + grammar.getClassName() + "(TokenStream lexer) {");
@@ -83,6 +104,10 @@
   println("public " + grammar.getClassName() + "(ParserSharedInputState state) {");
   println("  super(state," + grammar.maxk + ");");
   println("  tokenNames = _tokenNames;");
+  if (grammar.buildAST) {
+    println("  buildTokenTypeASTClassMap();");
+    println("  astFactory = new ASTFactory(getTokenTypeToASTClassMap());");
+  }
   println("}");
   println("");
   Enumeration ids=grammar.rules.elements();
@@ -96,6 +121,9 @@
     exitIfError();
   }
   genTokenStrings();
+  if (grammar.buildAST) {
+    genTokenASTNodeMap();
+  }
   genBitsets(bitsetsUsed,grammar.tokenManager.maxTokenType());
   if (grammar.debuggingOutput)   genSemPredMap();
   println("");

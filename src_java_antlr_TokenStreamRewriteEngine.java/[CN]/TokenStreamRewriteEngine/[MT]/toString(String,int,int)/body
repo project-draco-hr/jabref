@@ -1,0 +1,30 @@
+{
+  List rewrites=(List)programs.get(programName);
+  if (rewrites == null) {
+    return null;
+  }
+  StringBuffer buf=new StringBuffer();
+  int rewriteOpIndex=0;
+  int tokenCursor=start;
+  while (tokenCursor >= MIN_TOKEN_INDEX && tokenCursor <= end && tokenCursor < tokens.size()) {
+    if (rewriteOpIndex < rewrites.size()) {
+      RewriteOperation op=(RewriteOperation)rewrites.get(rewriteOpIndex);
+      while (tokenCursor == op.index && rewriteOpIndex < rewrites.size()) {
+        tokenCursor=op.execute(buf);
+        rewriteOpIndex++;
+        if (rewriteOpIndex < rewrites.size()) {
+          op=(RewriteOperation)rewrites.get(rewriteOpIndex);
+        }
+      }
+    }
+    if (tokenCursor < end) {
+      buf.append(getToken(tokenCursor).getText());
+      tokenCursor++;
+    }
+  }
+  for (int opi=rewriteOpIndex; opi < rewrites.size(); opi++) {
+    RewriteOperation op=(RewriteOperation)rewrites.get(opi);
+    op.execute(buf);
+  }
+  return buf.toString();
+}

@@ -12,36 +12,41 @@
     return;
   }
   if (grammar.buildAST && syntacticPredLevel == 0) {
-    boolean doNoGuessTest=(grammar.hasSyntacticPredicate && (el.getLabel() != null || el.getAutoGenType() != GrammarElement.AUTO_GEN_BANG));
+    boolean needASTDecl=(genAST && (el.getLabel() != null || el.getAutoGenType() != GrammarElement.AUTO_GEN_BANG));
+    if (el.getAutoGenType() != GrammarElement.AUTO_GEN_BANG && (el instanceof TokenRefElement))     needASTDecl=true;
+    boolean doNoGuessTest=(grammar.hasSyntacticPredicate && needASTDecl);
     String elementRef;
-    String astName;
+    String astNameBase;
     if (el.getLabel() != null) {
       elementRef=el.getLabel();
-      astName=el.getLabel() + "_AST";
+      astNameBase=el.getLabel();
     }
  else {
       elementRef=lt1Value;
-      astName="tmp" + astVarNumber + "_AST";
+      astNameBase="tmp" + astVarNumber;
       astVarNumber++;
+    }
+    if (needASTDecl) {
       if (el instanceof GrammarAtom) {
         GrammarAtom ga=(GrammarAtom)el;
         if (ga.getASTNodeType() != null) {
-          println("Ref" + ga.getASTNodeType() + " "+ astName+ ";");
+          genASTDeclaration(el,astNameBase,"Ref" + ga.getASTNodeType());
         }
  else {
-          println(labeledElementASTType + " " + astName+ " = "+ labeledElementASTInit+ ";");
+          genASTDeclaration(el,astNameBase,labeledElementASTType);
         }
       }
  else {
-        println(labeledElementASTType + " " + astName+ " = "+ labeledElementASTInit+ ";");
-      }
-      mapTreeVariable(el,astName);
-      if (grammar instanceof TreeWalkerGrammar) {
-        println(labeledElementASTType + " " + astName+ "_in = "+ labeledElementASTInit+ ";");
+        genASTDeclaration(el,astNameBase,labeledElementASTType);
       }
     }
+    String astName=astNameBase + "_AST";
+    mapTreeVariable(el,astName);
+    if (grammar instanceof TreeWalkerGrammar) {
+      println(labeledElementASTType + " " + astName+ "_in = "+ labeledElementASTInit+ ";");
+    }
     if (doNoGuessTest) {
-      println("if (inputState->guessing==0) {");
+      println("if ( inputState->guessing == 0 ) {");
       tabs++;
     }
     if (el.getLabel() != null) {
@@ -52,7 +57,7 @@
         println(astName + " = " + getASTCreateString(elementRef)+ ";");
       }
     }
- else {
+    if (el.getLabel() == null && needASTDecl) {
       elementRef=lt1Value;
       if (el instanceof GrammarAtom) {
         println(astName + " = " + getASTCreateString((GrammarAtom)el,elementRef)+ ";");
@@ -67,10 +72,12 @@
     if (genAST) {
 switch (el.getAutoGenType()) {
 case GrammarElement.AUTO_GEN_NONE:
-        println("astFactory.addASTChild(currentAST, " + namespaceAntlr + "RefAST("+ astName+ "));");
+        if (usingCustomAST || (el instanceof GrammarAtom && ((GrammarAtom)el).getASTNodeType() != null))         println("astFactory->addASTChild(currentAST, " + namespaceAntlr + "RefAST("+ astName+ "));");
+ else         println("astFactory->addASTChild(currentAST, " + astName + ");");
       break;
 case GrammarElement.AUTO_GEN_CARET:
-    println("astFactory.makeASTRoot(currentAST, " + namespaceAntlr + "RefAST("+ astName+ "));");
+    if (usingCustomAST || (el instanceof GrammarAtom && ((GrammarAtom)el).getASTNodeType() != null))     println("astFactory->makeASTRoot(currentAST, " + namespaceAntlr + "RefAST("+ astName+ "));");
+ else     println("astFactory->makeASTRoot(currentAST, " + astName + ");");
   break;
 default :
 break;

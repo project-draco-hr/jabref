@@ -1,0 +1,186 @@
+{
+  boolean hasPublicRules=false;
+  for (int i=0; i < grammar.rules.size(); i++) {
+    RuleSymbol rs=(RuleSymbol)grammar.rules.elementAt(i);
+    if (rs.isDefined() && rs.access.equals("public")) {
+      hasPublicRules=true;
+      break;
+    }
+  }
+  if (!hasPublicRules) {
+    println("");
+    println("override public Token nextToken()\t\t\t//throws TokenStreamException");
+    println("{");
+    tabs++;
+    println("try");
+    println("{");
+    tabs++;
+    println("uponEOF();");
+    tabs--;
+    println("}");
+    println("catch(CharStreamIOException csioe)");
+    println("{");
+    tabs++;
+    println("throw new TokenStreamIOException(csioe.io);");
+    tabs--;
+    println("}");
+    println("catch(CharStreamException cse)");
+    println("{");
+    tabs++;
+    println("throw new TokenStreamException(cse.Message);");
+    tabs--;
+    println("}");
+    println("return new CommonToken(Token.EOF_TYPE, \"\");");
+    tabs--;
+    println("}");
+    println("");
+    return;
+  }
+  RuleBlock nextTokenBlk=MakeGrammar.createNextTokenRule(grammar,grammar.rules,"nextToken");
+  RuleSymbol nextTokenRs=new RuleSymbol("mnextToken");
+  nextTokenRs.setDefined();
+  nextTokenRs.setBlock(nextTokenBlk);
+  nextTokenRs.access="private";
+  grammar.define(nextTokenRs);
+  boolean ok=grammar.theLLkAnalyzer.deterministic(nextTokenBlk);
+  String filterRule=null;
+  if (((LexerGrammar)grammar).filterMode) {
+    filterRule=((LexerGrammar)grammar).filterRule;
+  }
+  println("");
+  println("override public Token nextToken()\t\t\t//throws TokenStreamException");
+  println("{");
+  tabs++;
+  println("Token theRetToken = null;");
+  _println("tryAgain:");
+  println("for (;;)");
+  println("{");
+  tabs++;
+  println("Token _token = null;");
+  println("int _ttype = Token.INVALID_TYPE;");
+  if (((LexerGrammar)grammar).filterMode) {
+    println("setCommitToPath(false);");
+    if (filterRule != null) {
+      if (!grammar.isDefined(CodeGenerator.encodeLexerRuleName(filterRule))) {
+        grammar.antlrTool.error("Filter rule " + filterRule + " does not exist in this lexer");
+      }
+ else {
+        RuleSymbol rs=(RuleSymbol)grammar.getSymbol(CodeGenerator.encodeLexerRuleName(filterRule));
+        if (!rs.isDefined()) {
+          grammar.antlrTool.error("Filter rule " + filterRule + " does not exist in this lexer");
+        }
+ else         if (rs.access.equals("public")) {
+          grammar.antlrTool.error("Filter rule " + filterRule + " must be protected");
+        }
+      }
+      println("int _m;");
+      println("_m = mark();");
+    }
+  }
+  println("resetText();");
+  println("try     // for char stream error handling");
+  println("{");
+  tabs++;
+  println("try     // for lexical error handling");
+  println("{");
+  tabs++;
+  for (int i=0; i < nextTokenBlk.getAlternatives().size(); i++) {
+    Alternative a=nextTokenBlk.getAlternativeAt(i);
+    if (a.cache[1].containsEpsilon()) {
+      RuleRefElement rr=(RuleRefElement)a.head;
+      String r=CodeGenerator.decodeLexerRuleName(rr.targetRule);
+      antlrTool.warning("public lexical rule " + r + " is optional (can match \"nothing\")");
+    }
+  }
+  String newline=System.getProperty("line.separator");
+  CSharpBlockFinishingInfo howToFinish=genCommonBlock(nextTokenBlk,false);
+  String errFinish="if (LA(1)==EOF_CHAR) { uponEOF(); returnToken_ = makeToken(Token.EOF_TYPE); }";
+  errFinish+=newline + "\t\t\t\t";
+  if (((LexerGrammar)grammar).filterMode) {
+    if (filterRule == null) {
+      errFinish+="\t\t\t\telse";
+      errFinish+="\t\t\t\t{";
+      errFinish+="\t\t\t\t\tconsume();";
+      errFinish+="\t\t\t\t\tgoto tryAgain;";
+      errFinish+="\t\t\t\t}";
+    }
+ else {
+      errFinish+="\t\t\t\t\telse" + newline + "\t\t\t\t\t{"+ newline+ "\t\t\t\t\tcommit();"+ newline+ "\t\t\t\t\ttry {m"+ filterRule+ "(false);}"+ newline+ "\t\t\t\t\tcatch(RecognitionException e)"+ newline+ "\t\t\t\t\t{"+ newline+ "\t\t\t\t\t	// catastrophic failure"+ newline+ "\t\t\t\t\t	reportError(e);"+ newline+ "\t\t\t\t\t	consume();"+ newline+ "\t\t\t\t\t}"+ newline+ "\t\t\t\t\tgoto tryAgain;"+ newline+ "\t\t\t\t}";
+    }
+  }
+ else {
+    errFinish+="else {" + throwNoViable + "}";
+  }
+  genBlockFinish(howToFinish,errFinish);
+  if (((LexerGrammar)grammar).filterMode && filterRule != null) {
+    println("commit();");
+  }
+  println("if ( null==returnToken_ ) goto tryAgain; // found SKIP token");
+  println("_ttype = returnToken_.Type;");
+  if (((LexerGrammar)grammar).getTestLiterals()) {
+    genLiteralsTest();
+  }
+  println("returnToken_.Type = _ttype;");
+  println("return returnToken_;");
+  tabs--;
+  println("}");
+  println("catch (RecognitionException e) {");
+  tabs++;
+  if (((LexerGrammar)grammar).filterMode) {
+    if (filterRule == null) {
+      println("if (!getCommitToPath())");
+      println("{");
+      tabs++;
+      println("consume();");
+      println("goto tryAgain;");
+      tabs--;
+      println("}");
+    }
+ else {
+      println("if (!getCommitToPath())");
+      println("{");
+      tabs++;
+      println("rewind(_m);");
+      println("resetText();");
+      println("try {m" + filterRule + "(false);}");
+      println("catch(RecognitionException ee) {");
+      println("	// horrendous failure: error in filter rule");
+      println("	reportError(ee);");
+      println("	consume();");
+      println("}");
+      tabs--;
+      println("}");
+      println("else");
+    }
+  }
+  if (nextTokenBlk.getDefaultErrorHandler()) {
+    println("{");
+    tabs++;
+    println("reportError(e);");
+    println("consume();");
+    tabs--;
+    println("}");
+  }
+ else {
+    tabs++;
+    println("throw new TokenStreamRecognitionException(e);");
+    tabs--;
+  }
+  tabs--;
+  println("}");
+  tabs--;
+  println("}");
+  println("catch (CharStreamException cse) {");
+  println("	if ( cse is CharStreamIOException ) {");
+  println("		throw new TokenStreamIOException(((CharStreamIOException)cse).io);");
+  println("	}");
+  println("	else {");
+  println("		throw new TokenStreamException(cse.Message);");
+  println("	}");
+  println("}");
+  tabs--;
+  println("}");
+  tabs--;
+  println("}");
+  println("");
+}

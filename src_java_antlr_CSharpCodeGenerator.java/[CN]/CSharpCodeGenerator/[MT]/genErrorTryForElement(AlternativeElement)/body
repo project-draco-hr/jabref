@@ -1,0 +1,17 @@
+{
+  if (el.getLabel() == null)   return;
+  String r=el.enclosingRuleName;
+  if (grammar instanceof LexerGrammar) {
+    r=CodeGenerator.encodeLexerRuleName(el.enclosingRuleName);
+  }
+  RuleSymbol rs=(RuleSymbol)grammar.getSymbol(r);
+  if (rs == null) {
+    antlrTool.panic("Enclosing rule not found!");
+  }
+  ExceptionSpec ex=rs.block.findExceptionSpec(el.getLabel());
+  if (ex != null) {
+    println("try   // for error handling");
+    println("{");
+    tabs++;
+  }
+}

@@ -1,5 +1,5 @@
 {
-  if (DEBUG_CODE_GENERATOR)   System.out.println("genAction(" + action + ")");
+  if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)   System.out.println("genAction(" + action + ")");
   if (action.isSemPred) {
     genSemPred(action.actionText,action.line);
   }
@@ -9,7 +9,7 @@
       tabs++;
     }
     ActionTransInfo tInfo=new ActionTransInfo();
-    String actionStr=processActionForTreeSpecifiers(action.actionText,action.getLine(),currentRule,tInfo);
+    String actionStr=processActionForSpecialSymbols(action.actionText,action.getLine(),currentRule,tInfo);
     if (tInfo.refRuleRoot != null) {
       println(tInfo.refRuleRoot + " = " + labeledElementASTType+ "(currentAST.root);");
     }

@@ -1,0 +1,26 @@
+{
+  if (wc.getLabel() != null && syntacticPredLevel == 0) {
+    println(wc.getLabel() + " = " + lt1Value+ ";");
+  }
+  genElementAST(wc);
+  if (grammar instanceof TreeWalkerGrammar) {
+    println("if (null == _t) throw new MismatchedTokenException();");
+  }
+ else   if (grammar instanceof LexerGrammar) {
+    if (grammar instanceof LexerGrammar && (!saveText || wc.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)) {
+      declareSaveIndexVariableIfNeeded();
+      println("_saveIndex = text.Length;");
+    }
+    println("matchNot(EOF/*_CHAR*/);");
+    if (grammar instanceof LexerGrammar && (!saveText || wc.getAutoGenType() == GrammarElement.AUTO_GEN_BANG)) {
+      declareSaveIndexVariableIfNeeded();
+      println("text.Length = _saveIndex;");
+    }
+  }
+ else {
+    println("matchNot(" + getValueString(Token.EOF_TYPE) + ");");
+  }
+  if (grammar instanceof TreeWalkerGrammar) {
+    println("_t = _t.getNextSibling();");
+  }
+}

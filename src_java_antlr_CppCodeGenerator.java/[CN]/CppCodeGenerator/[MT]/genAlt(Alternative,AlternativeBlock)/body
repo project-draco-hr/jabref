@@ -17,9 +17,11 @@
   if (genAST) {
     if (blk instanceof RuleBlock) {
       RuleBlock rblk=(RuleBlock)blk;
-      println(rblk.getRuleName() + "_AST = " + labeledElementASTType+ "(currentAST.root);");
+      if (usingCustomAST)       println(rblk.getRuleName() + "_AST = " + labeledElementASTType+ "(currentAST.root);");
+ else       println(rblk.getRuleName() + "_AST = currentAST.root;");
     }
  else     if (blk.getLabel() != null) {
+      antlrTool.warning("Labeled subrules are not implemented",grammar.getFilename(),blk.getLine(),blk.getColumn());
     }
   }
   if (alt.exceptionSpec != null) {

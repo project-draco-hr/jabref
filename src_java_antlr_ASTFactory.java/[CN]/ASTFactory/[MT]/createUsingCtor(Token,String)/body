@@ -1,0 +1,22 @@
+{
+  Class c=null;
+  AST t=null;
+  try {
+    c=Class.forName(className);
+    Class[] tokenArgType=new Class[]{antlr.Token.class};
+    try {
+      Constructor ctor=c.getConstructor(tokenArgType);
+      t=(AST)ctor.newInstance(new Object[]{token});
+    }
+ catch (    NoSuchMethodException e) {
+      t=create(c);
+      if (t != null) {
+        t.initialize(token);
+      }
+    }
+  }
+ catch (  Exception e) {
+    throw new IllegalArgumentException("Invalid class or can't make instance, " + className);
+  }
+  return t;
+}

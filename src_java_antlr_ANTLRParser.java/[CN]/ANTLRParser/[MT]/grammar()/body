@@ -5,6 +5,9 @@
 {
       _loop4:       do {
         if ((LA(1) == LITERAL_header)) {
+          if (inputState.guessing == 0) {
+            n=null;
+          }
           match(LITERAL_header);
 {
 switch (LA(1)) {
@@ -72,7 +75,7 @@ match(Token.EOF_TYPE);
 }
  catch (RecognitionException ex) {
 if (inputState.guessing == 0) {
-reportError("rule grammar trapped: " + ex.toString());
+reportError(ex,"rule grammar trapped:\n" + ex.toString());
 consumeUntil(EOF);
 }
  else {

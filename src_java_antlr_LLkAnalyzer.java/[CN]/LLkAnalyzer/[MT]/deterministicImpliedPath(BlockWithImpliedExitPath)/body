@@ -8,7 +8,7 @@
   for (int i=0; i < nalts; i++) {
     Alternative alt=blk.getAlternativeAt(i);
     if (alt.head instanceof BlockEndElement) {
-      tool.warning("empty alternative makes no sense in (...)* or (...)+",grammar.getFilename(),blk.getLine());
+      tool.warning("empty alternative makes no sense in (...)* or (...)+",grammar.getFilename(),blk.getLine(),blk.getColumn());
     }
     k=1;
     Lookahead[] r=new Lookahead[grammar.maxk + 1];
@@ -46,7 +46,7 @@
  else       if (blk.greedy == false && !(ambigAlt.head instanceof BlockEndElement)) {
         if (DEBUG_ANALYZER)         System.out.println("nongreedy loop");
         if (!lookaheadEquivForApproxAndFullAnalysis(blk.exitCache,grammar.maxk)) {
-          tool.warning(new String[]{"nongreedy block may exit incorrectly due","\tto limitations of linear approximate lookahead (first k-1 sets","\tin lookahead not singleton)."},grammar.getFilename(),blk.getLine());
+          tool.warning(new String[]{"nongreedy block may exit incorrectly due","\tto limitations of linear approximate lookahead (first k-1 sets","\tin lookahead not singleton)."},grammar.getFilename(),blk.getLine(),blk.getColumn());
         }
       }
  else {

@@ -5,7 +5,7 @@
       return;
     }
     if (autoGenType == GrammarElement.AUTO_GEN_CARET) {
-      tool.error("AST specification ^ not allowed in lexer",grammar.getFilename(),r.getLine());
+      tool.error("AST specification ^ not allowed in lexer",grammar.getFilename(),r.getLine(),r.getColumn());
     }
   }
   super.refRule(idAssign,r,label,args,autoGenType);
@@ -19,7 +19,7 @@
   addElementToCurrentAlt(lastRuleRef);
   String id=r.getText();
   if (r.type == ANTLRTokenTypes.TOKEN_REF) {
-    id=CodeGenerator.lexerRuleName(id);
+    id=CodeGenerator.encodeLexerRuleName(id);
   }
   RuleSymbol rs=(RuleSymbol)grammar.getSymbol(id);
   rs.addReference(lastRuleRef);

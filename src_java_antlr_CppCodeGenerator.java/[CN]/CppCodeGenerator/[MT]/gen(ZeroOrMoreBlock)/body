@@ -1,6 +1,6 @@
 {
-  if (DEBUG_CODE_GENERATOR)   System.out.println("gen*(" + blk + ")");
-  println("{");
+  if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR)   System.out.println("gen*(" + blk + ")");
+  println("{ // ( ... )*");
   genBlockPreamble(blk);
   String label;
   if (blk.getLabel() != null) {
@@ -11,6 +11,7 @@
   }
   println("for (;;) {");
   tabs++;
+  genBlockInitAction(blk);
   String saveCurrentASTResult=currentASTResult;
   if (blk.getLabel() != null) {
     currentASTResult=blk.getLabel();
@@ -26,7 +27,7 @@
     generateNonGreedyExitPath=true;
   }
   if (generateNonGreedyExitPath) {
-    if (DEBUG_CODE_GENERATOR) {
+    if (DEBUG_CODE_GENERATOR || DEBUG_CPP_CODE_GENERATOR) {
       System.out.println("nongreedy (...)* loop; exit depth is " + blk.exitLookaheadDepth);
     }
     String predictExit=getLookaheadTestExpression(blk.exitCache,nonGreedyExitDepth);
@@ -38,6 +39,6 @@
   tabs--;
   println("}");
   println(label + ":;");
-  println("}");
+  println("} // ( ... )*");
   currentASTResult=saveCurrentASTResult;
 }

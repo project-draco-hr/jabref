@@ -1,20 +1,20 @@
 {
   if (r.type == ANTLRTokenTypes.TOKEN_REF) {
     if (!(grammar instanceof LexerGrammar)) {
-      tool.error("Lexical rule " + r.getText() + " defined outside of lexer",grammar.getFilename(),r.getLine());
+      tool.error("Lexical rule " + r.getText() + " defined outside of lexer",grammar.getFilename(),r.getLine(),r.getColumn());
       r.setText(r.getText().toLowerCase());
     }
   }
  else {
     if (grammar instanceof LexerGrammar) {
-      tool.error("Non-lexical rule " + r.getText() + " defined inside of lexer",grammar.getFilename(),r.getLine());
+      tool.error("Lexical rule names must be upper case, '" + r.getText() + "' is not",grammar.getFilename(),r.getLine(),r.getColumn());
       r.setText(r.getText().toUpperCase());
     }
   }
   super.defineRuleName(r,access,ruleAutoGen,docComment);
   String id=r.getText();
   if (r.type == ANTLRTokenTypes.TOKEN_REF) {
-    id=CodeGenerator.lexerRuleName(id);
+    id=CodeGenerator.encodeLexerRuleName(id);
   }
   RuleSymbol rs=(RuleSymbol)grammar.getSymbol(id);
   RuleBlock rb=new RuleBlock(grammar,r.getText(),r.getLine(),ruleAutoGen);
