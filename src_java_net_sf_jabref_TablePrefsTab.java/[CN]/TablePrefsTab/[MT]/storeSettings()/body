@@ -1,8 +1,25 @@
 {
-  String[] cols=tableFields.getText().replaceAll("\\s+","").replaceAll("\\n+","").toLowerCase().split(";");
-  if (cols.length > 0)   for (int i=0; i < cols.length; i++)   cols[i]=cols[i].trim();
- else   cols=null;
-  _prefs.putStringArray("columnNames",cols);
+  if (colSetup.isEditing()) {
+    int col=colSetup.getEditingColumn(), row=colSetup.getEditingRow();
+    colSetup.getCellEditor(row,col).stopCellEditing();
+  }
+  if (tableChanged) {
+    int i=0;
+    while (i < tableRows.size()) {
+      if (((TableRow)tableRows.elementAt(i)).name.equals(""))       tableRows.removeElementAt(i);
+ else       i++;
+    }
+    String[] names=new String[tableRows.size()], widths=new String[tableRows.size()];
+    int[] nWidths=new int[tableRows.size()];
+    for (i=0; i < tableRows.size(); i++) {
+      TableRow tr=(TableRow)tableRows.elementAt(i);
+      names[i]=tr.name;
+      nWidths[i]=tr.length;
+      widths[i]="" + tr.length;
+    }
+    _prefs.putStringArray("columnNames",names);
+    _prefs.putStringArray("columnWidths",widths);
+  }
   _prefs.putBoolean("tableColorCodesOn",colorCodes.isSelected());
   _prefs.putInt("autoResizeMode",autoResizeMode.isSelected() ? JTable.AUTO_RESIZE_ALL_COLUMNS : JTable.AUTO_RESIZE_OFF);
   _prefs.putBoolean("secDescending",secDesc.isSelected());
