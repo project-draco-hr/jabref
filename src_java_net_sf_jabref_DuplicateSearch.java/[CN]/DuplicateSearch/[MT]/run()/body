@@ -11,38 +11,45 @@
   st.start();
   int current=0;
   DuplicateResolverDialog drd=null;
-  loop:   while (!st.finished() || (current < duplicates.size())) {
+  while (!st.finished() || (current < duplicates.size())) {
     if (current >= duplicates.size()) {
-      try {
-        sleep(10);
+synchronized (duplicates) {
+        try {
+          duplicates.wait();
+        }
+ catch (        Exception e) {
+        }
       }
- catch (      InterruptedException ex) {
-      }
-      continue loop;
     }
-    BibtexEntry[] be=(BibtexEntry[])duplicates.get(current);
-    current++;
-    if ((panel.database.getEntryById(be[0].getId()) != null) && (panel.database.getEntryById(be[1].getId()) != null)) {
-      drd=new DuplicateResolverDialog(panel.frame,be[0],be[1]);
-      drd.show();
-      int answer=drd.getSelected();
-      if (answer == DuplicateResolverDialog.KEEP_UPPER) {
-        if (ce == null)         ce=new NamedCompound("duplicate removal");
-        panel.database.removeEntry(be[1].getId());
-        panel.refreshTable();
-        panel.markBaseChanged();
-        ce.addEdit(new UndoableRemoveEntry(panel.database,be[1],panel));
+ else {
+      BibtexEntry[] be=(BibtexEntry[])duplicates.get(current);
+      current++;
+      if ((panel.database.getEntryById(be[0].getId()) != null) && (panel.database.getEntryById(be[1].getId()) != null)) {
+        drd=new DuplicateResolverDialog(panel.frame,be[0],be[1]);
+        drd.show();
+        int answer=drd.getSelected();
+        if (answer == DuplicateResolverDialog.KEEP_UPPER) {
+          if (ce == null)           ce=new NamedCompound("duplicate removal");
+          panel.database.removeEntry(be[1].getId());
+          panel.refreshTable();
+          panel.markBaseChanged();
+          ce.addEdit(new UndoableRemoveEntry(panel.database,be[1],panel));
+        }
+ else         if (answer == DuplicateResolverDialog.KEEP_LOWER) {
+          if (ce == null)           ce=new NamedCompound("duplicate removal");
+          panel.database.removeEntry(be[0].getId());
+          panel.refreshTable();
+          panel.markBaseChanged();
+          ce.addEdit(new UndoableRemoveEntry(panel.database,be[0],panel));
+        }
+ else         if (answer == DuplicateResolverDialog.BREAK) {
+          st.setFinished();
+          current=Integer.MAX_VALUE;
+        }
+        dupl++;
+        drd.dispose();
       }
- else       if (answer == DuplicateResolverDialog.KEEP_LOWER) {
-        if (ce == null)         ce=new NamedCompound("duplicate removal");
-        panel.database.removeEntry(be[0].getId());
-        panel.refreshTable();
-        panel.markBaseChanged();
-        ce.addEdit(new UndoableRemoveEntry(panel.database,be[0],panel));
-      }
-      dupl++;
     }
-    drd.dispose();
   }
   if (drd != null)   drd.dispose();
   panel.output(Globals.lang("Duplicate pairs found") + ": " + dupl);
