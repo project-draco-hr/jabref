@@ -6,6 +6,21 @@
   Reader reader;
   int c;
   ps=new OutputStreamWriter(new FileOutputStream(outFile),encoding);
+  if (lfName.equals("mods")) {
+    MODSDatabase md=new MODSDatabase(database);
+    try {
+      DOMSource source=new DOMSource(md.getDOMrepresentation());
+      StreamResult result=new StreamResult(ps);
+      Transformer trans=TransformerFactory.newInstance().newTransformer();
+      trans.setOutputProperty(OutputKeys.INDENT,"yes");
+      trans.transform(source,result);
+    }
+ catch (    Exception e) {
+      throw new Error(e);
+    }
+    ps.close();
+    return;
+  }
   try {
     reader=getReader(prefix + lfName + ".begin.layout");
     while ((c=reader.read()) != -1) {
