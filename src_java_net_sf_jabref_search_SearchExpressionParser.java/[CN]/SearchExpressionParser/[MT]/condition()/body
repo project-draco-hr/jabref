@@ -1,0 +1,96 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST condition_AST=null;
+  boolean synPredMatched6=false;
+  if (((_tokenSet_0.member(LA(1))) && (_tokenSet_1.member(LA(2))) && (_tokenSet_1.member(LA(3))))) {
+    int _m6=mark();
+    synPredMatched6=true;
+    inputState.guessing++;
+    try {
+{
+        expression();
+        match(LITERAL_and);
+        condition();
+      }
+    }
+ catch (    RecognitionException pe) {
+      synPredMatched6=false;
+    }
+    rewind(_m6);
+    inputState.guessing--;
+  }
+  if (synPredMatched6) {
+    expression();
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    AST tmp2_AST=null;
+    tmp2_AST=(AST)astFactory.create(LT(1));
+    match(LITERAL_and);
+    condition();
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    if (inputState.guessing == 0) {
+      condition_AST=(AST)currentAST.root;
+      condition_AST=(AST)astFactory.make((new ASTArray(2)).add((AST)astFactory.create(And)).add(condition_AST));
+      currentAST.root=condition_AST;
+      currentAST.child=condition_AST != null && condition_AST.getFirstChild() != null ? condition_AST.getFirstChild() : condition_AST;
+      currentAST.advanceChildToEnd();
+    }
+    condition_AST=(AST)currentAST.root;
+  }
+ else {
+    boolean synPredMatched8=false;
+    if (((_tokenSet_0.member(LA(1))) && (_tokenSet_1.member(LA(2))) && (_tokenSet_1.member(LA(3))))) {
+      int _m8=mark();
+      synPredMatched8=true;
+      inputState.guessing++;
+      try {
+{
+          expression();
+          match(LITERAL_or);
+          condition();
+        }
+      }
+ catch (      RecognitionException pe) {
+        synPredMatched8=false;
+      }
+      rewind(_m8);
+      inputState.guessing--;
+    }
+    if (synPredMatched8) {
+      expression();
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      AST tmp3_AST=null;
+      tmp3_AST=(AST)astFactory.create(LT(1));
+      match(LITERAL_or);
+      condition();
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      if (inputState.guessing == 0) {
+        condition_AST=(AST)currentAST.root;
+        condition_AST=(AST)astFactory.make((new ASTArray(2)).add((AST)astFactory.create(Or)).add(condition_AST));
+        currentAST.root=condition_AST;
+        currentAST.child=condition_AST != null && condition_AST.getFirstChild() != null ? condition_AST.getFirstChild() : condition_AST;
+        currentAST.advanceChildToEnd();
+      }
+      condition_AST=(AST)currentAST.root;
+    }
+ else     if ((_tokenSet_0.member(LA(1))) && (_tokenSet_1.member(LA(2))) && (_tokenSet_1.member(LA(3)))) {
+      expression();
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      condition_AST=(AST)currentAST.root;
+    }
+ else {
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+  }
+  returnAST=condition_AST;
+}

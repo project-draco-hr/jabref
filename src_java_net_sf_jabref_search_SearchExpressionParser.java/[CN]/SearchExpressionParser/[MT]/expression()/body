@@ -1,0 +1,77 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST expression_AST=null;
+switch (LA(1)) {
+case STRING:
+case FIELDTYPE:
+{
+      expressionSearch();
+      if (inputState.guessing == 0) {
+        astFactory.addASTChild(currentAST,returnAST);
+      }
+      expression_AST=(AST)currentAST.root;
+      break;
+    }
+case LPAREN:
+{
+    AST tmp4_AST=null;
+    tmp4_AST=(AST)astFactory.create(LT(1));
+    match(LPAREN);
+    condition();
+    if (inputState.guessing == 0) {
+      astFactory.addASTChild(currentAST,returnAST);
+    }
+    AST tmp5_AST=null;
+    tmp5_AST=(AST)astFactory.create(LT(1));
+    match(RPAREN);
+    expression_AST=(AST)currentAST.root;
+    break;
+  }
+default :
+if ((LA(1) == LITERAL_not) && (LA(2) == STRING || LA(2) == FIELDTYPE)) {
+  AST tmp6_AST=null;
+  tmp6_AST=(AST)astFactory.create(LT(1));
+  match(LITERAL_not);
+  expressionSearch();
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
+  if (inputState.guessing == 0) {
+    expression_AST=(AST)currentAST.root;
+    expression_AST=(AST)astFactory.make((new ASTArray(2)).add((AST)astFactory.create(Not)).add(expression_AST));
+    currentAST.root=expression_AST;
+    currentAST.child=expression_AST != null && expression_AST.getFirstChild() != null ? expression_AST.getFirstChild() : expression_AST;
+    currentAST.advanceChildToEnd();
+  }
+  expression_AST=(AST)currentAST.root;
+}
+ else if ((LA(1) == LITERAL_not) && (LA(2) == LPAREN)) {
+  AST tmp7_AST=null;
+  tmp7_AST=(AST)astFactory.create(LT(1));
+  match(LITERAL_not);
+  AST tmp8_AST=null;
+  tmp8_AST=(AST)astFactory.create(LT(1));
+  match(LPAREN);
+  condition();
+  if (inputState.guessing == 0) {
+    astFactory.addASTChild(currentAST,returnAST);
+  }
+  AST tmp9_AST=null;
+  tmp9_AST=(AST)astFactory.create(LT(1));
+  match(RPAREN);
+  if (inputState.guessing == 0) {
+    expression_AST=(AST)currentAST.root;
+    expression_AST=(AST)astFactory.make((new ASTArray(2)).add((AST)astFactory.create(Not)).add(expression_AST));
+    currentAST.root=expression_AST;
+    currentAST.child=expression_AST != null && expression_AST.getFirstChild() != null ? expression_AST.getFirstChild() : expression_AST;
+    currentAST.advanceChildToEnd();
+  }
+  expression_AST=(AST)currentAST.root;
+}
+ else {
+  throw new NoViableAltException(LT(1),getFilename());
+}
+}
+returnAST=expression_AST;
+}
