@@ -381,16 +381,20 @@ catch (            Throwable ex) {
     }
   }
 );
-  actions.put("makeKey",new BaseAction(){
-    public void action(){
-      int[] rows=entryTable.getSelectedRows();
-      int numSelected=rows.length;
-      BibtexEntry bes=null;
+  actions.put("makeKey",new AbstractWorker(){
+    int[] rows;
+    int numSelected;
+    public void init(){
+      rows=entryTable.getSelectedRows();
+      numSelected=rows.length;
       if (numSelected == 0) {
         JOptionPane.showMessageDialog(frame,Globals.lang("First select the entries you want keys to be generated for."),Globals.lang("Autogenerate BibTeX key"),JOptionPane.INFORMATION_MESSAGE);
         return;
       }
-      output(Globals.lang("Generating BibTeX key for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry")));
+      output(Globals.lang("Generating BibTeX key for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
+    }
+    public void run(){
+      BibtexEntry bes=null;
       NamedCompound ce=new NamedCompound("autogenerate keys");
       Object oldValue;
       for (int i=0; i < numSelected; i++) {
@@ -407,6 +411,8 @@ catch (            Throwable ex) {
       }
       ce.end();
       undoManager.addEdit(ce);
+    }
+    public void update(){
       markBaseChanged();
       refreshTable();
       output(Globals.lang("Generated BibTeX key for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry")));
