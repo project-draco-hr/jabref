@@ -1,15 +1,24 @@
 {
-  if (showing == be)   return;
+  if (showing == be) {
+    if (splitPane.getBottomComponent() == null) {
+      showing=null;
+      showEntry(be);
+    }
+    return;
+  }
   EntryEditor form;
-  int divLoc=-1;
+  int divLoc=-1, visPan=-1;
+  if (showing != null)   visPan=((EntryEditor)splitPane.getBottomComponent()).getVisiblePanel();
   if (showing != null)   divLoc=splitPane.getDividerLocation();
   if (entryEditors.containsKey(be.getType().getName())) {
     form=(EntryEditor)entryEditors.get((be.getType().getName()));
     form.switchTo(be);
+    if (visPan >= 0)     form.setVisiblePanel(visPan);
     splitPane.setBottomComponent(form);
   }
  else {
     form=new EntryEditor(frame,ths,be,prefs);
+    if (visPan >= 0)     form.setVisiblePanel(visPan);
     splitPane.setBottomComponent(form);
     entryEditors.put(be.getType().getName(),form);
   }

@@ -1,45 +1,9 @@
 {
-  tableModel=new EntryTableModel(frame,this,database);
-  entryTable=new EntryTable(tableModel,frame.prefs);
   splitPane=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
   splitPane.setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);
-  entryTable.addMouseListener(this);
-  entryTable.getInputMap().put(prefs.getKey("Cut"),"Cut");
-  entryTable.getInputMap().put(prefs.getKey("Copy"),"Copy");
-  entryTable.getInputMap().put(prefs.getKey("Paste"),"Paste");
-  entryTable.getActionMap().put("Cut",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
-      runCommand("cut");
-    }
-  }
-);
-  entryTable.getActionMap().put("Copy",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
-      runCommand("copy");
-    }
-  }
-);
-  entryTable.getActionMap().put("Paste",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
-      runCommand("paste");
-    }
-  }
-);
-  entryTable.addKeyListener(new KeyAdapter(){
-    public void keyPressed(    KeyEvent e){
-      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        runCommand("edit");
-      }
- else       if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-        runCommand("delete");
-      }
-    }
-  }
-);
-  RightClickMenu rcm=new RightClickMenu(this,metaData);
-  entryTable.setRightClickMenu(rcm);
-  splitPane.setTopComponent(entryTable.getPane());
-  splitPane.setBottomComponent(null);
+  setupTable();
+  if (showing == null)   splitPane.setBottomComponent(null);
+ else   showEntry(showing);
   setRightComponent(splitPane);
   sidePaneManager=new SidePaneManager(frame,this,prefs,metaData);
   sidePaneManager.populatePanel();
