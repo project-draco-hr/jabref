@@ -1,8 +1,23 @@
 {
-  super(frame,Globals.lang("Resolve duplicate entries"),true);
+  super(frame,Globals.lang("Possible duplicate entries"),true);
   p1=new PreviewPanel(one);
   p2=new PreviewPanel(two);
+  ta1=new JTextArea();
+  ta2=new JTextArea();
+  ta1.setEditable(false);
+  ta2.setEditable(false);
+  try {
+    StringWriter sw=new StringWriter();
+    one.write(sw,new LatexFieldFormatter());
+    ta1.setText(sw.getBuffer().toString());
+    sw=new StringWriter();
+    two.write(sw,new LatexFieldFormatter());
+    ta2.setText(sw.getBuffer().toString());
+  }
+ catch (  IOException ex) {
+  }
   main.setLayout(gbl);
+  source.setLayout(gbl);
   con.insets=new Insets(10,10,10,10);
   con.fill=GridBagConstraints.BOTH;
   con.gridwidth=GridBagConstraints.REMAINDER;
@@ -11,9 +26,17 @@
   JScrollPane sp=new JScrollPane(p1);
   gbl.setConstraints(sp,con);
   main.add(sp);
+  sp=new JScrollPane(ta1);
+  gbl.setConstraints(sp,con);
+  source.add(sp);
   sp=new JScrollPane(p2);
   gbl.setConstraints(sp,con);
   main.add(sp);
+  sp=new JScrollPane(ta2);
+  gbl.setConstraints(sp,con);
+  source.add(sp);
+  tabbed.add(Globals.lang("Short form"),main);
+  tabbed.add(Globals.lang("Complete record"),source);
   options.add(first);
   options.add(second);
   options.add(both);
@@ -38,8 +61,9 @@
     }
   }
 );
-  getContentPane().add(main,BorderLayout.CENTER);
+  getContentPane().add(tabbed,BorderLayout.CENTER);
   getContentPane().add(options,BorderLayout.SOUTH);
   pack();
+  both.requestFocus();
   Util.placeDialog(this,frame);
 }

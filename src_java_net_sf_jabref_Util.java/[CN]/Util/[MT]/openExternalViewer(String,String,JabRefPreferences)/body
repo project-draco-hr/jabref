@@ -1,22 +1,22 @@
 {
-  if (link.startsWith("doi")) {
-    link=Globals.DOI_LOOKUP_PREFIX + link;
+  if (fieldName.equals("doi")) {
+    Process child=Runtime.getRuntime().exec(prefs.get("htmlviewer") + " " + Globals.DOI_LOOKUP_PREFIX+ link);
   }
-  if (link.substring(0,7).equals("http://")) {
+  if (fieldName.equals("url")) {
     try {
       Process child=Runtime.getRuntime().exec(prefs.get("htmlviewer") + " " + link);
     }
  catch (    IOException e) {
     }
   }
- else   if (link.endsWith(".ps")) {
+ else   if (fieldName.equals("ps")) {
     try {
       Process child=Runtime.getRuntime().exec(prefs.get("psviewer") + " " + link);
     }
  catch (    IOException e) {
     }
   }
- else   if (link.endsWith(".pdf")) {
+ else   if (fieldName.equals("pdf")) {
     try {
       File f=new File(link);
       String dir=prefs.get("pdfDirectory");
@@ -31,6 +31,6 @@
     }
   }
  else {
-    System.err.println("Message: currently only pdf, ps and HTML files can be opened by double clicking");
+    System.err.println("Message: currently only PDF, PS and HTML files can be opened by double clicking");
   }
 }
