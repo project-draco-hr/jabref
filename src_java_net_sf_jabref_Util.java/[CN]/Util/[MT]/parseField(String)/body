@@ -1,0 +1,30 @@
+{
+  if (content.length() == 0)   return "";
+  String toSet="";
+  boolean string;
+  int hash=content.indexOf('#'), wr1=content.indexOf('"'), wr2=content.indexOf('{'), end=content.length();
+  if (hash == -1)   hash=end;
+  if (wr1 == -1)   wr1=end;
+  if (wr2 == -1)   wr2=end;
+  if (((wr1 == end) && (wr2 == end)) || (hash < Math.min(wr1,wr2)))   string=true;
+ else   string=false;
+  StringTokenizer tok=new StringTokenizer(content,"#",true);
+  while (tok.hasMoreTokens()) {
+    String str=tok.nextToken();
+    if (str.equals("#"))     string=!string;
+ else {
+      if (string) {
+        String s=shaveString(str);
+        try {
+          Integer.parseInt(s);
+          toSet=toSet + s;
+        }
+ catch (        NumberFormatException ex) {
+          toSet=toSet + "#" + shaveString(str)+ "#";
+        }
+      }
+ else       toSet=toSet + shaveString(str);
+    }
+  }
+  return toSet;
+}

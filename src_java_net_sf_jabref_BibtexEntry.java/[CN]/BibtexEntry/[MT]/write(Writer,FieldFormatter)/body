@@ -1,0 +1,24 @@
+{
+  out.write("@" + _type.getName().toUpperCase() + "{");
+  String str=Util.shaveString((String)getField(GUIGlobals.KEY_FIELD));
+  out.write(((str == null) ? "" : str.toString()) + ",\n");
+  HashMap written=new HashMap();
+  written.put(GUIGlobals.KEY_FIELD,null);
+  String[] s=getRequiredFields();
+  if (s != null)   for (int i=0; i < s.length; i++) {
+    writeField(s[i],out,ff);
+    written.put(s[i],null);
+  }
+  s=getOptionalFields();
+  if (s != null)   for (int i=0; i < s.length; i++) {
+    writeField(s[i],out,ff);
+    written.put(s[i],null);
+  }
+  for (java.util.Iterator i=_fields.keySet().iterator(); i.hasNext(); ) {
+    String key=(String)i.next();
+    if (!written.containsKey(key) && GUIGlobals.isWriteableField(key)) {
+      writeField(key,out,ff);
+    }
+  }
+  out.write("}\n");
+}

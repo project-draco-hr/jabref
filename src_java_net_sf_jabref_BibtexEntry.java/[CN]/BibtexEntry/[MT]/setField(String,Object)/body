@@ -1,0 +1,12 @@
+{
+  if ("id".equals(name)) {
+    throw new IllegalArgumentException("The field name '" + name + "' is reserved");
+  }
+  try {
+    firePropertyChangedEvent(name,_fields.get(name),value);
+  }
+ catch (  PropertyVetoException pve) {
+    throw new IllegalArgumentException("Change rejected: " + pve);
+  }
+  Object oldValue=_fields.put(name,value);
+}
