@@ -1,0 +1,53 @@
+{
+  Vector back=new Vector();
+  StringBuffer structure=new StringBuffer();
+  int len=authors.length();
+  int mode=-1;
+  for (int t=0; t < len; t++) {
+    char ch=authors.charAt(t);
+switch (ch) {
+case ',':
+      if (mode == 5)       structure.append('a');
+ else       structure.append('N');
+    structure.append(',');
+  mode=0;
+break;
+case ' ':
+if (mode == 5) structure.append('a');
+ else if (mode != 0) structure.append('N');
+mode=-1;
+break;
+case 'a':
+if (mode == -1) mode=2;
+break;
+case 'n':
+if (mode == 2) mode=3;
+break;
+case 'd':
+if (mode == 3) mode=5;
+break;
+default :
+mode=1;
+}
+}
+if (mode == 5) structure.append('a');
+ else if (mode != 0) structure.append('N');
+len=structure.length();
+if (len > 0) {
+boolean failed=false;
+char z1=structure.charAt(0);
+if (structure.charAt(0) != 'N') {
+back.add("beginning of author field");
+failed=true;
+}
+if (structure.charAt(structure.length() - 1) != 'N') {
+back.add("bad end (author field)");
+failed=true;
+}
+if (structure.indexOf("NN,NN") > -1) {
+back.add("something could be wrong in author field");
+failed=true;
+}
+}
+return back;
+}
