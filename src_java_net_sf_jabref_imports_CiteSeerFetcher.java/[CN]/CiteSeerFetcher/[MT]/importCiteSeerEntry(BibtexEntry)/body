@@ -1,0 +1,38 @@
+{
+  boolean newValue=false;
+  SAXParserFactory factory=SAXParserFactory.newInstance();
+  String targetURL=(String)be.getField("url");
+  try {
+    if (targetURL != null && targetURL.startsWith(PREFIX_URL) && (targetURL.length() > (PREFIX_URL.length() + 5))) {
+      String id=targetURL.substring(PREFIX_URL.length(),targetURL.length() - 5);
+      String identifier=PREFIX_IDENTIFIER + id;
+      StringBuffer citeseerURLString=new StringBuffer();
+      citeseerURLString.append(OAI_URL);
+      citeseerURLString.append(OAI_ACTION);
+      citeseerURLString.append("&" + OAI_METADATAPREFIX);
+      citeseerURLString.append("&" + "identifier=" + identifier);
+      GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
+      int response=citeseerHttpClient.executeMethod(citeseerMethod);
+      saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerImportHandler(be));
+      citeseerMethod.releaseConnection();
+      newValue=true;
+    }
+ else {
+      ShowBadURLDialog dialog=new ShowBadURLDialog(targetURL);
+      dialog.run();
+    }
+  }
+ catch (  HttpException e) {
+    System.out.println("HttpException: " + e.getReason());
+    e.printStackTrace();
+  }
+catch (  IOException e) {
+    ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
+    dialog.run();
+  }
+catch (  SAXException e) {
+    System.out.println("SAXException: " + e.getLocalizedMessage());
+    e.printStackTrace();
+  }
+  return newValue;
+}

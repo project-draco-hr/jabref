@@ -15,6 +15,40 @@
     }
   }
 );
+  actions.put("importCiteSeer",new BaseAction(){
+    public void action(){
+      try {
+        int clickedOn=-1;
+        int rowCount=entryTable.getSelectedRowCount();
+        if (rowCount == 1) {
+          clickedOn=entryTable.getSelectedRow();
+        }
+ else         if (rowCount > 1) {
+          JOptionPane.showMessageDialog(frame(),"The CiteSeer import functionality is currently " + "supported for only one row at a time.","CiteSeer Import Error",JOptionPane.WARNING_MESSAGE);
+        }
+ else {
+          JOptionPane.showMessageDialog(frame(),"You must select a row to perform the " + "CiteSeer import operation.","CiteSeer Import Error",JOptionPane.WARNING_MESSAGE);
+        }
+        if (clickedOn >= 0) {
+          String id=tableModel.getNameFromNumber(clickedOn);
+          BibtexEntry be=(BibtexEntry)database.getEntryById(id).clone();
+          boolean newValue=citeSeerFetcher.importCiteSeerEntry(be);
+          if (newValue) {
+            database.removeEntry(id);
+            database.insertEntry(be);
+            refreshTable();
+            int row=tableModel.getNumberFromName(id);
+            entryTable.clearSelection();
+            entryTable.scrollTo(row);
+            markBaseChanged();
+          }
+        }
+      }
+ catch (      KeyCollisionException ex) {
+      }
+    }
+  }
+);
   actions.put("save",new BaseAction(){
     public void action() throws Throwable {
       if (file == null)       runCommand("saveAs");
@@ -427,10 +461,6 @@ catch (            Throwable ex) {
           if (importGroups) {
             Vector newGroups=meta.getData("groups");
             if (newGroups != null) {
-              if (groupSelector == null) {
-                groupSelector=new GroupSelector(frame,ths,new Vector(),sidePaneManager,prefs);
-                sidePaneManager.register("groups",groupSelector);
-              }
               groupSelector.addGroups(newGroups,ce);
               groupSelector.revalidateList();
             }

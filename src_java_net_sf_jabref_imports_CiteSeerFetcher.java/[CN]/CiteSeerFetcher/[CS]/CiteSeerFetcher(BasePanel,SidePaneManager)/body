@@ -1,0 +1,36 @@
+{
+  super(p0);
+  panel=panel_;
+  sidePaneManager=p0;
+  progressBar=new JProgressBar();
+  progressBar.setMinimumSize(new Dimension(1,1));
+  progressBar.setValue(0);
+  progressBar.setMinimum(0);
+  progressBar.setStringPainted(true);
+  setLayout(gbl);
+  SidePaneHeader header=new SidePaneHeader("CiteSeer Transfer",GUIGlobals.fetchHourglassIcon,this);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.fill=GridBagConstraints.BOTH;
+  con.weightx=1;
+  con.insets=new Insets(0,0,2,0);
+  gbl.setConstraints(header,con);
+  add(header);
+  con.gridwidth=1;
+  con.insets=new Insets(0,0,0,0);
+  con.fill=GridBagConstraints.HORIZONTAL;
+  gbl.setConstraints(progressBar,con);
+  add(progressBar);
+  try {
+    fetcherActive=false;
+    parserFactory=SAXParserFactory.newInstance();
+    saxParser=parserFactory.newSAXParser();
+    citeseerHttpClient=new HttpClient();
+    citeseerHttpClient.setConnectionTimeout(10000);
+  }
+ catch (  ParserConfigurationException e) {
+    e.printStackTrace();
+  }
+catch (  SAXException e) {
+    e.printStackTrace();
+  }
+}

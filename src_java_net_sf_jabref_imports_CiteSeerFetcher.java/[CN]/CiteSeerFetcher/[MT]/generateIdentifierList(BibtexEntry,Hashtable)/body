@@ -1,0 +1,34 @@
+{
+  String targetURL=(String)currentEntry.getField("url");
+  try {
+    if (targetURL != null && targetURL.startsWith(PREFIX_URL) && (targetURL.length() > (PREFIX_URL.length() + 5))) {
+      String id=targetURL.substring(PREFIX_URL.length(),targetURL.length() - 5);
+      String identifier=PREFIX_IDENTIFIER + id;
+      StringBuffer citeseerURLString=new StringBuffer();
+      citeseerURLString.append(OAI_URL);
+      citeseerURLString.append(OAI_ACTION);
+      citeseerURLString.append("&" + OAI_METADATAPREFIX);
+      citeseerURLString.append("&" + "identifier=" + identifier);
+      GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
+      citeseerHttpClient.executeMethod(citeseerMethod);
+      saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerCitationHandler(citationHashTable));
+      citeseerMethod.releaseConnection();
+    }
+ else {
+      ShowBadURLDialog dialog=new ShowBadURLDialog(targetURL);
+      SwingUtilities.invokeLater(dialog);
+    }
+  }
+ catch (  HttpException e) {
+    System.out.println("HttpException: " + e.getReason());
+    e.printStackTrace();
+  }
+catch (  SAXException e) {
+    System.out.println("SAXException: " + e.getLocalizedMessage());
+    e.printStackTrace();
+  }
+catch (  IOException e) {
+    ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
+    SwingUtilities.invokeLater(dialog);
+  }
+}

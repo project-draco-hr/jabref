@@ -1,20 +1,16 @@
 {
-  if (components.get(name) != null) {
-    if (!((SidePaneComponent)components.get(name)).isVisible()) {
-      visibleComponents++;
-      ((SidePaneComponent)components.get(name)).setVisible(true);
-      if (visibleComponents == 1)       panel.setLeftComponent(sidep);
-      ((SidePaneComponent)components.get(name)).componentOpening();
-      ((SidePaneComponent)components.get(name)).setVisibility(true);
+  Object o=components.get(name);
+  if (o != null) {
+    if (!visible.contains(o)) {
+      visible.add(o);
+      sidep.setComponents(visible);
+      ((SidePaneComponent)o).componentOpening();
     }
  else {
-      hideAway((SidePaneComponent)components.get(name));
+      visible.remove(o);
+      sidep.setComponents(visible);
+      ((SidePaneComponent)o).componentClosing();
     }
-    return;
   }
-  if (name.equals("groups")) {
-    if (metaData.getData("groups") == null)     metaData.putData("groups",new Vector());
-    panel.groupSelector=new GroupSelector(frame,panel,metaData.getData("groups"),this,prefs);
-    add("groups",panel.groupSelector);
-  }
+ else   System.err.println("Side pane component '" + name + "' unknown.");
 }

@@ -1,0 +1,38 @@
+{
+  if (basePanel().citeSeerFetcher.activateFetcher()) {
+    basePanel().sidePaneManager.ensureVisible("CiteSeerProgress");
+    (new Thread(){
+      BasePanel newBp;
+      BasePanel targetBp;
+      BibtexDatabase newDatabase;
+      BibtexDatabase targetDatabase;
+      Runnable updateComponent=new Runnable(){
+        public void run(){
+          tabbedPane.add(Globals.lang(GUIGlobals.untitledTitle),newBp);
+          tabbedPane.setSelectedComponent(newBp);
+          newBp.refreshTable();
+          output(Globals.lang("Fetched all citations from target database."));
+          targetBp.citeSeerFetcher.deactivateFetcher();
+        }
+      }
+;
+      public void run(){
+        try {
+          newBp=new BasePanel(ths,prefs);
+          targetBp=(BasePanel)tabbedPane.getSelectedComponent();
+          newDatabase=newBp.getDatabase();
+          targetDatabase=targetBp.getDatabase();
+          basePanel().citeSeerFetcher.populate(newDatabase,targetDatabase);
+          SwingUtilities.invokeLater(updateComponent);
+        }
+ catch (        Exception ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+).start();
+  }
+ else {
+    System.out.println("Fetch Currently Active");
+  }
+}

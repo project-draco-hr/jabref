@@ -1,0 +1,28 @@
+{
+  Iterator targetIterator=targetDatabase.getKeySet().iterator();
+  String currentKey;
+  BibtexEntry currentEntry;
+  Enumeration newEntryEnum;
+  Hashtable citationHashTable=new Hashtable();
+  UpdateProgressBarValue updateValue=new UpdateProgressBarValue(0);
+  SwingUtilities.invokeLater(updateValue);
+  while (targetIterator.hasNext()) {
+    currentKey=(String)targetIterator.next();
+    currentEntry=targetDatabase.getEntryById(currentKey);
+    generateIdentifierList(currentEntry,citationHashTable);
+  }
+  if (citationHashTable.size() > 0) {
+    UpdateProgressBarMaximum updateMaximum=new UpdateProgressBarMaximum(citationHashTable.size());
+    SwingUtilities.invokeLater(updateMaximum);
+  }
+  generateCitationList(citationHashTable,newDatabase);
+  newEntryEnum=citationHashTable.elements();
+  while (newEntryEnum.hasMoreElements()) {
+    try {
+      BibtexEntry nextEntry=(BibtexEntry)newEntryEnum.nextElement();
+      newDatabase.insertEntry(nextEntry);
+    }
+ catch (    KeyCollisionException ex) {
+    }
+  }
+}

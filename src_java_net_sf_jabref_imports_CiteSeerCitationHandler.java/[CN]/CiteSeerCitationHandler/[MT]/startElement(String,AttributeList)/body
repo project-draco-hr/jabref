@@ -1,0 +1,17 @@
+{
+  if (name.equals("oai_citeseer:relation")) {
+    for (int i=0; i < attrs.getLength(); i++) {
+      String attrName=attrs.getName(i);
+      String attrValue=attrs.getValue(i);
+      if (attrName.equals("type") && attrValue.equals("Is Referenced By")) {
+        correctDirection=true;
+      }
+ else       if (attrName.equals("type") && attrValue.equals("References")) {
+        correctDirection=false;
+      }
+    }
+  }
+ else   if (name.equals("oai_citeseer:uri") && correctDirection) {
+    getCitation=true;
+  }
+}

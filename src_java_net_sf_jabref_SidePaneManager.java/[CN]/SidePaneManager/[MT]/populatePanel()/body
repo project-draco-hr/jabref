@@ -1,7 +1,12 @@
 {
-  if (prefs.getBoolean("groupSelectorVisible") && (metaData.getData("groups") != null)) {
+  if (metaData.getData("groups") != null) {
     panel.groupSelector=new GroupSelector(frame,panel,metaData.getData("groups"),this,prefs);
-    add("groups",panel.groupSelector);
+    register("groups",panel.groupSelector);
+    if (prefs.getBoolean("groupSelectorVisible"))     ensureVisible("groups");
+  }
+ else {
+    panel.groupSelector=new GroupSelector(frame,panel,new Vector(),this,prefs);
+    register("groups",panel.groupSelector);
   }
   if (components.size() > 0) {
     panel.setLeftComponent(sidep);
