@@ -1,0 +1,11 @@
+{
+  panel.output(Globals.lang("Warning") + ": " + Globals.lang("duplicate BibTeX key."));
+  if (prefs.getBoolean("dialogWarningForDuplicateKey")) {
+    CheckBoxMessage jcb=new CheckBoxMessage(Globals.lang("Warning") + ": " + Globals.lang("duplicate BibTeX key."),Globals.lang("Disable this warning dialog"),false);
+    JOptionPane.showMessageDialog(frame,jcb,Globals.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+    if (jcb.isSelected())     prefs.putBoolean("dialogWarningForDuplicateKey",false);
+    if (containedInExplicitGroup(entry)) {
+      JOptionPane.showMessageDialog(frame,"Groups assignment for this entry cannot be restored after next load due to duplicate key",Globals.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+    }
+  }
+}
