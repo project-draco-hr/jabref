@@ -1,0 +1,17 @@
+{
+  Vector groups=metaData.getData("groups");
+  if (groups == null) {
+    groupMenu.setEnabled(false);
+    groupRemoveMenu.setEnabled(false);
+    return;
+  }
+  groupMenu.setEnabled(true);
+  groupRemoveMenu.setEnabled(true);
+  groupMenu.removeAll();
+  groupRemoveMenu.removeAll();
+  for (int i=GroupSelector.OFFSET; i < groups.size() - 2; i+=GroupSelector.DIM) {
+    String name=(String)groups.elementAt(i + 1), regexp=(String)groups.elementAt(i + 2), field=(String)groups.elementAt(i);
+    groupMenu.add(new AddToGroupAction(name,regexp,field));
+    groupRemoveMenu.add(new RemoveFromGroupAction(name,regexp,field));
+  }
+}
