@@ -16,7 +16,7 @@
   }
 );
   actions.put("save",new BaseAction(){
-    public void action(){
+    public void action() throws Throwable {
       if (file == null)       runCommand("saveAs");
  else {
         try {
@@ -37,13 +37,14 @@
           }
  else           ex.printStackTrace();
           JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file") + ".\n" + ex.getMessage(),Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
+          throw new SaveException("rt");
         }
       }
     }
   }
 );
   actions.put("saveAs",new BaseAction(){
-    public void action(){
+    public void action() throws Throwable {
       JFileChooser chooser=new JFileChooser(prefs.get("workingDirectory"));
       chooser.setFileFilter(new OpenFileFilter());
       int returnVal=chooser.showSaveDialog(frame);
@@ -84,7 +85,7 @@
   }
 );
   actions.put("cut",new BaseAction(){
-    public void action(){
+    public void action() throws Throwable {
       runCommand("copy");
       BibtexEntry[] bes=entryTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {

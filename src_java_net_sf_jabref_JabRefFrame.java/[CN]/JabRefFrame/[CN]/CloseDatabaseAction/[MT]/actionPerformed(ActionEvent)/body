@@ -5,7 +5,12 @@
     int answer=JOptionPane.showConfirmDialog(ths,Globals.lang("Database has changed. Do you want to save " + "before closing?"),Globals.lang("Save before closing"),JOptionPane.YES_NO_CANCEL_OPTION);
     if ((answer == JOptionPane.CANCEL_OPTION) || (answer == JOptionPane.CLOSED_OPTION))     close=false;
     if (answer == JOptionPane.YES_OPTION) {
-      basePanel().runCommand("save");
+      try {
+        basePanel().runCommand("save");
+      }
+ catch (      Throwable ex) {
+        close=false;
+      }
     }
   }
   if (close) {
