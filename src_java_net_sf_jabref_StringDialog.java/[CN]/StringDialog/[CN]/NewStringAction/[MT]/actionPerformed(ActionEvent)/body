@@ -1,18 +1,18 @@
 {
-  String name=JOptionPane.showInputDialog(parent,"Please enter the string's label");
+  String name=JOptionPane.showInputDialog(parent,Globals.lang("Please enter the string's label"));
   if (name == null)   return;
   if (isNumber(name)) {
-    JOptionPane.showMessageDialog(parent,"The label of the string can not be a number.","Label",JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(parent,Globals.lang("The label of the string can not be a number."),Globals.lang("Label"),JOptionPane.ERROR_MESSAGE);
     return;
   }
   try {
     BibtexString bs=new BibtexString(name,"");
-    panel.undoManager.addEdit(new UndoableInsertString(base,bs,base.getStringCount()));
+    panel.undoManager.addEdit(new UndoableInsertString(panel,panel.database,bs,base.getStringCount()));
     base.addString(bs,base.getStringCount());
     table.revalidate();
     panel.markBaseChanged();
   }
  catch (  KeyCollisionException ex) {
-    JOptionPane.showMessageDialog(parent,"A string with that label " + "already exists","Label",JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(parent,Globals.lang("A string with that label " + "already exists"),Globals.lang("Label"),JOptionPane.ERROR_MESSAGE);
   }
 }
