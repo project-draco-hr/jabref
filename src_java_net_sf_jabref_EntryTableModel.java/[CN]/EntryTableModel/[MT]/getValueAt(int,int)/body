@@ -2,9 +2,11 @@
   Object o;
   BibtexEntry be=db.getEntryById(getNameFromNumber(row));
   if (col == 0)   o="" + (row + 1);
- else   if (col == 1)   o=be.getType().getName();
  else {
-    o=be.getField(columns[col - PADLEFT]);
+    if (columns[col - PADLEFT].equals(GUIGlobals.TYPE_HEADER)) {
+      o=be.getType().getName();
+    }
+ else     o=be.getField(columns[col - PADLEFT]);
   }
   return o;
 }
