@@ -6,6 +6,7 @@
   groups=groups_;
   field.setText(defaultField);
   remove.setText(defaultRemove);
+  deliminator.setText(defaultDeliminator);
   ActionListener okListener=new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       if (field.getText().equals("")) {
@@ -14,7 +15,14 @@
       }
       ok_pressed=true;
       dispose();
-      HashSet hs=Util.findAllWordsInField(panel.getDatabase(),field().toLowerCase(),remove());
+      groups.clear();
+      HashSet hs=null;
+      if (nd.isSelected()) {
+        hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field().toLowerCase().trim(),deliminator.getText());
+      }
+ else {
+        hs=Util.findAllWordsInField(panel.getDatabase(),field().toLowerCase().trim(),remove());
+      }
       Vector added=new Vector(20,20);
       NamedCompound ce=new NamedCompound(Globals.lang("Autogenerate groups"));
       Iterator i=hs.iterator();
@@ -75,6 +83,9 @@
   con.gridy=1;
   gbl.setConstraints(nr,con);
   main.add(nr);
+  con.gridy=2;
+  gbl.setConstraints(nd,con);
+  main.add(nd);
   con.weightx=1;
   con.anchor=GridBagConstraints.WEST;
   con.fill=GridBagConstraints.HORIZONTAL;
@@ -85,6 +96,9 @@
   con.gridy=1;
   gbl.setConstraints(remove,con);
   main.add(remove);
+  con.gridy=2;
+  gbl.setConstraints(deliminator,con);
+  main.add(deliminator);
   con.gridx=GridBagConstraints.RELATIVE;
   con.gridy=GridBagConstraints.RELATIVE;
   con.weightx=1;
@@ -99,6 +113,6 @@
   opt.add(cancel);
   getContentPane().add(main,BorderLayout.CENTER);
   getContentPane().add(opt,BorderLayout.SOUTH);
-  setSize(400,140);
+  setSize(400,200);
   Util.placeDialog(this,frame);
 }
