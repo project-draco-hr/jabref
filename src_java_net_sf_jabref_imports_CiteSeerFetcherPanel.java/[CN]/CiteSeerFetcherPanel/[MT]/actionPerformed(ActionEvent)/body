@@ -1,0 +1,56 @@
+{
+  if (citeSeerFetcher.activateImportFetcher()) {
+    (new Thread(){
+      BibtexEntry entry;
+class UpdateComponent implements Runnable {
+        boolean changesMade;
+        UpdateComponent(        boolean changesMade){
+          this.changesMade=changesMade;
+        }
+        public void run(){
+          citeSeerFetcher.endImportCiteSeerProgress();
+          if (changesMade)           panel.markBaseChanged();
+          panel.refreshTable();
+          panel.output(Globals.lang("Completed Import Fields from CiteSeer."));
+        }
+      }
+      public void run(){
+        citeSeerFetcher.beginImportCiteSeerProgress();
+        NamedCompound undoEdit=new NamedCompound("CiteSeer import entries"), dummyCompound=new NamedCompound("dummy");
+        BooleanAssign overwriteAll=new BooleanAssign(false), overwriteNone=new BooleanAssign(false), newValue=new BooleanAssign(false);
+        Hashtable rejectedEntries=new Hashtable();
+        String text=tf.getText().replaceAll(",",";");
+        String[] ids=text.split(";");
+        BibtexEntry[] entries=new BibtexEntry[ids.length];
+        for (int i=0; i < entries.length; i++) {
+          entries[i]=new BibtexEntry(Util.createNeutralId(),BibtexEntryType.getType("article"));
+          entries[i].setField("citeseerurl",ids[i].trim());
+          boolean newValues=citeSeerFetcher.importCiteSeerEntry(entries[i],dummyCompound,overwriteAll,overwriteNone,newValue,rejectedEntries);
+        }
+        if (rejectedEntries.size() < entries.length) {
+          for (int i=0; i < entries.length; i++) {
+            if (rejectedEntries.contains(entries[i]))             continue;
+            try {
+              panel.database().insertEntry(entries[i]);
+              System.out.println(entries[i]);
+              UndoableInsertEntry undoItem=new UndoableInsertEntry(panel.database(),entries[i],panel);
+              undoEdit.addEdit(undoItem);
+            }
+ catch (            KeyCollisionException ex) {
+              ex.printStackTrace();
+            }
+          }
+          undoEdit.end();
+          panel.undoManager.addEdit(undoEdit);
+        }
+        UpdateComponent updateComponent=new UpdateComponent(rejectedEntries.size() < entries.length);
+        SwingUtilities.invokeLater(updateComponent);
+        citeSeerFetcher.deactivateImportFetcher();
+      }
+    }
+).start();
+  }
+ else {
+    JOptionPane.showMessageDialog(panel.frame(),Globals.lang("A CiteSeer import operation is currently in progress.") + "  " + Globals.lang("Please wait until it has finished."),Globals.lang("CiteSeer Import Error"),JOptionPane.WARNING_MESSAGE);
+  }
+}
