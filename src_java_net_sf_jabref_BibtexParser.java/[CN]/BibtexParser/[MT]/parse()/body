@@ -19,8 +19,10 @@
       }
  else       if (entryType.toLowerCase().equals("comment")) {
         StringBuffer comment=parseBracketedText();
-        if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG)) {
-          String rest=comment.substring(GUIGlobals.META_FLAG.length());
+        if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG) || comment.substring(0,GUIGlobals.META_FLAG_OLD.length()).equals(GUIGlobals.META_FLAG_OLD)) {
+          String rest;
+          if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG))           rest=comment.substring(GUIGlobals.META_FLAG.length());
+ else           rest=comment.substring(GUIGlobals.META_FLAG_OLD.length());
           int pos=rest.indexOf(':');
           if (pos > 0)           _meta.put(rest.substring(0,pos),rest.substring(pos + 1));
         }

@@ -1,0 +1,28 @@
+{
+  setLayout(gbl);
+  this.editor=editor_;
+  this.parent=parent;
+  metaData=data;
+  final MetaData metaData=data;
+  final JabRefFrame frame=parent.frame;
+  updateList();
+  list.setBackground(GUIGlobals.lightGray);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  gbl.setConstraints(list,con);
+  list.addItemListener(this);
+  add(list);
+  manage=new JButton(Globals.lang("Manage"));
+  manage.setBackground(GUIGlobals.lightGray);
+  gbl.setConstraints(manage,con);
+  add(manage);
+  manage.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      ContentSelectorDialog csd=new ContentSelectorDialog(frame,true,metaData,editor.getFieldName());
+      Util.placeDialog(csd,frame);
+      csd.show();
+      updateList();
+    }
+  }
+);
+}
