@@ -30,19 +30,14 @@
           if (answer == JOptionPane.CANCEL_OPTION)           return;
  else           if (answer == JOptionPane.YES_OPTION) {
             ChangeScanner scanner=new ChangeScanner(frame,ths);
-            try {
-              scanner.changeScan(file());
-              setUpdatedExternally(false);
-              SwingUtilities.invokeLater(new Runnable(){
-                public void run(){
-                  sidePaneManager.hideAway("fileUpdate");
-                }
+            scanner.changeScan(file());
+            setUpdatedExternally(false);
+            SwingUtilities.invokeLater(new Runnable(){
+              public void run(){
+                sidePaneManager.hideAway("fileUpdate");
               }
+            }
 );
-            }
- catch (            IOException ex) {
-              ex.printStackTrace();
-            }
             return;
           }
         }
@@ -125,6 +120,7 @@
     public void action() throws Throwable {
       runCommand("copy");
       BibtexEntry[] bes=entryTable.getSelectedEntries();
+      int row0=entryTable.getSelectedRow();
       if ((bes != null) && (bes.length > 0)) {
         NamedCompound ce=new NamedCompound(bes.length > 1 ? "cut entries" : "cut entry");
         for (int i=0; i < bes.length; i++) {
@@ -138,6 +134,8 @@
         undoManager.addEdit(ce);
         refreshTable();
         markBaseChanged();
+        if (row0 >= entryTable.getRowCount())         row0=entryTable.getRowCount() - 1;
+        if (row0 >= 0)         entryTable.addRowSelectionInterval(row0,row0);
       }
     }
   }
@@ -150,12 +148,13 @@
       if ((bes != null) && (bes.length > 0)) {
         boolean goOn=showDeleteConfirmationDialog(bes.length);
         if (!goOn) {
-          entryTable.clearSelection();
+          return;
         }
  else {
-          NamedCompound ce=new NamedCompound(bes.length > 1 ? Globals.lang("delete entries") : Globals.lang("delete entry"));
+          NamedCompound ce=new NamedCompound(bes.length > 1 ? "delete entries" : "delete entry");
           for (int i=0; i < bes.length; i++) {
             database.removeEntry(bes[i].getId());
+            ensureNotShowing(bes[i]);
             ce.addEdit(new UndoableRemoveEntry(database,bes[i],ths));
           }
           frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
@@ -163,6 +162,8 @@
           undoManager.addEdit(ce);
           refreshTable();
           markBaseChanged();
+          if (row0 >= entryTable.getRowCount())           row0=entryTable.getRowCount() - 1;
+          if (row0 >= 0)           entryTable.addRowSelectionInterval(row0,row0);
         }
       }
     }
@@ -663,7 +664,7 @@ catch (            Throwable ex) {
       if (tp == null)       return;
       String id=Util.createId(tp,database);
       BibtexEntry bibEntry=new BibtexEntry(id,tp);
-      TextInputDialog tidialog=new TextInputDialog(frame,"import",true,bibEntry);
+      TextInputDialog tidialog=new TextInputDialog(frame,ths,"import",true,bibEntry);
       Util.placeDialog(tidialog,ths);
       tidialog.setVisible(true);
       if (tidialog.okPressed()) {
@@ -679,7 +680,7 @@ catch (            Throwable ex) {
       if ((bes != null) && (bes.length > 0))       bibEntry=bes[0];
       if (bibEntry != null) {
         undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,ths));
-        TextInputDialog tidialog=new TextInputDialog(frame,"import",true,bibEntry);
+        TextInputDialog tidialog=new TextInputDialog(frame,ths,"import",true,bibEntry);
         Util.placeDialog(tidialog,ths);
         tidialog.setVisible(true);
         if (tidialog.okPressed()) {
@@ -796,21 +797,25 @@ catch (            Throwable ex) {
         getCallBack().update();
         return;
       }
-      Set formats=new HashSet();
-      formats.add("bibtexml");
-      formats.add("docbook");
-      formats.add("html");
-      formats.add("simplehtml");
+      Map formats=new HashMap();
+      formats.put("BibTeXML","bibtexml");
+      formats.put("DocBook","docbook");
+      formats.put("HTML","html");
+      formats.put("RTF (Harvard)","harvard/harvard");
+      formats.put("Simple HTML","simplehtml");
       for (int i=0; i < prefs.customExports.size(); i++) {
-        formats.add((prefs.customExports.getElementAt(i))[0]);
+        Object o=(prefs.customExports.getElementAt(i))[0];
+        formats.put(o,o);
       }
-      JList list=new JList(formats.toArray());
+      Object[] array=formats.keySet().toArray();
+      Arrays.sort(array);
+      JList list=new JList(array);
       list.setBorder(BorderFactory.createEtchedBorder());
       list.setSelectionInterval(0,0);
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      int answer=JOptionPane.showOptionDialog(frame,list,Globals.lang("Select the format to copy entries in"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,new String[]{Globals.lang("Ok"),Globals.lang("Cancel")},Globals.lang("Ok"));
+      int answer=JOptionPane.showOptionDialog(frame,list,Globals.lang("Select format"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,new String[]{Globals.lang("Ok"),Globals.lang("Cancel")},Globals.lang("Ok"));
       if (answer == JOptionPane.NO_OPTION)       return;
-      String lfName=(String)(list.getSelectedValue());
+      String lfName=(String)(formats.get(list.getSelectedValue()));
       final boolean custom=(list.getSelectedIndex() >= Globals.STANDARD_EXPORT_COUNT);
       String dir=null;
       if (custom) {
@@ -824,7 +829,15 @@ catch (            Throwable ex) {
       final String format=lfName, directory=dir;
       try {
         BibtexEntry[] bes=entryTable.getSelectedEntries();
-        FileActions.exportToClipboard(database,bes,format,custom,directory,prefs);
+        StringWriter sw=new StringWriter();
+        FileActions.exportEntries(database,bes,format,custom,directory,sw);
+        ClipboardOwner owner=new ClipboardOwner(){
+          public void lostOwnership(          Clipboard clipboard,          Transferable content){
+          }
+        }
+;
+        StringSelection ss=new StringSelection(sw.toString());
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,owner);
         message=Globals.lang("Entries exported to clipboard") + ": " + bes.length;
       }
  catch (      Exception ex) {

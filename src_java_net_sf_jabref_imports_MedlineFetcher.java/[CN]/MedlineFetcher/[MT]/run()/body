@@ -18,7 +18,14 @@
     String question=Globals.lang("References found") + ": " + Integer.toString(result.count)+ "  "+ Globals.lang("Number of references to fetch?");
     String strCount=JOptionPane.showInputDialog(question,Integer.toString(result.count));
     if (strCount == "")     return;
-    int count=Integer.parseInt(strCount);
+    int count;
+    try {
+      count=Integer.parseInt(strCount);
+    }
+ catch (    NumberFormatException ex) {
+      panel.output("");
+      return;
+    }
     for (int jj=0; jj < count; jj+=PACING) {
       result=getIds(searchTerm,jj,PACING);
       String[] test=getTitles((String[])result.idList.toArray(new String[0]));
@@ -30,6 +37,9 @@
         tf.setText("");
         panel.frame().addBibEntries(bibs,null,false);
         panel.output(Globals.lang("Medline entries fetched") + ": " + bibs.size());
+        BibtexEntry[] entries=(BibtexEntry[])bibs.toArray(new BibtexEntry[0]);
+        panel.selectEntries(entries,0);
+        if (entries.length == 1)         panel.showEntry(entries[0]);
         panel.markBaseChanged();
         panel.refreshTable();
       }

@@ -3,21 +3,27 @@
     (new Thread(){
       BibtexEntry entry;
 class UpdateComponent implements Runnable {
-        boolean changesMade;
-        UpdateComponent(        boolean changesMade){
-          this.changesMade=changesMade;
+        Set addedEntries;
+        UpdateComponent(        Set addedEntries){
+          this.addedEntries=addedEntries;
         }
         public void run(){
           citeSeerFetcher.endImportCiteSeerProgress();
-          if (changesMade)           panel.markBaseChanged();
+          if (addedEntries != null)           panel.markBaseChanged();
           panel.refreshTable();
+          if (addedEntries.size() > 0) {
+            BibtexEntry[] toSelect=new BibtexEntry[addedEntries.size()];
+            toSelect=(BibtexEntry[])addedEntries.toArray(toSelect);
+            panel.selectEntries(toSelect,0);
+            if (toSelect.length == 1)             panel.showEntry(toSelect[0]);
+          }
           panel.output(Globals.lang("Completed Import Fields from CiteSeer."));
         }
       }
       public void run(){
         citeSeerFetcher.beginImportCiteSeerProgress();
-        NamedCompound undoEdit=new NamedCompound("CiteSeer import entries"), dummyCompound=new NamedCompound("dummy");
-        BooleanAssign overwriteAll=new BooleanAssign(false), overwriteNone=new BooleanAssign(false), newValue=new BooleanAssign(false);
+        NamedCompound undoEdit=new NamedCompound("CiteSeer import entries"), dummyCompound=new NamedCompound("Ok");
+        BooleanAssign overwriteAll=new BooleanAssign(true), overwriteNone=new BooleanAssign(false), newValue=new BooleanAssign(false);
         Hashtable rejectedEntries=new Hashtable();
         String text=tf.getText().replaceAll(",",";");
         String[] ids=text.split(";");
@@ -27,14 +33,15 @@ class UpdateComponent implements Runnable {
           entries[i].setField("citeseerurl",ids[i].trim());
           boolean newValues=citeSeerFetcher.importCiteSeerEntry(entries[i],dummyCompound,overwriteAll,overwriteNone,newValue,rejectedEntries);
         }
+        Set addedEntries=new HashSet();
         if (rejectedEntries.size() < entries.length) {
           for (int i=0; i < entries.length; i++) {
             if (rejectedEntries.contains(entries[i]))             continue;
             try {
               panel.database().insertEntry(entries[i]);
-              System.out.println(entries[i]);
               UndoableInsertEntry undoItem=new UndoableInsertEntry(panel.database(),entries[i],panel);
               undoEdit.addEdit(undoItem);
+              addedEntries.add(entries[i]);
             }
  catch (            KeyCollisionException ex) {
               ex.printStackTrace();
@@ -43,7 +50,7 @@ class UpdateComponent implements Runnable {
           undoEdit.end();
           panel.undoManager.addEdit(undoEdit);
         }
-        UpdateComponent updateComponent=new UpdateComponent(rejectedEntries.size() < entries.length);
+        UpdateComponent updateComponent=new UpdateComponent(addedEntries.size() > 0 ? addedEntries : null);
         SwingUtilities.invokeLater(updateComponent);
         citeSeerFetcher.deactivateImportFetcher();
       }

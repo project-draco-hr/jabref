@@ -5,6 +5,10 @@
     String encoding=Globals.prefs.get("defaultEncoding");
     ParserResult pr=ImportFormatReader.loadDatabase(file,encoding);
     pr.setFile(file);
+    if (pr.hasWarnings()) {
+      String[] warn=pr.warnings();
+      for (int i=0; i < warn.length; i++)       System.out.println(Globals.lang("Warning") + ": " + warn[i]);
+    }
     return pr;
   }
  catch (  Throwable ex) {

@@ -21,9 +21,9 @@
   con.gridx=1;
   con.gridy=0;
   con.gridheight=1;
-  con.fill=GridBagConstraints.BOTH;
+  con.fill=GridBagConstraints.HORIZONTAL;
   con.anchor=GridBagConstraints.WEST;
-  con.insets=new Insets(5,5,10,0);
+  con.insets=new Insets(5,5,10,5);
   gbl.setConstraints(lblKeyPattern,con);
   pan.add(lblKeyPattern);
   con.gridy=1;
@@ -34,7 +34,18 @@
   con.gridx=1;
   gbl.setConstraints(defaultPat,con);
   pan.add(defaultPat);
+  con.insets=new Insets(5,5,10,5);
+  btnDefault=new JButton(Globals.lang("Default"));
+  btnDefault.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      defaultPat.setText((String)Globals.prefs.defaults.get("defaultLabelPattern"));
+    }
+  }
+);
+  con.gridx=2;
   int y=2;
+  gbl.setConstraints(btnDefault,con);
+  pan.add(btnDefault);
   Iterator i=BibtexEntryType.ALL_TYPES.keySet().iterator();
   while (i.hasNext()) {
     String s=(String)i.next();

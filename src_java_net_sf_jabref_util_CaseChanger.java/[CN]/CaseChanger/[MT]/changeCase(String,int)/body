@@ -1,0 +1,35 @@
+{
+switch (mode) {
+case UPPER:
+    return input.toUpperCase();
+case LOWER:
+  return input.toLowerCase();
+case UPPER_FIRST:
+String s=input.toLowerCase();
+UF_MATCHER.reset(s);
+if (UF_MATCHER.find()) {
+return UF_MATCHER.replaceFirst(UF_MATCHER.group(0).toUpperCase());
+}
+ else {
+return input;
+}
+case UPPER_EACH_FIRST:
+s=input.toLowerCase();
+StringBuffer sb=new StringBuffer();
+boolean found=false;
+UF_MATCHER.reset(s);
+while (UF_MATCHER.find()) {
+UF_MATCHER.appendReplacement(sb,UF_MATCHER.group(0).toUpperCase());
+found=true;
+}
+if (found) {
+UF_MATCHER.appendTail(sb);
+return sb.toString();
+}
+ else {
+return input;
+}
+default :
+return input;
+}
+}

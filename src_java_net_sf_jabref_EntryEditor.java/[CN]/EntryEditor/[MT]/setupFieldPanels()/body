@@ -2,7 +2,9 @@
   tabbed.removeAll();
   tabs.clear();
   String[] fields=entry.getRequiredFields();
-  reqPan=new EntryEditorTab(java.util.Arrays.asList(fields),this,true);
+  List fieldList=null;
+  if (fields != null)   fieldList=java.util.Arrays.asList(fields);
+  reqPan=new EntryEditorTab(fieldList,this,true);
   tabbed.addTab(Globals.lang("Required fields"),new ImageIcon(GUIGlobals.showReqIconFile),reqPan.getPane(),Globals.lang("Show required fields"));
   tabs.add(reqPan);
   if ((entry.getOptionalFields() != null) && (entry.getOptionalFields().length >= 1)) {
@@ -19,4 +21,5 @@
   tabbed.addTab(Globals.lang("BibTeX source"),new ImageIcon(GUIGlobals.sourceIconFile),srcPanel,Globals.lang("Show/edit BibTeX source"));
   tabs.add(srcPanel);
   sourceIndex=tabs.size() - 1;
+  srcPanel.setFocusCycleRoot(true);
 }

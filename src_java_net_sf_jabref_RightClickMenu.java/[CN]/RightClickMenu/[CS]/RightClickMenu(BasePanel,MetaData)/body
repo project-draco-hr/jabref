@@ -5,7 +5,7 @@
   BibtexEntry be=null;
   if (panel.entryTable.getSelectedRowCount() == 1)   be=panel.entryTable.getSelectedEntries()[0];
   addPopupMenuListener(this);
-  add(new AbstractAction(Globals.lang("Copy")){
+  add(new AbstractAction(Globals.lang("Copy"),new ImageIcon(GUIGlobals.copyIconFile)){
     public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("copy");
@@ -15,7 +15,7 @@
     }
   }
 );
-  add(new AbstractAction(Globals.lang("Paste")){
+  add(new AbstractAction(Globals.lang("Paste"),new ImageIcon(GUIGlobals.pasteIconFile)){
     public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("paste");
@@ -25,7 +25,7 @@
     }
   }
 );
-  add(new AbstractAction(Globals.lang("Cut")){
+  add(new AbstractAction(Globals.lang("Cut"),new ImageIcon(GUIGlobals.cutIconFile)){
     public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("cut");
@@ -35,9 +35,19 @@
     }
   }
 );
+  add(new AbstractAction(Globals.lang("Delete"),new ImageIcon(GUIGlobals.removeIconFile)){
+    public void actionPerformed(    ActionEvent e){
+      try {
+        panel.runCommand("delete");
+      }
+ catch (      Throwable ex) {
+      }
+    }
+  }
+);
   addSeparator();
   if (multiple) {
-    add(new AbstractAction(Globals.lang("Mark entries")){
+    add(new AbstractAction(Globals.lang("Mark entries"),new ImageIcon(GUIGlobals.markIcon)){
       public void actionPerformed(      ActionEvent e){
         try {
           panel.runCommand("markEntries");
@@ -47,7 +57,7 @@
       }
     }
 );
-    add(new AbstractAction(Globals.lang("Unmark entries")){
+    add(new AbstractAction(Globals.lang("Unmark entries"),new ImageIcon(GUIGlobals.unmarkIcon)){
       public void actionPerformed(      ActionEvent e){
         try {
           panel.runCommand("unmarkEntries");
@@ -60,7 +70,7 @@
     addSeparator();
   }
  else   if (be != null) {
-    if (be.getField(Globals.MARKED) == null)     add(new AbstractAction(Globals.lang("Mark entry")){
+    if (be.getField(Globals.MARKED) == null)     add(new AbstractAction(Globals.lang("Mark entry"),new ImageIcon(GUIGlobals.markIcon)){
       public void actionPerformed(      ActionEvent e){
         try {
           panel.runCommand("markEntries");
@@ -70,7 +80,7 @@
       }
     }
 );
- else     add(new AbstractAction(Globals.lang("Unmark entry")){
+ else     add(new AbstractAction(Globals.lang("Unmark entry"),new ImageIcon(GUIGlobals.unmarkIcon)){
       public void actionPerformed(      ActionEvent e){
         try {
           panel.runCommand("unmarkEntries");
@@ -82,7 +92,7 @@
 );
     addSeparator();
   }
-  add(new AbstractAction(Globals.lang("Open PDF or PS")){
+  add(new AbstractAction(Globals.lang("Open PDF or PS"),new ImageIcon(GUIGlobals.pdfIcon)){
     public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("openFile");
@@ -92,7 +102,7 @@
     }
   }
 );
-  add(new AbstractAction(Globals.lang("Open URL or DOI")){
+  add(new AbstractAction(Globals.lang("Open URL or DOI"),new ImageIcon(GUIGlobals.wwwIcon)){
     public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("openUrl");
@@ -102,7 +112,7 @@
     }
   }
 );
-  add(new AbstractAction(Globals.lang("Copy BibTeX key")){
+  add(new AbstractAction(Globals.lang("Copy BibTeX key"),new ImageIcon(GUIGlobals.copyKeyIconFile)){
     public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("copyKey");
@@ -112,7 +122,7 @@
     }
   }
 );
-  add(new AbstractAction(Globals.lang("Copy \\cite{BibTeX key}")){
+  add(new AbstractAction(Globals.lang("Copy \\cite{BibTeX key}"),new ImageIcon(GUIGlobals.copyKeyIconFile)){
     public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("copyCiteKey");

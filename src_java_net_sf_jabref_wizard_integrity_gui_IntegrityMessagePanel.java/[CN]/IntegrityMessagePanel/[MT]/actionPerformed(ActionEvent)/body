@@ -6,7 +6,11 @@
       IntegrityMessage msg=(IntegrityMessage)data;
       BibtexEntry entry=msg.getEntry();
       if (entry != null) {
+        Object oldContent=entry.getField(msg.getFieldName());
+        UndoableFieldChange edit=new UndoableFieldChange(entry,msg.getFieldName(),oldContent,content.getText());
         entry.setField(msg.getFieldName(),content.getText());
+        basePanel.undoManager.addEdit(edit);
+        basePanel.markBaseChanged();
         msg.setFixed(true);
         warningData.valueUpdated(warnings.getSelectedIndex());
       }
