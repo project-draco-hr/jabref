@@ -1,0 +1,22 @@
+{
+  AbstractWorker worker=new AbstractWorker(){
+    public void run(){
+      int count=main.getComponentCount();
+      Component[] comps=main.getComponents();
+      for (int i=0; i < count; i++) {
+        if (!((PrefsTab)comps[i]).readyToClose())         return;
+      }
+      for (int i=0; i < count; i++) {
+        ((PrefsTab)comps[i]).storeSettings();
+      }
+    }
+    public void update(){
+      dispose();
+      frame.setupAllTables();
+      frame.output(Globals.lang("Preferences recorded."));
+    }
+  }
+;
+  worker.getWorker().run();
+  worker.getCallBack().update();
+}
