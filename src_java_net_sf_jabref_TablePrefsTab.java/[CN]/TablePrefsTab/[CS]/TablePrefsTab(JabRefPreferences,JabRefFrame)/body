@@ -1,7 +1,7 @@
 {
   _prefs=prefs;
   this.frame=frame;
-  setLayout(gbl);
+  setLayout(new BorderLayout());
   menuFont=new Font(prefs.get("menuFontFamily"),prefs.getInt("menuFontStyle"),prefs.getInt("menuFontSize"));
   colorCodes=new JCheckBox(Globals.lang("Color codes for required and optional fields"),_prefs.getBoolean("tableColorCodesOn"));
   antialias=new JCheckBox(Globals.lang("Use antialiasing font in table"),_prefs.getBoolean("antialias"));
@@ -12,7 +12,6 @@
   pdfColumn=new JCheckBox(Globals.lang("Show PDF/PS column"),_prefs.getBoolean("pdfColumn"));
   urlColumn=new JCheckBox(Globals.lang("Show URL/DOI column"),_prefs.getBoolean("urlColumn"));
   citeseerColumn=new JCheckBox(Globals.lang("Show CiteSeer column"),_prefs.getBoolean("citeseerColumn"));
-  allowEditing=new JCheckBox(Globals.lang("Allow editing in table cells"),_prefs.getBoolean("allowTableEditing"));
   secField=new JTextField(_prefs.get("secSort"),10);
   terField=new JTextField(_prefs.get("terSort"),10);
   fontSize=new JTextField("");
@@ -52,196 +51,73 @@
   }
   secDesc=new JCheckBox(Globals.lang("Descending"),_prefs.getBoolean("secDescending"));
   terDesc=new JCheckBox(Globals.lang("Descending"),_prefs.getBoolean("terDescending"));
-  tableFields.setText(Util.stringArrayToDelimited(_prefs.getStringArray("columnNames"),";"));
-  String[] names=_prefs.getStringArray("columnNames"), lengths=_prefs.getStringArray("columnWidths");
-  for (int i=0; i < names.length; i++) {
-    if (i < lengths.length)     tableRows.add(new TableRow(names[i],Integer.parseInt(lengths[i])));
- else     tableRows.add(new TableRow(names[i]));
-  }
-  rowCount=tableRows.size() + 5;
-  ncWidth=prefs.getInt("numberColWidth");
-  TableModel tm=new AbstractTableModel(){
-    public int getRowCount(){
-      return rowCount;
+  FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  JLabel lab;
+  JPanel pan=new JPanel();
+  builder.appendSeparator("Special table columns");
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(pdfColumn);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(urlColumn);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(citeseerColumn);
+  builder.nextLine();
+  builder.appendSeparator("Format of author and editor names");
+  builder.append(pan);
+  builder.append(namesAsIs);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(namesFf);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(namesFl);
+  builder.nextLine();
+  builder.appendSeparator("Sort options");
+  lab=new JLabel(Globals.lang("Secondary sort criterion"));
+  builder.append(pan);
+  builder.append(lab);
+  builder.append(secSort);
+  builder.append(secField);
+  builder.append(secDesc);
+  builder.nextLine();
+  lab=new JLabel(Globals.lang("Tertiary sort criterion"));
+  builder.append(pan);
+  builder.append(lab);
+  builder.append(terSort);
+  builder.append(terField);
+  builder.append(terDesc);
+  builder.nextLine();
+  builder.appendSeparator("Table appearance");
+  builder.append(pan);
+  builder.append(colorCodes);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(autoResizeMode);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(antialias);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(fontButton);
+  builder.nextLine();
+  JPanel upper=new JPanel(), sort=new JPanel(), namesp=new JPanel(), iconCol=new JPanel();
+  upper.setLayout(gbl);
+  sort.setLayout(gbl);
+  namesp.setLayout(gbl);
+  iconCol.setLayout(gbl);
+  fontButton.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      Font f=new FontSelectorDialog(null,GUIGlobals.CURRENTFONT).getSelectedFont();
+      if (f == null)       return;
+ else       font=f;
     }
-    public int getColumnCount(){
-      return 2;
-    }
-    public Object getValueAt(    int row,    int column){
-      if (row == 0)       return (column == 0 ? GUIGlobals.NUMBER_COL : "" + ncWidth);
-      row--;
-      if (row >= tableRows.size())       return "";
-      Object rowContent=tableRows.elementAt(row);
-      if (rowContent == null)       return "";
-      TableRow tr=(TableRow)rowContent;
-switch (column) {
-case 0:
-        return tr.name;
-case 1:
-      return ((tr.length > 0) ? new Integer(tr.length).toString() : "");
   }
-  return null;
-}
-public String getColumnName(int col){
-  return (col == 0 ? Globals.lang("Field name") : Globals.lang("Column width"));
-}
-public Class getColumnClass(int column){
-  if (column == 0)   return String.class;
- else   return Integer.class;
-}
-public boolean isCellEditable(int row,int col){
-  return !((row == 0) && (col == 0));
-}
-public void setValueAt(Object value,int row,int col){
-  tableChanged=true;
-  while (row >= tableRows.size())   tableRows.add(new TableRow("",-1));
-  if ((row == 0) && (col == 1)) {
-    ncWidth=Integer.parseInt(value.toString());
-    return;
-  }
-  TableRow rowContent=(TableRow)tableRows.elementAt(row - 1);
-  if (col == 0) {
-    rowContent.name=value.toString();
-    if (((String)getValueAt(row,1)).equals(""))     setValueAt("" + GUIGlobals.DEFAULT_FIELD_LENGTH,row,1);
-  }
- else {
-    if (value == null)     rowContent.length=-1;
- else     rowContent.length=Integer.parseInt(value.toString());
-  }
-}
-}
-;
-colSetup=new JTable(tm);
-TableColumnModel cm=colSetup.getColumnModel();
-cm.getColumn(0).setPreferredWidth(140);
-cm.getColumn(1).setPreferredWidth(80);
-JLabel lab;
-JPanel upper=new JPanel(), sort=new JPanel(), namesp=new JPanel(), iconCol=new JPanel();
-upper.setLayout(gbl);
-sort.setLayout(gbl);
-namesp.setLayout(gbl);
-iconCol.setLayout(gbl);
-upper.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Miscellaneous")));
-sort.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Sort options")));
-iconCol.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Special table columns")));
-namesp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Format of author and editor names")));
-con.gridwidth=GridBagConstraints.REMAINDER;
-con.fill=GridBagConstraints.NONE;
-con.anchor=GridBagConstraints.WEST;
-gbl.setConstraints(colorCodes,con);
-upper.add(colorCodes);
-gbl.setConstraints(autoResizeMode,con);
-upper.add(autoResizeMode);
-gbl.setConstraints(antialias,con);
-upper.add(antialias);
-gbl.setConstraints(allowEditing,con);
-upper.add(allowEditing);
-con.gridwidth=1;
-lab=new JLabel(Globals.lang("Menu and label font size"));
-gbl.setConstraints(lab,con);
-upper.add(lab);
-Insets old=con.insets;
-con.insets=new Insets(0,5,0,5);
-gbl.setConstraints(fontSize,con);
-upper.add(fontSize);
-con.insets=old;
-con.gridwidth=GridBagConstraints.REMAINDER;
-lab=new JLabel("(" + Globals.lang("non-Mac only") + ")");
-gbl.setConstraints(lab,con);
-upper.add(lab);
-con.gridwidth=GridBagConstraints.REMAINDER;
-gbl.setConstraints(fontButton,con);
-upper.add(fontButton);
-con.anchor=GridBagConstraints.WEST;
-con.fill=GridBagConstraints.BOTH;
-con.gridwidth=1;
-con.gridheight=2;
-gbl.setConstraints(upper,con);
-add(upper);
-con.gridheight=1;
-con.gridwidth=GridBagConstraints.REMAINDER;
-gbl.setConstraints(pdfColumn,con);
-iconCol.add(pdfColumn);
-gbl.setConstraints(urlColumn,con);
-iconCol.add(urlColumn);
-gbl.setConstraints(citeseerColumn,con);
-iconCol.add(citeseerColumn);
-con.fill=GridBagConstraints.BOTH;
-gbl.setConstraints(iconCol,con);
-add(iconCol);
-con.gridwidth=GridBagConstraints.REMAINDER;
-con.fill=GridBagConstraints.NONE;
-con.anchor=GridBagConstraints.WEST;
-gbl.setConstraints(namesAsIs,con);
-namesp.add(namesAsIs);
-gbl.setConstraints(namesFf,con);
-namesp.add(namesFf);
-gbl.setConstraints(namesFl,con);
-namesp.add(namesFl);
-con.fill=GridBagConstraints.BOTH;
-gbl.setConstraints(namesp,con);
-add(namesp);
-lab=new JLabel(Globals.lang("Secondary sort criterion"));
-con.gridwidth=1;
-con.insets=new Insets(0,5,0,0);
-gbl.setConstraints(lab,con);
-sort.add(lab);
-con.weightx=1;
-gbl.setConstraints(secSort,con);
-sort.add(secSort);
-gbl.setConstraints(secField,con);
-sort.add(secField);
-con.gridwidth=GridBagConstraints.REMAINDER;
-gbl.setConstraints(secDesc,con);
-sort.add(secDesc);
-con.gridwidth=1;
-lab=new JLabel(Globals.lang("Tertiary sort criterion"));
-gbl.setConstraints(lab,con);
-sort.add(lab);
-con.weightx=0;
-gbl.setConstraints(terSort,con);
-sort.add(terSort);
-gbl.setConstraints(terField,con);
-sort.add(terField);
-con.weightx=1;
-con.gridwidth=GridBagConstraints.REMAINDER;
-gbl.setConstraints(terDesc,con);
-sort.add(terDesc);
-con.insets=new Insets(0,0,0,0);
-gbl.setConstraints(sort,con);
-add(sort);
-JPanel tabPanel=new JPanel();
-gbl.setConstraints(tabPanel,con);
-add(tabPanel);
-tabPanel.setBorder(BorderFactory.createEtchedBorder());
-tabPanel.setLayout(gbl);
-JScrollPane sp=new JScrollPane(colSetup,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-colSetup.setPreferredScrollableViewportSize(new Dimension(250,200));
-sp.setMinimumSize(new Dimension(250,300));
-con.gridwidth=1;
-con.weighty=1;
-con.weightx=0;
-con.fill=GridBagConstraints.BOTH;
-con.anchor=GridBagConstraints.NORTHWEST;
-gbl.setConstraints(sp,con);
-tabPanel.add(sp);
-tabPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Visible fields")));
-JToolBar tlb=new JToolBar(SwingConstants.VERTICAL);
-tlb.setFloatable(false);
-AddRowAction ara=new AddRowAction();
-DeleteRowAction dra=new DeleteRowAction();
-tlb.add(ara);
-tlb.add(dra);
-tlb.addSeparator();
-tlb.add(new UpdateWidthsAction());
-gbl.setConstraints(tlb,con);
-tabPanel.add(tlb);
-fontButton.addActionListener(new ActionListener(){
-public void actionPerformed(ActionEvent e){
-  Font f=new FontSelectorDialog(null,GUIGlobals.CURRENTFONT).getSelectedFont();
-  if (f == null)   return;
- else   font=f;
-}
-}
 );
+  pan=builder.getPanel();
+  pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  add(pan,BorderLayout.CENTER);
 }

@@ -1,0 +1,24 @@
+{
+  if (colSetup.isEditing()) {
+    int col=colSetup.getEditingColumn(), row=colSetup.getEditingRow();
+    colSetup.getCellEditor(row,col).stopCellEditing();
+  }
+  if (tableChanged) {
+    int i=0;
+    while (i < tableRows.size()) {
+      if (((TableRow)tableRows.elementAt(i)).name.equals(""))       tableRows.removeElementAt(i);
+ else       i++;
+    }
+    String[] names=new String[tableRows.size()], widths=new String[tableRows.size()];
+    int[] nWidths=new int[tableRows.size()];
+    _prefs.putInt("numberColWidth",ncWidth);
+    for (i=0; i < tableRows.size(); i++) {
+      TableRow tr=(TableRow)tableRows.elementAt(i);
+      names[i]=tr.name;
+      nWidths[i]=tr.length;
+      widths[i]="" + tr.length;
+    }
+    _prefs.putStringArray("columnNames",names);
+    _prefs.putStringArray("columnWidths",widths);
+  }
+}

@@ -1,0 +1,97 @@
+{
+  _prefs=prefs;
+  this.frame=frame;
+  setLayout(new BorderLayout());
+  String[] names=_prefs.getStringArray("columnNames"), lengths=_prefs.getStringArray("columnWidths");
+  for (int i=0; i < names.length; i++) {
+    if (i < lengths.length)     tableRows.add(new TableRow(names[i],Integer.parseInt(lengths[i])));
+ else     tableRows.add(new TableRow(names[i]));
+  }
+  rowCount=tableRows.size() + 5;
+  ncWidth=prefs.getInt("numberColWidth");
+  TableModel tm=new AbstractTableModel(){
+    public int getRowCount(){
+      return rowCount;
+    }
+    public int getColumnCount(){
+      return 2;
+    }
+    public Object getValueAt(    int row,    int column){
+      if (row == 0)       return (column == 0 ? GUIGlobals.NUMBER_COL : "" + ncWidth);
+      row--;
+      if (row >= tableRows.size())       return "";
+      Object rowContent=tableRows.elementAt(row);
+      if (rowContent == null)       return "";
+      TableRow tr=(TableRow)rowContent;
+switch (column) {
+case 0:
+        return tr.name;
+case 1:
+      return ((tr.length > 0) ? new Integer(tr.length).toString() : "");
+  }
+  return null;
+}
+public String getColumnName(int col){
+  return (col == 0 ? Globals.lang("Field name") : Globals.lang("Column width"));
+}
+public Class getColumnClass(int column){
+  if (column == 0)   return String.class;
+ else   return Integer.class;
+}
+public boolean isCellEditable(int row,int col){
+  return !((row == 0) && (col == 0));
+}
+public void setValueAt(Object value,int row,int col){
+  tableChanged=true;
+  while (row >= tableRows.size())   tableRows.add(new TableRow("",-1));
+  if ((row == 0) && (col == 1)) {
+    ncWidth=Integer.parseInt(value.toString());
+    return;
+  }
+  TableRow rowContent=(TableRow)tableRows.elementAt(row - 1);
+  if (col == 0) {
+    rowContent.name=value.toString();
+    if (((String)getValueAt(row,1)).equals(""))     setValueAt("" + GUIGlobals.DEFAULT_FIELD_LENGTH,row,1);
+  }
+ else {
+    if (value == null)     rowContent.length=-1;
+ else     rowContent.length=Integer.parseInt(value.toString());
+  }
+}
+}
+;
+colSetup=new JTable(tm);
+TableColumnModel cm=colSetup.getColumnModel();
+cm.getColumn(0).setPreferredWidth(140);
+cm.getColumn(1).setPreferredWidth(80);
+FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, fill:pref","");
+DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+JLabel lab;
+JPanel pan=new JPanel();
+JPanel tabPanel=new JPanel();
+tabPanel.setLayout(new BorderLayout());
+JScrollPane sp=new JScrollPane(colSetup,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+colSetup.setPreferredScrollableViewportSize(new Dimension(250,200));
+sp.setMinimumSize(new Dimension(250,300));
+tabPanel.add(sp,BorderLayout.CENTER);
+JToolBar tlb=new JToolBar(SwingConstants.VERTICAL);
+tlb.setFloatable(false);
+AddRowAction ara=new AddRowAction();
+DeleteRowAction dra=new DeleteRowAction();
+tlb.setBorder(null);
+tlb.add(ara);
+tlb.add(dra);
+tabPanel.add(tlb,BorderLayout.EAST);
+builder.appendSeparator("Entry table columns");
+builder.nextLine();
+builder.append(pan);
+builder.append(tabPanel);
+builder.nextLine();
+builder.append(pan);
+JButton button=new JButton(new UpdateWidthsAction());
+builder.append(button);
+builder.nextLine();
+pan=builder.getPanel();
+pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+add(pan,BorderLayout.CENTER);
+}
