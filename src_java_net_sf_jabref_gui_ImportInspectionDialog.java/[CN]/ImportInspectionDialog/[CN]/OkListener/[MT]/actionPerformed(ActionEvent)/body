@@ -1,22 +1,24 @@
 {
   final List selected=getSelectedEntries();
+  if (selected.size() == 0) {
+    dispose();
+    return;
+  }
   NamedCompound ce=new NamedCompound(undoName);
-  if (selected.size() > 0) {
-    if (newDatabase) {
-      BibtexDatabase base=new BibtexDatabase();
-      panel=new BasePanel(frame,base,null,new HashMap(),Globals.prefs);
+  if (newDatabase) {
+    BibtexDatabase base=new BibtexDatabase();
+    panel=new BasePanel(frame,base,null,new HashMap(),Globals.prefs);
+  }
+  for (Iterator i=selected.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=(BibtexEntry)i.next();
+    entry.clone();
+    try {
+      entry.setId(Util.createId(entry.getType(),panel.database()));
+      panel.database().insertEntry(entry);
+      ce.addEdit(new UndoableInsertEntry(panel.database(),entry,panel));
     }
-    for (Iterator i=selected.iterator(); i.hasNext(); ) {
-      BibtexEntry entry=(BibtexEntry)i.next();
-      entry.clone();
-      try {
-        entry.setId(Util.createId(entry.getType(),panel.database()));
-        panel.database().insertEntry(entry);
-        ce.addEdit(new UndoableInsertEntry(panel.database(),entry,panel));
-      }
- catch (      KeyCollisionException e) {
-        e.printStackTrace();
-      }
+ catch (    KeyCollisionException e) {
+      e.printStackTrace();
     }
   }
   ce.end();

@@ -26,24 +26,32 @@
       panel.output("");
       return;
     }
-    for (int jj=0; jj < count; jj+=PACING) {
-      result=getIds(searchTerm,jj,PACING);
-      String[] test=getTitles((String[])result.idList.toArray(new String[0]));
-      for (int pelle=0; pelle < test.length; pelle++) {
-        System.out.println(": " + test[pelle]);
+    ImportInspectionDialog diag=new ImportInspectionDialog(panel.frame(),panel,GUIGlobals.DEFAULT_INSPECTION_FIELDS,"Fetch Medline",false);
+    Util.placeDialog(diag,panel.frame());
+    diag.setVisible(true);
+    keepOn=true;
+    diag.addCallBack(new ImportInspectionDialog.CallBack(){
+      public void done(      int entriesImported){
+        if (entriesImported > 0) {
+          panel.output(Globals.lang("Medline entries fetched") + ": " + entriesImported);
+          panel.markBaseChanged();
+          panel.refreshTable();
+        }
+ else         panel.output(Globals.lang("No Medline entries found."));
       }
-      ArrayList bibs=fetchMedline(result.ids);
-      if ((bibs != null) && (bibs.size() > 0)) {
-        tf.setText("");
-        panel.frame().addBibEntries(bibs,null,false);
-        panel.output(Globals.lang("Medline entries fetched") + ": " + bibs.size());
-        BibtexEntry[] entries=(BibtexEntry[])bibs.toArray(new BibtexEntry[0]);
-        panel.selectEntries(entries,0);
-        if (entries.length == 1)         panel.showEntry(entries[0]);
-        panel.markBaseChanged();
-        panel.refreshTable();
+      public void stopFetching(){
+        keepOn=false;
       }
- else       panel.output(Globals.lang("No Medline entries found."));
     }
+);
+    for (int jj=0; jj < count; jj+=PACING) {
+      if (!keepOn)       break;
+      result=getIds(searchTerm,jj,PACING);
+      final ArrayList bibs=fetchMedline(result.ids);
+      if (!keepOn)       break;
+      diag.addEntries(bibs);
+      diag.setProgress(jj + PACING,count);
+    }
+    diag.entryListComplete();
   }
 }
