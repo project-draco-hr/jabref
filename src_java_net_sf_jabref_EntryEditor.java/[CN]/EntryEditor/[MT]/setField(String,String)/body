@@ -1,12 +1,8 @@
 {
-  try {
-    if (setFieldInPanel(reqPanel,fieldName,newFieldData))     return true;
-    if (setFieldInPanel(optPanel,fieldName,newFieldData))     return true;
-    if (setFieldInPanel(genPanel,fieldName,newFieldData))     return true;
+  for (Iterator i=tabs.iterator(); i.hasNext(); ) {
+    Object o=i.next();
+    if (o instanceof EntryEditorTab) {
+      ((EntryEditorTab)o).updateField(fieldName,newFieldData);
+    }
   }
- catch (  ClassCastException cce) {
-    System.err.println("caught in setField: " + cce);
-    return false;
-  }
-  return false;
 }

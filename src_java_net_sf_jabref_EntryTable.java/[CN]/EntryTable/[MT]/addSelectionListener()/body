@@ -1,19 +1,24 @@
 {
   if (previewListener == null)   previewListener=new ListSelectionListener(){
-    public void valueChanged(    ListSelectionEvent e){
+    public void valueChanged(    final ListSelectionEvent e){
       if (!selectionListenerOn)       return;
       if (!e.getValueIsAdjusting()) {
-        if (getSelectedRowCount() == 1) {
-          int row=getSelectedRow();
-          if (row >= 0) {
-            panel.updateViewToSelected();
-          }
-        }
+        SwingUtilities.invokeLater(new Thread(){
+          public void run(){
+            if (getSelectedRowCount() == 1) {
+              int row=getSelectedRow();
+              if (row >= 0) {
+                panel.updateViewToSelected();
+              }
+            }
  else {
-          if (prefs.getBoolean("disableOnMultipleSelection")) {
-            panel.setEntryEditorEnabled(false);
+              if (prefs.getBoolean("disableOnMultipleSelection")) {
+                panel.setEntryEditorEnabled(false);
+              }
+            }
           }
         }
+);
       }
     }
   }

@@ -1,0 +1,27 @@
+{
+  InputMap im=ta.getInputMap(JComponent.WHEN_FOCUSED);
+  ActionMap am=ta.getActionMap();
+  im.put(Globals.prefs.getKey("Entry editor, store field"),"store");
+  am.put("store",parent.storeFieldAction);
+  im.put(Globals.prefs.getKey("Entry editor, next panel"),"right");
+  am.put("left",parent.switchLeftAction);
+  im.put(Globals.prefs.getKey("Entry editor, previous panel"),"left");
+  am.put("right",parent.switchRightAction);
+  im.put(Globals.prefs.getKey("Help"),"help");
+  am.put("help",parent.helpAction);
+  im.put(Globals.prefs.getKey("Save database"),"save");
+  am.put("save",parent.saveDatabaseAction);
+  try {
+    HashSet keys=new HashSet(ta.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+    keys.clear();
+    keys.add(AWTKeyStroke.getAWTKeyStroke("pressed TAB"));
+    ta.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,keys);
+    keys=new HashSet(ta.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
+    keys.clear();
+    keys.add(KeyStroke.getKeyStroke("shift pressed TAB"));
+    ta.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,keys);
+  }
+ catch (  Throwable t) {
+    System.err.println(t);
+  }
+}
