@@ -1,0 +1,48 @@
+{
+  String idList=tf.getText().replace(';',',');
+  if (idList == null || idList.trim().equals(""))   return;
+  Pattern p=Pattern.compile(".+[,.+]*");
+  Matcher m=p.matcher(idList);
+  if (m.matches()) {
+    panel.frame().output(Globals.lang("Fetching Medline..."));
+    idList=setupTerm(idList);
+    String[] idListArray=getIds(idList);
+    int idMax=idListArray.length;
+    String[] titles=new String[idMax];
+    titles=getTitles(idListArray);
+    authorDialog=new AuthorDialog(jFrame,titles);
+    boolean[] picks=authorDialog.showDialog();
+    idList="";
+    for (int i=0; i < idListArray.length; i++) {
+      if (picks[i]) {
+        idList+=idListArray[i] + ",";
+      }
+    }
+    ArrayList bibs=fetchMedline(idList);
+    if ((bibs != null) && (bibs.size() > 0)) {
+      tf.setText("");
+      NamedCompound ce=new NamedCompound("fetch Medline");
+      Iterator i=bibs.iterator();
+      while (i.hasNext()) {
+        try {
+          BibtexEntry be=(BibtexEntry)i.next();
+          String id=Util.createId(be.getType(),panel.database());
+          be.setId(id);
+          panel.database().insertEntry(be);
+          ce.addEdit(new UndoableInsertEntry(panel.database(),be,panel));
+        }
+ catch (        KeyCollisionException ex) {
+        }
+      }
+      ce.end();
+      panel.output(Globals.lang("Medline entries fetched") + ": " + bibs.size());
+      panel.undoManager.addEdit(ce);
+      panel.markBaseChanged();
+      panel.refreshTable();
+    }
+ else     panel.output(Globals.lang("No Medline entries found."));
+  }
+ else {
+    JOptionPane.showMessageDialog(panel.frame(),Globals.lang("Please enter a semicolon or comma separated list of Medline IDs (numbers)."),Globals.lang("Input error"),JOptionPane.ERROR_MESSAGE);
+  }
+}
