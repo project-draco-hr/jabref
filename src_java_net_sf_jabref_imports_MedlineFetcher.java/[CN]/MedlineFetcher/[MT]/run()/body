@@ -20,22 +20,8 @@
       ArrayList bibs=fetchMedline(result.ids);
       if ((bibs != null) && (bibs.size() > 0)) {
         tf.setText("");
-        NamedCompound ce=new NamedCompound("fetch Medline");
-        Iterator i=bibs.iterator();
-        while (i.hasNext()) {
-          try {
-            BibtexEntry be=(BibtexEntry)i.next();
-            String id=Util.createId(be.getType(),panel.database());
-            be.setId(id);
-            panel.database().insertEntry(be);
-            ce.addEdit(new UndoableInsertEntry(panel.database(),be,panel));
-          }
- catch (          KeyCollisionException ex) {
-          }
-        }
-        ce.end();
+        panel.frame().addBibEntries(bibs,null,false);
         panel.output(Globals.lang("Medline entries fetched") + ": " + bibs.size());
-        panel.undoManager.addEdit(ce);
         panel.markBaseChanged();
         panel.refreshTable();
       }
