@@ -8,16 +8,16 @@
     Object tmpId=i.next();
     BibtexString tmp=onTmp.getString(tmpId);
     for (Iterator j=onDisk.getStringKeySet().iterator(); j.hasNext(); ) {
-      Object diskId=i.next();
+      Object diskId=j.next();
       if (!used.contains(diskId)) {
-        BibtexString disk=onDisk.getString(j.next());
+        BibtexString disk=onDisk.getString(diskId);
         if (disk.getName().equals(tmp.getName())) {
           if ((tmp.getContent() != null) && !tmp.getContent().equals(disk.getContent())) {
             BibtexString mem=findString(inMem,tmp.getName(),usedInMem);
             if (mem != null)             changes.add(new StringChange(mem,tmp.getName(),mem.getContent(),tmp.getContent(),disk.getContent()));
  else             changes.add(new StringChange(null,tmp.getName(),null,tmp.getContent(),disk.getContent()));
           }
-          used.add(disk.getId());
+          used.add(diskId);
           continue mainLoop;
         }
       }
@@ -47,6 +47,7 @@
             changes.add(new StringNameChange(bsMem,bsMem.getName(),tmp.getName(),disk.getName(),tmp.getContent()));
             i.remove();
             used.add(diskId);
+            System.out.println(onDisk.getString(diskId).getName());
           }
         }
       }
@@ -67,7 +68,7 @@
     Object diskId=i.next();
     if (!used.contains(diskId)) {
       BibtexString disk=onDisk.getString(diskId);
-      used.remove(diskId);
+      used.add(diskId);
       changes.add(new StringAddChange(disk));
     }
   }

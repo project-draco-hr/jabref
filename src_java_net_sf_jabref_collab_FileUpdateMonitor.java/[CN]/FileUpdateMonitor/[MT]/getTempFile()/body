@@ -1,6 +1,11 @@
 {
   File f=null;
-  while ((f=new File(Globals.prefs.get("tempDir") + "jabref" + (tmpNum++)+ ".tmp")).exists())   ;
-  System.out.println(f.getPath());
+  try {
+    f=File.createTempFile("jabref",null);
+    System.out.println(f.getPath());
+  }
+ catch (  IOException ex) {
+    ex.printStackTrace();
+  }
   return f;
 }
