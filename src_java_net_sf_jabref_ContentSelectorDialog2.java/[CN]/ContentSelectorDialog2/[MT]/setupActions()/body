@@ -1,0 +1,66 @@
+{
+  wordList.addListSelectionListener(new ListSelectionListener(){
+    public void valueChanged(    ListSelectionEvent e){
+      wordEditField.setText((String)wordList.getSelectedValue());
+      wordEditField.selectAll();
+      new FocusRequester(wordEditField);
+    }
+  }
+);
+  newWord.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      wordListModel.add(0,WORD_FIRSTLINE_TEXT);
+      wordList.setSelectedIndex(0);
+      wPane.getVerticalScrollBar().setValue(0);
+    }
+  }
+);
+  wordEditField.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      int index=wordList.getSelectedIndex();
+      String old=(String)wordList.getSelectedValue(), newVal=wordEditField.getText();
+      if (newVal.equals("") || newVal.equals(old))       return;
+      int newIndex=findPosInWords(newVal);
+      wordListModel.remove(index);
+      wordListModel.add((newIndex <= index ? newIndex : newIndex - 1),newVal);
+    }
+  }
+);
+  removeWord.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      int index=wordList.getSelectedIndex();
+      if (index == -1)       return;
+      wordListModel.remove(index);
+      wordEditField.setText("");
+      if (wordListModel.size() > 0)       wordList.setSelectedIndex(Math.min(index,wordListModel.size() - 1));
+    }
+  }
+);
+  fieldList.addListSelectionListener(new ListSelectionListener(){
+    public void valueChanged(    ListSelectionEvent e){
+      currentField=(String)fieldList.getSelectedValue();
+      fieldNameField.setText(currentField);
+      setupWordSelector();
+    }
+  }
+);
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      applyChanges();
+      dispose();
+    }
+  }
+);
+  apply.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      applyChanges();
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+}

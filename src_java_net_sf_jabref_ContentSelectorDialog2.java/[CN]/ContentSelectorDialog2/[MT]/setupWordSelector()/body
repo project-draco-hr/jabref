@@ -1,0 +1,21 @@
+{
+  Object o=wordListModels.get(currentField);
+  if (o != null) {
+    wordListModel=(DefaultListModel)o;
+    wordList.setModel(wordListModel);
+  }
+ else {
+    wordListModel=new DefaultListModel();
+    wordListModels.put(currentField,wordListModel);
+    wordListModel.clear();
+    Vector items=metaData.getData(Globals.SELECTOR_META_PREFIX + currentField);
+    if ((items != null)) {
+      wordSet=new TreeSet(items);
+      for (Iterator i=wordSet.iterator(); i.hasNext(); ) {
+        String s=(String)i.next();
+        int index=findPosInWords(s);
+        wordListModel.add(index,s);
+      }
+    }
+  }
+}
