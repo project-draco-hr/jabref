@@ -1,6 +1,21 @@
 {
   URL old=getPage();
-  setPageOnly(url);
+  File f=new File(url.getPath());
+  File directory=new File(f.getParent());
+  File translatedFile=new File(directory.getPath() + "/" + prefs.get("language")+ "/"+ f.getName());
+  if (translatedFile.exists()) {
+    try {
+      Util.pr("file:" + translatedFile.getPath());
+      URL translatedURL=new URL("file:" + translatedFile.getPath());
+      setPageOnly(translatedURL);
+    }
+ catch (    Throwable ex) {
+      ex.printStackTrace();
+    }
+  }
+ else {
+    setPageOnly(url);
+  }
   forw.removeAllElements();
   if (old != null)   history.push(old);
 }
