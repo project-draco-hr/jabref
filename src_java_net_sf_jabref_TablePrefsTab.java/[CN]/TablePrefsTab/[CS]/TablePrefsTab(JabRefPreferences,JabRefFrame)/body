@@ -15,6 +15,10 @@
   allowEditing=new JCheckBox(Globals.lang("Allow editing in table cells"),_prefs.getBoolean("allowTableEditing"));
   secField=new JTextField(_prefs.get("secSort"),10);
   terField=new JTextField(_prefs.get("terSort"),10);
+  fontSize=new JTextField("");
+  fontSize.setPreferredSize(new Dimension(45,fontSize.getPreferredSize().height));
+  fontSize.setText("" + _prefs.getInt("menuFontSize"));
+  oldMenuFontSize=_prefs.getInt("menuFontSize");
   secSort.insertItemAt(Globals.lang("<select>"),0);
   terSort.insertItemAt(Globals.lang("<select>"),0);
   secSort.setSelectedIndex(0);
@@ -132,10 +136,16 @@ gbl.setConstraints(antialias,con);
 upper.add(antialias);
 gbl.setConstraints(allowEditing,con);
 upper.add(allowEditing);
-con.anchor=GridBagConstraints.EAST;
 con.gridwidth=1;
-gbl.setConstraints(menuFontButton,con);
-upper.add(menuFontButton);
+lab=new JLabel(Globals.lang("Menu and label font size"));
+gbl.setConstraints(lab,con);
+upper.add(lab);
+con.gridwidth=GridBagConstraints.REMAINDER;
+Insets old=con.insets;
+con.insets=new Insets(0,10,0,0);
+gbl.setConstraints(fontSize,con);
+upper.add(fontSize);
+con.insets=old;
 con.gridwidth=GridBagConstraints.REMAINDER;
 gbl.setConstraints(fontButton,con);
 upper.add(fontButton);
@@ -228,14 +238,6 @@ public void actionPerformed(ActionEvent e){
   Font f=new FontSelectorDialog(null,GUIGlobals.CURRENTFONT).getSelectedFont();
   if (f == null)   return;
  else   font=f;
-}
-}
-);
-menuFontButton.addActionListener(new ActionListener(){
-public void actionPerformed(ActionEvent e){
-  Font f=new FontSelectorDialog(null,menuFont).getSelectedFont();
-  if (f == null)   return;
- else   menuFont=f;
 }
 }
 );

@@ -2,6 +2,9 @@
   (new Thread(){
     public void run(){
       for (int i=0; i < tabbed.getTabCount(); i++) {
+        if (!((PrefsTab)tabbed.getComponentAt(i)).readyToClose())         return;
+      }
+      for (int i=0; i < tabbed.getTabCount(); i++) {
         ((PrefsTab)tabbed.getComponentAt(i)).storeSettings();
       }
       frame.setupAllTables();
