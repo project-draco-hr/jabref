@@ -2,5 +2,7 @@
   Object o=formats.get(format);
   if (o == null)   throw new IllegalArgumentException("Unknown import format: " + format);
   ImportFormat importer=(ImportFormat)o;
-  return importer.importEntries(in);
+  List res=importer.importEntries(in);
+  if (res != null)   purgeEmptyEntries(res);
+  return res;
 }
