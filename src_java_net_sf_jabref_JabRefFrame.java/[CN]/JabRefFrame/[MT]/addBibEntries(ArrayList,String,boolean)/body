@@ -1,0 +1,39 @@
+{
+  if (intoNew || (tabbedPane.getTabCount() == 0)) {
+    BibtexDatabase database=new BibtexDatabase();
+    Iterator it=bibentries.iterator();
+    while (it.hasNext()) {
+      BibtexEntry entry=(BibtexEntry)it.next();
+      try {
+        entry.setId(Util.createId(entry.getType(),database));
+        database.insertEntry(entry);
+      }
+ catch (      KeyCollisionException ex) {
+        System.err.println("KeyCollisionException [ addBibEntries(...) ]");
+      }
+    }
+    HashMap meta=new HashMap();
+    BasePanel bp=new BasePanel(ths,database,null,meta,prefs);
+    tabbedPane.add(Globals.lang("untitled"),bp);
+    tabbedPane.setSelectedComponent(bp);
+    if (tabbedPane.getTabCount() == 1)     setNonEmptyState();
+    output("Imported database '" + filename + "' with "+ database.getEntryCount()+ " entries into new database.");
+  }
+ else {
+    BibtexDatabase database=basePanel().database;
+    Iterator it=bibentries.iterator();
+    while (it.hasNext()) {
+      BibtexEntry entry=(BibtexEntry)it.next();
+      try {
+        entry.setId(Util.createId(entry.getType(),database));
+        database.insertEntry(entry);
+      }
+ catch (      KeyCollisionException ex) {
+        System.err.println("KeyCollisionException [ addBibEntries(...) ]");
+      }
+      basePanel().markBaseChanged();
+      basePanel().refreshTable();
+      output("Imported database '" + filename + "' with "+ database.getEntryCount()+ " entries.");
+    }
+  }
+}

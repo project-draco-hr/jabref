@@ -1,0 +1,16 @@
+{
+  double n=(double)(newGroups.size() - OFFSET);
+  while ((n > 0) && (n / DIM != Math.floor(n / DIM))) {
+    newGroups.removeElementAt(groups.size() - 1);
+    n=(double)(groups.size() - OFFSET);
+  }
+  for (int i=0; i < (newGroups.size() - OFFSET) / DIM; i++) {
+    int pos=OFFSET + i * DIM;
+    int index=findPos(groups,(String)newGroups.elementAt(pos + 1));
+    String regexp=(String)newGroups.elementAt(pos + 2), name=(String)newGroups.elementAt(pos + 1), field=(String)newGroups.elementAt(pos);
+    groups.add(index,regexp);
+    groups.add(index,name);
+    groups.add(index,field);
+    ce.addEdit(new UndoableAddOrRemoveGroup(this,groups,index,true,field,name,regexp));
+  }
+}

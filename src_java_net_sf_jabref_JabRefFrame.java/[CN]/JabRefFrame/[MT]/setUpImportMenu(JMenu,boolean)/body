@@ -1,11 +1,12 @@
 {
+  final boolean intoNew=intoNew_;
   JMenuItem newEndnoteFile_mItem=new JMenuItem(Globals.lang("Endnote"));
   newEndnoteFile_mItem.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       String tempFilename=getNewFile();
       if (tempFilename != null) {
         ArrayList bibs=ImportFormatReader.readEndnote(tempFilename);
-        addBibEntries(bibs,tempFilename);
+        addBibEntries(bibs,tempFilename,intoNew);
       }
     }
   }
@@ -17,7 +18,7 @@
       String tempFilename=getNewFile();
       if (tempFilename != null) {
         ArrayList bibs=ImportFormatReader.readINSPEC(tempFilename);
-        addBibEntries(bibs,tempFilename);
+        addBibEntries(bibs,tempFilename,intoNew);
       }
     }
   }
@@ -29,7 +30,7 @@
       String tempFilename=getNewFile();
       if (tempFilename != null) {
         ArrayList bibs=ImportFormatReader.readISI(tempFilename);
-        addBibEntries(bibs,tempFilename);
+        addBibEntries(bibs,tempFilename,intoNew);
       }
     }
   }
@@ -41,37 +42,19 @@
       String tempFilename=getNewFile();
       if (tempFilename != null) {
         ArrayList bibs=ImportFormatReader.readMedline(tempFilename);
-        addBibEntries(bibs,tempFilename);
+        addBibEntries(bibs,tempFilename,intoNew);
       }
     }
   }
 );
   importMenu.add(newMedlineFile_mItem);
-  JMenuItem newMedlineId_mItem=new JMenuItem(Globals.lang("Medline Fetch By ID"));
-  newMedlineId_mItem.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
-      String idList=JOptionPane.showInputDialog(ths,"Enter a comma separated list of Medline ids","Fetch Medline Citation",JOptionPane.PLAIN_MESSAGE);
-      if (idList == null || idList.trim().equals(""))       return;
-      Pattern p=Pattern.compile("\\d+[,\\d+]*");
-      Matcher m=p.matcher(idList);
-      if (m.matches()) {
-        ArrayList bibs=ImportFormatReader.fetchMedline(idList);
-        addBibEntries(bibs,idList);
-      }
- else {
-        JOptionPane.showMessageDialog(ths,"Sorry, I was expecting a comma separated list of Medline IDs (numbers)!","Input Error",JOptionPane.ERROR_MESSAGE);
-      }
-    }
-  }
-);
-  importMenu.add(newMedlineId_mItem);
   JMenuItem newOvidFile_mItem=new JMenuItem(Globals.lang("Ovid"));
   newOvidFile_mItem.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       String tempFilename=getNewFile();
       if (tempFilename != null) {
         ArrayList bibs=ImportFormatReader.readOvid(tempFilename);
-        addBibEntries(bibs,tempFilename);
+        addBibEntries(bibs,tempFilename,intoNew);
       }
     }
   }
@@ -83,7 +66,7 @@
       String tempFilename=getNewFile();
       if (tempFilename != null) {
         ArrayList bibs=ImportFormatReader.readReferenceManager10(tempFilename);
-        addBibEntries(bibs,tempFilename);
+        addBibEntries(bibs,tempFilename,intoNew);
       }
     }
   }
@@ -95,7 +78,7 @@
       String tempFilename=getNewFile();
       if (tempFilename != null) {
         ArrayList bibs=ImportFormatReader.readScifinder(tempFilename);
-        addBibEntries(bibs,tempFilename);
+        addBibEntries(bibs,tempFilename,intoNew);
       }
     }
   }

@@ -1,16 +1,5 @@
 {
-  setTitle(GUIGlobals.frameTitle);
-  setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-  addWindowListener(new WindowAdapter(){
-    public void windowClosing(    WindowEvent e){
-      (new CloseAction()).actionPerformed(null);
-    }
-  }
-);
-  initLabelMaker();
-  setupLayout();
-  setSize(new Dimension(prefs.getInt("sizeX"),prefs.getInt("sizeY")));
-  setLocation(new Point(prefs.getInt("posX"),prefs.getInt("posY")));
+  init();
   if (prefs.getBoolean("openLastEdited") && (prefs.get("lastEdited") != null)) {
     String[] names=prefs.getStringArray("lastEdited");
     for (int i=0; i < names.length; i++) {
@@ -19,12 +8,7 @@
         openDatabaseAction.openIt(i == 0);
       }
     }
-    output("");
-  }
-  try {
-    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-  }
- catch (  Exception e) {
+    output(Globals.lang("Files opened: " + tabbedPane.getTabCount()));
   }
   setVisible(true);
   if (tabbedPane.getTabCount() > 0) {
