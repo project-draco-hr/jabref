@@ -803,9 +803,14 @@ catch (            Throwable ex) {
     }
   }
 );
-  actions.put("test",new BaseAction(){
-    public void action(){
-      if (entryTable.getSelectedRowCount() == 0)       return;
+  actions.put("exportToClipboard",new AbstractWorker(){
+    String message=null;
+    public void run(){
+      if (entryTable.getSelectedRowCount() == 0) {
+        message=Globals.lang("No entries selected") + ".";
+        getCallBack().update();
+        return;
+      }
       Set formats=new HashSet();
       formats.add("bibtexml");
       formats.add("docbook");
@@ -832,18 +837,32 @@ catch (            Throwable ex) {
         dir=f.getParent() + System.getProperty("file.separator");
       }
       final String format=lfName, directory=dir;
-      (new Thread(){
-        public void run(){
-          try {
-            BibtexEntry[] bes=entryTable.getSelectedEntries();
-            FileActions.exportToClipboard(database,bes,format,custom,directory,prefs);
-          }
- catch (          Exception ex) {
-            ex.printStackTrace();
-          }
-        }
+      try {
+        BibtexEntry[] bes=entryTable.getSelectedEntries();
+        FileActions.exportToClipboard(database,bes,format,custom,directory,prefs);
+        message=Globals.lang("Entries exported to clipboard") + ": " + bes.length;
       }
-).start();
+ catch (      Exception ex) {
+        ex.printStackTrace();
+      }
+      getCallBack().update();
+    }
+    public void update(){
+      output(message);
+    }
+  }
+);
+  actions.put("test",new AbstractWorker(){
+    public void run(){
+      try {
+        Thread.sleep(4000);
+      }
+ catch (      InterruptedException ex) {
+      }
+      getCallBack().update();
+    }
+    public void update(){
+      output("done");
     }
   }
 );

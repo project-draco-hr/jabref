@@ -1,10 +1,14 @@
 {
   final String command=_command;
   if (actions.get(command) == null)   Util.pr("No action defined for'" + command + "'");
- else   try {
-    ((BaseAction)actions.get(command)).action();
-  }
- catch (  Throwable ex) {
-    ex.printStackTrace();
+ else {
+    Object o=actions.get(command);
+    try {
+      if (o instanceof BaseAction)       ((BaseAction)o).action();
+ else       ((AbstractWorker)o).getWorker().run();
+    }
+ catch (    Throwable ex) {
+      ex.printStackTrace();
+    }
   }
 }

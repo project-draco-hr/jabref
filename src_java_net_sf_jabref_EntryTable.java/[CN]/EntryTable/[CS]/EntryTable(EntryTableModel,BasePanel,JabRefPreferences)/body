@@ -26,6 +26,23 @@
         if (s.equals("")) {
           return;
         }
+        Point p=e.getPoint();
+        int colindex=getTableHeader().columnAtPoint(p);
+        if (colindex >= 0) {
+          int xoffset=0;
+          for (int i=0; i < colindex; i++) {
+            xoffset+=getColumnModel().getColumn(i).getWidth();
+          }
+          TableColumn column=getColumnModel().getColumn(col);
+          int cw=column.getWidth();
+          int ch=getTableHeader().getHeight();
+          Rectangle r=new Rectangle();
+          int offset=3;
+          r.setBounds(offset + xoffset,0,cw - 2 * offset,ch);
+          if (!r.contains(p)) {
+            return;
+          }
+        }
         if (!s.equals(prefs.get("priSort")))         prefs.put("priSort",s);
  else         prefs.putBoolean("priDescending",!prefs.getBoolean("priDescending"));
         tableModel.remap();
