@@ -23,7 +23,7 @@
   options.register("prexport",'x',Globals.lang("Export preferences to file"),exportPrefs);
   options.register("primport",'p',Globals.lang("Import preferences from file"),importPrefs);
   options.setUseMenu(false);
-  options.process(args);
+  String[] leftOver=options.process(args);
   if (helpO.isInvoked()) {
     System.out.println(options.getHelp());
     System.out.println(Globals.lang("Available import formats") + ": biblioscape, bibtexml, endnote, inspec, isi, medline, ovid, ris, scifinder, sixpack.");
@@ -85,19 +85,17 @@
   }
   GUIGlobals.CURRENTFONT=new Font(prefs.get("fontFamily"),prefs.getInt("fontStyle"),prefs.getInt("fontSize"));
   Vector loaded=new Vector();
+  if (leftOver.length > 0) {
+    for (int i=0; i < leftOver.length; i++) {
+      ParserResult pr=openBibFile(leftOver[i]);
+      if (pr != null)       loaded.add(pr);
+    }
+  }
   if (importFile.isInvoked()) {
     String[] data=importFile.getStringValue().split(",");
     if (data.length == 1) {
-      System.out.println(Globals.lang("Opening") + ": " + data[0]);
-      try {
-        File file=new File(data[0]);
-        ParserResult pr=ImportFormatReader.loadDatabase(file);
-        pr.setFile(file);
-        loaded.add(pr);
-      }
- catch (      IOException ex) {
-        System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getMessage());
-      }
+      ParserResult pr=openBibFile(data[0]);
+      if (pr != null)       loaded.add(pr);
     }
  else     if (data.length == 2) {
       try {
