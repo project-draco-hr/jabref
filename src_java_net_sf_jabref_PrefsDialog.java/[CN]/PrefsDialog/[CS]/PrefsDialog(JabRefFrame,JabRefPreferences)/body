@@ -1,0 +1,225 @@
+{
+  super(parent,Globals.lang("JabRef preferences"),true);
+  this.parent=parent;
+  _prefs=prefs;
+  colorCodes=new JCheckBox("Use color codes for required and optional fields",_prefs.getBoolean("tableColorCodesOn"));
+  autoResizeMode=new JCheckBox("Always resize table horizontally to fit on screen",(_prefs.getInt("autoResizeMode") == JTable.AUTO_RESIZE_ALL_COLUMNS));
+  autoOpenForm=new JCheckBox("Automatically open editor when creating a new entry",_prefs.getBoolean("autoOpenForm"));
+  backup=new JCheckBox("Backup old file when saving",_prefs.getBoolean("backup"));
+  openLast=new JCheckBox("As default, open latest edited database on startup",_prefs.getBoolean("openLastEdited"));
+  secDesc=new JCheckBox("Descending",_prefs.getBoolean("secDescending"));
+  terDesc=new JCheckBox("Descending",_prefs.getBoolean("terDescending"));
+  defSource=new JCheckBox("Show source by default",_prefs.getBoolean("defaultShowSource"));
+  editSource=new JCheckBox("Enable source editing",_prefs.getBoolean("enableSourceEditing"));
+  autoComplete=new JCheckBox("Enable autocompletion",_prefs.getBoolean("autoComplete"));
+  groupsVisible=new JCheckBox("Show groups interface if " + "database has groups defined",_prefs.getBoolean("groupSelectorVisible"));
+  groupsField=new JTextField(_prefs.get("groupsDefaultField"));
+  colorCodes.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(GUIGlobals.exitDialog,"close");
+  colorCodes.getActionMap().put("close",new CancelAction());
+  formWidth.setEditable(false);
+  Boolean[] sel=new Boolean[GUIGlobals.ALL_FIELDS.length];
+  boolean found, found_ac;
+  _choices=GUIGlobals.ALL_FIELDS;
+  _sel=sel;
+  byte[] autoCompFields=prefs.getByteArray("autoCompFields");
+  String[] columns=prefs.getStringArray("columnNames");
+  for (int i=0; i < _choices.length; i++) {
+    found=false;
+    found_ac=false;
+    for (int j=0; j < columns.length; j++)     if (columns[j].equals(_choices[i]))     found=true;
+    for (int j=0; j < autoCompFields.length; j++)     if (GUIGlobals.ALL_FIELDS[autoCompFields[j]].equals(_choices[i]))     found_ac=true;
+    if (found)     sel[i]=new Boolean(true);
+ else     sel[i]=new Boolean(false);
+    if (found_ac)     sel_ac[i]=new JCheckBoxMenuItem(GUIGlobals.ALL_FIELDS[i],true);
+ else     sel_ac[i]=new JCheckBoxMenuItem(GUIGlobals.ALL_FIELDS[i],false);
+  }
+  for (int i=0; i < _choices.length; i++) {
+    String text=sel_ac[i].getText();
+    if ((!text.equals("bibtexkey")) && (!text.equals("search")))     complFields.add(sel_ac[i]);
+  }
+  openAutoComp.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      JButton src=(JButton)e.getSource();
+      complFields.show(src,0,0);
+    }
+  }
+);
+  String sec=prefs.get("secSort"), ter=prefs.get("terSort");
+  for (int i=0; i < GUIGlobals.ALL_FIELDS.length; i++) {
+    if (sec.equals(GUIGlobals.ALL_FIELDS[i]))     secSort.setSelectedIndex(i);
+    if (ter.equals(GUIGlobals.ALL_FIELDS[i]))     terSort.setSelectedIndex(i);
+  }
+  addWindowListener(new WindowAdapter(){
+    public void windowClosing(    WindowEvent e){
+      (new CancelAction()).actionPerformed(null);
+    }
+  }
+);
+  TableModel tm=new AbstractTableModel(){
+    public int getRowCount(){
+      return _choices.length;
+    }
+    public int getColumnCount(){
+      return 2;
+    }
+    public Object getValueAt(    int row,    int column){
+      if (column == 0)       return _choices[row];
+ else       return _sel[row];
+    }
+    public Class getColumnClass(    int column){
+      if (column == 0)       return String.class;
+ else       return Boolean.class;
+    }
+    public boolean isCellEditable(    int row,    int col){
+      if (col > 0)       return true;
+ else       return false;
+    }
+    public void setValueAt(    Object aValue,    int rowIndex,    int columnIndex){
+      if (columnIndex == 1)       _sel[rowIndex]=(Boolean)aValue;
+    }
+  }
+;
+  JTable table=new JTable(tm);
+  table.setRowSelectionAllowed(false);
+  table.setColumnSelectionAllowed(false);
+  table.getInputMap().put(GUIGlobals.exitDialog,"close");
+  table.getActionMap().put("close",new CancelAction());
+  TableColumnModel cm=table.getColumnModel();
+  cm.getColumn(0).setPreferredWidth(90);
+  cm.getColumn(1).setPreferredWidth(25);
+  JLabel lab;
+  JPanel upper=new JPanel(), lower=new JPanel(), right=new JPanel(), general=new JPanel(), rightlow=new JPanel(), tablePanel=new JPanel(), innerTablePanel=new JPanel(), sort=new JPanel(), source=new JPanel(), autoComp=new JPanel(), groups=new JPanel();
+  table.setShowVerticalLines(false);
+  innerTablePanel.setBorder(BorderFactory.createEtchedBorder());
+  tablePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Visible fields"));
+  right.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Table appearance"));
+  general.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"General options"));
+  sort.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Sort options"));
+  source.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Edit/view bibtex source"));
+  autoComp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Autocomplete options"));
+  groups.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Groups options"));
+  formHeight.setSelectedIndex(prefs.getInt("entryTypeFormHeightFactor"));
+  formWidth.setSelectedIndex(prefs.getInt("entryTypeFormWidth"));
+  innerTablePanel.setLayout(new GridLayout(1,1));
+  innerTablePanel.add(table);
+  tablePanel.add(innerTablePanel);
+  upper.setLayout(gbl);
+  right.setLayout(gbl);
+  general.setLayout(gbl);
+  sort.setLayout(gbl);
+  source.setLayout(gbl);
+  autoComp.setLayout(gbl);
+  groups.setLayout(gbl);
+  con.gridheight=GridBagConstraints.REMAINDER;
+  con.fill=GridBagConstraints.BOTH;
+  gbl.setConstraints(tablePanel,con);
+  upper.add(tablePanel);
+  con.gridheight=1;
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(right,con);
+  upper.add(right);
+  gbl.setConstraints(general,con);
+  upper.add(general);
+  gbl.setConstraints(sort,con);
+  upper.add(sort);
+  gbl.setConstraints(source,con);
+  upper.add(source);
+  gbl.setConstraints(autoComp,con);
+  upper.add(autoComp);
+  gbl.setConstraints(groups,con);
+  upper.add(groups);
+  con.fill=GridBagConstraints.NONE;
+  con.anchor=GridBagConstraints.WEST;
+  gbl.setConstraints(colorCodes,con);
+  right.add(colorCodes);
+  gbl.setConstraints(autoResizeMode,con);
+  right.add(autoResizeMode);
+  gbl.setConstraints(autoOpenForm,con);
+  general.add(autoOpenForm);
+  con.gridwidth=1;
+  con.anchor=GridBagConstraints.WEST;
+  con.weightx=0;
+  gbl.setConstraints(formWidth,con);
+  general.add(formWidth);
+  lab=new JLabel("Secondary sort criterion");
+  gbl.setConstraints(lab,con);
+  sort.add(lab);
+  con.weightx=1;
+  con.insets=new Insets(0,5,0,0);
+  gbl.setConstraints(secSort,con);
+  sort.add(secSort);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(secDesc,con);
+  sort.add(secDesc);
+  lab=new JLabel("Default width of entry editor");
+  gbl.setConstraints(lab,con);
+  general.add(lab);
+  con.gridwidth=1;
+  con.anchor=GridBagConstraints.WEST;
+  con.weightx=0;
+  con.insets=new Insets(0,0,0,0);
+  gbl.setConstraints(formHeight,con);
+  general.add(formHeight);
+  con.weightx=1;
+  lab=new JLabel("Tertiary sort criterion");
+  gbl.setConstraints(lab,con);
+  sort.add(lab);
+  con.weightx=0;
+  con.insets=new Insets(0,5,0,0);
+  gbl.setConstraints(terSort,con);
+  sort.add(terSort);
+  con.weightx=1;
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(terDesc,con);
+  sort.add(terDesc);
+  lab=new JLabel("Default height of entry editor");
+  gbl.setConstraints(lab,con);
+  general.add(lab);
+  con.insets=new Insets(0,0,0,0);
+  con.fill=GridBagConstraints.NONE;
+  con.anchor=GridBagConstraints.WEST;
+  gbl.setConstraints(backup,con);
+  general.add(backup);
+  gbl.setConstraints(openLast,con);
+  general.add(openLast);
+  lab=new JLabel("Primary sort criterion is set by clicking on column headers.");
+  gbl.setConstraints(lab,con);
+  sort.add(lab);
+  con.insets=new Insets(0,0,0,0);
+  con.fill=GridBagConstraints.NONE;
+  con.anchor=GridBagConstraints.WEST;
+  gbl.setConstraints(defSource,con);
+  source.add(defSource);
+  gbl.setConstraints(editSource,con);
+  source.add(editSource);
+  con.gridwidth=1;
+  gbl.setConstraints(autoComplete,con);
+  autoComp.add(autoComplete);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(openAutoComp,con);
+  autoComp.add(openAutoComp);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(groupsVisible,con);
+  groups.add(groupsVisible);
+  lab=new JLabel("Default search field for new group:");
+  con.gridwidth=1;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  con.anchor=GridBagConstraints.WEST;
+  gbl.setConstraints(lab,con);
+  groups.add(lab);
+  gbl.setConstraints(groupsField,con);
+  groups.add(groupsField);
+  con.fill=GridBagConstraints.BOTH;
+  gbl.setConstraints(rightlow,con);
+  upper.add(rightlow);
+  JButton ok=new JButton("Ok"), cancel=new JButton("Cancel");
+  ok.addActionListener(new OkAction());
+  cancel.addActionListener(new CancelAction());
+  lower.add(ok);
+  lower.add(cancel);
+  getContentPane().setLayout(new BorderLayout());
+  getContentPane().add(upper,BorderLayout.CENTER);
+  getContentPane().add(lower,BorderLayout.SOUTH);
+  pack();
+  setResizable(false);
+}
