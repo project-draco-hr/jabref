@@ -1,5 +1,5 @@
 {
-  if (basePanel().citeSeerFetcher.activateImportFetcher()) {
+  if (citeSeerFetcher.activateImportFetcher()) {
     (new Thread(){
       BasePanel currentBp;
       BibtexEntry toShow;
@@ -10,7 +10,7 @@ class UpdateComponent implements Runnable {
           this.changesMade=changesMade;
         }
         public void run(){
-          currentBp.citeSeerFetcher.endImportCiteSeerProgress();
+          citeSeerFetcher.endImportCiteSeerProgress();
           if (changesMade)           currentBp.markBaseChanged();
           currentBp.refreshTable();
           output(Globals.lang("Completed Import Fields from CiteSeer."));
@@ -27,9 +27,9 @@ class UpdateComponent implements Runnable {
         }
         toShow=currentBp.database().getEntryById(currentBp.getTableModel().getNameFromNumber(clickedOn[0]));
         if (clickedOn != null) {
-          basePanel().citeSeerFetcher.beginImportCiteSeerProgress();
+          citeSeerFetcher.beginImportCiteSeerProgress();
           NamedCompound citeseerNamedCompound=new NamedCompound("CiteSeer Import Fields");
-          boolean newValues=basePanel().citeSeerFetcher.importCiteSeerEntries(clickedOn,citeseerNamedCompound);
+          boolean newValues=citeSeerFetcher.importCiteSeerEntries(clickedOn,citeseerNamedCompound);
           if (newValues) {
             citeseerNamedCompound.end();
             currentBp.undoManager.addEdit(citeseerNamedCompound);
@@ -37,7 +37,7 @@ class UpdateComponent implements Runnable {
           UpdateComponent updateComponent=new UpdateComponent(newValues);
           SwingUtilities.invokeLater(updateComponent);
         }
-        basePanel().citeSeerFetcher.deactivateImportFetcher();
+        citeSeerFetcher.deactivateImportFetcher();
       }
     }
 ).start();

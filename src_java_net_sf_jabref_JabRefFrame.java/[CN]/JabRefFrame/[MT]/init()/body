@@ -11,6 +11,22 @@
   }
 );
   initLabelMaker();
+  sidePaneManager=new SidePaneManager(this);
+  Globals.sidePaneManager=this.sidePaneManager;
+  Globals.helpDiag=this.helpDiag;
+  medlineFetcher=new MedlineFetcher(sidePaneManager);
+  citeSeerFetcher=new CiteSeerFetcher(sidePaneManager);
+  citeSeerFetcherPanel=new CiteSeerFetcherPanel(sidePaneManager,(CiteSeerFetcher)citeSeerFetcher);
+  searchManager=new SearchManager2(sidePaneManager);
+{
+    groupSelector=new GroupSelector(this,sidePaneManager);
+    sidePaneManager.register("groups",groupSelector);
+  }
+  sidePaneManager.register("fetchMedline",medlineFetcher);
+  sidePaneManager.add("search",searchManager);
+  sidePaneManager.register("CiteSeerPanel",citeSeerFetcherPanel);
+  sidePaneManager.register("CiteSeerProgress",citeSeerFetcher);
+  sidePaneManager.populatePanel();
   setupLayout();
   setSize(new Dimension(prefs.getInt("sizeX"),prefs.getInt("sizeY")));
   setLocation(new Point(prefs.getInt("posX"),prefs.getInt("posY")));
@@ -21,8 +37,8 @@
       markActiveBasePanel();
       BasePanel bp=basePanel();
       if (bp != null) {
-        groupToggle.setSelected(bp.sidePaneManager.isPanelVisible("groups"));
-        searchToggle.setSelected(bp.sidePaneManager.isPanelVisible("search"));
+        groupToggle.setSelected(sidePaneManager.isPanelVisible("groups"));
+        searchToggle.setSelected(sidePaneManager.isPanelVisible("search"));
         previewToggle.setSelected(bp.previewEnabled);
         Globals.focusListener.setFocused(bp.entryTable);
         new FocusRequester(bp.entryTable);

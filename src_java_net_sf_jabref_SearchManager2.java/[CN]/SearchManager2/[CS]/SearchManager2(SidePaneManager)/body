@@ -1,13 +1,11 @@
 {
   super(manager,GUIGlobals.searchIconFile,Globals.lang("Search"));
-  this.frame=frame;
-  prefs=prefs_;
-  incSearcher=new IncrementalSearcher(prefs);
-  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),prefs.getBoolean("searchReq"));
-  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),prefs.getBoolean("searchOpt"));
-  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),prefs.getBoolean("searchGen"));
-  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),prefs.getBoolean("searchAll"));
-  regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),prefs.getBoolean("regExpSearch"));
+  incSearcher=new IncrementalSearcher(Globals.prefs);
+  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),Globals.prefs.getBoolean("searchReq"));
+  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),Globals.prefs.getBoolean("searchOpt"));
+  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),Globals.prefs.getBoolean("searchGen"));
+  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean("searchAll"));
+  regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),Globals.prefs.getBoolean("regExpSearch"));
   increment=new JRadioButton(Globals.lang("Incremental"),false);
   highlight=new JRadioButton(Globals.lang("Highlight"),true);
   reorder=new JRadioButton(Globals.lang("Float"),false);
@@ -26,7 +24,7 @@
     searchOpt.setEnabled(false);
     searchGen.setEnabled(false);
   }
-  caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),prefs.getBoolean("caseSensitiveSearch"));
+  caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),Globals.prefs.getBoolean("caseSensitiveSearch"));
   settings.add(select);
   settings.addSeparator();
   settings.add(searchReq);
@@ -70,9 +68,9 @@
   help.setPreferredSize(butDim);
   help.setMinimumSize(butDim);
   help.setMargin(margin);
-  help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.searchHelp,"Help"));
-  if (prefs.getBoolean("incrementS"))   increment.setSelected(true);
- else   if (!prefs.getBoolean("selectS"))   reorder.setSelected(true);
+  help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.searchHelp,"Help"));
+  if (Globals.prefs.getBoolean("incrementS"))   increment.setSelected(true);
+ else   if (!Globals.prefs.getBoolean("selectS"))   reorder.setSelected(true);
   JPanel main=new JPanel();
   main.setLayout(gbl);
   con.gridwidth=GridBagConstraints.REMAINDER;
@@ -108,14 +106,14 @@
   main.add(pan);
   main.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
   add(main,BorderLayout.CENTER);
-  searchField.getInputMap().put(prefs.getKey("Repeat incremental search"),"repeat");
+  searchField.getInputMap().put(Globals.prefs.getKey("Repeat incremental search"),"repeat");
   searchField.getActionMap().put("repeat",new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
       if (increment.isSelected())       repeatIncremental();
     }
   }
 );
-  searchField.getInputMap().put(prefs.getKey("Clear search"),"escape");
+  searchField.getInputMap().put(Globals.prefs.getKey("Clear search"),"escape");
   searchField.getActionMap().put("escape",new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
       ths.actionPerformed(new ActionEvent(escape,0,""));

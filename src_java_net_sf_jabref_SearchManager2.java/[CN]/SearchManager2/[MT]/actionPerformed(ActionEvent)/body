@@ -1,39 +1,39 @@
 {
   if (e.getSource() == escape) {
     incSearch=false;
-    if (frame.basePanel() != null) {
+    if (panel != null) {
       (new Thread(){
         public void run(){
-          frame.basePanel().stopShowingSearchResults();
+          panel.stopShowingSearchResults();
         }
       }
 ).start();
     }
   }
- else   if (((e.getSource() == searchField) || (e.getSource() == search)) && !increment.isSelected() && (frame.basePanel() != null)) {
+ else   if (((e.getSource() == searchField) || (e.getSource() == search)) && !increment.isSelected() && (panel != null)) {
     updatePrefs();
     if (searchField.getText().equals("")) {
-      frame.stopShowingSearchResults();
+      panel.stopShowingSearchResults();
       return;
     }
     Hashtable searchOptions=new Hashtable();
     searchOptions.put("option",searchField.getText());
     SearchRuleSet searchRules=new SearchRuleSet();
     SearchRule rule1;
-    if (prefs.getBoolean("regExpSearch"))     rule1=new RegExpRule(prefs.getBoolean("caseSensitiveSearch"),prefs.getBoolean("searchAll"),prefs.getBoolean("searchReq"),prefs.getBoolean("searchOpt"),prefs.getBoolean("searchGen"));
- else     rule1=new SimpleSearchRule(prefs.getBoolean("caseSensitiveSearch"),prefs.getBoolean("searchAll"),prefs.getBoolean("searchReq"),prefs.getBoolean("searchOpt"),prefs.getBoolean("searchGen"));
+    if (Globals.prefs.getBoolean("regExpSearch"))     rule1=new RegExpRule(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("searchAll"),Globals.prefs.getBoolean("searchReq"),Globals.prefs.getBoolean("searchOpt"),Globals.prefs.getBoolean("searchGen"));
+ else     rule1=new SimpleSearchRule(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("searchAll"),Globals.prefs.getBoolean("searchReq"),Globals.prefs.getBoolean("searchOpt"),Globals.prefs.getBoolean("searchGen"));
     try {
-      rule1=new SearchExpression(prefs,searchOptions);
+      rule1=new SearchExpression(Globals.prefs,searchOptions);
     }
  catch (    Exception ex) {
     }
     searchRules.addRule(rule1);
     if (reorder.isSelected()) {
-      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,true,true,select.isSelected());
+      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,panel,Globals.SEARCH,true,true,select.isSelected());
       search.start();
     }
  else     if (highlight.isSelected()) {
-      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,false,true,select.isSelected());
+      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,panel,Globals.SEARCH,false,true,select.isSelected());
       search.start();
     }
     searchField.select(0,searchField.getText().length());

@@ -1,6 +1,6 @@
 {
-  if (basePanel().citeSeerFetcher.activateCitationFetcher()) {
-    basePanel().sidePaneManager.ensureVisible("CiteSeerProgress");
+  if (citeSeerFetcher.activateCitationFetcher()) {
+    sidePaneManager.ensureVisible("CiteSeerProgress");
     (new Thread(){
       BasePanel newBp;
       BasePanel targetBp;
@@ -16,7 +16,7 @@
           tabbedPane.setSelectedComponent(newBp);
           newBp.refreshTable();
           output(Globals.lang("Fetched all citations from target database."));
-          targetBp.citeSeerFetcher.deactivateCitationFetcher();
+          citeSeerFetcher.deactivateCitationFetcher();
         }
       }
 ;
@@ -27,15 +27,15 @@
           targetBp=(BasePanel)tabbedPane.getSelectedComponent();
           newDatabase=newBp.getDatabase();
           targetDatabase=targetBp.getDatabase();
-          errorCode=basePanel().citeSeerFetcher.populate(newDatabase,targetDatabase);
+          errorCode=citeSeerFetcher.populate(newDatabase,targetDatabase);
           if (newDatabase.getEntryCount() > 0) {
             SwingUtilities.invokeLater(updateComponent);
           }
  else           if (errorCode == 0) {
-            SwingUtilities.invokeLater(basePanel().citeSeerFetcher.getEmptyFetchSetDialog());
+            SwingUtilities.invokeLater(citeSeerFetcher.getEmptyFetchSetDialog());
           }
  else {
-            targetBp.citeSeerFetcher.deactivateCitationFetcher();
+            citeSeerFetcher.deactivateCitationFetcher();
           }
         }
  catch (        Exception ex) {

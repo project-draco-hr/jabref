@@ -1,59 +1,56 @@
 {
   super(manager,GUIGlobals.groupsIconFile,Globals.lang("Groups"));
-  this.prefs=prefs;
-  this.groupsRoot=groupsRoot;
-  final JabRefPreferences _prefs=prefs;
-  final BasePanel basePanel=panel;
+  this.groupsRoot=new GroupTreeNode(new AllEntriesGroup());
   this.manager=manager;
   this.frame=frame;
   this.panel=panel;
-  hideNonHits=new JRadioButtonMenuItem(Globals.lang("Hide non-hits"),!prefs.getBoolean("grayOutNonHits"));
-  grayOut=new JRadioButtonMenuItem(Globals.lang("Gray out non-hits"),prefs.getBoolean("grayOutNonHits"));
+  hideNonHits=new JRadioButtonMenuItem(Globals.lang("Hide non-hits"),!Globals.prefs.getBoolean("grayOutNonHits"));
+  grayOut=new JRadioButtonMenuItem(Globals.lang("Gray out non-hits"),Globals.prefs.getBoolean("grayOutNonHits"));
   nonHits.add(hideNonHits);
   nonHits.add(grayOut);
   floatCb.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
-      _prefs.putBoolean("groupFloatSelections",floatCb.isSelected());
+      Globals.prefs.putBoolean("groupFloatSelections",floatCb.isSelected());
     }
   }
 );
   andCb.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
-      _prefs.putBoolean("groupIntersectSelections",andCb.isSelected());
+      Globals.prefs.putBoolean("groupIntersectSelections",andCb.isSelected());
     }
   }
 );
   invCb.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
-      _prefs.putBoolean("groupInvertSelections",invCb.isSelected());
+      Globals.prefs.putBoolean("groupInvertSelections",invCb.isSelected());
     }
   }
 );
   select.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
-      _prefs.putBoolean("groupSelectMatches",select.isSelected());
+      Globals.prefs.putBoolean("groupSelectMatches",select.isSelected());
     }
   }
 );
   grayOut.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
-      _prefs.putBoolean("grayOutNonHits",grayOut.isSelected());
+      Globals.prefs.putBoolean("grayOutNonHits",grayOut.isSelected());
     }
   }
 );
   groupModeIndependent.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
-      _prefs.putBoolean("groupSubgroupIndependent",groupModeIndependent.isSelected());
+      Globals.prefs.putBoolean("groupSubgroupIndependent",groupModeIndependent.isSelected());
     }
   }
 );
   groupModeIntersection.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
-      _prefs.putBoolean("groupSubgroupIntersection",groupModeIntersection.isSelected());
+      Globals.prefs.putBoolean("groupSubgroupIntersection",groupModeIntersection.isSelected());
     }
   }
 );
-  if (prefs.getBoolean("groupFloatSelections")) {
+  if (Globals.prefs.getBoolean("groupFloatSelections")) {
     floatCb.setSelected(true);
     highlCb.setSelected(false);
   }
@@ -61,7 +58,7 @@
     highlCb.setSelected(true);
     floatCb.setSelected(false);
   }
-  if (prefs.getBoolean("groupIntersectSelections")) {
+  if (Globals.prefs.getBoolean("groupIntersectSelections")) {
     andCb.setSelected(true);
     orCb.setSelected(false);
   }
@@ -69,14 +66,14 @@
     orCb.setSelected(true);
     andCb.setSelected(false);
   }
-  if (prefs.getBoolean("groupSubgroupIndependent")) {
+  if (Globals.prefs.getBoolean("groupSubgroupIndependent")) {
     groupModeIndependent.setSelected(true);
     groupModeIntersection.setSelected(false);
     groupModeUnion.setSelected(false);
   }
  else {
     groupModeIndependent.setSelected(false);
-    if (prefs.getBoolean("groupSubgroupIntersection")) {
+    if (Globals.prefs.getBoolean("groupSubgroupIntersection")) {
       groupModeIntersection.setSelected(true);
       groupModeUnion.setSelected(false);
     }
@@ -85,8 +82,8 @@
       groupModeUnion.setSelected(true);
     }
   }
-  invCb.setSelected(prefs.getBoolean("groupInvertSelections"));
-  select.setSelected(prefs.getBoolean("groupSelectMatches"));
+  invCb.setSelected(Globals.prefs.getBoolean("groupInvertSelections"));
+  select.setSelected(Globals.prefs.getBoolean("groupSelectMatches"));
   openset.setMargin(new Insets(0,0,0,0));
   settings.add(groupModeUnion);
   settings.add(groupModeIntersection);
@@ -117,26 +114,26 @@
 );
   expand.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      int i=_prefs.getInt("groupsVisibleRows") + 1;
+      int i=Globals.prefs.getInt("groupsVisibleRows") + 1;
       groupsTree.setVisibleRowCount(i);
       groupsTree.revalidate();
       groupsTree.repaint();
       GroupSelector.this.revalidate();
       GroupSelector.this.repaint();
-      _prefs.putInt("groupsVisibleRows",i);
+      Globals.prefs.putInt("groupsVisibleRows",i);
     }
   }
 );
   reduce.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      int i=_prefs.getInt("groupsVisibleRows") - 1;
+      int i=Globals.prefs.getInt("groupsVisibleRows") - 1;
       if (i < 1)       i=1;
       groupsTree.setVisibleRowCount(i);
       groupsTree.revalidate();
       groupsTree.repaint();
       GroupSelector.this.revalidate();
       GroupSelector.this.repaint();
-      _prefs.putInt("groupsVisibleRows",i);
+      Globals.prefs.putInt("groupsVisibleRows",i);
     }
   }
 );
@@ -215,7 +212,7 @@
   }
 );
   groupsTree.setShowsRootHandles(false);
-  groupsTree.setVisibleRowCount(prefs.getInt("groupsVisibleRows"));
+  groupsTree.setVisibleRowCount(Globals.prefs.getInt("groupsVisibleRows"));
   groupsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
   groupsTree.setModel(groupsTreeModel=new DefaultTreeModel(groupsRoot));
   sp=new JScrollPane(groupsTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
