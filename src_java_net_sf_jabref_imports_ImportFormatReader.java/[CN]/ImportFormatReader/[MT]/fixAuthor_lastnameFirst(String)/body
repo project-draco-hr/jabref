@@ -1,4 +1,17 @@
 {
+  if (in.indexOf("{") > 0) {
+    StringBuffer tmp=new StringBuffer();
+    int start=-1, end=0;
+    while ((start=in.indexOf("{",end)) > -1) {
+      tmp.append(in.substring(end,start));
+      end=in.indexOf("}",start);
+      if (end > 0) {
+        tmp.append(in.substring(start,end).replaceAll(" ",SPACE_MARKER));
+      }
+    }
+    if ((end > 0) && (end < in.length() - 1))     tmp.append(in.substring(end));
+    in=tmp.toString();
+  }
   StringBuffer sb=new StringBuffer();
   String[] authors=in.split(" and ");
   for (int i=0; i < authors.length; i++) {
@@ -26,5 +39,6 @@
     if (i != (authors.length - 1))     sb.append(" and ");
   }
   String fixed=sb.toString();
-  return fixed;
+  if (spaceMarkerPattern.matcher(fixed).find())   return fixed.replaceAll(SPACE_MARKER," ");
+ else   return fixed;
 }
