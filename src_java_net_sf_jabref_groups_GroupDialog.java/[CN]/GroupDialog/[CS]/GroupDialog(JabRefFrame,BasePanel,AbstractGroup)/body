@@ -4,9 +4,9 @@
   m_parent=jabrefFrame;
   m_editedGroup=editedGroup;
   m_searchField.setText(jabrefFrame.prefs().get("groupsDefaultField"));
+  m_types.addElement("Explicit");
   m_types.addElement("Keywords");
   m_types.addElement("Search Expression");
-  m_types.addElement("Explicit");
   m_typeSelector.setModel(m_types);
   m_mainPanel=new JPanelYBoxPreferredWidth();
   JPanel namePanel=new JPanelXBoxPreferredHeight();
@@ -93,12 +93,7 @@ case INDEX_EXPLICITGROUP:
  else {
           m_resultingGroup=new ExplicitGroup(m_name.getText().trim(),m_basePanel.database());
           if (m_editedGroup == null)           break;
-          int i=JOptionPane.showConfirmDialog(m_basePanel.frame(),"Assign all entries that matched the previous group to this group?","Conversion to an Explicit Group",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-          BibtexEntry entry;
-          for (Iterator it=m_basePanel.database().getEntries().iterator(); it.hasNext(); ) {
-            entry=(BibtexEntry)it.next();
-            if (m_editedGroup.contains(entry))             ((ExplicitGroup)m_resultingGroup).addEntry(entry);
-          }
+          addPreviousEntries();
         }
       break;
 case INDEX_KEYWORDGROUP:
