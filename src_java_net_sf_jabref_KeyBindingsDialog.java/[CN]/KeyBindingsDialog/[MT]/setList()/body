@@ -1,13 +1,19 @@
 {
-  list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-  list.getModel().addListDataListener(new MyListDataListener());
   list.addListSelectionListener(new MyListSelectionListener());
   DefaultListModel listModel=new DefaultListModel();
   TreeMap sorted=new TreeMap(bindHM);
   Iterator it=sorted.keySet().iterator();
+  String[][] tableData=new String[sorted.size()][2];
+  int i=0;
   while (it.hasNext()) {
-    listModel.addElement(it.next());
+    String s=(String)it.next();
+    tableData[i][0]=s;
+    tableData[i][1]=(String)bindHM.get(s);
+    i++;
+    listModel.addElement(s + " (" + bindHM.get(s)+ ")");
   }
-  list.setModel(listModel);
+  table=new JTable(tableData,new String[]{Globals.lang("Action"),Globals.lang("Shortcut")});
+  table.setCellSelectionEnabled(true);
+  table.setRowSelectionAllowed(true);
   list.setSelectionInterval(0,0);
 }
