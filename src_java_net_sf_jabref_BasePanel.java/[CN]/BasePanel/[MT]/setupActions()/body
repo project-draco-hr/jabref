@@ -1,6 +1,28 @@
 {
   actions.put("undo",undoAction);
   actions.put("redo",redoAction);
+  actions.put("edit",new BaseAction(){
+    public void action(){
+      int clickedOn=-1;
+      if (entryTable.getSelectedRowCount() == 1) {
+        clickedOn=entryTable.getSelectedRow();
+      }
+      if (clickedOn >= 0) {
+        String id=tableModel.getNameFromNumber(clickedOn);
+        if (!entryTypeForms.containsKey(id)) {
+          BibtexEntry be=database.getEntryById(id);
+          EntryTypeForm form=new EntryTypeForm(frame,ths,be,prefs);
+          Util.placeDialog(form,frame);
+          form.setVisible(true);
+          entryTypeForms.put(id,form);
+        }
+ else {
+          ((EntryTypeForm)(entryTypeForms.get(id))).setVisible(true);
+        }
+      }
+    }
+  }
+);
   actions.put("save",new BaseAction(){
     public void action(){
       if (file == null)       runCommand("saveAs");
@@ -42,6 +64,20 @@
  else         file=null;
       }
  else {
+      }
+    }
+  }
+);
+  actions.put("editPreamble",new BaseAction(){
+    public void action(){
+      if (preambleEditor == null) {
+        PreambleEditor form=new PreambleEditor(frame,ths,database,prefs);
+        Util.placeDialog(form,frame);
+        form.setVisible(true);
+        preambleEditor=form;
+      }
+ else {
+        preambleEditor.setVisible(true);
       }
     }
   }

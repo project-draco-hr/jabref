@@ -1,0 +1,18 @@
+{
+  int[] sel=table.getSelectedRows();
+  if ((sel.length == 1) && (sel[0] > 0)) {
+    assureNotEditing();
+    panel.undoManager.addEdit(new UndoableMoveString(panel,base,sel[0],true));
+    BibtexString bs=base.getString(sel[0]);
+    base.removeString(sel[0]);
+    try {
+      base.addString(bs,sel[0] - 1);
+    }
+ catch (    KeyCollisionException ex) {
+    }
+    table.revalidate();
+    table.setRowSelectionInterval(sel[0] - 1,sel[0] - 1);
+    table.repaint();
+    panel.markBaseChanged();
+  }
+}

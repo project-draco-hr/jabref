@@ -1,0 +1,33 @@
+{
+  super(bf,GUIGlobals.helpTitle,false);
+  content=new HelpContent();
+  content.addHyperlinkListener(this);
+  setSize(GUIGlobals.helpSize);
+  Dimension ds=GUIGlobals.helpSize, df=bf.getSize();
+  Point pf=bf.getLocation();
+  setLocation(new Point(Math.max(0,(pf.x + (df.width - ds.width) / 2)),Math.max(0,(pf.y + (df.height - ds.height) / 2))));
+  JToolBar tlb=new JToolBar();
+  tlb.add(back);
+  tlb.add(forward);
+  tlb.addSeparator();
+  tlb.add(contents);
+  tlb.setFloatable(false);
+  InputMap im=tlb.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  ActionMap am=tlb.getActionMap();
+  im.put(GUIGlobals.exitDialog,"close");
+  am.put("close",new CloseAction());
+  im.put(GUIGlobals.switchPanelLeft,"left");
+  am.put("left",back);
+  im.put(GUIGlobals.switchPanelRight,"right");
+  am.put("right",forward);
+  im=content.getInputMap(JComponent.WHEN_FOCUSED);
+  am=content.getActionMap();
+  im.put(GUIGlobals.switchPanelLeft,"left");
+  am.put("left",back);
+  im.put(GUIGlobals.switchPanelRight,"right");
+  am.put("right",forward);
+  getContentPane().add(tlb,BorderLayout.NORTH);
+  getContentPane().add(content.getPane());
+  forward.setEnabled(false);
+  back.setEnabled(false);
+}

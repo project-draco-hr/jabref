@@ -1,0 +1,22 @@
+{
+  if (col == 0) {
+    if (!((String)value).equals(base.getString(row).getName())) {
+      if (base.hasStringLabel((String)value))       JOptionPane.showMessageDialog(parent,"A string with that label " + "already exists","Label",JOptionPane.ERROR_MESSAGE);
+ else       if ((value != null) && isNumber((String)value)) {
+        JOptionPane.showMessageDialog(parent,"The label of the string can not be a number.","Label",JOptionPane.ERROR_MESSAGE);
+      }
+ else {
+        panel.undoManager.addEdit(new UndoableStringChange(panel,base.getString(row),true,base.getString(row).getName(),(String)value));
+        base.getString(row).setName((String)value);
+        panel.markBaseChanged();
+      }
+    }
+  }
+ else {
+    if (!((String)value).equals(base.getString(row).getContent())) {
+      panel.undoManager.addEdit(new UndoableStringChange(panel,base.getString(row),false,base.getString(row).getContent(),(String)value));
+      base.getString(row).setContent((String)value);
+      panel.markBaseChanged();
+    }
+  }
+}

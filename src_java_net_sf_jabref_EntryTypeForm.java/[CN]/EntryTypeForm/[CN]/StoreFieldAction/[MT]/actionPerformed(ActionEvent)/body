@@ -1,0 +1,86 @@
+{
+  if (e.getSource() instanceof FieldEditor) {
+    String toSet=null, fieldName=null;
+    FieldEditor fe=(FieldEditor)e.getSource();
+    boolean set;
+    if (fe.getText().length() > 0)     toSet=fe.getText();
+    if (toSet == null) {
+      if (entry.getField(fe.getFieldName()) == null)       set=false;
+ else       set=true;
+    }
+ else {
+      if ((entry.getField(fe.getFieldName()) != null) && toSet.equals(entry.getField(fe.getFieldName()).toString()))       set=false;
+ else       set=true;
+    }
+    if (set)     try {
+      if (toSet != null)       (new LatexFieldFormatter()).format(toSet);
+      Object oldValue=entry.getField(fe.getFieldName());
+      entry.setField(fe.getFieldName(),toSet);
+      if ((toSet != null) && (toSet.length() > 0)) {
+        fe.setLabelColor(GUIGlobals.validFieldColor);
+        fe.setBackground(GUIGlobals.validFieldBackground);
+      }
+ else {
+        fe.setLabelColor(GUIGlobals.nullFieldColor);
+        fe.setBackground(GUIGlobals.validFieldBackground);
+      }
+      panel.undoManager.addEdit(new UndoableFieldChange(entry,fe.getFieldName(),oldValue,toSet));
+      panel.refreshTable();
+      panel.markBaseChanged();
+    }
+ catch (    IllegalArgumentException ex) {
+      frame.output("Invalid field format: " + ex.getMessage());
+      fe.setLabelColor(GUIGlobals.invalidFieldColor);
+      fe.setBackground(GUIGlobals.invalidFieldBackground);
+    }
+ else {
+      fe.setBackground(GUIGlobals.validFieldBackground);
+      fe.setLabelColor((toSet == null) ? GUIGlobals.nullFieldColor : GUIGlobals.validFieldColor);
+    }
+  }
+ else   if ((source.isEditable()) && (source.getText() != lastSourceStringAccepted)) {
+    BibtexParser bp=new BibtexParser(new java.io.StringReader(source.getText()));
+    try {
+      BibtexDatabase db=bp.parse().getDatabase();
+      if (db.getEntryCount() > 1)       throw new Exception("More than one entry found.");
+      if (db.getEntryCount() < 1)       throw new Exception("No entries found.");
+      String id=entry.getId();
+      NamedCompound compound=new NamedCompound("source edit");
+      BibtexEntry nu=db.getEntryById((String)db.getKeySet().iterator().next());
+      boolean anyChanged=false;
+      Object[] fields=entry.getAllFields();
+      for (int i=0; i < fields.length; i++)       if (GUIGlobals.isWriteableField(fields[i].toString()))       if (nu.getField(fields[i].toString()) == null) {
+        compound.addEdit(new UndoableFieldChange(entry,fields[i].toString(),entry.getField(fields[i].toString()),(Object)null));
+        entry.setField(fields[i].toString(),null);
+        anyChanged=true;
+      }
+      fields=nu.getAllFields();
+      for (int i=0; i < fields.length; i++)       if (entry.getField(fields[i].toString()) != nu.getField(fields[i].toString())) {
+        compound.addEdit(new UndoableFieldChange(entry,fields[i].toString(),entry.getField(fields[i].toString()),nu.getField(fields[i].toString())));
+        entry.setField(fields[i].toString(),nu.getField(fields[i].toString()));
+        anyChanged=true;
+      }
+      compound.end();
+      if (anyChanged)       panel.undoManager.addEdit(compound);
+      lastSourceStringAccepted=source.getText();
+      updateAllFields();
+      lastSourceAccepted=true;
+      updateSource=true;
+      panel.refreshTable();
+      panel.markBaseChanged();
+    }
+ catch (    Throwable ex) {
+      updateSource=false;
+      lastSourceAccepted=false;
+      tabbed.setSelectedComponent(srcPanel);
+      Object[] options={"Edit","Revert to original source"};
+      int answer=JOptionPane.showOptionDialog(parent,"Error: " + ex.getMessage(),"Problem with parsing entry",JOptionPane.YES_NO_OPTION,JOptionPane.ERROR_MESSAGE,null,options,options[0]);
+      if (answer == 0) {
+      }
+ else {
+        updateSource=true;
+        updateSource();
+      }
+    }
+  }
+}

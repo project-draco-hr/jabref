@@ -1,0 +1,25 @@
+{
+  InputMap im=ta.getInputMap(JComponent.WHEN_FOCUSED);
+  ActionMap am=ta.getActionMap();
+  im.put(KeyStroke.getKeyStroke(GUIGlobals.storeFieldKey),"store");
+  am.put("store",storeFieldAction);
+  im.put(GUIGlobals.switchPanelLeft,"left");
+  am.put("left",switchLeftAction);
+  im.put(GUIGlobals.switchPanelRight,"right");
+  am.put("right",switchRightAction);
+  im.put(GUIGlobals.helpKeyStroke,"help");
+  am.put("help",helpAction);
+  try {
+    int i=0;
+    HashSet keys=new HashSet(ta.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+    keys.add(AWTKeyStroke.getAWTKeyStroke("pressed TAB"));
+    ta.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,keys);
+    keys=new HashSet(ta.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
+    keys.add(KeyStroke.getKeyStroke("shift pressed TAB"));
+    ta.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,keys);
+  }
+ catch (  Throwable t) {
+    System.err.println(t);
+  }
+  ta.addFocusListener(new FieldListener());
+}
