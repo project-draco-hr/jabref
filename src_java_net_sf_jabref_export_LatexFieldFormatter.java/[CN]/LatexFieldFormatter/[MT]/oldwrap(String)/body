@@ -1,0 +1,45 @@
+{
+  boolean whitesp=false, last=false, cont=true;
+  int lastWh=-1, lastWhCol=-1;
+  StringCharacterIterator it=new StringCharacterIterator(s);
+  char c=it.first();
+  String toSetIn="";
+  while (cont) {
+    toSetIn="";
+    if ((Character.isWhitespace(c))) {
+      if (!whitesp) {
+        whitesp=true;
+        if ((col >= GUIGlobals.LINE_LENGTH) && (lastWhCol > GUIGlobals.LINE_LENGTH)) {
+          if (sb.charAt(sb.length() - it.getIndex() + lastWh - 1) != '\n') {
+            sb.delete(sb.length() - it.getIndex() + lastWh,sb.length());
+            it.setIndex(lastWh);
+          }
+          col=0;
+          toSetIn="\n\t";
+        }
+ else {
+          lastWh=it.getIndex();
+          lastWhCol=col;
+          toSetIn=" ";
+          col++;
+        }
+      }
+ else {
+        lastWh++;
+      }
+    }
+ else {
+      toSetIn="" + c;
+      whitesp=false;
+      col++;
+    }
+    sb.append(toSetIn);
+    if (it.getIndex() < it.getEndIndex() - 1) {
+      c=it.next();
+      Util.pr("'" + c + "'");
+    }
+ else {
+      cont=false;
+    }
+  }
+}
