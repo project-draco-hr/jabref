@@ -1,22 +1,13 @@
 {
   String[] reqFields=entry.getRequiredFields(), optFields=entry.getOptionalFields(), genFields=entry.getGeneralFields();
+  if (reqFields == null)   reqFields=new String[0];
+  if (optFields == null)   optFields=new String[0];
+  if (genFields == null)   genFields=new String[0];
   int iter, rmax, omax, gmax;
+  rmax=reqFields.length;
+  omax=optFields.length;
   gmax=genFields.length;
-  if (reqFields == null) {
-    iter=optFields.length;
-    rmax=0;
-    omax=optFields.length;
-  }
- else   if (optFields == null) {
-    iter=reqFields.length;
-    rmax=reqFields.length;
-    omax=0;
-  }
- else {
-    iter=Math.max(reqFields.length,optFields.length);
-    rmax=reqFields.length;
-    omax=optFields.length;
-  }
+  iter=Math.max(rmax,Math.max(omax,gmax));
   FieldTextArea ta1=null, ta2=null, ta3=null, firstR=null, firstO=null;
   String stringContent;
   Object content;

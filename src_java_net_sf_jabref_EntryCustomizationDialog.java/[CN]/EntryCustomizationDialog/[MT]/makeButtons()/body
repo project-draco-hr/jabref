@@ -23,8 +23,15 @@
       if (type == null)       messageLabel.setText(Globals.lang("There is no entry type") + " '" + Util.nCase(name.getText())+ "' "+ Globals.lang("defined."));
  else       if (!(type instanceof CustomEntryType))       messageLabel.setText("'" + type.getName() + "' "+ Globals.lang("is a standard type."));
  else {
-        BibtexEntryType.removeType(name.getText());
+        String nm=name.getText();
+        if (BibtexEntryType.getStandardType(nm) == null) {
+          int reply=JOptionPane.showConfirmDialog(parent,Globals.lang("All entries of this " + "type will be declared " + "typeless. Continue?"),Globals.lang("Delete custom format") + " '" + Util.nCase(nm)+ "'",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+          if (reply != JOptionPane.YES_OPTION)           return;
+        }
+        BibtexEntryType.removeType(nm);
         setTypeSelection();
+        updateTypesForEntries(Util.nCase(nm));
+        messageLabel.setText(Globals.lang("Removed entry type."));
       }
     }
   }
