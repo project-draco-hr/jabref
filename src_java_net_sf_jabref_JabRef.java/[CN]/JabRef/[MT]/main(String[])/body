@@ -53,35 +53,22 @@
       System.err.println(Globals.lang("Unable to create graphical interface") + ".");
     }
   }
-  Object fnt=new UIDefaults.ProxyLazyValue("javax.swing.plaf.FontUIResource",null,new Object[]{"Arial",new Integer(Font.PLAIN),new Integer(12)});
-  System.setProperty("apple.laf.useScreenMenuBar","true");
-  if (Globals.ON_WIN) {
-    try {
-      UIManager.setLookAndFeel(new com.jgoodies.plaf.windows.ExtWindowsLookAndFeel());
-    }
- catch (    UnsupportedLookAndFeelException ex) {
-    }
-  }
- else   if (!Globals.ON_MAC) {
-    try {
-      LookAndFeel lnf=new com.jgoodies.plaf.plastic.Plastic3DLookAndFeel();
-      UIManager.setLookAndFeel(lnf);
-    }
- catch (    UnsupportedLookAndFeelException ex) {
-    }
-  }
   Vector loaded=new Vector();
   if (leftOver.length > 0) {
     for (int i=0; i < leftOver.length; i++) {
       ParserResult pr=openBibFile(leftOver[i]);
-      if (pr != null)       loaded.add(pr);
+      if (pr != null) {
+        loaded.add(pr);
+      }
     }
   }
   if (importFile.isInvoked()) {
     String[] data=importFile.getStringValue().split(",");
     if (data.length == 1) {
       ParserResult pr=openBibFile(data[0]);
-      if (pr != null)       loaded.add(pr);
+      if (pr != null) {
+        loaded.add(pr);
+      }
     }
  else     if (data.length == 2) {
       try {
@@ -110,7 +97,9 @@
             System.err.println(Globals.lang("Could not save file") + " '" + data[0]+ "': "+ ex.getMessage());
           }
         }
- else         System.err.println(Globals.lang("The output option depends on a valid import option."));
+ else {
+          System.err.println(Globals.lang("The output option depends on a valid import option."));
+        }
       }
  else       if (data.length == 2) {
         ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
@@ -145,7 +134,9 @@ catch (          Exception ex) {
         }
       }
     }
- else     System.err.println(Globals.lang("The output option depends on a valid import option."));
+ else {
+      System.err.println(Globals.lang("The output option depends on a valid import option."));
+    }
   }
   if (exportPrefs.isInvoked()) {
     try {
@@ -164,26 +155,48 @@ catch (          Exception ex) {
     }
   }
   if (!graphicFailure && !disableGui.isInvoked()) {
+    System.setProperty("apple.laf.useScreenMenuBar","true");
+    if (Globals.ON_WIN) {
+      try {
+        UIManager.setLookAndFeel(new com.jgoodies.plaf.windows.ExtWindowsLookAndFeel());
+      }
+ catch (      UnsupportedLookAndFeelException ex) {
+      }
+    }
+ else     if (!Globals.ON_MAC) {
+      try {
+        LookAndFeel lnf=new com.jgoodies.plaf.plastic.Plastic3DLookAndFeel();
+        UIManager.setLookAndFeel(lnf);
+      }
+ catch (      UnsupportedLookAndFeelException ex) {
+      }
+    }
     if (prefs.getBoolean("openLastEdited") && (prefs.get("lastEdited") != null)) {
       String[] names=prefs.getStringArray("lastEdited");
       lastEdLoop:       for (int i=0; i < names.length; i++) {
         File fileToOpen=new File(names[i]);
         for (int j=0; j < loaded.size(); j++) {
           ParserResult pr=(ParserResult)loaded.elementAt(j);
-          if (pr.getFile().equals(fileToOpen))           continue lastEdLoop;
+          if (pr.getFile().equals(fileToOpen)) {
+            continue lastEdLoop;
+          }
         }
         if (fileToOpen.exists()) {
           ParserResult pr=openBibFile(names[i]);
-          if (pr != null)           loaded.add(pr);
+          if (pr != null) {
+            loaded.add(pr);
+          }
         }
       }
     }
     GUIGlobals.init();
     GUIGlobals.CURRENTFONT=new Font(prefs.get("fontFamily"),prefs.getInt("fontStyle"),prefs.getInt("fontSize"));
     jrf=new JabRefFrame();
-    if (loaded.size() > 0)     for (int i=0; i < loaded.size(); i++) {
-      ParserResult pr=(ParserResult)loaded.elementAt(i);
-      jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),(i == 0));
+    if (loaded.size() > 0) {
+      for (int i=0; i < loaded.size(); i++) {
+        ParserResult pr=(ParserResult)loaded.elementAt(i);
+        jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),(i == 0));
+      }
     }
     if (loadSess.isInvoked()) {
       jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
@@ -195,5 +208,7 @@ catch (          Exception ex) {
       new FocusRequester(((BasePanel)jrf.tabbedPane.getComponentAt(0)).entryTable);
     }
   }
- else   System.exit(0);
+ else {
+    System.exit(0);
+  }
 }

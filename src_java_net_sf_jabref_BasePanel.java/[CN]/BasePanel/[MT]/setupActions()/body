@@ -20,7 +20,14 @@
     public void action() throws Throwable {
       if (file == null)       runCommand("saveAs");
  else {
+        saving=true;
         saveDatabase(file,false);
+        try {
+          Globals.fileUpdateMonitor.updateTimeStamp(fileMonitorHandle);
+        }
+ catch (        IllegalArgumentException ex) {
+        }
+        saving=false;
         undoManager.markUnchanged();
         nonUndoableChange=false;
         baseChanged=false;
@@ -37,6 +44,12 @@
         file=new File(chosenFile);
         if (!file.exists() || (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
           runCommand("save");
+          try {
+            fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(ths,file);
+          }
+ catch (          IOException ex) {
+            ex.printStackTrace();
+          }
           prefs.put("workingDirectory",file.getParent());
           frame.fileHistory.newFile(file.getPath());
         }
