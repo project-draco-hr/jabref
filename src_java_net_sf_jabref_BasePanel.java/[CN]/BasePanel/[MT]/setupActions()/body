@@ -58,8 +58,6 @@
         }
  else         file=null;
       }
- else {
-      }
     }
   }
 );
@@ -137,8 +135,10 @@
             bes=(BibtexEntry[])(content.getTransferData(TransferableBibtexEntry.entryFlavor));
           }
  catch (          UnsupportedFlavorException ex) {
+            ex.printStackTrace();
           }
 catch (          IOException ex) {
+            ex.printStackTrace();
           }
           if ((bes != null) && (bes.length > 0)) {
             NamedCompound ce=new NamedCompound(bes.length > 1 ? "paste entries" : "paste entry");
@@ -174,8 +174,10 @@ catch (          IOException ex) {
               output("Pasted cell contents");
             }
  catch (            UnsupportedFlavorException ex) {
+              ex.printStackTrace();
             }
 catch (            IOException ex) {
+              ex.printStackTrace();
             }
 catch (            IllegalArgumentException ex) {
               output("Can't paste.");
@@ -268,9 +270,7 @@ catch (            IllegalArgumentException ex) {
       int[] rows=entryTable.getSelectedRows();
       int numSelected=rows.length;
       BibtexEntry bes=null;
-      if (numSelected > 0) {
-      }
- else {
+      if (numSelected == 0) {
         JOptionPane.showMessageDialog(frame,Globals.lang("First select the entries you want keys to be generated for."),Globals.lang("Autogenerate BibTeX key"),JOptionPane.INFORMATION_MESSAGE);
         return;
       }
@@ -404,7 +404,6 @@ catch (            IllegalArgumentException ex) {
           if (importGroups) {
             Vector newGroups=meta.getData("groups");
             if (newGroups != null) {
-              Vector groups=metaData.getData("groups");
               if (groupSelector == null) {
                 groupSelector=new GroupSelector(frame,ths,new Vector(),sidePaneManager,prefs);
                 sidePaneManager.register("groups",groupSelector);
@@ -415,7 +414,7 @@ catch (            IllegalArgumentException ex) {
           }
           if (importSelectorWords) {
             Iterator i=meta.iterator();
-            for (; i.hasNext(); ) {
+            while (i.hasNext()) {
               String s=(String)i.next();
               if (s.startsWith(Globals.SELECTOR_META_PREFIX)) {
                 metaData.putData(s,meta.getData(s));
