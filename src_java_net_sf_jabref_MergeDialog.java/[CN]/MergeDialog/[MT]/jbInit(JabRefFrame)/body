@@ -1,0 +1,38 @@
+{
+  titledBorder1=new TitledBorder(BorderFactory.createLineBorder(new Color(153,153,153),2),Globals.lang("Options"));
+  panel1.setLayout(borderLayout1);
+  ok.setText(Globals.lang("Ok"));
+  ok.addActionListener(new MergeDialog_ok_actionAdapter(this));
+  Cancel.setText(Globals.lang("Cancel"));
+  Cancel.addActionListener(new MergeDialog_Cancel_actionAdapter(this));
+  jPanel1.setBorder(titledBorder1);
+  jPanel1.setLayout(gridBagLayout1);
+  entries.setToolTipText("");
+  entries.setSelected(true);
+  entries.setText(Globals.lang("Import entries"));
+  strings.setSelected(true);
+  strings.setText(Globals.lang("Import strings"));
+  groups.setText(Globals.lang("Import group definitions"));
+  selector.setText(Globals.lang("Import word selector definitions"));
+  this.setModal(true);
+  this.setResizable(false);
+  this.setTitle("Import database");
+  getContentPane().add(panel1);
+  panel1.add(jPanel2,BorderLayout.SOUTH);
+  jPanel2.add(ok,null);
+  jPanel2.add(Cancel,null);
+  panel1.add(jPanel1,BorderLayout.CENTER);
+  jPanel1.add(entries,new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL,new Insets(0,0,0,0),0,0));
+  jPanel1.add(strings,new GridBagConstraints(0,1,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,0,0,0),0,0));
+  jPanel1.add(groups,new GridBagConstraints(0,2,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,0,0,0),0,0));
+  jPanel1.add(selector,new GridBagConstraints(0,3,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,0,0,0),0,0));
+  ActionMap am=jPanel1.getActionMap();
+  InputMap im=jPanel1.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(parent.prefs.getKey("Close dialog"),"close");
+  am.put("close",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+}

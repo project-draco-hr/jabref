@@ -1,0 +1,90 @@
+{
+  super(parent_,Globals.lang("Replace string"),true);
+  parent=parent_;
+  bg.add(allFi);
+  bg.add(field);
+  ActionListener okListener=new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      s1=from.getText();
+      s2=to.getText();
+      if (s1.equals(""))       return;
+      ok_pressed=true;
+      flds=Util.delimToStringArray(fields.getText().toLowerCase(),";");
+      dispose();
+    }
+  }
+;
+  ok.addActionListener(okListener);
+  to.addActionListener(okListener);
+  fields.addActionListener(okListener);
+  AbstractAction cancelAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+;
+  cancel.addActionListener(cancelAction);
+  ActionMap am=settings.getActionMap();
+  InputMap im=settings.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(parent.prefs.getKey("Close dialog"),"close");
+  am.put("close",cancelAction);
+  settings.setLayout(gbl);
+  opt.setLayout(gbl);
+  main.setLayout(gbl);
+  settings.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Replace string")));
+  main.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Strings")));
+  con.gridwidth=2;
+  con.weightx=0;
+  con.anchor=GridBagConstraints.WEST;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  con.gridy=0;
+  con.gridx=0;
+  gbl.setConstraints(selOnly,con);
+  settings.add(selOnly);
+  con.gridy=1;
+  gbl.setConstraints(allFi,con);
+  settings.add(allFi);
+  con.gridwidth=1;
+  con.gridy=2;
+  con.gridx=0;
+  gbl.setConstraints(field,con);
+  settings.add(field);
+  con.gridx=1;
+  con.weightx=1;
+  con.insets=new Insets(3,5,3,5);
+  gbl.setConstraints(fields,con);
+  settings.add(fields);
+  con.weightx=0;
+  con.gridx=0;
+  con.gridy=0;
+  gbl.setConstraints(fl,con);
+  main.add(fl);
+  con.gridy=1;
+  gbl.setConstraints(tl,con);
+  main.add(tl);
+  con.weightx=1;
+  con.gridx=1;
+  con.gridy=0;
+  gbl.setConstraints(from,con);
+  main.add(from);
+  con.gridy=1;
+  gbl.setConstraints(to,con);
+  main.add(to);
+  con.gridx=GridBagConstraints.RELATIVE;
+  con.gridy=GridBagConstraints.RELATIVE;
+  con.weightx=1;
+  con.gridwidth=1;
+  con.anchor=GridBagConstraints.EAST;
+  con.fill=GridBagConstraints.NONE;
+  gbl.setConstraints(ok,con);
+  opt.add(ok);
+  con.anchor=GridBagConstraints.WEST;
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(cancel,con);
+  opt.add(cancel);
+  getContentPane().add(main,BorderLayout.NORTH);
+  getContentPane().add(settings,BorderLayout.CENTER);
+  getContentPane().add(opt,BorderLayout.SOUTH);
+  pack();
+  Util.placeDialog(this,parent);
+}
