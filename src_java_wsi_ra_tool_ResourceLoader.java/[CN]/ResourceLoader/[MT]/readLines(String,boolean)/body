@@ -1,0 +1,29 @@
+{
+  if (resourceFile == null) {
+    return null;
+  }
+  byte[] bytes=ResourceLoader.instance().getBytesFromResourceLocation(resourceFile);
+  if (bytes == null) {
+    return null;
+  }
+  ByteArrayInputStream sReader=new ByteArrayInputStream(bytes);
+  LineNumberReader lnr=new LineNumberReader(new InputStreamReader(sReader));
+  String line;
+  Vector vector=new Vector(100);
+  try {
+    while ((line=lnr.readLine()) != null) {
+      if (!ignoreCommentedLines) {
+        if (!(line.charAt(0) == '#')) {
+          vector.add(line);
+        }
+      }
+ else {
+        vector.add(line);
+      }
+    }
+  }
+ catch (  IOException ex) {
+    ex.printStackTrace();
+  }
+  return vector;
+}

@@ -1,0 +1,31 @@
+{
+  skipWhitespace();
+  int c;
+  StringBuffer buffer=null;
+  int previous=-1;
+  while (!_eof) {
+    c=read();
+    if (c == -1) {
+      _eof=true;
+      parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
+      return null;
+    }
+    if ((c == '\\') && (peek() != '\\') && (previous != '\\')) {
+      if (buffer != null) {
+        parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
+        buffer=null;
+      }
+      parseField();
+    }
+ else {
+      if (buffer == null) {
+        buffer=new StringBuffer(100);
+      }
+      if (!((c == '\\') && (previous == '\\'))) {
+        buffer.append((char)c);
+      }
+    }
+    previous=c;
+  }
+  return null;
+}

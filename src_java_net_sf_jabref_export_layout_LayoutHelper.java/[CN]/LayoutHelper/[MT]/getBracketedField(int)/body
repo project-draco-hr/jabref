@@ -1,0 +1,41 @@
+{
+  StringBuffer buffer=null;
+  int previous=-1;
+  int c;
+  boolean start=false;
+  while (!_eof) {
+    c=read();
+    if (c == -1) {
+      _eof=true;
+      if (buffer != null) {
+        parsedEntries.add(new StringInt(buffer.toString(),_field));
+      }
+      return null;
+    }
+    if ((c == '{') || (c == '}')) {
+      if (c == '}') {
+        if (buffer != null) {
+          parsedEntries.add(new StringInt(buffer.toString(),_field));
+          return null;
+        }
+      }
+ else {
+        start=true;
+      }
+    }
+ else {
+      if (buffer == null) {
+        buffer=new StringBuffer(100);
+      }
+      if (start) {
+        if (c == '}') {
+        }
+ else {
+          buffer.append((char)c);
+        }
+      }
+    }
+    previous=c;
+  }
+  return null;
+}

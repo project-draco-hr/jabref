@@ -1,0 +1,21 @@
+{
+  int index=0;
+  int oldPos=0;
+  String author;
+  StringBuffer sb=new StringBuffer(100);
+  sb.append("<author>");
+  if (fieldText.indexOf(" and ") == -1) {
+    singleAuthor(sb,fieldText);
+  }
+ else {
+    while ((index=fieldText.indexOf(" and ",index + 1)) != -1) {
+      author=fieldText.substring(oldPos,index);
+      singleAuthor(sb,author);
+      sb.append("\n");
+      oldPos=index + 4;
+    }
+  }
+  sb.append("</author>");
+  fieldText=sb.toString();
+  return fieldText;
+}

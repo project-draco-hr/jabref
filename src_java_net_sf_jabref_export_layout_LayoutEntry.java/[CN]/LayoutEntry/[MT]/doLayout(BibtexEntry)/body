@@ -1,0 +1,76 @@
+{
+  if (type == LayoutHelper.IS_LAYOUT_TEXT) {
+    return text;
+  }
+ else   if (type == LayoutHelper.IS_SIMPLE_FIELD) {
+    if (text.equals("bibtextype")) {
+      return bibtex.getType().getName();
+    }
+    String field=(String)bibtex.getField(text);
+    if (field == null) {
+      return null;
+    }
+ else {
+      return field;
+    }
+  }
+ else   if (type == LayoutHelper.IS_FIELD_START) {
+    String field=(String)bibtex.getField(text);
+    if (field == null) {
+      return null;
+    }
+ else {
+      StringBuffer sb=new StringBuffer(100);
+      String fieldText;
+      boolean previousSkipped=false;
+      for (int i=0; i < layoutEntries.length; i++) {
+        fieldText=layoutEntries[i].doLayout(bibtex);
+        if (fieldText == null) {
+          if ((i + 1) < layoutEntries.length) {
+            if (layoutEntries[i + 1].doLayout(bibtex).trim().length() == 0) {
+              i++;
+              previousSkipped=true;
+              continue;
+            }
+          }
+        }
+ else {
+          if (previousSkipped) {
+            int eol=0;
+            while ((eol < fieldText.length()) && ((fieldText.charAt(eol) == '\n') || (fieldText.charAt(eol) == '\r'))) {
+              eol++;
+            }
+            if (eol < fieldText.length()) {
+              sb.append(fieldText.substring(eol));
+            }
+          }
+ else {
+            sb.append(fieldText);
+          }
+        }
+        previousSkipped=false;
+      }
+      return sb.toString();
+    }
+  }
+ else   if (type == LayoutHelper.IS_FIELD_END) {
+  }
+ else   if (type == LayoutHelper.IS_OPTION_FIELD) {
+    String fieldEntry;
+    if (text.equals("bibtextype")) {
+      fieldEntry=bibtex.getType().getName();
+    }
+    String field=(String)bibtex.getField(text);
+    if (field == null) {
+      fieldEntry="";
+    }
+ else {
+      fieldEntry=field;
+    }
+    if (option != null) {
+      fieldEntry=option.format(fieldEntry);
+    }
+    return fieldEntry;
+  }
+  return "";
+}

@@ -1,0 +1,64 @@
+{
+  StringBuffer buffer=null;
+  int previous=-1;
+  int c;
+  boolean start=false;
+  String option=null;
+  String tmp;
+  while (!_eof) {
+    c=read();
+    if (c == -1) {
+      _eof=true;
+      if (buffer != null) {
+        if (option != null) {
+          tmp=buffer.toString() + "\n" + option;
+        }
+ else {
+          tmp=buffer.toString();
+        }
+        parsedEntries.add(new StringInt(tmp,IS_OPTION_FIELD));
+      }
+      return null;
+    }
+    if ((c == '{') || (c == '}') || (c == ']')|| (c == '[')) {
+      if ((c == '}') || (c == ']')) {
+        if (buffer != null) {
+          if (c == ']') {
+            option=buffer.toString();
+            buffer=null;
+            start=false;
+          }
+          if (buffer != null) {
+            if (option != null) {
+              tmp=buffer.toString() + "\n" + option;
+            }
+ else {
+              tmp=buffer.toString();
+            }
+            parsedEntries.add(new StringInt(tmp,IS_OPTION_FIELD));
+            return null;
+          }
+        }
+      }
+ else {
+        start=true;
+      }
+    }
+ else {
+      if (buffer == null) {
+        buffer=new StringBuffer(100);
+      }
+      if (start) {
+        if ((c == '}') || (c == ']')) {
+        }
+ else {
+          if (c != '\\') {
+            buffer.append((char)c);
+          }
+        }
+      }
+    }
+    previous=c;
+  }
+  return null;
+}

@@ -1,0 +1,32 @@
+{
+  if (fileName.startsWith("/cygdrive/")) {
+    int length="/cygdrive/".length();
+    fileName=fileName.substring(length,length + 1) + ":" + fileName.substring(length + 1);
+  }
+  File file=new File(fileName);
+  FileInputStream fis=null;
+  try {
+    fis=new FileInputStream(file);
+  }
+ catch (  Exception e) {
+    return null;
+  }
+  BufferedInputStream bis=new BufferedInputStream(fis);
+  int size=(int)file.length();
+  byte[] b=new byte[size];
+  int rb=0;
+  int chunk=0;
+  try {
+    while (((int)size - rb) > 0) {
+      chunk=bis.read(b,rb,(int)size - rb);
+      if (chunk == -1) {
+        break;
+      }
+      rb+=chunk;
+    }
+  }
+ catch (  Exception e) {
+    return null;
+  }
+  return b;
+}
