@@ -1,0 +1,22 @@
+{
+  ArrayList bibItems=null;
+  try {
+    String baseUrl="http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&rettype=citation&id=" + id;
+    URL url=new URL(baseUrl);
+    HttpURLConnection data=(HttpURLConnection)url.openConnection();
+    SAXParserFactory parserFactory=SAXParserFactory.newInstance();
+    parserFactory.setValidating(true);
+    parserFactory.setNamespaceAware(true);
+    SAXParser parser=parserFactory.newSAXParser();
+    MedlineHandler handler=new MedlineHandler();
+    parser.parse(data.getInputStream(),handler);
+    bibItems=handler.getItems();
+  }
+ catch (  javax.xml.parsers.ParserConfigurationException e1) {
+  }
+catch (  org.xml.sax.SAXException e2) {
+  }
+catch (  java.io.IOException e3) {
+  }
+  return bibItems;
+}

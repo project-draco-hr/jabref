@@ -35,7 +35,7 @@
   }
 );
   importMenu.add(newISIFile_mItem);
-  JMenuItem newMedlineFile_mItem=new JMenuItem(Globals.lang("Medline XML"));
+  JMenuItem newMedlineFile_mItem=new JMenuItem(Globals.lang("Medline XML File"));
   newMedlineFile_mItem.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       String tempFilename=getNewFile();
@@ -47,6 +47,23 @@
   }
 );
   importMenu.add(newMedlineFile_mItem);
+  JMenuItem newMedlineId_mItem=new JMenuItem(Globals.lang("Medline Fetch By ID"));
+  newMedlineId_mItem.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      String idList=JOptionPane.showInputDialog(ths,"Enter a comma separated list of Medline ids","Fetch Medline Citation",JOptionPane.PLAIN_MESSAGE);
+      Pattern p=Pattern.compile("\\d+[,\\d+]*");
+      Matcher m=p.matcher(idList);
+      if (m.matches()) {
+        ArrayList bibs=ImportFormatReader.fetchMedline(idList);
+        addBibEntries(bibs,idList);
+      }
+ else {
+        JOptionPane.showMessageDialog(ths,"Sorry, I was expecting a comma separated list of Medline IDs (numbers)!","Input Error",JOptionPane.ERROR_MESSAGE);
+      }
+    }
+  }
+);
+  importMenu.add(newMedlineId_mItem);
   JMenuItem newOvidFile_mItem=new JMenuItem(Globals.lang("Ovid"));
   newOvidFile_mItem.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
