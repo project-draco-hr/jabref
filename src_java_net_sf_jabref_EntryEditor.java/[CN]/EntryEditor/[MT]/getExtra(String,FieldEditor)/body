@@ -26,7 +26,7 @@
           File newFile=new File(chosenFile);
           ed.setText(newFile.getPath());
           prefs.put(fieldName + Globals.FILETYPE_PREFS_EXT,newFile.getPath());
-          storeFieldAction.actionPerformed(new ActionEvent(ed,0,""));
+          updateField(ed);
         }
       }
     }
@@ -36,7 +36,7 @@
  else   if ((s != null) && s.equals("browsePdf")) {
     JPanel pan=new JPanel();
     pan.setLayout(new GridLayout(2,1));
-    JButton but=new JButton(Globals.lang("Browse")), auto=new JButton(Globals.lang("Auto"));
+    JButton but=new JButton(Globals.lang("Browse")), download=new JButton(Globals.lang("Download"));
     ((JComponent)editor).addMouseListener(new ExternalViewerListener());
     but.addActionListener(new ActionListener(){
       public void actionPerformed(      ActionEvent e){
@@ -70,35 +70,42 @@
       }
     }
 );
-    auto.addActionListener(new ActionListener(){
+    download.addActionListener(new ActionListener(){
       public void actionPerformed(      ActionEvent e){
-        Object o=entry.getField(Globals.KEY_FIELD);
-        if ((o == null) || (prefs.get("pdfDirectory") == null)) {
-          frame.output(Globals.lang("You must set both bibtex key and PDF directory") + ".");
-          return;
-        }
-        panel.output(Globals.lang("Searching for PDF file") + " '" + o+ ".pdf'...");
-        (new Thread(){
-          public void run(){
-            Object o=entry.getField(Globals.KEY_FIELD);
-            String found=Util.findPdf((String)o,prefs.get("pdfDirectory"));
-            if (found != null) {
-              ed.setText(found);
-              storeFieldAction.actionPerformed(new ActionEvent(ed,0,""));
-              panel.output(Globals.lang("PDF field set") + ".");
+        String res=JOptionPane.showInputDialog((Component)ed,Globals.lang("Enter URL to download"));
+        if (res != null) {
+          URL url;
+          try {
+            url=new URL(res);
+            File file=new File(new File(prefs.get("pdfDirectory")),entry.getField(Globals.KEY_FIELD) + ".pdf");
+            URLDownload udl=new URLDownload((Component)ed,url,file);
+            frame.output(Globals.lang("Downloading..."));
+            try {
+              udl.download();
             }
- else {
-              panel.output(Globals.lang("No PDF found") + ".");
+ catch (            IOException e2) {
+              JOptionPane.showMessageDialog((Component)ed,"Invalid URL","Download file",JOptionPane.ERROR_MESSAGE);
+              logger.log(java.util.logging.Level.WARNING,"Error while downloading " + url.toString(),e2);
             }
+            frame.output(Globals.lang("Download completed"));
+            ed.setText(file.toURL().toString());
+            updateField(ed);
+          }
+ catch (          MalformedURLException e1) {
+            JOptionPane.showMessageDialog((Component)ed,"Invalid URL","Download file",JOptionPane.ERROR_MESSAGE);
           }
         }
-).start();
       }
     }
 );
     pan.add(but);
-    pan.add(auto);
+    pan.add(download);
+    ((JComponent)editor).setDropTarget(new DropTarget((Component)editor,DnDConstants.ACTION_NONE,new UrlDragDrop(this,frame,editor)));
     return pan;
+  }
+ else   if ((s != null) && s.equals("url")) {
+    ((JComponent)editor).setDropTarget(new DropTarget((Component)editor,DnDConstants.ACTION_NONE,new SimpleUrlDragDrop(editor,storeFieldAction)));
+    return null;
   }
  else {
     return null;
