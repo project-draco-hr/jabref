@@ -1,0 +1,33 @@
+{
+  LayoutHelper layoutHelper=null;
+  URL reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + "."+ entry.getType().getName()+ ".layout");
+  try {
+    if (reso == null)     reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + ".layout");
+    layoutHelper=new LayoutHelper(new InputStreamReader(reso.openStream()));
+  }
+ catch (  IOException ex) {
+  }
+  layout=layoutHelper.getLayoutFromText();
+  reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + ".begin.layout");
+  StringWriter stw=new StringWriter();
+  InputStreamReader reader;
+  int c;
+  if (reso != null) {
+    reader=new InputStreamReader(reso.openStream());
+    while ((c=reader.read()) != -1) {
+      stw.write((char)c);
+    }
+    reader.close();
+  }
+  prefix=stw.toString();
+  reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + ".end.layout");
+  stw=new StringWriter();
+  if (reso != null) {
+    reader=new InputStreamReader(reso.openStream());
+    while ((c=reader.read()) != -1) {
+      stw.write((char)c);
+    }
+    reader.close();
+  }
+  postfix=stw.toString();
+}
