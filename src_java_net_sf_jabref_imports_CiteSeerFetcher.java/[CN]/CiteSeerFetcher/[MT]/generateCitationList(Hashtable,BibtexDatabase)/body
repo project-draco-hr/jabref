@@ -1,6 +1,7 @@
 {
   try {
     NamedCompound dummyNamedCompound=new NamedCompound("Import Data from CiteSeer Database");
+    BooleanAssign dummyBoolean=new BooleanAssign();
     if ((citationHashTable != null) && (citationHashTable.size() > 0)) {
       int citationCounter=0;
       for (Enumeration e=citationHashTable.keys(); e.hasMoreElements(); ) {
@@ -14,7 +15,7 @@
         citeseerURLString.append("&" + "identifier=" + key);
         GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
         citeseerHttpClient.executeMethod(citeseerMethod);
-        saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(dummyNamedCompound,newEntry,panel));
+        saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(dummyNamedCompound,newEntry,panel,dummyBoolean));
         citeseerMethod.releaseConnection();
         database.insertEntry(newEntry);
         citationCounter++;

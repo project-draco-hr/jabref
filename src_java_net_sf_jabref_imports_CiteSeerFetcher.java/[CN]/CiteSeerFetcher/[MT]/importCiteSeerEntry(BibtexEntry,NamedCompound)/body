@@ -1,11 +1,9 @@
 {
-  boolean newValue=false;
   SAXParserFactory factory=SAXParserFactory.newInstance();
-  String targetURL=(String)be.getField("url");
+  BooleanAssign newValue=new BooleanAssign();
+  String identifier=generateCanonicalIdentifier(be);
   try {
-    if (targetURL != null && targetURL.startsWith(PREFIX_URL) && (targetURL.length() > (PREFIX_URL.length() + 5))) {
-      String id=targetURL.substring(PREFIX_URL.length(),targetURL.length() - 5);
-      String identifier=PREFIX_IDENTIFIER + id;
+    if (identifier != null) {
       StringBuffer citeseerURLString=new StringBuffer();
       citeseerURLString.append(OAI_URL);
       citeseerURLString.append(OAI_ACTION);
@@ -13,14 +11,24 @@
       citeseerURLString.append("&" + "identifier=" + identifier);
       GetMethod citeseerMethod=new GetMethod(citeseerURLString.toString());
       int response=citeseerHttpClient.executeMethod(citeseerMethod);
-      saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(citeseerNC,be,panel));
+      saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(citeseerNC,be,panel,newValue));
       citeseerMethod.releaseConnection();
-      newValue=true;
+      if (newValue.getValue() == false) {
+        int row=panel.getTableModel().getNumberFromName(be.getId());
+        ShowBadIdentifierDialog dialog=new ShowBadIdentifierDialog(generateCanonicalURL(be),row);
+        SwingUtilities.invokeLater(dialog);
+      }
     }
  else {
       int row=panel.getTableModel().getNumberFromName(be.getId());
-      ShowBadURLDialog dialog=new ShowBadURLDialog(targetURL,row);
-      dialog.run();
+      if (be.getField("url") == null) {
+        ShowMissingURLDialog dialog=new ShowMissingURLDialog(row);
+        SwingUtilities.invokeLater(dialog);
+      }
+ else {
+        ShowBadURLDialog dialog=new ShowBadURLDialog((String)be.getField("url"),row);
+        SwingUtilities.invokeLater(dialog);
+      }
     }
   }
  catch (  HttpException e) {
@@ -29,11 +37,11 @@
   }
 catch (  IOException e) {
     ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
-    dialog.run();
+    SwingUtilities.invokeLater(dialog);
   }
 catch (  SAXException e) {
     System.out.println("SAXException: " + e.getLocalizedMessage());
     e.printStackTrace();
   }
-  return newValue;
+  return newValue.getValue();
 }

@@ -1,12 +1,8 @@
 {
   boolean abortOperation=false;
-  Object o=currentEntry.getField("url");
-  String targetURL=(String)o;
+  String identifier=generateCanonicalIdentifier(currentEntry);
   try {
-    if ((o != null) && targetURL.startsWith(PREFIX_URL) && (targetURL.length() > (PREFIX_URL.length() + 5))) {
-      Util.pr("targetUrl: " + targetURL);
-      String id=targetURL.substring(PREFIX_URL.length(),targetURL.length() - 5);
-      String identifier=PREFIX_IDENTIFIER + id;
+    if (identifier != null) {
       StringBuffer citeseerURLString=new StringBuffer();
       citeseerURLString.append(OAI_URL);
       citeseerURLString.append(OAI_ACTION);
@@ -17,10 +13,16 @@
       saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerCitationHandler(citationHashTable));
       citeseerMethod.releaseConnection();
     }
- else     if (o != null) {
+ else {
       int row=panel.getTableModel().getNumberFromName(currentEntry.getId());
-      ShowBadURLDialog dialog=new ShowBadURLDialog(targetURL,row);
-      SwingUtilities.invokeLater(dialog);
+      if (currentEntry.getField("url") == null) {
+        ShowMissingURLDialog dialog=new ShowMissingURLDialog(row);
+        SwingUtilities.invokeLater(dialog);
+      }
+ else {
+        ShowBadURLDialog dialog=new ShowBadURLDialog((String)currentEntry.getField("url"),row);
+        SwingUtilities.invokeLater(dialog);
+      }
     }
   }
  catch (  HttpException e) {
