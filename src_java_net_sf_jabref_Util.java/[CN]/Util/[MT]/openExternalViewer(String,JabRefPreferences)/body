@@ -18,6 +18,12 @@
   }
  else   if (link.endsWith(".pdf")) {
     try {
+      File f=new File(link);
+      String dir=prefs.get("pdfDirectory");
+      if (!f.exists() && (dir != null)) {
+        if (dir.endsWith(System.getProperty("file.separator")))         link=dir + link;
+ else         link=dir + System.getProperty("file.separator") + link;
+      }
       Process child=Runtime.getRuntime().exec(prefs.get("pdfviewer") + " " + link);
     }
  catch (    IOException e) {

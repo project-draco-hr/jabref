@@ -1,10 +1,27 @@
 {
   String idList=tf.getText().replace(';',',');
-  if (idList == null || idList.trim().equals(""))   return;
-  Pattern p=Pattern.compile("\\d+[,\\d+]*");
-  Matcher m=p.matcher(idList);
-  if (m.matches()) {
-    panel.frame().output(Globals.lang("Fetching Medline..."));
+  Pattern p1=Pattern.compile("\\d+[,\\d+]*"), p2=Pattern.compile(".+[,.+]*");
+  Matcher m1=p1.matcher(idList), m2=p2.matcher(idList);
+  if (m1.matches()) {
+    fetchById();
+  }
+ else   if (m2.matches()) {
+    panel.frame().output(Globals.lang("Fetching Medline by author..."));
+    idList=setupTerm(idList);
+    String[] idListArray=getIds(idList);
+    int idMax=idListArray.length;
+    Util.pr("fikk " + idListArray.length);
+    String[] titles=new String[idMax];
+    titles=getTitles(idListArray);
+    Util.pr("titler " + titles.length);
+    authorDialog=new AuthorDialog(jFrame,titles);
+    boolean[] picks=authorDialog.showDialog();
+    idList="";
+    for (int i=0; i < titles.length; i++) {
+      if (picks[i]) {
+        idList+=idListArray[i] + ",";
+      }
+    }
     ArrayList bibs=fetchMedline(idList);
     if ((bibs != null) && (bibs.size() > 0)) {
       tf.setText("");
@@ -30,6 +47,6 @@
  else     panel.output(Globals.lang("No Medline entries found."));
   }
  else {
-    JOptionPane.showMessageDialog(panel.frame(),Globals.lang("Please enter a semicolon or comma separated list of Medline IDs (numbers)."),Globals.lang("Input error"),JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(panel.frame(),Globals.lang("Please enter a semicolon or comma separated list of either Medline IDs (numbers), " + "or author names to search for."),Globals.lang("Input error"),JOptionPane.ERROR_MESSAGE);
   }
 }
