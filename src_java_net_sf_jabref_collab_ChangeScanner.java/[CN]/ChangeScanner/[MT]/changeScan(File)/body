@@ -1,24 +1,4 @@
 {
-  File tempFile=Globals.fileUpdateMonitor.getTempFile(panel.fileMonitorHandle());
-  ParserResult pr=ImportFormatReader.loadDatabase(tempFile,Globals.prefs.get("defaultEncoding"));
-  BibtexDatabase inTemp=pr.getDatabase();
-  MetaData mdInTemp=new MetaData(pr.getMetaData());
-  pr=ImportFormatReader.loadDatabase(f,Globals.prefs.get("defaultEncoding"));
-  BibtexDatabase onDisk=pr.getDatabase();
-  MetaData mdOnDisk=new MetaData(pr.getMetaData());
-  EntrySorter sInTemp=inTemp.getSorter(new EntryComparator(true,true,true,sortBy[0],sortBy[1],sortBy[2]));
-  EntrySorter sOnDisk=onDisk.getSorter(new EntryComparator(true,true,true,sortBy[0],sortBy[1],sortBy[2]));
-  EntrySorter sInMem=inMem.getSorter(new EntryComparator(true,true,true,sortBy[0],sortBy[1],sortBy[2]));
-  scanPreamble(inMem,inTemp,onDisk);
-  scanStrings(inMem,inTemp,onDisk);
-  scanEntries(sInMem,sInTemp,sOnDisk);
-  scanGroups(mdInMem,mdInTemp,mdOnDisk);
-  if (changes.getChildCount() > 0) {
-    ChangeDisplayDialog dial=new ChangeDisplayDialog(frame,panel,changes);
-    Util.placeDialog(dial,frame);
-    dial.show();
-  }
- else {
-    JOptionPane.showMessageDialog(frame,Globals.lang("No actual changes found."),Globals.lang("External changes"),JOptionPane.INFORMATION_MESSAGE);
-  }
+  this.f=f;
+  start();
 }
