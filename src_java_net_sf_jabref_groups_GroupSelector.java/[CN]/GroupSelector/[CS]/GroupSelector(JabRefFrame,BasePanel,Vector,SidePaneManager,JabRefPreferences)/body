@@ -11,6 +11,26 @@
     groups.removeElementAt(groups.size() - 1);
     n=(double)(groups.size() - OFFSET);
   }
+  settings.add(andCb);
+  settings.add(orCb);
+  settings.addSeparator();
+  settings.add(invCb);
+  settings.addSeparator();
+  settings.add(highlCb);
+  settings.add(floatCb);
+  settings.addSeparator();
+  settings.add(select);
+  openset.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      if (settings.isVisible()) {
+      }
+ else {
+        JButton src=(JButton)e.getSource();
+        settings.show(src,0,openset.getHeight());
+      }
+    }
+  }
+);
   Dimension butDim=new Dimension(20,20);
   newButton.setPreferredSize(butDim);
   newButton.setMinimumSize(butDim);
@@ -31,8 +51,14 @@
   andCb.setToolTipText(Globals.lang("Display only entries belonging to all selected" + " groups."));
   orCb.setToolTipText(Globals.lang("Display all entries belonging to one or more " + "of the selected groups."));
   autoGroup.setToolTipText(Globals.lang("Automatically create groups for database."));
+  invCb.setToolTipText(Globals.lang("Show entries not in group selection"));
+  floatCb.setToolTipText(Globals.lang("Move entries in group selection to the top"));
+  highlCb.setToolTipText(Globals.lang("Gray out entries not in group selection"));
+  select.setToolTipText(Globals.lang("Select entries in group selection"));
   bgr.add(andCb);
   bgr.add(orCb);
+  visMode.add(floatCb);
+  visMode.add(highlCb);
   setLayout(gbl);
   SidePaneHeader header=new SidePaneHeader("Groups",GUIGlobals.groupsIconFile,this);
   con.gridwidth=GridBagConstraints.REMAINDER;
@@ -66,18 +92,7 @@
   con.weighty=1;
   gbl.setConstraints(sp,con);
   add(sp);
-  JPanel lower=new JPanel();
-  lower.setLayout(gbl);
-  lower.setBorder(BorderFactory.createEtchedBorder());
-  con.weighty=0;
-  con.anchor=GridBagConstraints.WEST;
-  gbl.setConstraints(andCb,con);
-  lower.add(andCb);
-  gbl.setConstraints(orCb,con);
-  lower.add(orCb);
-  gbl.setConstraints(invCb,con);
-  lower.add(invCb);
-  gbl.setConstraints(lower,con);
-  add(lower);
+  gbl.setConstraints(openset,con);
+  add(openset);
   definePopup();
 }
