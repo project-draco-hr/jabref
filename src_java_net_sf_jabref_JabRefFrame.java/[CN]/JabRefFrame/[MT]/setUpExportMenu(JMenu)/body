@@ -1,0 +1,41 @@
+{
+  ActionListener listener=new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      JMenuItem source=(JMenuItem)e.getSource();
+      String lfFileName=null, extension=null;
+      if (source == htmlItem) {
+        lfFileName="html";
+        extension=".html";
+      }
+ else       if (source == docbookItem) {
+        lfFileName="docbook";
+        extension=".docbook";
+      }
+      File outFile=null;
+      JFileChooser chooser=(prefs.get("workingDirectory") == null) ? new JabRefFileChooser((File)null) : new JabRefFileChooser(new File(prefs.get("workingDirectory")));
+      OpenFileFilter off=new OpenFileFilter(extension);
+      chooser.addChoosableFileFilter(off);
+      int returnVal=chooser.showSaveDialog(ths);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        outFile=chooser.getSelectedFile();
+        if ((chooser.getFileFilter() == off) && !outFile.getPath().endsWith(extension))         outFile=new File(outFile.getPath() + extension);
+      }
+ else       return;
+      InputStreamReader reader=null;
+      try {
+        URL reso=JabRefFrame.class.getResource("/resource/layout/" + lfFileName + ".layout");
+        reader=new InputStreamReader(reso.openStream());
+        FileActions.exportDatabase(basePanel().database,reader,outFile,prefs);
+      }
+ catch (      IOException ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+;
+  JMenuItem item;
+  htmlItem.addActionListener(listener);
+  menu.add(htmlItem);
+  docbookItem.addActionListener(listener);
+  menu.add(docbookItem);
+}
