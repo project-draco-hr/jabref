@@ -3,9 +3,6 @@
   try {
     Element mods=d.createElement("mods");
     mods.setAttribute("version","3.0");
-    mods.setAttribute("xmlns:xlink:","http://www.w3.org/1999/xlink");
-    mods.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
-    mods.setAttribute("xsi:schemaLocation","http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-0.xsd");
     mods.setAttribute("ID",id);
     Element titleInfo=d.createElement("titleInfo");
     Element mainTitle=d.createElement("title");
@@ -29,7 +26,7 @@
           namePart.setTextContent(name.getGivenNames());
           modsName.appendChild(namePart);
         }
-        Element role=d.createElement("name");
+        Element role=d.createElement("role");
         Element roleTerm=d.createElement("roleTerm");
         roleTerm.setAttribute("type","text");
         roleTerm.setTextContent("author");
@@ -64,6 +61,17 @@
       genreElement.setAttribute("authority","marc");
       genreElement.setTextContent(genre);
       mods.appendChild(genreElement);
+    }
+    for (Iterator iter=extensionFields.entrySet().iterator(); iter.hasNext(); ) {
+      Element extension=d.createElement("extension");
+      Map.Entry theEntry=(Map.Entry)iter.next();
+      String field=(String)theEntry.getKey();
+      String value=(String)theEntry.getValue();
+      if (handledExtensions.contains(field))       continue;
+      Element theData=d.createElement(field);
+      theData.setTextContent(value);
+      extension.appendChild(theData);
+      mods.appendChild(extension);
     }
     return mods;
   }
