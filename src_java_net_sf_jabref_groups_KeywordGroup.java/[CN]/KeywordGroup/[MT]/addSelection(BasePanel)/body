@@ -8,22 +8,8 @@
       if (!showWarningDialog(basePanel))       return null;
     }
   }
-  BibtexEntry[] bes=basePanel.getSelectedEntries();
-  if ((bes != null) && (bes.length > 0)) {
-    NamedCompound ce=new NamedCompound("add to group");
-    boolean modified=false;
-    for (int i=0; i < bes.length; i++) {
-      if (applyRule(null,bes[i]) == 0) {
-        String oldContent=(String)bes[i].getField(m_searchField), pre=" ", post="";
-        String newContent=(oldContent == null ? "" : oldContent + pre) + m_searchExpression + post;
-        bes[i].setField(m_searchField,newContent);
-        ce.addEdit(new UndoableFieldChange(bes[i],m_searchField,oldContent,newContent));
-        modified=true;
-      }
-    }
-    if (modified)     ce.end();
-    basePanel.output("Appended '" + m_searchExpression + "' to the '"+ m_searchField+ "' field of "+ bes.length+ " entr"+ (bes.length > 1 ? "ies." : "y."));
-    return modified ? ce : null;
-  }
-  return null;
+  BibtexEntry[] entries=basePanel.getSelectedEntries();
+  AbstractUndoableEdit undo=addSelection(entries);
+  if (entries.length > 0)   basePanel.output("Appended '" + m_searchExpression + "' to the '"+ m_searchField+ "' field of "+ entries.length+ " entr"+ (entries.length > 1 ? "ies." : "y."));
+  return undo;
 }
