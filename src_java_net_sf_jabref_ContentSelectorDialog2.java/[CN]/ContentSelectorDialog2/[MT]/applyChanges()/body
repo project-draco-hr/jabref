@@ -1,14 +1,15 @@
 {
-  for (Iterator i=wordListModels.keySet().iterator(); i.hasNext(); ) {
+  loop:   for (Iterator i=wordListModels.keySet().iterator(); i.hasNext(); ) {
     String fieldName=(String)i.next();
     DefaultListModel lm=(DefaultListModel)wordListModels.get(fieldName);
     int start=0;
-    while (((String)lm.get(start)).equals(WORD_FIRSTLINE_TEXT))     start++;
+    if (lm.size() > 0)     while (((String)lm.get(start)).equals(WORD_FIRSTLINE_TEXT))     start++;
     Vector data=metaData.getData(Globals.SELECTOR_META_PREFIX + fieldName);
     boolean newField=false;
     if (data == null) {
       newField=true;
       data=new Vector();
+      System.out.println("TODO: rebuild all existing EntryEditor instances, so they contain selectors for the new field(s).");
     }
  else     data.clear();
     for (int wrd=start; wrd < lm.size(); wrd++) {
@@ -17,4 +18,5 @@
     }
     if (newField)     metaData.putData(Globals.SELECTOR_META_PREFIX + fieldName,data);
   }
+  panel.updateAllContentSelectors();
 }
