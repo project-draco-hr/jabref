@@ -23,6 +23,13 @@
   external.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("External programs")));
   ownerHelp=new HelpAction(frame.helpDiag,GUIGlobals.ownerHelp,"Help",GUIGlobals.helpSmallIconFile);
   pdfHelp=new HelpAction(frame.helpDiag,GUIGlobals.pdfHelp,"Help",GUIGlobals.helpSmallIconFile);
+  String enc=prefs.get("defaultEncoding");
+  outer:   for (int i=0; i < Globals.ENCODINGS.length; i++) {
+    if (Globals.ENCODINGS[i].equalsIgnoreCase(enc)) {
+      encodings.setSelectedIndex(i);
+      break outer;
+    }
+  }
   general.setLayout(gbl);
   external.setLayout(gbl);
   con.gridwidth=1;
@@ -89,6 +96,13 @@
   con.gridwidth=GridBagConstraints.REMAINDER;
   gbl.setConstraints(language,con);
   general.add(language);
+  lab=new JLabel(Globals.lang("Default encoding") + ":");
+  con.gridwidth=1;
+  gbl.setConstraints(lab,con);
+  general.add(lab);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(encodings,con);
+  general.add(encodings);
   pdfDir=new JTextField(_prefs.get("pdfDirectory"),30);
   pdf=new JTextField(_prefs.get("pdfviewer"),30);
   ps=new JTextField(_prefs.get("psviewer"),30);

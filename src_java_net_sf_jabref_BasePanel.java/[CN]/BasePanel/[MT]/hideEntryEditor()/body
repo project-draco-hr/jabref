@@ -2,7 +2,11 @@
   BibtexEntry be=showing;
   showing=null;
   if (be != null) {
-    updateWiewToSelected();
+    if (entryTable.getSelectedRows().length == 0) {
+      int row=tableModel.getNumberFromName(be.getId());
+      entryTable.addRowSelectionInterval(row,row);
+    }
+    updateViewToSelected();
   }
   new FocusRequester(entryTable);
 }

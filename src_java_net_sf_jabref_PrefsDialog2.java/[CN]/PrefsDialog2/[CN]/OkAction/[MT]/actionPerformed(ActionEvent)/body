@@ -1,8 +1,13 @@
 {
-  for (int i=0; i < tabbed.getTabCount(); i++) {
-    ((PrefsTab)tabbed.getComponentAt(i)).storeSettings();
+  (new Thread(){
+    public void run(){
+      for (int i=0; i < tabbed.getTabCount(); i++) {
+        ((PrefsTab)tabbed.getComponentAt(i)).storeSettings();
+      }
+      frame.setupAllTables();
+      frame.output(Globals.lang("Preferences recorded."));
+      dispose();
+    }
   }
-  frame.setupAllTables();
-  frame.output(Globals.lang("Preferences recorded."));
-  dispose();
+).start();
 }

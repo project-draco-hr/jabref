@@ -2,7 +2,8 @@
   if ((fileToOpen != null) && (fileToOpen.exists())) {
     try {
       prefs.put("workingDirectory",fileToOpen.getPath());
-      ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen);
+      String encoding=Globals.prefs.get("defaultEncoding");
+      ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen,encoding);
       BibtexDatabase db=pr.getDatabase();
       HashMap meta=pr.getMetaData();
       if (pr.hasWarnings()) {

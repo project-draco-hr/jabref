@@ -2,22 +2,35 @@
   BibtexEntry be=null;
   try {
     initFile(file,prefs.getBoolean("backup"));
-    FileWriter fw=new FileWriter(file);
-    fw.write(GUIGlobals.SIGNATURE);
+    Writer fw=getWriter(file,encoding);
+    writeBibFileHeader(fw,encoding);
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
     String pri=prefs.get("priSort");
     String sec=prefs.get("secSort");
     String ter=prefs.get("terSort");
     TreeSet sorter=new TreeSet(new CrossRefEntryComparator(new EntryComparator(prefs.getBoolean("priDescending"),prefs.getBoolean("secDescending"),prefs.getBoolean("terDescending"),pri,sec,ter)));
-    if ((bes != null) && (bes.length > 0))     for (int i=0; i < bes.length; i++) {
-      sorter.add(bes[i]);
+    Set keySet=database.getKeySet();
+    if (keySet != null) {
+      Iterator i=keySet.iterator();
+      for (; i.hasNext(); ) {
+        sorter.add(database.getEntryById((String)(i.next())));
+      }
     }
     FieldFormatter ff=new LatexFieldFormatter();
     for (Iterator i=sorter.iterator(); i.hasNext(); ) {
       be=(BibtexEntry)(i.next());
-      be.write(fw,ff,true);
-      fw.write("\n");
+      boolean write=true;
+      if (checkSearch && !nonZeroField(be,Globals.SEARCH)) {
+        write=false;
+      }
+      if (checkGroup && !nonZeroField(be,Globals.GROUPSEARCH)) {
+        write=false;
+      }
+      if (write) {
+        be.write(fw,ff,true);
+        fw.write("\n");
+      }
     }
     if (metaData != null) {
       metaData.writeMetaData(fw);

@@ -420,7 +420,8 @@ catch (            Throwable ex) {
       if ((fileToOpen != null) && (fileToOpen.exists())) {
         try {
           prefs.put("workingDirectory",fileToOpen.getPath());
-          ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen);
+          String encoding=Globals.prefs.get("defaultEncoding");
+          ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen,encoding);
           BibtexDatabase db=pr.getDatabase();
           MetaData meta=new MetaData(pr.getMetaData());
           NamedCompound ce=new NamedCompound("Append database");
@@ -673,7 +674,7 @@ catch (            Throwable ex) {
       previewEnabled=!previewEnabled;
       if (!previewEnabled)       hidePreview();
  else {
-        updateWiewToSelected();
+        updateViewToSelected();
       }
     }
   }
