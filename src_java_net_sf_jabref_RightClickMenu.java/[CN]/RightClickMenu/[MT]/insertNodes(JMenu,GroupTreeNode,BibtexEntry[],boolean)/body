@@ -1,0 +1,23 @@
+{
+  final AbstractAction action=getAction(node,selection,add);
+  if (node.getChildCount() == 0) {
+    menu.add(action);
+    if (action.isEnabled())     menu.setEnabled(true);
+    return;
+  }
+  JMenu submenu=null;
+  if (node.getGroup() instanceof AllEntriesGroup) {
+    for (int i=0; i < node.getChildCount(); ++i) {
+      insertNodes(menu,(GroupTreeNode)node.getChildAt(i),selection,add);
+    }
+  }
+ else {
+    submenu=new JMenu("[" + node.getGroup().getName() + "]");
+    submenu.setEnabled(action.isEnabled());
+    submenu.add(action);
+    submenu.add(new Separator());
+    for (int i=0; i < node.getChildCount(); ++i)     insertNodes(submenu,(GroupTreeNode)node.getChildAt(i),selection,add);
+    menu.add(submenu);
+    if (submenu.isEnabled())     menu.setEnabled(true);
+  }
+}
