@@ -1,17 +1,27 @@
 {
   final FieldEditor ed=editor;
   Object o=GUIGlobals.FIELD_EXTRAS.get(string);
+  final String fieldName=editor.getFieldName();
   if (o == null)   return null;
-  if (((String)o).equals("browse")) {
+  String s=(String)o;
+  if (s.equals("external")) {
+    ((JComponent)editor).addMouseListener(new ExternalViewerListener());
+    return null;
+  }
+ else   if (s.equals("browse")) {
     JButton but=new JButton(Globals.lang("Browse"));
     but.setBackground(GUIGlobals.lightGray);
     but.addActionListener(new ActionListener(){
       public void actionPerformed(      ActionEvent e){
         JabRefFileChooser chooser=new JabRefFileChooser(new File(ed.getText()));
+        if (ed.getText().equals("")) {
+          chooser.setCurrentDirectory(new File(prefs.get(fieldName + Globals.FILETYPE_PREFS_EXT,"")));
+        }
         int returnVal=chooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
           File newFile=chooser.getSelectedFile();
           ed.setText(newFile.getPath());
+          prefs.put(fieldName + Globals.FILETYPE_PREFS_EXT,newFile.getPath());
           storeFieldAction.actionPerformed(new ActionEvent(ed,0,""));
         }
       }
