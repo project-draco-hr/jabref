@@ -81,6 +81,19 @@
     }
   }
 );
+  removeField.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      int index=fieldList.getSelectedIndex();
+      if (index == -1)       return;
+      String fieldName=(String)fieldListModel.get(index);
+      removedFields.add(fieldName);
+      fieldListModel.remove(index);
+      wordListModels.remove(fieldName);
+      fieldNameField.setText("");
+      if (fieldListModel.size() > 0)       fieldList.setSelectedIndex(Math.min(index,wordListModel.size() - 1));
+    }
+  }
+);
   ok.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       applyChanges();
