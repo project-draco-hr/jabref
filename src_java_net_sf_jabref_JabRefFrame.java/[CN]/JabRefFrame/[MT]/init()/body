@@ -14,7 +14,12 @@
   setSize(new Dimension(prefs.getInt("sizeX"),prefs.getInt("sizeY")));
   setLocation(new Point(prefs.getInt("posX"),prefs.getInt("posY")));
   tabbedPane.addChangeListener(new ChangeListener(){
+    private int lastSelectionIndex=-1;
     public void stateChanged(    ChangeEvent e){
+      int now=tabbedPane.getSelectedIndex();
+      if (lastSelectionIndex > -1)       tabbedPane.setForegroundAt(lastSelectionIndex,GUIGlobals.inActiveTabbed);
+      if (now > -1)       tabbedPane.setForegroundAt(now,GUIGlobals.activeTabbed);
+      lastSelectionIndex=now;
       BasePanel bp=basePanel();
       if (bp != null) {
         groupToggle.setSelected(bp.sidePaneManager.isPanelVisible("groups"));
