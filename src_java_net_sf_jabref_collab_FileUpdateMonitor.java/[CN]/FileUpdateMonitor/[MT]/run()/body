@@ -1,0 +1,20 @@
+{
+  running=true;
+  while (running) {
+    Iterator i=entries.keySet().iterator();
+    for (; i.hasNext(); ) {
+      Entry e=(Entry)entries.get(i.next());
+      try {
+        if (e.hasBeenUpdated())         e.notifyListener();
+      }
+ catch (      IOException ex) {
+        e.notifyFileRemoved();
+      }
+    }
+    try {
+      sleep(WAIT);
+    }
+ catch (    InterruptedException ex) {
+    }
+  }
+}

@@ -1,21 +1,4 @@
 {
   BibtexEntry[] bes=entryTable.getSelectedEntries();
-  if ((bes == null) || (bes.length == 0)) {
-    output("First select the entries you wish to change type " + "for.");
-    return;
-  }
-  if (bes.length > 1) {
-    int choice=JOptionPane.showConfirmDialog(this,"Multiple entries selected. Do you want to change" + "\nthe type of all these to '" + type.getName() + "'?","Change type",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
-    if (choice == JOptionPane.NO_OPTION)     return;
-  }
-  NamedCompound ce=new NamedCompound("change type");
-  for (int i=0; i < bes.length; i++) {
-    ce.addEdit(new UndoableChangeType(bes[i],bes[i].getType(),type));
-    bes[i].setType(type);
-  }
-  output(Globals.lang("Changed type to") + " '" + type.getName()+ "' "+ Globals.lang("for")+ " "+ bes.length+ " "+ Globals.lang("entries")+ ".");
-  ce.end();
-  undoManager.addEdit(ce);
-  refreshTable();
-  markBaseChanged();
+  changeType(bes,type);
 }
