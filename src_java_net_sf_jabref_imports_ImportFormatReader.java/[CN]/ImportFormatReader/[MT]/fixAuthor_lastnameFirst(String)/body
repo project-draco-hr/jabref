@@ -1,14 +1,10 @@
 {
-  Object old=Globals.nameCache_lastFirst.get(in);
-  if (old != null)   return (String)old;
   StringBuffer sb=new StringBuffer();
   String[] authors=in.split(" and ");
   for (int i=0; i < authors.length; i++) {
     authors[i]=authors[i].trim();
     int comma=authors[i].indexOf(',');
-    test:     if (comma >= 0) {
-      sb.append(authors[i]);
-    }
+    test:     if (comma >= 0)     sb.append(authors[i]);
  else {
       int pos=authors[i].lastIndexOf(' ');
       if (pos == -1) {
@@ -27,9 +23,8 @@
       sb.append(surname + ", ");
       sb.append(authors[i].substring(0,pos));
     }
-    if (i != authors.length - 1)     sb.append(" and ");
+    if (i != (authors.length - 1))     sb.append(" and ");
   }
   String fixed=sb.toString();
-  Globals.nameCache_lastFirst.put(in,fixed);
   return fixed;
 }

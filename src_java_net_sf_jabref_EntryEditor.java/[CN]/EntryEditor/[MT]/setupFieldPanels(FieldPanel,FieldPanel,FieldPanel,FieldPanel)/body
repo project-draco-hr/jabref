@@ -4,25 +4,33 @@
   gen.removeAll();
   abs.removeAll();
   con=new GridBagConstraints();
-  String[] reqFields=entry.getRequiredFields(), optFields=entry.getOptionalFields(), genFields=prefs.getStringArray("generalFields");
-  if (reqFields == null) {
-    reqFields=new String[0];
-  }
-  if (optFields == null) {
-    optFields=new String[0];
-  }
-  if (genFields == null) {
-    genFields=new String[0];
-  }
+  String[] reqFields=entry.getRequiredFields();
+  String[] optFields=entry.getOptionalFields();
+  String[] genFields=prefs.getStringArray("generalFields");
+  if (reqFields == null)   reqFields=new String[0];
+  if (optFields == null)   optFields=new String[0];
+  if (genFields == null)   genFields=new String[0];
   String[] absFields=new String[]{"abstract","annote"};
-  int iter, rmax, omax, gmax, amax;
+  int iter;
+  int rmax;
+  int omax;
+  int gmax;
+  int amax;
   rmax=reqFields.length;
   omax=optFields.length;
   gmax=genFields.length;
   amax=absFields.length;
   iter=Math.max(rmax,Math.max(omax,gmax));
-  FieldTextArea ta1=null, ta2=null, ta3=null, ta4=null, firstR=null, firstO=null;
-  JComponent ex1=null, ex2=null, ex3=null, ex4=null;
+  FieldTextArea ta1=null;
+  FieldTextArea ta2=null;
+  FieldTextArea ta3=null;
+  FieldTextArea ta4=null;
+  FieldTextArea firstR=null;
+  FieldTextArea firstO=null;
+  JComponent ex1=null;
+  JComponent ex2=null;
+  JComponent ex3=null;
+  JComponent ex4=null;
   String stringContent;
   Object content;
   req.setLayout(gbl);
@@ -39,12 +47,8 @@
     con.anchor=GridBagConstraints.NORTH;
     con.fill=GridBagConstraints.BOTH;
     if (i < rmax) {
-      if ((content=entry.getField(reqFields[i])) != null) {
-        stringContent=content.toString();
-      }
- else {
-        stringContent=null;
-      }
+      if ((content=entry.getField(reqFields[i])) != null)       stringContent=content.toString();
+ else       stringContent=null;
       ta1=new FieldTextArea(reqFields[i],stringContent);
       ex1=getExtra(reqFields[i],ta1);
       setupJTextComponent(ta1);
@@ -54,12 +58,8 @@
       }
     }
     if (i < omax) {
-      if ((content=entry.getField(optFields[i])) != null) {
-        stringContent=content.toString();
-      }
- else {
-        stringContent=null;
-      }
+      if ((content=entry.getField(optFields[i])) != null)       stringContent=content.toString();
+ else       stringContent=null;
       ta2=new FieldTextArea(optFields[i],stringContent);
       ex2=getExtra(optFields[i],ta2);
       setupJTextComponent(ta2);
@@ -69,12 +69,8 @@
       }
     }
     if (i < gmax) {
-      if ((content=entry.getField(genFields[i])) != null) {
-        stringContent=content.toString();
-      }
- else {
-        stringContent=null;
-      }
+      if ((content=entry.getField(genFields[i])) != null)       stringContent=content.toString();
+ else       stringContent=null;
       ta3=new FieldTextArea(genFields[i],stringContent);
       ex3=getExtra(genFields[i],ta3);
       setupJTextComponent(ta3);
@@ -84,12 +80,8 @@
       }
     }
     if (i < amax) {
-      if ((content=entry.getField(absFields[i])) != null) {
-        stringContent=content.toString();
-      }
- else {
-        stringContent=null;
-      }
+      if ((content=entry.getField(absFields[i])) != null)       stringContent=content.toString();
+ else       stringContent=null;
       ta4=new FieldTextArea(absFields[i],stringContent);
       ex4=getExtra(absFields[i],ta4);
       setupJTextComponent(ta4);
@@ -118,12 +110,8 @@
     con.weightx=1;
     con.fill=GridBagConstraints.BOTH;
     if (i < rmax) {
-      if (ex1 != null) {
-        con.gridwidth=1;
-      }
- else {
-        con.gridwidth=GridBagConstraints.REMAINDER;
-      }
+      if (ex1 != null)       con.gridwidth=1;
+ else       con.gridwidth=GridBagConstraints.REMAINDER;
       con.weighty=GUIGlobals.getFieldWeight(reqFields[i]);
       reqW+=con.weighty;
       gbl.setConstraints(ta1.getPane(),con);
@@ -139,12 +127,8 @@
     }
     con.weightx=1;
     if (i < omax) {
-      if (ex2 != null) {
-        con.gridwidth=1;
-      }
- else {
-        con.gridwidth=GridBagConstraints.REMAINDER;
-      }
+      if (ex2 != null)       con.gridwidth=1;
+ else       con.gridwidth=GridBagConstraints.REMAINDER;
       con.weighty=GUIGlobals.getFieldWeight(optFields[i]);
       con.fill=GridBagConstraints.BOTH;
       optW+=con.weighty;
@@ -161,12 +145,8 @@
     }
     con.weightx=1;
     if (i < gmax) {
-      if (ex3 != null) {
-        con.gridwidth=1;
-      }
- else {
-        con.gridwidth=GridBagConstraints.REMAINDER;
-      }
+      if (ex3 != null)       con.gridwidth=1;
+ else       con.gridwidth=GridBagConstraints.REMAINDER;
       con.fill=GridBagConstraints.BOTH;
       con.weighty=GUIGlobals.getFieldWeight(genFields[i]);
       genW+=con.weighty;
@@ -185,12 +165,8 @@
     }
     con.weightx=1;
     if (i < amax) {
-      if (ex4 != null) {
-        con.gridwidth=1;
-      }
- else {
-        con.gridwidth=GridBagConstraints.REMAINDER;
-      }
+      if (ex4 != null)       con.gridwidth=1;
+ else       con.gridwidth=GridBagConstraints.REMAINDER;
       con.fill=GridBagConstraints.BOTH;
       con.weightx=1;
       con.weighty=GUIGlobals.getFieldWeight(absFields[i]);

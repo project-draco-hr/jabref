@@ -2,16 +2,14 @@
   BibtexParser bp=new BibtexParser(new java.io.StringReader(source.getText()));
   try {
     BibtexDatabase db=bp.parse().getDatabase();
-    if (db.getEntryCount() > 1) {
-      throw new Exception("More than one entry found.");
-    }
-    if (db.getEntryCount() < 1) {
-      throw new Exception("No entries found.");
-    }
+    if (db.getEntryCount() > 1)     throw new Exception("More than one entry found.");
+    if (db.getEntryCount() < 1)     throw new Exception("No entries found.");
     NamedCompound compound=new NamedCompound("source edit");
     BibtexEntry nu=db.getEntryById((String)db.getKeySet().iterator().next());
-    String id=entry.getId(), newKey=nu.getCiteKey();
-    boolean anyChanged=false, duplicateWarning=false;
+    String id=entry.getId();
+    String newKey=nu.getCiteKey();
+    boolean anyChanged=false;
+    boolean duplicateWarning=false;
     if (panel.database.setCiteKeyForEntry(id,newKey)) {
       duplicateWarning=true;
     }
@@ -36,16 +34,10 @@
       }
     }
     compound.end();
-    if (!anyChanged) {
-      return true;
-    }
+    if (!anyChanged)     return true;
     panel.undoManager.addEdit(compound);
-    if (duplicateWarning) {
-      panel.output(Globals.lang("Warning: duplicate bibtex key."));
-    }
- else {
-      panel.output(Globals.lang("Stored entry") + ".");
-    }
+    if (duplicateWarning)     panel.output(Globals.lang("Warning: duplicate bibtex key."));
+ else     panel.output(Globals.lang("Stored entry") + ".");
     lastSourceStringAccepted=source.getText();
     updateAllFields();
     lastSourceAccepted=true;

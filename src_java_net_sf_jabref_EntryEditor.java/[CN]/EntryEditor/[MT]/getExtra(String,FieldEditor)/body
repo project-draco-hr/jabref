@@ -18,9 +18,7 @@
     but.addActionListener(new ActionListener(){
       public void actionPerformed(      ActionEvent e){
         String dir=ed.getText();
-        if (dir.equals("")) {
-          dir=prefs.get(fieldName + Globals.FILETYPE_PREFS_EXT,"");
-        }
+        if (dir.equals(""))         dir=prefs.get(fieldName + Globals.FILETYPE_PREFS_EXT,"");
         String chosenFile=Globals.getNewFile(frame,prefs,new File(dir),"." + fieldName,JFileChooser.OPEN_DIALOG,false);
         if (chosenFile != null) {
           File newFile=new File(chosenFile);
@@ -36,19 +34,16 @@
  else   if ((s != null) && s.equals("browsePdf")) {
     JPanel pan=new JPanel();
     pan.setLayout(new GridLayout(2,1));
-    JButton but=new JButton(Globals.lang("Browse")), download=new JButton(Globals.lang("Download"));
+    JButton but=new JButton(Globals.lang("Browse"));
+    JButton download=new JButton(Globals.lang("Download"));
     ((JComponent)editor).addMouseListener(new ExternalViewerListener());
     but.addActionListener(new ActionListener(){
       public void actionPerformed(      ActionEvent e){
         String pdfDir=prefs.get("pdfDirectory");
         String dir=ed.getText();
         if (dir.equals("") || !(new File(dir)).isAbsolute()) {
-          if (pdfDir != null) {
-            dir=pdfDir;
-          }
- else {
-            dir=prefs.get(fieldName + Globals.FILETYPE_PREFS_EXT,"");
-          }
+          if (pdfDir != null)           dir=pdfDir;
+ else           dir=prefs.get(fieldName + Globals.FILETYPE_PREFS_EXT,"");
         }
         String chosenFile=Globals.getNewFile(frame,prefs,new File(dir),".pdf",JFileChooser.OPEN_DIALOG,false);
         if (chosenFile != null) {
@@ -61,9 +56,7 @@
             }
             ed.setText(relPath);
           }
- else {
-            ed.setText(newFile.getPath());
-          }
+ else           ed.setText(newFile.getPath());
           prefs.put(fieldName + Globals.FILETYPE_PREFS_EXT,newFile.getPath());
           storeFieldAction.actionPerformed(new ActionEvent(ed,0,""));
         }
@@ -107,7 +100,5 @@
     ((JComponent)editor).setDropTarget(new DropTarget((Component)editor,DnDConstants.ACTION_NONE,new SimpleUrlDragDrop(editor,storeFieldAction)));
     return null;
   }
- else {
-    return null;
-  }
+ else   return null;
 }

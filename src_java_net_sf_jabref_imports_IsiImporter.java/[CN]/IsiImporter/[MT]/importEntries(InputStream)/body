@@ -5,9 +5,7 @@
   String str;
   while ((str=in.readLine()) != null) {
     if (str.length() < 3)     continue;
-    if (str.substring(0,3).equals("PT ")) {
-      sb.append("::" + str);
-    }
+    if (str.substring(0,3).equals("PT "))     sb.append("::" + str);
  else {
       String beg=str.substring(0,3).trim();
       if (beg.length() == 2) {
@@ -25,36 +23,37 @@
   for (int i=0; i < entries.length; i++) {
     String[] fields=entries[i].split(" ## ");
     if (fields.length == 0)     fields=entries[i].split("\n");
-    String Type="", PT="", pages="";
+    String Type="";
+    String PT="";
+    String pages="";
     hm.clear();
     for (int j=0; j < fields.length; j++) {
       if (fields[j].length() <= 2)       continue;
+      fields[j]=fields[j].replace(" - ","");
       String beg=fields[j].substring(0,2);
       String value=fields[j].substring(2);
-      value=value.trim();
-      if (value.startsWith("-"))       value=value.substring(1);
       value=value.trim();
       if (beg.equals("PT")) {
         PT=value.replaceAll("Journal","article");
         Type="article";
       }
  else       if (beg.equals("TY")) {
-        Type="inproceedings";
+        if ("CONF".equals(value))         Type="inproceedings";
       }
  else       if (beg.equals("JO"))       hm.put("booktitle",value);
- else       if (beg.equals("AU"))       hm.put("author",ImportFormatReader.fixAuthor_lastnameFirst(value.replaceAll("EOLEOL"," and ")));
- else       if (beg.equals("TI"))       hm.put("title",value.replaceAll("EOLEOL"," "));
- else       if (beg.equals("SO")) {
-        hm.put("journal",value);
+ else       if (beg.equals("AU")) {
+        String author=ImportFormatReader.fixAuthor_lastnameFirst(value.replaceAll("EOLEOL"," and "));
+        if (hm.get("author") != null)         author=(String)hm.get("author") + " and " + author;
+        hm.put("author",author);
       }
+ else       if (beg.equals("TI"))       hm.put("title",value.replaceAll("EOLEOL"," "));
+ else       if (beg.equals("SO"))       hm.put("journal",value);
  else       if (beg.equals("ID"))       hm.put("keywords",value.replaceAll("EOLEOL"," "));
  else       if (beg.equals("AB"))       hm.put("abstract",value.replaceAll("EOLEOL"," "));
  else       if (beg.equals("BP") || beg.equals("BR") || beg.equals("SP"))       pages=value;
  else       if (beg.equals("EP")) {
         int detpos=value.indexOf(' ');
-        if (detpos != -1) {
-          value=value.substring(0,detpos);
-        }
+        if (detpos != -1)         value=value.substring(0,detpos);
         pages=pages + "--" + value;
       }
  else       if (beg.equals("AR"))       pages=value;

@@ -36,13 +36,13 @@
     int length=outFormats.length();
     for (int i=0; i < prefs.customExports.size(); i++) {
       String[] format=prefs.customExports.getElementAt(i);
-      if (length + format[0].length() > 50) {
+      if ((length + format[0].length()) > 50) {
         outFormats=outFormats + ",\n\t" + format[0];
         length=format[0].length();
       }
  else {
         outFormats=outFormats + ", " + format[0];
-        length+=1 + format[0].length();
+        length+=(1 + format[0].length());
       }
     }
     System.out.println(Globals.lang("Available export formats") + outFormats + ".");
@@ -63,18 +63,14 @@
   if (leftOver.length > 0) {
     for (int i=0; i < leftOver.length; i++) {
       ParserResult pr=openBibFile(leftOver[i]);
-      if (pr != null) {
-        loaded.add(pr);
-      }
+      if (pr != null)       loaded.add(pr);
     }
   }
   if (importFile.isInvoked()) {
     String[] data=importFile.getStringValue().split(",");
     if (data.length == 1) {
       ParserResult pr=openBibFile(data[0]);
-      if (pr != null) {
-        loaded.add(pr);
-      }
+      if (pr != null)       loaded.add(pr);
     }
  else     if (data.length == 2) {
       try {
@@ -117,9 +113,7 @@
             System.err.println(Globals.lang("Could not save file") + " '" + data[0]+ "': "+ ex.getMessage());
           }
         }
- else {
-          System.err.println(Globals.lang("The output option depends on a valid import option."));
-        }
+ else         System.err.println(Globals.lang("The output option depends on a valid import option."));
       }
  else       if (data.length == 2) {
         ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
@@ -154,9 +148,7 @@ catch (          Exception ex) {
         }
       }
     }
- else {
-      System.err.println(Globals.lang("The output option depends on a valid import option."));
-    }
+ else     System.err.println(Globals.lang("The output option depends on a valid import option."));
   }
   if (exportPrefs.isInvoked()) {
     try {
@@ -183,16 +175,18 @@ catch (          Exception ex) {
         AuxCommandLine acl=new AuxCommandLine(data[0],pr.getDatabase());
         BibtexDatabase newBase=acl.perform();
         boolean notSavedMsg=false;
-        if (newBase != null)         if (newBase.getEntryCount() > 0) {
-          String subName=Util.getCorrectFileName(data[1],"bib");
-          try {
-            System.out.println(Globals.lang("Saving") + ": " + subName);
-            FileActions.saveDatabase(newBase,new MetaData(),new File(subName),prefs,false,false,prefs.get("defaultEncoding"));
+        if (newBase != null) {
+          if (newBase.getEntryCount() > 0) {
+            String subName=Util.getCorrectFileName(data[1],"bib");
+            try {
+              System.out.println(Globals.lang("Saving") + ": " + subName);
+              FileActions.saveDatabase(newBase,new MetaData(),new File(subName),prefs,false,false,prefs.get("defaultEncoding"));
+            }
+ catch (            SaveException ex) {
+              System.err.println(Globals.lang("Could not save file") + " '" + subName+ "': "+ ex.getMessage());
+            }
+            notSavedMsg=true;
           }
- catch (          SaveException ex) {
-            System.err.println(Globals.lang("Could not save file") + " '" + subName+ "': "+ ex.getMessage());
-          }
-          notSavedMsg=true;
         }
         if (!notSavedMsg)         System.out.println(Globals.lang("no database generated"));
       }
@@ -261,15 +255,11 @@ catch (          Exception ex) {
         File fileToOpen=new File(names[i]);
         for (int j=0; j < loaded.size(); j++) {
           ParserResult pr=(ParserResult)loaded.elementAt(j);
-          if (pr.getFile().equals(fileToOpen)) {
-            continue lastEdLoop;
-          }
+          if (pr.getFile().equals(fileToOpen))           continue lastEdLoop;
         }
         if (fileToOpen.exists()) {
           ParserResult pr=openBibFile(names[i]);
-          if (pr != null) {
-            loaded.add(pr);
-          }
+          if (pr != null)           loaded.add(pr);
         }
       }
     }
@@ -282,9 +272,7 @@ catch (          Exception ex) {
         jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),(i == 0));
       }
     }
-    if (loadSess.isInvoked()) {
-      jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
-    }
+    if (loadSess.isInvoked())     jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
     ss.dispose();
     jrf.setVisible(true);
     if (loaded.size() > 0) {
@@ -292,7 +280,5 @@ catch (          Exception ex) {
       new FocusRequester(((BasePanel)jrf.tabbedPane.getComponentAt(0)).entryTable);
     }
   }
- else {
-    System.exit(0);
-  }
+ else   System.exit(0);
 }

@@ -1,12 +1,4 @@
 {
-  if (includeAnds) {
-    Object old=Globals.nameCache.get(in);
-    if (old != null)     return (String)old;
-  }
- else {
-    Object old=Globals.nameCache_commas.get(in);
-    if (old != null)     return (String)old;
-  }
   StringBuffer sb=new StringBuffer();
   String[] authors=in.split(" and ");
   for (int i=0; i < authors.length; i++) {
@@ -15,14 +7,13 @@
     if (t.length < 2)     sb.append(authors[i].trim());
  else     sb.append(t[1].trim() + " " + t[0].trim());
     if (includeAnds) {
-      if (i != authors.length - 1)       sb.append(" and ");
+      if (i != (authors.length - 1))       sb.append(" and ");
     }
  else {
-      if (i == authors.length - 2)       sb.append(" and ");
+      if (i == (authors.length - 2))       sb.append(" and ");
  else       if (i != (authors.length - 1))       sb.append(", ");
     }
   }
   String fixed=sb.toString();
-  Globals.nameCache.put(in,fixed);
   return fixed;
 }
