@@ -1,8 +1,7 @@
 {
   BibtexEntry[] bes=basePanel.getSelectedEntries();
-  Object bibtexkey;
-  for (int i=0; i < bes.length; ++i) {
-    bibtexkey=bes[i].getField("bibtexkey");
-    if (bibtexkey != null)     m_entries.add(bibtexkey);
-  }
+  if (bes.length == 0)   return null;
+  HashSet entriesBeforeEdit=new HashSet(m_entries);
+  for (int i=0; i < bes.length; ++i)   m_entries.add(bes[i]);
+  return new UndoableChangeAssignment(entriesBeforeEdit,m_entries);
 }
