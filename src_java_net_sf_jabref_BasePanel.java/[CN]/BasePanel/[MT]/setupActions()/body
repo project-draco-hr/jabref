@@ -17,34 +17,32 @@
 );
   actions.put("importCiteSeer",new BaseAction(){
     public void action(){
-      try {
-        int clickedOn=-1;
-        int rowCount=entryTable.getSelectedRowCount();
-        if (rowCount == 1) {
-          clickedOn=entryTable.getSelectedRow();
-        }
- else         if (rowCount > 1) {
-          JOptionPane.showMessageDialog(frame(),"The CiteSeer import functionality is currently " + "supported for only one row at a time.","CiteSeer Import Error",JOptionPane.WARNING_MESSAGE);
-        }
- else {
-          JOptionPane.showMessageDialog(frame(),"You must select a row to perform the " + "CiteSeer import operation.","CiteSeer Import Error",JOptionPane.WARNING_MESSAGE);
-        }
-        if (clickedOn >= 0) {
-          String id=tableModel.getNameFromNumber(clickedOn);
-          BibtexEntry be=(BibtexEntry)database.getEntryById(id).clone();
-          boolean newValue=citeSeerFetcher.importCiteSeerEntry(be);
-          if (newValue) {
-            database.removeEntry(id);
-            database.insertEntry(be);
-            refreshTable();
-            int row=tableModel.getNumberFromName(id);
-            entryTable.clearSelection();
-            entryTable.scrollTo(row);
-            markBaseChanged();
-          }
-        }
+      int clickedOn=-1;
+      int rowCount=entryTable.getSelectedRowCount();
+      if (rowCount == 1) {
+        clickedOn=entryTable.getSelectedRow();
       }
- catch (      KeyCollisionException ex) {
+ else       if (rowCount > 1) {
+        JOptionPane.showMessageDialog(frame(),"The CiteSeer import functionality is currently " + "supported for only one row at a time.","CiteSeer Import Error",JOptionPane.WARNING_MESSAGE);
+      }
+ else {
+        JOptionPane.showMessageDialog(frame(),"You must select a row to perform the " + "CiteSeer import operation.","CiteSeer Import Error",JOptionPane.WARNING_MESSAGE);
+      }
+      if (clickedOn >= 0) {
+        String id=tableModel.getNameFromNumber(clickedOn);
+        NamedCompound citeseerNamedCompound=new NamedCompound("CiteSeer Import Fields");
+        BibtexEntry be=(BibtexEntry)database.getEntryById(id);
+        boolean newValue=citeSeerFetcher.importCiteSeerEntry(be,citeseerNamedCompound);
+        if (newValue) {
+          citeseerNamedCompound.end();
+          undoManager.addEdit(citeseerNamedCompound);
+          refreshTable();
+          updateEntryEditorIfShowing();
+          int row=tableModel.getNumberFromName(id);
+          entryTable.clearSelection();
+          entryTable.scrollTo(row);
+          markBaseChanged();
+        }
       }
     }
   }
