@@ -13,7 +13,14 @@
  catch (    IOException ex) {
       System.err.println("Weird error while parsing meta data.");
     }
-    if (key.equals("groupstree"))     putGroups(orderedData,db);
- else     putData(key,orderedData);
+    if (key.equals("groupstree")) {
+      putGroups(orderedData,db);
+    }
+ else     if (key.equals("groups")) {
+      groupsRoot=GroupTreeNode.importFlatGroups(orderedData);
+    }
+ else {
+      putData(key,orderedData);
+    }
   }
 }
