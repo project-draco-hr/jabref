@@ -1,12 +1,14 @@
 {
+  if (groupsTree.getSelectionCount() != 1) {
+    frame.output(Globals.lang("Please select exactly one group to move."));
+    return false;
+  }
   AbstractUndoableEdit undo=null;
-  TreePath[] selectionPaths=groupsTree.getSelectionPaths();
-  Enumeration expandedPaths=getExpandedPaths();
   if (!node.canMoveUp() || (undo=node.moveUp(GroupSelector.this)) == null) {
     frame.output(Globals.lang("Cannot move group") + " '" + node.getGroup().getName()+ "' "+ Globals.lang("up."));
     return false;
   }
-  revalidateGroups(selectionPaths,expandedPaths);
+  revalidateGroups();
   panel.undoManager.addEdit(undo);
   panel.markBaseChanged();
   frame.output(Globals.lang("Moved group") + " '" + node.getGroup().getName()+ "'.");

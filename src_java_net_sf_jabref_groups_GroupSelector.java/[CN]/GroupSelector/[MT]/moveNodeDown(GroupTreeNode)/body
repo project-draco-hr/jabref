@@ -1,10 +1,14 @@
 {
+  if (groupsTree.getSelectionCount() != 1) {
+    frame.output(Globals.lang("Please select exactly one group to move."));
+    return false;
+  }
   AbstractUndoableEdit undo=null;
   if (!node.canMoveDown() || (undo=node.moveDown(GroupSelector.this)) == null) {
     frame.output(Globals.lang("Cannot move group") + " '" + node.getGroup().getName()+ "' down.");
     return false;
   }
-  revalidateGroups(groupsTree.getSelectionPaths(),getExpandedPaths());
+  revalidateGroups();
   panel.undoManager.addEdit(undo);
   panel.markBaseChanged();
   frame.output(Globals.lang("Moved group") + " '" + node.getGroup().getName()+ "'.");
