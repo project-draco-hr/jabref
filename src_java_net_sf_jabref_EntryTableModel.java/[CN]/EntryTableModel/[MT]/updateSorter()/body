@@ -1,0 +1,47 @@
+{
+  iconCols.clear();
+  int coln=1;
+  if (panel.prefs.getBoolean("pdfColumn"))   iconCols.put(new Integer(coln++),PDF);
+  if (panel.prefs.getBoolean("urlColumn"))   iconCols.put(new Integer(coln++),URL_);
+  if (panel.prefs.getBoolean("citeseerColumn"))   iconCols.put(new Integer(coln++),CITESEER);
+  padleft=1 + iconCols.size();
+  Vector tmp=new Vector(2,1);
+  for (int i=0; i < columns.length; i++) {
+    if (columns[i].equals("author") || columns[i].equals("editor")) {
+      tmp.add(new Integer(i));
+    }
+  }
+  nameCols=new int[tmp.size()];
+  for (int i=0; i < nameCols.length; i++) {
+    nameCols[i]=((Integer)tmp.elementAt(i)).intValue();
+  }
+  namesAsIs=panel.prefs.getBoolean("namesAsIs");
+  namesFf=panel.prefs.getBoolean("namesFf");
+  List fields=new ArrayList(6), directions=new ArrayList(6);
+  fields.add(Globals.MARKED);
+  directions.add(new Boolean(true));
+  if (panel.sortingByGroup) {
+    fields.add(Globals.GROUPSEARCH);
+    directions.add(new Boolean(true));
+  }
+  if (panel.sortingBySearchResults) {
+    fields.add(Globals.SEARCH);
+    directions.add(new Boolean(true));
+  }
+  if (panel.sortingByCiteSeerResults) {
+    fields.add("citeseercitationcount");
+    directions.add(new Boolean(true));
+  }
+  directions.add(new Boolean(frame.prefs.getBoolean("priDescending")));
+  directions.add(new Boolean(frame.prefs.getBoolean("secDescending")));
+  directions.add(new Boolean(frame.prefs.getBoolean("terDescending")));
+  fields.add(frame.prefs.get("priSort"));
+  fields.add(frame.prefs.get("secSort"));
+  fields.add(frame.prefs.get("terSort"));
+  if (directions.size() < 4) {
+    sorter=db.getSorter(new EntryComparator(((Boolean)directions.get(0)).booleanValue(),((Boolean)directions.get(1)).booleanValue(),((Boolean)directions.get(2)).booleanValue(),(String)fields.get(0),(String)fields.get(1),(String)fields.get(2)));
+  }
+ else {
+    sorter=db.getSorter(new EntryComparator(((Boolean)directions.get(0)).booleanValue(),((Boolean)directions.get(1)).booleanValue(),((Boolean)directions.get(2)).booleanValue(),((Boolean)directions.get(3)).booleanValue(),(String)fields.get(0),(String)fields.get(1),(String)fields.get(2),(String)fields.get(3)));
+  }
+}

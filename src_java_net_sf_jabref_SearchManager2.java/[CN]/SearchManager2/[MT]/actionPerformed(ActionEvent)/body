@@ -1,7 +1,14 @@
 {
   if (e.getSource() == escape) {
     incSearch=false;
-    if (frame.basePanel() != null)     frame.basePanel().stopShowingSearchResults();
+    if (frame.basePanel() != null) {
+      (new Thread(){
+        public void run(){
+          frame.basePanel().stopShowingSearchResults();
+        }
+      }
+).start();
+    }
   }
  else   if (((e.getSource() == searchField) || (e.getSource() == search)) && !increment.isSelected() && (frame.basePanel() != null)) {
     updatePrefs();
@@ -22,7 +29,7 @@
     }
     searchRules.addRule(rule1);
     if (reorder.isSelected()) {
-      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,true,true,select.isSelected());
+      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,true,Globals.prefs.getBoolean("grayOutNonHits"),select.isSelected());
       search.start();
     }
  else     if (highlight.isSelected()) {

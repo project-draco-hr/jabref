@@ -8,9 +8,16 @@
   searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),prefs.getBoolean("searchGen"));
   searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),prefs.getBoolean("searchAll"));
   regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),prefs.getBoolean("regExpSearch"));
+  hideNonHits=new JRadioButtonMenuItem(Globals.lang("Hide non-hits"),!prefs.getBoolean("grayOutNonHits"));
+  grayOut=new JRadioButtonMenuItem(Globals.lang("Gray out non-hits"),prefs.getBoolean("grayOutNonHits"));
   increment=new JRadioButton(Globals.lang("Incremental"),false);
   highlight=new JRadioButton(Globals.lang("Highlight"),true);
   reorder=new JRadioButton(Globals.lang("Float"),false);
+  types.add(increment);
+  types.add(highlight);
+  types.add(reorder);
+  nonHits.add(hideNonHits);
+  nonHits.add(grayOut);
   select=new JCheckBoxMenuItem(Globals.lang("Select matches"),false);
   increment.setToolTipText(Globals.lang("Incremental search"));
   highlight.setToolTipText(Globals.lang("Gray out non-matching entries"));
@@ -34,6 +41,9 @@
   settings.addSeparator();
   settings.add(caseSensitive);
   settings.add(regExpSearch);
+  settings.addSeparator();
+  settings.add(grayOut);
+  settings.add(hideNonHits);
   searchField.addActionListener(this);
   search.addActionListener(this);
   searchField.addFocusListener(new FocusAdapter(){
@@ -68,9 +78,6 @@
   help.setMinimumSize(butDim);
   help.setMargin(margin);
   help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.searchHelp,"Help"));
-  types.add(increment);
-  types.add(highlight);
-  types.add(reorder);
   if (prefs.getBoolean("incrementS"))   increment.setSelected(true);
  else   if (!prefs.getBoolean("selectS"))   reorder.setSelected(true);
   setLayout(gbl);
