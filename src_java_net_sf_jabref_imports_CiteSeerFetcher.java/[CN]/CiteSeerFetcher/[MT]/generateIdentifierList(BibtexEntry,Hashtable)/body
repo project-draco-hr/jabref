@@ -1,4 +1,5 @@
 {
+  boolean abortOperation=false;
   String targetURL=(String)currentEntry.getField("url");
   try {
     if (targetURL != null && targetURL.startsWith(PREFIX_URL) && (targetURL.length() > (PREFIX_URL.length() + 5))) {
@@ -15,7 +16,8 @@
       citeseerMethod.releaseConnection();
     }
  else {
-      ShowBadURLDialog dialog=new ShowBadURLDialog(targetURL);
+      int row=panel.getTableModel().getNumberFromName(currentEntry.getId());
+      ShowBadURLDialog dialog=new ShowBadURLDialog(targetURL,row);
       SwingUtilities.invokeLater(dialog);
     }
   }
@@ -28,7 +30,10 @@ catch (  SAXException e) {
     e.printStackTrace();
   }
 catch (  IOException e) {
+    System.out.println("IOException: " + e.getLocalizedMessage());
     ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
+    abortOperation=true;
     SwingUtilities.invokeLater(dialog);
   }
+  return (abortOperation);
 }
