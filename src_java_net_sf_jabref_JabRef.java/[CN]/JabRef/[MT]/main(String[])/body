@@ -192,24 +192,41 @@ catch (          Exception ex) {
   if (!graphicFailure && !disableGui.isInvoked()) {
     Util.performCompatibilityUpdate();
     System.setProperty("apple.laf.useScreenMenuBar","true");
-    int fontSizes=prefs.getInt("menuFontSize");
-    if (Globals.ON_WIN) {
+    if (!Globals.ON_MAC) {
+      int fontSizes=prefs.getInt("menuFontSize");
+      String defaultLookAndFeel;
+      if (Globals.ON_WIN)       defaultLookAndFeel=GUIGlobals.windowsDefaultLookAndFeel;
+ else       defaultLookAndFeel=GUIGlobals.linuxDefaultLookAndFeel;
+      String lookAndFeel=null;
+      if (!prefs.getBoolean("useDefaultLookAndFeel"))       lookAndFeel=prefs.get("lookAndFeel");
+ else       lookAndFeel=defaultLookAndFeel;
+      LookAndFeel lnf=null;
+      Object objLnf=null;
       try {
-        ExtWindowsLookAndFeel lnf=new ExtWindowsLookAndFeel();
-        lnf.setFontSizeHints(new FontSizeHints(fontSizes,fontSizes,fontSizes,fontSizes));
-        UIManager.setLookAndFeel(lnf);
+        if (lookAndFeel != null)         objLnf=Class.forName(lookAndFeel).newInstance();
+ else         objLnf=Class.forName(defaultLookAndFeel).newInstance();
       }
- catch (      UnsupportedLookAndFeelException ex) {
+ catch (      Exception ex) {
+        ex.printStackTrace();
+        try {
+          objLnf=Class.forName(defaultLookAndFeel).newInstance();
+        }
+ catch (        Exception ex2) {
+        }
       }
-    }
- else     if (!Globals.ON_MAC) {
-      try {
-        PlasticLookAndFeel lnf=new com.jgoodies.plaf.plastic.Plastic3DLookAndFeel();
-        lnf.setFontSizeHints(new FontSizeHints(fontSizes,fontSizes,fontSizes,fontSizes));
+      if (objLnf != null)       lnf=(LookAndFeel)objLnf;
+      if ((lnf != null) && (lnf instanceof PlasticLookAndFeel)) {
+        PlasticLookAndFeel plLnf=(PlasticLookAndFeel)lnf;
+        plLnf.setFontSizeHints(new FontSizeHints(fontSizes,fontSizes,fontSizes,fontSizes));
         MetalLookAndFeel.setCurrentTheme(new com.jgoodies.plaf.plastic.theme.SkyBluer());
-        UIManager.setLookAndFeel(lnf);
       }
- catch (      UnsupportedLookAndFeelException ex) {
+      if (lnf != null) {
+        try {
+          UIManager.setLookAndFeel(lnf);
+        }
+ catch (        UnsupportedLookAndFeelException ex) {
+          ex.printStackTrace();
+        }
       }
     }
     if (prefs.getBoolean("openLastEdited") && (prefs.get("lastEdited") != null)) {
