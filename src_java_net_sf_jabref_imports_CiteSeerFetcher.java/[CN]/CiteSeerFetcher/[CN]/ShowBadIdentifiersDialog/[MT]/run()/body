@@ -4,13 +4,14 @@
  else   if (rejectedEntries.size() > 1) {
     String rowNumbers=new String("");
     TreeSet rowSet=new TreeSet(rejectedEntries.keySet());
-    for (int i=0; i < rowSet.size() - 1; i++) {
+    int rowSize=rowSet.size();
+    for (int i=0; i < rowSize - 1; i++) {
       Integer next=(Integer)rowSet.first();
       if (rowNumbers.equals(""))       rowNumbers=next.toString();
  else       rowNumbers=rowNumbers + ", " + next.toString();
       rowSet.remove(next);
     }
     rowNumbers=rowNumbers + " and " + ((Integer)rowSet.first()).toString();
-    JOptionPane.showMessageDialog(panel.frame(),Globals.lang("I couldn't parse the CiteSeer URL field of the following entries") + '\n' + rowNumbers+ ".\n"+ Globals.lang("Please refer to the JabRef help manual on using the CiteSeer tools" + '.'),Globals.lang("CiteSeer Warning"),JOptionPane.WARNING_MESSAGE);
+    JOptionPane.showMessageDialog(panel.frame(),Globals.lang("I couldn't parse the CiteSeer URL field of the following entries") + ':' + '\n'+ rowNumbers+ ".\n"+ Globals.lang("Please refer to the JabRef help manual on using the CiteSeer tools" + '.'),Globals.lang("CiteSeer Warning"),JOptionPane.WARNING_MESSAGE);
   }
 }

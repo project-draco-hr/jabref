@@ -13,22 +13,10 @@
       int response=citeseerHttpClient.executeMethod(citeseerMethod);
       saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerUndoHandler(citeseerNC,be,panel,newValue,overwriteAll,overwriteNone));
       citeseerMethod.releaseConnection();
-      if (newValue.getValue() == false) {
-        int row=panel.getTableModel().getNumberFromName(be.getId());
-        ShowBadIdentifierDialog dialog=new ShowBadIdentifierDialog(generateCanonicalURL(be),row);
-        SwingUtilities.invokeLater(dialog);
-      }
     }
  else {
       int row=panel.getTableModel().getNumberFromName(be.getId());
-      if (be.getField("citeseerurl") == null) {
-        ShowMissingURLDialog dialog=new ShowMissingURLDialog(row);
-        SwingUtilities.invokeLater(dialog);
-      }
- else {
-        ShowBadURLDialog dialog=new ShowBadURLDialog((String)be.getField("citeseerurl"),row);
-        SwingUtilities.invokeLater(dialog);
-      }
+      rejectedEntries.put(new Integer(row + 1),be);
     }
   }
  catch (  HttpException e) {
