@@ -1,15 +1,17 @@
 {
-  TreePath[] selection=groupsTree.getSelectionPaths();
+  final TreePath[] selection=groupsTree.getSelectionPaths();
   if (selection == null || selection.length == 0 || (selection.length == 1 && ((GroupTreeNode)selection[0].getLastPathComponent()).getGroup() instanceof AllEntriesGroup)) {
     panel.stopShowingGroup();
     frame.output(Globals.lang("Displaying no groups") + ".");
     return;
   }
-  AndOrSearchRuleSet searchRules=new AndOrSearchRuleSet(andCb.isSelected(),invCb.isSelected());
-  AbstractGroup group;
+  final AndOrSearchRuleSet searchRules=new AndOrSearchRuleSet(andCb.isSelected(),invCb.isSelected());
+  int groupMode;
+  if (groupModeUnion.isSelected())   groupMode=GroupTreeNode.GROUP_UNION_CHILDREN;
+ else   if (groupModeIntersection.isSelected())   groupMode=GroupTreeNode.GROUP_INTERSECTION_PARENT;
+ else   groupMode=GroupTreeNode.GROUP_ITSELF;
   for (int i=0; i < selection.length; ++i) {
-    group=((GroupTreeNode)selection[i].getLastPathComponent()).getGroup();
-    searchRules.addRule(group.getSearchRule());
+    searchRules.addRule(((GroupTreeNode)selection[i].getLastPathComponent()).getSearchRule(groupMode));
   }
   Hashtable searchOptions=new Hashtable();
   searchOptions.put("option","dummy");
