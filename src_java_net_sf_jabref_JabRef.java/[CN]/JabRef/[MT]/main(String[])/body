@@ -1,18 +1,30 @@
 {
-  boolean openGui=true;
-  if (args.length > 0)   for (int i=0; i < args.length; i++) {
-    if (args[i].startsWith("-o"))     openGui=false;
-    if (args[i].equals("-h")) {
-      System.out.println("Help info goes here.");
-      System.exit(0);
-    }
+  JabRefPreferences prefs=new JabRefPreferences();
+  BibtexEntryType.loadCustomEntryTypes(prefs);
+  Globals.setLanguage(prefs.get("language"),"");
+  Options options=new Options("JabRef ");
+  options.setVersion(GUIGlobals.version);
+  StringOption importFile=new StringOption("");
+  importFile.setDescription("imopoepuoeu");
+  StringOption exportFile=new StringOption("");
+  NotifyOption helpO=new NotifyOption("");
+  NotifyOption disableGui=new NotifyOption("");
+  exportFile.setHelpDescriptionSize(80);
+  options.register("nogui",'n',Globals.lang("No GUI. Only process command line options."),disableGui);
+  options.register("import",'i',Globals.lang("Imports file: [bibtexml|endnote|isi|ris,]filename"),importFile);
+  options.register("output",'o',Globals.lang("Outputs or exports file: [bibtexml|docbook|html|simplehtml,]filename"),exportFile);
+  options.register("help",'h',Globals.lang("Displays help on command line options"),helpO);
+  options.setUseMenu(false);
+  options.process(args);
+  if (helpO.isInvoked()) {
+    System.out.println(options.getHelp());
+    System.exit(0);
   }
   SplashScreen ss=null;
-  if (openGui) {
+  if (!disableGui.isInvoked()) {
     ss=new SplashScreen();
     ss.show();
   }
- else   Util.pr("JabRef " + GUIGlobals.version);
   Object fnt=new UIDefaults.ProxyLazyValue("javax.swing.plaf.FontUIResource",null,new Object[]{"Arial",new Integer(Font.PLAIN),new Integer(12)});
   UIManager.put("Button.font",fnt);
   UIManager.put("ToggleButton.font",fnt);
@@ -61,74 +73,68 @@
  catch (    UnsupportedLookAndFeelException ex) {
     }
   }
-  JabRefPreferences prefs=new JabRefPreferences();
-  BibtexEntryType.loadCustomEntryTypes(prefs);
-  Globals.setLanguage(prefs.get("language"),"");
   GUIGlobals.CURRENTFONT=new Font(prefs.get("fontFamily"),prefs.getInt("fontStyle"),prefs.getInt("fontSize"));
   Vector loaded=new Vector();
-  if (args.length > 0)   for (int i=0; i < args.length; i++) {
-    if (!args[i].startsWith("-")) {
-      System.out.println(Globals.lang("Opening") + ": " + args[i]);
+  if (importFile.isInvoked()) {
+    String[] data=importFile.getStringValue().split(",");
+    if (data.length == 1) {
+      System.out.println(Globals.lang("Opening") + ": " + data[0]);
       try {
-        File file=new File(args[i]);
+        File file=new File(data[0]);
         ParserResult pr=ImportFormatReader.loadDatabase(file);
         pr.setFile(file);
         loaded.add(pr);
       }
  catch (      IOException ex) {
-        System.err.println(Globals.lang("Error opening file") + " '" + args[i]+ "': "+ ex.getMessage());
+        System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getMessage());
       }
     }
- else {
-      if (args[i].startsWith("-i") && (args[i].length() > 3) && (args.length > i + 1)) {
-        try {
-          System.out.println(Globals.lang("Importing") + ": " + args[i + 1]);
-          BibtexDatabase base=ImportFormatReader.importFile(args[i].substring(3),args[i + 1]);
-          ParserResult pr=new ParserResult(base,new HashMap());
-          pr.setFile(new File(args[i + 1]));
-          loaded.add(pr);
-        }
- catch (        IOException ex) {
-          System.err.println(Globals.lang("Error opening file") + " '" + args[i + 1]+ "': "+ ex.getMessage());
-        }
-        i++;
+ else     if (data.length == 2) {
+      try {
+        System.out.println(Globals.lang("Importing") + ": " + data[0]);
+        BibtexDatabase base=ImportFormatReader.importFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")));
+        ParserResult pr=new ParserResult(base,new HashMap());
+        pr.setFile(new File(data[0]));
+        loaded.add(pr);
       }
- else       if (args[i].equals("-o") && (args.length > i + 1)) {
+ catch (      IOException ex) {
+        System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getMessage());
+      }
+    }
+  }
+  if (exportFile.isInvoked()) {
+    if (loaded.size() == 1) {
+      String[] data=exportFile.getStringValue().split(",");
+      if (data.length == 1) {
         if (loaded.size() > 0) {
           ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
           try {
-            System.out.println(Globals.lang("Saving") + ": " + args[i + 1]);
-            FileActions.saveDatabase(pr.getDatabase(),new MetaData(pr.getMetaData()),new File(args[i + 1]),prefs,false,false);
+            System.out.println(Globals.lang("Saving") + ": " + data[0]);
+            FileActions.saveDatabase(pr.getDatabase(),new MetaData(pr.getMetaData()),new File(data[0]),prefs,false,false);
           }
  catch (          SaveException ex) {
-            System.err.println(Globals.lang("Could not save file") + " '" + args[i + 1]+ "': "+ ex.getMessage());
+            System.err.println(Globals.lang("Could not save file") + " '" + data[0]+ "': "+ ex.getMessage());
           }
         }
- else         System.err.println(Globals.lang("The -o option must be preceded by an import option."));
-        i++;
+ else         System.err.println(Globals.lang("The output option depends on a valid import option."));
       }
- else       if (args[i].startsWith("-o") && (args.length > i + 1)) {
-        if (loaded.size() > 0) {
-          ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
-          try {
-            System.out.println(Globals.lang("Exporting") + ": " + args[i + 1]);
-            FileActions.exportDatabase(pr.getDatabase(),args[i].substring(3),new File(args[i + 1]),prefs);
-          }
- catch (          IOException ex) {
-            System.err.println(Globals.lang("Could not export file") + " '" + args[i + 1]+ "': "+ ex.getMessage());
-          }
-catch (          NullPointerException ex2) {
-            System.err.println(Globals.lang("Unknown export format") + ": " + args[i].substring(3));
-          }
+ else       if (data.length == 2) {
+        ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
+        try {
+          System.out.println(Globals.lang("Exporting") + ": " + data[0]);
+          FileActions.exportDatabase(pr.getDatabase(),data[1],new File(data[0]),prefs);
         }
- else         System.err.println(Globals.lang("The -o option must be preceded by an import option."));
-        i++;
+ catch (        IOException ex) {
+          System.err.println(Globals.lang("Could not export file") + " '" + data[0]+ "': "+ ex.getMessage());
+        }
+catch (        NullPointerException ex2) {
+          System.err.println(Globals.lang("Unknown export format") + ": " + data[1]);
+        }
       }
     }
+ else     System.err.println(Globals.lang("The output option depends on a valid import option."));
   }
- else {
-  }
-  if (openGui) {
+  if (!disableGui.isInvoked()) {
     JabRefFrame jrf=new JabRefFrame();
     if (loaded.size() > 0)     for (int i=0; i < loaded.size(); i++) {
       ParserResult pr=(ParserResult)loaded.elementAt(i);

@@ -1,0 +1,23 @@
+{
+  BufferedReader reader=null;
+  String line=null;
+  currentModule=generalModule;
+  try {
+    reader=new BufferedReader(new FileReader(filename));
+    while ((line=reader.readLine()) != null) {
+      line=Utility.stripComments(line,'\"',';');
+      process(line);
+    }
+  }
+ catch (  IOException e) {
+    throw new OptionProcessingException(e.getMessage());
+  }
+ finally {
+    try {
+      if (reader != null)       reader.close();
+    }
+ catch (    IOException e) {
+      throw new OptionProcessingException(e.getMessage());
+    }
+  }
+}

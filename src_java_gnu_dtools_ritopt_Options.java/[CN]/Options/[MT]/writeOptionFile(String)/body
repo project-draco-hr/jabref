@@ -1,0 +1,27 @@
+{
+  BufferedOutputStream writer=null;
+  String line=null;
+  Iterator it=null;
+  currentModule=generalModule;
+  try {
+    writer=new BufferedOutputStream(new FileOutputStream(filename));
+    PrintStream ps=new PrintStream(writer);
+    generalModule.writeFileToPrintStream(ps);
+    it=modules.values().iterator();
+    while (it.hasNext()) {
+      OptionModule module=(OptionModule)it.next();
+      module.writeFileToPrintStream(ps);
+    }
+  }
+ catch (  IOException e) {
+    throw new OptionProcessingException(e.getMessage());
+  }
+ finally {
+    try {
+      if (writer != null)       writer.close();
+    }
+ catch (    IOException e) {
+      throw new OptionProcessingException(e.getMessage());
+    }
+  }
+}
