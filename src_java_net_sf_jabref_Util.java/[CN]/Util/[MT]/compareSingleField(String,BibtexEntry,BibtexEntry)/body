@@ -1,0 +1,19 @@
+{
+  String s1=(String)one.getField(field), s2=(String)two.getField(field);
+  if (s1 == null) {
+    if (s2 == null)     return EQUAL;
+ else     return EMPTY_IN_ONE;
+  }
+ else   if (s2 == null)   return EMPTY_IN_TWO;
+  s1=s1.toLowerCase();
+  s2=s2.toLowerCase();
+  if (field.equals("author") || field.equals("editor")) {
+    String[] aus1=ImportFormatReader.fixAuthor_lastnameFirst(s1).split(" and "), aus2=ImportFormatReader.fixAuthor_lastnameFirst(s2).split(" and "), au1=aus1[0].split(","), au2=aus2[0].split(",");
+    if ((aus1.length > 0) && (aus1.length == aus2.length) && au1[0].trim().equals(au2[0].trim()))     return EQUAL;
+ else     return NOT_EQUAL;
+  }
+ else {
+    if (s1.trim().equals(s2.trim()))     return EQUAL;
+ else     return NOT_EQUAL;
+  }
+}
