@@ -1,30 +1,17 @@
 {
   rawPanel.setLayout(new BorderLayout());
-  textPane=new JTextPane(){
-    public void setSize(    Dimension d){
-      if (d.width > 100)       d.width=100;
-      super.setSize(d);
-    }
-    public boolean getScrollableTracksViewportWidth(){
-      return false;
-    }
-  }
-;
+  textPane=new JTextPane();
   textPane.setEditable(false);
-  textPane.setOpaque(false);
-  textPane.setMaximumSize(new Dimension(100,100));
   doc=textPane.getStyledDocument();
   addStylesToDocument(doc);
-  OverlayPanel testPanel=new OverlayPanel(textPane,Globals.lang("Text_Input_Area"));
   try {
     doc.insertString(0,"",doc.getStyle("regular"));
   }
  catch (  Exception e) {
   }
-  JScrollPane paneScrollPane=new JScrollPane(testPanel);
-  paneScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-  paneScrollPane.setPreferredSize(new Dimension(350,255));
-  paneScrollPane.setMinimumSize(new Dimension(10,10));
+  testPanel=new OverlayPanel(textPane,Globals.lang("Text_Input_Area"));
+  testPanel.setPreferredSize(new Dimension(450,255));
+  testPanel.setMaximumSize(new Dimension(450,Integer.MAX_VALUE));
   PasteAction pasteAction=new PasteAction();
   JMenuItem pasteMI=new JMenuItem(pasteAction);
   inputMenu.add(new MenuHeaderAction());
@@ -41,7 +28,7 @@
   toolBar.add(new LoadAction());
   JPanel leftPanel=new JPanel(new BorderLayout());
   leftPanel.add(toolBar,BorderLayout.NORTH);
-  leftPanel.add(paneScrollPane,BorderLayout.CENTER);
+  leftPanel.add(testPanel,BorderLayout.CENTER);
   JPanel inputPanel=new JPanel();
   GridBagLayout gbl=new GridBagLayout();
   GridBagConstraints con=new GridBagConstraints();
@@ -64,7 +51,7 @@
   fieldScroller.setPreferredSize(new Dimension(180,190));
   fieldScroller.setMinimumSize(new Dimension(180,190));
   insertButton.setText(Globals.lang("Insert"));
-  insertButton.addActionListener(new TextInputDialog_insert_actionAdapter(this));
+  insertButton.addActionListener(this);
   appRadio=new JRadioButton(Globals.lang("Append"));
   appRadio.setToolTipText("append the selected text to bibtex key");
   appRadio.setMnemonic(KeyEvent.VK_A);
@@ -98,14 +85,16 @@
   JEditorPane infoText=new JEditorPane();
   infoText.setEditable(false);
   URL infoURL=JabRef.class.getResource(GUIGlobals.helpPre + GUIGlobals.shortPlainImport);
-  if (infoURL != null)   try {
-    infoText.setPage(infoURL);
-    infoText.setBackground(GUIGlobals.infoField);
-    infoText.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-    infoText.setPreferredSize(new Dimension(220,50));
-    infoText.setMinimumSize(new Dimension(180,50));
-    rawPanel.add(infoText,BorderLayout.SOUTH);
-  }
- catch (  IOException e) {
+  if (infoURL != null) {
+    try {
+      infoText.setPage(infoURL);
+      infoText.setBackground(GUIGlobals.infoField);
+      infoText.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+      infoText.setPreferredSize(new Dimension(220,50));
+      infoText.setMinimumSize(new Dimension(180,50));
+      rawPanel.add(infoText,BorderLayout.SOUTH);
+    }
+ catch (    IOException e) {
+    }
   }
 }
