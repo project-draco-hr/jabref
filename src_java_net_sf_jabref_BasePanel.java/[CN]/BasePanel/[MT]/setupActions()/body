@@ -68,6 +68,119 @@
     }
   }
 );
+  actions.put("copy",new BaseAction(){
+    public void action(){
+      BibtexEntry[] bes=entryTable.getSelectedEntries();
+      if ((bes != null) && (bes.length > 0)) {
+        TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,ths);
+        output("Copied " + (bes.length > 1 ? bes.length + " entries." : "1 entry."));
+      }
+ else {
+        int[] rows=entryTable.getSelectedRows(), cols=entryTable.getSelectedColumns();
+        if ((cols.length == 1) && (rows.length == 1)) {
+          Object o=tableModel.getValueAt(rows[0],cols[0]);
+          if (o != null) {
+            StringSelection ss=new StringSelection(o.toString());
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,ths);
+            output(Globals.lang("Copied cell contents") + ".");
+          }
+        }
+      }
+    }
+  }
+);
+  actions.put("cut",new BaseAction(){
+    public void action(){
+      runCommand("copy");
+      int[] rows=entryTable.getSelectedRows(), cols=entryTable.getSelectedColumns();
+      if ((((cols.length == 1) && (cols[0] == 0)) || (cols.length == tableModel.getColumnCount())) && (rows.length > 0)) {
+        NamedCompound ce=new NamedCompound(rows.length > 1 ? Globals.lang("delete entries") : Globals.lang("delete entry"));
+        for (int i=0; i < rows.length; i++) {
+          String id=tableModel.getNameFromNumber(rows[i]);
+          BibtexEntry entry=database.getEntryById(id);
+          database.removeEntry(id);
+          Object o=entryTypeForms.get(id);
+          if (o != null) {
+            ((EntryTypeForm)o).dispose();
+          }
+          ce.addEdit(new UndoableRemoveEntry(database,entry,entryTypeForms));
+        }
+        entryTable.clearSelection();
+        frame.output(Globals.lang("Cut") + " " + (rows.length > 1 ? rows.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
+        ce.end();
+        undoManager.addEdit(ce);
+        refreshTable();
+        markBaseChanged();
+      }
+    }
+  }
+);
+  actions.put("paste",new BaseAction(){
+    public void action(){
+      Transferable content=Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+      if (content != null) {
+        DataFlavor[] flavor=content.getTransferDataFlavors();
+        if ((flavor != null) && (flavor.length > 0) && flavor[0].equals(TransferableBibtexEntry.entryFlavor)) {
+          BibtexEntry[] bes=null;
+          try {
+            bes=(BibtexEntry[])(content.getTransferData(TransferableBibtexEntry.entryFlavor));
+          }
+ catch (          UnsupportedFlavorException ex) {
+          }
+catch (          IOException ex) {
+          }
+          if ((bes != null) && (bes.length > 0)) {
+            NamedCompound ce=new NamedCompound(bes.length > 1 ? "paste entries" : "paste entry");
+            for (int i=0; i < bes.length; i++) {
+              try {
+                BibtexEntry be=(BibtexEntry)(bes[i].clone());
+                be.setId(Util.createId(be.getType(),database));
+                database.insertEntry(be);
+                ce.addEdit(new UndoableInsertEntry(database,be,entryTypeForms));
+              }
+ catch (              KeyCollisionException ex) {
+                Util.pr("KeyCollisionException... this shouldn't happen.");
+              }
+            }
+            ce.end();
+            undoManager.addEdit(ce);
+            tableModel.remap();
+            entryTable.clearSelection();
+            entryTable.revalidate();
+            output("Pasted " + (bes.length > 1 ? bes.length + " entries." : "1 entry."));
+            refreshTable();
+            markBaseChanged();
+          }
+        }
+        if ((flavor != null) && (flavor.length > 0) && flavor[0].equals(DataFlavor.stringFlavor)) {
+          int[] rows=entryTable.getSelectedRows(), cols=entryTable.getSelectedColumns();
+          if ((cols != null) && (cols.length == 1) && (cols[0] != 0)&& (rows != null)&& (rows.length == 1)) {
+            try {
+              tableModel.setValueAt((String)(content.getTransferData(DataFlavor.stringFlavor)),rows[0],cols[0]);
+              refreshTable();
+              markBaseChanged();
+              output("Pasted cell contents");
+            }
+ catch (            UnsupportedFlavorException ex) {
+            }
+catch (            IOException ex) {
+            }
+catch (            IllegalArgumentException ex) {
+              output("Can't paste.");
+            }
+          }
+        }
+      }
+    }
+  }
+);
+  actions.put("selectAll",new BaseAction(){
+    public void action(){
+      entryTable.selectAll();
+    }
+  }
+);
   actions.put("editPreamble",new BaseAction(){
     public void action(){
       if (preambleEditor == null) {
