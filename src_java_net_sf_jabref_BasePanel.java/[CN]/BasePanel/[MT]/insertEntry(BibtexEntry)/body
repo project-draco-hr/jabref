@@ -1,0 +1,21 @@
+{
+  if (bibEntry != null) {
+    try {
+      database.insertEntry(bibEntry);
+      if (prefs.getBoolean("useOwner"))       bibEntry.setField(Globals.OWNER,prefs.get("defaultOwner"));
+      undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,ths));
+      output(Globals.lang("Added new") + " '" + bibEntry.getType().getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
+      refreshTable();
+      int row=tableModel.getNumberFromName(bibEntry.getId());
+      entryTable.clearSelection();
+      entryTable.scrollTo(row);
+      markBaseChanged();
+      if (prefs.getBoolean("autoOpenForm")) {
+        showEntry(bibEntry);
+      }
+    }
+ catch (    KeyCollisionException ex) {
+      Util.pr(ex.getMessage());
+    }
+  }
+}

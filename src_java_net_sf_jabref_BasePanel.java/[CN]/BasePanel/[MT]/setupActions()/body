@@ -650,6 +650,49 @@ catch (            Throwable ex) {
     }
   }
 );
+  actions.put("plainTextImport",new BaseAction(){
+    public void action(){
+      EntryTypeDialog etd=new EntryTypeDialog(frame);
+      Util.placeDialog(etd,ths);
+      etd.show();
+      BibtexEntryType tp=etd.getChoice();
+      if (tp == null)       return;
+      String id=Util.createId(tp,database);
+      BibtexEntry bibEntry=new BibtexEntry(id,tp);
+      TextInputDialog tidialog=new TextInputDialog(frame,"import",true,bibEntry);
+      Util.placeDialog(tidialog,ths);
+      tidialog.show();
+      if (tidialog.okPressed()) {
+        insertEntry(bibEntry);
+      }
+    }
+  }
+);
+  actions.put("importPlainText",new BaseAction(){
+    public void action(){
+      BibtexEntry bibEntry=null;
+      BibtexEntry[] bes=entryTable.getSelectedEntries();
+      if ((bes != null) && (bes.length > 0))       bibEntry=bes[0];
+      if (bibEntry != null) {
+        undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,ths));
+        TextInputDialog tidialog=new TextInputDialog(frame,"import",true,bibEntry);
+        Util.placeDialog(tidialog,ths);
+        tidialog.show();
+        if (tidialog.okPressed()) {
+          output(Globals.lang("changed ") + " '" + bibEntry.getType().getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
+          refreshTable();
+          int row=tableModel.getNumberFromName(bibEntry.getId());
+          entryTable.clearSelection();
+          entryTable.scrollTo(row);
+          markBaseChanged();
+          if (prefs.getBoolean("autoOpenForm")) {
+            showEntry(bibEntry);
+          }
+        }
+      }
+    }
+  }
+);
   actions.put("markEntries",new BaseAction(){
     public void action(){
       NamedCompound ce=new NamedCompound("Mark entries");

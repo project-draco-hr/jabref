@@ -1,0 +1,78 @@
+{
+  rawPanel.setLayout(new BorderLayout());
+  textPane=new JTextPane();
+  doc=textPane.getStyledDocument();
+  addStylesToDocument(doc);
+  try {
+    doc.insertString(0,"",doc.getStyle("regular"));
+  }
+ catch (  Exception e) {
+  }
+  JScrollPane paneScrollPane=new JScrollPane(textPane);
+  paneScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+  paneScrollPane.setPreferredSize(new Dimension(350,255));
+  paneScrollPane.setMinimumSize(new Dimension(10,10));
+  PasteAction pasteAction=new PasteAction();
+  JMenuItem pasteMI=new JMenuItem(pasteAction);
+  inputMenu.add(pasteMI);
+  MouseListener popupListener=new PopupListener(inputMenu);
+  textPane.addMouseListener(popupListener);
+  JToolBar toolBar=new JToolBar();
+  toolBar.setBorderPainted(false);
+  toolBar.add(pasteAction);
+  toolBar.add(new LoadAction());
+  toolBar.addSeparator();
+  JPanel leftPanel=new JPanel(new BorderLayout());
+  leftPanel.add(toolBar,BorderLayout.NORTH);
+  leftPanel.add(paneScrollPane,BorderLayout.CENTER);
+  JPanel inputPanel=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
+  GridBagConstraints con=new GridBagConstraints();
+  con.weightx=0;
+  con.insets=new Insets(5,5,0,5);
+  con.fill=GridBagConstraints.HORIZONTAL;
+  inputPanel.setLayout(gbl);
+  TitledBorder titledBorder1=new TitledBorder(BorderFactory.createLineBorder(new Color(153,153,153),2),Globals.lang("input"));
+  inputPanel.setBorder(titledBorder1);
+  inputPanel.setPreferredSize(new Dimension(200,255));
+  inputPanel.setMinimumSize(new Dimension(10,10));
+  fieldList=new JList(getAllFields());
+  fieldList.setCellRenderer(new SimpleCellRenderer(fieldList.getFont()));
+  ListSelectionModel listSelectionModel=fieldList.getSelectionModel();
+  listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  listSelectionModel.addListSelectionListener(new FieldListSelectionHandler());
+  JScrollPane fieldScroller=new JScrollPane(fieldList);
+  fieldScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+  fieldScroller.setPreferredSize(new Dimension(180,190));
+  fieldScroller.setMinimumSize(new Dimension(180,190));
+  insertButton.setText(Globals.lang("insert"));
+  insertButton.addActionListener(new TextInputDialog_insert_actionAdapter(this));
+  appRadio=new JRadioButton(Globals.lang("append"));
+  appRadio.setMnemonic(KeyEvent.VK_A);
+  appRadio.setSelected(true);
+  overRadio=new JRadioButton(Globals.lang("override"));
+  overRadio.setMnemonic(KeyEvent.VK_O);
+  overRadio.setSelected(false);
+  ButtonGroup group=new ButtonGroup();
+  group.add(appRadio);
+  group.add(overRadio);
+  JPanel radioPanel=new JPanel(new GridLayout(0,1));
+  radioPanel.add(appRadio);
+  radioPanel.add(overRadio);
+  JLabel label1=new JLabel(Globals.lang("available fields"));
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(label1,con);
+  inputPanel.add(label1);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.gridheight=8;
+  gbl.setConstraints(fieldScroller,con);
+  inputPanel.add(fieldScroller);
+  con.gridwidth=2;
+  gbl.setConstraints(radioPanel,con);
+  inputPanel.add(radioPanel);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(insertButton,con);
+  inputPanel.add(insertButton);
+  rawPanel.add(leftPanel,BorderLayout.CENTER);
+  rawPanel.add(inputPanel,BorderLayout.EAST);
+}
