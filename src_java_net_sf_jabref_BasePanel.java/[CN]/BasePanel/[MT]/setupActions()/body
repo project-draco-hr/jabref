@@ -109,16 +109,14 @@
         NamedCompound ce=new NamedCompound(bes.length > 1 ? Globals.lang("delete entries") : Globals.lang("delete entry"));
         for (int i=0; i < bes.length; i++) {
           database.removeEntry(bes[i].getId());
-          ensureNotShowing(bes[i]);
           ce.addEdit(new UndoableRemoveEntry(database,bes[i],ths));
         }
         frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
         ce.end();
         undoManager.addEdit(ce);
+        entryTable.clearSelection();
         refreshTable();
         markBaseChanged();
-        if (row0 < entryTable.getRowCount())         entryTable.scrollTo(row0);
- else         entryTable.clearSelection();
       }
     }
   }
