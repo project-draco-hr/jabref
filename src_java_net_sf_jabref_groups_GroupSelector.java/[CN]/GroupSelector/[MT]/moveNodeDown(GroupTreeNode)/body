@@ -1,0 +1,12 @@
+{
+  AbstractUndoableEdit undo=null;
+  if (!node.canMoveDown() || (undo=node.moveDown(GroupSelector.this)) == null) {
+    frame.output(Globals.lang("Cannot move group") + " '" + node.getGroup().getName()+ "' down.");
+    return false;
+  }
+  revalidateGroups(new TreePath(node.getPath()));
+  panel.undoManager.addEdit(undo);
+  panel.markBaseChanged();
+  frame.output(Globals.lang("Moved group") + " '" + node.getGroup().getName()+ "'.");
+  return true;
+}
