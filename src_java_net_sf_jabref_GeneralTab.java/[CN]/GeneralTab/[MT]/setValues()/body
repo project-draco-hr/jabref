@@ -1,0 +1,34 @@
+{
+  autoOpenForm.setSelected(_prefs.getBoolean("autoOpenForm"));
+  openLast.setSelected(_prefs.getBoolean("openLastEdited"));
+  allowEditing.setSelected(_prefs.getBoolean("allowTableEditing"));
+  backup.setSelected(_prefs.getBoolean("backup"));
+  defSource.setSelected(_prefs.getBoolean("defaultShowSource"));
+  editSource.setSelected(_prefs.getBoolean("enableSourceEditing"));
+  defSort.setSelected(_prefs.getBoolean("defaultAutoSort"));
+  ctrlClick.setSelected(_prefs.getBoolean("ctrlClick"));
+  disableOnMultiple.setSelected(_prefs.getBoolean("disableOnMultipleSelection"));
+  useOwner.setSelected(_prefs.getBoolean("useOwner"));
+  keyWarningDialog.setSelected(_prefs.getBoolean("dialogWarningForDuplicateKey"));
+  confirmDelete.setSelected(_prefs.getBoolean("confirmDelete"));
+  saveInStandardOrder.setSelected(_prefs.getBoolean("saveInStandardOrder"));
+  defOwnerField.setText(_prefs.get("defaultOwner"));
+  groupField.setText(_prefs.get("groupsDefaultField"));
+  String enc=_prefs.get("defaultEncoding");
+  outer:   for (int i=0; i < Globals.ENCODINGS.length; i++) {
+    if (Globals.ENCODINGS[i].equalsIgnoreCase(enc)) {
+      encodings.setSelectedIndex(i);
+      break outer;
+    }
+  }
+  fontSize.setText("" + _prefs.getInt("menuFontSize"));
+  oldMenuFontSize=_prefs.getInt("menuFontSize");
+  String oldLan=_prefs.get("language");
+  int ilk=0;
+  for (Iterator i=GUIGlobals.LANGUAGES.keySet().iterator(); i.hasNext(); ) {
+    if (GUIGlobals.LANGUAGES.get(i.next()).equals(oldLan)) {
+      language.setSelectedIndex(ilk);
+    }
+    ilk++;
+  }
+}
