@@ -1,0 +1,19 @@
+{
+  StringBuffer la_s=new StringBuffer("");
+  int len=s.length();
+  try {
+    for (int i=1; i <= len; i++) {
+      la_s.append(super.LA(i));
+    }
+  }
+ catch (  Exception ignoreMe) {
+  }
+  try {
+    super.match(s);
+    parserEventSupport.fireMatch(s,inputState.guessing);
+  }
+ catch (  MismatchedCharException e) {
+    if (inputState.guessing == 0)     parserEventSupport.fireMismatch(la_s.toString(),s,inputState.guessing);
+    throw e;
+  }
+}

@@ -1,0 +1,47 @@
+{
+  if (alreadyExpanded) {
+    return;
+  }
+  Grammar superG=getSuperGrammar();
+  if (superG == null)   return;
+  if (exportVocab == null) {
+    exportVocab=getName();
+  }
+  if (superG.isPredefined())   return;
+  superG.expandInPlace();
+  alreadyExpanded=true;
+  GrammarFile gf=hier.getFile(getFileName());
+  gf.setExpanded(true);
+  IndexedVector inhRules=superG.getRules();
+  for (Enumeration e=inhRules.elements(); e.hasMoreElements(); ) {
+    Rule r=(Rule)e.nextElement();
+    inherit(r,superG);
+  }
+  IndexedVector inhOptions=superG.getOptions();
+  if (inhOptions != null) {
+    for (Enumeration e=inhOptions.elements(); e.hasMoreElements(); ) {
+      Option o=(Option)e.nextElement();
+      inherit(o,superG);
+    }
+  }
+  if ((options != null && options.getElement("importVocab") == null) || options == null) {
+    Option inputV=new Option("importVocab",superG.exportVocab + ";",this);
+    addOption(inputV);
+    String originatingGrFileName=superG.getFileName();
+    String path=antlrTool.pathToFile(originatingGrFileName);
+    String superExportVocabFileName=path + superG.exportVocab + antlr.CodeGenerator.TokenTypesFileSuffix+ antlr.CodeGenerator.TokenTypesFileExt;
+    String newImportVocabFileName=antlrTool.fileMinusPath(superExportVocabFileName);
+    if (path.equals("." + System.getProperty("file.separator"))) {
+    }
+ else {
+      try {
+        antlrTool.copyFile(superExportVocabFileName,newImportVocabFileName);
+      }
+ catch (      IOException io) {
+        antlrTool.toolError("cannot find/copy importVocab file " + superExportVocabFileName);
+        return;
+      }
+    }
+  }
+  inherit(superG.memberAction,superG);
+}

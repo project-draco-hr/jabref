@@ -1,0 +1,40 @@
+{
+  Token theRetToken=null;
+  tryAgain:   for (; ; ) {
+    Token _token=null;
+    int _ttype=Token.INVALID_TYPE;
+    resetText();
+    try {
+      try {
+        if (((LA(1) >= '\u0003' && LA(1) <= '\u00ff'))) {
+          mACTION(true);
+          theRetToken=_returnToken;
+        }
+ else {
+          if (LA(1) == EOF_CHAR) {
+            uponEOF();
+            _returnToken=makeToken(Token.EOF_TYPE);
+          }
+ else {
+            throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+          }
+        }
+        if (_returnToken == null)         continue tryAgain;
+        _ttype=_returnToken.getType();
+        _returnToken.setType(_ttype);
+        return _returnToken;
+      }
+ catch (      RecognitionException e) {
+        throw new TokenStreamRecognitionException(e);
+      }
+    }
+ catch (    CharStreamException cse) {
+      if (cse instanceof CharStreamIOException) {
+        throw new TokenStreamIOException(((CharStreamIOException)cse).io);
+      }
+ else {
+        throw new TokenStreamException(cse.getMessage());
+      }
+    }
+  }
+}

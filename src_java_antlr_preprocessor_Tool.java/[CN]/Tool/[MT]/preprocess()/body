@@ -1,0 +1,38 @@
+{
+  if (grammarFileName == null) {
+    antlrTool.toolError("no grammar file specified");
+    return false;
+  }
+  if (grammars != null) {
+    theHierarchy=new Hierarchy(antlrTool);
+    for (Enumeration e=grammars.elements(); e.hasMoreElements(); ) {
+      String f=(String)e.nextElement();
+      try {
+        theHierarchy.readGrammarFile(f);
+      }
+ catch (      FileNotFoundException fe) {
+        antlrTool.toolError("file " + f + " not found");
+        return false;
+      }
+    }
+  }
+  boolean complete=theHierarchy.verifyThatHierarchyIsComplete();
+  if (!complete)   return false;
+  theHierarchy.expandGrammarsInFile(grammarFileName);
+  GrammarFile gf=theHierarchy.getFile(grammarFileName);
+  String expandedFileName=gf.nameForExpandedGrammarFile(grammarFileName);
+  if (expandedFileName.equals(grammarFileName)) {
+    args[nargs++]=grammarFileName;
+  }
+ else {
+    try {
+      gf.generateExpandedFile();
+      args[nargs++]=antlrTool.getOutputDirectory() + System.getProperty("file.separator") + expandedFileName;
+    }
+ catch (    IOException io) {
+      antlrTool.toolError("cannot write expanded grammar file " + expandedFileName);
+      return false;
+    }
+  }
+  return true;
+}

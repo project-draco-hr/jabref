@@ -1,0 +1,18 @@
+{
+  Reader grStream=new BufferedReader(new FileReader(file));
+  addGrammarFile(new GrammarFile(antlrTool,file));
+  PreprocessorLexer ppLexer=new PreprocessorLexer(grStream);
+  ppLexer.setFilename(file);
+  Preprocessor pp=new Preprocessor(ppLexer);
+  pp.setTool(antlrTool);
+  pp.setFilename(file);
+  try {
+    pp.grammarFile(this,file);
+  }
+ catch (  TokenStreamException io) {
+    antlrTool.toolError("Token stream error reading grammar(s):\n" + io);
+  }
+catch (  ANTLRException se) {
+    antlrTool.toolError("error reading grammar(s):\n" + se);
+  }
+}

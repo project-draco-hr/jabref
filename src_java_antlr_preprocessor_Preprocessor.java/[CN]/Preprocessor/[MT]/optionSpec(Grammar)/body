@@ -1,0 +1,40 @@
+{
+  IndexedVector options;
+  Token op=null;
+  Token rhs=null;
+  options=new IndexedVector();
+  try {
+    match(OPTIONS_START);
+{
+      _loop280:       do {
+        if ((LA(1) == ID)) {
+          op=LT(1);
+          match(ID);
+          rhs=LT(1);
+          match(ASSIGN_RHS);
+          Option newOp=new Option(op.getText(),rhs.getText(),gr);
+          options.appendElement(newOp.getName(),newOp);
+          if (gr != null && op.getText().equals("importVocab")) {
+            gr.specifiedVocabulary=true;
+            gr.importVocab=rhs.getText();
+          }
+ else           if (gr != null && op.getText().equals("exportVocab")) {
+            gr.exportVocab=rhs.getText().substring(0,rhs.getText().length() - 1);
+            gr.exportVocab=gr.exportVocab.trim();
+          }
+        }
+ else {
+          break _loop280;
+        }
+      }
+ while (true);
+    }
+    match(RCURLY);
+  }
+ catch (  RecognitionException ex) {
+    reportError(ex);
+    consume();
+    consumeUntil(_tokenSet_1);
+  }
+  return options;
+}

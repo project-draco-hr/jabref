@@ -1,0 +1,15 @@
+{
+  if (!rootIsValidANTLRDir(tool)) {
+    return;
+  }
+  tool.antlr(root + "/antlr/antlr.g");
+  tool.antlr(root + "/antlr/tokdef.g");
+  tool.antlr(root + "/antlr/preprocessor/preproc.g");
+  tool.antlr(root + "/antlr/actions/java/action.g");
+  tool.antlr(root + "/antlr/actions/cpp/action.g");
+  tool.antlr(root + "/antlr/actions/csharp/action.g");
+  for (int i=0; i < srcdir.length; i++) {
+    String cmd=compiler + " -d " + root+ " "+ root+ "/"+ srcdir[i]+ "/*.java";
+    tool.system(cmd);
+  }
+}

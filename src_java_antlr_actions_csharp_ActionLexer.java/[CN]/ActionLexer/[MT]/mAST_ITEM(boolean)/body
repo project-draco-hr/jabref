@@ -1,0 +1,167 @@
+{
+  int _ttype;
+  Token _token=null;
+  int _begin=text.length();
+  _ttype=AST_ITEM;
+  int _saveIndex;
+  Token t=null;
+  Token id=null;
+  Token ctor=null;
+  if ((LA(1) == '#') && (LA(2) == '(')) {
+    _saveIndex=text.length();
+    match('#');
+    text.setLength(_saveIndex);
+    mTREE(true);
+    t=_returnToken;
+  }
+ else   if ((LA(1) == '#') && (_tokenSet_3.member(LA(2)))) {
+    _saveIndex=text.length();
+    match('#');
+    text.setLength(_saveIndex);
+{
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+          mWS(false);
+          break;
+        }
+case 'A':
+case 'B':
+case 'C':
+case 'D':
+case 'E':
+case 'F':
+case 'G':
+case 'H':
+case 'I':
+case 'J':
+case 'K':
+case 'L':
+case 'M':
+case 'N':
+case 'O':
+case 'P':
+case 'Q':
+case 'R':
+case 'S':
+case 'T':
+case 'U':
+case 'V':
+case 'W':
+case 'X':
+case 'Y':
+case 'Z':
+case '_':
+case 'a':
+case 'b':
+case 'c':
+case 'd':
+case 'e':
+case 'f':
+case 'g':
+case 'h':
+case 'i':
+case 'j':
+case 'k':
+case 'l':
+case 'm':
+case 'n':
+case 'o':
+case 'p':
+case 'q':
+case 'r':
+case 's':
+case 't':
+case 'u':
+case 'v':
+case 'w':
+case 'x':
+case 'y':
+case 'z':
+{
+        break;
+      }
+default :
+{
+      throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+    }
+}
+}
+mID(true);
+id=_returnToken;
+String idt=id.getText();
+String mapped=generator.mapTreeId(id.getText(),transInfo);
+if ((mapped != null) && !idt.equals(mapped)) {
+text.setLength(_begin);
+text.append(mapped);
+}
+ else {
+if (idt.equals("define") || idt.equals("undef") || idt.equals("if")|| idt.equals("elif")|| idt.equals("else")|| idt.equals("endif")|| idt.equals("line")|| idt.equals("error")|| idt.equals("warning")|| idt.equals("region")|| idt.equals("endregion")) {
+  text.setLength(_begin);
+  text.append("#" + idt);
+}
+}
+{
+if ((_tokenSet_4.member(LA(1))) && (true) && (true)) {
+  mWS(false);
+}
+ else {
+}
+}
+{
+if ((LA(1) == '=') && (true) && (true)) {
+  mVAR_ASSIGN(false);
+}
+ else {
+}
+}
+}
+ else if ((LA(1) == '#') && (LA(2) == '[')) {
+_saveIndex=text.length();
+match('#');
+text.setLength(_saveIndex);
+mAST_CONSTRUCTOR(true);
+ctor=_returnToken;
+}
+ else if ((LA(1) == '#') && (LA(2) == '#')) {
+match("##");
+if (currentRule != null) {
+String r=currentRule.getRuleName() + "_AST";
+text.setLength(_begin);
+text.append(r);
+if (transInfo != null) {
+  transInfo.refRuleRoot=r;
+}
+}
+ else {
+reportWarning("\"##\" not valid in this context");
+text.setLength(_begin);
+text.append("##");
+}
+{
+if ((_tokenSet_4.member(LA(1))) && (true) && (true)) {
+  mWS(false);
+}
+ else {
+}
+}
+{
+if ((LA(1) == '=') && (true) && (true)) {
+  mVAR_ASSIGN(false);
+}
+ else {
+}
+}
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+if (_createToken && _token == null && _ttype != Token.SKIP) {
+_token=makeToken(_ttype);
+_token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));
+}
+_returnToken=_token;
+}

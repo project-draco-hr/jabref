@@ -1,0 +1,19 @@
+{
+  if (parent == null || child == null) {
+    throw new IllegalArgumentException("root or child is null");
+  }
+  AST p=(AST)parent;
+  AST c=p.getFirstChild();
+  if (c == null) {
+    throw new ArrayIndexOutOfBoundsException("node has no children");
+  }
+  int i=0;
+  while (c != null && c != child) {
+    c=c.getNextSibling();
+    i++;
+  }
+  if (c == child) {
+    return i;
+  }
+  throw new java.util.NoSuchElementException("node is not a child");
+}

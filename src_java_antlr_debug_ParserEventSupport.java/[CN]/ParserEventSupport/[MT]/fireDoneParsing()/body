@@ -1,0 +1,17 @@
+{
+  traceEvent.setValues(TraceEvent.DONE_PARSING,0,0,0);
+  Hashtable targets=null;
+  ListenerBase l=null;
+synchronized (this) {
+    if (doneListeners == null)     return;
+    targets=(Hashtable)doneListeners.clone();
+  }
+  if (targets != null) {
+    Enumeration e=targets.keys();
+    while (e.hasMoreElements()) {
+      l=(ListenerBase)e.nextElement();
+      fireEvent(DONE_PARSING,l);
+    }
+  }
+  if (controller != null)   controller.checkBreak();
+}

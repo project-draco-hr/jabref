@@ -1,0 +1,38 @@
+{
+  int _ttype;
+  Token _token=null;
+  int _begin=text.length();
+  _ttype=ARG_ACTION;
+  int _saveIndex;
+  match('[');
+{
+    _loop375:     do {
+      if ((LA(1) == ']') && (true))       break _loop375;
+      if ((LA(1) == '[') && ((LA(2) >= '\u0003' && LA(2) <= '\u00ff'))) {
+        mARG_ACTION(false);
+      }
+ else       if ((LA(1) == '\n' || LA(1) == '\r') && ((LA(2) >= '\u0003' && LA(2) <= '\u00ff'))) {
+        mNEWLINE(false);
+      }
+ else       if ((LA(1) == '\'') && (_tokenSet_6.member(LA(2)))) {
+        mCHAR_LITERAL(false);
+      }
+ else       if ((LA(1) == '"') && ((LA(2) >= '\u0003' && LA(2) <= '\u00ff'))) {
+        mSTRING_LITERAL(false);
+      }
+ else       if (((LA(1) >= '\u0003' && LA(1) <= '\u00ff')) && ((LA(2) >= '\u0003' && LA(2) <= '\u00ff'))) {
+        matchNot(EOF_CHAR);
+      }
+ else {
+        break _loop375;
+      }
+    }
+ while (true);
+  }
+  match(']');
+  if (_createToken && _token == null && _ttype != Token.SKIP) {
+    _token=makeToken(_ttype);
+    _token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));
+  }
+  _returnToken=_token;
+}

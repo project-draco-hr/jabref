@@ -1,0 +1,62 @@
+{
+  int _ttype;
+  Token _token=null;
+  int _begin=text.length();
+  _ttype=STUFF;
+  int _saveIndex;
+switch (LA(1)) {
+case '"':
+{
+      mSTRING(false);
+      break;
+    }
+case '\'':
+{
+    mCHAR(false);
+    break;
+  }
+case '\n':
+{
+  match('\n');
+  newline();
+  break;
+}
+default :
+if ((LA(1) == '/') && (LA(2) == '*' || LA(2) == '/')) {
+mCOMMENT(false);
+}
+ else if ((LA(1) == '\r') && (LA(2) == '\n') && (true)) {
+match("\r\n");
+newline();
+}
+ else if ((LA(1) == '\\') && (LA(2) == '#') && (true)) {
+match('\\');
+match('#');
+text.setLength(_begin);
+text.append("#");
+}
+ else if ((LA(1) == '/') && (_tokenSet_1.member(LA(2)))) {
+match('/');
+{
+  match(_tokenSet_1);
+}
+}
+ else if ((LA(1) == '\r') && (true) && (true)) {
+match('\r');
+newline();
+}
+ else if ((_tokenSet_2.member(LA(1))) && (true) && (true)) {
+{
+  match(_tokenSet_2);
+}
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+if (_createToken && _token == null && _ttype != Token.SKIP) {
+_token=makeToken(_ttype);
+_token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));
+}
+_returnToken=_token;
+}

@@ -1,0 +1,33 @@
+{
+  StringBuffer s=new StringBuffer(10000);
+  if (preambleAction != null) {
+    s.append(preambleAction);
+  }
+  if (superGrammar == null) {
+    return "class " + name + ";";
+  }
+  if (superClass != null) {
+    s.append("class " + name + " extends "+ superClass+ ";");
+  }
+ else {
+    s.append("class " + name + " extends "+ type+ ";");
+  }
+  s.append(System.getProperty("line.separator") + System.getProperty("line.separator"));
+  if (options != null) {
+    s.append(Hierarchy.optionsToString(options));
+  }
+  if (tokenSection != null) {
+    s.append(tokenSection + "\n");
+  }
+  if (memberAction != null) {
+    s.append(memberAction + System.getProperty("line.separator"));
+  }
+  for (int i=0; i < rules.size(); i++) {
+    Rule r=(Rule)rules.elementAt(i);
+    if (!getName().equals(r.enclosingGrammar.getName())) {
+      s.append("// inherited from grammar " + r.enclosingGrammar.getName() + System.getProperty("line.separator"));
+    }
+    s.append(r + System.getProperty("line.separator") + System.getProperty("line.separator"));
+  }
+  return s.toString();
+}

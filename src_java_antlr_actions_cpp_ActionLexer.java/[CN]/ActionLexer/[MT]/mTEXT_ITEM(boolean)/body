@@ -1,0 +1,245 @@
+{
+  int _ttype;
+  Token _token=null;
+  int _begin=text.length();
+  _ttype=TEXT_ITEM;
+  int _saveIndex;
+  Token a1=null;
+  Token a2=null;
+  Token a3=null;
+  Token a4=null;
+  Token a5=null;
+  Token a6=null;
+  if ((LA(1) == '$') && (LA(2) == 'F') && (LA(3) == 'O')) {
+    match("$FOLLOW");
+{
+      if ((_tokenSet_5.member(LA(1))) && (_tokenSet_6.member(LA(2))) && ((LA(3) >= '\u0003' && LA(3) <= '\u00ff'))) {
+{
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+              mWS(false);
+              break;
+            }
+case '(':
+{
+            break;
+          }
+default :
+{
+          throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+        }
+    }
+  }
+  match('(');
+  mTEXT_ARG(true);
+  a5=_returnToken;
+  match(')');
+}
+ else {
+}
+}
+String rule=currentRule.getRuleName();
+if (a5 != null) {
+rule=a5.getText();
+}
+String setName=generator.getFOLLOWBitSet(rule,1);
+if (setName == null) {
+reportError("$FOLLOW(" + rule + ")"+ ": unknown rule or bad lookahead computation");
+}
+ else {
+text.setLength(_begin);
+text.append(setName);
+}
+}
+ else if ((LA(1) == '$') && (LA(2) == 'F') && (LA(3) == 'I')) {
+match("$FIRST");
+{
+if ((_tokenSet_5.member(LA(1))) && (_tokenSet_6.member(LA(2))) && ((LA(3) >= '\u0003' && LA(3) <= '\u00ff'))) {
+{
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+        mWS(false);
+        break;
+      }
+case '(':
+{
+      break;
+    }
+default :
+{
+    throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+  }
+}
+}
+match('(');
+mTEXT_ARG(true);
+a6=_returnToken;
+match(')');
+}
+ else {
+}
+}
+String rule=currentRule.getRuleName();
+if (a6 != null) {
+rule=a6.getText();
+}
+String setName=generator.getFIRSTBitSet(rule,1);
+if (setName == null) {
+reportError("$FIRST(" + rule + ")"+ ": unknown rule or bad lookahead computation");
+}
+ else {
+text.setLength(_begin);
+text.append(setName);
+}
+}
+ else if ((LA(1) == '$') && (LA(2) == 'a')) {
+match("$append");
+{
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+mWS(false);
+break;
+}
+case '(':
+{
+break;
+}
+default :
+{
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+}
+match('(');
+mTEXT_ARG(true);
+a1=_returnToken;
+match(')');
+String t="text += " + a1.getText();
+text.setLength(_begin);
+text.append(t);
+}
+ else if ((LA(1) == '$') && (LA(2) == 's')) {
+match("$set");
+{
+if ((LA(1) == 'T') && (LA(2) == 'e')) {
+match("Text");
+{
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+mWS(false);
+break;
+}
+case '(':
+{
+break;
+}
+default :
+{
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+}
+match('(');
+mTEXT_ARG(true);
+a2=_returnToken;
+match(')');
+String t;
+t="{ text.erase(_begin); text += " + a2.getText() + "; }";
+text.setLength(_begin);
+text.append(t);
+}
+ else if ((LA(1) == 'T') && (LA(2) == 'o')) {
+match("Token");
+{
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+mWS(false);
+break;
+}
+case '(':
+{
+break;
+}
+default :
+{
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+}
+match('(');
+mTEXT_ARG(true);
+a3=_returnToken;
+match(')');
+String t="_token = " + a3.getText();
+text.setLength(_begin);
+text.append(t);
+}
+ else if ((LA(1) == 'T') && (LA(2) == 'y')) {
+match("Type");
+{
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+mWS(false);
+break;
+}
+case '(':
+{
+break;
+}
+default :
+{
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+}
+match('(');
+mTEXT_ARG(true);
+a4=_returnToken;
+match(')');
+String t="_ttype = " + a4.getText();
+text.setLength(_begin);
+text.append(t);
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+}
+}
+ else if ((LA(1) == '$') && (LA(2) == 'g')) {
+match("$getText");
+text.setLength(_begin);
+text.append("text.substr(_begin,text.length()-_begin)");
+}
+ else {
+throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+}
+if (_createToken && _token == null && _ttype != Token.SKIP) {
+_token=makeToken(_ttype);
+_token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));
+}
+_returnToken=_token;
+}

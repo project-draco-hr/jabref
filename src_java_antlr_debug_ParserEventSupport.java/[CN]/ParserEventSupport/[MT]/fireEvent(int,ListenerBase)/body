@@ -1,0 +1,54 @@
+{
+switch (type) {
+case CONSUME:
+    ((ParserTokenListener)l).parserConsume(tokenEvent);
+  break;
+case LA:
+((ParserTokenListener)l).parserLA(tokenEvent);
+break;
+case ENTER_RULE:
+((TraceListener)l).enterRule(traceEvent);
+break;
+case EXIT_RULE:
+((TraceListener)l).exitRule(traceEvent);
+break;
+case MATCH:
+((ParserMatchListener)l).parserMatch(matchEvent);
+break;
+case MATCH_NOT:
+((ParserMatchListener)l).parserMatchNot(matchEvent);
+break;
+case MISMATCH:
+((ParserMatchListener)l).parserMismatch(matchEvent);
+break;
+case MISMATCH_NOT:
+((ParserMatchListener)l).parserMismatchNot(matchEvent);
+break;
+case SEMPRED:
+((SemanticPredicateListener)l).semanticPredicateEvaluated(semPredEvent);
+break;
+case SYNPRED_STARTED:
+((SyntacticPredicateListener)l).syntacticPredicateStarted(synPredEvent);
+break;
+case SYNPRED_FAILED:
+((SyntacticPredicateListener)l).syntacticPredicateFailed(synPredEvent);
+break;
+case SYNPRED_SUCCEEDED:
+((SyntacticPredicateListener)l).syntacticPredicateSucceeded(synPredEvent);
+break;
+case REPORT_ERROR:
+((MessageListener)l).reportError(messageEvent);
+break;
+case REPORT_WARNING:
+((MessageListener)l).reportWarning(messageEvent);
+break;
+case DONE_PARSING:
+l.doneParsing(traceEvent);
+break;
+case NEW_LINE:
+((NewLineListener)l).hitNewLine(newLineEvent);
+break;
+default :
+throw new IllegalArgumentException("bad type " + type + " for fireEvent()");
+}
+}

@@ -1,0 +1,31 @@
+{
+  if (root == null) {
+    return false;
+  }
+  File antlrRootDir=new File(root);
+  if (!antlrRootDir.exists()) {
+    tool.error("Property antlr.build.root==" + root + " does not exist");
+    return false;
+  }
+  if (!antlrRootDir.isDirectory()) {
+    tool.error("Property antlr.build.root==" + root + " is not a directory");
+    return false;
+  }
+  String[] antlrDir=antlrRootDir.list(new FilenameFilter(){
+    public boolean accept(    File dir,    String name){
+      return dir.isDirectory() && name.equals("antlr");
+    }
+  }
+);
+  if (antlrDir == null || antlrDir.length == 0) {
+    tool.error("Property antlr.build.root==" + root + " does not appear to be a valid ANTLR project root (no antlr subdir)");
+    return false;
+  }
+  File antlrPackageDir=new File(root + "/antlr");
+  String[] antlrPackageJavaFiles=antlrPackageDir.list();
+  if (antlrPackageJavaFiles == null || antlrPackageJavaFiles.length == 0) {
+    tool.error("Property antlr.build.root==" + root + " does not appear to be a valid ANTLR project root (no .java files in antlr subdir");
+    return false;
+  }
+  return true;
+}

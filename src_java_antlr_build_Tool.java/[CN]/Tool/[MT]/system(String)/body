@@ -1,0 +1,21 @@
+{
+  Runtime rt=Runtime.getRuntime();
+  try {
+    log(cmd);
+    Process proc=null;
+    if (!os.startsWith("Windows")) {
+      proc=rt.exec(new String[]{"sh","-c",cmd});
+    }
+ else {
+      proc=rt.exec(cmd);
+    }
+    StreamScarfer stderrScarfer=new StreamScarfer(proc.getErrorStream(),"stderr",this);
+    StreamScarfer stdoutScarfer=new StreamScarfer(proc.getInputStream(),"stdout",this);
+    stderrScarfer.start();
+    stdoutScarfer.start();
+    int exitVal=proc.waitFor();
+  }
+ catch (  Exception e) {
+    error("cannot exec " + cmd,e);
+  }
+}

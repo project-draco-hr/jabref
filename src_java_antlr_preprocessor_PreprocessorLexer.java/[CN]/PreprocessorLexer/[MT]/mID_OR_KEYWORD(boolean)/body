@@ -1,0 +1,136 @@
+{
+  int _ttype;
+  Token _token=null;
+  int _begin=text.length();
+  _ttype=ID_OR_KEYWORD;
+  int _saveIndex;
+  Token id=null;
+  mID(true);
+  id=_returnToken;
+  _ttype=id.getType();
+{
+    if (((_tokenSet_9.member(LA(1))) && ((LA(2) >= '\u0003' && LA(2) <= '\u00ff'))) && (id.getText().equals("header"))) {
+{
+        if ((_tokenSet_1.member(LA(1))) && (_tokenSet_9.member(LA(2)))) {
+          mWS(false);
+        }
+ else         if ((_tokenSet_9.member(LA(1))) && ((LA(2) >= '\u0003' && LA(2) <= '\u00ff'))) {
+        }
+ else {
+          throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+        }
+      }
+{
+switch (LA(1)) {
+case '"':
+{
+            mSTRING_LITERAL(false);
+            break;
+          }
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+case '/':
+case '{':
+{
+          break;
+        }
+default :
+{
+        throw new NoViableAltForCharException((char)LA(1),getFilename(),getLine(),getColumn());
+      }
+  }
+}
+{
+  _loop331:   do {
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+        mWS(false);
+        break;
+      }
+case '/':
+{
+      mCOMMENT(false);
+      break;
+    }
+default :
+{
+    break _loop331;
+  }
+}
+}
+ while (true);
+}
+mACTION(false);
+_ttype=HEADER_ACTION;
+}
+ else if (((_tokenSet_10.member(LA(1))) && ((LA(2) >= '\u0003' && LA(2) <= '\u00ff'))) && (id.getText().equals("tokens"))) {
+{
+_loop333: do {
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+  mWS(false);
+  break;
+}
+case '/':
+{
+mCOMMENT(false);
+break;
+}
+default :
+{
+break _loop333;
+}
+}
+}
+ while (true);
+}
+mCURLY_BLOCK_SCARF(false);
+_ttype=TOKENS_SPEC;
+}
+ else if (((_tokenSet_10.member(LA(1))) && (true)) && (id.getText().equals("options"))) {
+{
+_loop335: do {
+switch (LA(1)) {
+case '\t':
+case '\n':
+case '\r':
+case ' ':
+{
+mWS(false);
+break;
+}
+case '/':
+{
+mCOMMENT(false);
+break;
+}
+default :
+{
+break _loop335;
+}
+}
+}
+ while (true);
+}
+match('{');
+_ttype=OPTIONS_START;
+}
+ else {
+}
+}
+if (_createToken && _token == null && _ttype != Token.SKIP) {
+_token=makeToken(_ttype);
+_token.setText(new String(text.getBuffer(),_begin,text.length() - _begin));
+}
+_returnToken=_token;
+}

@@ -1,0 +1,54 @@
+{
+  String es;
+  Token aa=null;
+  String h=null;
+  es=System.getProperty("line.separator") + "exception ";
+  try {
+    match(LITERAL_exception);
+{
+switch (LA(1)) {
+case ARG_ACTION:
+{
+          aa=LT(1);
+          match(ARG_ACTION);
+          es+=aa.getText();
+          break;
+        }
+case EOF:
+case ACTION:
+case LITERAL_class:
+case ID:
+case LITERAL_protected:
+case LITERAL_private:
+case LITERAL_public:
+case LITERAL_exception:
+case LITERAL_catch:
+{
+        break;
+      }
+default :
+{
+      throw new NoViableAltException(LT(1),getFilename());
+    }
+}
+}
+{
+_loop298: do {
+  if ((LA(1) == LITERAL_catch)) {
+    h=exceptionHandler();
+    es+=h;
+  }
+ else {
+    break _loop298;
+  }
+}
+ while (true);
+}
+}
+ catch (RecognitionException ex) {
+reportError(ex);
+consume();
+consumeUntil(_tokenSet_7);
+}
+return es;
+}
