@@ -358,18 +358,19 @@ catch (            IllegalArgumentException ex) {
 );
   actions.put("mergeDatabase",new BaseAction(){
     public void action(){
-      JFileChooser chooser=(prefs.get("workingDirectory") == null) ? new JabRefFileChooser((File)null) : new JabRefFileChooser(new File(prefs.get("workingDirectory")));
-      chooser.addChoosableFileFilter(new OpenFileFilter());
-      int returnVal=chooser.showOpenDialog(ths);
-      if (returnVal == JFileChooser.APPROVE_OPTION) {
+      final MergeDialog md=new MergeDialog(frame,Globals.lang("Append database"),true);
+      Util.placeDialog(md,ths);
+      md.setVisible(true);
+      if (md.okPressed) {
+        JFileChooser chooser=(prefs.get("workingDirectory") == null) ? new JabRefFileChooser((File)null) : new JabRefFileChooser(new File(prefs.get("workingDirectory")));
+        chooser.addChoosableFileFilter(new OpenFileFilter());
+        int returnVal=chooser.showOpenDialog(ths);
+        if (returnVal != JFileChooser.APPROVE_OPTION)         return;
         fileToOpen=chooser.getSelectedFile();
-        final MergeDialog md=new MergeDialog(frame,Globals.lang("Append database"),true);
-        Util.placeDialog(md,ths);
-        md.setVisible(true);
         if (fileToOpen != null) {
           (new Thread(){
             public void run(){
-              openIt(md.importEntries(),md.importStrings(),md.importGroups());
+              openIt(md.importEntries(),md.importStrings(),md.importGroups(),md.importSelectorWords());
             }
           }
 ).start();
@@ -377,14 +378,14 @@ catch (            IllegalArgumentException ex) {
         }
       }
     }
-    void openIt(    boolean importEntries,    boolean importStrings,    boolean importGroups){
+    void openIt(    boolean importEntries,    boolean importStrings,    boolean importGroups,    boolean importSelectorWords){
       if ((fileToOpen != null) && (fileToOpen.exists())) {
         try {
           prefs.put("workingDirectory",fileToOpen.getPath());
           ParserResult pr=frame.loadDatabase(fileToOpen);
           BibtexDatabase db=pr.getDatabase();
           MetaData meta=new MetaData(pr.getMetaData());
-          NamedCompound ce=new NamedCompound(Globals.lang("Append database"));
+          NamedCompound ce=new NamedCompound("Append database");
           if (importEntries) {
             Iterator i=db.getKeySet().iterator();
             while (i.hasNext()) {
@@ -416,6 +417,15 @@ catch (            IllegalArgumentException ex) {
               }
               groupSelector.addGroups(newGroups,ce);
               groupSelector.revalidateList();
+            }
+          }
+          if (importSelectorWords) {
+            Iterator i=meta.iterator();
+            for (; i.hasNext(); ) {
+              String s=(String)i.next();
+              if (s.startsWith(Globals.SELECTOR_META_PREFIX)) {
+                metaData.putData(s,meta.getData(s));
+              }
             }
           }
           ce.end();
