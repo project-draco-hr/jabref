@@ -2,6 +2,7 @@
   _prefs=prefs;
   this.frame=frame;
   setLayout(gbl);
+  menuFont=new Font(prefs.get("menuFontFamily"),prefs.getInt("menuFontStyle"),prefs.getInt("menuFontSize"));
   colorCodes=new JCheckBox(Globals.lang("Color codes for required and optional fields"),_prefs.getBoolean("tableColorCodesOn"));
   antialias=new JCheckBox(Globals.lang("Use antialiasing font"),_prefs.getBoolean("antialias"));
   autoResizeMode=new JCheckBox(Globals.lang("Fit table horizontally on screen"),(_prefs.getInt("autoResizeMode") == JTable.AUTO_RESIZE_ALL_COLUMNS));
@@ -132,6 +133,10 @@ upper.add(antialias);
 gbl.setConstraints(allowEditing,con);
 upper.add(allowEditing);
 con.anchor=GridBagConstraints.EAST;
+con.gridwidth=1;
+gbl.setConstraints(menuFontButton,con);
+upper.add(menuFontButton);
+con.gridwidth=GridBagConstraints.REMAINDER;
 gbl.setConstraints(fontButton,con);
 upper.add(fontButton);
 con.anchor=GridBagConstraints.WEST;
@@ -223,6 +228,14 @@ public void actionPerformed(ActionEvent e){
   Font f=new FontSelectorDialog(null,GUIGlobals.CURRENTFONT).getSelectedFont();
   if (f == null)   return;
  else   font=f;
+}
+}
+);
+menuFontButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+  Font f=new FontSelectorDialog(null,menuFont).getSelectedFont();
+  if (f == null)   return;
+ else   menuFont=f;
 }
 }
 );

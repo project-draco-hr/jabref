@@ -26,7 +26,7 @@
   String[] leftOver=options.process(args);
   if (helpO.isInvoked()) {
     System.out.println(options.getHelp());
-    System.out.println(Globals.lang("Available import formats") + ": biblioscape, bibtexml, endnote, inspec,\n\tisi, medline, ovid, ris, scifinder, sixpack, jstor.");
+    System.out.println(Globals.lang("Available import formats") + ": biblioscape, bibtexml, endnote, inspec,\n\tisi, medline, ovid, ris, scifinder, sixpack, jstor, silverplatter.");
     String outFormats=": bibtexml, docbook, html, simplehtml";
     int length=outFormats.length();
     for (int i=0; i < prefs.customExports.size(); i++) {
@@ -156,6 +156,7 @@ catch (          Exception ex) {
     }
   }
   if (!graphicFailure && !disableGui.isInvoked()) {
+    Object fnt=new UIDefaults.ProxyLazyValue("javax.swing.plaf.FontUIResource",null,new Object[]{prefs.get("menuFontFamily"),new Integer(prefs.getInt("menuFontStyle")),new Integer(prefs.getInt("menuFontSize"))});
     System.setProperty("apple.laf.useScreenMenuBar","true");
     if (Globals.ON_WIN) {
       try {

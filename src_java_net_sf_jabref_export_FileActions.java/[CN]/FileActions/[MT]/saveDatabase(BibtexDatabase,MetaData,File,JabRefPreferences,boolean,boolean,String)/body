@@ -6,10 +6,25 @@
     writeBibFileHeader(fw,encoding);
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
-    String pri=prefs.get("priSort");
-    String sec=prefs.get("secSort");
-    String ter=prefs.get("terSort");
-    TreeSet sorter=new TreeSet(new CrossRefEntryComparator(new EntryComparator(prefs.getBoolean("priDescending"),prefs.getBoolean("secDescending"),prefs.getBoolean("terDescending"),pri,sec,ter)));
+    String pri, sec, ter;
+    boolean priD, secD, terD;
+    if (!prefs.getBoolean("saveInStandardOrder")) {
+      pri=prefs.get("priSort");
+      sec=prefs.get("secSort");
+      ter=prefs.get("terSort");
+      priD=prefs.getBoolean("priDescending");
+      secD=prefs.getBoolean("secDescending");
+      terD=prefs.getBoolean("terDescending");
+    }
+ else {
+      pri="author";
+      sec="editor";
+      ter="year";
+      priD=false;
+      secD=false;
+      terD=true;
+    }
+    TreeSet sorter=new TreeSet(new CrossRefEntryComparator(new EntryComparator(priD,secD,terD,pri,sec,ter)));
     Set keySet=database.getKeySet();
     if (keySet != null) {
       Iterator i=keySet.iterator();
