@@ -1,9 +1,19 @@
 {
   if (previewListener == null)   previewListener=new ListSelectionListener(){
     public void valueChanged(    ListSelectionEvent e){
+      if (!selectionListenerOn)       return;
       if (!e.getValueIsAdjusting()) {
-        int row=getSelectedRow();
-        if (row >= 0)         panel.updateWiewToSelected(panel.database().getEntryById(tableModel.getNameFromNumber(row)));
+        if (getSelectedRowCount() == 1) {
+          int row=getSelectedRow();
+          if (row >= 0) {
+            panel.updateWiewToSelected(panel.database().getEntryById(tableModel.getNameFromNumber(row)));
+          }
+        }
+ else {
+          if (prefs.getBoolean("disableOnMultipleSelection")) {
+            panel.setEntryEditorEnabled(false);
+          }
+        }
       }
     }
   }
