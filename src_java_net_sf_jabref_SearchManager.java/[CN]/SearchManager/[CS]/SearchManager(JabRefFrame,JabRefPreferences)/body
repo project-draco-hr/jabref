@@ -1,6 +1,7 @@
 {
   this.frame=frame;
   prefs=prefs_;
+  incSearcher=new IncrementalSearcher(prefs);
   setBorder(BorderFactory.createEtchedBorder());
   searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),prefs.getBoolean("searchReq"));
   searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),prefs.getBoolean("searchOpt"));
@@ -28,6 +29,13 @@
   settings.addSeparator();
   settings.add(regExpSearch);
   searchField.addActionListener(this);
+  searchField.addFocusListener(new FocusAdapter(){
+    public void focusLost(    FocusEvent e){
+      incSearchPos=-1;
+      if (increment.isSelected())       searchField.setText("");
+    }
+  }
+);
   escape.addActionListener(this);
   openset.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
@@ -70,4 +78,11 @@
   con.insets=new Insets(0,2,2,2);
   gbl.setConstraints(escape,con);
   add(escape);
+  searchField.getInputMap().put(prefs.getKey("Repeat incremental search"),"repeat");
+  searchField.getActionMap().put("repeat",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      if (increment.isSelected())       repeatIncremental();
+    }
+  }
+);
 }

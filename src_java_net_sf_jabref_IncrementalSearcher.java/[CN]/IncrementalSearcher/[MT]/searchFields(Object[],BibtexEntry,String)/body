@@ -1,0 +1,25 @@
+{
+  boolean found=false;
+  if (fields != null) {
+    for (int i=0; i < fields.length; i++) {
+      try {
+        if (bibtexEntry.getField(fields[i].toString()) != null) {
+          if (prefs.getBoolean("caseSensitiveSearch")) {
+            if (bibtexEntry.getField(fields[i].toString()).toString().indexOf(searchString) > -1)             found=true;
+          }
+ else {
+            if (bibtexEntry.getField(fields[i].toString()).toString().toLowerCase().indexOf(searchString.toLowerCase()) > -1)             found=true;
+          }
+          if (found) {
+            hitInField=fields[i].toString();
+            return true;
+          }
+        }
+      }
+ catch (      Throwable t) {
+        System.err.println("Searching error: " + t);
+      }
+    }
+  }
+  return false;
+}
