@@ -1,8 +1,18 @@
 {
   rawPanel.setLayout(new BorderLayout());
-  textPane=new JTextPane();
+  textPane=new JTextPane(){
+    public void setSize(    Dimension d){
+      if (d.width > 100)       d.width=100;
+      super.setSize(d);
+    }
+    public boolean getScrollableTracksViewportWidth(){
+      return false;
+    }
+  }
+;
   textPane.setEditable(false);
   textPane.setOpaque(false);
+  textPane.setMaximumSize(new Dimension(100,100));
   doc=textPane.getStyledDocument();
   addStylesToDocument(doc);
   OverlayPanel testPanel=new OverlayPanel(textPane,Globals.lang("Text_Input_Area"));
@@ -12,7 +22,7 @@
  catch (  Exception e) {
   }
   JScrollPane paneScrollPane=new JScrollPane(testPanel);
-  paneScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+  paneScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
   paneScrollPane.setPreferredSize(new Dimension(350,255));
   paneScrollPane.setMinimumSize(new Dimension(10,10));
   PasteAction pasteAction=new PasteAction();
