@@ -14,8 +14,12 @@
     cmdArray[1]=Globals.DOI_LOOKUP_PREFIX + link;
     Process child=Runtime.getRuntime().exec(cmdArray[0] + " " + cmdArray[1]);
   }
- else   if (fieldName.equals("url")) {
+ else   if (fieldName.equals("url") || fieldName.equals("citeseerurl")) {
     try {
+      if (fieldName.equals("citeseerurl")) {
+        String canonicalLink=CiteSeerFetcher.generateCanonicalURL(link);
+        if (canonicalLink != null)         link=canonicalLink;
+      }
       if (link.startsWith("\\url{") && link.endsWith("}"))       link=link.substring(5,link.length() - 1);
       if (Globals.ON_MAC) {
         String[] cmd={"/usr/bin/open","-a",prefs.get("htmlviewer"),link};

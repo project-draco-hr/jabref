@@ -5,12 +5,17 @@
   BibtexEntry currentEntry;
   Enumeration newEntryEnum;
   Hashtable citationHashTable=new Hashtable();
+  Hashtable rejectedEntries=new Hashtable();
   InitializeProgressBar initializeProgressBar=new InitializeProgressBar();
   SwingUtilities.invokeLater(initializeProgressBar);
   while (targetIterator.hasNext() && !abortOperation) {
     currentKey=(String)targetIterator.next();
     currentEntry=targetDatabase.getEntryById(currentKey);
-    abortOperation=generateIdentifierList(currentEntry,citationHashTable);
+    abortOperation=generateIdentifierList(currentEntry,citationHashTable,rejectedEntries);
+  }
+  if (rejectedEntries.size() > 0) {
+    ShowBadIdentifiersDialog badIdentifiersDialog=new ShowBadIdentifiersDialog(rejectedEntries);
+    SwingUtilities.invokeLater(badIdentifiersDialog);
   }
   if (citationHashTable.size() > 0) {
     UpdateProgressBarMaximum updateMaximum=new UpdateProgressBarMaximum(citationHashTable.size());
