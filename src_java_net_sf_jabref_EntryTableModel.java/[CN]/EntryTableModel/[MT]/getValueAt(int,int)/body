@@ -1,13 +1,15 @@
 {
   Object o;
   BibtexEntry be=db.getEntryById(getNameFromNumber(row));
-  String iconType=getIconTypeForColumn(col);
+  String[] iconType=getIconTypeForColumn(col);
   if (col == 0) {
     o="" + (row + 1);
   }
  else   if (iconType != null) {
-    if (!hasField(row,iconType))     return null;
-    return GUIGlobals.getTableIcon(iconType);
+    int hasField=-1;
+    for (int i=iconType.length - 1; i >= 0; i--)     if (hasField(row,iconType[i]))     hasField=i;
+    if (hasField < 0)     return null;
+    return GUIGlobals.getTableIcon(iconType[hasField]);
   }
  else   if (columns[col - padleft].equals(GUIGlobals.TYPE_HEADER)) {
     o=be.getType().getName();
