@@ -698,14 +698,18 @@ catch (            Throwable ex) {
 );
   actions.put("togglePreview",new BaseAction(){
     public void action(){
-      if (!previewEnabled) {
-        previewEnabled=true;
-        activePreview=0;
-      }
+      previewEnabled=!previewEnabled;
+      if (!previewEnabled)       hidePreview();
  else {
-        if (activePreview < previewPanel.length - 1)         activePreview++;
- else         previewEnabled=false;
+        updateViewToSelected();
       }
+    }
+  }
+);
+  actions.put("switchPreview",new BaseAction(){
+    public void action(){
+      if (activePreview < previewPanel.length - 1)       activePreview++;
+ else       activePreview=0;
       if (!previewEnabled)       hidePreview();
  else {
         updateViewToSelected();
