@@ -1,0 +1,26 @@
+{
+  StringBuffer sb=new StringBuffer("");
+  char c;
+  boolean escaped=false, incommand=false;
+  for (int i=0; i < field.length(); i++) {
+    c=field.charAt(i);
+    if (escaped && (c == '\\')) {
+      sb.append('\\');
+      escaped=false;
+    }
+ else     if (c == '\\') {
+      escaped=true;
+      incommand=true;
+    }
+ else     if (Character.isLetter((char)c)) {
+      escaped=false;
+      if (!incommand)       sb.append((char)c);
+    }
+ else {
+      if (!incommand || ((c != '{') && !Character.isWhitespace(c)))       sb.append((char)c);
+      incommand=false;
+      escaped=false;
+    }
+  }
+  return sb.toString();
+}
