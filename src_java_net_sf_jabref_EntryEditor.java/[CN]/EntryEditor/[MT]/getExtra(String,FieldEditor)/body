@@ -1,0 +1,22 @@
+{
+  final FieldEditor ed=editor;
+  Object o=GUIGlobals.FIELD_EXTRAS.get(string);
+  if (o == null)   return null;
+  if (((String)o).equals("browse")) {
+    JButton but=new JButton(Globals.lang("Browse"));
+    but.addActionListener(new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        JabRefFileChooser chooser=new JabRefFileChooser(new File(ed.getText()));
+        int returnVal=chooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          File newFile=chooser.getSelectedFile();
+          ed.setText(newFile.getPath());
+          storeFieldAction.actionPerformed(new ActionEvent(ed,0,""));
+        }
+      }
+    }
+);
+    return but;
+  }
+ else   return null;
+}
