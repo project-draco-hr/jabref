@@ -1,8 +1,16 @@
 {
   if (!fileOk)   return;
   if (entries != null) {
-    frame.addBibEntries(entries,filename,openInNew);
-    frame.output(Globals.lang("Imported entries") + ": " + entries.size());
+    BasePanel panel=null;
+    if (!openInNew) {
+      panel=(BasePanel)frame.getTabbedPane().getSelectedComponent();
+    }
+    String[] fields=new String[]{"author","title","year"};
+    ImportInspectionDialog diag=new ImportInspectionDialog(frame,panel,fields,"Import",openInNew);
+    diag.addEntries(entries);
+    diag.addCallBack(ImportMenuItem.this);
+    diag.entryListComplete();
+    diag.setVisible(true);
   }
  else {
     JOptionPane.showMessageDialog(frame,Globals.lang("No entries found. Please make sure you are " + "using the correct import filter."),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);

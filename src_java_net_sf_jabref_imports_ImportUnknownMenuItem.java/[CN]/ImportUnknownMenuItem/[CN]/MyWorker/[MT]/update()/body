@@ -1,8 +1,16 @@
 {
   if (!fileOk)   return;
   if (entries != null) {
-    frame.addBibEntries(entries,filename,openInNew);
-    frame.output(Globals.lang("Imported entries") + ": " + entries.size()+ "  "+ Globals.lang("Format used")+ ": "+ formatName);
+    BasePanel panel=null;
+    if (!openInNew) {
+      panel=(BasePanel)frame.getTabbedPane().getSelectedComponent();
+    }
+    String[] fields=new String[]{"author","title","year"};
+    ImportInspectionDialog diag=new ImportInspectionDialog(frame,panel,fields,"Import",openInNew);
+    diag.addEntries(entries);
+    diag.addCallBack(ImportUnknownMenuItem.this);
+    diag.entryListComplete();
+    diag.setVisible(true);
   }
  else   if (bibtexResult != null) {
     frame.addTab(bibtexResult.getDatabase(),bibtexResult.getFile(),bibtexResult.getMetaData(),true);
