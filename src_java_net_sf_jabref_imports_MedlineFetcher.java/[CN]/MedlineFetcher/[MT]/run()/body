@@ -11,7 +11,11 @@
     panel.frame().output(Globals.lang("Fetching Medline by term ..."));
     String searchTerm=setupTerm(idList);
     SearchResult result=getIds(searchTerm,0,1);
-    String question=new String("Found ") + Integer.toString(result.count) + new String(" references. Retrieve references")+ new String(" from 1 through");
+    if (result.count == 0) {
+      JOptionPane.showMessageDialog(panel.frame(),Globals.lang("No references found"));
+      return;
+    }
+    String question=Globals.lang("References found") + ": " + Integer.toString(result.count)+ "  "+ Globals.lang("Number of references to fetch?");
     String strCount=JOptionPane.showInputDialog(question,Integer.toString(result.count));
     if (strCount == "")     return;
     int count=Integer.parseInt(strCount);

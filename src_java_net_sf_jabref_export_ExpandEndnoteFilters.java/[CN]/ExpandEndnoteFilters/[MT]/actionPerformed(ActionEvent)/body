@@ -1,0 +1,11 @@
+{
+  String filename=Globals.getNewFile(frame,Globals.prefs,new File(System.getProperty("user.home")),".zip",JFileChooser.SAVE_DIALOG,false);
+  if (filename == null)   return;
+  file=new File(filename);
+  if (file.exists()) {
+    int confirm=JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Unpack EndNote filter set"),JOptionPane.OK_CANCEL_OPTION);
+    if (confirm != JOptionPane.OK_OPTION)     return;
+  }
+  ((Worker)Spin.off(this)).run();
+  file=null;
+}
