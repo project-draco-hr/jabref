@@ -1,0 +1,31 @@
+{
+  boolean retval=false;
+  Object[] possibilities={"Yes","Yes to All","No","No to All"};
+  final JOptionPane optionPane=new JOptionPane("Do you want to overwrite the value '" + oldValue + "' \nwith the value '"+ newValue+ "' \nfor the "+ fieldName+ " field?",JOptionPane.QUESTION_MESSAGE,JOptionPane.DEFAULT_OPTION,null,possibilities,"No");
+  final JDialog dialog=new JDialog(panel.frame(),"Overwrite Value",true);
+  dialog.setContentPane(optionPane);
+  dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+  optionPane.addPropertyChangeListener(new PropertyChangeListener(){
+    public void propertyChange(    PropertyChangeEvent e){
+      String prop=e.getPropertyName();
+      if (dialog.isVisible() && (e.getSource() == optionPane) && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+        dialog.setVisible(false);
+      }
+    }
+  }
+);
+  dialog.pack();
+  dialog.setVisible(true);
+  String userChoice=(String)optionPane.getValue();
+  if (userChoice.equals("Yes to All")) {
+    overwriteAll=true;
+    retval=true;
+  }
+ else   if (userChoice.equals("Yes")) {
+    retval=true;
+  }
+ else   if (userChoice.equals("No to All")) {
+    overwriteNone=true;
+  }
+  return (retval);
+}
