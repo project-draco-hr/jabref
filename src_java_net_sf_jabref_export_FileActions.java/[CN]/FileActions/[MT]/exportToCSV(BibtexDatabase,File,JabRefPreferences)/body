@@ -1,4 +1,8 @@
 {
+  HashMap fieldFormatters=new HashMap();
+  fieldFormatters.put("default",new RemoveLatexCommands());
+  fieldFormatters.put("author",new Object[]{new AuthorLastFirst(),new RemoveLatexCommands()});
+  fieldFormatters.put("pdf",new ResolvePDF());
   String SEPARATOR="\t";
   TreeSet sorted=getSortedEntries(database);
   Set fields=new TreeSet();
@@ -12,10 +16,10 @@
   out.write("\n");
   for (Iterator i=sorted.iterator(); i.hasNext(); ) {
     BibtexEntry entry=(BibtexEntry)i.next();
-    writeField(entry,(String)o[0],out);
+    writeField(entry,(String)o[0],fieldFormatters,out);
     for (int j=1; j < o.length; j++) {
       out.write(SEPARATOR);
-      writeField(entry,(String)o[j],out);
+      writeField(entry,(String)o[j],fieldFormatters,out);
     }
     out.write("\n");
   }

@@ -1,0 +1,18 @@
+{
+  String s=(String)entry.getField(field);
+  if (s == null) {
+    return;
+  }
+  Object form=fieldFormatters.get(field);
+  if (form == null)   form=fieldFormatters.get("default");
+  if (form instanceof LayoutFormatter) {
+    s=((LayoutFormatter)form).format(s);
+  }
+ else   if (form instanceof Object[]) {
+    Object[] forms=(Object[])form;
+    for (int i=0; i < forms.length; i++) {
+      s=((LayoutFormatter)(forms[i])).format(s);
+    }
+  }
+  out.write(s);
+}
