@@ -30,7 +30,7 @@
       panel.markBaseChanged();
     }
  catch (    IllegalArgumentException ex) {
-      frame.output("Invalid field format: " + ex.getMessage());
+      JOptionPane.showMessageDialog(frame,"Error: " + ex.getMessage(),Globals.lang("Error setting field"),JOptionPane.ERROR_MESSAGE);
       fe.setLabelColor(GUIGlobals.invalidFieldColor);
       fe.setBackground(GUIGlobals.invalidFieldBackground);
     }
@@ -58,7 +58,7 @@
     panel.refreshTable();
     panel.markBaseChanged();
   }
- else   if ((source.isEditable()) && (source.getText() != lastSourceStringAccepted)) {
+ else   if ((source.isEditable()) && (!source.getText().equals(lastSourceStringAccepted))) {
     BibtexParser bp=new BibtexParser(new java.io.StringReader(source.getText()));
     try {
       BibtexDatabase db=bp.parse().getDatabase();
@@ -77,8 +77,10 @@
       }
       fields=nu.getAllFields();
       for (int i=0; i < fields.length; i++)       if (entry.getField(fields[i].toString()) != nu.getField(fields[i].toString())) {
-        compound.addEdit(new UndoableFieldChange(entry,fields[i].toString(),entry.getField(fields[i].toString()),nu.getField(fields[i].toString())));
-        entry.setField(fields[i].toString(),nu.getField(fields[i].toString()));
+        String toSet=(String)nu.getField(fields[i].toString());
+        (new LatexFieldFormatter()).format(toSet,GUIGlobals.isStandardField(fields[i].toString()));
+        compound.addEdit(new UndoableFieldChange(entry,fields[i].toString(),entry.getField(fields[i].toString()),toSet));
+        entry.setField(fields[i].toString(),toSet);
         anyChanged=true;
       }
       compound.end();
