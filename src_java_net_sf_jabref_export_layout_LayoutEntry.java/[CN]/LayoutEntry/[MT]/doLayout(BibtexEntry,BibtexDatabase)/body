@@ -6,7 +6,7 @@
     if (text.equals("bibtextype")) {
       return bibtex.getType().getName();
     }
-    String field=(String)bibtex.getField(text);
+    String field=getField(bibtex,text,database);
     if (field == null) {
       return null;
     }
@@ -15,7 +15,7 @@
     }
   }
  else   if ((type == LayoutHelper.IS_FIELD_START) || (type == LayoutHelper.IS_GROUP_START)) {
-    String field=(String)bibtex.getField(text);
+    String field=getField(bibtex,text,database);
     if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && (field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())))) {
       return null;
     }
@@ -27,10 +27,10 @@
       String fieldText;
       boolean previousSkipped=false;
       for (int i=0; i < layoutEntries.length; i++) {
-        fieldText=layoutEntries[i].doLayout(bibtex);
+        fieldText=layoutEntries[i].doLayout(bibtex,database);
         if (fieldText == null) {
           if ((i + 1) < layoutEntries.length) {
-            if (layoutEntries[i + 1].doLayout(bibtex).trim().length() == 0) {
+            if (layoutEntries[i + 1].doLayout(bibtex,database).trim().length() == 0) {
               i++;
               previousSkipped=true;
               continue;
@@ -64,7 +64,7 @@
       fieldEntry=bibtex.getType().getName();
     }
  else {
-      String field=(String)bibtex.getField(text);
+      String field=getField(bibtex,text,database);
       if (field == null) {
         fieldEntry="";
       }
