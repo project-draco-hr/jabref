@@ -1,0 +1,41 @@
+{
+  final String SEPARATOR=new String(new char[]{0,48});
+  ArrayList bibitems=new ArrayList();
+  File f=new File(filename);
+  if (!f.exists() && !f.canRead() && !f.isFile()) {
+    System.err.println("Error " + filename + " is not a valid file and|or is not readable.");
+    return null;
+  }
+  try {
+    BufferedReader in=new BufferedReader(new FileReader(filename));
+    Util.pr(in.readLine());
+    Util.pr(in.readLine());
+    String s=null;
+    BibtexEntry entry=null;
+    while ((s=in.readLine()) != null) {
+      try {
+        s=s.replaceAll("<par>","");
+        String[] fields=s.split(SEPARATOR);
+        if (fields[1].equals("Article"))         entry=new BibtexEntry(Util.createNeutralId(),BibtexEntryType.getType("article"));
+        entry.setField("author",fields[2].replaceAll(" and ",", ").replaceAll(", "," and "));
+        entry.setField("title",fields[3]);
+        entry.setField("journal",fields[4]);
+        entry.setField("volume",fields[5]);
+        entry.setField("number",fields[6]);
+        entry.setField("pages",fields[7].replaceAll("-","--"));
+        entry.setField("month",fields[8]);
+        entry.setField("year",fields[9]);
+        entry.setField("abstract",fields[12]);
+        bibitems.add(entry);
+      }
+ catch (      NullPointerException ex) {
+        Globals.logger("Error parsing Sixpack file, ignoring entry.");
+      }
+    }
+    in.close();
+  }
+ catch (  IOException e) {
+    return null;
+  }
+  return bibitems;
+}
