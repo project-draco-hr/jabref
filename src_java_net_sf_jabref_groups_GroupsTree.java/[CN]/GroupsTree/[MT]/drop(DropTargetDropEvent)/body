@@ -1,0 +1,32 @@
+{
+  try {
+    Transferable transferable=dtde.getTransferable();
+    if (!transferable.isDataFlavorSupported(GroupTreeNode.flavor)) {
+      dtde.rejectDrop();
+      return;
+    }
+    Point p=dtde.getLocation();
+    TreePath path=getPathForLocation(p.x,p.y);
+    if (path == null) {
+      dtde.rejectDrop();
+      return;
+    }
+    GroupTreeNode target=(GroupTreeNode)path.getLastPathComponent();
+    GroupTreeNode source=(GroupTreeNode)transferable.getTransferData(GroupTreeNode.flavor);
+    if (source == target) {
+      dtde.rejectDrop();
+      return;
+    }
+    if (source.isNodeChild(target)) {
+      dtde.rejectDrop();
+      return;
+    }
+    target.add(source);
+    dtde.getDropTargetContext().dropComplete(true);
+    groupSelector.revalidateGroups();
+  }
+ catch (  IOException ioe) {
+  }
+catch (  UnsupportedFlavorException e) {
+  }
+}

@@ -1,0 +1,15 @@
+{
+  Point p=dsde.getLocation();
+  SwingUtilities.convertPointFromScreen(p,this);
+  TreePath path=getPathForLocation(p.x,p.y);
+  if (path == null) {
+    dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
+    return;
+  }
+  GroupTreeNode target=(GroupTreeNode)path.getLastPathComponent();
+  if (dragNode.isNodeChild(target) || dragNode == target) {
+    dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
+    return;
+  }
+  dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
+}
