@@ -3,5 +3,10 @@
   skipWhitespace();
   consume('=');
   String content=parseFieldContent();
-  if (content.length() > 0)   entry.setField(key,content);
+  if (content.length() > 0) {
+    if (entry.getField(key) == null)     entry.setField(key,content);
+ else {
+      if (key.equals("author") || key.equals("editor"))       entry.setField(key,entry.getField(key) + " and " + content);
+    }
+  }
 }

@@ -19,8 +19,13 @@
   tabbed.addTab(Globals.lang("Key pattern"),new TabLabelPattern(_prefs,parent.helpDiag));
   JButton ok=new JButton(Globals.lang("Ok")), cancel=new JButton(Globals.lang("Cancel"));
   ok.addActionListener(new OkAction());
-  cancel.addActionListener(new CancelAction());
+  CancelAction cancelAction=new CancelAction();
+  cancel.addActionListener(cancelAction);
   lower.add(ok);
   lower.add(cancel);
+  ActionMap am=tabbed.getActionMap();
+  InputMap im=tabbed.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(frame.prefs().getKey("Close dialog"),"close");
+  am.put("close",cancelAction);
   pack();
 }
