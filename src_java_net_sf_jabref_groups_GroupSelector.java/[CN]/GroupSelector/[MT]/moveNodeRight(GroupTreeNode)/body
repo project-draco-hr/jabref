@@ -11,11 +11,11 @@
     frame.output(Globals.lang("Cannot move group") + " '" + node.getGroup().getName()+ "' right.");
     return false;
   }
-  selectionPath=new TreePath(addParent(selectionPath.getPath(),node,newParent));
+  selectionPath=new TreePath(node.getPath());
   Vector newExpandedPaths=new Vector();
   while (expandedPaths.hasMoreElements()) {
     TreePath path=(TreePath)expandedPaths.nextElement();
-    newExpandedPaths.add(new TreePath(addParent(path.getPath(),node,newParent)));
+    newExpandedPaths.add(new TreePath(((DefaultMutableTreeNode)path.getLastPathComponent()).getPath()));
   }
   expandedPaths=newExpandedPaths.elements();
   revalidateGroups(new TreePath[]{selectionPath},expandedPaths);
