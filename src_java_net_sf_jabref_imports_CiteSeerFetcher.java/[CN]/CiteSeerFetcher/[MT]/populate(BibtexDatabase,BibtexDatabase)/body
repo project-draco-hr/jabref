@@ -7,20 +7,34 @@
   Hashtable citationHashTable=new Hashtable();
   Hashtable rejectedEntries=new Hashtable();
   InitializeProgressBar initializeProgressBar=new InitializeProgressBar();
+  InitializeProgressBarTwo initializeProgressBarTwo=new InitializeProgressBarTwo();
+  UpdateProgressBarMaximum updateMaximum=new UpdateProgressBarMaximum(targetDatabase.getEntryCount());
+  progressBar2.setVisible(true);
   SwingUtilities.invokeLater(initializeProgressBar);
+  SwingUtilities.invokeLater(initializeProgressBarTwo);
+  SwingUtilities.invokeLater(updateMaximum);
+  int identifierCounter=0;
+  UpdateProgressStatus progressStatus=new UpdateProgressStatus(Globals.lang("Fetching Identifiers"));
+  SwingUtilities.invokeLater(progressStatus);
   while (targetIterator.hasNext() && !abortOperation) {
     currentKey=(String)targetIterator.next();
     currentEntry=targetDatabase.getEntryById(currentKey);
     abortOperation=generateIdentifierList(currentEntry,citationHashTable,rejectedEntries);
+    UpdateProgressBarValue updateValue=new UpdateProgressBarValue(++identifierCounter);
+    SwingUtilities.invokeLater(updateValue);
   }
   if (rejectedEntries.size() > 0) {
     ShowBadIdentifiersDialog badIdentifiersDialog=new ShowBadIdentifiersDialog(rejectedEntries);
     SwingUtilities.invokeLater(badIdentifiersDialog);
   }
   if (citationHashTable.size() > 0) {
-    UpdateProgressBarMaximum updateMaximum=new UpdateProgressBarMaximum(citationHashTable.size());
-    SwingUtilities.invokeLater(updateMaximum);
+    UpdateProgressBarTwoMaximum update2Maximum=new UpdateProgressBarTwoMaximum(citationHashTable.size());
+    SwingUtilities.invokeLater(update2Maximum);
   }
+  progressStatus=new UpdateProgressStatus(Globals.lang("Fetching Citations"));
+  SwingUtilities.invokeLater(progressStatus);
   generateCitationList(citationHashTable,newDatabase);
   newEntryEnum=citationHashTable.elements();
+  progressStatus=new UpdateProgressStatus(Globals.lang("Done"));
+  SwingUtilities.invokeLater(progressStatus);
 }
