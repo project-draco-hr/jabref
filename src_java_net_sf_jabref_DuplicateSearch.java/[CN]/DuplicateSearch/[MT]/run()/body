@@ -1,6 +1,6 @@
 {
   NamedCompound ce=null;
-  int dupl=0;
+  int duplicateCounter=0;
   panel.output(Globals.lang("Searching for duplicates..."));
   Object[] keys=panel.database.getKeySet().toArray();
   if ((keys == null) || (keys.length < 2))   return;
@@ -11,7 +11,6 @@
   st.start();
   int current=0;
   DuplicateResolverDialog drd=null;
-  boolean cancelled=false;
   while (!st.finished() || (current < duplicates.size())) {
     if (current >= duplicates.size()) {
 synchronized (duplicates) {
@@ -28,6 +27,7 @@ synchronized (duplicates) {
       if ((panel.database.getEntryById(be[0].getId()) != null) && (panel.database.getEntryById(be[1].getId()) != null)) {
         drd=new DuplicateResolverDialog(panel.frame,be[0],be[1]);
         drd.show();
+        duplicateCounter++;
         int answer=drd.getSelected();
         if (answer == DuplicateResolverDialog.KEEP_UPPER) {
           if (ce == null)           ce=new NamedCompound("duplicate removal");
@@ -46,14 +46,14 @@ synchronized (duplicates) {
  else         if (answer == DuplicateResolverDialog.BREAK) {
           st.setFinished();
           current=Integer.MAX_VALUE;
+          duplicateCounter--;
         }
-        dupl++;
         drd.dispose();
       }
     }
   }
   if (drd != null)   drd.dispose();
-  panel.output(Globals.lang("Duplicate pairs found") + ": " + dupl);
+  panel.output(Globals.lang("Duplicate pairs found") + ": " + duplicates.size()+ " "+ Globals.lang("pairs processed")+ ": "+ duplicateCounter);
   if (ce != null) {
     ce.end();
     panel.undoManager.addEdit(ce);
