@@ -11,6 +11,11 @@
     SearchRule rule1;
     if (prefs.getBoolean("regExpSearch"))     rule1=new RegExpRule(prefs);
  else     rule1=new SimpleSearchRule(prefs);
+    try {
+      rule1=new SearchExpression(prefs,searchOptions);
+    }
+ catch (    Exception ex) {
+    }
     searchRules.addRule(rule1);
     if (reorder.isSelected()) {
       DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,true);
