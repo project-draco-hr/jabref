@@ -13,14 +13,11 @@
       if (val.equals("["))       field=true;
  else       if (val.equals("]"))       field=false;
  else       if (field) {
-        if (_entry.getField(val) == null) {
-          Globals.logger("Key generator warning: field '" + val + "' empty.");
-        }
- else {
-          if (val.equals("author")) {
+        try {
+          if (val.equals("auth")) {
             _sb.append(firstAuthor(_entry.getField("author").toString()));
           }
- else           if (val.equals("editor")) {
+ else           if (val.equals("edtr")) {
             _sb.append(firstAuthor(_entry.getField("editor").toString()));
           }
  else           if (val.equals("firstpage")) {
@@ -32,6 +29,9 @@
  else {
             _sb.append(_entry.getField(val).toString());
           }
+        }
+ catch (        Exception ex) {
+          Globals.logger("Key generator warning: field '" + val + "' empty.");
         }
       }
  else {
