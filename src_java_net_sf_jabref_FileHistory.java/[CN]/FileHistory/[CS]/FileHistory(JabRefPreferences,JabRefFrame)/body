@@ -1,15 +1,20 @@
 {
-  super(Globals.lang("Recent files"));
+  String name=Globals.menuTitle("Recent files");
+  int i=name.indexOf('&');
+  if (i >= 0) {
+    setText(name.substring(0,i) + name.substring(i + 1));
+    char mnemonic=Character.toUpperCase(name.charAt(i + 1));
+    setMnemonic((int)mnemonic);
+  }
+ else   setText(name);
   this.prefs=prefs;
   this.frame=frame;
   String[] old=prefs.getStringArray("recentFiles");
   if ((old != null) && (old.length > 0)) {
-    for (int i=0; i < old.length; i++) {
-      JMenuItem item=new JMenuItem(old[i]);
-      item.addActionListener(this);
-      add(item);
-      history.addFirst(item);
+    for (i=0; i < old.length; i++) {
+      history.addFirst(old[i]);
     }
+    setItems();
   }
  else   setEnabled(false);
 }
