@@ -3,6 +3,7 @@
   this.tableModel=tm_;
   prefs=prefs_;
   antialiasing=prefs.getBoolean("antialias");
+  ctrlClick=prefs.getBoolean("ctrlClick");
   getTableHeader().setReorderingAllowed(false);
   setShowVerticalLines(true);
   setShowHorizontalLines(true);
@@ -27,7 +28,7 @@
 );
   addMouseListener(new MouseAdapter(){
     public void mouseClicked(    MouseEvent e){
-      if (e.getButton() == MouseEvent.BUTTON3) {
+      if ((e.getButton() == MouseEvent.BUTTON3) || (ctrlClick && (e.getButton() == MouseEvent.BUTTON1) && e.isControlDown())) {
         if (rightClickMenu != null)         rightClickMenu.show(ths,e.getX(),e.getY());
       }
     }
