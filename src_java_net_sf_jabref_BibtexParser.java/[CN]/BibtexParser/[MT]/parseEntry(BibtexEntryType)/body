@@ -1,9 +1,29 @@
 {
+  String id=Util.createId(tp,_db);
+  BibtexEntry result=new BibtexEntry(id,tp);
   skipWhitespace();
   consume('{','(');
   skipWhitespace();
-  String key=parseKey(), id=Util.createId(tp,_db);
-  BibtexEntry result=new BibtexEntry(id,tp);
+  String key=null;
+  boolean doAgain=true;
+  while (doAgain) {
+    doAgain=false;
+    try {
+      if (key != null)       key=key + parseKey();
+ else       key=parseKey();
+    }
+ catch (    NoLabelException ex) {
+      char c=(char)peek();
+      if (Character.isWhitespace(c) || (c == '{') || (c == '\"')) {
+        String cont=parseFieldContent();
+        result.setField(ex.getMessage().trim().toLowerCase(),cont);
+      }
+ else {
+        key=ex.getMessage() + "=";
+        doAgain=true;
+      }
+    }
+  }
   result.setField(GUIGlobals.KEY_FIELD,key);
   skipWhitespace();
   while (true) {
