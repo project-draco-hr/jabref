@@ -11,5 +11,12 @@
   setupLayout();
   setSize(new Dimension(prefs.getInt("sizeX"),prefs.getInt("sizeY")));
   setLocation(new Point(prefs.getInt("posX"),prefs.getInt("posY")));
+  if (prefs.getBoolean("openLastEdited") && (prefs.get("lastEdited") != null)) {
+    fileToOpen=new File(prefs.get("lastEdited"));
+    if (fileToOpen.exists()) {
+      Util.pr("Opening last edited file: " + fileToOpen.getName());
+      openDatabaseAction.openIt();
+    }
+  }
   setVisible(true);
 }

@@ -1,0 +1,14 @@
+{
+  String searchString=null;
+  Enumeration strings=thisSearchOptions.elements();
+  searchString=(String)strings.nextElement();
+  int searchScore=0;
+  BibtexEntry bes=null;
+  int numRows=thisDatabase.getEntryCount();
+  for (int row=0; row < numRows; row++) {
+    bes=thisDatabase.getEntryById(thisTableModel.getNameFromNumber(row));
+    searchScore=thisRuleSet.applyRules(thisSearchOptions,bes);
+    bes.setField(searchValueField,String.valueOf(searchScore));
+  }
+  panel.showSearchResults(searchValueField);
+}

@@ -1,0 +1,19 @@
+{
+  if (components.get(name) != null) {
+    if (!((SidePaneComponent)components.get(name)).isVisible()) {
+      visibleComponents++;
+      ((SidePaneComponent)components.get(name)).setVisible(true);
+      if (visibleComponents == 1)       panel.setLeftComponent(sidep);
+      ((SidePaneComponent)components.get(name)).componentOpening();
+    }
+ else {
+      hideAway((SidePaneComponent)components.get(name));
+    }
+    return;
+  }
+  if (name.equals("groups")) {
+    if (metaData.getData("groups") == null)     metaData.putData("groups",new Vector());
+    GroupSelector gs=new GroupSelector(frame,panel,metaData.getData("groups"),this,prefs);
+    add("groups",gs);
+  }
+}

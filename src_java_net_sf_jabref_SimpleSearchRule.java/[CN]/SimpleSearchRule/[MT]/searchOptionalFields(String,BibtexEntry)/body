@@ -1,0 +1,19 @@
+{
+  int score=0;
+  int counter=0;
+  String[] optionalField=bibtexEntry.getOptionalFields();
+  for (int i=0; i < optionalField.length; i++) {
+    if (bibtexEntry.getField(optionalField[i]) != null)     try {
+      counter=String.valueOf(bibtexEntry.getField(optionalField[i])).indexOf(searchString,counter);
+      while (counter >= 0) {
+        ++score;
+        counter=String.valueOf(bibtexEntry.getField(optionalField[i])).indexOf(searchString,counter + 1);
+      }
+    }
+ catch (    Throwable t) {
+      System.err.println("sorting error: " + t);
+    }
+    counter=0;
+  }
+  return score;
+}

@@ -1,0 +1,116 @@
+{
+  addWindowListener(new WindowAdapter(){
+    public void windowClosing(    WindowEvent e){
+      close();
+    }
+  }
+);
+  searchButton=new JButton("Search");
+  searchReq=new JCheckBoxMenuItem("Search required fields",prefs.getBoolean("searchReq"));
+  searchOpt=new JCheckBoxMenuItem("Search optional fields",prefs.getBoolean("searchOpt"));
+  searchGen=new JCheckBoxMenuItem("Search general fields",prefs.getBoolean("searchGen"));
+  searchAll=new JCheckBoxMenuItem("Search all fields",prefs.getBoolean("searchAll"));
+  regExpSearch=new JCheckBoxMenuItem("Use regular expressions",prefs.getBoolean("regExpSearch"));
+  if (searchAll.isSelected()) {
+    searchReq.setEnabled(false);
+    searchOpt.setEnabled(false);
+    searchGen.setEnabled(false);
+  }
+  caseSensitive=new JCheckBoxMenuItem("Case sensitive",prefs.getBoolean("caseSensitiveSearch"));
+  settings.add(caseSensitive);
+  settings.addSeparator();
+  settings.add(searchReq);
+  settings.add(searchOpt);
+  settings.add(searchGen);
+  settings.addSeparator();
+  settings.add(searchAll);
+  settings.addSeparator();
+  settings.add(regExpSearch);
+  openset.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      JButton src=(JButton)e.getSource();
+      settings.show(src,0,0);
+    }
+  }
+);
+  searchButton.addMouseListener(new MouseAdapter(){
+    public void mouseClicked(    MouseEvent e){
+      if (searchField.getText().length() > 0) {
+        searchOptions.clear();
+        searchOptions.put("option",searchField.getText());
+        doSearch(searchOptions);
+      }
+    }
+  }
+);
+  searchButton.addKeyListener(new KeyAdapter(){
+    public void keyPressed(    KeyEvent e){
+      int keyStroke=e.getKeyCode();
+      if (keyStroke == e.VK_ENTER) {
+        if (searchField.getText().length() > 0) {
+          searchOptions.clear();
+          searchOptions.put("option",searchField.getText());
+          doSearch(searchOptions);
+        }
+      }
+ else       if (keyStroke == e.VK_ESCAPE) {
+        close();
+      }
+ else       if (keyStroke == e.VK_F1) {
+        helpAction.actionPerformed(null);
+      }
+    }
+  }
+);
+  searchField=new JTextField(110);
+  searchField.setMinimumSize(GUIGlobals.searchFieldSize);
+  searchField.addKeyListener(new KeyAdapter(){
+    public void keyPressed(    KeyEvent e){
+      int keyStroke=e.getKeyCode();
+      if (keyStroke == e.VK_ENTER) {
+        if (searchField.getText().length() > 0) {
+          searchOptions.clear();
+          searchOptions.put("option",searchField.getText());
+          doSearch(searchOptions);
+        }
+      }
+ else       if (keyStroke == e.VK_ESCAPE) {
+        close();
+      }
+ else       if (keyStroke == e.VK_F1) {
+        helpAction.actionPerformed(null);
+      }
+    }
+  }
+);
+  searchAll.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent e){
+      boolean set=!searchAll.isSelected();
+      searchReq.setEnabled(set);
+      searchOpt.setEnabled(set);
+      searchGen.setEnabled(set);
+      searchField.requestFocus();
+    }
+  }
+);
+  GridBagLayout gbl=new GridBagLayout();
+  GridBagConstraints con=new GridBagConstraints();
+  getContentPane().setLayout(gbl);
+  con.anchor=GridBagConstraints.WEST;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  con.gridwidth=1;
+  gbl.setConstraints(searchField,con);
+  getContentPane().add(searchField);
+  con.insets=new Insets(0,10,0,10);
+  gbl.setConstraints(searchButton,con);
+  getContentPane().add(searchButton);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.insets=new Insets(0,0,0,0);
+  gbl.setConstraints(openset,con);
+  getContentPane().add(openset);
+  setSize(GUIGlobals.searchPaneSize);
+  setLocation(prefs.getInt("searchPanePosX"),prefs.getInt("searchPanePosY"));
+  setVisible(true);
+  searchField.requestFocus();
+  searchField.select(0,searchField.getText().length());
+}

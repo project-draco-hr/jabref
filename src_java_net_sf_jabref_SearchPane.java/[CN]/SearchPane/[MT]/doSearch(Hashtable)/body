@@ -1,0 +1,11 @@
+{
+  updatePrefs();
+  SearchRuleSet searchRules=new SearchRuleSet();
+  SearchRule rule1;
+  if (prefs.getBoolean("regExpSearch"))   rule1=new RegExpRule(prefs);
+ else   rule1=new SimpleSearchRule(prefs);
+  searchRules.addRule(rule1);
+  DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,panel,DatabaseSearch.SEARCH);
+  search.start();
+  searchField.select(0,searchField.getText().length());
+}
