@@ -8,7 +8,10 @@
     title=Globals.putBracesAroundCapitals(title);
     keyword=descriptorName + pubmedid;
     BibtexEntry b=new BibtexEntry(Util.createNeutralId(),Globals.getEntryType("article"));
-    if (!author.equals(""))     b.setField("author",author);
+    if (!author.equals("")) {
+      b.setField("author",author);
+      author="";
+    }
     if (!title.equals(""))     b.setField("title",title);
     if (!journal.equals(""))     b.setField("journal",journal);
     if (!year.equals(""))     b.setField("year",year);
@@ -33,6 +36,7 @@
     pii="";
     year="";
     forename="";
+    lastName="";
     abstractText="";
     pubmedid="";
     month="";
@@ -80,6 +84,9 @@
     author=forename + " " + lastname;
     authors.add(author);
     inAuthor=false;
+    forename="";
+    initials="";
+    lastname="";
   }
  else   if (localName.equals("DescriptorName"))   inDescriptorName=false;
  else   if (localName.equals("LastName")) {

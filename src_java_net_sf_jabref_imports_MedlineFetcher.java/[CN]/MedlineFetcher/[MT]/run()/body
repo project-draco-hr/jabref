@@ -1,12 +1,11 @@
 {
-  String idList=tf.getText().replace(';',',');
+  idList=tf.getText().replace(';',',');
   Pattern p1=Pattern.compile("\\d+[,\\d+]*"), p2=Pattern.compile(".+[,.+]*");
   Matcher m1=p1.matcher(idList), m2=p2.matcher(idList);
   if (m1.matches()) {
     panel.frame().output(Globals.lang("Fetching Medline by id ..."));
     idList=tf.getText().replace(';',',');
     fetchById();
-    System.out.println("Fetch by id");
   }
  else   if (m2.matches()) {
     panel.frame().output(Globals.lang("Fetching Medline by term ..."));
@@ -18,7 +17,6 @@
     int count=Integer.parseInt(strCount);
     for (int jj=0; jj < count; jj+=PACING) {
       result=getIds(searchTerm,jj,PACING);
-      System.out.println("fetching: " + result.ids);
       ArrayList bibs=fetchMedline(result.ids);
       if ((bibs != null) && (bibs.size() > 0)) {
         tf.setText("");
