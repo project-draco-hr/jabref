@@ -1,0 +1,45 @@
+{
+  super(frame,Globals.lang("Resolve duplicate entries"),true);
+  p1=new PreviewPanel(one);
+  p2=new PreviewPanel(two);
+  main.setLayout(gbl);
+  con.insets=new Insets(10,10,10,10);
+  con.fill=GridBagConstraints.BOTH;
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.weightx=1;
+  con.weighty=1;
+  JScrollPane sp=new JScrollPane(p1);
+  gbl.setConstraints(sp,con);
+  main.add(sp);
+  sp=new JScrollPane(p2);
+  gbl.setConstraints(sp,con);
+  main.add(sp);
+  options.add(first);
+  options.add(second);
+  options.add(both);
+  first.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      status=KEEP_UPPER;
+      dispose();
+    }
+  }
+);
+  second.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      status=KEEP_LOWER;
+      dispose();
+    }
+  }
+);
+  both.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      status=KEEP_BOTH;
+      dispose();
+    }
+  }
+);
+  getContentPane().add(main,BorderLayout.CENTER);
+  getContentPane().add(options,BorderLayout.SOUTH);
+  pack();
+  Util.placeDialog(this,frame);
+}
