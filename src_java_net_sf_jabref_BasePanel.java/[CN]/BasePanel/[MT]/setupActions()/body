@@ -476,16 +476,45 @@ catch (            Throwable ex) {
           link=bes[0].getField("pdf");
           field="pdf";
         }
+        String filepath=null;
         if (link != null) {
+          filepath=link.toString();
+        }
+ else {
+          String basefile;
+          Object key=bes[0].getField(Globals.KEY_FIELD);
+          if (key != null) {
+            basefile=key.toString();
+            String dir=prefs.get("pdfDirectory");
+            if (dir.endsWith(System.getProperty("file.separator"))) {
+              basefile=dir + basefile;
+            }
+ else {
+              basefile=dir + System.getProperty("file.separator") + basefile;
+            }
+            final String[] typesToTry=new String[]{"html","ps","pdf"};
+            for (int i=0; i < typesToTry.length; i++) {
+              File f=new File(basefile + "." + typesToTry[i]);
+              Util.pr("Checking for " + f);
+              if (f.exists()) {
+                field=typesToTry[i];
+                filepath=f.getPath();
+                break;
+              }
+            }
+          }
+        }
+        if (filepath != null) {
           try {
-            Util.openExternalViewer(link.toString(),field,prefs);
+            Util.pr("Opening external " + field + " file '"+ filepath+ "'.");
+            Util.openExternalViewer(filepath,field,prefs);
             output(Globals.lang("External viewer called") + ".");
           }
  catch (          IOException ex) {
             output(Globals.lang("Error: check your External viewer settings in Preferences") + ".");
           }
         }
- else         output(Globals.lang("No pdf or ps defined") + ".");
+ else         output(Globals.lang("No pdf or ps defined, and no file matching Bibtex key found") + ".");
       }
  else       output(Globals.lang("No entries or multiple entries selected."));
     }
@@ -578,6 +607,22 @@ catch (            Throwable ex) {
         ce.end();
         undoManager.addEdit(ce);
       }
+    }
+  }
+);
+  actions.put("markEntries",new BaseAction(){
+    public void action(){
+      BibtexEntry[] bes=entryTable.getSelectedEntries();
+      for (int i=0; i < bes.length; i++)       bes[i].setField(Globals.MARKED,"0");
+      refreshTable();
+    }
+  }
+);
+  actions.put("unmarkEntries",new BaseAction(){
+    public void action(){
+      BibtexEntry[] bes=entryTable.getSelectedEntries();
+      for (int i=0; i < bes.length; i++)       bes[i].setField(Globals.MARKED,null);
+      refreshTable();
     }
   }
 );

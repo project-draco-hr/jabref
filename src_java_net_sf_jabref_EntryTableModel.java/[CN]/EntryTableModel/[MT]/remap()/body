@@ -8,6 +8,8 @@
   namesAsIs=panel.prefs.getBoolean("namesAsIs");
   namesFf=panel.prefs.getBoolean("namesFf");
   Vector fields=new Vector(5,1), directions=new Vector(5,1);
+  fields.add(Globals.MARKED);
+  directions.add(new Boolean(true));
   if (panel.showingGroup) {
     fields.add(Globals.GROUPSEARCH);
     directions.add(new Boolean(true));
@@ -22,5 +24,6 @@
   fields.add(frame.prefs.get("priSort"));
   fields.add(frame.prefs.get("secSort"));
   fields.add(frame.prefs.get("terSort"));
-  sorter=db.getSorter(new EntryComparator(((Boolean)directions.elementAt(0)).booleanValue(),((Boolean)directions.elementAt(1)).booleanValue(),((Boolean)directions.elementAt(2)).booleanValue(),(String)fields.elementAt(0),(String)fields.elementAt(1),(String)fields.elementAt(2)));
+  if (directions.size() < 4)   sorter=db.getSorter(new EntryComparator(((Boolean)directions.elementAt(0)).booleanValue(),((Boolean)directions.elementAt(1)).booleanValue(),((Boolean)directions.elementAt(2)).booleanValue(),(String)fields.elementAt(0),(String)fields.elementAt(1),(String)fields.elementAt(2)));
+ else   sorter=db.getSorter(new EntryComparator(((Boolean)directions.elementAt(0)).booleanValue(),((Boolean)directions.elementAt(1)).booleanValue(),((Boolean)directions.elementAt(2)).booleanValue(),((Boolean)directions.elementAt(3)).booleanValue(),(String)fields.elementAt(0),(String)fields.elementAt(1),(String)fields.elementAt(2),(String)fields.elementAt(3)));
 }

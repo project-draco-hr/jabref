@@ -1,6 +1,7 @@
 {
   super(tm_);
   this.tableModel=tm_;
+  panel=panel_;
   addFocusListener(Globals.focusListener);
   prefs=prefs_;
   antialiasing=prefs.getBoolean("antialias");
@@ -30,7 +31,8 @@
   addMouseListener(new MouseAdapter(){
     public void mouseClicked(    MouseEvent e){
       if ((e.getButton() == MouseEvent.BUTTON3) || (ctrlClick && (e.getButton() == MouseEvent.BUTTON1) && e.isControlDown())) {
-        if (rightClickMenu != null)         rightClickMenu.show(ths,e.getX(),e.getY());
+        rightClickMenu=new RightClickMenu(panel,panel.metaData);
+        rightClickMenu.show(ths,e.getX(),e.getY());
       }
     }
   }
