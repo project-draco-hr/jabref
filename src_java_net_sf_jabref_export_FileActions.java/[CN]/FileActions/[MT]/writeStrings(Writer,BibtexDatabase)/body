@@ -1,6 +1,10 @@
 {
-  for (int i=0; i < database.getStringCount(); i++) {
-    BibtexString bs=database.getString(i);
+  TreeSet strings=new TreeSet(new BibtexStringComparator(true));
+  for (Iterator i=database.getStringKeySet().iterator(); i.hasNext(); ) {
+    strings.add(database.getString(i.next()));
+  }
+  for (Iterator i=strings.iterator(); i.hasNext(); ) {
+    BibtexString bs=(BibtexString)i.next();
     fw.write("@STRING{" + bs.getName() + " = ");
     if (!bs.getContent().equals(""))     fw.write((new LatexFieldFormatter()).format(bs.getContent(),true));
  else     fw.write("{}");

@@ -10,10 +10,11 @@
     return;
   }
   try {
-    BibtexString bs=new BibtexString(name,"");
-    panel.undoManager.addEdit(new UndoableInsertString(panel,panel.database,bs,base.getStringCount()));
-    base.addString(bs,base.getStringCount());
-    table.revalidate();
+    String newId=Util.createNeutralId();
+    BibtexString bs=new BibtexString(newId,name,"");
+    panel.undoManager.addEdit(new UndoableInsertString(panel,panel.database,bs));
+    base.addString(bs);
+    refreshTable();
     panel.markBaseChanged();
   }
  catch (  KeyCollisionException ex) {

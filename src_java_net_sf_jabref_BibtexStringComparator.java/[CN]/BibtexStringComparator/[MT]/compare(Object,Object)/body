@@ -1,0 +1,22 @@
+{
+  BibtexString s1=(BibtexString)one;
+  BibtexString s2=(BibtexString)two;
+  int res=0;
+  String name1=s1.getName().toLowerCase(), name2=s2.getName().toLowerCase();
+  res=name1.compareTo(name2);
+  if (res == 0)   return res;
+  if (considerRefs) {
+    BibtexString pre, post;
+    if (res < 0) {
+      pre=s1;
+      post=s2;
+    }
+ else {
+      pre=s2;
+      post=s1;
+    }
+    String namePost=post.getName().toLowerCase(), textPre=pre.getContent().toLowerCase();
+    if (textPre.indexOf("#" + namePost + "#") >= 0)     res=-res;
+  }
+  return res;
+}
