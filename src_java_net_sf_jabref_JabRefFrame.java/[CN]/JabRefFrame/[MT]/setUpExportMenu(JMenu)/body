@@ -21,12 +21,20 @@
         if ((chooser.getFileFilter() == off) && !outFile.getPath().endsWith(extension))         outFile=new File(outFile.getPath() + extension);
       }
  else       return;
-      try {
-        FileActions.exportDatabase(basePanel().database,lfFileName,outFile,prefs);
+      final String lfName=lfFileName;
+      final File oFile=outFile;
+      (new Thread(){
+        public void run(){
+          try {
+            FileActions.exportDatabase(basePanel().database,lfName,oFile,prefs);
+            output(Globals.lang("Exported database to file") + " '" + oFile.getPath()+ "'.");
+          }
+ catch (          IOException ex) {
+            ex.printStackTrace();
+          }
+        }
       }
- catch (      IOException ex) {
-        ex.printStackTrace();
-      }
+).start();
     }
   }
 ;
