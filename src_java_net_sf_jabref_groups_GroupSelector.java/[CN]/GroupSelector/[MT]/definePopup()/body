@@ -1,9 +1,9 @@
 {
   gropt.add(modifyAction);
-  gropt.add(new AbstractAction("Remove"){
+  gropt.add(new AbstractAction(Globals.lang("Remove")){
     public void actionPerformed(    ActionEvent e){
       String gname=(String)groups.elementAt(OFFSET + DIM * (list.getSelectedIndex() - 1) + 1);
-      int conf=JOptionPane.showConfirmDialog(frame,"Remove group '" + gname + "'?","Remove group",JOptionPane.YES_NO_OPTION);
+      int conf=JOptionPane.showConfirmDialog(frame,Globals.lang("Remove group") + " '" + gname+ "'?",Globals.lang("Remove group"),JOptionPane.YES_NO_OPTION);
       if (conf == JOptionPane.YES_OPTION) {
         try {
           int index=OFFSET + DIM * (list.getSelectedIndex() - 1);
@@ -12,10 +12,10 @@
           revalidateList();
           panel.undoManager.addEdit(new UndoableAddOrRemoveGroup(ths,groups,index,false,field,name,regexp));
           panel.markBaseChanged();
-          frame.output("Removed group '" + name + "'.");
+          frame.output(Globals.lang("Removed group") + " '" + name+ "'.");
         }
  catch (        ArrayIndexOutOfBoundsException ex) {
-          System.err.println("Unexpected error when " + "trying to remove group.");
+          System.err.println(Globals.lang("Unexpected error when " + "trying to remove group."));
         }
       }
     }
