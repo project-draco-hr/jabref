@@ -1,0 +1,41 @@
+{
+  if ((file != null) && (file.exists())) {
+    try {
+      String fileName=file.getPath();
+      Globals.prefs.put("workingDirectory",file.getPath());
+      String encoding=Globals.prefs.get("defaultEncoding");
+      ParserResult pr=ImportFormatReader.loadDatabase(file,encoding);
+      BibtexDatabase db=pr.getDatabase();
+      HashMap meta=pr.getMetaData();
+      if (pr.hasWarnings()) {
+        final String[] wrns=pr.warnings();
+        (new Thread(){
+          public void run(){
+            StringBuffer wrn=new StringBuffer();
+            for (int i=0; i < wrns.length; i++)             wrn.append((i + 1) + ". " + wrns[i]+ "\n");
+            if (wrn.length() > 0)             wrn.deleteCharAt(wrn.length() - 1);
+            JOptionPane.showMessageDialog(frame,wrn.toString(),Globals.lang("Warnings"),JOptionPane.WARNING_MESSAGE);
+          }
+        }
+).start();
+      }
+      BasePanel bp=new BasePanel(frame,db,file,meta,Globals.prefs);
+      bp.setEncoding(pr.getEncoding());
+      SwingUtilities.invokeLater(new OpenItSwingHelper(bp,file,raisePanel));
+      if (pr.getEntryTypes().size() > 0) {
+        StringBuffer sb=new StringBuffer(": ");
+        Object[] types=pr.getEntryTypes().keySet().toArray();
+        Arrays.sort(types);
+        for (int i=0; i < types.length; i++) {
+          sb.append(types[i].toString() + ", ");
+        }
+        String s=sb.toString();
+        JOptionPane.showMessageDialog(frame,Globals.lang("Custom entry types found in file") + s.substring(0,s.length() - 2) + ".\n",Globals.lang("Custom entry types"),JOptionPane.INFORMATION_MESSAGE);
+      }
+      frame.output(Globals.lang("Opened database") + " '" + fileName+ "' "+ Globals.lang("with")+ " "+ db.getEntryCount()+ " "+ Globals.lang("entries")+ ".");
+    }
+ catch (    Throwable ex) {
+      JOptionPane.showMessageDialog(frame,ex.getMessage(),Globals.lang("Open database"),JOptionPane.ERROR_MESSAGE);
+    }
+  }
+}

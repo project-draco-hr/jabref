@@ -1,8 +1,10 @@
 {
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
+  Pattern pat1=Pattern.compile("Record.*INSPEC.*");
   String str;
   while ((str=in.readLine()) != null) {
-    if ((str.length() >= 5) && (str.substring(0,5).equals("AU:  ")))     return true;
+    if (pat1.matcher(str).find())     return false;
+    if ((str.length() >= 5) && (str.substring(0,5).equals("TI:  ")))     return true;
   }
   return false;
 }
