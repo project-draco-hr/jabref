@@ -7,5 +7,14 @@
   date=getDate(bibtex);
   genre=getMODSgenre(bibtex);
   if (bibtex.getField("author") != null)   authors=getAuthors(bibtex.getField("author").toString());
+  if (bibtex.getType() == BibtexEntryType.ARTICLE) {
+    host=new MODSEntry();
+    host.title=(String)bibtex.getField("booktitle");
+    host.publisher=(String)bibtex.getField("publisher");
+    host.pages=(String)bibtex.getField("pages");
+    host.number=(String)bibtex.getField("number");
+    host.volume=(String)bibtex.getField("volume");
+    host.issuance="continuing";
+  }
   populateExtensionFields(bibtex);
 }

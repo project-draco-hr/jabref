@@ -6,7 +6,7 @@
     mods.setAttribute("ID",id);
     Element titleInfo=d.createElement("titleInfo");
     Element mainTitle=d.createElement("title");
-    mainTitle.setTextContent(title);
+    mainTitle.setNodeValue(title);
     titleInfo.appendChild(mainTitle);
     mods.appendChild(titleInfo);
     if (authors != null) {
@@ -17,19 +17,19 @@
         if (name.getSurname() != null) {
           Element namePart=d.createElement("namePart");
           namePart.setAttribute("type","family");
-          namePart.setTextContent(name.getSurname());
+          namePart.setNodeValue(name.getSurname());
           modsName.appendChild(namePart);
         }
         if (name.getGivenNames() != null) {
           Element namePart=d.createElement("namePart");
           namePart.setAttribute("type","given");
-          namePart.setTextContent(name.getGivenNames());
+          namePart.setNodeValue(name.getGivenNames());
           modsName.appendChild(namePart);
         }
         Element role=d.createElement("role");
         Element roleTerm=d.createElement("roleTerm");
         roleTerm.setAttribute("type","text");
-        roleTerm.setTextContent("author");
+        roleTerm.setNodeValue("author");
         role.appendChild(roleTerm);
         modsName.appendChild(role);
         mods.appendChild(modsName);
@@ -39,28 +39,30 @@
     mods.appendChild(originInfo);
     if (this.publisher != null) {
       Element publisher=d.createElement("publisher");
-      publisher.setTextContent(this.publisher);
+      publisher.setNodeValue(this.publisher);
       originInfo.appendChild(publisher);
     }
     if (date != null) {
       Element dateIssued=d.createElement("dateIssued");
-      dateIssued.setTextContent(date);
+      dateIssued.setNodeValue(date);
       originInfo.appendChild(dateIssued);
     }
     Element issuance=d.createElement("issuance");
-    issuance.setTextContent(this.issuance);
+    issuance.setNodeValue(this.issuance);
     originInfo.appendChild(issuance);
     Element idref=d.createElement("identifier");
-    idref.setTextContent(id);
+    idref.setNodeValue(id);
     mods.appendChild(idref);
     Element typeOfResource=d.createElement("typeOfResource");
-    typeOfResource.setTextContent(type);
+    typeOfResource.setNodeValue(type);
     mods.appendChild(typeOfResource);
     if (genre != null) {
       Element genreElement=d.createElement("genre");
       genreElement.setAttribute("authority","marc");
-      genreElement.setTextContent(genre);
+      genreElement.setNodeValue(genre);
       mods.appendChild(genreElement);
+    }
+    if (host != null) {
     }
     for (Iterator iter=extensionFields.entrySet().iterator(); iter.hasNext(); ) {
       Element extension=d.createElement("extension");
@@ -69,7 +71,7 @@
       String value=(String)theEntry.getValue();
       if (handledExtensions.contains(field))       continue;
       Element theData=d.createElement(field);
-      theData.setTextContent(value);
+      theData.setNodeValue(value);
       extension.appendChild(theData);
       mods.appendChild(extension);
     }
