@@ -276,14 +276,20 @@ catch (            Throwable ex) {
       BibtexEntry bes=null;
       File lyxpipe=new File(prefs.get("lyxpipe") + ".in");
       if (!lyxpipe.exists() || !lyxpipe.canWrite()) {
-        output("ERROR: verify that LyX is running and that the lyxpipe is valid. [" + prefs.get("lyxpipe") + "]");
+        output(Globals.lang("Error") + ": " + Globals.lang("verify that LyX is running and that the lyxpipe is valid")+ ". ["+ prefs.get("lyxpipe")+ "]");
         return;
       }
+      Util.pr("tre");
       if (numSelected > 0) {
         try {
-          BufferedWriter lyx_out=new BufferedWriter(new FileWriter(lyxpipe));
+          Util.pr("fil");
+          FileWriter fw=new FileWriter(lyxpipe);
+          Util.pr("fil pluss");
+          BufferedWriter lyx_out=new BufferedWriter(fw);
+          Util.pr("fem");
           String citeStr="", citeKey="", message="";
           for (int i=0; i < numSelected; i++) {
+            Util.pr(":" + i);
             bes=database.getEntryById(tableModel.getNameFromNumber(rows[i]));
             citeKey=(String)bes.getField(GUIGlobals.KEY_FIELD);
             if (citeKey == null || citeKey.equals(""))             continue;

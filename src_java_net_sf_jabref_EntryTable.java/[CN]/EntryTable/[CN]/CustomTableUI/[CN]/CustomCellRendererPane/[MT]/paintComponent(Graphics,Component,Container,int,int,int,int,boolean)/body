@@ -1,0 +1,31 @@
+{
+  if (c == null) {
+    if (p != null) {
+      Color oldColor=g.getColor();
+      g.setColor(p.getBackground());
+      g.fillRect(x,y,w,h);
+      g.setColor(oldColor);
+    }
+    return;
+  }
+  if (c.getParent() != this) {
+    this.add(c);
+  }
+  c.setBounds(x,y,w,h);
+  boolean wasDoubleBuffered=false;
+  JComponent jc=(c instanceof JComponent) ? (JComponent)c : null;
+  if (jc != null && jc.isDoubleBuffered()) {
+    wasDoubleBuffered=true;
+    jc.setDoubleBuffered(false);
+  }
+  Rectangle clip=g.getClipBounds(tmpRect);
+  g.clipRect(x,y,w,h);
+  g.translate(x,y);
+  c.paint(g);
+  g.translate(-x,-y);
+  g.setClip(clip.x,clip.y,clip.width,clip.height);
+  if (wasDoubleBuffered) {
+    jc.setDoubleBuffered(true);
+  }
+  c.setBounds(-w,-h,0,0);
+}

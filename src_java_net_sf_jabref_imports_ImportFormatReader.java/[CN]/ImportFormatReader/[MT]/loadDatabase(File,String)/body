@@ -27,19 +27,17 @@
     try {
       reader=getReader(fileToOpen,suppliedEncoding);
       oldReader.close();
-      System.out.println("Using encoding: " + suppliedEncoding);
     }
  catch (    IOException ex) {
       reader=oldReader;
-      System.out.println("Error, using default encoding.");
     }
   }
  else {
     reader.close();
     reader=getReader(fileToOpen,encoding);
-    System.out.println("No encoding supplied, or supplied encoding equals default. Using default encoding.");
   }
   BibtexParser bp=new BibtexParser(reader);
   ParserResult pr=bp.parse();
+  pr.setEncoding(encoding);
   return pr;
 }

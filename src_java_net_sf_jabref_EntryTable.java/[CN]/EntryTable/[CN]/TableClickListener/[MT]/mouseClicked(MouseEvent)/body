@@ -1,6 +1,6 @@
 {
-  int col=columnAtPoint(e.getPoint());
-  if ((col == 0) && (e.getClickCount() == 2)) {
+  final int col=columnAtPoint(e.getPoint()), row=rowAtPoint(e.getPoint());
+  if (!isCellEditable(row,col) && (e.getClickCount() == 2)) {
     try {
       panel.runCommand("edit");
     }
@@ -13,7 +13,6 @@
     rightClickMenu.show(ths,e.getX(),e.getY());
   }
   if (tableModel.getCellStatus(0,col) == EntryTableModel.ICON_COL) {
-    final int row=rowAtPoint(e.getPoint());
     Object value=getValueAt(row,col);
     if (value == null)     return;
     final String[] iconType=tableModel.getIconTypeForColumn(col);
