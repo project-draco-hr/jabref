@@ -1,6 +1,7 @@
 {
   if ((fileToOpen != null) && (fileToOpen.exists())) {
     try {
+      String fileName=fileToOpen.getPath();
       prefs.put("workingDirectory",fileToOpen.getPath());
       String encoding=Globals.prefs.get("defaultEncoding");
       ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen,encoding);
@@ -21,8 +22,7 @@
       BasePanel bp=new BasePanel(ths,db,fileToOpen,meta,prefs);
       bp.encoding=pr.getEncoding();
       SwingUtilities.invokeLater(new openItSwingHelper(bp,raisePanel));
-      output(Globals.lang("Opened database") + " '" + fileToOpen.getPath()+ "' "+ Globals.lang("with")+ " "+ db.getEntryCount()+ " "+ Globals.lang("entries")+ ".");
-      fileToOpen=null;
+      output(Globals.lang("Opened database") + " '" + fileName+ "' "+ Globals.lang("with")+ " "+ db.getEntryCount()+ " "+ Globals.lang("entries")+ ".");
     }
  catch (    Throwable ex) {
       JOptionPane.showMessageDialog(ths,ex.getMessage(),Globals.lang("Open database"),JOptionPane.ERROR_MESSAGE);
