@@ -1,5 +1,6 @@
 {
-  int gradientWidth, gradientHeight;
+  int gradientWidth;
+  int gradientHeight;
   if (info.isVertical) {
     gradientHeight=info.parallelLength;
     gradientWidth=this.perpendicularLength=perpendicularLength;
@@ -20,10 +21,14 @@
   Object c=null;
   int pl=info.parallelLength;
   for (int i=0; i < pl; i++) {
-    c=info.model.getDataElements((sa + (i * da) / pl) << 24 | (sr + (i * dr) / pl) << 16 | (sg + (i * dg) / pl) << 8 | (sb + (i * db) / pl),c);
+    c=info.model.getDataElements(((sa + ((i * da) / pl)) << 24) | ((sr + ((i * dr) / pl)) << 16) | ((sg + ((i * dg) / pl)) << 8)| (sb + ((i * db) / pl)),c);
     for (int j=0; j < perpendicularLength; j++) {
-      if (info.isVertical)       raster.setDataElements(j,i,c);
- else       raster.setDataElements(i,j,c);
+      if (info.isVertical) {
+        raster.setDataElements(j,i,c);
+      }
+ else {
+        raster.setDataElements(i,j,c);
+      }
     }
   }
   childRasterCache=new HashMap();

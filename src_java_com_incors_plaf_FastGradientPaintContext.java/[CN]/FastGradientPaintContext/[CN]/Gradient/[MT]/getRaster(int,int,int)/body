@@ -1,12 +1,20 @@
 {
-  if (raster == null || (this.perpendicularLength < perpendicularLength))   createRaster(perpendicularLength);
+  if ((raster == null) || (this.perpendicularLength < perpendicularLength)) {
+    createRaster(perpendicularLength);
+  }
   Integer key=new Integer(parallelPos);
   Object o=childRasterCache.get(key);
-  if (o != null)   return (Raster)o;
+  if (o != null) {
+    return (Raster)o;
+  }
  else {
     Raster r;
-    if (info.isVertical)     r=raster.createChild(0,parallelPos,this.perpendicularLength,info.parallelLength - parallelPos,0,0,null);
- else     r=raster.createChild(parallelPos,0,info.parallelLength - parallelPos,this.perpendicularLength,0,0,null);
+    if (info.isVertical) {
+      r=raster.createChild(0,parallelPos,this.perpendicularLength,info.parallelLength - parallelPos,0,0,null);
+    }
+ else {
+      r=raster.createChild(parallelPos,0,info.parallelLength - parallelPos,this.perpendicularLength,0,0,null);
+    }
     childRasterCache.put(key,r);
     return r;
   }
