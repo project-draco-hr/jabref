@@ -1,12 +1,14 @@
 {
-  Clipboard systemClip=Toolkit.getDefaultToolkit().getSystemClipboard();
-  try {
+  String data=ClipBoardManager.clipBoard.getClipboardContents();
+  if (data != null) {
     int selStart=textPane.getSelectionStart();
     int selEnd=textPane.getSelectionEnd();
     if (selEnd - selStart > 0)     textPane.replaceSelection("");
     int cPos=textPane.getCaretPosition();
-    doc.insertString(cPos,(String)systemClip.getContents(null).getTransferData(DataFlavor.stringFlavor),doc.getStyle("regular"));
-  }
- catch (  Exception ex) {
+    try {
+      doc.insertString(cPos,data,doc.getStyle("regular"));
+    }
+ catch (    Exception ex) {
+    }
   }
 }
