@@ -732,21 +732,28 @@ catch (            Throwable ex) {
       undoManager.addEdit(ce);
       markBaseChanged();
       refreshTable();
+      output(Globals.lang("Marked selected") + " " + Globals.lang(bes.length > 0 ? "entry" : "entries"));
     }
   }
 );
   actions.put("unmarkEntries",new BaseAction(){
     public void action(){
-      NamedCompound ce=new NamedCompound("Unmark entries");
-      BibtexEntry[] bes=entryTable.getSelectedEntries();
-      for (int i=0; i < bes.length; i++) {
-        ce.addEdit(new UndoableFieldChange(bes[i],Globals.MARKED,bes[i].getField(Globals.MARKED),null));
-        bes[i].setField(Globals.MARKED,null);
+      try {
+        NamedCompound ce=new NamedCompound("Unmark entries");
+        BibtexEntry[] bes=entryTable.getSelectedEntries();
+        for (int i=0; i < bes.length; i++) {
+          ce.addEdit(new UndoableFieldChange(bes[i],Globals.MARKED,bes[i].getField(Globals.MARKED),null));
+          bes[i].setField(Globals.MARKED,null);
+        }
+        ce.end();
+        undoManager.addEdit(ce);
+        markBaseChanged();
+        refreshTable();
+        output(Globals.lang("Unmarked selected") + " " + Globals.lang(bes.length > 0 ? "entry" : "entries"));
       }
-      ce.end();
-      undoManager.addEdit(ce);
-      markBaseChanged();
-      refreshTable();
+ catch (      Throwable ex) {
+        ex.printStackTrace();
+      }
     }
   }
 );

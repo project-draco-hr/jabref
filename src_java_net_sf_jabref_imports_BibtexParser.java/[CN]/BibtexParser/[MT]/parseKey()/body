@@ -6,16 +6,19 @@
       _eof=true;
       return token.toString();
     }
-    if (Character.isLetterOrDigit((char)c) || ((c != '#') && (c != '{') && (c != '}')&& (c != '\uFFFD')&& (c != '~')&& (c != '\uFFFD')&& (c != ',')&& (c != '='))) {
+    if (!Character.isWhitespace((char)c) && (Character.isLetterOrDigit((char)c) || ((c != '#') && (c != '{') && (c != '}')&& (c != '\uFFFD')&& (c != '~')&& (c != '\uFFFD')&& (c != ',')&& (c != '=')))) {
       token.append((char)c);
     }
  else {
-      if (c == ',') {
+      if (Character.isWhitespace((char)c)) {
+        return token.toString();
+      }
+ else       if (c == ',') {
         unread(c);
         return token.toString();
       }
  else       if (c == '=') {
-        throw new NoLabelException(token.toString());
+        return token.toString();
       }
  else       throw new IOException("Error in line " + line + ":"+ "Character '"+ (char)c+ "' is not "+ "allowed in bibtex keys.");
     }

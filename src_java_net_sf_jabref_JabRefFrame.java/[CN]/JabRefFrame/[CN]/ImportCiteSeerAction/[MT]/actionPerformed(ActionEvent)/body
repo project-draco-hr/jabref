@@ -2,7 +2,7 @@
   if (basePanel().citeSeerFetcher.activateImportFetcher()) {
     (new Thread(){
       BasePanel currentBp;
-      String id;
+      BibtexEntry toShow;
       int[] clickedOn=null;
 class UpdateComponent implements Runnable {
         boolean changesMade;
@@ -13,8 +13,6 @@ class UpdateComponent implements Runnable {
           currentBp.citeSeerFetcher.endImportCiteSeerProgress();
           if (changesMade)           currentBp.markBaseChanged();
           currentBp.refreshTable();
-          for (int i=0; i < clickedOn.length; i++)           currentBp.entryTable.addRowSelectionInterval(i,i);
-          currentBp.updateViewToSelected();
           output(Globals.lang("Completed Import Fields from CiteSeer."));
         }
       }
@@ -27,6 +25,7 @@ class UpdateComponent implements Runnable {
  else {
           JOptionPane.showMessageDialog(currentBp.frame(),Globals.lang("You must select at least one row to perform this operation."),Globals.lang("CiteSeer Import Error"),JOptionPane.WARNING_MESSAGE);
         }
+        toShow=currentBp.database().getEntryById(currentBp.getTableModel().getNameFromNumber(clickedOn[0]));
         if (clickedOn != null) {
           basePanel().citeSeerFetcher.beginImportCiteSeerProgress();
           NamedCompound citeseerNamedCompound=new NamedCompound("CiteSeer Import Fields");
