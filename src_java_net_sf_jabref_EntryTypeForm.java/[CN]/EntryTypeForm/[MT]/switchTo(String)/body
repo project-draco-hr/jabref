@@ -2,14 +2,25 @@
   if (id != null) {
     if (!panel.entryTypeForms.containsKey(id)) {
       BibtexEntry be=panel.database.getEntryById(id);
-      EntryTypeForm form=new EntryTypeForm(frame,panel,be,prefs);
-      form.setLocation(ths.getLocation());
-      form.setVisible(true);
-      dispose();
-      panel.entryTypeForms.put(id,form);
+      if (entry.getType() == be.getType()) {
+        panel.entryTypeForms.remove(entry.getId());
+        entry=be;
+        updateAllFields();
+        updateSource();
+        panel.entryTypeForms.put(id,ths);
+      }
+ else {
+        EntryTypeForm form=new EntryTypeForm(frame,panel,be,prefs);
+        form.setLocation(ths.getLocation());
+        form.setVisible(true);
+        dispose();
+        panel.entryTypeForms.remove(entry.getId());
+        panel.entryTypeForms.put(id,form);
+      }
     }
  else {
       ((EntryTypeForm)(panel.entryTypeForms.get(id))).setVisible(true);
+      panel.entryTypeForms.remove(entry.getId());
       dispose();
     }
   }
