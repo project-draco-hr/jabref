@@ -11,7 +11,7 @@
   increment=new JRadioButton(Globals.lang("Incremental"),false);
   highlight=new JRadioButton(Globals.lang("Highlight"),true);
   reorder=new JRadioButton(Globals.lang("Float"),false);
-  select=new JCheckBox(Globals.lang("Select matches"),false);
+  select=new JCheckBoxMenuItem(Globals.lang("Select matches"),false);
   increment.setToolTipText(Globals.lang("Incremental search"));
   highlight.setToolTipText(Globals.lang("Gray out non-matching entries"));
   reorder.setToolTipText(Globals.lang("Move matching entries to the top"));
@@ -24,7 +24,7 @@
     searchGen.setEnabled(false);
   }
   caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),prefs.getBoolean("caseSensitiveSearch"));
-  settings.add(caseSensitive);
+  settings.add(select);
   settings.addSeparator();
   settings.add(searchReq);
   settings.add(searchOpt);
@@ -32,6 +32,7 @@
   settings.addSeparator();
   settings.add(searchAll);
   settings.addSeparator();
+  settings.add(caseSensitive);
   settings.add(regExpSearch);
   searchField.addActionListener(this);
   search.addActionListener(this);
@@ -55,6 +56,9 @@
     }
   }
 );
+  Insets margin=new Insets(0,0,0,0);
+  openset.setMargin(margin);
+  help.setMargin(margin);
   help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.searchHelp,"Help"));
   types.add(increment);
   types.add(highlight);
@@ -84,11 +88,6 @@
   add(highlight);
   gbl.setConstraints(reorder,con);
   add(reorder);
-  JSeparator js=new JSeparator(JSeparator.HORIZONTAL);
-  gbl.setConstraints(js,con);
-  add(js);
-  gbl.setConstraints(select,con);
-  add(select);
   con.gridwidth=1;
   gbl.setConstraints(openset,con);
   add(openset);

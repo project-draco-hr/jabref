@@ -1,8 +1,10 @@
 {
   boolean abortOperation=false;
-  String targetURL=(String)currentEntry.getField("url");
+  Object o=currentEntry.getField("url");
+  String targetURL=(String)o;
   try {
-    if (targetURL != null && targetURL.startsWith(PREFIX_URL) && (targetURL.length() > (PREFIX_URL.length() + 5))) {
+    if ((o != null) && targetURL.startsWith(PREFIX_URL) && (targetURL.length() > (PREFIX_URL.length() + 5))) {
+      Util.pr("targetUrl: " + targetURL);
       String id=targetURL.substring(PREFIX_URL.length(),targetURL.length() - 5);
       String identifier=PREFIX_IDENTIFIER + id;
       StringBuffer citeseerURLString=new StringBuffer();
@@ -15,7 +17,7 @@
       saxParser.parse(citeseerMethod.getResponseBodyAsStream(),new CiteSeerCitationHandler(citationHashTable));
       citeseerMethod.releaseConnection();
     }
- else {
+ else     if (o != null) {
       int row=panel.getTableModel().getNumberFromName(currentEntry.getId());
       ShowBadURLDialog dialog=new ShowBadURLDialog(targetURL,row);
       SwingUtilities.invokeLater(dialog);
