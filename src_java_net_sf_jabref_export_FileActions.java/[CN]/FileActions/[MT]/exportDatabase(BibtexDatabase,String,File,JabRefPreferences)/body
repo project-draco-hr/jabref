@@ -2,7 +2,7 @@
   PrintStream ps=null;
   try {
     Object[] keys=database.getKeySet().toArray();
-    String key;
+    String key, type;
     InputStreamReader reader;
     ps=new PrintStream(new FileOutputStream(outFile));
     URL reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + lfName + ".begin.layout");
@@ -16,13 +16,27 @@
     }
     String pri=prefs.get("priSort"), sec=prefs.get("secSort"), ter=prefs.get("terSort");
     EntrySorter sorter=database.getSorter(new EntryComparator(prefs.getBoolean("priDescending"),prefs.getBoolean("secDescending"),prefs.getBoolean("terDescending"),pri,sec,ter));
+    reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + lfName + ".layout");
+    reader=new InputStreamReader(reso.openStream());
+    LayoutHelper layoutHelper=new LayoutHelper(reader);
+    Layout defLayout=layoutHelper.getLayoutFromText();
+    HashMap layouts=new HashMap();
+    Layout layout;
     for (int i=0; i < sorter.getEntryCount(); i++) {
-      reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + lfName + ".layout");
-      reader=new InputStreamReader(reso.openStream());
-      LayoutHelper layoutHelper=new LayoutHelper(reader);
-      Layout layout=layoutHelper.getLayoutFromText();
       key=(String)sorter.getIdAt(i);
       BibtexEntry entry=database.getEntryById(key);
+      type=entry.getType().getName().toLowerCase();
+      if (layouts.containsKey(type))       layout=(Layout)layouts.get(type);
+ else {
+        reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + lfName + "."+ type+ ".layout");
+        if (reso != null) {
+          reader=new InputStreamReader(reso.openStream());
+          layoutHelper=new LayoutHelper(reader);
+          layout=layoutHelper.getLayoutFromText();
+          layouts.put(type,layout);
+        }
+ else         layout=defLayout;
+      }
       ps.println(layout.doLayout(entry));
     }
     reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + lfName + ".end.layout");
