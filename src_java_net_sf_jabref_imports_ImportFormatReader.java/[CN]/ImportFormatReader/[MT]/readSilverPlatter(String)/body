@@ -76,8 +76,17 @@
  else         if (f3.equals("DT")) {
           frest=frest.trim();
           if (frest.equals("Monograph"))           Type="book";
- else           if (frest.equals("Contribution"))           Type="incollection";
  else           if (frest.equals("Journal-Article"))           Type="article";
+ else           if (frest.equals("Contribution")) {
+            Type="incollection";
+            String title=((String)h.get("title")).trim();
+            if (title != null) {
+              int inPos=title.indexOf("\" in ");
+              int pgPos=title.lastIndexOf(" ");
+              if (inPos > 1)               h.put("title",title.substring(1,inPos));
+              if (pgPos > inPos)               h.put("pages",title.substring(pgPos).replaceAll("-","--"));
+            }
+          }
  else           Type=frest.replaceAll(" ","");
         }
       }

@@ -126,21 +126,11 @@
       BibtexEntry[] bes=entryTable.getSelectedEntries();
       int row0=entryTable.getSelectedRow();
       if ((bes != null) && (bes.length > 0)) {
-        if (prefs.getBoolean("confirmDelete")) {
-          String msg=Globals.lang("Really delete the selected") + " " + Globals.lang("entry")+ "?", title=Globals.lang("Delete entry");
-          if (bes.length > 1) {
-            msg=Globals.lang("Really delete the selected") + " " + bes.length+ " "+ Globals.lang("entries")+ "?";
-            title=Globals.lang("Delete multiple entries");
-          }
-          CheckBoxMessage cb=new CheckBoxMessage(msg,Globals.lang("Disable this confirmation dialog"),false);
-          int answer=JOptionPane.showConfirmDialog(frame,cb,title,JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-          if (answer == JOptionPane.NO_OPTION) {
-            entryTable.clearSelection();
-            cancelled=true;
-          }
-          if (cb.isSelected())           prefs.putBoolean("confirmDelete",false);
+        boolean goOn=showDeleteConfirmationDialog(bes.length);
+        if (!goOn) {
+          entryTable.clearSelection();
         }
-        if (!cancelled) {
+ else {
           NamedCompound ce=new NamedCompound(bes.length > 1 ? Globals.lang("delete entries") : Globals.lang("delete entry"));
           for (int i=0; i < bes.length; i++) {
             database.removeEntry(bes[i].getId());
