@@ -1,0 +1,20 @@
+{
+  super.paintThumb(g,c,thumbBounds);
+  Color colorReflection=KunststoffLookAndFeel.getComponentGradientColorReflection();
+  Color colorReflectionFaded=KunststoffUtilities.getTranslucentColor(colorReflection,0);
+  Color colorShadow=KunststoffLookAndFeel.getComponentGradientColorShadow();
+  Color colorShadowFaded=KunststoffUtilities.getTranslucentColor(colorShadow,0);
+  Rectangle rectReflection;
+  Rectangle rectShadow;
+  if (scrollbar.getOrientation() == JScrollBar.VERTICAL) {
+    rectReflection=new Rectangle(thumbBounds.x + 1,thumbBounds.y,thumbBounds.width / 2,thumbBounds.height);
+    rectShadow=new Rectangle(thumbBounds.x + thumbBounds.width / 2,thumbBounds.y,thumbBounds.width / 2 + 1,thumbBounds.height);
+  }
+ else {
+    rectReflection=new Rectangle(thumbBounds.x,thumbBounds.y + 1,thumbBounds.width,thumbBounds.height / 2);
+    rectShadow=new Rectangle(thumbBounds.x,thumbBounds.y + thumbBounds.height / 2,thumbBounds.width,thumbBounds.height / 2 + 1);
+  }
+  boolean isVertical=(scrollbar.getOrientation() == JScrollBar.HORIZONTAL);
+  KunststoffUtilities.drawGradient(g,colorReflection,colorReflectionFaded,rectReflection,isVertical);
+  KunststoffUtilities.drawGradient(g,colorShadowFaded,colorShadow,rectShadow,isVertical);
+}
