@@ -1,0 +1,28 @@
+{
+  if (type == null) {
+    EntryTypeDialog etd=new EntryTypeDialog(frame);
+    Util.placeDialog(etd,frame);
+    etd.setVisible(true);
+    type=etd.getChoice();
+  }
+  if (type != null) {
+    String id=Util.createId(type,database);
+    BibtexEntry be=new BibtexEntry(id,type);
+    try {
+      database.insertEntry(be);
+      undoManager.addEdit(new UndoableInsertEntry(database,be,entryTypeForms));
+      output("Added new " + type.getName().toLowerCase() + " entry.");
+      refreshTable();
+      markBaseChanged();
+      if (prefs.getBoolean("autoOpenForm")) {
+        EntryTypeForm etf=new EntryTypeForm(frame,ths,be,prefs);
+        Util.placeDialog(etf,frame);
+        etf.setVisible(true);
+        entryTypeForms.put(id,etf);
+      }
+    }
+ catch (    KeyCollisionException ex) {
+      Util.pr(ex.getMessage());
+    }
+  }
+}

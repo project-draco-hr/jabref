@@ -1,0 +1,51 @@
+{
+  super(baseFrame_,true);
+  setTitle("Select entry type");
+  addWindowListener(new WindowAdapter(){
+    public void windowClosing(    WindowEvent e){
+      cancelAction.actionPerformed(null);
+    }
+  }
+);
+  getContentPane().setLayout(new BorderLayout());
+  JPanel pan=new JPanel();
+  getContentPane().add(pan,BorderLayout.CENTER);
+  JPanel lower=new JPanel();
+  JButton cancel=new JButton(Globals.lang("Cancel"));
+  cancel.addActionListener(this);
+  cancel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(GUIGlobals.exitDialog,"close");
+  cancel.getActionMap().put("close",cancelAction);
+  lower.add(cancel);
+  getContentPane().add(lower,BorderLayout.SOUTH);
+  GridBagLayout gbl=new GridBagLayout();
+  pan.setLayout(gbl);
+  GridBagConstraints con=new GridBagConstraints();
+  con.anchor=GridBagConstraints.WEST;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  con.insets=new Insets(4,4,4,4);
+  int col=0;
+  TreeSet buttons=new TreeSet();
+  Iterator iter=BibtexEntryType.ALL_TYPES.iterator();
+  for (; iter.hasNext(); ) {
+    BibtexEntryType type=(BibtexEntryType)(iter.next());
+    TypeButton b=new TypeButton(type.getName(),type);
+    buttons.add(b);
+  }
+  iter=buttons.iterator();
+  for (; iter.hasNext(); ) {
+    TypeButton b=(TypeButton)(iter.next());
+    b.setAlignmentX(SwingConstants.LEFT);
+    b.addActionListener(this);
+    col++;
+    if (col == COLNUM) {
+      col=0;
+      con.gridwidth=GridBagConstraints.REMAINDER;
+    }
+ else     con.gridwidth=1;
+    gbl.setConstraints(b,con);
+    pan.add(b);
+  }
+  pan.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Entry types")));
+  pack();
+  setResizable(false);
+}
