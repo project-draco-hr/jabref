@@ -1,0 +1,88 @@
+{
+  super(manager);
+  this.frame=frame;
+  prefs=prefs_;
+  incSearcher=new IncrementalSearcher(prefs);
+  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),prefs.getBoolean("searchReq"));
+  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),prefs.getBoolean("searchOpt"));
+  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),prefs.getBoolean("searchGen"));
+  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),prefs.getBoolean("searchAll"));
+  regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),prefs.getBoolean("regExpSearch"));
+  increment=new JCheckBox(Globals.lang("Incremental"),false);
+  select=new JCheckBox(Globals.lang("Highlight"),true);
+  reorder=new JCheckBox(Globals.lang("Float"),false);
+  increment.addItemListener(this);
+  reorder.addItemListener(this);
+  if (searchAll.isSelected()) {
+    searchReq.setEnabled(false);
+    searchOpt.setEnabled(false);
+    searchGen.setEnabled(false);
+  }
+  caseSensitive=new JCheckBoxMenuItem("Case sensitive",prefs.getBoolean("caseSensitiveSearch"));
+  settings.add(caseSensitive);
+  settings.addSeparator();
+  settings.add(searchReq);
+  settings.add(searchOpt);
+  settings.add(searchGen);
+  settings.addSeparator();
+  settings.add(searchAll);
+  settings.addSeparator();
+  settings.add(regExpSearch);
+  searchField.addActionListener(this);
+  searchField.addFocusListener(new FocusAdapter(){
+    public void focusLost(    FocusEvent e){
+      incSearch=false;
+      incSearchPos=-1;
+      if (increment.isSelected())       searchField.setText("");
+    }
+  }
+);
+  escape.addActionListener(this);
+  openset.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      JButton src=(JButton)e.getSource();
+      settings.show(src,0,0);
+    }
+  }
+);
+  types.add(increment);
+  types.add(select);
+  types.add(reorder);
+  if (prefs.getBoolean("incrementS"))   increment.setSelected(true);
+ else   if (!prefs.getBoolean("selectS"))   reorder.setSelected(true);
+  setLayout(gbl);
+  SidePaneHeader header=new SidePaneHeader("Search",GUIGlobals.searchIconFile,this);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.fill=GridBagConstraints.BOTH;
+  con.insets=new Insets(0,0,2,0);
+  gbl.setConstraints(header,con);
+  add(header);
+  con.insets=new Insets(0,0,0,0);
+  gbl.setConstraints(searchField,con);
+  add(searchField);
+  gbl.setConstraints(increment,con);
+  add(increment);
+  gbl.setConstraints(select,con);
+  add(select);
+  gbl.setConstraints(reorder,con);
+  add(reorder);
+  gbl.setConstraints(openset,con);
+  add(openset);
+  JPanel empt=new JPanel();
+  gbl.setConstraints(escape,con);
+  add(escape);
+  searchField.getInputMap().put(prefs.getKey("Repeat incremental search"),"repeat");
+  searchField.getActionMap().put("repeat",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      if (increment.isSelected())       repeatIncremental();
+    }
+  }
+);
+  searchField.getInputMap().put(prefs.getKey("Clear search"),"escape");
+  searchField.getActionMap().put("escape",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      ths.actionPerformed(new ActionEvent(escape,0,""));
+    }
+  }
+);
+}

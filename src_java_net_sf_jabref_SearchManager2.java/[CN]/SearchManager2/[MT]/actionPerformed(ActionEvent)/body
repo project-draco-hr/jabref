@@ -1,0 +1,25 @@
+{
+  if (e.getSource() == escape) {
+    incSearch=false;
+    if (frame.basePanel() != null)     frame.basePanel().stopShowingSearchResults();
+  }
+ else   if ((e.getSource() == searchField) && !increment.isSelected() && (frame.basePanel() != null)) {
+    updatePrefs();
+    Hashtable searchOptions=new Hashtable();
+    searchOptions.put("option",searchField.getText());
+    SearchRuleSet searchRules=new SearchRuleSet();
+    SearchRule rule1;
+    if (prefs.getBoolean("regExpSearch"))     rule1=new RegExpRule(prefs);
+ else     rule1=new SimpleSearchRule(prefs);
+    searchRules.addRule(rule1);
+    if (reorder.isSelected()) {
+      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),DatabaseSearch.SEARCH,true);
+      search.start();
+    }
+ else     if (select.isSelected()) {
+      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),DatabaseSearch.SEARCH,false);
+      search.start();
+    }
+    searchField.select(0,searchField.getText().length());
+  }
+}
