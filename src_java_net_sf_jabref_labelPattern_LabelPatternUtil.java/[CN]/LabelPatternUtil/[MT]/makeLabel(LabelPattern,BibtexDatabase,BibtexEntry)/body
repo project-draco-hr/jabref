@@ -18,36 +18,37 @@
         field=false;
       }
  else       if (field) {
+        String modifier=null;
+        int _mi=val.indexOf(":");
+        if (_mi != -1 && _mi != val.length() - 1 && _mi != 0) {
+          modifier=val.substring(_mi + 1);
+          val=val.substring(0,_mi);
+        }
+        StringBuffer _sbvalue=new StringBuffer();
         try {
-          if (val.equals("uppercase")) {
-            forceUpper=true;
-          }
- else           if (val.equals("lowercase")) {
-            forceLower=true;
-          }
- else           if (val.equals("auth")) {
-            _sb.append(firstAuthor(_entry.getField("author").toString()));
+          if (val.equals("auth")) {
+            _sbvalue.append(firstAuthor(_entry.getField("author").toString()));
           }
  else           if (val.equals("edtr")) {
-            _sb.append(firstAuthor(_entry.getField("editor").toString()));
+            _sbvalue.append(firstAuthor(_entry.getField("editor").toString()));
           }
  else           if (val.equals("authors")) {
-            _sb.append(allAuthors(_entry.getField("author").toString()));
+            _sbvalue.append(allAuthors(_entry.getField("author").toString()));
           }
  else           if (val.equals("editors")) {
-            _sb.append(allAuthors(_entry.getField("editor").toString()));
+            _sbvalue.append(allAuthors(_entry.getField("editor").toString()));
           }
  else           if (val.equals("authorIni")) {
-            _sb.append(oneAuthorPlusIni(_entry.getField("author").toString()));
+            _sbvalue.append(oneAuthorPlusIni(_entry.getField("author").toString()));
           }
  else           if (val.equals("editorIni")) {
-            _sb.append(oneAuthorPlusIni(_entry.getField("editor").toString()));
+            _sbvalue.append(oneAuthorPlusIni(_entry.getField("editor").toString()));
           }
  else           if (val.equals("firstpage")) {
-            _sb.append(firstPage(_entry.getField("pages").toString()));
+            _sbvalue.append(firstPage(_entry.getField("pages").toString()));
           }
  else           if (val.equals("lastpage")) {
-            _sb.append(lastPage(_entry.getField("pages").toString()));
+            _sbvalue.append(lastPage(_entry.getField("pages").toString()));
           }
  else           if (val.equals("shorttitle")) {
             String ss=_entry.getField("title").toString();
@@ -57,26 +58,54 @@
                 wrd++;
               }
  else {
-                _sb.append(ss.charAt(piv));
+                _sbvalue.append(ss.charAt(piv));
               }
               piv++;
             }
           }
- else           if (val.equals("yy")) {
+ else           if (val.equals("shortyear")) {
             String ss=_entry.getField("year").toString();
             if (ss.length() > 2) {
-              _sb.append(ss.substring(ss.length() - 2));
+              _sbvalue.append(ss.substring(ss.length() - 2));
             }
  else {
-              _sb.append(ss);
+              _sbvalue.append(ss);
+            }
+          }
+ else           if (val.equals("veryshorttitle")) {
+            String ss=_entry.getField("title").toString();
+            int piv=0;
+            String[] skipWords={"a","an","the"};
+            for (int _i=0; _i < skipWords.length; _i++) {
+              if (ss.toLowerCase().startsWith(skipWords[_i])) {
+                piv=skipWords[_i].length() + 1;
+              }
+            }
+            while ((piv < ss.length()) && Character.isWhitespace(ss.charAt(piv))) {
+              piv++;
+            }
+            while ((piv < ss.length()) && !Character.isWhitespace(ss.charAt(piv))) {
+              _sbvalue.append(ss.charAt(piv));
+              piv++;
             }
           }
  else {
-            _sb.append(_entry.getField(val).toString());
+            _sbvalue.append(_entry.getField(val).toString());
           }
         }
  catch (        Exception ex) {
           Globals.logger("Key generator warning: field '" + val + "' empty.");
+        }
+        if (modifier != null) {
+          if (modifier.equals("lower")) {
+            _sb.append(_sbvalue.toString().toLowerCase());
+          }
+ else {
+            Globals.logger("Key generator warning: unknown modifier '" + modifier + "'.");
+          }
+        }
+ else {
+          _sb.append(_sbvalue);
         }
       }
  else {
