@@ -1,4 +1,5 @@
 {
+  boolean graphicFailure=false;
   JabRefPreferences prefs=new JabRefPreferences();
   Globals.prefs=prefs;
   BibtexEntryType.loadCustomEntryTypes(prefs);
@@ -43,8 +44,14 @@
   }
   SplashScreen ss=null;
   if (!disableGui.isInvoked()) {
-    ss=new SplashScreen();
-    ss.show();
+    try {
+      ss=new SplashScreen();
+      ss.show();
+    }
+ catch (    Throwable ex) {
+      graphicFailure=true;
+      System.err.println(Globals.lang("Unable to create graphical interface") + ".");
+    }
   }
   Object fnt=new UIDefaults.ProxyLazyValue("javax.swing.plaf.FontUIResource",null,new Object[]{"Arial",new Integer(Font.PLAIN),new Integer(12)});
   UIManager.put("Button.font",fnt);
@@ -94,7 +101,6 @@
  catch (    UnsupportedLookAndFeelException ex) {
     }
   }
-  GUIGlobals.CURRENTFONT=new Font(prefs.get("fontFamily"),prefs.getInt("fontStyle"),prefs.getInt("fontSize"));
   Vector loaded=new Vector();
   if (leftOver.length > 0) {
     for (int i=0; i < leftOver.length; i++) {
@@ -188,7 +194,9 @@ catch (          Exception ex) {
       Util.pr(ex.getMessage());
     }
   }
-  if (!disableGui.isInvoked()) {
+  if (!graphicFailure && !disableGui.isInvoked()) {
+    GUIGlobals.init();
+    GUIGlobals.CURRENTFONT=new Font(prefs.get("fontFamily"),prefs.getInt("fontStyle"),prefs.getInt("fontSize"));
     JabRefFrame jrf=new JabRefFrame();
     if (loaded.size() > 0)     for (int i=0; i < loaded.size(); i++) {
       ParserResult pr=(ParserResult)loaded.elementAt(i);
