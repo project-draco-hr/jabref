@@ -34,7 +34,7 @@
       String value=fields[j].substring(2);
       value=value.trim();
       if (beg.equals("PT")) {
-        PT=value.replaceAll("Journal","article");
+        PT=value.replaceAll("Journal","article").replaceAll("J","article");
         Type="article";
       }
  else       if (beg.equals("TY")) {
@@ -42,7 +42,7 @@
       }
  else       if (beg.equals("JO"))       hm.put("booktitle",value);
  else       if (beg.equals("AU")) {
-        String author=ImportFormatReader.fixAuthor_lastnameFirst(value.replaceAll("EOLEOL"," and "));
+        String author=isiAuthorConvert(ImportFormatReader.fixAuthor_lastnameFirst(value.replaceAll("EOLEOL"," and ")));
         if (hm.get("author") != null)         author=(String)hm.get("author") + " and " + author;
         hm.put("author",author);
       }
@@ -62,7 +62,10 @@
  else       if (beg.equals("VL"))       hm.put("volume",value);
  else       if (beg.equals("DT")) {
         Type=value;
-        if (!Type.equals("Article") && !PT.equals("Journal"))         Type="misc";
+        if (Type.equals("Review")) {
+          Type="article";
+        }
+ else         if (!Type.equals("Article") && !PT.equals("Journal"))         Type="misc";
  else         Type="article";
       }
  else       if (beg.equals("CR"))       hm.put("CitedReferences",value.replaceAll("EOLEOL"," ; ").trim());
