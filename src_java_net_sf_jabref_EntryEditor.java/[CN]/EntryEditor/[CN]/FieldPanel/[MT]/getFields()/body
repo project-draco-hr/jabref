@@ -1,0 +1,19 @@
+{
+  Vector textFields=new Vector();
+  Component[] components=this.getComponents();
+  try {
+    for (int i=0; i < components.length; i++) {
+      if (components[i] instanceof FieldEditor) {
+        textFields.add(components[i]);
+      }
+ else       if (components[i] instanceof JScrollPane) {
+        textFields.add(((JScrollPane)components[i]).getViewport().getComponent(0));
+      }
+    }
+    return textFields;
+  }
+ catch (  ClassCastException cce) {
+    System.err.println("caught in getFields: " + cce);
+  }
+  return null;
+}

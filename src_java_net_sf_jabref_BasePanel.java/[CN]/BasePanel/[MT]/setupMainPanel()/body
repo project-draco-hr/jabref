@@ -1,6 +1,8 @@
 {
   tableModel=new EntryTableModel(frame,this,database);
   entryTable=new EntryTable(tableModel,frame.prefs);
+  splitPane=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+  splitPane.setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);
   entryTable.addMouseListener(this);
   entryTable.getInputMap().put(prefs.getKey("Cut"),"Cut");
   entryTable.getInputMap().put(prefs.getKey("Copy"),"Copy");
@@ -36,7 +38,9 @@
 );
   RightClickMenu rcm=new RightClickMenu(this,metaData);
   entryTable.setRightClickMenu(rcm);
-  setRightComponent(entryTable.getPane());
+  splitPane.setTopComponent(entryTable.getPane());
+  splitPane.setBottomComponent(null);
+  setRightComponent(splitPane);
   sidePaneManager=new SidePaneManager(frame,this,prefs,metaData);
   sidePaneManager.populatePanel();
   setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);

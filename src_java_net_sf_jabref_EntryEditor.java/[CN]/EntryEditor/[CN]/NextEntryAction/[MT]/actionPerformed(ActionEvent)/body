@@ -1,0 +1,16 @@
+{
+  int thisRow=panel.tableModel.getNumberFromName(entry.getId());
+  String id=null;
+  int newRow=-1;
+  if (thisRow + 1 < panel.database.getEntryCount())   newRow=thisRow + 1;
+ else   if (thisRow > 0)   newRow=0;
+  id=panel.tableModel.getNameFromNumber(newRow);
+  switchTo(id);
+  final int nr=newRow;
+  (new Thread(){
+    public void run(){
+      scrollTo(nr);
+    }
+  }
+).start();
+}
