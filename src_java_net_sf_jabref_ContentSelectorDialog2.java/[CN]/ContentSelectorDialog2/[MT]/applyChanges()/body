@@ -1,15 +1,16 @@
 {
+  boolean changedFieldSet=false;
   for (Iterator i=removedFields.iterator(); i.hasNext(); ) {
     String fieldName=(String)i.next();
     metaData.remove(Globals.SELECTOR_META_PREFIX + fieldName);
+    changedFieldSet=true;
   }
-  boolean changedFieldSet=false;
   loop:   for (Iterator i=wordListModels.keySet().iterator(); i.hasNext(); ) {
     String fieldName=(String)i.next();
     if ((fieldName == null) || FIELD_FIRST_LINE.equals(fieldName))     continue loop;
     DefaultListModel lm=(DefaultListModel)wordListModels.get(fieldName);
     int start=0;
-    if (lm.size() > 0)     while (((String)lm.get(start)).equals(WORD_FIRSTLINE_TEXT))     start++;
+    if (lm.size() > 0)     while ((start < lm.size()) && ((String)lm.get(start)).equals(WORD_FIRSTLINE_TEXT))     start++;
     Vector data=metaData.getData(Globals.SELECTOR_META_PREFIX + fieldName);
     boolean newField=false;
     if (data == null) {
@@ -26,5 +27,7 @@
   }
   panel.markNonUndoableBaseChanged();
   if (!changedFieldSet)   panel.updateAllContentSelectors();
- else   panel.rebuildAllEntryEditors();
+ else {
+    panel.rebuildAllEntryEditors();
+  }
 }
