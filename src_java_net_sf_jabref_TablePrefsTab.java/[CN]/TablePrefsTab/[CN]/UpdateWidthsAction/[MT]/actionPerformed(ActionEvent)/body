@@ -1,0 +1,17 @@
+{
+  BasePanel panel=frame.basePanel();
+  if (panel == null)   return;
+  TableColumnModel colMod=panel.entryTable.getColumnModel();
+  for (int i=1; i < colMod.getColumnCount(); i++) {
+    try {
+      String name=panel.entryTable.getColumnName(i).toLowerCase();
+      int width=colMod.getColumn(i).getWidth();
+      if ((i < tableRows.size()) && (((String)colSetup.getValueAt(i - 1,0)).toLowerCase()).equals(name))       colSetup.setValueAt("" + width,i - 1,1);
+    }
+ catch (    Throwable ex) {
+      ex.printStackTrace();
+    }
+    colSetup.revalidate();
+    colSetup.repaint();
+  }
+}
