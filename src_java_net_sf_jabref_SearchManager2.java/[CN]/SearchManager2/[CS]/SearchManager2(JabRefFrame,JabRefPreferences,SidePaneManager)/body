@@ -9,10 +9,11 @@
   searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),prefs.getBoolean("searchAll"));
   regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),prefs.getBoolean("regExpSearch"));
   increment=new JRadioButton(Globals.lang("Incremental"),false);
-  select=new JRadioButton(Globals.lang("Highlight"),true);
+  highlight=new JRadioButton(Globals.lang("Highlight"),true);
   reorder=new JRadioButton(Globals.lang("Float"),false);
+  select=new JCheckBox(Globals.lang("Select matches"),false);
   increment.setToolTipText(Globals.lang("Incremental search"));
-  select.setToolTipText(Globals.lang("Select matching entries"));
+  highlight.setToolTipText(Globals.lang("Select matching entries"));
   reorder.setToolTipText(Globals.lang("Move matching entries to the top"));
   increment.addItemListener(this);
   reorder.addItemListener(this);
@@ -33,6 +34,7 @@
   settings.addSeparator();
   settings.add(regExpSearch);
   searchField.addActionListener(this);
+  search.addActionListener(this);
   searchField.addFocusListener(new FocusAdapter(){
     public void focusLost(    FocusEvent e){
       incSearch=false;
@@ -55,7 +57,7 @@
 );
   help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.searchHelp,"Help"));
   types.add(increment);
-  types.add(select);
+  types.add(highlight);
   types.add(reorder);
   if (prefs.getBoolean("incrementS"))   increment.setSelected(true);
  else   if (!prefs.getBoolean("selectS"))   reorder.setSelected(true);
@@ -70,21 +72,29 @@
   con.insets=new Insets(0,0,0,0);
   gbl.setConstraints(searchField,con);
   add(searchField);
+  con.gridwidth=1;
+  gbl.setConstraints(search,con);
+  add(search);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gbl.setConstraints(escape,con);
+  add(escape);
   gbl.setConstraints(increment,con);
   add(increment);
-  gbl.setConstraints(select,con);
-  add(select);
+  gbl.setConstraints(highlight,con);
+  add(highlight);
   gbl.setConstraints(reorder,con);
   add(reorder);
+  JSeparator js=new JSeparator(JSeparator.HORIZONTAL);
+  gbl.setConstraints(js,con);
+  add(js);
+  gbl.setConstraints(select,con);
+  add(select);
   con.gridwidth=1;
   gbl.setConstraints(openset,con);
   add(openset);
   con.gridwidth=GridBagConstraints.REMAINDER;
   gbl.setConstraints(help,con);
   add(help);
-  con.gridwidth=2;
-  gbl.setConstraints(escape,con);
-  add(escape);
   searchField.getInputMap().put(prefs.getKey("Repeat incremental search"),"repeat");
   searchField.getActionMap().put("repeat",new AbstractAction(){
     public void actionPerformed(    ActionEvent e){

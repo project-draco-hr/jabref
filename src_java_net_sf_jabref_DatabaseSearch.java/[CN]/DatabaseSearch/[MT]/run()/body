@@ -11,7 +11,11 @@
     bes.setField(searchValueField,String.valueOf(searchScore));
     if (searchScore > 0)     hits++;
   }
-  if (reorder)   panel.showSearchResults(searchValueField);
- else   panel.selectSearchResults();
+  panel.entryTable.invalidate();
+  panel.showSearchResults(searchValueField,reorder,grayOut);
+  if (select) {
+    panel.selectResults(searchValueField);
+    new FocusRequester(panel.entryTable);
+  }
   if ((searchValueField == null) || (searchValueField == Globals.SEARCH))   panel.output(Globals.lang("Searched database. Global number of hits") + ": " + hits);
 }

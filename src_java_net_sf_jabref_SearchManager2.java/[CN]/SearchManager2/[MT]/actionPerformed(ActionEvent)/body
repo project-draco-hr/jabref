@@ -3,7 +3,7 @@
     incSearch=false;
     if (frame.basePanel() != null)     frame.basePanel().stopShowingSearchResults();
   }
- else   if ((e.getSource() == searchField) && !increment.isSelected() && (frame.basePanel() != null)) {
+ else   if (((e.getSource() == searchField) || (e.getSource() == search)) && !increment.isSelected() && (frame.basePanel() != null)) {
     updatePrefs();
     if (searchField.getText().equals("")) {
       frame.stopShowingSearchResults();
@@ -22,11 +22,11 @@
     }
     searchRules.addRule(rule1);
     if (reorder.isSelected()) {
-      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,true);
+      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,true,true,select.isSelected());
       search.start();
     }
- else     if (select.isSelected()) {
-      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,false);
+ else     if (highlight.isSelected()) {
+      DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,frame.basePanel(),Globals.SEARCH,false,true,select.isSelected());
       search.start();
     }
     searchField.select(0,searchField.getText().length());
