@@ -1,0 +1,73 @@
+{
+  this.frame=frame;
+  prefs=prefs_;
+  setBorder(BorderFactory.createEtchedBorder());
+  searchReq=new JCheckBoxMenuItem("Search required fields",prefs.getBoolean("searchReq"));
+  searchOpt=new JCheckBoxMenuItem("Search optional fields",prefs.getBoolean("searchOpt"));
+  searchGen=new JCheckBoxMenuItem("Search general fields",prefs.getBoolean("searchGen"));
+  searchAll=new JCheckBoxMenuItem("Search all fields",prefs.getBoolean("searchAll"));
+  regExpSearch=new JCheckBoxMenuItem("Use regular expressions",prefs.getBoolean("regExpSearch"));
+  increment=new JCheckBox(Globals.lang("Incremental"),false);
+  select=new JCheckBox(Globals.lang("Highlight"),true);
+  reorder=new JCheckBox(Globals.lang("Float"),false);
+  increment.addItemListener(this);
+  reorder.addItemListener(this);
+  if (searchAll.isSelected()) {
+    searchReq.setEnabled(false);
+    searchOpt.setEnabled(false);
+    searchGen.setEnabled(false);
+  }
+  caseSensitive=new JCheckBoxMenuItem("Case sensitive",prefs.getBoolean("caseSensitiveSearch"));
+  settings.add(caseSensitive);
+  settings.addSeparator();
+  settings.add(searchReq);
+  settings.add(searchOpt);
+  settings.add(searchGen);
+  settings.addSeparator();
+  settings.add(searchAll);
+  settings.addSeparator();
+  settings.add(regExpSearch);
+  searchField.addActionListener(this);
+  escape.addActionListener(this);
+  openset.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      JButton src=(JButton)e.getSource();
+      settings.show(src,0,0);
+    }
+  }
+);
+  types.add(increment);
+  types.add(select);
+  types.add(reorder);
+  if (prefs.getBoolean("incrementS"))   increment.setSelected(true);
+ else   if (!prefs.getBoolean("selectS"))   reorder.setSelected(true);
+  setLayout(gbl);
+  con.insets=new Insets(2,2,0,2);
+  con.anchor=GridBagConstraints.WEST;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  con.gridwidth=1;
+  gbl.setConstraints(lab,con);
+  add(lab);
+  con.gridwidth=3;
+  gbl.setConstraints(searchField,con);
+  add(searchField);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.fill=GridBagConstraints.BOTH;
+  gbl.setConstraints(openset,con);
+  add(openset);
+  con.fill=GridBagConstraints.HORIZONTAL;
+  con.gridwidth=1;
+  con.insets=new Insets(0,0,0,0);
+  JPanel empt=new JPanel();
+  gbl.setConstraints(empt,con);
+  add(empt);
+  gbl.setConstraints(increment,con);
+  add(increment);
+  gbl.setConstraints(select,con);
+  add(select);
+  gbl.setConstraints(reorder,con);
+  add(reorder);
+  con.insets=new Insets(0,2,2,2);
+  gbl.setConstraints(escape,con);
+  add(escape);
+}

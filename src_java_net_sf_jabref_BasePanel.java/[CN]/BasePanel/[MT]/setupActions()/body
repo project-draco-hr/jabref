@@ -93,21 +93,19 @@
   actions.put("cut",new BaseAction(){
     public void action(){
       runCommand("copy");
-      int[] rows=entryTable.getSelectedRows(), cols=entryTable.getSelectedColumns();
-      if ((((cols.length == 1) && (cols[0] == 0)) || (cols.length == tableModel.getColumnCount())) && (rows.length > 0)) {
-        NamedCompound ce=new NamedCompound(rows.length > 1 ? Globals.lang("delete entries") : Globals.lang("delete entry"));
-        for (int i=0; i < rows.length; i++) {
-          String id=tableModel.getNameFromNumber(rows[i]);
-          BibtexEntry entry=database.getEntryById(id);
-          database.removeEntry(id);
-          Object o=entryTypeForms.get(id);
+      BibtexEntry[] bes=entryTable.getSelectedEntries();
+      if (bes.length > 0) {
+        NamedCompound ce=new NamedCompound(bes.length > 1 ? Globals.lang("delete entries") : Globals.lang("delete entry"));
+        for (int i=0; i < bes.length; i++) {
+          database.removeEntry(bes[i].getId());
+          Object o=entryTypeForms.get(bes[i].getId());
           if (o != null) {
             ((EntryTypeForm)o).dispose();
           }
-          ce.addEdit(new UndoableRemoveEntry(database,entry,entryTypeForms));
+          ce.addEdit(new UndoableRemoveEntry(database,bes[i],entryTypeForms));
         }
         entryTable.clearSelection();
-        frame.output(Globals.lang("Cut") + " " + (rows.length > 1 ? rows.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
+        frame.output(Globals.lang("Cut") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
         ce.end();
         undoManager.addEdit(ce);
         refreshTable();
