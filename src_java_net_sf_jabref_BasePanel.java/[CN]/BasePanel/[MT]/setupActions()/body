@@ -19,26 +19,12 @@
     public void action() throws Throwable {
       if (file == null)       runCommand("saveAs");
  else {
-        try {
-          FileActions.saveDatabase(database,metaData,file,prefs,false,false);
-          undoManager.markUnchanged();
-          nonUndoableChange=false;
-          baseChanged=false;
-          frame.setTabTitle(ths,file.getName());
-          frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
-        }
- catch (        SaveException ex) {
-          if (ex.specificEntry()) {
-            int row=tableModel.getNumberFromName(ex.getEntry().getId()), topShow=Math.max(0,row - 3);
-            entryTable.setRowSelectionInterval(row,row);
-            entryTable.setColumnSelectionInterval(0,entryTable.getColumnCount() - 1);
-            entryTable.scrollTo(topShow);
-            showEntry(ex.getEntry());
-          }
- else           ex.printStackTrace();
-          JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file") + ".\n" + ex.getMessage(),Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
-          throw new SaveException("rt");
-        }
+        saveDatabase(file,false);
+        undoManager.markUnchanged();
+        nonUndoableChange=false;
+        baseChanged=false;
+        frame.setTabTitle(ths,file.getName());
+        frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
       }
     }
   }
@@ -58,6 +44,23 @@
           frame.fileHistory.newFile(file.getPath());
         }
  else         file=null;
+      }
+    }
+  }
+);
+  actions.put("saveSelectedAs",new BaseAction(){
+    public void action() throws Throwable {
+      JFileChooser chooser=new JFileChooser(prefs.get("workingDirectory"));
+      chooser.setFileFilter(new OpenFileFilter());
+      int returnVal=chooser.showSaveDialog(frame);
+      if (returnVal == JFileChooser.APPROVE_OPTION) {
+        String name=chooser.getSelectedFile().getName(), path=chooser.getSelectedFile().getParent();
+        if (!name.endsWith(".bib"))         name=name + ".bib";
+        File expFile=new File(path,name);
+        if (!expFile.exists() || (JOptionPane.showConfirmDialog(frame,"File '" + name + "' exists. Overwrite?","Save database",JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
+          saveDatabase(expFile,true);
+          frame.fileHistory.newFile(expFile.getPath());
+        }
       }
     }
   }

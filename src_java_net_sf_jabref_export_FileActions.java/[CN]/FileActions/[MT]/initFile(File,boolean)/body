@@ -1,0 +1,22 @@
+{
+  String name=file.getName();
+  String path=file.getParent();
+  File temp=new File(path,name + GUIGlobals.tempExt);
+  if (backup) {
+    File back=new File(path,name + GUIGlobals.backupExt);
+    if (back.exists()) {
+      back.renameTo(temp);
+    }
+    if (file.exists()) {
+      file.renameTo(back);
+    }
+    if (temp.exists()) {
+      temp.delete();
+    }
+  }
+ else {
+    if (file.exists()) {
+      file.renameTo(temp);
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  try {
+    if (!selectedOnly)     FileActions.saveDatabase(database,metaData,file,prefs,false,false);
+ else     FileActions.savePartOfDatabase(database,metaData,file,prefs,entryTable.getSelectedEntries());
+  }
+ catch (  SaveException ex) {
+    if (ex.specificEntry()) {
+      int row=tableModel.getNumberFromName(ex.getEntry().getId()), topShow=Math.max(0,row - 3);
+      entryTable.setRowSelectionInterval(row,row);
+      entryTable.setColumnSelectionInterval(0,entryTable.getColumnCount() - 1);
+      entryTable.scrollTo(topShow);
+      showEntry(ex.getEntry());
+    }
+ else     ex.printStackTrace();
+    JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file") + ".\n" + ex.getMessage(),Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
+    throw new SaveException("rt");
+  }
+}
