@@ -12,13 +12,17 @@
     table.getColumnModel().getColumn(i + 1).setPreferredWidth(width);
   }
   table.getColumnModel().getColumn(0).setPreferredWidth(25);
-  table.setRowSelectionAllowed(false);
-  table.setCellSelectionEnabled(false);
+  table.setRowSelectionAllowed(true);
+  table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  previewListener=new TableSelectionListener();
+  table.getSelectionModel().addListSelectionListener(previewListener);
   getContentPane().setLayout(new BorderLayout());
   progressBar.setIndeterminate(true);
   JPanel centerPan=new JPanel();
   centerPan.setLayout(new BorderLayout());
-  centerPan.add(new JScrollPane(table),BorderLayout.CENTER);
+  contentPane.setTopComponent(new JScrollPane(table));
+  contentPane.setBottomComponent(new JScrollPane(preview));
+  centerPan.add(contentPane,BorderLayout.CENTER);
   centerPan.add(progressBar,BorderLayout.SOUTH);
   getContentPane().add(centerPan,BorderLayout.CENTER);
   ButtonBarBuilder bb=new ButtonBarBuilder();
@@ -31,14 +35,18 @@
   ButtonStackBuilder builder=new ButtonStackBuilder();
   builder.addGridded(selectAll);
   builder.addGridded(deselectAll);
+  builder.addRelatedGap();
+  builder.addGridded(generate);
   builder.getPanel().setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   centerPan.add(builder.getPanel(),BorderLayout.WEST);
   ok.setEnabled(false);
+  generate.setEnabled(false);
   ok.addActionListener(new OkListener());
   cancel.addActionListener(new CancelListener());
+  generate.addActionListener(new GenerateListener());
   stop.addActionListener(new StopListener());
   selectAll.addActionListener(new SelectionButton(true));
   deselectAll.addActionListener(new SelectionButton(false));
   getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
-  setSize(new Dimension(650,500));
+  setSize(new Dimension(650,650));
 }
