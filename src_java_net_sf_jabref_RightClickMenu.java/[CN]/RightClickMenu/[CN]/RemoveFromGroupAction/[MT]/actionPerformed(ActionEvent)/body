@@ -1,3 +1,9 @@
 {
-  m_group.removeSelection(panel);
+  AbstractUndoableEdit undo=m_node.getGroup().removeSelection(panel);
+  if (undo == null)   return;
+  panel.undoManager.addEdit(undo);
+  panel.refreshTable();
+  panel.markBaseChanged();
+  panel.updateEntryEditorIfShowing();
+  panel.updateViewToSelected();
 }
