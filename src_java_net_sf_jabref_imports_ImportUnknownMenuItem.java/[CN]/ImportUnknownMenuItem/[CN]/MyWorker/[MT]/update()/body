@@ -1,0 +1,13 @@
+{
+  if (!fileOk)   return;
+  if (entries != null) {
+    frame.addBibEntries(entries,filename,openInNew);
+    frame.output(Globals.lang("Imported entries") + ": " + entries.size()+ "  "+ Globals.lang("Format used")+ ": "+ formatName);
+  }
+ else   if (bibtexResult != null) {
+    frame.addTab(bibtexResult.getDatabase(),bibtexResult.getFile(),bibtexResult.getMetaData(),true);
+    frame.output(Globals.lang("Opened database") + " '" + filename+ "' "+ Globals.lang("with")+ " "+ bibtexResult.getDatabase().getEntryCount()+ " "+ Globals.lang("entries")+ ".");
+  }
+ else   frame.output(Globals.lang("Could not find a suitable import format."));
+  frame.unblock();
+}

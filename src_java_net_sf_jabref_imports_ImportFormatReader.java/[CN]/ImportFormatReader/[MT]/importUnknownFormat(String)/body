@@ -1,11 +1,12 @@
 {
-  List entryList=null;
+  Object entryList=null;
   String usedFormat=null;
   int bestResult=0;
   for (Iterator i=getImportFormats().iterator(); i.hasNext(); ) {
     ImportFormat imFo=(ImportFormat)((Map.Entry)i.next()).getValue();
     try {
       List entries=importFromFile(imFo,filename);
+      if (entries != null)       purgeEmptyEntries(entries);
       int entryCount=(entries != null ? entries.size() : 0);
       if (entryCount > bestResult) {
         bestResult=entryCount;
@@ -14,6 +15,13 @@
       }
     }
  catch (    IOException ex) {
+    }
+  }
+  if (entryList == null) {
+    ParserResult pr=loadDatabase(new File(filename),Globals.prefs.get("defaultEncoding"));
+    if ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0)) {
+      entryList=pr;
+      usedFormat="BibTeX";
     }
   }
   return new Object[]{usedFormat,entryList};
