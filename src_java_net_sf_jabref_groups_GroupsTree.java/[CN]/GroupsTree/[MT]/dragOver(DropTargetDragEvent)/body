@@ -1,4 +1,13 @@
 {
-  Rectangle r=new Rectangle(dtde.getLocation().x - dragScrollActivationMargin,dtde.getLocation().y - dragScrollActivationMargin,1 + 2 * dragScrollActivationMargin,1 + 2 * dragScrollActivationMargin);
+  Rectangle r=getVisibleRect();
+  Point cursor=dtde.getLocation();
+  boolean scrollUp=cursor.y - r.y < dragScrollActivationMargin;
+  boolean scrollDown=r.y + r.height - cursor.y < dragScrollActivationMargin;
+  boolean scrollLeft=cursor.x - r.x < dragScrollActivationMargin;
+  boolean scrollRight=r.x + r.width - cursor.x < dragScrollActivationMargin;
+  if (scrollUp)   r.translate(0,-dragScrollDistance);
+ else   if (scrollDown)   r.translate(0,+dragScrollDistance);
+  if (scrollLeft)   r.translate(-dragScrollDistance,0);
+ else   if (scrollRight)   r.translate(+dragScrollDistance,0);
   scrollRectToVisible(r);
 }
