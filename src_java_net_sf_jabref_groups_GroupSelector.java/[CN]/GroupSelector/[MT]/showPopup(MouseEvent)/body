@@ -6,8 +6,10 @@
   AbstractGroup group=node.getGroup();
   if (group instanceof AllEntriesGroup) {
     editGroupAction.setEnabled(false);
+    addGroupAction.setEnabled(false);
     removeGroupAndSubgroupsAction.setEnabled(false);
     removeGroupKeepSubgroupsAction.setEnabled(false);
+    moveSubmenu.setEnabled(false);
     moveNodeUp.setEnabled(false);
     moveNodeDown.setEnabled(false);
     moveNodeLeft.setEnabled(false);
@@ -15,12 +17,14 @@
   }
  else {
     editGroupAction.setEnabled(true);
+    addGroupAction.setEnabled(true);
     removeGroupAndSubgroupsAction.setEnabled(true);
     removeGroupKeepSubgroupsAction.setEnabled(true);
     moveNodeUp.setEnabled(node.getPreviousSibling() != null);
     moveNodeDown.setEnabled(node.getNextSibling() != null);
     moveNodeLeft.setEnabled(node.getParent() != groupsRoot);
     moveNodeRight.setEnabled(node.getPreviousSibling() != null);
+    moveSubmenu.setEnabled(moveNodeUp.isEnabled() || moveNodeDown.isEnabled() || moveNodeLeft.isEnabled()|| moveNodeRight.isEnabled());
   }
   groupsContextMenu.show(groupsTree,e.getPoint().x,e.getPoint().y);
 }
