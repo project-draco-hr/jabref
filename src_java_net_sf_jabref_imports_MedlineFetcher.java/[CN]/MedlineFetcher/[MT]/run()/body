@@ -3,40 +3,45 @@
   Pattern p1=Pattern.compile("\\d+[,\\d+]*"), p2=Pattern.compile(".+[,.+]*");
   Matcher m1=p1.matcher(idList), m2=p2.matcher(idList);
   if (m1.matches()) {
+    panel.frame().output(Globals.lang("Fetching Medline by id ..."));
+    idList=tf.getText().replace(';',',');
     fetchById();
+    System.out.println("Fetch by id");
   }
  else   if (m2.matches()) {
-    panel.frame().output(Globals.lang("Fetching Medline by author..."));
-    idList=setupTerm(idList);
-    String[] idListArray=getIds(idList);
-    if (idListArray.length > 0) {
-      authorDialog=new AuthorDialog(jFrame,this,idListArray);
-    }
-    ArrayList bibs=fetchMedline(idList);
-    if ((bibs != null) && (bibs.size() > 0)) {
-      tf.setText("");
-      NamedCompound ce=new NamedCompound("fetch Medline");
-      Iterator i=bibs.iterator();
-      while (i.hasNext()) {
-        try {
-          BibtexEntry be=(BibtexEntry)i.next();
-          String id=Util.createId(be.getType(),panel.database());
-          be.setId(id);
-          panel.database().insertEntry(be);
-          ce.addEdit(new UndoableInsertEntry(panel.database(),be,panel));
+    panel.frame().output(Globals.lang("Fetching Medline by term ..."));
+    String searchTerm=setupTerm(idList);
+    SearchResult result=getIds(searchTerm,0,1);
+    String question=new String("Found ") + Integer.toString(result.count) + new String(" references. Retrieve references")+ new String(" from 1 through");
+    String strCount=JOptionPane.showInputDialog(question,Integer.toString(result.count));
+    if (strCount == "")     return;
+    int count=Integer.parseInt(strCount);
+    for (int jj=0; jj < count; jj+=PACING) {
+      result=getIds(searchTerm,jj,PACING);
+      System.out.println("fetching: " + result.ids);
+      ArrayList bibs=fetchMedline(result.ids);
+      if ((bibs != null) && (bibs.size() > 0)) {
+        tf.setText("");
+        NamedCompound ce=new NamedCompound("fetch Medline");
+        Iterator i=bibs.iterator();
+        while (i.hasNext()) {
+          try {
+            BibtexEntry be=(BibtexEntry)i.next();
+            String id=Util.createId(be.getType(),panel.database());
+            be.setId(id);
+            panel.database().insertEntry(be);
+            ce.addEdit(new UndoableInsertEntry(panel.database(),be,panel));
+          }
+ catch (          KeyCollisionException ex) {
+          }
         }
- catch (        KeyCollisionException ex) {
-        }
+        ce.end();
+        panel.output(Globals.lang("Medline entries fetched") + ": " + bibs.size());
+        panel.undoManager.addEdit(ce);
+        panel.markBaseChanged();
+        panel.refreshTable();
       }
-      ce.end();
-      panel.output(Globals.lang("Medline entries fetched") + ": " + bibs.size());
-      panel.undoManager.addEdit(ce);
-      panel.markBaseChanged();
-      panel.refreshTable();
+ else       panel.output(Globals.lang("No Medline entries found."));
     }
- else     panel.output(Globals.lang("No Medline entries found."));
-  }
- else {
-    JOptionPane.showMessageDialog(panel.frame(),Globals.lang("Please enter a semicolon or comma separated list of Medline IDs (numbers)."),Globals.lang("Input error"),JOptionPane.ERROR_MESSAGE);
   }
 }
