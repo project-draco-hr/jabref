@@ -5,9 +5,14 @@
     if (orderedData.size() > 0) {
       out.write("@comment{" + GUIGlobals.META_FLAG + key+ ":");
       for (int j=0; j < orderedData.size(); j++) {
-        out.write(makeEscape((String)orderedData.elementAt(j)) + ";");
+        out.write(Util.quote((String)orderedData.elementAt(j),";",'\\') + ";");
       }
       out.write("}\n\n");
     }
+  }
+  if (groupsRoot != null && groupsRoot.getChildCount() > 0) {
+    out.write("@comment{" + GUIGlobals.META_FLAG + "groupstree:");
+    out.write(Util.quote(groupsRoot.toString(),";",'\\'));
+    out.write("}\n\n");
   }
 }

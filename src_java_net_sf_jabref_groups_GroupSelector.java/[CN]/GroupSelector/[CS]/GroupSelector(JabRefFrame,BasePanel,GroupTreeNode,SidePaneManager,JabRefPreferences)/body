@@ -1,0 +1,189 @@
+{
+  super(manager);
+  this.prefs=prefs;
+  this.groupsRoot=groupsRoot;
+  final JabRefPreferences _prefs=prefs;
+  final BasePanel basePanel=panel;
+  this.manager=manager;
+  this.frame=frame;
+  this.panel=panel;
+  floatCb.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      _prefs.putBoolean("groupFloatSelections",floatCb.isSelected());
+    }
+  }
+);
+  andCb.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      _prefs.putBoolean("groupIntersectSelections",andCb.isSelected());
+    }
+  }
+);
+  invCb.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      _prefs.putBoolean("groupInvertSelections",invCb.isSelected());
+    }
+  }
+);
+  select.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      _prefs.putBoolean("groupSelectMatches",select.isSelected());
+    }
+  }
+);
+  if (prefs.getBoolean("groupFloatSelections")) {
+    floatCb.setSelected(true);
+    highlCb.setSelected(false);
+  }
+ else {
+    highlCb.setSelected(true);
+    floatCb.setSelected(false);
+  }
+  if (prefs.getBoolean("groupIntersectSelections")) {
+    andCb.setSelected(true);
+    orCb.setSelected(false);
+  }
+ else {
+    orCb.setSelected(true);
+    andCb.setSelected(false);
+  }
+  invCb.setSelected(prefs.getBoolean("groupInvertSelections"));
+  select.setSelected(prefs.getBoolean("groupSelectMatches"));
+  openset.setMargin(new Insets(0,0,0,0));
+  settings.add(andCb);
+  settings.add(orCb);
+  settings.addSeparator();
+  settings.add(invCb);
+  settings.addSeparator();
+  settings.add(highlCb);
+  settings.add(floatCb);
+  settings.addSeparator();
+  settings.add(select);
+  settings.addSeparator();
+  openset.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      if (settings.isVisible()) {
+      }
+ else {
+        JButton src=(JButton)e.getSource();
+        settings.show(src,0,openset.getHeight());
+      }
+    }
+  }
+);
+  expand.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      int i=_prefs.getInt("groupsVisibleRows") + 1;
+      groupsTree.setVisibleRowCount(i);
+      groupsTree.revalidate();
+      groupsTree.repaint();
+      GroupSelector.this.revalidate();
+      GroupSelector.this.repaint();
+      _prefs.putInt("groupsVisibleRows",i);
+    }
+  }
+);
+  reduce.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      int i=_prefs.getInt("groupsVisibleRows") - 1;
+      if (i < 1)       i=1;
+      groupsTree.setVisibleRowCount(i);
+      groupsTree.revalidate();
+      groupsTree.repaint();
+      GroupSelector.this.revalidate();
+      GroupSelector.this.repaint();
+      _prefs.putInt("groupsVisibleRows",i);
+    }
+  }
+);
+  Dimension butDim=new Dimension(20,20);
+  Dimension butDim2=new Dimension(40,20);
+  openset.setPreferredSize(butDim2);
+  expand.setPreferredSize(butDim);
+  reduce.setPreferredSize(butDim);
+  Insets butIns=new Insets(0,0,0,0);
+  reduce.setMargin(butIns);
+  expand.setMargin(butIns);
+  openset.setMargin(butIns);
+  newButton.addActionListener(this);
+  refresh.addActionListener(this);
+  andCb.addActionListener(this);
+  orCb.addActionListener(this);
+  invCb.addActionListener(this);
+  autoGroup.addActionListener(this);
+  newButton.setToolTipText(Globals.lang("New group"));
+  refresh.setToolTipText(Globals.lang("Refresh view"));
+  andCb.setToolTipText(Globals.lang("Display only entries belonging to all selected" + " groups."));
+  orCb.setToolTipText(Globals.lang("Display all entries belonging to one or more " + "of the selected groups."));
+  autoGroup.setToolTipText(Globals.lang("Automatically create groups for database."));
+  invCb.setToolTipText(Globals.lang("Show entries *not* in group selection"));
+  floatCb.setToolTipText(Globals.lang("Move entries in group selection to the top"));
+  highlCb.setToolTipText(Globals.lang("Gray out entries not in group selection"));
+  select.setToolTipText(Globals.lang("Select entries in group selection"));
+  expand.setToolTipText(Globals.lang("Show one more row"));
+  reduce.setToolTipText(Globals.lang("Show one less rows"));
+  bgr.add(andCb);
+  bgr.add(orCb);
+  visMode.add(floatCb);
+  visMode.add(highlCb);
+  setLayout(gbl);
+  SidePaneHeader header=new SidePaneHeader("Groups",GUIGlobals.groupsIconFile,this);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.fill=GridBagConstraints.BOTH;
+  con.insets=new Insets(0,0,2,0);
+  con.weightx=1;
+  gbl.setConstraints(header,con);
+  add(header);
+  con.gridwidth=1;
+  con.insets=new Insets(0,0,0,0);
+  gbl.setConstraints(newButton,con);
+  add(newButton);
+  gbl.setConstraints(refresh,con);
+  add(refresh);
+  gbl.setConstraints(autoGroup,con);
+  add(autoGroup);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  HelpAction helpAction=new HelpAction(frame.helpDiag,GUIGlobals.groupsHelp,"Help on groups");
+  helpButton.addActionListener(helpAction);
+  helpButton.setToolTipText(Globals.lang("Help on groups"));
+  gbl.setConstraints(helpButton,con);
+  add(helpButton);
+  groupsTree=new JTree();
+  groupsTree.setShowsRootHandles(true);
+  groupsTree.setCellRenderer(new GroupTreeCellRenderer());
+  groupsTree.setToggleClickCount(0);
+  groupsTree.addTreeSelectionListener(this);
+  ToolTipManager.sharedInstance().registerComponent(groupsTree);
+  DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(groupsTree,DnDConstants.ACTION_MOVE,new DragGestureListener(){
+    public void dragGestureRecognized(    DragGestureEvent dge){
+      System.out.println(dge);
+    }
+  }
+);
+  groupsTree.setVisibleRowCount(prefs.getInt("groupsVisibleRows"));
+  groupsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+  groupsTree.setModel(groupsTreeModel=new DefaultTreeModel(groupsRoot));
+  sp=new JScrollPane(groupsTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  revalidateGroups();
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.weighty=1;
+  gbl.setConstraints(sp,con);
+  add(sp);
+  JPanel pan=new JPanel();
+  GridBagLayout gb=new GridBagLayout();
+  con.weighty=0;
+  gbl.setConstraints(pan,con);
+  pan.setLayout(gb);
+  con.weightx=1;
+  con.gridwidth=1;
+  gb.setConstraints(openset,con);
+  pan.add(openset);
+  con.weightx=0;
+  gb.setConstraints(expand,con);
+  pan.add(expand);
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  gb.setConstraints(reduce,con);
+  pan.add(reduce);
+  add(pan);
+  definePopup();
+}

@@ -1,0 +1,19 @@
+{
+  TreePath[] selection=groupsTree.getSelectionPaths();
+  if (selection == null || selection.length == 0 || (selection.length == 1 && ((GroupTreeNode)selection[0].getLastPathComponent()).getGroup() instanceof AllEntriesGroup)) {
+    panel.stopShowingGroup();
+    frame.output(Globals.lang("Displaying no groups") + ".");
+    return;
+  }
+  AndOrSearchRuleSet searchRules=new AndOrSearchRuleSet(andCb.isSelected(),invCb.isSelected());
+  AbstractGroup group;
+  for (int i=0; i < selection.length; ++i) {
+    group=((GroupTreeNode)selection[i].getLastPathComponent()).getGroup();
+    searchRules.addRule(group.getSearchRule());
+  }
+  Hashtable searchOptions=new Hashtable();
+  searchOptions.put("option","dummy");
+  DatabaseSearch search=new DatabaseSearch(searchOptions,searchRules,panel,Globals.GROUPSEARCH,floatCb.isSelected(),true,select.isSelected());
+  search.start();
+  frame.output(Globals.lang("Updated group selection") + ".");
+}

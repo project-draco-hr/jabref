@@ -1,0 +1,30 @@
+{
+  int score=0;
+  int counter=0;
+  Iterator e=searchStrings.values().iterator();
+  String searchString=(String)e.next();
+  String upperString=null;
+  try {
+    upperString=searchString.substring(0,1).toUpperCase() + searchString.substring(1).toLowerCase();
+  }
+ catch (  Throwable t) {
+    System.err.println(t);
+    upperString=searchString;
+  }
+  if (prefs.getBoolean("caseSensitiveSearch")) {
+    score+=doSearch(searchString,bibtexEntry);
+  }
+ else {
+    score+=doSearch(searchString,bibtexEntry);
+    if (!searchString.equals(searchString.toLowerCase())) {
+      score+=doSearch(searchString.toLowerCase(),bibtexEntry);
+    }
+    if (!searchString.equals(searchString.toUpperCase())) {
+      score+=doSearch(searchString.toUpperCase(),bibtexEntry);
+    }
+    if (!searchString.equals(upperString)) {
+      score+=doSearch(upperString,bibtexEntry);
+    }
+  }
+  return score;
+}

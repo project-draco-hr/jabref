@@ -1,0 +1,34 @@
+{
+  if (!supportsAdd()) {
+    basePanel.output("The group \"" + getName() + "\" does not support the adding of entries.");
+    return;
+  }
+  for (int i=0; i < GUIGlobals.ALL_FIELDS.length; ++i) {
+    if (m_searchField.equals(GUIGlobals.ALL_FIELDS[i]) && !m_searchField.equals("keywords")) {
+      if (!showWarningDialog(basePanel))       return;
+    }
+  }
+  BibtexEntry[] bes=basePanel.getSelectedEntries();
+  if ((bes != null) && (bes.length > 0)) {
+    NamedCompound ce=new NamedCompound("add to group");
+    boolean hasEdits=false;
+    for (int i=0; i < bes.length; i++) {
+      if (applyRule(null,bes[i]) == 0) {
+        String oldContent=(String)bes[i].getField(m_searchField), pre=" ", post="";
+        String newContent=(oldContent == null ? "" : oldContent + pre) + m_searchExpression + post;
+        bes[i].setField(m_searchField,newContent);
+        ce.addEdit(new UndoableFieldChange(bes[i],m_searchField,oldContent,newContent));
+        hasEdits=true;
+      }
+    }
+    if (hasEdits) {
+      ce.end();
+      basePanel.undoManager.addEdit(ce);
+      basePanel.refreshTable();
+      basePanel.markBaseChanged();
+      basePanel.updateEntryEditorIfShowing();
+      basePanel.updateViewToSelected();
+    }
+    basePanel.output("Appended '" + m_searchExpression + "' to the '"+ m_searchField+ "' field of "+ bes.length+ " entr"+ (bes.length > 1 ? "ies." : "y."));
+  }
+}

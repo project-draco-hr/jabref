@@ -1,25 +1,26 @@
 {
   if (e.getSource() == refresh) {
-    valueChanged(new ListSelectionEvent(list,1,2,false));
+    valueChanged(null);
   }
-  if (e.getSource() == newButton) {
-    GroupDialog gd=new GroupDialog(frame,groups,-1,prefs.get("groupsDefaultField"));
+ else   if (e.getSource() == newButton) {
+    GroupDialog gd=new GroupDialog(frame,null);
     gd.show();
     if (gd.okPressed()) {
-      revalidateList((gd.index() - OFFSET) / DIM + 1);
-      int index=gd.index();
-      panel.undoManager.addEdit(new UndoableAddOrRemoveGroup(this,groups,index,true,(String)groups.elementAt(index),(String)groups.elementAt(index + 1),(String)groups.elementAt(index + 2)));
+      AbstractGroup newGroup=gd.getResultingGroup();
+      GroupTreeNode newNode=new GroupTreeNode(newGroup);
+      groupsRoot.add(newNode);
+      revalidateGroups(groupsTree.getSelectionPaths());
+      UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(GroupSelector.this,groupsRoot,newNode,UndoableAddOrRemoveGroup.ADD_NODE);
+      panel.undoManager.addEdit(undo);
       panel.markBaseChanged();
-      frame.output(Globals.lang("Created group") + " '" + gd.name()+ "'.");
+      frame.output(Globals.lang("Created group") + " '" + newGroup.getName()+ "'.");
     }
   }
-  if (e.getSource() == autoGroup) {
-    AutoGroupDialog gd=new AutoGroupDialog(frame,panel,this,groups,prefs.get("groupsDefaultField")," .,",",");
+ else   if (e.getSource() == autoGroup) {
+    AutoGroupDialog gd=new AutoGroupDialog(frame,panel,GroupSelector.this,groupsRoot,prefs.get("groupsDefaultField")," .,",",");
     gd.show();
-    if (gd.okPressed()) {
-    }
   }
  else   if (e.getSource() instanceof JCheckBox) {
-    valueChanged(new ListSelectionEvent(list,1,2,false));
+    valueChanged(null);
   }
 }

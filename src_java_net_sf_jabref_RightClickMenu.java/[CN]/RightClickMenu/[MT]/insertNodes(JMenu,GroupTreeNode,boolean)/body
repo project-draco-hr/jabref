@@ -1,0 +1,14 @@
+{
+  AbstractAction action=getAction(node,add);
+  if (node.getChildCount() == 0) {
+    menu.add(action);
+    return;
+  }
+  JMenu submenu=new JMenu("[" + node.getGroup().getName() + "]");
+  submenu.add(action);
+  submenu.add(new Separator());
+  for (int i=0; i < node.getChildCount(); ++i) {
+    insertNodes(submenu,(GroupTreeNode)node.getChildAt(i),add);
+  }
+  menu.add(submenu);
+}

@@ -1,18 +1,16 @@
 {
-  if (metaData.getData("groups") != null) {
-    panel.groupSelector=new GroupSelector(frame,panel,metaData.getData("groups"),this,prefs);
+  if (metaData.getGroups() != null) {
+    panel.groupSelector=new GroupSelector(frame,panel,metaData.getGroups(),this,prefs);
     register("groups",panel.groupSelector);
     if (prefs.getBoolean("groupSelectorVisible"))     ensureVisible("groups");
   }
  else {
-    Vector v=new Vector();
-    metaData.putData("groups",v);
-    panel.groupSelector=new GroupSelector(frame,panel,v,this,prefs);
+    GroupTreeNode newGroupsRoot=new GroupTreeNode(new AllEntriesGroup());
+    metaData.setGroups(newGroupsRoot);
+    panel.groupSelector=new GroupSelector(frame,panel,newGroupsRoot,this,prefs);
     register("groups",panel.groupSelector);
   }
   updateView();
-  if (components.size() > 0) {
-    sidep.setVisible(true);
-  }
+  if (components.size() > 0)   sidep.setVisible(true);
  else   sidep.setVisible(false);
 }

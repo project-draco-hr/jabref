@@ -1,47 +1,29 @@
 {
-  gropt.add(modifyAction);
-  gropt.add(new AbstractAction(Globals.lang("Remove")){
-    public void actionPerformed(    ActionEvent e){
-      String gname=(String)groups.elementAt(OFFSET + DIM * (list.getSelectedIndex() - 1) + 1);
-      int conf=JOptionPane.showConfirmDialog(frame,Globals.lang("Remove group") + " '" + gname+ "'?",Globals.lang("Remove group"),JOptionPane.YES_NO_OPTION);
-      if (conf == JOptionPane.YES_OPTION) {
-        try {
-          int index=OFFSET + DIM * (list.getSelectedIndex() - 1);
-          String field=(String)groups.elementAt(index), name=(String)groups.elementAt(index + 1), regexp=(String)groups.elementAt(index + 2);
-          for (int i=0; i < DIM; i++) {
-            groups.removeElementAt(index);
-          }
-          revalidateList();
-          panel.undoManager.addEdit(new UndoableAddOrRemoveGroup(ths,groups,index,false,field,name,regexp));
-          panel.markBaseChanged();
-          frame.output(Globals.lang("Removed group") + " '" + name+ "'.");
-        }
- catch (        ArrayIndexOutOfBoundsException ex) {
-          System.err.println(Globals.lang("Unexpected error when " + "trying to remove group."));
-        }
-      }
-    }
-  }
-);
-  list.addMouseListener(new MouseAdapter(){
+  groupsContextMenu.add(addGroupAction);
+  groupsContextMenu.add(addSubgroupAction);
+  groupsContextMenu.add(editGroupAction);
+  groupsContextMenu.add(removeGroupAndSubgroupsAction);
+  groupsContextMenu.add(removeGroupKeepSubgroupsAction);
+  JMenu menu=new JMenu("Move");
+  groupsContextMenu.add(menu);
+  menu.add(moveNodeUp);
+  menu.add(moveNodeDown);
+  menu.add(moveNodeLeft);
+  menu.add(moveNodeRight);
+  groupsTree.addMouseListener(new MouseAdapter(){
     public void mousePressed(    MouseEvent e){
-      int index=list.locationToIndex(e.getPoint());
-      if (index == 0) {
-        list.setSelectedIndex(0);
-      }
+      if (e.isPopupTrigger())       showPopup(e);
+    }
+    public void mouseReleased(    MouseEvent e){
+      if (e.isPopupTrigger())       showPopup(e);
     }
     public void mouseClicked(    MouseEvent e){
-      int index=list.locationToIndex(e.getPoint());
-      if ((e.getButton() == MouseEvent.BUTTON3) || (prefs.getBoolean("ctrlClick") && (e.getButton() == MouseEvent.BUTTON1) && e.isControlDown())) {
-        if ((index > 0) && (index < list.getModel().getSize())) {
-          list.setSelectedIndex(index);
-          gropt.show(list,e.getPoint().x,list.indexToLocation(index).y);
-        }
-      }
- else {
-        if ((index > 0) && (e.getClickCount() == 2)) {
-          modifyAction.actionPerformed(new ActionEvent(list,0,"Modify"));
-        }
+      TreePath path=groupsTree.getPathForLocation(e.getPoint().x,e.getPoint().y);
+      if (path == null)       return;
+      GroupTreeNode node=(GroupTreeNode)path.getLastPathComponent();
+      if (node.isRoot())       return;
+      if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+        editGroupAction.actionPerformed(null);
       }
     }
   }

@@ -1,11 +1,38 @@
 {
-  if (add) {
-    groups.add(index,regexp);
-    groups.add(index,name);
-    groups.add(index,field);
-  }
+  GroupTreeNode cursor=m_groupsRootHandle;
+  final int childIndex=m_pathToNode[m_pathToNode.length - 1];
+  for (int i=0; i < m_pathToNode.length - 1; ++i)   cursor=(GroupTreeNode)cursor.getChildAt(m_pathToNode[i]);
+  if (undo) {
+switch (m_editType) {
+case ADD_NODE:
+      cursor.remove(childIndex);
+    break;
+case REMOVE_NODE_KEEP_CHILDREN:
+  GroupTreeNode newNode=m_subtreeBackup.deepCopy();
+for (int i=childIndex; i < childIndex + m_subtreeRootChildCount; ++i) {
+  newNode.add((GroupTreeNode)cursor.getChildAt(i));
+}
+cursor.insert(m_subtreeBackup.deepCopy(),childIndex);
+break;
+case REMOVE_NODE_AND_CHILDREN:
+cursor.insert(m_subtreeBackup.deepCopy(),childIndex);
+break;
+}
+}
  else {
-    for (int i=0; i < GroupSelector.DIM; i++)     groups.removeElementAt(index);
-  }
-  if (revalidate)   gs.revalidateList();
+switch (m_editType) {
+case ADD_NODE:
+cursor.insert(m_subtreeBackup.deepCopy(),childIndex);
+break;
+case REMOVE_NODE_KEEP_CHILDREN:
+GroupTreeNode removedNode=(GroupTreeNode)cursor.getChildAt(childIndex);
+cursor.remove(childIndex);
+while (removedNode.getChildCount() > 0) cursor.insert((GroupTreeNode)removedNode.getFirstChild(),childIndex);
+break;
+case REMOVE_NODE_AND_CHILDREN:
+cursor.remove(childIndex);
+break;
+}
+}
+if (m_revalidate) m_groupSelector.revalidateGroups();
 }

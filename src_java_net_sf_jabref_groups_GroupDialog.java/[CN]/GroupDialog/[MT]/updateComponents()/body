@@ -1,0 +1,41 @@
+{
+  boolean okEnabled=m_name.getText().trim().length() > 0;
+  String s;
+switch (m_typeSelector.getSelectedIndex()) {
+case INDEX_KEYWORDGROUP:
+    s=m_searchField.getText().trim();
+  okEnabled=okEnabled && s.length() > 0 && s.indexOf(' ') < 0;
+s=m_kgSearchExpression.getText().trim();
+okEnabled=okEnabled && s.length() > 0;
+try {
+Pattern.compile(s);
+}
+ catch (Exception e) {
+okEnabled=false;
+}
+break;
+case INDEX_SEARCHGROUP:
+s=m_sgSearchExpression.getText().trim();
+okEnabled=okEnabled & s.length() > 0;
+m_parser=new SearchExpressionParser(new SearchExpressionLexer(new StringReader(s)));
+m_parser.caseSensitive=m_caseSensitive.isSelected();
+m_parser.regex=m_isRegExp.isSelected();
+boolean advancedSearch=false;
+try {
+m_parser.searchExpression();
+advancedSearch=true;
+}
+ catch (Exception e) {
+}
+m_searchType.setText(advancedSearch ? "Advanced Search" : "Plaintext Search");
+m_searchAllFields.setEnabled(!advancedSearch);
+m_searchRequiredFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
+m_searchOptionalFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
+m_searchGeneralFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
+validate();
+break;
+case INDEX_EXPLICITGROUP:
+break;
+}
+m_ok.setEnabled(okEnabled);
+}

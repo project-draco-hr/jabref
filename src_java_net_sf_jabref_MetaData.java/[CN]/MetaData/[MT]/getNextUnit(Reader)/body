@@ -1,26 +1,22 @@
 {
   int c;
-  boolean escape=false, done=false;
+  boolean escape=false;
   StringBuffer res=new StringBuffer();
-  while (!done && ((c=data.read()) != -1)) {
-    if (c == '\\') {
-      if (!escape)       escape=true;
- else {
-        escape=false;
-        res.append('\\');
-      }
+  while ((c=reader.read()) != -1) {
+    if (escape) {
+      res.append((char)c);
+      escape=false;
+    }
+ else     if (c == '\\') {
+      escape=true;
+    }
+ else     if (c == ';') {
+      break;
     }
  else {
-      if (c == ';') {
-        if (!escape)         done=true;
- else         res.append(';');
-      }
- else {
-        res.append((char)c);
-      }
-      escape=false;
+      res.append((char)c);
     }
   }
   if (res.length() > 0)   return res.toString();
- else   return null;
+  return null;
 }

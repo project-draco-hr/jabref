@@ -498,10 +498,11 @@ catch (            Throwable ex) {
             }
           }
           if (importGroups) {
-            Vector newGroups=meta.getData("groups");
+            GroupTreeNode newGroups=meta.getGroups();
             if (newGroups != null) {
+              if (newGroups.getGroup() instanceof AllEntriesGroup)               newGroups.setGroup(new ExplicitGroup("Imported Groups"));
               groupSelector.addGroups(newGroups,ce);
-              groupSelector.revalidateList();
+              groupSelector.revalidateGroups();
             }
           }
           if (importSelectorWords) {

@@ -1,0 +1,155 @@
+{
+  super(jabrefFrame,Globals.lang("Edit group"),true);
+  m_parent=jabrefFrame;
+  m_searchField.setText(jabrefFrame.prefs().get("groupsDefaultField"));
+  m_types.addElement("Keywords");
+  m_types.addElement("Search Expression");
+  m_types.addElement("Explicit");
+  m_typeSelector.setModel(m_types);
+  m_mainPanel=new JPanelYBoxPreferredWidth();
+  JPanel namePanel=new JPanelXBoxPreferredHeight();
+  namePanel.add(m_nameLabel);
+  namePanel.add(Box.createHorizontalGlue());
+  namePanel.add(new JPanelXBoxPreferredSize(m_name));
+  JPanel typePanel=new JPanelXBoxPreferredHeight();
+  typePanel.add(m_typeLabel);
+  typePanel.add(Box.createHorizontalGlue());
+  typePanel.add(new JPanelXBoxPreferredSize(m_typeSelector));
+  m_keywordGroupPanel=new JPanelYBox();
+  JPanel kgField=new JPanelXBoxPreferredHeight();
+  kgField.add(m_searchFieldLabel);
+  kgField.add(Box.createHorizontalGlue());
+  kgField.add(new JPanelXBoxPreferredSize(m_searchField));
+  JPanel kgExpression=new JPanelXBoxPreferredHeight();
+  kgExpression.add(m_keywordLabel);
+  kgExpression.add(Box.createHorizontalGlue());
+  kgExpression.add(new JPanelXBoxPreferredSize(m_kgSearchExpression));
+  m_keywordGroupPanel.add(kgField);
+  m_keywordGroupPanel.add(kgExpression);
+  m_keywordGroupPanel.add(Box.createVerticalGlue());
+  m_searchGroupPanel=new JPanelYBox();
+  JPanel sgExpression=new JPanelXBoxPreferredHeight();
+  sgExpression.add(m_searchExpressionLabel);
+  sgExpression.add(Box.createHorizontalGlue());
+  sgExpression.add(new JPanelXBoxPreferredSize(m_sgSearchExpression));
+  JPanel sgSearchType=new JPanelXBoxPreferredHeight(m_searchType);
+  sgSearchType.add(Box.createHorizontalGlue());
+  JPanel sgCaseSensitive=new JPanelXBoxPreferredHeight(m_caseSensitive);
+  JPanel sgRegExp=new JPanelXBoxPreferredHeight(m_isRegExp);
+  JPanel sgAll=new JPanelXBoxPreferredHeight(m_searchAllFields);
+  JPanel sgReq=new JPanelXBoxPreferredHeight(m_searchRequiredFields);
+  JPanel sgOpt=new JPanelXBoxPreferredHeight(m_searchOptionalFields);
+  JPanel sgGen=new JPanelXBoxPreferredHeight(m_searchGeneralFields);
+  sgCaseSensitive.add(Box.createHorizontalGlue());
+  sgRegExp.add(Box.createHorizontalGlue());
+  sgAll.add(Box.createHorizontalGlue());
+  sgReq.add(Box.createHorizontalGlue());
+  sgOpt.add(Box.createHorizontalGlue());
+  sgGen.add(Box.createHorizontalGlue());
+  m_searchGroupPanel.add(sgExpression);
+  m_searchGroupPanel.add(sgSearchType);
+  m_searchGroupPanel.add(sgCaseSensitive);
+  m_searchGroupPanel.add(sgRegExp);
+  m_searchGroupPanel.add(sgAll);
+  m_searchGroupPanel.add(sgReq);
+  m_searchGroupPanel.add(sgOpt);
+  m_searchGroupPanel.add(sgGen);
+  m_searchGroupPanel.add(Box.createVerticalGlue());
+  m_mainPanel.add(namePanel);
+  m_mainPanel.add(typePanel);
+  JPanel buttons=new JPanelXBoxPreferredHeight();
+  buttons.add(m_ok);
+  buttons.add(Box.createHorizontalStrut(5));
+  buttons.add(m_cancel);
+  Container cp=getContentPane();
+  cp.setLayout(new BoxLayout(cp,BoxLayout.Y_AXIS));
+  cp.add(m_mainPanel);
+  cp.add(Box.createVerticalGlue());
+  cp.add(buttons);
+  m_typeSelector.addItemListener(new ItemListener(){
+    public void itemStateChanged(    ItemEvent e){
+      setLayoutForGroup(m_typeSelector.getSelectedIndex());
+      updateComponents();
+    }
+  }
+);
+  m_cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+  m_ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      m_okPressed=true;
+switch (m_typeSelector.getSelectedIndex()) {
+case INDEX_EXPLICITGROUP:
+        m_resultingGroup=new ExplicitGroup(m_name.getText().trim());
+      break;
+case INDEX_KEYWORDGROUP:
+    m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_searchField.getText().trim(),m_kgSearchExpression.getText().trim());
+  break;
+case INDEX_SEARCHGROUP:
+try {
+  m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),m_caseSensitive.isSelected(),m_isRegExp.isSelected(),m_searchAllFields.isSelected(),m_searchRequiredFields.isSelected(),m_searchOptionalFields.isSelected(),m_searchGeneralFields.isSelected());
+}
+ catch (Exception e1) {
+}
+break;
+}
+dispose();
+}
+}
+);
+CaretListener caretListener=new CaretListener(){
+public void caretUpdate(CaretEvent e){
+updateComponents();
+}
+}
+;
+ItemListener itemListener=new ItemListener(){
+public void itemStateChanged(ItemEvent e){
+updateComponents();
+}
+}
+;
+m_name.addCaretListener(caretListener);
+m_searchField.addCaretListener(caretListener);
+m_kgSearchExpression.addCaretListener(caretListener);
+m_sgSearchExpression.addCaretListener(caretListener);
+m_isRegExp.addItemListener(itemListener);
+m_caseSensitive.addItemListener(itemListener);
+m_searchAllFields.addItemListener(itemListener);
+m_searchRequiredFields.addItemListener(itemListener);
+m_searchOptionalFields.addItemListener(itemListener);
+m_searchGeneralFields.addItemListener(itemListener);
+if (editedGroup instanceof KeywordGroup) {
+KeywordGroup group=(KeywordGroup)editedGroup;
+m_name.setText(group.getName());
+m_searchField.setText(group.getSearchField());
+m_kgSearchExpression.setText(group.getSearchExpression());
+m_typeSelector.setSelectedIndex(INDEX_KEYWORDGROUP);
+}
+ else if (editedGroup instanceof SearchGroup) {
+SearchGroup group=(SearchGroup)editedGroup;
+m_name.setText(group.getName());
+m_sgSearchExpression.setText(group.getSearchExpression());
+m_caseSensitive.setSelected(group.isCaseSensitive());
+m_isRegExp.setSelected(group.isRegExp());
+m_searchAllFields.setSelected(group.searchAllFields());
+m_searchRequiredFields.setSelected(group.searchRequiredFields());
+m_searchOptionalFields.setSelected(group.searchOptionalFields());
+m_searchGeneralFields.setSelected(group.searchGeneralFields());
+m_typeSelector.setSelectedIndex(INDEX_SEARCHGROUP);
+}
+ else if (editedGroup instanceof ExplicitGroup) {
+m_name.setText(editedGroup.getName());
+m_typeSelector.setSelectedIndex(INDEX_EXPLICITGROUP);
+}
+pack();
+setSize(350,300);
+setResizable(false);
+updateComponents();
+setLayoutForGroup(m_typeSelector.getSelectedIndex());
+Util.placeDialog(this,m_parent);
+}

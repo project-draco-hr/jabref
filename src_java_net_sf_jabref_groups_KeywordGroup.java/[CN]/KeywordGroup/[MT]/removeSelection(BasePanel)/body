@@ -1,0 +1,33 @@
+{
+  if (!supportsRemove()) {
+    basePanel.output("The group \"" + getName() + "\" does not support the removal of entries.");
+    return;
+  }
+  for (int i=0; i < GUIGlobals.ALL_FIELDS.length; i++) {
+    if (m_searchField.equals(GUIGlobals.ALL_FIELDS[i]) && !m_searchField.equals("keywords")) {
+      if (!showWarningDialog(basePanel))       return;
+    }
+  }
+  BibtexEntry[] selectedEntries=basePanel.getSelectedEntries();
+  if ((selectedEntries != null) && (selectedEntries.length > 0)) {
+    NamedCompound ce=new NamedCompound("remove from group");
+    boolean hasEdits=false;
+    for (int i=0; i < selectedEntries.length; ++i) {
+      if (applyRule(null,selectedEntries[i]) > 0) {
+        String oldContent=(String)selectedEntries[i].getField(m_searchField);
+        removeMatches(selectedEntries[i]);
+        ce.addEdit(new UndoableFieldChange(selectedEntries[i],m_searchField,oldContent,selectedEntries[i].getField(m_searchField)));
+        hasEdits=true;
+      }
+    }
+    if (hasEdits) {
+      ce.end();
+      basePanel.undoManager.addEdit(ce);
+      basePanel.refreshTable();
+      basePanel.markBaseChanged();
+      basePanel.updateEntryEditorIfShowing();
+      basePanel.updateViewToSelected();
+    }
+    basePanel.output("Removed '" + m_searchExpression + "' from the '"+ m_searchField+ "' field of "+ selectedEntries.length+ " entr"+ (selectedEntries.length > 1 ? "ies." : "y."));
+  }
+}

@@ -1,0 +1,35 @@
+{
+  m_name=name;
+  m_searchExpression=searchExpression;
+  m_caseSensitive=caseSensitive;
+  m_regExp=regExp;
+  m_searchAllFields=searchAllFields;
+  m_searchRequiredFields=searchRequiredFields;
+  m_searchOptionalFields=searchOptionalFields;
+  m_searchGeneralFields=searchGeneralFields;
+  AST ast=null;
+  try {
+    SearchExpressionParser parser=new SearchExpressionParser(new SearchExpressionLexer(new StringReader(m_searchExpression)));
+    parser.caseSensitive=m_caseSensitive;
+    parser.regex=m_regExp;
+    parser.searchExpression();
+    ast=parser.getAST();
+  }
+ catch (  Exception e) {
+    ast=null;
+  }
+  m_ast=ast;
+  if (m_ast != null) {
+    m_searchRule=this;
+  }
+ else {
+    JabRefPreferences prefs=new JabRefPreferences();
+    prefs.putBoolean("searchAll",m_searchAllFields);
+    prefs.putBoolean("searchReq",m_searchRequiredFields);
+    prefs.putBoolean("searchOpt",m_searchOptionalFields);
+    prefs.putBoolean("searchGen",m_searchGeneralFields);
+    prefs.putBoolean("caseSensitiveSearch",m_caseSensitive);
+    if (m_regExp)     m_searchRule=new RegExpRule(prefs);
+ else     m_searchRule=new SimpleSearchRule(prefs);
+  }
+}
