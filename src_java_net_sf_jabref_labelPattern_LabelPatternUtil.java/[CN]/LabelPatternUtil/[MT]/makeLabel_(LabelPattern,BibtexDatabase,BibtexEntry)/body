@@ -1,0 +1,43 @@
+{
+  _db=database;
+  ArrayList _al;
+  String _spacer, _label;
+  StringBuffer _sb=new StringBuffer();
+  try {
+    String _type=_entry.getType().getName().toLowerCase();
+    _al=table.getValue(_type);
+    int _alSize=_al.size();
+    _spacer=_al.get(1).toString();
+    for (int i=2; i < _alSize; i++) {
+      String _field=_al.get(i).toString();
+      if (_field.equals("author")) {
+        _sb.append(firstAuthor(_entry.getField("author").toString()));
+      }
+ else       if (_field.equals("editor")) {
+        _sb.append(firstAuthor(_entry.getField("editor").toString()));
+      }
+ else       if (_field.equals("firstpage")) {
+        _sb.append(firstPage(_entry.getField("pages").toString()));
+      }
+ else       if (_field.equals("lastpage")) {
+        _sb.append(lastPage(_entry.getField("pages").toString()));
+      }
+ else {
+        _sb.append(_entry.getField(_al.get(i).toString()).toString());
+      }
+      if (i < _alSize - 1) {
+        _sb.append(_spacer);
+      }
+    }
+  }
+ catch (  Exception e) {
+    System.err.println(e);
+  }
+  _label=Util.checkLegalKey(_sb.toString());
+  if (_db.setCiteKeyForEntry(_entry.getId(),_label)) {
+    char c='b';
+    String modKey=_label + "a";
+    while (_db.setCiteKeyForEntry(_entry.getId(),modKey))     modKey=_label + ((char)(c++));
+  }
+  return _entry;
+}

@@ -1,21 +1,7 @@
 {
   ArrayList _alist=new ArrayList();
-  Pattern pi=Pattern.compile("\\[\\w*\\]");
-  Pattern ps=Pattern.compile("\\].()*\\[");
-  Matcher mi=pi.matcher(labelPattern);
-  Matcher ms=ps.matcher(labelPattern);
   _alist.add(labelPattern);
-  if (ms.find()) {
-    String t_spacer=ms.group();
-    t_spacer=t_spacer.substring(1,2);
-    _alist.add(t_spacer);
-  }
-  while (mi.find()) {
-    String t_str=mi.group();
-    int _sindex=1;
-    int _eindex=t_str.length() - 1;
-    t_str=t_str.substring(_sindex,_eindex);
-    _alist.add(t_str);
-  }
+  StringTokenizer tok=new StringTokenizer(labelPattern,"[]",true);
+  while (tok.hasMoreTokens())   _alist.add(tok.nextToken());
   return _alist;
 }
