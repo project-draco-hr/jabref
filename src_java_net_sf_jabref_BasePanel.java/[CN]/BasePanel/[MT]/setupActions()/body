@@ -43,7 +43,7 @@
   actions.put("saveAs",new BaseAction(){
     public void action(){
       JFileChooser chooser=new JFileChooser(prefs.get("workingDirectory"));
-      Util.pr("BasePanel: must set file filter");
+      chooser.setFileFilter(new OpenFileFilter());
       int returnVal=chooser.showSaveDialog(frame);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         String name=chooser.getSelectedFile().getName(), path=chooser.getSelectedFile().getParent();
@@ -340,7 +340,7 @@ catch (            IllegalArgumentException ex) {
       int returnVal=chooser.showOpenDialog(ths);
       if (returnVal == JFileChooser.APPROVE_OPTION) {
         fileToOpen=chooser.getSelectedFile();
-        final MergeDialog md=new MergeDialog(frame,Globals.lang("Merge database"),true);
+        final MergeDialog md=new MergeDialog(frame,Globals.lang("Append database"),true);
         Util.placeDialog(md,ths);
         md.setVisible(true);
         if (fileToOpen != null) {
@@ -361,7 +361,7 @@ catch (            IllegalArgumentException ex) {
           ParserResult pr=frame.loadDatabase(fileToOpen);
           BibtexDatabase db=pr.getDatabase();
           MetaData meta=new MetaData(pr.getMetaData());
-          NamedCompound ce=new NamedCompound(Globals.lang("Import database"));
+          NamedCompound ce=new NamedCompound(Globals.lang("Append database"));
           if (importEntries) {
             Iterator i=db.getKeySet().iterator();
             while (i.hasNext()) {
