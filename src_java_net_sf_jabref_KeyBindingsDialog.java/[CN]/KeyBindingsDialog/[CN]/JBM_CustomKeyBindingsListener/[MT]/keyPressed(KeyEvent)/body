@@ -1,6 +1,6 @@
 {
-  if (table.getSelectedRow() < 0)   return;
-  Util.pr("dei" + selectedRow + " "+ table.getSelectedRow());
+  int selRow=table.getSelectedRow();
+  if (selRow < 0)   return;
   String code=KeyEvent.getKeyText(evt.getKeyCode());
   String mod=KeyEvent.getKeyModifiersText(evt.getModifiers());
   if (mod.equals("")) {
@@ -20,10 +20,9 @@
     newKey=code;
   }
   keyTF.setText(newKey);
-  String selectedFunction=(String)table.getValueAt(table.getSelectedRow(),0);
-  table.setValueAt(newKey,table.getSelectedRow(),1);
+  String selectedFunction=(String)table.getValueAt(selRow,0);
+  table.setValueAt(newKey,selRow,1);
   table.revalidate();
   table.repaint();
-  Util.pr(selectedFunction);
   bindHM.put(selectedFunction,newKey);
 }

@@ -1,5 +1,4 @@
 {
-  list.addListSelectionListener(new MyListSelectionListener());
   DefaultListModel listModel=new DefaultListModel();
   TreeMap sorted=new TreeMap(bindHM);
   Iterator it=sorted.keySet().iterator();
@@ -10,15 +9,14 @@
     tableData[i][0]=s;
     tableData[i][1]=(String)bindHM.get(s);
     i++;
-    listModel.addElement(s + " (" + bindHM.get(s)+ ")");
   }
-  table=new JTable(tableData,new String[]{Globals.lang("Action"),Globals.lang("Shortcut")}){
+  tableModel=new KeystrokeTableModel(tableData);
+  table=new JTable(tableModel){
     public boolean isCellEditable(    int row,    int col){
       return false;
     }
   }
 ;
-  table.setCellSelectionEnabled(false);
   table.setRowSelectionAllowed(true);
   table.setColumnSelectionAllowed(false);
   table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
