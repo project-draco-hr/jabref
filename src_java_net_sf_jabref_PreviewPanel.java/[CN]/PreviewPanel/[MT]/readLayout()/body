@@ -1,6 +1,11 @@
 {
+  String entryType=entry.getType().getName().toLowerCase();
+  if (layouts.get(entryType) != null) {
+    layout=(Layout)layouts.get(entryType);
+    return;
+  }
   LayoutHelper layoutHelper=null;
-  URL reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + "."+ entry.getType().getName()+ ".layout");
+  URL reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + "."+ entryType+ ".layout");
   try {
     if (reso == null)     reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + ".layout");
     layoutHelper=new LayoutHelper(new InputStreamReader(reso.openStream()));
@@ -8,6 +13,7 @@
  catch (  IOException ex) {
   }
   layout=layoutHelper.getLayoutFromText();
+  layouts.put(entryType,layout);
   reso=JabRefFrame.class.getResource(Globals.LAYOUT_PREFIX + LAYOUT_FILE + ".begin.layout");
   StringWriter stw=new StringWriter();
   InputStreamReader reader;
