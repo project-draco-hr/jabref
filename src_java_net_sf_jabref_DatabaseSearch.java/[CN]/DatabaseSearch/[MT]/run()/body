@@ -11,7 +11,13 @@
     bes.setField(searchValueField,String.valueOf(searchScore));
     if (searchScore > 0)     hits++;
   }
-  panel.entryTable.invalidate();
-  panel.showSearchResults(searchValueField,reorder,grayOut,select);
-  if ((searchValueField == null) || (searchValueField == Globals.SEARCH))   panel.output(Globals.lang("Searched database. Global number of hits") + ": " + hits);
+  final int outputHits=hits;
+  SwingUtilities.invokeLater(new Thread(){
+    public void run(){
+      panel.entryTable.invalidate();
+      panel.showSearchResults(searchValueField,reorder,grayOut,select);
+      if ((searchValueField == null) || (searchValueField == Globals.SEARCH))       panel.output(Globals.lang("Searched database. Global number of hits") + ": " + outputHits);
+    }
+  }
+);
 }
