@@ -1,19 +1,30 @@
 {
+  String cmdArray[]=new String[2];
   if (fieldName.equals("doi")) {
-    Process child=Runtime.getRuntime().exec(prefs.get("htmlviewer") + " " + Globals.DOI_LOOKUP_PREFIX+ link);
+    cmdArray[0]=prefs.get("htmlviewer");
+    cmdArray[1]=Globals.DOI_LOOKUP_PREFIX + link;
+    Process child=Runtime.getRuntime().exec(cmdArray);
   }
-  if (fieldName.equals("url")) {
+ else   if (fieldName.equals("url")) {
     try {
-      Process child=Runtime.getRuntime().exec(prefs.get("htmlviewer") + " " + link);
+      System.err.println("Starting HTML browser: " + prefs.get("htmlviewer") + " "+ link);
+      cmdArray[0]=prefs.get("htmlviewer");
+      cmdArray[1]=link;
+      Process child=Runtime.getRuntime().exec(cmdArray);
     }
  catch (    IOException e) {
+      System.err.println("An error occured on the command: " + prefs.get("htmlviewer") + " "+ link);
     }
   }
  else   if (fieldName.equals("ps")) {
     try {
-      Process child=Runtime.getRuntime().exec(prefs.get("psviewer") + " " + link);
+      System.err.println("Starting external viewer: " + prefs.get("psviewer") + " "+ link);
+      cmdArray[0]=prefs.get("psviewer");
+      cmdArray[1]=link;
+      Process child=Runtime.getRuntime().exec(cmdArray);
     }
  catch (    IOException e) {
+      System.err.println("An error occured on the command: " + prefs.get("psviewer") + " "+ link);
     }
   }
  else   if (fieldName.equals("pdf")) {
@@ -24,12 +35,16 @@
         if (dir.endsWith(System.getProperty("file.separator")))         link=dir + link;
  else         link=dir + System.getProperty("file.separator") + link;
       }
-      Process child=Runtime.getRuntime().exec(prefs.get("pdfviewer") + " " + link);
+      System.err.println("Starting external viewer: " + prefs.get("pdfviewer") + " "+ link);
+      cmdArray[0]=prefs.get("pdfviewer");
+      cmdArray[1]=link;
+      Process child=Runtime.getRuntime().exec(cmdArray);
     }
  catch (    IOException e) {
-      throw e;
+      System.err.println("An error occured on the command: " + prefs.get("pdfviewer") + " "+ link);
     }
   }
  else {
+    System.err.println("Message: currently only PDF, PS and HTML files can be opened by double clicking");
   }
 }
