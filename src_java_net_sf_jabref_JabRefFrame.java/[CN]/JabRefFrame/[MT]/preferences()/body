@@ -1,10 +1,17 @@
 {
-  (new Thread(){
+  AbstractWorker worker=new AbstractWorker(){
+    PrefsDialog2 pd=null;
     public void run(){
-      PrefsDialog2 pd=new PrefsDialog2(ths,prefs);
+      output(Globals.lang("Opening preferences..."));
+      pd=new PrefsDialog2(ths,prefs);
       Util.placeDialog(pd,ths);
+    }
+    public void update(){
       pd.show();
+      output("");
     }
   }
-).start();
+;
+  worker.getWorker().run();
+  worker.getCallBack().update();
 }

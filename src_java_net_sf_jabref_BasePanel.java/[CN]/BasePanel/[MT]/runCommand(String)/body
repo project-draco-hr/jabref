@@ -5,7 +5,12 @@
     Object o=actions.get(command);
     try {
       if (o instanceof BaseAction)       ((BaseAction)o).action();
- else       ((AbstractWorker)o).getWorker().run();
+ else {
+        Worker wrk=((AbstractWorker)o).getWorker();
+        CallBack clb=((AbstractWorker)o).getCallBack();
+        wrk.run();
+        clb.update();
+      }
     }
  catch (    Throwable ex) {
       ex.printStackTrace();

@@ -1,5 +1,5 @@
 {
-  (new Thread(){
+  AbstractWorker worker=new AbstractWorker(){
     public void run(){
       for (int i=0; i < tabbed.getTabCount(); i++) {
         if (!((PrefsTab)tabbed.getComponentAt(i)).readyToClose())         return;
@@ -7,10 +7,14 @@
       for (int i=0; i < tabbed.getTabCount(); i++) {
         ((PrefsTab)tabbed.getComponentAt(i)).storeSettings();
       }
+    }
+    public void update(){
+      dispose();
       frame.setupAllTables();
       frame.output(Globals.lang("Preferences recorded."));
-      dispose();
     }
   }
-).start();
+;
+  worker.getWorker().run();
+  worker.getCallBack().update();
 }
