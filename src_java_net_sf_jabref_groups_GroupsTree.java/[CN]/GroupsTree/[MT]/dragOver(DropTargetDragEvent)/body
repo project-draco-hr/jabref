@@ -1,4 +1,6 @@
 {
+  long currentTime=System.currentTimeMillis();
+  if (currentTime - lastDragAutoscroll < minAutoscrollInterval)   return;
   Rectangle r=getVisibleRect();
   Point cursor=dtde.getLocation();
   boolean scrollUp=cursor.y - r.y < dragScrollActivationMargin;
@@ -10,4 +12,5 @@
   if (scrollLeft)   r.translate(-dragScrollDistance,0);
  else   if (scrollRight)   r.translate(+dragScrollDistance,0);
   scrollRectToVisible(r);
+  lastDragAutoscroll=currentTime;
 }
