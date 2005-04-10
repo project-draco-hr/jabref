@@ -3,6 +3,10 @@
   actions.put("redo",redoAction);
   actions.put("edit",new BaseAction(){
     public void action(){
+      if (isShowingEditor()) {
+        new FocusRequester(splitPane.getBottomComponent());
+        return;
+      }
       frame.block();
       int clickedOn=-1;
       if (entryTable.getSelectedRowCount() == 1) {
@@ -410,6 +414,7 @@ catch (            Throwable ex) {
     public void action(){
       BibtexEntry[] bes=entryTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
+        storeCurrentEdit();
         Vector keys=new Vector();
         for (int i=0; i < bes.length; i++)         if (bes[i].getField(Globals.KEY_FIELD) != null)         keys.add(bes[i].getField(Globals.KEY_FIELD));
         if (keys.size() == 0) {
@@ -433,6 +438,7 @@ catch (            Throwable ex) {
     public void action(){
       BibtexEntry[] bes=entryTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
+        storeCurrentEdit();
         Vector keys=new Vector();
         for (int i=0; i < bes.length; i++)         if (bes[i].getField(Globals.KEY_FIELD) != null)         keys.add(bes[i].getField(Globals.KEY_FIELD));
         if (keys.size() == 0) {
