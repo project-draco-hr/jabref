@@ -10,8 +10,12 @@
  else     if (j == '{')     brackets++;
  else     if (j == '}')     brackets--;
     if (Character.isWhitespace((char)j)) {
-      value.append(' ');
-      skipWhitespace();
+      String whs=skipAndRecordWhitespace(j);
+      if (!whs.equals("") && !whs.equals("\n\t")) {
+        if (whs.endsWith("\t"))         value.append(whs.substring(0,whs.length() - 1));
+ else         value.append(whs);
+      }
+ else       value.append(' ');
     }
  else     value.append((char)j);
   }

@@ -1,11 +1,12 @@
 {
-  StringBuffer out=new StringBuffer(in.replaceAll("[ \\t\\r]+"," ").replaceAll("\n","\n\t"));
+  StringBuffer out=new StringBuffer(in.replaceAll("[ \\t\\r]+"," "));
   int p=0;
   while (p < out.length()) {
     int q=out.indexOf(" ",p + wrapAmount);
     if ((q < 0) || (q >= out.length()))     break;
     int lbreak=out.indexOf("\n",p);
     if ((lbreak > p) && (lbreak < q)) {
+      if ((out.length() > lbreak + 1) && !(out.charAt(lbreak + 1) == '\t'))       out.insert(lbreak + 1,'\t');
       p=lbreak + 1;
     }
  else {
