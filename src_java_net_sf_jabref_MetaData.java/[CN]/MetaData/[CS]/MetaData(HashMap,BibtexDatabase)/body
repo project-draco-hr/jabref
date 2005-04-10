@@ -2,6 +2,8 @@
   this();
   boolean groupsTreePresent=false;
   Vector flatGroupsData=null;
+  Vector treeGroupsData=null;
+  int groupsVersionOnDisk=0;
   if (inData != null)   for (Iterator i=inData.keySet().iterator(); i.hasNext(); ) {
     String key=(String)i.next();
     data=new StringReader((String)inData.get(key));
@@ -19,8 +21,8 @@
       if (orderedData.size() >= 1)       groupsVersionOnDisk=Integer.parseInt(orderedData.firstElement().toString());
     }
  else     if (key.equals("groupstree")) {
-      putGroups(orderedData,db);
       groupsTreePresent=true;
+      treeGroupsData=orderedData;
     }
  else     if (key.equals("groups")) {
       flatGroupsData=orderedData;
@@ -29,6 +31,7 @@
       putData(key,orderedData);
     }
   }
+  if (groupsTreePresent)   putGroups(treeGroupsData,db,groupsVersionOnDisk);
   if (!groupsTreePresent && flatGroupsData != null) {
     groupsRoot=VersionHandling.importFlatGroups(flatGroupsData);
   }
