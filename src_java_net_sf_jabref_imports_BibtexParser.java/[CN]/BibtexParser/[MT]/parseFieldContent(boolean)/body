@@ -18,7 +18,10 @@
       consume('"');
     }
  else     if (c == '{') {
-      if (isStandardBibtexField || !Globals.prefs.getBoolean("preserveFieldFormatting"))       value.append(parseBracketedText());
+      if (isStandardBibtexField || !Globals.prefs.getBoolean("preserveFieldFormatting")) {
+        StringBuffer text=parseBracketedTextExactly();
+        value.append(fieldContentParser.format(text));
+      }
  else       value.append(parseBracketedTextExactly());
     }
  else     if (Character.isDigit((char)c)) {
