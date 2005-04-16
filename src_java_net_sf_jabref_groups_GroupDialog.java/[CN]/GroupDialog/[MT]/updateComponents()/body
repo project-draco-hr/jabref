@@ -1,33 +1,42 @@
 {
   boolean okEnabled=m_name.getText().trim().length() > 0;
-  String s;
+  String s1, s2;
 switch (m_typeSelector.getSelectedIndex()) {
 case INDEX_KEYWORDGROUP:
-    s=m_searchField.getText().trim();
-  okEnabled=okEnabled && s.length() > 0 && s.indexOf(' ') < 0;
-s=m_kgSearchExpression.getText().trim();
-okEnabled=okEnabled && s.length() > 0;
+    s1=m_searchField.getText().trim();
+  okEnabled=okEnabled && s1.length() > 0 && s1.indexOf(' ') < 0;
+s2=m_kgSearchExpression.getText().trim();
+okEnabled=okEnabled && s2.length() > 0;
+if (!okEnabled) {
+m_description.setText("Please enter the field to search (e.g. \"keywords\") and the term to search it for (e.g. \"electrical\").");
+break;
+}
 if (m_kgIsRegExp.isSelected()) {
 try {
-Pattern.compile(s);
+Pattern.compile(s2);
 }
  catch (Exception e) {
 okEnabled=false;
+m_description.setText("The regular expression \"" + s2 + "\" is invalid ("+ e.getMessage()+ ").");
+break;
 }
 }
+m_description.setText(getDescriptionForKeywordGroup(s1,s2,m_kgCaseSensitive.isSelected(),m_kgIsRegExp.isSelected()));
 break;
 case INDEX_SEARCHGROUP:
-s=m_sgSearchExpression.getText().trim();
-okEnabled=okEnabled & s.length() > 0;
-boolean advancedSearch=SearchExpressionParser.isValidSyntax(s,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
+s2=m_sgSearchExpression.getText().trim();
+okEnabled=okEnabled & s2.length() > 0;
+boolean advancedSearch=SearchExpressionParser.isValidSyntax(s2,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
 m_searchType.setText(advancedSearch ? "Advanced Search" : "Plaintext Search");
 m_searchAllFields.setEnabled(!advancedSearch);
 m_searchRequiredFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
 m_searchOptionalFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
 m_searchGeneralFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
 validate();
+m_description.setText(getDescriptionForSearchGroup());
 break;
 case INDEX_EXPLICITGROUP:
+m_description.setText(getDescriptionForExplicitGroup());
 break;
 }
 m_ok.setEnabled(okEnabled);

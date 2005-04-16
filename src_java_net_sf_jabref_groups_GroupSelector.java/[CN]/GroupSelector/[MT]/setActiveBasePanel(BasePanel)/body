@@ -1,12 +1,13 @@
 {
   super.setActiveBasePanel(panel);
   if (panel == null) {
-    if (frame.sidePaneManager.isPanelVisible("groups"))     frame.sidePaneManager.togglePanel("groups");
+    frame.sidePaneManager.ensureNotVisible("groups");
     return;
   }
   MetaData metaData=panel.metaData();
   if (metaData.getGroups() != null) {
     setGroups(metaData.getGroups());
+    if (!groupsRoot.isLeaf())     frame.sidePaneManager.ensureVisible("groups");
   }
  else {
     GroupTreeNode newGroupsRoot=new GroupTreeNode(new AllEntriesGroup());

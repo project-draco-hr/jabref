@@ -38,6 +38,14 @@
   builder.nextLine();
   builder.append(m_searchGeneralFields);
   m_searchGroupPanel=builder.getPanel();
+  layout=new FormLayout("left:pref, 4dlu, fill:130dlu","");
+  builder=new DefaultFormBuilder(layout);
+  m_description.setEditable(false);
+  m_description.setWrapStyleWord(true);
+  m_description.setLineWrap(true);
+  JScrollPane sp=new JScrollPane(m_description);
+  builder.append(sp);
+  m_descriptionPanel=builder.getPanel();
   m_keywordGroupPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   m_searchGroupPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   lowerPanel=new JPanel();
@@ -59,10 +67,11 @@
   buttons.add(m_ok);
   buttons.add(m_cancel);
   Container cp=getContentPane();
-  cp.setLayout(new BorderLayout());
-  cp.add(m_mainPanel,BorderLayout.NORTH);
-  cp.add(lowerPanel,BorderLayout.CENTER);
-  cp.add(buttons,BorderLayout.SOUTH);
+  cp.setLayout(new BoxLayout(cp,BoxLayout.Y_AXIS));
+  cp.add(m_mainPanel);
+  cp.add(lowerPanel);
+  cp.add(m_descriptionPanel);
+  cp.add(buttons);
   m_typeSelector.addItemListener(new ItemListener(){
     public void itemStateChanged(    ItemEvent e){
       setLayoutForGroup(m_typeSelector.getSelectedIndex());
