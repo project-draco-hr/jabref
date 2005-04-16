@@ -1,4 +1,6 @@
 {
+  cellRenderer.setTargetCell(null);
+  repaint();
   try {
     final Transferable transferable=dtde.getTransferable();
     final Point p=dtde.getLocation();
@@ -26,15 +28,17 @@
       groupSelector.concludeMoveGroup(undo,source);
     }
  else     if (transferable.isDataFlavorSupported(TransferableEntrySelection.flavorInternal)) {
-      if (!target.getGroup().supportsAdd()) {
-        System.out.println("drop rejected");
+      final AbstractGroup group=target.getGroup();
+      if (!group.supportsAdd()) {
         dtde.rejectDrop();
         return;
       }
-      TransferableEntrySelection selection=(TransferableEntrySelection)transferable.getTransferData(TransferableEntrySelection.flavorInternal);
-      target.getGroup().addSelection(selection.getSelection());
+      final TransferableEntrySelection selection=(TransferableEntrySelection)transferable.getTransferData(TransferableEntrySelection.flavorInternal);
+      AbstractUndoableEdit undo=group.addSelection(selection.getSelection());
+      if (undo instanceof UndoableChangeAssignment)       ((UndoableChangeAssignment)undo).setEditedNode(target);
       dtde.getDropTargetContext().dropComplete(true);
       groupSelector.revalidateGroups();
+      groupSelector.concludeAssignment(undo,target,selection.getSelection().length);
     }
  else {
       dtde.rejectDrop();
