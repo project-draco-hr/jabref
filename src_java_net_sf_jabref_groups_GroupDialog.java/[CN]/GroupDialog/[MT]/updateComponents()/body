@@ -7,17 +7,19 @@ case INDEX_KEYWORDGROUP:
   okEnabled=okEnabled && s.length() > 0 && s.indexOf(' ') < 0;
 s=m_kgSearchExpression.getText().trim();
 okEnabled=okEnabled && s.length() > 0;
+if (m_kgIsRegExp.isSelected()) {
 try {
 Pattern.compile(s);
 }
  catch (Exception e) {
 okEnabled=false;
 }
+}
 break;
 case INDEX_SEARCHGROUP:
 s=m_sgSearchExpression.getText().trim();
 okEnabled=okEnabled & s.length() > 0;
-boolean advancedSearch=SearchExpressionParser.isValidSyntax(s,m_caseSensitive.isSelected(),m_isRegExp.isSelected());
+boolean advancedSearch=SearchExpressionParser.isValidSyntax(s,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
 m_searchType.setText(advancedSearch ? "Advanced Search" : "Plaintext Search");
 m_searchAllFields.setEnabled(!advancedSearch);
 m_searchRequiredFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());

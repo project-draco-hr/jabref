@@ -16,15 +16,19 @@
   builder.nextLine();
   builder.append(m_keywordLabel);
   builder.append(m_kgSearchExpression);
+  builder.nextLine();
+  builder.append(m_kgCaseSensitive);
+  builder.nextLine();
+  builder.append(m_kgIsRegExp);
   m_keywordGroupPanel=builder.getPanel();
   layout=new FormLayout("left:pref, 4dlu, fill:130dlu","");
   builder=new DefaultFormBuilder(layout);
   builder.append(m_searchExpressionLabel);
   builder.append(m_sgSearchExpression);
   builder.nextLine();
-  builder.append(m_caseSensitive);
+  builder.append(m_sgCaseSensitive);
   builder.nextLine();
-  builder.append(m_isRegExp);
+  builder.append(m_sgIsRegExp);
   builder.nextLine();
   builder.append(m_searchAllFields);
   builder.nextLine();
@@ -88,11 +92,11 @@ case INDEX_EXPLICITGROUP:
         }
       break;
 case INDEX_KEYWORDGROUP:
-    m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_searchField.getText().trim(),m_kgSearchExpression.getText().trim());
+    m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_searchField.getText().trim(),m_kgSearchExpression.getText().trim(),m_kgCaseSensitive.isSelected(),m_kgIsRegExp.isSelected());
   break;
 case INDEX_SEARCHGROUP:
 try {
-  m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),m_caseSensitive.isSelected(),m_isRegExp.isSelected(),m_searchAllFields.isSelected(),m_searchRequiredFields.isSelected(),m_searchOptionalFields.isSelected(),m_searchGeneralFields.isSelected());
+  m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected(),m_searchAllFields.isSelected(),m_searchRequiredFields.isSelected(),m_searchOptionalFields.isSelected(),m_searchGeneralFields.isSelected());
 }
  catch (Exception e1) {
 }
@@ -117,9 +121,11 @@ updateComponents();
 m_name.addCaretListener(caretListener);
 m_searchField.addCaretListener(caretListener);
 m_kgSearchExpression.addCaretListener(caretListener);
+m_kgCaseSensitive.addItemListener(itemListener);
+m_kgIsRegExp.addItemListener(itemListener);
 m_sgSearchExpression.addCaretListener(caretListener);
-m_isRegExp.addItemListener(itemListener);
-m_caseSensitive.addItemListener(itemListener);
+m_sgIsRegExp.addItemListener(itemListener);
+m_sgCaseSensitive.addItemListener(itemListener);
 m_searchAllFields.addItemListener(itemListener);
 m_searchRequiredFields.addItemListener(itemListener);
 m_searchOptionalFields.addItemListener(itemListener);
@@ -129,14 +135,16 @@ KeywordGroup group=(KeywordGroup)editedGroup;
 m_name.setText(group.getName());
 m_searchField.setText(group.getSearchField());
 m_kgSearchExpression.setText(group.getSearchExpression());
+m_kgCaseSensitive.setSelected(group.isCaseSensitive());
+m_kgIsRegExp.setSelected(group.isRegExp());
 m_typeSelector.setSelectedIndex(INDEX_KEYWORDGROUP);
 }
  else if (editedGroup instanceof SearchGroup) {
 SearchGroup group=(SearchGroup)editedGroup;
 m_name.setText(group.getName());
 m_sgSearchExpression.setText(group.getSearchExpression());
-m_caseSensitive.setSelected(group.isCaseSensitive());
-m_isRegExp.setSelected(group.isRegExp());
+m_sgCaseSensitive.setSelected(group.isCaseSensitive());
+m_sgIsRegExp.setSelected(group.isRegExp());
 m_searchAllFields.setSelected(group.searchAllFields());
 m_searchRequiredFields.setSelected(group.searchRequiredFields());
 m_searchOptionalFields.setSelected(group.searchOptionalFields());
