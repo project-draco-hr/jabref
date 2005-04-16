@@ -1,13 +1,13 @@
 {
   try {
-    Transferable transferable=dtde.getTransferable();
-    Point p=dtde.getLocation();
-    TreePath path=getPathForLocation(p.x,p.y);
+    final Transferable transferable=dtde.getTransferable();
+    final Point p=dtde.getLocation();
+    final TreePath path=getPathForLocation(p.x,p.y);
     if (path == null) {
       dtde.rejectDrop();
       return;
     }
-    GroupTreeNode target=(GroupTreeNode)path.getLastPathComponent();
+    final GroupTreeNode target=(GroupTreeNode)path.getLastPathComponent();
     if (transferable.isDataFlavorSupported(GroupTreeNode.flavor)) {
       GroupTreeNode source=(GroupTreeNode)transferable.getTransferData(GroupTreeNode.flavor);
       if (source == target) {
@@ -27,6 +27,7 @@
     }
  else     if (transferable.isDataFlavorSupported(TransferableEntrySelection.flavorInternal)) {
       if (!target.getGroup().supportsAdd()) {
+        System.out.println("drop rejected");
         dtde.rejectDrop();
         return;
       }
