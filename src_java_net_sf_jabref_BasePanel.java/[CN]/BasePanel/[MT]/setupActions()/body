@@ -346,12 +346,12 @@ catch (            Throwable ex) {
   }
 );
   actions.put("makeKey",new AbstractWorker(){
-    int[] rows;
+    List entries;
     int numSelected;
+    boolean cancelled=false;
     public void init(){
-      rows=entryTable.getSelectedRows();
-      numSelected=rows.length;
-      if (numSelected == 0) {
+      entries=new ArrayList(Arrays.asList(getSelectedEntries()));
+      if (entries.size() == 0) {
         JOptionPane.showMessageDialog(frame,Globals.lang("First select the entries you want keys to be generated for."),Globals.lang("Autogenerate BibTeX key"),JOptionPane.INFORMATION_MESSAGE);
         return;
       }
@@ -362,25 +362,46 @@ catch (            Throwable ex) {
       BibtexEntry bes=null;
       NamedCompound ce=new NamedCompound("autogenerate keys");
       Object oldValue;
-      for (int i=0; i < numSelected; i++) {
-        bes=database.getEntryById(tableModel.getNameFromNumber(rows[i]));
-        oldValue=bes.getField(GUIGlobals.KEY_FIELD);
-        database.setCiteKeyForEntry(bes.getId(),null);
-        ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldValue,null));
+      boolean hasShownWarning=false;
+      loop:       for (Iterator i=entries.iterator(); i.hasNext(); ) {
+        bes=(BibtexEntry)i.next();
+        if (bes.getField(GUIGlobals.KEY_FIELD) != null) {
+          if (prefs.getBoolean("avoidOverwritingKey"))           i.remove();
+ else           if (prefs.getBoolean("warnBeforeOverwritingKey")) {
+            CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("One or more keys will be overwritten. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
+            int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Overwrite keys"),JOptionPane.YES_NO_OPTION);
+            if (cbm.isSelected())             prefs.putBoolean("warnBeforeOverwritingKey",false);
+            if (answer == JOptionPane.NO_OPTION) {
+              cancelled=true;
+              return;
+            }
+            break loop;
+          }
+        }
       }
-      for (int i=0; i < numSelected; i++) {
-        bes=database.getEntryById(tableModel.getNameFromNumber(rows[i]));
-        oldValue=bes.getField(GUIGlobals.KEY_FIELD);
+      HashMap oldvals=new HashMap();
+      if (!prefs.getBoolean("avoidOverwritingKey"))       for (Iterator i=entries.iterator(); i.hasNext(); ) {
+        bes=(BibtexEntry)i.next();
+        oldvals.put(bes,bes.getField(GUIGlobals.KEY_FIELD));
+        database.setCiteKeyForEntry(bes.getId(),null);
+      }
+      for (Iterator i=entries.iterator(); i.hasNext(); ) {
+        bes=(BibtexEntry)i.next();
         bes=LabelPatternUtil.makeLabel(prefs.getKeyPattern(),database,bes);
-        ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldValue,(String)bes.getField(GUIGlobals.KEY_FIELD)));
+        ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),(String)bes.getField(GUIGlobals.KEY_FIELD)));
       }
       ce.end();
       undoManager.addEdit(ce);
     }
     public void update(){
+      if (cancelled) {
+        frame.unblock();
+        return;
+      }
       markBaseChanged();
       refreshTable();
-      output(Globals.lang("Generated BibTeX key for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry")));
+      numSelected=entries.size();
+      output(Globals.lang("Generated BibTeX key for") + " " + numSelected+ " "+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
       frame.unblock();
     }
   }
