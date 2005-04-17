@@ -1,30 +1,26 @@
 {
+  String searchString=(String)searchStrings.values().iterator().next();
+  if (!m_caseSensitiveSearch)   searchString=searchString.toLowerCase();
   int score=0;
   int counter=0;
-  Iterator e=searchStrings.values().iterator();
-  String searchString=(String)e.next();
-  String upperString=null;
-  try {
-    upperString=searchString.substring(0,1).toUpperCase() + searchString.substring(1).toLowerCase();
-  }
- catch (  Throwable t) {
-    System.err.println(t);
-    upperString=searchString;
-  }
-  if (m_caseSensitiveSearch) {
-    score+=doSearch(searchString,bibtexEntry);
-  }
- else {
-    score+=doSearch(searchString,bibtexEntry);
-    if (!searchString.equals(searchString.toLowerCase())) {
-      score+=doSearch(searchString.toLowerCase(),bibtexEntry);
+  Object fieldContentAsObject;
+  String fieldContent;
+  Object[] fields=bibtexEntry.getAllFields();
+  for (int i=0; i < fields.length; i++) {
+    fieldContentAsObject=bibtexEntry.getField(fields[i].toString());
+    if (fieldContentAsObject != null)     try {
+      fieldContent=fieldContentAsObject.toString();
+      if (!m_caseSensitiveSearch)       fieldContent=fieldContent.toLowerCase();
+      counter=fieldContent.indexOf(searchString,counter);
+      while (counter >= 0) {
+        ++score;
+        counter=fieldContent.indexOf(searchString,counter + 1);
+      }
     }
-    if (!searchString.equals(searchString.toUpperCase())) {
-      score+=doSearch(searchString.toUpperCase(),bibtexEntry);
+ catch (    Throwable t) {
+      System.err.println("sorting error: " + t);
     }
-    if (!searchString.equals(upperString)) {
-      score+=doSearch(upperString,bibtexEntry);
-    }
+    counter=0;
   }
   return score;
 }

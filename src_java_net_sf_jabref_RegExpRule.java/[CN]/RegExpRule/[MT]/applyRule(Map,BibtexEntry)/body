@@ -5,27 +5,10 @@
   if (!searchString.matches("\\.\\*")) {
     searchString=".*" + searchString + ".*";
   }
-  String tempString=null;
   int flags=0;
   if (!m_caseSensitiveSearch)   flags=Pattern.CASE_INSENSITIVE;
   Pattern pattern=Pattern.compile(searchString,flags);
-  if (m_searchAll) {
-    Object[] fields=bibtexEntry.getAllFields();
-    score+=searchFields(fields,bibtexEntry,pattern);
-  }
- else {
-    if (m_searchReq) {
-      String[] requiredField=bibtexEntry.getRequiredFields();
-      score+=searchFields(requiredField,bibtexEntry,pattern);
-    }
-    if (m_searchOpt) {
-      String[] optionalField=bibtexEntry.getOptionalFields();
-      score+=searchFields(optionalField,bibtexEntry,pattern);
-    }
-    if (m_searchGen) {
-      String[] generalField=bibtexEntry.getGeneralFields();
-      score+=searchFields(generalField,bibtexEntry,pattern);
-    }
-  }
+  Object[] fields=bibtexEntry.getAllFields();
+  score+=searchFields(fields,bibtexEntry,pattern);
   return score;
 }

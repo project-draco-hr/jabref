@@ -24,16 +24,12 @@ break;
 m_description.setText(getDescriptionForKeywordGroup(s1,s2,m_kgCaseSensitive.isSelected(),m_kgIsRegExp.isSelected()));
 break;
 case INDEX_SEARCHGROUP:
-s2=m_sgSearchExpression.getText().trim();
-okEnabled=okEnabled & s2.length() > 0;
-boolean advancedSearch=SearchExpressionParser.isValidSyntax(s2,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
+s1=m_sgSearchExpression.getText().trim();
+okEnabled=okEnabled & s1.length() > 0;
+boolean advancedSearch=SearchExpressionParser.isValidSyntax(s1,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
 m_searchType.setText(advancedSearch ? "Advanced Search" : "Plaintext Search");
-m_searchAllFields.setEnabled(!advancedSearch);
-m_searchRequiredFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
-m_searchOptionalFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
-m_searchGeneralFields.setEnabled(!advancedSearch && !m_searchAllFields.isSelected());
 validate();
-m_description.setText(getDescriptionForSearchGroup());
+m_description.setText(getDescriptionForSearchGroup(s1,advancedSearch,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected()));
 break;
 case INDEX_EXPLICITGROUP:
 m_description.setText(getDescriptionForExplicitGroup());
