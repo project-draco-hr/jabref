@@ -22,18 +22,17 @@
     Pattern valueSpec=((RegExNode)var_v).getPattern();
     int pseudoField=0;
     for (int i=0; i < searchKeys.length + PSEUDOFIELD_TYPE && !ret; ++i) {
-      String content="";
+      String content;
 switch (i - searchKeys.length + 1) {
 case PSEUDOFIELD_TYPE:
         if (!fieldSpec.matcher("entrytype").matches())         continue;
       content=bibtexEntry.getType().getName();
     break;
 default :
-  if (fieldSpec.matcher(searchKeys[i].toString()).matches()) {
-    Object o=bibtexEntry.getField(searchKeys[i].toString());
-    content=(o != null ? o.toString() : "");
-  }
+  if (!fieldSpec.matcher(searchKeys[i].toString()).matches())   continue;
+content=(String)bibtexEntry.getField(searchKeys[i].toString());
 }
+if (content == null) continue;
 Matcher matcher=valueSpec.matcher(content);
 switch (matchType) {
 case MATCH_CONTAINS:
