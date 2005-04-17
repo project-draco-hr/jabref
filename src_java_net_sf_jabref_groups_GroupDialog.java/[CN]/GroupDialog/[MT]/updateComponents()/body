@@ -26,10 +26,10 @@ break;
 case INDEX_SEARCHGROUP:
 s1=m_sgSearchExpression.getText().trim();
 okEnabled=okEnabled & s1.length() > 0;
-boolean advancedSearch=SearchExpressionParser.isValidSyntax(s1,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
-m_searchType.setText(advancedSearch ? "Advanced Search" : "Plaintext Search");
+AST ast=SearchExpressionParser.checkSyntax(s1,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
+m_searchType.setText(ast != null ? "Advanced Search" : "Plaintext Search");
 validate();
-m_description.setText(getDescriptionForSearchGroup(s1,advancedSearch,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected()));
+m_description.setText(getDescriptionForSearchGroup(s1,ast,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected()));
 break;
 case INDEX_EXPLICITGROUP:
 m_description.setText(getDescriptionForExplicitGroup());

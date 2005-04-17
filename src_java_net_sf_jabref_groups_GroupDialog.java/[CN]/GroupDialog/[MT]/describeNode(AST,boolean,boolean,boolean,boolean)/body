@@ -1,0 +1,46 @@
+{
+  StringBuffer sb=new StringBuffer();
+switch (node.getType()) {
+case SearchExpressionTreeParserTokenTypes.And:
+    if (not)     sb.append("not ");
+  if (or || not)   sb.append("(");
+sb.append(describeNode(node.getFirstChild(),regExp,false,true,false) + " and " + describeNode(node.getFirstChild().getNextSibling(),regExp,false,true,false));
+if (or || not) sb.append(")");
+return sb.toString();
+case SearchExpressionTreeParserTokenTypes.Or:
+if (not) sb.append("not ");
+if (and || not) sb.append("(");
+sb.append(describeNode(node.getFirstChild(),regExp,false,false,true) + " or " + describeNode(node.getFirstChild().getNextSibling(),regExp,false,false,true));
+if (and || not) sb.append(")");
+return sb.toString();
+case SearchExpressionTreeParserTokenTypes.Not:
+return describeNode(node.getFirstChild(),regExp,true,and,or);
+default :
+node=node.getFirstChild();
+String field=node.getText();
+node=node.getNextSibling();
+String matchType;
+switch (node.getType()) {
+case SearchExpressionTreeParserTokenTypes.LITERAL_contains:
+case SearchExpressionTreeParserTokenTypes.EQUAL:
+matchType=not ? "doesn't contain" : "contains";
+break;
+case SearchExpressionTreeParserTokenTypes.LITERAL_matches:
+case SearchExpressionTreeParserTokenTypes.EEQUAL:
+matchType=not ? "doesn't match" : "matches";
+break;
+case SearchExpressionTreeParserTokenTypes.NEQUAL:
+matchType="doesn't contain";
+break;
+default :
+matchType="?";
+}
+node=node.getNextSibling();
+String term=node.getText();
+boolean regExpFieldSpec=!Pattern.matches("\\w+",field);
+sb.append(regExpFieldSpec ? "any field that matches the regular expression" : "the field");
+sb.append(" \"" + field + "\" "+ matchType);
+sb.append((regExp ? " the regular expression" : " the term") + " \"" + term+ "\"");
+return sb.toString();
+}
+}
