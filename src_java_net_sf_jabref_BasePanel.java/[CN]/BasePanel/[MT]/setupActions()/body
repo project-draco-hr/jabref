@@ -33,7 +33,7 @@
           int answer=JOptionPane.showOptionDialog(frame,Globals.lang("File has been updated externally. " + "What do you want to do?"),Globals.lang("File updated externally"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,opts,opts[0]);
           if (answer == JOptionPane.CANCEL_OPTION)           return;
  else           if (answer == JOptionPane.YES_OPTION) {
-            ChangeScanner scanner=new ChangeScanner(frame,ths);
+            ChangeScanner scanner=new ChangeScanner(frame,BasePanel.this);
             scanner.changeScan(file());
             setUpdatedExternally(false);
             SwingUtilities.invokeLater(new Runnable(){
@@ -57,7 +57,7 @@
         nonUndoableChange=false;
         baseChanged=false;
         updatedExternally=false;
-        frame.setTabTitle(ths,file.getName());
+        frame.setTabTitle(BasePanel.this,file.getName());
         frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
       }
     }
@@ -71,7 +71,7 @@
         if (!file.exists() || (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
           runCommand("save");
           try {
-            fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(ths,file);
+            fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(BasePanel.this,file);
           }
  catch (          IOException ex) {
             ex.printStackTrace();
@@ -103,7 +103,7 @@
       BibtexEntry[] bes=entryTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,ths);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,BasePanel.this);
         output(Globals.lang("Copied") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry") + "."));
       }
  else {
@@ -112,7 +112,7 @@
           Object o=tableModel.getValueAt(rows[0],cols[0]);
           if (o != null) {
             StringSelection ss=new StringSelection(o.toString());
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,ths);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
             output(Globals.lang("Copied cell contents") + ".");
           }
         }
@@ -130,7 +130,7 @@
         for (int i=0; i < bes.length; i++) {
           database.removeEntry(bes[i].getId());
           ensureNotShowing(bes[i]);
-          ce.addEdit(new UndoableRemoveEntry(database,bes[i],ths));
+          ce.addEdit(new UndoableRemoveEntry(database,bes[i],BasePanel.this));
         }
         entryTable.clearSelection();
         frame.output(Globals.lang("Cut_pr") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
@@ -159,7 +159,7 @@
           for (int i=0; i < bes.length; i++) {
             database.removeEntry(bes[i].getId());
             ensureNotShowing(bes[i]);
-            ce.addEdit(new UndoableRemoveEntry(database,bes[i],ths));
+            ce.addEdit(new UndoableRemoveEntry(database,bes[i],BasePanel.this));
           }
           frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
           ce.end();
@@ -240,7 +240,7 @@ catch (            Throwable ex) {
               BibtexEntry be=(BibtexEntry)(bes[i].clone());
               be.setId(Util.createId(be.getType(),database));
               database.insertEntry(be);
-              ce.addEdit(new UndoableInsertEntry(database,be,ths));
+              ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
             }
  catch (            KeyCollisionException ex) {
               Util.pr("KeyCollisionException... this shouldn't happen.");
@@ -268,7 +268,7 @@ catch (            Throwable ex) {
   actions.put("editPreamble",new BaseAction(){
     public void action(){
       if (preambleEditor == null) {
-        PreambleEditor form=new PreambleEditor(frame,ths,database,prefs);
+        PreambleEditor form=new PreambleEditor(frame,BasePanel.this,database,prefs);
         Util.placeDialog(form,frame);
         form.setVisible(true);
         preambleEditor=form;
@@ -282,7 +282,7 @@ catch (            Throwable ex) {
   actions.put("editStrings",new BaseAction(){
     public void action(){
       if (stringDialog == null) {
-        StringDialog form=new StringDialog(frame,ths,database,prefs);
+        StringDialog form=new StringDialog(frame,BasePanel.this,database,prefs);
         Util.placeDialog(form,frame);
         form.setVisible(true);
         stringDialog=form;
@@ -300,7 +300,7 @@ catch (            Throwable ex) {
     }
   }
 );
-  actions.put("pushToLyX",new PushToLyx(ths));
+  actions.put("pushToLyX",new PushToLyx(BasePanel.this));
   actions.put("pushToWinEdt",new BaseAction(){
     public void action(){
       final int[] rows=entryTable.getSelectedRows();
@@ -448,7 +448,7 @@ catch (            Throwable ex) {
           sb.append((String)keys.elementAt(i));
         }
         StringSelection ss=new StringSelection(sb.toString());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,ths);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
         if (keys.size() == bes.length)         output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + ".");
  else         output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
       }
@@ -472,7 +472,7 @@ catch (            Throwable ex) {
           sb.append((String)keys.elementAt(i));
         }
         StringSelection ss=new StringSelection("\\cite{" + sb.toString() + "}");
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,ths);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
         if (keys.size() == bes.length)         output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + ".");
  else         output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
       }
@@ -482,7 +482,7 @@ catch (            Throwable ex) {
   actions.put("mergeDatabase",new BaseAction(){
     public void action(){
       final MergeDialog md=new MergeDialog(frame,Globals.lang("Append database"),true);
-      Util.placeDialog(md,ths);
+      Util.placeDialog(md,BasePanel.this);
       md.setVisible(true);
       if (md.okPressed) {
         String chosenFile=Globals.getNewFile(frame,prefs,new File(prefs.get("workingDirectory")),null,JFileChooser.OPEN_DIALOG,false);
@@ -514,7 +514,7 @@ catch (            Throwable ex) {
               BibtexEntry be=(BibtexEntry)(db.getEntryById((String)i.next()).clone());
               be.setId(Util.createNeutralId());
               database.insertEntry(be);
-              ce.addEdit(new UndoableInsertEntry(database,be,ths));
+              ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
             }
           }
           if (importStrings) {
@@ -525,7 +525,7 @@ catch (            Throwable ex) {
               bs=(BibtexString)(db.getString(i.next()).clone());
               if (!database.hasStringLabel(bs.getName())) {
                 database.addString(bs);
-                ce.addEdit(new UndoableInsertString(ths,database,bs));
+                ce.addEdit(new UndoableInsertString(BasePanel.this,database,bs));
               }
             }
           }
@@ -555,7 +555,7 @@ catch (            Throwable ex) {
         }
  catch (        Throwable ex) {
           ex.printStackTrace();
-          JOptionPane.showMessageDialog(ths,ex.getMessage(),"Open database",JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(BasePanel.this,ex.getMessage(),"Open database",JOptionPane.ERROR_MESSAGE);
         }
       }
     }
@@ -670,14 +670,14 @@ catch (            Throwable ex) {
 );
   actions.put("dupliCheck",new BaseAction(){
     public void action(){
-      DuplicateSearch ds=new DuplicateSearch(ths);
+      DuplicateSearch ds=new DuplicateSearch(BasePanel.this);
       ds.start();
     }
   }
 );
   actions.put("strictDupliCheck",new BaseAction(){
     public void action(){
-      StrictDuplicateSearch ds=new StrictDuplicateSearch(ths);
+      StrictDuplicateSearch ds=new StrictDuplicateSearch(BasePanel.this);
       ds.start();
     }
   }
@@ -685,14 +685,14 @@ catch (            Throwable ex) {
   actions.put("plainTextImport",new BaseAction(){
     public void action(){
       EntryTypeDialog etd=new EntryTypeDialog(frame);
-      Util.placeDialog(etd,ths);
+      Util.placeDialog(etd,BasePanel.this);
       etd.setVisible(true);
       BibtexEntryType tp=etd.getChoice();
       if (tp == null)       return;
       String id=Util.createId(tp,database);
       BibtexEntry bibEntry=new BibtexEntry(id,tp);
-      TextInputDialog tidialog=new TextInputDialog(frame,ths,"import",true,bibEntry);
-      Util.placeDialog(tidialog,ths);
+      TextInputDialog tidialog=new TextInputDialog(frame,BasePanel.this,"import",true,bibEntry);
+      Util.placeDialog(tidialog,BasePanel.this);
       tidialog.setVisible(true);
       if (tidialog.okPressed()) {
         insertEntry(bibEntry);
@@ -706,9 +706,9 @@ catch (            Throwable ex) {
       BibtexEntry[] bes=entryTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0))       bibEntry=bes[0];
       if (bibEntry != null) {
-        undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,ths));
-        TextInputDialog tidialog=new TextInputDialog(frame,ths,"import",true,bibEntry);
-        Util.placeDialog(tidialog,ths);
+        undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,BasePanel.this));
+        TextInputDialog tidialog=new TextInputDialog(frame,BasePanel.this,"import",true,bibEntry);
+        Util.placeDialog(tidialog,BasePanel.this);
         tidialog.setVisible(true);
         if (tidialog.okPressed()) {
           output(Globals.lang("changed ") + " '" + bibEntry.getType().getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
@@ -810,7 +810,7 @@ catch (            Throwable ex) {
 );
   actions.put("manageSelectors",new BaseAction(){
     public void action(){
-      ContentSelectorDialog2 csd=new ContentSelectorDialog2(frame,ths,false,metaData,null);
+      ContentSelectorDialog2 csd=new ContentSelectorDialog2(frame,frame,BasePanel.this,false,metaData,null);
       Util.placeDialog(csd,frame);
       csd.setVisible(true);
     }
