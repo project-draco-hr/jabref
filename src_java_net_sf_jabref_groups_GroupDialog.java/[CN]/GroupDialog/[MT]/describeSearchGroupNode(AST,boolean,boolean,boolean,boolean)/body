@@ -4,17 +4,17 @@ switch (node.getType()) {
 case SearchExpressionTreeParserTokenTypes.And:
     if (not)     sb.append("not ");
   if (or || not)   sb.append("(");
-sb.append(describeNode(node.getFirstChild(),regExp,false,true,false) + " and " + describeNode(node.getFirstChild().getNextSibling(),regExp,false,true,false));
+sb.append(describeSearchGroupNode(node.getFirstChild(),regExp,false,true,false) + " and " + describeSearchGroupNode(node.getFirstChild().getNextSibling(),regExp,false,true,false));
 if (or || not) sb.append(")");
 return sb.toString();
 case SearchExpressionTreeParserTokenTypes.Or:
 if (not) sb.append("not ");
 if (and || not) sb.append("(");
-sb.append(describeNode(node.getFirstChild(),regExp,false,false,true) + " or " + describeNode(node.getFirstChild().getNextSibling(),regExp,false,false,true));
+sb.append(describeSearchGroupNode(node.getFirstChild(),regExp,false,false,true) + " or " + describeSearchGroupNode(node.getFirstChild().getNextSibling(),regExp,false,false,true));
 if (and || not) sb.append(")");
 return sb.toString();
 case SearchExpressionTreeParserTokenTypes.Not:
-return describeNode(node.getFirstChild(),regExp,true,and,or);
+return describeSearchGroupNode(node.getFirstChild(),regExp,true,and,or);
 default :
 node=node.getFirstChild();
 String field=node.getText();
