@@ -1,13 +1,7 @@
 {
   setLayout(gbl);
-  this.editor=editor_;
-  this.parent=parent;
-  metaData=data;
   list.setEditable(true);
   list.setMaximumRowCount(35);
-  final MetaData metaData=data;
-  final JabRefFrame frame=parent.frame;
-  final BasePanel panel=parent.panel;
   updateList();
   con.gridwidth=GridBagConstraints.REMAINDER;
   con.fill=GridBagConstraints.HORIZONTAL;
@@ -20,8 +14,8 @@
   add(manage);
   manage.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      ContentSelectorDialog2 csd=new ContentSelectorDialog2(frame,panel,false,metaData,editor.getFieldName());
-      Util.placeDialog(csd,frame);
+      ContentSelectorDialog2 csd=m_owner instanceof Frame ? new ContentSelectorDialog2((Frame)m_owner,m_frame,m_panel,false,m_metaData,m_editor.getFieldName()) : new ContentSelectorDialog2((Dialog)m_owner,m_frame,m_panel,false,m_metaData,m_editor.getFieldName());
+      Util.placeDialog(csd,m_frame);
       csd.show();
     }
   }
