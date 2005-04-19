@@ -83,4 +83,29 @@
   gbl.setConstraints(btnDefaultAll,con);
   btnDefaultAll.addActionListener(new buttonHandler());
   add(btnDefaultAll);
+  FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref","");
+  pan=new JPanel();
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  builder.appendSeparator(Globals.lang("Key generator settings"));
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(warnBeforeOverwriting);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(dontOverwrite);
+  builder.nextLine();
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  con.gridx=0;
+  con.gridy=3;
+  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.weightx=1;
+  con.fill=GridBagConstraints.BOTH;
+  gbl.setConstraints(builder.getPanel(),con);
+  add(builder.getPanel());
+  dontOverwrite.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      warnBeforeOverwriting.setEnabled(!dontOverwrite.isSelected());
+    }
+  }
+);
 }
