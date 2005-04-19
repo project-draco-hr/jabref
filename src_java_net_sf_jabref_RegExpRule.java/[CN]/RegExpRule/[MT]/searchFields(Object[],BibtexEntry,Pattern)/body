@@ -3,8 +3,11 @@
   if (fields != null) {
     for (int i=0; i < fields.length; i++) {
       try {
-        if (pattern.matcher(String.valueOf(bibtexEntry.getField(fields[i].toString()))).matches()) {
-          score++;
+        Object value=bibtexEntry.getField((String)fields[i]);
+        if (value != null) {
+          if (pattern.matcher(removeBrackets.format((String)value)).matches()) {
+            score++;
+          }
         }
       }
  catch (      Throwable t) {

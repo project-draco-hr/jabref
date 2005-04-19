@@ -8,7 +8,13 @@
   for (Iterator i=thisDatabase.getKeySet().iterator(); i.hasNext(); ) {
     bes=thisDatabase.getEntryById((String)i.next());
     if (bes == null)     continue;
-    searchScore=thisRuleSet.applyRule(thisSearchOptions,bes);
+    try {
+      searchScore=thisRuleSet.applyRule(thisSearchOptions,bes);
+    }
+ catch (    PatternSyntaxException ex) {
+      errorDisplay.reportError("Malformed regular expression",ex);
+      return;
+    }
     if (searchScore > 0)     searchScore=1;
     bes.setField(searchValueField,String.valueOf(searchScore));
     if (searchScore > 0)     hits++;
