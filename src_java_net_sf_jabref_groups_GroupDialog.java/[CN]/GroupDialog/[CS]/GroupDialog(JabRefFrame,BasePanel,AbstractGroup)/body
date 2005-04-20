@@ -3,75 +3,89 @@
   m_basePanel=basePanel;
   m_parent=jabrefFrame;
   m_editedGroup=editedGroup;
-  m_searchField.setText(jabrefFrame.prefs().get("groupsDefaultField"));
-  m_types.addElement("Explicit");
-  m_types.addElement("Keywords");
-  m_types.addElement("Search Expression");
-  m_typeSelector.setModel(m_types);
-  m_mainPanel=new JPanelYBoxPreferredWidth();
-  FormLayout layout=new FormLayout("left:pref, 4dlu, fill:130dlu","");
-  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
-  builder.append(m_searchFieldLabel);
-  builder.append(m_searchField);
-  builder.nextLine();
-  builder.append(m_keywordLabel);
-  builder.append(m_kgSearchExpression);
-  builder.append(new FieldContentSelector(m_parent,m_basePanel,this,m_kgSearchExpression,m_basePanel.metaData(),null));
-  builder.nextLine();
-  builder.append(m_kgCaseSensitive);
-  builder.nextLine();
-  builder.append(m_kgIsRegExp);
-  m_keywordGroupPanel=builder.getPanel();
-  layout=new FormLayout("left:pref, 4dlu, fill:130dlu","");
-  builder=new DefaultFormBuilder(layout);
-  builder.append(m_searchExpressionLabel);
-  builder.append(m_sgSearchExpression);
-  builder.nextLine();
-  builder.append(m_sgCaseSensitive);
-  builder.nextLine();
-  builder.append(m_sgIsRegExp);
-  m_searchGroupPanel=builder.getPanel();
-  layout=new FormLayout("left:pref, 4dlu, fill:130dlu","");
-  builder=new DefaultFormBuilder(layout);
-  m_description.setEditable(false);
-  m_description.setWrapStyleWord(true);
-  m_description.setLineWrap(true);
-  JScrollPane sp=new JScrollPane(m_description);
-  builder.append(sp);
-  m_descriptionPanel=builder.getPanel();
-  m_keywordGroupPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-  m_searchGroupPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-  lowerPanel=new JPanel();
-  lowerPanel.setLayout(lowerLayout);
-  lowerPanel.add(new JPanel(),String.valueOf(INDEX_EXPLICITGROUP));
-  lowerPanel.add(m_keywordGroupPanel,String.valueOf(INDEX_KEYWORDGROUP));
-  lowerPanel.add(m_searchGroupPanel,String.valueOf(INDEX_SEARCHGROUP));
-  layout=new FormLayout("left:pref, 4dlu, fill:80dlu","");
-  builder=new DefaultFormBuilder(layout);
-  builder.append(m_nameLabel);
-  builder.append(m_name);
-  builder.nextLine();
-  builder.append(m_typeLabel);
-  builder.append(m_typeSelector);
-  m_mainPanel=builder.getPanel();
-  m_mainPanel.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
-  lowerPanel.setBorder(BorderFactory.createEtchedBorder());
-  JPanel buttons=new JPanel();
-  buttons.add(m_ok);
-  buttons.add(m_cancel);
+  m_kgSearchField.setText(jabrefFrame.prefs().get("groupsDefaultField"));
+  ButtonGroup groupType=new ButtonGroup();
+  groupType.add(m_explicitRadioButton);
+  groupType.add(m_keywordsRadioButton);
+  groupType.add(m_searchRadioButton);
+  m_description.setVerticalAlignment(JLabel.TOP);
+  m_optionsPanel.setLayout(m_optionsLayout);
+  m_optionsPanel.add(new JPanel(),"" + INDEX_EXPLICITGROUP);
+  FormLayout layoutKG=new FormLayout("right:pref, 4dlu, fill:100dlu, 2dlu, left:pref");
+  DefaultFormBuilder builderKG=new DefaultFormBuilder(layoutKG);
+  builderKG.append("Field");
+  builderKG.append(m_kgSearchField,1);
+  builderKG.nextLine();
+  builderKG.append("Term");
+  builderKG.append(m_kgSearchTerm);
+  builderKG.append(new FieldContentSelector(m_parent,m_basePanel,this,m_kgSearchTerm,m_basePanel.metaData(),null));
+  builderKG.nextLine();
+  builderKG.append(m_kgCaseSensitive,3);
+  builderKG.nextLine();
+  builderKG.append(m_kgRegExp,3);
+  m_optionsPanel.add(builderKG.getPanel(),"" + INDEX_KEYWORDGROUP);
+  FormLayout layoutSG=new FormLayout("right:pref, 4dlu, fill:190dlu");
+  DefaultFormBuilder builderSG=new DefaultFormBuilder(layoutSG);
+  builderSG.append("Expression");
+  builderSG.append(m_sgSearchExpression);
+  builderSG.nextLine();
+  builderSG.append(m_sgCaseSensitive,3);
+  builderSG.nextLine();
+  builderSG.append(m_sgRegExp,3);
+  m_optionsPanel.add(builderSG.getPanel(),"" + INDEX_SEARCHGROUP);
+  FormLayout layoutAll=new FormLayout("right:pref, 4dlu, fill:500px, 4dlu, fill:pref","p, 3dlu, p, 3dlu, p, 0dlu, p, 0dlu, p, 3dlu, p, 3dlu, " + "p, 3dlu, p, 3dlu, top:80dlu");
+  DefaultFormBuilder builderAll=new DefaultFormBuilder(layoutAll);
+  builderAll.setDefaultDialogBorder();
+  builderAll.appendSeparator("General");
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.append("Name");
+  builderAll.append(m_name);
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.append(m_explicitRadioButton,5);
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.append(m_keywordsRadioButton,5);
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.append(m_searchRadioButton,5);
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.appendSeparator("Options");
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.append(m_optionsPanel,5);
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.appendSeparator("Description");
+  builderAll.nextLine();
+  builderAll.nextLine();
+  JScrollPane sp=new JScrollPane(m_description,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER){
+    public Dimension getPreferredSize(){
+      return getMaximumSize();
+    }
+  }
+;
+  builderAll.append(sp,5);
   Container cp=getContentPane();
   cp.setLayout(new BoxLayout(cp,BoxLayout.Y_AXIS));
-  cp.add(m_mainPanel);
-  cp.add(lowerPanel);
-  cp.add(m_descriptionPanel);
-  cp.add(buttons);
-  m_typeSelector.addItemListener(new ItemListener(){
+  cp.add(builderAll.getPanel());
+  pack();
+  setResizable(false);
+  updateComponents();
+  setLayoutForSelectedGroup();
+  Util.placeDialog(this,m_parent);
+  ItemListener radioButtonItemListener=new ItemListener(){
     public void itemStateChanged(    ItemEvent e){
-      setLayoutForGroup(m_typeSelector.getSelectedIndex());
+      setLayoutForSelectedGroup();
       updateComponents();
     }
   }
-);
+;
+  m_explicitRadioButton.addItemListener(radioButtonItemListener);
+  m_keywordsRadioButton.addItemListener(radioButtonItemListener);
+  m_searchRadioButton.addItemListener(radioButtonItemListener);
   m_cancel.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       dispose();
@@ -81,77 +95,69 @@
   m_ok.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       m_okPressed=true;
-switch (m_typeSelector.getSelectedIndex()) {
-case INDEX_EXPLICITGROUP:
+      if (m_explicitRadioButton.isSelected()) {
         if (m_editedGroup instanceof ExplicitGroup) {
           m_resultingGroup=m_editedGroup.deepCopy();
           m_resultingGroup.setName(m_name.getText().trim());
         }
  else {
           m_resultingGroup=new ExplicitGroup(m_name.getText().trim(),m_basePanel.database());
-          if (m_editedGroup == null)           break;
-          addPreviousEntries();
+          if (m_editedGroup != null)           addPreviousEntries();
         }
-      break;
-case INDEX_KEYWORDGROUP:
-    m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_searchField.getText().trim(),m_kgSearchExpression.getText().trim(),m_kgCaseSensitive.isSelected(),m_kgIsRegExp.isSelected());
-  break;
-case INDEX_SEARCHGROUP:
-try {
-  m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
-}
- catch (Exception e1) {
-}
-break;
-}
-dispose();
-}
-}
+      }
+ else       if (m_keywordsRadioButton.isSelected()) {
+        m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_kgSearchField.getText().trim(),m_kgSearchTerm.getText().trim(),m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected());
+      }
+ else       if (m_searchRadioButton.isSelected()) {
+        try {
+          m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected());
+        }
+ catch (        Exception e1) {
+        }
+      }
+      dispose();
+    }
+  }
 );
-CaretListener caretListener=new CaretListener(){
-public void caretUpdate(CaretEvent e){
-updateComponents();
-}
-}
+  CaretListener caretListener=new CaretListener(){
+    public void caretUpdate(    CaretEvent e){
+      updateComponents();
+    }
+  }
 ;
-ItemListener itemListener=new ItemListener(){
-public void itemStateChanged(ItemEvent e){
-updateComponents();
-}
-}
+  ItemListener itemListener=new ItemListener(){
+    public void itemStateChanged(    ItemEvent e){
+      updateComponents();
+    }
+  }
 ;
-m_name.addCaretListener(caretListener);
-m_searchField.addCaretListener(caretListener);
-m_kgSearchExpression.addCaretListener(caretListener);
-m_kgCaseSensitive.addItemListener(itemListener);
-m_kgIsRegExp.addItemListener(itemListener);
-m_sgSearchExpression.addCaretListener(caretListener);
-m_sgIsRegExp.addItemListener(itemListener);
-m_sgCaseSensitive.addItemListener(itemListener);
-if (editedGroup instanceof KeywordGroup) {
-KeywordGroup group=(KeywordGroup)editedGroup;
-m_name.setText(group.getName());
-m_searchField.setText(group.getSearchField());
-m_kgSearchExpression.setText(group.getSearchExpression());
-m_kgCaseSensitive.setSelected(group.isCaseSensitive());
-m_kgIsRegExp.setSelected(group.isRegExp());
-m_typeSelector.setSelectedIndex(INDEX_KEYWORDGROUP);
-}
- else if (editedGroup instanceof SearchGroup) {
-SearchGroup group=(SearchGroup)editedGroup;
-m_name.setText(group.getName());
-m_sgSearchExpression.setText(group.getSearchExpression());
-m_sgCaseSensitive.setSelected(group.isCaseSensitive());
-m_sgIsRegExp.setSelected(group.isRegExp());
-m_typeSelector.setSelectedIndex(INDEX_SEARCHGROUP);
-}
- else if (editedGroup instanceof ExplicitGroup) {
-m_name.setText(editedGroup.getName());
-m_typeSelector.setSelectedIndex(INDEX_EXPLICITGROUP);
-}
-pack();
-setResizable(true);
-updateComponents();
-setLayoutForGroup(m_typeSelector.getSelectedIndex());
-Util.placeDialog(this,m_parent);
+  m_name.addCaretListener(caretListener);
+  m_kgSearchField.addCaretListener(caretListener);
+  m_kgSearchTerm.addCaretListener(caretListener);
+  m_kgCaseSensitive.addItemListener(itemListener);
+  m_kgRegExp.addItemListener(itemListener);
+  m_sgSearchExpression.addCaretListener(caretListener);
+  m_sgRegExp.addItemListener(itemListener);
+  m_sgCaseSensitive.addItemListener(itemListener);
+  if (editedGroup instanceof KeywordGroup) {
+    KeywordGroup group=(KeywordGroup)editedGroup;
+    m_name.setText(group.getName());
+    m_kgSearchField.setText(group.getSearchField());
+    m_kgSearchTerm.setText(group.getSearchExpression());
+    m_kgCaseSensitive.setSelected(group.isCaseSensitive());
+    m_kgRegExp.setSelected(group.isRegExp());
+    m_keywordsRadioButton.setSelected(true);
+  }
+ else   if (editedGroup instanceof SearchGroup) {
+    SearchGroup group=(SearchGroup)editedGroup;
+    m_name.setText(group.getName());
+    m_sgSearchExpression.setText(group.getSearchExpression());
+    m_sgCaseSensitive.setSelected(group.isCaseSensitive());
+    m_sgRegExp.setSelected(group.isRegExp());
+    m_searchRadioButton.setSelected(true);
+  }
+ else   if (editedGroup instanceof ExplicitGroup) {
+    m_name.setText(editedGroup.getName());
+    m_explicitRadioButton.setSelected(true);
+  }
 }

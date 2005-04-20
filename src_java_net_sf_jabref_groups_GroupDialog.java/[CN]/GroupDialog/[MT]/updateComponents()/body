@@ -1,39 +1,36 @@
 {
   boolean okEnabled=m_name.getText().trim().length() > 0;
   String s1, s2;
-switch (m_typeSelector.getSelectedIndex()) {
-case INDEX_KEYWORDGROUP:
-    s1=m_searchField.getText().trim();
-  okEnabled=okEnabled && s1.length() > 0 && s1.indexOf(' ') < 0;
-s2=m_kgSearchExpression.getText().trim();
-okEnabled=okEnabled && s2.length() > 0;
-if (!okEnabled) {
-m_description.setText("Please enter the field to search (e.g. \"keywords\") and the term to search it for (e.g. \"electrical\").");
-break;
-}
-if (m_kgIsRegExp.isSelected()) {
-try {
-Pattern.compile(s2);
-}
- catch (Exception e) {
-okEnabled=false;
-m_description.setText("The regular expression \"" + s2 + "\" is invalid ("+ e.getMessage()+ ").");
-break;
-}
-}
-m_description.setText(getDescriptionForKeywordGroup(s1,s2,m_kgCaseSensitive.isSelected(),m_kgIsRegExp.isSelected()));
-break;
-case INDEX_SEARCHGROUP:
-s1=m_sgSearchExpression.getText().trim();
-okEnabled=okEnabled & s1.length() > 0;
-AST ast=SearchExpressionParser.checkSyntax(s1,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected());
-m_searchType.setText(ast != null ? "Advanced Search" : "Plaintext Search");
-validate();
-m_description.setText(getDescriptionForSearchGroup(s1,ast,m_sgCaseSensitive.isSelected(),m_sgIsRegExp.isSelected()));
-break;
-case INDEX_EXPLICITGROUP:
-m_description.setText(getDescriptionForExplicitGroup());
-break;
-}
-m_ok.setEnabled(okEnabled);
+  if (m_keywordsRadioButton.isSelected()) {
+    s1=m_kgSearchField.getText().trim();
+    okEnabled=okEnabled && s1.length() > 0 && s1.indexOf(' ') < 0;
+    s2=m_kgSearchTerm.getText().trim();
+    okEnabled=okEnabled && s2.length() > 0;
+    if (!okEnabled) {
+      setDescription("Please enter the field to search (e.g. \"keywords\") and the term to search it for (e.g. \"electrical\").");
+    }
+ else {
+      if (m_kgRegExp.isSelected()) {
+        try {
+          Pattern.compile(s2);
+        }
+ catch (        Exception e) {
+          okEnabled=false;
+          setDescription("The regular expression \"" + s2 + "\" is invalid ("+ e.getMessage()+ ").");
+        }
+      }
+      setDescription(getDescriptionForKeywordGroup(s1,s2,m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected()));
+    }
+  }
+ else   if (m_searchRadioButton.isSelected()) {
+    s1=m_sgSearchExpression.getText().trim();
+    okEnabled=okEnabled & s1.length() > 0;
+    AST ast=SearchExpressionParser.checkSyntax(s1,m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected());
+    validate();
+    setDescription(getDescriptionForSearchGroup(s1,ast,m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected()));
+  }
+ else   if (m_explicitRadioButton.isSelected()) {
+    setDescription(getDescriptionForExplicitGroup());
+  }
+  m_ok.setEnabled(okEnabled);
 }
