@@ -9,12 +9,13 @@
   groupType.add(m_keywordsRadioButton);
   groupType.add(m_searchRadioButton);
   m_description.setVerticalAlignment(JLabel.TOP);
+  getRootPane().setDefaultButton(m_ok);
   m_optionsPanel.setLayout(m_optionsLayout);
   m_optionsPanel.add(new JPanel(),"" + INDEX_EXPLICITGROUP);
-  FormLayout layoutKG=new FormLayout("right:pref, 4dlu, fill:100dlu, 2dlu, left:pref");
+  FormLayout layoutKG=new FormLayout("right:pref, 4dlu, fill:1dlu:grow, 2dlu, left:pref");
   DefaultFormBuilder builderKG=new DefaultFormBuilder(layoutKG);
   builderKG.append("Field");
-  builderKG.append(m_kgSearchField);
+  builderKG.append(m_kgSearchField,3);
   builderKG.nextLine();
   builderKG.append("Term");
   builderKG.append(m_kgSearchTerm);
@@ -23,8 +24,10 @@
   builderKG.append(m_kgCaseSensitive,3);
   builderKG.nextLine();
   builderKG.append(m_kgRegExp,3);
+  builderKG.nextLine();
+  builderKG.append(m_kgIgnoreBraces,3);
   m_optionsPanel.add(builderKG.getPanel(),"" + INDEX_KEYWORDGROUP);
-  FormLayout layoutSG=new FormLayout("right:pref, 4dlu, fill:190dlu");
+  FormLayout layoutSG=new FormLayout("right:pref, 4dlu, fill:1dlu:grow");
   DefaultFormBuilder builderSG=new DefaultFormBuilder(layoutSG);
   builderSG.append("Expression");
   builderSG.append(m_sgSearchExpression);
@@ -32,6 +35,8 @@
   builderSG.append(m_sgCaseSensitive,3);
   builderSG.nextLine();
   builderSG.append(m_sgRegExp,3);
+  builderSG.nextLine();
+  builderSG.append(m_sgIgnoreBraces,3);
   m_optionsPanel.add(builderSG.getPanel(),"" + INDEX_SEARCHGROUP);
   FormLayout layoutBP=new FormLayout("pref, 4dlu, pref","p");
   layoutBP.setColumnGroups(new int[][]{{1,3}});
@@ -148,9 +153,11 @@
   m_kgSearchTerm.addCaretListener(caretListener);
   m_kgCaseSensitive.addItemListener(itemListener);
   m_kgRegExp.addItemListener(itemListener);
+  m_kgIgnoreBraces.addItemListener(itemListener);
   m_sgSearchExpression.addCaretListener(caretListener);
   m_sgRegExp.addItemListener(itemListener);
   m_sgCaseSensitive.addItemListener(itemListener);
+  m_sgIgnoreBraces.addItemListener(itemListener);
   if (editedGroup instanceof KeywordGroup) {
     KeywordGroup group=(KeywordGroup)editedGroup;
     m_name.setText(group.getName());
