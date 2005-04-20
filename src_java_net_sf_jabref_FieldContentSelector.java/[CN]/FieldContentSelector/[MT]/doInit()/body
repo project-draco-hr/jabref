@@ -3,12 +3,13 @@
   list.setEditable(true);
   list.setMaximumRowCount(35);
   updateList();
-  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.gridwidth=m_horizontalLayout ? 3 : GridBagConstraints.REMAINDER;
   con.fill=GridBagConstraints.HORIZONTAL;
   con.weightx=1;
   gbl.setConstraints(list,con);
   list.addActionListener(this);
   add(list);
+  if (m_horizontalLayout)   add(Box.createHorizontalStrut(Sizes.dialogUnitXAsPixel(2,this)));
   manage=new JButton(Globals.lang("Manage"));
   gbl.setConstraints(manage,con);
   add(manage);
@@ -17,6 +18,7 @@
       ContentSelectorDialog2 csd=m_owner instanceof Frame ? new ContentSelectorDialog2((Frame)m_owner,m_frame,m_panel,false,m_metaData,m_editor.getFieldName()) : new ContentSelectorDialog2((Dialog)m_owner,m_frame,m_panel,false,m_metaData,m_editor.getFieldName());
       Util.placeDialog(csd,m_frame);
       csd.show();
+      updateList();
     }
   }
 );
