@@ -1,0 +1,45 @@
+{
+  String translation=null;
+  try {
+    if (Globals.messages != null) {
+      translation=Globals.messages.getString(key.replaceAll(" ","_"));
+    }
+  }
+ catch (  MissingResourceException ex) {
+    translation=key;
+    logger("Warning: could not get translation for \"" + key + "\"");
+  }
+  if ((translation != null) && (translation.length() != 0)) {
+    translation=translation.replaceAll("_"," ");
+    StringBuffer sb=new StringBuffer();
+    boolean b=false;
+    char c;
+    for (int i=0; i < translation.length(); ++i) {
+      c=translation.charAt(i);
+      if (c == '%') {
+        b=true;
+      }
+ else {
+        if (!b) {
+          sb.append(c);
+        }
+ else {
+          b=false;
+          if (c == '%') {
+            sb.append(c);
+          }
+ else {
+            try {
+              int index=Integer.parseInt(String.valueOf(c));
+              if (params != null && index >= 0 && index <= params.length)               sb.append(params[index]);
+            }
+ catch (            NumberFormatException e) {
+            }
+          }
+        }
+      }
+    }
+    return sb.toString();
+  }
+  return key;
+}
