@@ -25,21 +25,26 @@
         }
  else {
           b=false;
-          if (c == '%') {
-            sb.append(c);
+          try {
+            int index=Integer.parseInt(String.valueOf(c));
+            if (params != null && index >= 0 && index <= params.length)             sb.append(params[index]);
           }
- else {
-            try {
-              int index=Integer.parseInt(String.valueOf(c));
-              if (params != null && index >= 0 && index <= params.length)               sb.append(params[index]);
-            }
- catch (            NumberFormatException e) {
-            }
-          }
-        }
-      }
-    }
-    return sb.toString();
+ catch (          NumberFormatException e) {
+switch (c) {
+case 'c':
+              sb.append(':');
+            break;
+case 'e':
+          sb.append('=');
+        break;
+default :
+      sb.append(c);
   }
-  return key;
+}
+}
+}
+}
+return sb.toString();
+}
+return key;
 }
