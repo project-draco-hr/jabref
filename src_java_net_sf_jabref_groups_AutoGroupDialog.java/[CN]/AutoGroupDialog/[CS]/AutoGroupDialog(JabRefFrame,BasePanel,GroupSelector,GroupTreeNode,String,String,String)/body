@@ -9,13 +9,9 @@
   deliminator.setText(defaultDeliminator);
   ActionListener okListener=new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      if (field.getText().equals("")) {
-        JOptionPane.showMessageDialog(frame,Globals.lang("You must provide a field name " + "as basis for the group creation."),Globals.lang("Automatically create groups"),JOptionPane.ERROR_MESSAGE);
-        return;
-      }
       ok_pressed=true;
       dispose();
-      GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup("Automatically created groups",panel.database()));
+      GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Globals.lang("Automatically created groups"),panel.database()));
       HashSet hs=null;
       if (nd.isSelected()) {
         hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field().toLowerCase().trim(),deliminator.getText());
@@ -44,6 +40,7 @@
 ;
   remove.addActionListener(okListener);
   field.addActionListener(okListener);
+  field.addCaretListener(this);
   AbstractAction cancelAction=new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
       dispose();
@@ -101,6 +98,7 @@
   opt.add(cancel);
   getContentPane().add(main,BorderLayout.CENTER);
   getContentPane().add(opt,BorderLayout.SOUTH);
+  updateComponents();
   setSize(400,200);
   Util.placeDialog(this,frame);
 }
