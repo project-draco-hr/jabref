@@ -1,0 +1,21 @@
+def handleFileSet(mainFile, files, changeFiles):
+    f1 = open(mainFile)
+    lines = f1.readlines()
+    f1.close()
+    keys = indexFile(lines)
+    keysPresent = []
+    for i in range(0, len(files)):
+        f2 = open(files[i])
+        lines = f2.readlines()
+        f2.close()
+        keysPresent.append(indexFile(lines))
+        missing = findMissingKeys(keys, keysPresent[i])
+        print (("\n\nFile '" + files[i]) + "'\n")
+        if (len(missing) == 0):
+            print '-> No missing keys.'
+        else:
+            if (changeFiles == 1):
+                appendMissingKeys(files[i], missing)
+            print '-> Missing keys:'
+            for key in missing:
+                print (key + '=')
