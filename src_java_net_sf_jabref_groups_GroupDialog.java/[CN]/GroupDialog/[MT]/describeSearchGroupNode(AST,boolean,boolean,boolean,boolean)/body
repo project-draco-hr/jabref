@@ -2,45 +2,40 @@
   StringBuffer sb=new StringBuffer();
 switch (node.getType()) {
 case SearchExpressionTreeParserTokenTypes.And:
-    if (not)     sb.append("not ");
+    if (not)     sb.append(Globals.lang("not") + " ");
   if (or || not)   sb.append("(");
-sb.append(describeSearchGroupNode(node.getFirstChild(),regExp,false,true,false) + " and " + describeSearchGroupNode(node.getFirstChild().getNextSibling(),regExp,false,true,false));
+sb.append(describeSearchGroupNode(node.getFirstChild(),regExp,false,true,false) + " " + Globals.lang("and")+ " "+ describeSearchGroupNode(node.getFirstChild().getNextSibling(),regExp,false,true,false));
 if (or || not) sb.append(")");
 return sb.toString();
 case SearchExpressionTreeParserTokenTypes.Or:
-if (not) sb.append("not ");
+if (not) sb.append(Globals.lang("not") + " ");
 if (and || not) sb.append("(");
-sb.append(describeSearchGroupNode(node.getFirstChild(),regExp,false,false,true) + " or " + describeSearchGroupNode(node.getFirstChild().getNextSibling(),regExp,false,false,true));
+sb.append(describeSearchGroupNode(node.getFirstChild(),regExp,false,false,true) + " " + Globals.lang("or")+ " "+ describeSearchGroupNode(node.getFirstChild().getNextSibling(),regExp,false,false,true));
 if (and || not) sb.append(")");
 return sb.toString();
 case SearchExpressionTreeParserTokenTypes.Not:
 return describeSearchGroupNode(node.getFirstChild(),regExp,true,and,or);
 default :
 node=node.getFirstChild();
-String field=node.getText();
+final String field=node.getText();
+final boolean regExpFieldSpec=!Pattern.matches("\\w+",field);
 node=node.getNextSibling();
-String matchType;
-switch (node.getType()) {
+final int type=node.getType();
+node=node.getNextSibling();
+final String term=node.getText();
+final String fieldSpec=regExpFieldSpec ? Globals.lang("any field that matches the regular expression <b>%0</b>",field) : Globals.lang("the field <b>%0</b>",field);
+final String termSpec=regExp ? Globals.lang("the regular expression <b>%0</b>",term) : Globals.lang("the term <b>%0</b>",term);
+switch (type) {
 case SearchExpressionTreeParserTokenTypes.LITERAL_contains:
 case SearchExpressionTreeParserTokenTypes.EQUAL:
-matchType=not ? "doesn't contain" : "contains";
-break;
+return not ? Globals.lang("%0 doesn't contain %1",fieldSpec,termSpec) : Globals.lang("%0 contains %1",fieldSpec,termSpec);
 case SearchExpressionTreeParserTokenTypes.LITERAL_matches:
 case SearchExpressionTreeParserTokenTypes.EEQUAL:
-matchType=not ? "doesn't match" : "matches";
-break;
+return not ? Globals.lang("%0 doesn't match %1",fieldSpec,termSpec) : Globals.lang("%0 matches %1",fieldSpec,termSpec);
 case SearchExpressionTreeParserTokenTypes.NEQUAL:
-matchType="doesn't contain";
-break;
+return Globals.lang("%0 doesn't contain %1",fieldSpec,termSpec);
 default :
-matchType="?";
+return "?";
 }
-node=node.getNextSibling();
-String term=node.getText();
-boolean regExpFieldSpec=!Pattern.matches("\\w+",field);
-sb.append(regExpFieldSpec ? "any field that matches the regular expression" : "the field");
-sb.append(" <b>" + field + "</b> "+ matchType);
-sb.append((regExp ? " the regular expression" : " the term") + " <b>" + term+ "</b>");
-return sb.toString();
 }
 }
