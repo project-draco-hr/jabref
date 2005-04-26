@@ -1,7 +1,16 @@
 import sys
-if ((len(sys.argv) < 2) or (not (sys.argv[1] == '-u'))):
-    changeFiles = 0
+import os
+import re
+if ((len(sys.argv) >= 2) and (sys.argv[1] == '-s')):
+    if ((len(sys.argv) >= 3) and (sys.argv[2] == '-u')):
+        update = 1
+    else:
+        update = 0
+    findNewKeysInJavaCode('resource/JabRef_en.properties', '.', update)
 else:
-    changeFiles = 1
-handleFileSet('JabRef_en.properties', ('JabRef_de.properties', 'JabRef_fr.properties', 'JabRef_no.properties'), changeFiles)
-handleFileSet('Menu_en.properties', ('Menu_de.properties', 'Menu_fr.properties', 'Menu_no.properties'), changeFiles)
+    if ((len(sys.argv) < 2) or (not (sys.argv[1] == '-u'))):
+        changeFiles = 0
+    else:
+        changeFiles = 1
+    handleFileSet('resource/JabRef_en.properties', ('resource/JabRef_de.properties', 'resource/JabRef_fr.properties', 'resource/JabRef_no.properties'), changeFiles)
+    handleFileSet('resource/Menu_en.properties', ('resource/Menu_de.properties', 'resource/Menu_fr.properties', 'resource/Menu_no.properties'), changeFiles)

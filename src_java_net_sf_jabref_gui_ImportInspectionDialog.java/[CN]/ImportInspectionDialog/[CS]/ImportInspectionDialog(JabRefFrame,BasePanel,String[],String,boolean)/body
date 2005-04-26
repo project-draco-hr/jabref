@@ -11,11 +11,13 @@
     int width=o == null ? GUIGlobals.DEFAULT_FIELD_LENGTH : ((Integer)o).intValue();
     table.getColumnModel().getColumn(i + 1).setPreferredWidth(width);
   }
-  table.getColumnModel().getColumn(0).setPreferredWidth(25);
+  table.getColumnModel().getColumn(0).setPreferredWidth(55);
+  table.getColumnModel().getColumn(0).setMaxWidth(55);
   table.setRowSelectionAllowed(true);
-  table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
   previewListener=new TableSelectionListener();
   table.getSelectionModel().addListSelectionListener(previewListener);
+  table.addMouseListener(new TableClickListener());
   getContentPane().setLayout(new BorderLayout());
   progressBar.setIndeterminate(true);
   JPanel centerPan=new JPanel();
@@ -24,17 +26,27 @@
   contentPane.setBottomComponent(new JScrollPane(preview));
   centerPan.add(contentPane,BorderLayout.CENTER);
   centerPan.add(progressBar,BorderLayout.SOUTH);
+  if (!newDatabase) {
+    GroupTreeNode node=panel.metaData().getGroups();
+    groupsAdd.setEnabled(false);
+    insertNodes(groupsAdd,node,true);
+    popup.add(groupsAdd);
+  }
   getContentPane().add(centerPan,BorderLayout.CENTER);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
   bb.addGridded(ok);
   bb.addGridded(stop);
   bb.addGridded(cancel);
+  bb.addRelatedGap();
+  bb.addGridded(help);
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   ButtonStackBuilder builder=new ButtonStackBuilder();
   builder.addGridded(selectAll);
   builder.addGridded(deselectAll);
+  builder.addRelatedGap();
+  builder.addGridded(delete);
   builder.addRelatedGap();
   builder.addGridded(generate);
   builder.getPanel().setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
@@ -47,6 +59,8 @@
   stop.addActionListener(new StopListener());
   selectAll.addActionListener(new SelectionButton(true));
   deselectAll.addActionListener(new SelectionButton(false));
+  delete.addActionListener(new DeleteListener());
+  help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.importInspectionHelp));
   getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   setSize(new Dimension(650,650));
 }

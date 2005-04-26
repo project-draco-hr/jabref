@@ -1,10 +1,12 @@
 {
-  for (Iterator i=entries.iterator(); i.hasNext(); ) {
-    BibtexEntry entry=(BibtexEntry)i.next();
-    this.entries.add(entry);
-    Object[] values=new Object[tableModel.getColumnCount()];
-    values[0]=Boolean.TRUE;
-    for (int j=0; j < fields.length; j++)     values[1 + j]=entry.getField(fields[j]);
-    tableModel.addRow(values);
+synchronized (this.entries) {
+    for (Iterator i=entries.iterator(); i.hasNext(); ) {
+      BibtexEntry entry=(BibtexEntry)i.next();
+      this.entries.add(entry);
+      Object[] values=new Object[tableModel.getColumnCount()];
+      values[0]=Boolean.TRUE;
+      for (int j=0; j < fields.length; j++)       values[1 + j]=entry.getField(fields[j]);
+      tableModel.addRow(values);
+    }
   }
 }

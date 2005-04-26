@@ -1,0 +1,19 @@
+def findNewKeysInJavaCode(mainFile, dir, update):
+    f1 = open(mainFile)
+    lines = f1.readlines()
+    f1.close()
+    keys = indexFile(lines)
+    keyList = traverseFileTree(dir)
+    if update:
+        f1 = open(mainFile, 'a')
+        f1.write('\n')
+    for key in keyList:
+        if (key not in keys):
+            print ('Missing key: ' + key)
+            if update:
+                f1.write((key + '=\n'))
+    for key in keys:
+        if (key not in keyList):
+            print ('Possible redundant key: ' + key)
+    if update:
+        f1.close()

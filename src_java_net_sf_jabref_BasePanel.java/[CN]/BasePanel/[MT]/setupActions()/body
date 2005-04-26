@@ -788,12 +788,13 @@ catch (            Throwable ex) {
 );
   actions.put("togglePreview",new BaseAction(){
     public void action(){
-      previewEnabled=!previewEnabled;
-      if (!previewEnabled)       hidePreview();
+      boolean enabled=!Globals.prefs.getBoolean("previewEnabled");
+      Globals.prefs.putBoolean("previewEnabled",enabled);
+      if (!enabled)       hidePreview();
  else {
         updateViewToSelected();
       }
-      frame.previewToggle.setSelected(previewEnabled);
+      frame.previewToggle.setSelected(enabled);
     }
   }
 );
@@ -801,7 +802,7 @@ catch (            Throwable ex) {
     public void action(){
       if (activePreview < previewPanel.length - 1)       activePreview++;
  else       activePreview=0;
-      if (!previewEnabled)       hidePreview();
+      if (!Globals.prefs.getBoolean("previewEnabled"))       hidePreview();
  else {
         updateViewToSelected();
       }
