@@ -1,0 +1,14 @@
+{
+  if (!(group instanceof KeywordGroup))   return true;
+  KeywordGroup kg=(KeywordGroup)group;
+  String field=kg.getSearchField().toLowerCase();
+  if (field.equals("keywords"))   return true;
+  for (int i=0; i < GUIGlobals.ALL_FIELDS.length; ++i) {
+    if (field.equals(GUIGlobals.ALL_FIELDS[i])) {
+      String message=Globals.lang("This action will modify the \"%0\" field " + "of your entries.\nThis could cause undesired changes to " + "your entries, so it\nis recommended that you change the field "+ "in your group\ndefinition to \"keywords\" or a non-standard name."+ "\n\nDo you still want to continue?",field);
+      int choice=JOptionPane.showConfirmDialog(basePanel,message,Globals.lang("Warning"),JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+      return choice != JOptionPane.NO_OPTION;
+    }
+  }
+  return true;
+}
