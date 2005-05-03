@@ -1,5 +1,6 @@
 {
-  AbstractUndoableEdit undo=m_node.removeSelectionFromGroup(panel);
+  if (!Util.warnAssignmentSideEffects(m_node.getGroup(),panel.frame))   return;
+  AbstractUndoableEdit undo=m_node.removeFromGroup(panel.getSelectedEntries());
   if (undo == null)   return;
   panel.undoManager.addEdit(undo);
   panel.refreshTable();
