@@ -39,7 +39,8 @@
       for (int i=0; i < entries.length; ++i) {
         if (!target.getGroup().contains(entries[i]))         ++assignedEntries;
       }
-      AbstractUndoableEdit undo=group.addSelection(selection.getSelection());
+      if (!Util.warnAssignmentSideEffects(group,groupSelector.frame))       return;
+      AbstractUndoableEdit undo=group.add(selection.getSelection());
       if (undo instanceof UndoableChangeAssignment)       ((UndoableChangeAssignment)undo).setEditedNode(target);
       dtde.getDropTargetContext().dropComplete(true);
       groupSelector.revalidateGroups();
