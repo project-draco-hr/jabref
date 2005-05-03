@@ -1,12 +1,13 @@
 {
   if (bibentries == null || bibentries.size() == 0) {
     JOptionPane.showMessageDialog(ths,Globals.lang("No entries found. Please make sure you are " + "using the correct import filter."),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
-    return;
+    return 0;
   }
+  int addedEntries=0;
   if (prefs.getBoolean("useOwner"))   Util.setDefaultOwner(bibentries,prefs.get("defaultOwner"));
   if (bibentries == null) {
-    output(Globals.lang("Ne entries imported."));
-    return;
+    output(Globals.lang("No entries imported."));
+    return 0;
   }
   if (intoNew || (tabbedPane.getTabCount() == 0)) {
     BibtexDatabase database=new BibtexDatabase();
@@ -23,6 +24,7 @@
     }
     HashMap meta=new HashMap();
     BasePanel bp=new BasePanel(ths,database,null,meta,prefs);
+    addedEntries=database.getEntryCount();
     tabbedPane.add(Globals.lang("untitled"),bp);
     bp.markBaseChanged();
     tabbedPane.setSelectedComponent(bp);
@@ -48,7 +50,9 @@
             DuplicateResolverDialog drd=new DuplicateResolverDialog(ths,existingEntry,entry,DuplicateResolverDialog.IMPORT_CHECK);
             drd.setVisible(true);
             int res=drd.getSelected();
-            if (res == drd.KEEP_LOWER)             dupli=true;
+            if (res == drd.KEEP_LOWER) {
+              dupli=true;
+            }
  else             if (res == drd.KEEP_UPPER) {
               database.removeEntry(existingEntry.getId());
               ce.addEdit(new UndoableRemoveEntry(database,existingEntry,basePanel));
@@ -65,16 +69,20 @@
           entry.setId(Util.createId(entry.getType(),database));
           database.insertEntry(entry);
           ce.addEdit(new UndoableInsertEntry(database,entry,basePanel));
+          addedEntries++;
         }
  catch (        KeyCollisionException ex) {
           System.err.println("KeyCollisionException [ addBibEntries(...) ]");
         }
       }
     }
-    ce.end();
-    basePanel.undoManager.addEdit(ce);
-    basePanel.markBaseChanged();
-    basePanel.refreshTable();
-    if (filename != null)     output(Globals.lang("Imported database") + " '" + filename+ "' "+ Globals.lang("with")+ " "+ (database.getEntryCount() - oldCount)+ " "+ Globals.lang("entries into new database")+ ".");
+    if (addedEntries > 0) {
+      ce.end();
+      basePanel.undoManager.addEdit(ce);
+      basePanel.markBaseChanged();
+      basePanel.refreshTable();
+      if (filename != null)       output(Globals.lang("Imported database") + " '" + filename+ "' "+ Globals.lang("with")+ " "+ (database.getEntryCount() - oldCount)+ " "+ Globals.lang("entries into new database")+ ".");
+    }
   }
+  return addedEntries;
 }
