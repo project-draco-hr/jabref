@@ -11,11 +11,25 @@
     splitPane.setBottomComponent(null);
     return;
   }
-  if (previewPanel[activePreview] == null) {
+  boolean newPreviewPanel=previewPanel[activePreview] == null;
+  if (newPreviewPanel) {
     previewPanel[activePreview]=new PreviewPanel(database,be,prefs.get("preview" + activePreview));
   }
  else   previewPanel[activePreview].setEntry(be);
-  splitPane.setBottomComponent(previewPanel[activePreview].getPane());
-  int prevSize=Math.min(splitPane.getHeight() / 2,previewPanel[activePreview].getPane().getPreferredSize().height + GUIGlobals.PREVIEW_PANEL_PADDING);
-  splitPane.setDividerLocation(splitPane.getHeight() - prevSize);
+  boolean resizePreview=false;
+  if (splitPane.getBottomComponent() == null || splitPane.getBottomComponent() != previewPanel[activePreview].getPane()) {
+    resizePreview=true;
+    splitPane.setBottomComponent(previewPanel[activePreview].getPane());
+  }
+  if (!resizePreview)   resizePreview=previewPanel[activePreview].getPane().getPreferredSize().height >= splitPane.getHeight();
+  if (!resizePreview) {
+    if (splitPane.getDividerLocation() <= 0) {
+      resizePreview=true;
+    }
+  }
+  if (newPreviewPanel || resizePreview) {
+    int prevSize;
+    prevSize=GUIGlobals.PREVIEW_PANEL_HEIGHT;
+    splitPane.setDividerLocation(splitPane.getHeight() - prevSize);
+  }
 }
