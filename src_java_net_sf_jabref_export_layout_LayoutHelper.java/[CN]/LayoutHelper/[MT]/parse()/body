@@ -3,6 +3,7 @@
   int c;
   StringBuffer buffer=null;
   int previous=-1;
+  boolean justParsedTag=false;
   while (!_eof) {
     c=read();
     if (c == -1) {
@@ -10,14 +11,16 @@
       parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
       return null;
     }
-    if ((c == '\\') && (peek() != '\\') && (previous != '\\')) {
+    if ((c == '\\') && (peek() != '\\') && (justParsedTag || (previous != '\\'))) {
       if (buffer != null) {
         parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
         buffer=null;
       }
       parseField();
+      justParsedTag=true;
     }
  else {
+      justParsedTag=false;
       if (buffer == null) {
         buffer=new StringBuffer(100);
       }
