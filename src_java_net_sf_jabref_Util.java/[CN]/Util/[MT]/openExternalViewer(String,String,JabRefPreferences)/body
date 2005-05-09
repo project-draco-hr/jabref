@@ -11,10 +11,14 @@
     String dir=prefs.get("pdfDirectory");
     file=expandFilename(link,dir);
   }
+ else   if (fieldName.equals("ps")) {
+    String dir=prefs.get("psDirectory");
+    file=expandFilename(link,dir);
+  }
  else   file=new File(link);
   if (fieldName.equals("ps") || fieldName.equals("pdf")) {
     if ((file == null) || !file.exists()) {
-      throw new IOException(Globals.lang("File not found") + ": '" + link+ "'.");
+      throw new IOException(Globals.lang("File not found") + " (" + fieldName+ "): '"+ link+ "'.");
     }
     link=file.getPath();
     String[] split=file.getName().split("\\.");
