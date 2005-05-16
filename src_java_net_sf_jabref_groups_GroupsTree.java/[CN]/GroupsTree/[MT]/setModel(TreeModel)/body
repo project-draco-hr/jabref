@@ -1,0 +1,11 @@
+{
+  super.setModel(newModel);
+  Object root=newModel.getRoot();
+  if (root == null)   return;
+  GroupTreeNode cursor;
+  if (!(root instanceof GroupTreeNode))   return;
+  for (Enumeration e=((GroupTreeNode)root).preorderEnumeration(); e.hasMoreElements(); ) {
+    cursor=(GroupTreeNode)e.nextElement();
+    if (cursor.isExpanded)     expandPath(new TreePath(cursor.getPath()));
+  }
+}
