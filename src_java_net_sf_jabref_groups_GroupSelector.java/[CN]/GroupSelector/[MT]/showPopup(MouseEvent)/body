@@ -1,25 +1,35 @@
 {
-  TreePath path=groupsTree.getPathForLocation(e.getPoint().x,e.getPoint().y);
-  if (path == null)   return;
-  groupsTree.setSelectionPath(path);
-  GroupTreeNode node=(GroupTreeNode)path.getLastPathComponent();
-  AbstractGroup group=node.getGroup();
-  if (group instanceof AllEntriesGroup) {
-    editGroupAction.setEnabled(false);
-    addGroupAction.setEnabled(false);
-    removeGroupAndSubgroupsAction.setEnabled(false);
-    removeGroupKeepSubgroupsAction.setEnabled(false);
-  }
+  final TreePath path=groupsTree.getPathForLocation(e.getPoint().x,e.getPoint().y);
+  addGroupAction.setEnabled(path != null);
+  addSubgroupAction.setEnabled(path != null);
+  editGroupAction.setEnabled(path != null);
+  removeGroupAndSubgroupsAction.setEnabled(path != null);
+  removeGroupKeepSubgroupsAction.setEnabled(path != null);
+  moveSubmenu.setEnabled(path != null);
+  expandSubtreeAction.setEnabled(path != null);
+  collapseSubtreeAction.setEnabled(path != null);
+  showOverlappingGroupsAction.setEnabled(path != null);
+  if (path != null) {
+    groupsTree.setSelectionPath(path);
+    GroupTreeNode node=(GroupTreeNode)path.getLastPathComponent();
+    AbstractGroup group=node.getGroup();
+    if (group instanceof AllEntriesGroup) {
+      editGroupAction.setEnabled(false);
+      addGroupAction.setEnabled(false);
+      removeGroupAndSubgroupsAction.setEnabled(false);
+      removeGroupKeepSubgroupsAction.setEnabled(false);
+    }
  else {
-    editGroupAction.setEnabled(true);
-    addGroupAction.setEnabled(true);
-    removeGroupAndSubgroupsAction.setEnabled(true);
-    removeGroupKeepSubgroupsAction.setEnabled(true);
+      editGroupAction.setEnabled(true);
+      addGroupAction.setEnabled(true);
+      removeGroupAndSubgroupsAction.setEnabled(true);
+      removeGroupKeepSubgroupsAction.setEnabled(true);
+    }
+    moveNodeUpAction.setEnabled(node.canMoveUp());
+    moveNodeDownAction.setEnabled(node.canMoveDown());
+    moveNodeLeftAction.setEnabled(node.canMoveLeft());
+    moveNodeRightAction.setEnabled(node.canMoveRight());
+    moveSubmenu.setEnabled(moveNodeUpAction.isEnabled() || moveNodeDownAction.isEnabled() || moveNodeLeftAction.isEnabled()|| moveNodeRightAction.isEnabled());
   }
-  moveNodeUpAction.setEnabled(node.canMoveUp());
-  moveNodeDownAction.setEnabled(node.canMoveDown());
-  moveNodeLeftAction.setEnabled(node.canMoveLeft());
-  moveNodeRightAction.setEnabled(node.canMoveRight());
-  moveSubmenu.setEnabled(moveNodeUpAction.isEnabled() || moveNodeDownAction.isEnabled() || moveNodeLeftAction.isEnabled()|| moveNodeRightAction.isEnabled());
   groupsContextMenu.show(groupsTree,e.getPoint().x,e.getPoint().y);
 }

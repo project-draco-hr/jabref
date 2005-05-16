@@ -1,0 +1,31 @@
+{
+  GroupTreeNode node;
+  AbstractGroup group;
+  Vector vec=new Vector();
+  for (Enumeration e=groupsRoot.preorderEnumeration(); e.hasMoreElements(); ) {
+    node=(GroupTreeNode)e.nextElement();
+    group=node.getGroup();
+    for (int i=0; i < entries.length; ++i) {
+      if (requireAll) {
+        if (!group.contains(entries[i])) {
+          System.out.println("NOT adding node: " + group.getName());
+          break;
+        }
+      }
+ else {
+        if (group.contains(entries[i])) {
+          System.out.println("adding node: " + group.getName());
+          vec.add(node);
+        }
+      }
+    }
+  }
+  TreeCellRenderer renderer=groupsTree.getCellRenderer();
+  if (!(renderer instanceof GroupTreeCellRenderer))   return;
+  ((GroupTreeCellRenderer)renderer).setHighlight2Cells(vec.toArray());
+  for (int i=0; i < vec.size(); ++i) {
+    node=(GroupTreeNode)((GroupTreeNode)vec.elementAt(i)).getParent();
+    if (node != null)     groupsTree.expandPath(new TreePath(node.getPath()));
+  }
+  groupsTree.revalidate();
+}
