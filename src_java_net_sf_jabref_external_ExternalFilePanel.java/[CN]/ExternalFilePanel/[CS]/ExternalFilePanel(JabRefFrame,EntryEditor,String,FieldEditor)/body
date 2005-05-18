@@ -1,4 +1,5 @@
 {
+  this.frame=frame;
   this.entryEditor=entryEditor;
   setLayout(new GridLayout(3,1));
   browseBut=new JButton(Globals.lang("Browse"));
@@ -6,28 +7,8 @@
   auto=new JButton(Globals.lang("Auto"));
   browseBut.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      String directory=Globals.prefs.get(fieldName + "Directory");
-      if ((directory != null) && directory.equals(""))       directory=null;
-      String dir=editor.getText();
-      if ((directory == null) || !(new File(dir)).isAbsolute()) {
-        if (directory != null)         dir=directory;
- else         dir=Globals.prefs.get(fieldName + Globals.FILETYPE_PREFS_EXT,"");
-      }
-      String chosenFile=Globals.getNewFile(frame,Globals.prefs,new File(dir),"." + fieldName,JFileChooser.OPEN_DIALOG,false);
-      if (chosenFile != null) {
-        File newFile=new File(chosenFile);
-        String position=newFile.getParent();
-        if ((directory != null) && position.startsWith(directory)) {
-          String relPath=position.substring(directory.length(),position.length()) + File.separator + newFile.getName();
-          if (relPath.startsWith(File.separator)) {
-            relPath=relPath.substring(File.separator.length(),relPath.length());
-          }
-          editor.setText(relPath);
-        }
- else         editor.setText(newFile.getPath());
-        Globals.prefs.put(fieldName + Globals.FILETYPE_PREFS_EXT,newFile.getPath());
-        entryEditor.storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
-      }
+      browseFile(fieldName,editor);
+      entryEditor.storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
     }
   }
 );
@@ -45,7 +26,7 @@ class Downloader extends Thread {
             try {
               url=new URL(res);
               String plannedName=null;
-              if (entryEditor.entry.getField(Globals.KEY_FIELD) != null)               plannedName=entryEditor.entry.getField(Globals.KEY_FIELD) + "." + fieldName;
+              if (getKey() != null)               plannedName=getKey() + "." + fieldName;
  else {
                 plannedName=JOptionPane.showInputDialog((Component)editor,Globals.lang("BibTeX key not set. Enter a name for the downloaded file"));
                 if (plannedName == null)                 return;
@@ -53,7 +34,7 @@ class Downloader extends Thread {
               }
               File file=new File(new File(Globals.prefs.get(fieldName + "Directory")),plannedName);
               URLDownload udl=new URLDownload((Component)editor,url,file);
-              frame.output(Globals.lang("Downloading..."));
+              output(Globals.lang("Downloading..."));
               try {
                 udl.download();
               }
@@ -61,7 +42,7 @@ class Downloader extends Thread {
                 JOptionPane.showMessageDialog((Component)editor,Globals.lang("Invalid URL"),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
                 Globals.logger("Error while downloading " + url.toString());
               }
-              frame.output(Globals.lang("Download completed"));
+              output(Globals.lang("Download completed"));
               String filename=file.getPath();
               System.out.println(filename);
               String directory=Globals.prefs.get(fieldName + "Directory");
@@ -93,23 +74,23 @@ class Downloader extends Thread {
 );
   auto.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      Object o=entryEditor.entry.getField(Globals.KEY_FIELD);
+      Object o=getKey();
       if ((o == null) || (Globals.prefs.get(fieldName + "Directory") == null)) {
-        frame.output(Globals.lang("You must set both bibtex key and %0 directory",fieldName.toUpperCase()) + ".");
+        output(Globals.lang("You must set both bibtex key and %0 directory",fieldName.toUpperCase()) + ".");
         return;
       }
-      frame.output(Globals.lang("Searching for %0 file",fieldName.toUpperCase()) + " '" + o+ "."+ fieldName+ "'...");
+      output(Globals.lang("Searching for %0 file",fieldName.toUpperCase()) + " '" + o+ "."+ fieldName+ "'...");
       (new Thread(){
         public void run(){
-          Object o=entryEditor.entry.getField(Globals.KEY_FIELD);
+          Object o=getKey();
           String found=Util.findPdf((String)o,fieldName,Globals.prefs.get(fieldName + "Directory"));
           if (found != null) {
             editor.setText(found);
             entryEditor.updateField(editor);
-            frame.output(Globals.lang("%0 field set",fieldName.toUpperCase()) + ".");
+            output(Globals.lang("%0 field set",fieldName.toUpperCase()) + ".");
           }
  else {
-            frame.output(Globals.lang("No %0 found",fieldName.toUpperCase()) + ".");
+            output(Globals.lang("No %0 found",fieldName.toUpperCase()) + ".");
           }
         }
       }
@@ -120,5 +101,5 @@ class Downloader extends Thread {
   add(browseBut);
   add(auto);
   add(download);
-  ((JComponent)editor).setDropTarget(new DropTarget((Component)editor,DnDConstants.ACTION_NONE,new UrlDragDrop(entryEditor,frame,editor)));
+  if (editor != null)   ((JComponent)editor).setDropTarget(new DropTarget((Component)editor,DnDConstants.ACTION_NONE,new UrlDragDrop(entryEditor,frame,editor)));
 }
