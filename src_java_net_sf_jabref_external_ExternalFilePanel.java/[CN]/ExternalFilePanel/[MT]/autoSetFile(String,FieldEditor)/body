@@ -1,17 +1,17 @@
 {
   Object o=getKey();
   if ((o == null) || (Globals.prefs.get(fieldName + "Directory") == null)) {
-    output(Globals.lang("You must set both bibtex key and %0 directory",fieldName.toUpperCase()) + ".");
-    return;
+    output(Globals.lang("You must set both BibTeX key and %0 directory",fieldName.toUpperCase()) + ".");
+    return null;
   }
   output(Globals.lang("Searching for %0 file",fieldName.toUpperCase()) + " '" + o+ "."+ fieldName+ "'...");
-  (new Thread(){
+  Thread t=(new Thread(){
     public void run(){
       Object o=getKey();
       String found=Util.findPdf((String)o,fieldName,Globals.prefs.get(fieldName + "Directory"));
       if (found != null) {
         editor.setText(found);
-        entryEditor.updateField(editor);
+        if (entryEditor != null)         entryEditor.updateField(editor);
         output(Globals.lang("%0 field set",fieldName.toUpperCase()) + ".");
       }
  else {
@@ -19,5 +19,7 @@
       }
     }
   }
-).start();
+);
+  t.start();
+  return t;
 }
