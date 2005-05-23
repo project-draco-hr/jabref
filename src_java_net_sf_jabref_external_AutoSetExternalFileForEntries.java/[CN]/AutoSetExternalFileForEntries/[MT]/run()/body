@@ -6,14 +6,34 @@
   NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
   ExternalFilePanel extPan=new ExternalFilePanel(fieldName,null);
   FieldTextField editor=new FieldTextField(fieldName,"",false);
-  mainLoop:   for (int i=0; i < sel.length; i++) {
-    final Object old=sel[i].getField(fieldName);
-    if ((old != null) && !((String)old).equals("")) {
-      if (checkExisting) {
-        File file=new File((String)old);
-        if (!file.exists()) {
-          System.out.println("Broken link: " + file.getPath());
-          int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{file.getPath(),sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+  String dir=Globals.prefs.get(fieldName + "Directory");
+  if (autoSet) {
+    for (int i=0; i < sel.length; i++) {
+      final Object old=sel[i].getField(fieldName);
+      if ((old != null) && !old.equals("") && !overWriteAllowed)       continue;
+      extPan.setEntry(sel[i]);
+      editor.setText((old != null) ? (String)old : "");
+      Thread t=extPan.autoSetFile(fieldName,editor);
+      if (t != null)       try {
+        t.join();
+      }
+ catch (      InterruptedException e) {
+        e.printStackTrace();
+      }
+      if (!editor.getText().equals("") && !editor.getText().equals(old)) {
+        ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,editor.getText()));
+        sel[i].setField(fieldName,editor.getText());
+        entriesChanged++;
+      }
+    }
+  }
+  if (checkExisting) {
+    mainLoop:     for (int i=0; i < sel.length; i++) {
+      final Object old=sel[i].getField(fieldName);
+      if ((old != null) && !((String)old).equals("")) {
+        File file=Util.expandFilename((String)old,dir);
+        if ((file == null) || !file.exists()) {
+          int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{(String)old,sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
 switch (answer) {
 case 1:
             AttachFileDialog afd=new AttachFileDialog(panel.frame(),sel[i],fieldName);
@@ -36,26 +56,6 @@ break mainLoop;
 brokenLinks++;
 }
 continue;
-}
- else if (!overWriteAllowed) {
-skipped++;
-continue;
-}
-}
- else {
-extPan.setEntry(sel[i]);
-editor.setText((old != null) ? (String)old : "");
-Thread t=extPan.autoSetFile(fieldName,editor);
-if (t != null) try {
-t.join();
-}
- catch (InterruptedException e) {
-e.printStackTrace();
-}
-if (!editor.getText().equals("") && !editor.getText().equals(old)) {
-ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,editor.getText()));
-sel[i].setField(fieldName,editor.getText());
-entriesChanged++;
 }
 }
 }

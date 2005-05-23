@@ -1,0 +1,44 @@
+{
+  super(parent,Globals.lang("Synchronize "),true);
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      canceled=false;
+      dispose();
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+  fieldName=fieldName.toUpperCase();
+  autoSetUnset=new JRadioButton(Globals.lang("Autoset %0 links. Do not overwrite existing links.",fieldName),true);
+  autoSetAll=new JRadioButton(Globals.lang("Autoset %0 links. Allow overwriting existing links.",fieldName),false);
+  autoSetNone=new JRadioButton(Globals.lang("Do not autoset"),false);
+  checkLinks=new JCheckBox(Globals.lang("Check existing %0 links",fieldName),true);
+  ButtonGroup bg=new ButtonGroup();
+  bg.add(autoSetUnset);
+  bg.add(autoSetNone);
+  bg.add(autoSetAll);
+  FormLayout layout=new FormLayout("fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  builder.append(checkLinks);
+  builder.nextLine();
+  builder.appendSeparator();
+  builder.append(autoSetUnset);
+  builder.nextLine();
+  builder.append(autoSetAll);
+  builder.nextLine();
+  builder.append(autoSetNone);
+  builder.nextLine();
+  JPanel main=builder.getPanel();
+  main.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGridded(ok);
+  bb.addGridded(cancel);
+  getContentPane().add(main,BorderLayout.CENTER);
+  getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  pack();
+}

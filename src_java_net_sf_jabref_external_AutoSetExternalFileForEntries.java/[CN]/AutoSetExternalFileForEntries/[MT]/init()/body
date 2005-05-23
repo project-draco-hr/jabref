@@ -1,8 +1,19 @@
 {
-  sel=panel.getSelectedEntries();
+  panel.database().getEntries();
+  sel=(BibtexEntry[])panel.database().getEntries().toArray(new BibtexEntry[0]);
   if (sel.length < 1) {
     goOn=false;
     return;
   }
-  panel.output(Globals.lang("Autosetting %0 field...",fieldName));
+  if (optDiag == null)   optDiag=new OptionsDialog(panel.frame(),fieldName);
+  Util.placeDialog(optDiag,panel.frame());
+  optDiag.setVisible(true);
+  if (optDiag.canceled()) {
+    goOn=false;
+    return;
+  }
+  autoSet=!optDiag.autoSetNone.isSelected();
+  overWriteAllowed=optDiag.autoSetAll.isSelected();
+  checkExisting=optDiag.checkLinks.isSelected();
+  panel.output(Globals.lang("Synchronizing %0 links...",fieldName.toUpperCase()));
 }
