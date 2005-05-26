@@ -5,18 +5,14 @@
   AbstractGroup group;
   int spaceIndex;
   int level;
-  boolean expanded;
   String s;
   for (int i=0; i < data.size(); ++i) {
     s=data.elementAt(i).toString();
     spaceIndex=s.indexOf(' ');
     if (spaceIndex <= 0)     throw new Exception("bad format");
     level=Integer.parseInt(s.substring(0,spaceIndex));
-    expanded=s.charAt(spaceIndex + 1) == '-';
-    spaceIndex+=2;
     group=AbstractGroup.fromString(s.substring(spaceIndex + 1),db,version);
     newNode=new GroupTreeNode(group);
-    newNode.isExpanded=expanded;
     if (cursor == null) {
       cursor=newNode;
       root=cursor;
