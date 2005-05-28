@@ -513,14 +513,20 @@ catch (            Throwable ex) {
           String encoding=Globals.prefs.get("defaultEncoding");
           ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen,encoding);
           BibtexDatabase db=pr.getDatabase();
-          MetaData meta=new MetaData(pr.getMetaData(),database());
+          MetaData meta=new MetaData(pr.getMetaData(),pr.getDatabase());
           NamedCompound ce=new NamedCompound(Globals.lang("Append database"));
+          Vector appendedEntries=new Vector();
+          Vector originalEntries=new Vector();
+          BibtexEntry originalEntry;
           if (importEntries) {
             Iterator i=db.getKeySet().iterator();
             while (i.hasNext()) {
-              BibtexEntry be=(BibtexEntry)(db.getEntryById((String)i.next()).clone());
+              originalEntry=db.getEntryById((String)i.next());
+              BibtexEntry be=(BibtexEntry)(originalEntry.clone());
               be.setId(Util.createNeutralId());
               database.insertEntry(be);
+              appendedEntries.add(be);
+              originalEntries.add(originalEntry);
               ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
             }
           }
@@ -539,8 +545,27 @@ catch (            Throwable ex) {
           if (importGroups) {
             GroupTreeNode newGroups=meta.getGroups();
             if (newGroups != null) {
-              if (newGroups.getGroup() instanceof AllEntriesGroup)               newGroups.setGroup(new ExplicitGroup("Imported Groups"));
+              if (newGroups.getGroup() instanceof AllEntriesGroup) {
+                ExplicitGroup group=new ExplicitGroup("Imported");
+                newGroups.setGroup(group);
+                for (int i=0; i < appendedEntries.size(); ++i)                 group.addEntry((BibtexEntry)appendedEntries.elementAt(i));
+              }
               frame.groupSelector.addGroups(newGroups,ce);
+              GroupTreeNode node;
+              ExplicitGroup group;
+              BibtexEntry entry;
+              for (Enumeration e=newGroups.preorderEnumeration(); e.hasMoreElements(); ) {
+                node=(GroupTreeNode)e.nextElement();
+                if (!(node.getGroup() instanceof ExplicitGroup))                 continue;
+                group=(ExplicitGroup)node.getGroup();
+                for (int i=0; i < originalEntries.size(); ++i) {
+                  entry=(BibtexEntry)originalEntries.elementAt(i);
+                  if (group.contains(entry)) {
+                    group.removeEntry(entry);
+                    group.addEntry((BibtexEntry)appendedEntries.elementAt(i));
+                  }
+                }
+              }
               frame.groupSelector.revalidateGroups();
             }
           }
