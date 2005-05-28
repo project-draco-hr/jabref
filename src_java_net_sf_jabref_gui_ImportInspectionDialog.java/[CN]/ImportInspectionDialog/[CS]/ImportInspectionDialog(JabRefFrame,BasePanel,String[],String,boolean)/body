@@ -5,6 +5,7 @@
   this.undoName=undoName;
   this.newDatabase=newDatabase;
   tableModel.addColumn(Globals.lang("Keep"));
+  DeleteListener deleteListener=new DeleteListener();
   for (int i=0; i < fields.length; i++) {
     tableModel.addColumn(Util.nCase(fields[i]));
     Object o=GUIGlobals.fieldLength.get(fields[i]);
@@ -26,6 +27,8 @@
   contentPane.setBottomComponent(new JScrollPane(preview));
   centerPan.add(contentPane,BorderLayout.CENTER);
   centerPan.add(progressBar,BorderLayout.SOUTH);
+  popup.add(deleteListener);
+  popup.addSeparator();
   if (!newDatabase) {
     GroupTreeNode node=panel.metaData().getGroups();
     groupsAdd.setEnabled(false);
@@ -60,7 +63,7 @@
   stop.addActionListener(new StopListener());
   selectAll.addActionListener(new SelectionButton(true));
   deselectAll.addActionListener(new SelectionButton(false));
-  delete.addActionListener(new DeleteListener());
+  delete.addActionListener(deleteListener);
   help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.importInspectionHelp));
   getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   setSize(new Dimension(650,650));

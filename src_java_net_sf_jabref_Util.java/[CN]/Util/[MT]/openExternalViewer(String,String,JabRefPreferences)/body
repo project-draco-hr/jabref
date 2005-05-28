@@ -1,34 +1,28 @@
 {
-  File file;
-  if (fieldName.equals("pdf")) {
-    String dir=prefs.get("pdfDirectory");
-    file=expandFilename(link,dir);
-  }
- else   if (fieldName.equals("ps")) {
-    String dir=prefs.get("psDirectory");
-    file=expandFilename(link,dir);
-  }
- else   file=new File(link);
   if (fieldName.equals("ps") || fieldName.equals("pdf")) {
+    File file=expandFilename(link,prefs.get(fieldName + "Directory"));
     if ((file == null) || !file.exists()) {
       throw new IOException(Globals.lang("File not found") + " (" + fieldName+ "): '"+ link+ "'.");
     }
     link=file.getPath();
     String[] split=file.getName().split("\\.");
-    if ((split.length >= 2) && (split[split.length - 1].equalsIgnoreCase("pdf")))     fieldName="pdf";
- else     if ((split.length >= 2) && (split[split.length - 1].equalsIgnoreCase("ps")))     fieldName="ps";
+    if (split.length >= 2) {
+      if (split[split.length - 1].equalsIgnoreCase("pdf"))       fieldName="pdf";
+ else       if (split[split.length - 1].equalsIgnoreCase("ps") || (split.length >= 3 && split[split.length - 2].equalsIgnoreCase("ps")))       fieldName="ps";
+    }
   }
-  String cmdArray[]=new String[2];
-  if (fieldName.equals("doi")) {
+ else   if (fieldName.equals("doi")) {
     fieldName="url";
     link=Globals.DOI_LOOKUP_PREFIX + link;
   }
-  if (fieldName.equals("url") || fieldName.equals("citeseerurl")) {
+ else   if (fieldName.equals("citeseerurl")) {
+    fieldName="url";
+    String canonicalLink=CiteSeerFetcher.generateCanonicalURL(link);
+    if (canonicalLink != null)     link=canonicalLink;
+  }
+  String cmdArray[]=new String[2];
+  if (fieldName.equals("url")) {
     try {
-      if (fieldName.equals("citeseerurl")) {
-        String canonicalLink=CiteSeerFetcher.generateCanonicalURL(link);
-        if (canonicalLink != null)         link=canonicalLink;
-      }
       if (link.startsWith("\\url{") && link.endsWith("}"))       link=link.substring(5,link.length() - 1);
       if (Globals.ON_MAC) {
         String[] cmd={"/usr/bin/open","-a",prefs.get("htmlviewer"),link};
@@ -72,7 +66,6 @@
   }
  else   if (fieldName.equals("pdf")) {
     try {
-      System.err.println("Starting external viewer: " + prefs.get("pdfviewer") + " "+ link);
       if (Globals.ON_MAC) {
         String[] cmd={"/usr/bin/open","-a",prefs.get("pdfviewer"),link};
         Process child=Runtime.getRuntime().exec(cmd);

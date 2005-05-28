@@ -10,12 +10,14 @@ class Downloader extends Thread {
         URL url;
         try {
           url=new URL(res);
+          String suffix=off.getSuffix(res);
+          if (suffix == null)           suffix="." + fieldName.toLowerCase();
           String plannedName=null;
-          if (getKey() != null)           plannedName=getKey() + "." + fieldName;
+          if (getKey() != null)           plannedName=getKey() + suffix;
  else {
             plannedName=JOptionPane.showInputDialog(parent,Globals.lang("BibTeX key not set. Enter a name for the downloaded file"));
             if (plannedName == null)             return;
-            if (!plannedName.substring(4).equals("." + fieldName))             plannedName+="." + fieldName;
+            if (!off.accept(plannedName))             plannedName+=suffix;
           }
           File file=new File(new File(Globals.prefs.get(fieldName + "Directory")),plannedName);
           URLDownload udl=new URLDownload(parent,url,file);
