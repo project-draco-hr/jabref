@@ -1,5 +1,8 @@
 {
-  if (containedInExplicitGroup(entry)) {
-    JOptionPane.showMessageDialog(frame,"Groups assignment for this entry cannot be restored after next load due to lacking key",Globals.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+  panel.output(Globals.lang("Warning") + ": " + Globals.lang("Empty BibTeX key."));
+  if (prefs.getBoolean("dialogWarningForEmptyKey")) {
+    CheckBoxMessage jcb=new CheckBoxMessage(Globals.lang("Warning") + ": " + Globals.lang("Empty BibTeX key. Grouping may not work for this entry."),Globals.lang("Disable this warning dialog"),false);
+    JOptionPane.showMessageDialog(frame,jcb,Globals.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+    if (jcb.isSelected())     prefs.putBoolean("dialogWarningForEmptyKey",false);
   }
 }

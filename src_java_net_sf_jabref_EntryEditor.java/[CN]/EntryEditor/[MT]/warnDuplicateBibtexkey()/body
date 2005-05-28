@@ -1,13 +1,8 @@
 {
-  panel.output(Globals.lang("Warning") + ": " + Globals.lang("duplicate BibTeX key."));
+  panel.output(Globals.lang("Warning") + ": " + Globals.lang("Duplicate BibTeX key."));
   if (prefs.getBoolean("dialogWarningForDuplicateKey")) {
-    CheckBoxMessage jcb=new CheckBoxMessage(Globals.lang("Warning") + ": " + Globals.lang("duplicate BibTeX key."),Globals.lang("Disable this warning dialog"),false);
+    CheckBoxMessage jcb=new CheckBoxMessage(Globals.lang("Warning") + ": " + Globals.lang("Duplicate BibTeX key. Grouping may not work for this entry."),Globals.lang("Disable this warning dialog"),false);
     JOptionPane.showMessageDialog(frame,jcb,Globals.lang("Warning"),JOptionPane.WARNING_MESSAGE);
     if (jcb.isSelected())     prefs.putBoolean("dialogWarningForDuplicateKey",false);
-    if (containedInExplicitGroup(entry)) {
-      String[] options=new String[]{"Generate Unique Key","Keep Duplicate Key"};
-      int choice=JOptionPane.showOptionDialog(frame,Globals.lang("Due to the duplicate BibTeX key, the groups assignment(s) for this entry\n" + "cannot be restored correctly when reopening this database. It is recommended\n" + "that you have JabRef generate a unique key now to prevent this problem."),Globals.lang("Warning"),JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE,null,options,options[0]);
-      if (choice == 0)       generateKeyAction.actionPerformed(null);
-    }
   }
 }
