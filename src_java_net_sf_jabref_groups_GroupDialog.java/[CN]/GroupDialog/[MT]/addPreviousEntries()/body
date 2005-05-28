@@ -2,8 +2,14 @@
   int i=JOptionPane.showConfirmDialog(m_basePanel.frame(),Globals.lang("Assign the original group's entries to this group?"),Globals.lang("Change of Grouping Method"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
   if (i == JOptionPane.NO_OPTION)   return;
   BibtexEntry entry;
+  Vector vec=new Vector();
   for (Iterator it=m_basePanel.database().getEntries().iterator(); it.hasNext(); ) {
     entry=(BibtexEntry)it.next();
-    if (m_editedGroup.contains(entry))     ((ExplicitGroup)m_resultingGroup).addEntry(entry);
+    if (m_editedGroup.contains(entry))     vec.add(entry);
+  }
+  if (vec.size() > 0) {
+    BibtexEntry[] entries=new BibtexEntry[vec.size()];
+    vec.toArray(entries);
+    if (!(m_resultingGroup instanceof ExplicitGroup))     m_undoAddPreviousEntires=m_resultingGroup.add(entries);
   }
 }
