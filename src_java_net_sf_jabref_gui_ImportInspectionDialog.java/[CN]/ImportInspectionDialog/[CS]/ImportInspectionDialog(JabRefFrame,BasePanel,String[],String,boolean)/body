@@ -5,17 +5,18 @@
   this.undoName=undoName;
   this.newDatabase=newDatabase;
   tableModel.addColumn(Globals.lang("Keep"));
+  tableModel.addColumn("");
+  tableModel.addColumn("");
   DeleteListener deleteListener=new DeleteListener();
   for (int i=0; i < fields.length; i++) {
     tableModel.addColumn(Util.nCase(fields[i]));
-    Object o=GUIGlobals.fieldLength.get(fields[i]);
-    int width=o == null ? GUIGlobals.DEFAULT_FIELD_LENGTH : ((Integer)o).intValue();
-    table.getColumnModel().getColumn(i + 1).setPreferredWidth(width);
   }
-  table.getColumnModel().getColumn(0).setPreferredWidth(55);
-  table.getColumnModel().getColumn(0).setMaxWidth(55);
+  setWidths();
   table.setRowSelectionAllowed(true);
   table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+  GeneralRenderer renderer=new GeneralRenderer(table,Color.white,true);
+  table.setDefaultRenderer(JLabel.class,renderer);
+  table.setDefaultRenderer(String.class,renderer);
   previewListener=new TableSelectionListener();
   table.getSelectionModel().addListSelectionListener(previewListener);
   table.addMouseListener(new TableClickListener());
@@ -36,6 +37,7 @@
     popup.add(groupsAdd);
   }
   popup.add(new AttachFile("pdf"));
+  popup.add(new AttachFile("ps"));
   getContentPane().add(centerPan,BorderLayout.CENTER);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
