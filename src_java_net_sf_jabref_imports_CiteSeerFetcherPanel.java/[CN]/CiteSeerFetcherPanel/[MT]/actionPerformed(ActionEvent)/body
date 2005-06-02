@@ -2,57 +2,36 @@
   if (citeSeerFetcher.activateImportFetcher()) {
     (new Thread(){
       BibtexEntry entry;
-class UpdateComponent implements Runnable {
-        Set addedEntries;
-        UpdateComponent(        Set addedEntries){
-          this.addedEntries=addedEntries;
+class Update implements ImportInspectionDialog.CallBack {
+        public void done(        int entriesImported){
+          if (entriesImported > 0)           panel.output(Globals.lang("Completed import from CiteSeer."));
+ else           panel.output(Globals.lang("No entries imported."));
         }
-        public void run(){
-          citeSeerFetcher.endImportCiteSeerProgress();
-          if (addedEntries != null)           panel.markBaseChanged();
-          panel.refreshTable();
-          if (addedEntries.size() > 0) {
-            BibtexEntry[] toSelect=new BibtexEntry[addedEntries.size()];
-            toSelect=(BibtexEntry[])addedEntries.toArray(toSelect);
-            panel.selectEntries(toSelect,0);
-            if (toSelect.length == 1)             panel.showEntry(toSelect[0]);
-          }
-          panel.output(Globals.lang("Completed Import Fields from CiteSeer."));
+        public void stopFetching(){
         }
       }
       public void run(){
-        citeSeerFetcher.beginImportCiteSeerProgress();
+        ImportInspectionDialog diag=new ImportInspectionDialog(panel.frame(),panel,GUIGlobals.DEFAULT_INSPECTION_FIELDS,Globals.lang("Fetch CiteSeer"),false);
+        diag.addCallBack(new Update());
+        Util.placeDialog(diag,panel.frame());
+        diag.setVisible(true);
         NamedCompound undoEdit=new NamedCompound(Globals.lang("CiteSeer import entries")), dummyCompound=new NamedCompound(Globals.lang("Ok"));
         BooleanAssign overwriteAll=new BooleanAssign(true), overwriteNone=new BooleanAssign(false), newValue=new BooleanAssign(false);
         Hashtable rejectedEntries=new Hashtable();
         String text=tf.getText().replaceAll(",",";");
         String[] ids=text.split(";");
         BibtexEntry[] entries=new BibtexEntry[ids.length];
+        citeSeerFetcher.activateImportFetcher();
+        diag.setProgress(0,entries.length);
         for (int i=0; i < entries.length; i++) {
           entries[i]=new BibtexEntry(Util.createNeutralId(),BibtexEntryType.getType("article"));
           entries[i].setField("citeseerurl",ids[i].trim());
           boolean newValues=citeSeerFetcher.importCiteSeerEntry(entries[i],dummyCompound,overwriteAll,overwriteNone,newValue,rejectedEntries);
+          diag.addEntry(entries[i]);
+          diag.setProgress(i + 1,entries.length);
         }
-        Set addedEntries=new HashSet();
-        if (rejectedEntries.size() < entries.length) {
-          for (int i=0; i < entries.length; i++) {
-            if (rejectedEntries.contains(entries[i]))             continue;
-            try {
-              panel.database().insertEntry(entries[i]);
-              UndoableInsertEntry undoItem=new UndoableInsertEntry(panel.database(),entries[i],panel);
-              undoEdit.addEdit(undoItem);
-              addedEntries.add(entries[i]);
-            }
- catch (            KeyCollisionException ex) {
-              ex.printStackTrace();
-            }
-          }
-          undoEdit.end();
-          panel.undoManager.addEdit(undoEdit);
-        }
-        UpdateComponent updateComponent=new UpdateComponent(addedEntries.size() > 0 ? addedEntries : null);
-        SwingUtilities.invokeLater(updateComponent);
         citeSeerFetcher.deactivateImportFetcher();
+        diag.entryListComplete();
       }
     }
 ).start();

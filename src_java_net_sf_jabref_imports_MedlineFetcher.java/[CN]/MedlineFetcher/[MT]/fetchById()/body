@@ -6,18 +6,7 @@
     ArrayList bibs=fetchMedline(idList);
     if ((bibs != null) && (bibs.size() > 0)) {
       tf.setText("");
-      int importedEntries=panel.frame().addBibEntries(bibs,null,false);
-      if (importedEntries == 0) {
-        return;
-      }
-      panel.markBaseChanged();
-      panel.refreshTable();
-      if (bibs.size() > 0) {
-        BibtexEntry[] entries=(BibtexEntry[])bibs.toArray(new BibtexEntry[0]);
-        panel.selectEntries(entries,0);
-        if (entries.length == 1)         panel.showEntry(entries[0]);
-      }
-      panel.output(Globals.lang("Medline entries fetched") + ": " + bibs.size());
+      panel.frame().addImportedEntries(panel,bibs,null,false,this);
     }
  else     panel.output(Globals.lang("No Medline entries found."));
   }
