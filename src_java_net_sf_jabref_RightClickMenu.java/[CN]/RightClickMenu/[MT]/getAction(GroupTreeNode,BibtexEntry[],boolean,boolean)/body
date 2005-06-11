@@ -1,0 +1,11 @@
+{
+  AbstractAction action=add ? (AbstractAction)new AddToGroupAction(node,move) : (AbstractAction)new RemoveFromGroupAction(node);
+  AbstractGroup group=node.getGroup();
+  if (!move) {
+    action.setEnabled(add ? group.supportsAdd() && !group.containsAll(selection) : group.supportsRemove() && group.containsAny(selection));
+  }
+ else {
+    action.setEnabled(group.supportsAdd());
+  }
+  return action;
+}

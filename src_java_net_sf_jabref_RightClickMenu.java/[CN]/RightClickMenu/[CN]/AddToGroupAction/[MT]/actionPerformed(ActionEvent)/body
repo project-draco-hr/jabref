@@ -1,9 +1,41 @@
 {
-  if (!Util.warnAssignmentSideEffects(m_node.getGroup(),panel.getSelectedEntries(),panel.getDatabase(),panel.frame))   return;
+  final BibtexEntry[] entries=panel.getSelectedEntries();
+  final Vector removeGroupsNodes=new Vector();
+  if (m_move) {
+    Enumeration e=((GroupTreeNode)m_node.getRoot()).preorderEnumeration();
+    GroupTreeNode node;
+    while (e.hasMoreElements()) {
+      node=(GroupTreeNode)e.nextElement();
+      if (!node.getGroup().supportsRemove())       continue;
+      for (int i=0; i < entries.length; ++i) {
+        if (node.getGroup().contains(entries[i]))         removeGroupsNodes.add(node);
+      }
+    }
+    AbstractGroup[] groups=new AbstractGroup[removeGroupsNodes.size() + 1];
+    for (int i=0; i < removeGroupsNodes.size(); ++i)     groups[i]=((GroupTreeNode)removeGroupsNodes.elementAt(i)).getGroup();
+    groups[groups.length - 1]=m_node.getGroup();
+    if (!Util.warnAssignmentSideEffects(groups,entries,panel.getDatabase(),panel.frame))     return;
+  }
+ else {
+    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{m_node.getGroup()},entries,panel.getDatabase(),panel.frame))     return;
+  }
   panel.storeCurrentEdit();
-  AbstractUndoableEdit undo=m_node.addToGroup(panel.getSelectedEntries());
-  if (undo == null)   return;
-  panel.undoManager.addEdit(undo);
+  NamedCompound undoAll=new NamedCompound(Globals.lang("change assignment of entries"));
+  if (m_move) {
+    for (int i=0; i < removeGroupsNodes.size(); ++i) {
+      GroupTreeNode node=(GroupTreeNode)removeGroupsNodes.elementAt(i);
+      if (node.getGroup().containsAny(entries))       undoAll.addEdit(node.removeFromGroup(entries));
+    }
+    AbstractUndoableEdit undoAdd=m_node.addToGroup(entries);
+    if (undoAdd != null)     undoAll.addEdit(undoAdd);
+  }
+ else {
+    AbstractUndoableEdit undoAdd=m_node.addToGroup(entries);
+    if (undoAdd == null)     return;
+    undoAll.addEdit(undoAdd);
+  }
+  undoAll.end();
+  panel.undoManager.addEdit(undoAll);
   panel.refreshTable();
   panel.markBaseChanged();
   panel.updateEntryEditorIfShowing();
