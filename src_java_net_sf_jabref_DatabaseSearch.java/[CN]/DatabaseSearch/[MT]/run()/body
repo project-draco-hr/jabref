@@ -1,10 +1,8 @@
 {
-  String searchString=null;
-  Enumeration strings=thisSearchOptions.elements();
-  searchString=(String)strings.nextElement();
   int searchScore=0;
+  matches.clear();
   BibtexEntry bes=null;
-  int numRows=thisDatabase.getEntryCount(), hits=0;
+  int hits=0;
   for (Iterator i=thisDatabase.getKeySet().iterator(); i.hasNext(); ) {
     bes=thisDatabase.getEntryById((String)i.next());
     if (bes == null)     continue;
@@ -17,7 +15,10 @@
     }
     if (searchScore > 0)     searchScore=1;
     bes.setField(searchValueField,String.valueOf(searchScore));
-    if (searchScore > 0)     hits++;
+    if (searchScore > 0) {
+      hits++;
+      matches.add(bes);
+    }
   }
   final int outputHits=hits;
   SwingUtilities.invokeLater(new Thread(){
