@@ -5,11 +5,22 @@ switch (version) {
 case 0:
 case 1:
 case 2:
+{
+      String name=tok.nextToken();
+      String expression=tok.nextToken();
+      boolean caseSensitive=Integer.parseInt(tok.nextToken()) == 1;
+      boolean regExp=Integer.parseInt(tok.nextToken()) == 1;
+      return new SearchGroup(Util.unquote(name,QUOTE_CHAR),Util.unquote(expression,QUOTE_CHAR),caseSensitive,regExp,AbstractGroup.INDEPENDENT);
+    }
+case 3:
+{
     String name=tok.nextToken();
-  String expression=tok.nextToken();
-boolean caseSensitive=Integer.parseInt(tok.nextToken()) == 1;
-boolean regExp=Integer.parseInt(tok.nextToken()) == 1;
-return new SearchGroup(Util.unquote(name,QUOTE_CHAR),Util.unquote(expression,QUOTE_CHAR),caseSensitive,regExp);
+    int context=Integer.parseInt(tok.nextToken());
+    String expression=tok.nextToken();
+    boolean caseSensitive=Integer.parseInt(tok.nextToken()) == 1;
+    boolean regExp=Integer.parseInt(tok.nextToken()) == 1;
+    return new SearchGroup(Util.unquote(name,QUOTE_CHAR),Util.unquote(expression,QUOTE_CHAR),caseSensitive,regExp,context);
+  }
 default :
 throw new UnsupportedVersionException("SearchGroup",version);
 }
