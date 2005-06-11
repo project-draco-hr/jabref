@@ -7,11 +7,12 @@
   field.setText(defaultField);
   remove.setText(defaultRemove);
   deliminator.setText(defaultDeliminator);
+  nd.setSelected(true);
   ActionListener okListener=new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       ok_pressed=true;
       dispose();
-      GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Globals.lang("Automatically created groups")));
+      GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Globals.lang("Automatically created groups"),AbstractGroup.INCLUDING));
       HashSet hs=null;
       if (nd.isSelected()) {
         hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field().toLowerCase().trim(),deliminator.getText());
@@ -22,7 +23,7 @@
       Iterator i=hs.iterator();
       while (i.hasNext()) {
         String keyword=i.next().toString();
-        KeywordGroup group=new KeywordGroup(keyword,field(),keyword,false,false);
+        KeywordGroup group=new KeywordGroup(keyword,field(),keyword,false,false,AbstractGroup.INDEPENDENT);
         autoGroupsRoot.add(new GroupTreeNode(group));
       }
       m_groupsRoot.add(autoGroupsRoot);
