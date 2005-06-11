@@ -1,0 +1,35 @@
+{
+  StringBuffer sb=new StringBuffer();
+  StringTokenizer tok=new StringTokenizer(s);
+  int charsLeft=lineWidth;
+  while (tok.hasMoreTokens()) {
+    String word=tok.nextToken();
+    if (charsLeft == lineWidth) {
+      sb.append(word);
+      charsLeft-=word.length();
+      if (charsLeft <= 0) {
+        sb.append("<br>\n");
+        charsLeft=lineWidth;
+      }
+    }
+ else {
+      if (charsLeft < word.length() + 1) {
+        sb.append("<br>\n");
+        sb.append(word);
+        if (word.length() >= lineWidth - 1) {
+          sb.append("<br>\n");
+          charsLeft=lineWidth;
+        }
+ else {
+          sb.append(" ");
+          charsLeft=lineWidth - word.length() - 1;
+        }
+      }
+ else {
+        sb.append(" " + word);
+        charsLeft-=word.length() + 1;
+      }
+    }
+  }
+  return sb.toString();
+}
