@@ -1,0 +1,18 @@
+{
+  StringBuffer sb=new StringBuffer();
+  sb.append("<b>");
+  if (Globals.prefs.getBoolean("groupShowDynamic"))   sb.append("<i>" + getName() + "</i>");
+ else   sb.append(getName());
+  sb.append("</b> - dynamic group (<b>" + m_searchField + "</b> contains <b>"+ m_searchExpression+ "</b>)");
+switch (getHierarchicalContext()) {
+case AbstractGroup.INCLUDING:
+    sb.append(", includes subgroups");
+  break;
+case AbstractGroup.REFINING:
+sb.append(", refines supergroup");
+break;
+default :
+break;
+}
+return sb.toString();
+}
