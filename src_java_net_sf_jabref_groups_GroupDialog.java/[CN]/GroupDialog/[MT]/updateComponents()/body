@@ -18,7 +18,7 @@
       if (m_kgRegExp.isSelected()) {
         try {
           Pattern.compile(s2);
-          setDescription(getDescriptionForKeywordGroup(s1,s2,m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected()));
+          setDescription(KeywordGroup.getDescriptionForPreview(s1,s2,m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected()));
         }
  catch (        Exception e) {
           okEnabled=false;
@@ -26,9 +26,10 @@
         }
       }
  else {
-        setDescription(getDescriptionForKeywordGroup(s1,s2,m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected()));
+        setDescription(KeywordGroup.getDescriptionForPreview(s1,s2,m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected()));
       }
     }
+    setNameFontItalic(true);
   }
  else   if (m_searchRadioButton.isSelected()) {
     s1=m_sgSearchExpression.getText().trim();
@@ -38,7 +39,7 @@
     }
  else {
       AST ast=SearchExpressionParser.checkSyntax(s1,m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected());
-      setDescription(getDescriptionForSearchGroup(s1,ast,m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected()));
+      setDescription(SearchGroup.getDescriptionForPreview(s1,ast,m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected()));
       if (m_sgRegExp.isSelected()) {
         try {
           Pattern.compile(s1);
@@ -49,9 +50,11 @@
         }
       }
     }
+    setNameFontItalic(true);
   }
  else   if (m_explicitRadioButton.isSelected()) {
-    setDescription(getDescriptionForExplicitGroup());
+    setDescription(ExplicitGroup.getDescriptionForPreview());
+    setNameFontItalic(false);
   }
   m_ok.setEnabled(okEnabled);
 }

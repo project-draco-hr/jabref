@@ -8,6 +8,10 @@
   groupType.add(m_explicitRadioButton);
   groupType.add(m_keywordsRadioButton);
   groupType.add(m_searchRadioButton);
+  ButtonGroup groupHierarchy=new ButtonGroup();
+  groupHierarchy.add(m_independentButton);
+  groupHierarchy.add(m_intersectionButton);
+  groupHierarchy.add(m_unionButton);
   m_description.setVerticalAlignment(JLabel.TOP);
   getRootPane().setDefaultButton(m_ok);
   m_optionsPanel.setLayout(m_optionsLayout);
@@ -39,7 +43,7 @@
   DefaultFormBuilder builderBP=new DefaultFormBuilder(layoutBP);
   builderBP.append(m_ok);
   builderBP.add(m_cancel);
-  FormLayout layoutAll=new FormLayout("right:pref, 4dlu, fill:500px, 4dlu, fill:pref","p, 3dlu, p, 3dlu, p, 0dlu, p, 0dlu, p, 3dlu, p, 3dlu, " + "p, 3dlu, p, 3dlu, top:80dlu, 9dlu, p, , 9dlu, p");
+  FormLayout layoutAll=new FormLayout("right:pref, 4dlu, fill:600px, 4dlu, fill:pref","p, 3dlu, p, 3dlu, p, 0dlu, p, 0dlu, p, 3dlu, p, 3dlu, p, " + "0dlu, p, 0dlu, p, 3dlu, p, 3dlu, " + "p, 3dlu, p, 3dlu, top:80dlu, 9dlu, p, , 9dlu, p");
   DefaultFormBuilder builderAll=new DefaultFormBuilder(layoutAll);
   builderAll.setDefaultDialogBorder();
   builderAll.appendSeparator(Globals.lang("General"));
@@ -56,6 +60,18 @@
   builderAll.nextLine();
   builderAll.nextLine();
   builderAll.append(m_searchRadioButton,5);
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.appendSeparator("Hierarchical Context");
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.append(m_independentButton,5);
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.append(m_intersectionButton,5);
+  builderAll.nextLine();
+  builderAll.nextLine();
+  builderAll.append(m_unionButton,5);
   builderAll.nextLine();
   builderAll.nextLine();
   builderAll.appendSeparator(Globals.lang("Options"));
@@ -112,21 +128,22 @@
         if (m_editedGroup instanceof ExplicitGroup) {
           m_resultingGroup=m_editedGroup.deepCopy();
           m_resultingGroup.setName(m_name.getText().trim());
+          m_resultingGroup.setHierarchicalContext(getContext());
         }
  else {
-          m_resultingGroup=new ExplicitGroup(m_name.getText().trim());
+          m_resultingGroup=new ExplicitGroup(m_name.getText().trim(),getContext());
           if (m_editedGroup != null)           addPreviousEntries();
         }
       }
  else       if (m_keywordsRadioButton.isSelected()) {
-        m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_kgSearchField.getText().trim(),m_kgSearchTerm.getText().trim(),m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected());
+        m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_kgSearchField.getText().trim(),m_kgSearchTerm.getText().trim(),m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected(),getContext());
         if ((m_editedGroup instanceof ExplicitGroup || m_editedGroup instanceof SearchGroup) && m_resultingGroup.supportsAdd()) {
           addPreviousEntries();
         }
       }
  else       if (m_searchRadioButton.isSelected()) {
         try {
-          m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected());
+          m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected(),getContext());
         }
  catch (        Exception e1) {
         }
@@ -163,6 +180,7 @@
     m_kgCaseSensitive.setSelected(group.isCaseSensitive());
     m_kgRegExp.setSelected(group.isRegExp());
     m_keywordsRadioButton.setSelected(true);
+    setContext(editedGroup.getHierarchicalContext());
   }
  else   if (editedGroup instanceof SearchGroup) {
     SearchGroup group=(SearchGroup)editedGroup;
@@ -171,12 +189,15 @@
     m_sgCaseSensitive.setSelected(group.isCaseSensitive());
     m_sgRegExp.setSelected(group.isRegExp());
     m_searchRadioButton.setSelected(true);
+    setContext(editedGroup.getHierarchicalContext());
   }
  else   if (editedGroup instanceof ExplicitGroup) {
     m_name.setText(editedGroup.getName());
     m_explicitRadioButton.setSelected(true);
+    setContext(editedGroup.getHierarchicalContext());
   }
  else {
     m_explicitRadioButton.setSelected(true);
+    setContext(AbstractGroup.INDEPENDENT);
   }
 }
