@@ -25,6 +25,13 @@
     }
   }
 );
+  showOverlappingGroups.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean("groupShowOverlapping",showOverlappingGroups.isSelected());
+      if (!showOverlappingGroups.isSelected())       groupsTree.setHighlight2Cells(null);
+    }
+  }
+);
   select.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("groupSelectMatches",select.isSelected());
@@ -34,18 +41,6 @@
   grayOut.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("grayOutNonHits",grayOut.isSelected());
-    }
-  }
-);
-  groupModeIndependent.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("groupSubgroupIndependent",groupModeIndependent.isSelected());
-    }
-  }
-);
-  groupModeIntersection.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("groupSubgroupIntersection",groupModeIntersection.isSelected());
     }
   }
 );
@@ -65,29 +60,10 @@
     orCb.setSelected(true);
     andCb.setSelected(false);
   }
-  if (Globals.prefs.getBoolean("groupSubgroupIndependent")) {
-    groupModeIndependent.setSelected(true);
-    groupModeIntersection.setSelected(false);
-    groupModeUnion.setSelected(false);
-  }
- else {
-    groupModeIndependent.setSelected(false);
-    if (Globals.prefs.getBoolean("groupSubgroupIntersection")) {
-      groupModeIntersection.setSelected(true);
-      groupModeUnion.setSelected(false);
-    }
- else {
-      groupModeIntersection.setSelected(false);
-      groupModeUnion.setSelected(true);
-    }
-  }
   invCb.setSelected(Globals.prefs.getBoolean("groupInvertSelections"));
+  showOverlappingGroups.setSelected(Globals.prefs.getBoolean("groupShowOverlapping"));
   select.setSelected(Globals.prefs.getBoolean("groupSelectMatches"));
   openset.setMargin(new Insets(0,0,0,0));
-  settings.add(groupModeUnion);
-  settings.add(groupModeIntersection);
-  settings.add(groupModeIndependent);
-  settings.addSeparator();
   settings.add(andCb);
   settings.add(orCb);
   settings.addSeparator();
@@ -100,6 +76,8 @@
   settings.addSeparator();
   settings.add(grayOut);
   settings.add(hideNonHits);
+  settings.addSeparator();
+  settings.add(showOverlappingGroups);
   openset.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       if (settings.isVisible()) {
@@ -162,10 +140,8 @@
   andCb.addActionListener(this);
   orCb.addActionListener(this);
   invCb.addActionListener(this);
+  showOverlappingGroups.addActionListener(this);
   autoGroup.addActionListener(this);
-  groupModeIndependent.addActionListener(this);
-  groupModeIntersection.addActionListener(this);
-  groupModeUnion.addActionListener(this);
   floatCb.addActionListener(this);
   highlCb.addActionListener(this);
   select.addActionListener(this);
@@ -177,14 +153,12 @@
   orCb.setToolTipText(Globals.lang("Display all entries belonging to one or more " + "of the selected groups."));
   autoGroup.setToolTipText(Globals.lang("Automatically create groups for database."));
   invCb.setToolTipText(Globals.lang("Show entries *not* in group selection"));
+  showOverlappingGroups.setToolTipText("Highlight groups that contain entries contained in any currently selected group");
   floatCb.setToolTipText(Globals.lang("Move entries in group selection to the top"));
   highlCb.setToolTipText(Globals.lang("Gray out entries not in group selection"));
   select.setToolTipText(Globals.lang("Select entries in group selection"));
   expand.setToolTipText(Globals.lang("Show one more row"));
   reduce.setToolTipText(Globals.lang("Show one less rows"));
-  groupModeGroup.add(groupModeUnion);
-  groupModeGroup.add(groupModeIntersection);
-  groupModeGroup.add(groupModeIndependent);
   bgr.add(andCb);
   bgr.add(orCb);
   visMode.add(floatCb);

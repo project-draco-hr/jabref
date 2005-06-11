@@ -1,6 +1,6 @@
 {
   final TreePath path=groupsTree.getPathForLocation(e.getPoint().x,e.getPoint().y);
-  addGroupAction.setEnabled(path != null);
+  addGroupAction.setEnabled(true);
   addSubgroupAction.setEnabled(path != null);
   editGroupAction.setEnabled(path != null);
   removeGroupAndSubgroupsAction.setEnabled(path != null);
@@ -8,7 +8,6 @@
   moveSubmenu.setEnabled(path != null);
   expandSubtreeAction.setEnabled(path != null);
   collapseSubtreeAction.setEnabled(path != null);
-  showOverlappingGroupsAction.setEnabled(path != null);
   removeSubgroupsAction.setEnabled(path != null);
   sortSubmenu.setEnabled(path != null);
   if (path != null) {
@@ -27,6 +26,9 @@
       removeGroupAndSubgroupsAction.setEnabled(true);
       removeGroupKeepSubgroupsAction.setEnabled(true);
     }
+    expandSubtreeAction.setEnabled(!node.isLeaf());
+    collapseSubtreeAction.setEnabled(!node.isLeaf());
+    sortSubmenu.setEnabled(!node.isLeaf());
     removeSubgroupsAction.setEnabled(!node.isLeaf());
     moveNodeUpAction.setEnabled(node.canMoveUp());
     moveNodeDownAction.setEnabled(node.canMoveDown());

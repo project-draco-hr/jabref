@@ -13,5 +13,13 @@
     metaData.setGroups(newGroupsRoot);
     setGroups(newGroupsRoot);
   }
+  if (Globals.prefs.getBoolean("groupAutoShow") && !groupsRoot.isLeaf()) {
+    frame.sidePaneManager.ensureVisible("groups");
+    frame.groupToggle.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean("groupAutoHide") && groupsRoot.isLeaf()) {
+    frame.sidePaneManager.ensureNotVisible("groups");
+    frame.groupToggle.setSelected(false);
+  }
   validateTree();
 }

@@ -1,0 +1,18 @@
+{
+  GroupTreeNode node;
+  SearchRule rule;
+  BibtexEntry entry;
+  Vector vec=new Vector();
+  Map dummyMap=new HashMap();
+  for (Enumeration e=groupsRoot.depthFirstEnumeration(); e.hasMoreElements(); ) {
+    node=(GroupTreeNode)e.nextElement();
+    rule=node.getSearchRule();
+    for (Iterator it=search.matches(); it.hasNext(); ) {
+      entry=(BibtexEntry)it.next();
+      if (rule.applyRule(dummyMap,entry) == 0)       continue;
+      vec.add(node);
+      break;
+    }
+  }
+  groupsTree.setHighlight2Cells(vec.toArray());
+}

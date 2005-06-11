@@ -3,20 +3,25 @@
   final TreePath[] selection=groupsTree.getSelectionPaths();
   if (selection == null || selection.length == 0 || (selection.length == 1 && ((GroupTreeNode)selection[0].getLastPathComponent()).getGroup() instanceof AllEntriesGroup)) {
     panel.stopShowingGroup();
+    if (showOverlappingGroups.isSelected())     groupsTree.setHighlight2Cells(null);
     frame.output(Globals.lang("Displaying no groups") + ".");
     return;
   }
   final AndOrSearchRuleSet searchRules=new AndOrSearchRuleSet(andCb.isSelected(),invCb.isSelected());
-  int groupMode;
-  if (groupModeUnion.isSelected())   groupMode=GroupTreeNode.GROUP_UNION_CHILDREN;
- else   if (groupModeIntersection.isSelected())   groupMode=GroupTreeNode.GROUP_INTERSECTION_PARENT;
- else   groupMode=GroupTreeNode.GROUP_ITSELF;
   for (int i=0; i < selection.length; ++i) {
-    searchRules.addRule(((GroupTreeNode)selection[i].getLastPathComponent()).getSearchRule(groupMode));
+    searchRules.addRule(((GroupTreeNode)selection[i].getLastPathComponent()).getSearchRule());
   }
   Hashtable searchOptions=new Hashtable();
   searchOptions.put("option","dummy");
   DatabaseSearch search=new DatabaseSearch(this,searchOptions,searchRules,panel,Globals.GROUPSEARCH,floatCb.isSelected(),Globals.prefs.getBoolean("grayOutNonHits"),select.isSelected());
   search.start();
+  if (showOverlappingGroups.isSelected()) {
+    try {
+      search.join();
+      showOverlappingGroups(search);
+    }
+ catch (    InterruptedException e1) {
+    }
+  }
   frame.output(Globals.lang("Updated group selection") + ".");
 }
