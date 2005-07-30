@@ -7,6 +7,7 @@
   allowEditing=new JCheckBox(Globals.lang("Allow editing in table cells"));
   backup=new JCheckBox(Globals.lang("Backup old file when saving"));
   defSource=new JCheckBox(Globals.lang("Show BibTeX source by default"));
+  showSource=new JCheckBox(Globals.lang("Show BibTeX source panel"));
   editSource=new JCheckBox(Globals.lang("Enable source editing"));
   defSort=new JCheckBox(Globals.lang("Sort Automatically"));
   ctrlClick=new JCheckBox(Globals.lang("Open right-click menu with Ctrl+left button"));
@@ -16,13 +17,33 @@
   keyEmptyWarningDialog=new JCheckBox(Globals.lang("Show warning dialog when an empty BibTeX key is entered"));
   confirmDelete=new JCheckBox(Globals.lang("Show confirmation dialog when deleting entries"));
   saveInStandardOrder=new JCheckBox(Globals.lang("Always save database ordered by author name"));
-  preserveFormatting=new JCheckBox(Globals.lang("Preserve formatting of non-BibTeX fields"));
   autoDoubleBraces=new JCheckBox("<HTML>" + Globals.lang("Store fields with double braces, and remove extra braces when loading.<BR>" + "Double braces signal that BibTeX should preserve character case.") + "</HTML>");
   useImportInspector=new JCheckBox(Globals.lang("Display imported entries in an inspection window before they are added."));
+  useImportInspectorForSingle=new JCheckBox(Globals.lang("Use inspection window also when a single entry is imported."));
   JPanel general=new JPanel();
   defOwnerField=new JTextField();
   ownerHelp=new HelpAction(frame.helpDiag,GUIGlobals.ownerHelp,"Help",GUIGlobals.helpSmallIconFile);
+  inspectionWarnDupli=new JCheckBox(Globals.lang("Warn about unresolved duplicates when closing inspection window"));
+  Insets marg=new Insets(0,12,3,0);
+  useImportInspectorForSingle.setMargin(marg);
+  editSource.setMargin(marg);
+  defSource.setMargin(marg);
+  inspectionWarnDupli.setMargin(marg);
   fontSize=new JTextField();
+  showSource.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      defSource.setEnabled(showSource.isSelected());
+      editSource.setEnabled(showSource.isSelected());
+    }
+  }
+);
+  useImportInspector.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      useImportInspectorForSingle.setEnabled(useImportInspector.isSelected());
+      inspectionWarnDupli.setEnabled(useImportInspector.isSelected());
+    }
+  }
+);
   FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:60dlu, 4dlu, fill:pref","");
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
   JPanel pan=new JPanel();
@@ -38,9 +59,6 @@
   builder.append(saveInStandardOrder);
   builder.nextLine();
   builder.append(pan);
-  builder.append(preserveFormatting);
-  builder.nextLine();
-  builder.append(pan);
   builder.append(autoDoubleBraces);
   builder.nextLine();
   builder.appendSeparator(Globals.lang("Entry editor"));
@@ -49,17 +67,26 @@
   builder.append(autoOpenForm);
   builder.nextLine();
   builder.append(pan);
-  builder.append(defSource);
+  builder.append(disableOnMultiple);
   builder.nextLine();
   builder.append(pan);
-  builder.append(disableOnMultiple);
+  builder.append(showSource);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(defSource);
   builder.nextLine();
   builder.appendSeparator(Globals.lang("Miscellaneous"));
   builder.append(pan);
   builder.append(useImportInspector);
   builder.nextLine();
   builder.append(pan);
-  builder.append(allowEditing);
+  builder.append(useImportInspector);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(useImportInspectorForSingle);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(inspectionWarnDupli);
   builder.nextLine();
   builder.append(pan);
   builder.append(ctrlClick);

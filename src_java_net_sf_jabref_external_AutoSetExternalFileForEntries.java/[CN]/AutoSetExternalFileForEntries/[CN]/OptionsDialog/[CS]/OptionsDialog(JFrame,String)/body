@@ -8,12 +8,17 @@
     }
   }
 );
-  cancel.addActionListener(new ActionListener(){
+  Action closeAction=new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }
-);
+;
+  cancel.addActionListener(closeAction);
+  InputMap im=cancel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  ActionMap am=cancel.getActionMap();
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",closeAction);
   fieldName=fieldName.toUpperCase();
   autoSetUnset=new JRadioButton(Globals.lang("Autoset %0 links. Do not overwrite existing links.",fn),true);
   autoSetAll=new JRadioButton(Globals.lang("Autoset %0 links. Allow overwriting existing links.",fn),false);

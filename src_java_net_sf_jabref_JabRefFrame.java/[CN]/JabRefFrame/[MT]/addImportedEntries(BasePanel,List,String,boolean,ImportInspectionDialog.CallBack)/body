@@ -1,5 +1,5 @@
 {
-  if (Globals.prefs.getBoolean("useImportInspectionDialog")) {
+  if (Globals.prefs.getBoolean("useImportInspectionDialog") && (Globals.prefs.getBoolean("useImportInspectionDialogForSingle") || (entries.size() > 1))) {
     String[] fields=new String[]{"author","title","year"};
     ImportInspectionDialog diag=new ImportInspectionDialog(ths,panel,fields,Globals.lang("Import"),openInNew);
     diag.addEntries(entries);
@@ -10,5 +10,14 @@
   }
  else {
     ths.addBibEntries(entries,filename,openInNew);
+    if ((panel != null) && (entries.size() == 1)) {
+      panel.highlightEntry((BibtexEntry)entries.get(0));
+      SwingUtilities.invokeLater(new Runnable(){
+        public void run(){
+          panel.updateViewToSelected();
+        }
+      }
+);
+    }
   }
 }

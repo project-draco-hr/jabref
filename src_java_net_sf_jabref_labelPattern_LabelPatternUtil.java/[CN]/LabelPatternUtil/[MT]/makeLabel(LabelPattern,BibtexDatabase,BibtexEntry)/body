@@ -156,17 +156,18 @@
     if (!_label.equals(oldKey))     _db.setCiteKeyForEntry(_entry.getId(),_label);
   }
  else {
-    char c='b';
-    String modKey=_label + "a";
-    occurences=_db.getNumberOfKeyOccurences(modKey);
-    if ((oldKey != null) && oldKey.equals(modKey))     occurences--;
+    int number=0;
+    String moddedKey=_label + getAddition(number);
+    occurences=_db.getNumberOfKeyOccurences(moddedKey);
+    if ((oldKey != null) && oldKey.equals(moddedKey))     occurences--;
     while (occurences > 0) {
-      modKey=_label + ((char)(c++));
-      occurences=_db.getNumberOfKeyOccurences(modKey);
-      if ((oldKey != null) && oldKey.equals(modKey))       occurences--;
+      number++;
+      moddedKey=_label + getAddition(number);
+      occurences=_db.getNumberOfKeyOccurences(moddedKey);
+      if ((oldKey != null) && oldKey.equals(moddedKey))       occurences--;
     }
-    if (!modKey.equals(oldKey)) {
-      _db.setCiteKeyForEntry(_entry.getId(),modKey);
+    if (!moddedKey.equals(oldKey)) {
+      _db.setCiteKeyForEntry(_entry.getId(),moddedKey);
     }
   }
   return _entry;

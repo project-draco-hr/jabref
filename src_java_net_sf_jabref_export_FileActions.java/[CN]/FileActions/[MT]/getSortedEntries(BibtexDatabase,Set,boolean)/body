@@ -1,7 +1,8 @@
 {
   String pri, sec, ter;
-  boolean priD, secD, terD;
+  boolean priD, secD, terD, priBinary=false;
   if (!isSaveOperation || !Globals.prefs.getBoolean("saveInStandardOrder")) {
+    priBinary=Globals.prefs.getBoolean("priBinary");
     pri=Globals.prefs.get("priSort");
     sec=Globals.prefs.get("secSort");
     ter=Globals.prefs.get("terSort");
@@ -17,7 +18,11 @@
     secD=false;
     terD=true;
   }
-  TreeSet sorter=new TreeSet(new CrossRefEntryComparator(new EntryComparator(priD,secD,terD,false,pri,sec,ter,Globals.KEY_FIELD)));
+  EntryComparator comp=new EntryComparator(false,false,Globals.KEY_FIELD);
+  comp=new EntryComparator(false,terD,ter,comp);
+  comp=new EntryComparator(false,secD,sec,comp);
+  comp=new EntryComparator(priBinary,priD,pri,comp);
+  TreeSet sorter=new TreeSet(new CrossRefEntryComparator(comp));
   if (keySet == null)   keySet=database.getKeySet();
   if (keySet != null) {
     Iterator i=keySet.iterator();

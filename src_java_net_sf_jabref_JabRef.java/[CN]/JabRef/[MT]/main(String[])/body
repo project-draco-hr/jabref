@@ -13,6 +13,7 @@
   StringOption exportFile=new StringOption("");
   BooleanOption helpO=new BooleanOption();
   BooleanOption disableGui=new BooleanOption();
+  BooleanOption blank=new BooleanOption();
   BooleanOption loadSess=new BooleanOption();
   StringOption exportPrefs=new StringOption("jabref_prefs.xml");
   StringOption importPrefs=new StringOption("jabref_prefs.xml");
@@ -25,6 +26,7 @@
   options.register("prexp",'x',Globals.lang("Export preferences to file"),exportPrefs);
   options.register("primp",'p',Globals.lang("Import preferences from file"),importPrefs);
   options.register("aux",'a',Globals.lang("Subdatabase from aux") + ": " + Globals.lang("file")+ "[.aux]"+ ","+ Globals.lang("new")+ "[.bib]",auxImExport);
+  options.register("blank",'b',Globals.lang("Do not open any files at startup"),blank);
   options.setUseMenu(false);
   String[] leftOver=options.process(args);
   if (helpO.isInvoked()) {
@@ -59,13 +61,13 @@
     }
   }
   Vector loaded=new Vector();
-  if (leftOver.length > 0) {
+  if (!blank.isInvoked() && (leftOver.length > 0)) {
     for (int i=0; i < leftOver.length; i++) {
       ParserResult pr=openBibFile(leftOver[i]);
       if (pr != null)       loaded.add(pr);
     }
   }
-  if (importFile.isInvoked()) {
+  if (!blank.isInvoked() && importFile.isInvoked()) {
     String[] data=importFile.getStringValue().split(",");
     if (data.length == 1) {
       ParserResult pr=openBibFile(data[0]);
@@ -73,23 +75,28 @@
     }
  else     if (data.length == 2) {
       try {
-        List entries;
         if (!"*".equals(data[1])) {
           System.out.println(Globals.lang("Importing") + ": " + data[0]);
-          entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")));
+          List entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")));
         }
  else {
           System.out.println(Globals.lang("Importing in unknown format") + ": " + data[0]);
           Object[] o=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
           String formatName=(String)o[0];
-          entries=(java.util.List)o[1];
-          if (entries != null)           System.out.println(Globals.lang("Format used") + ": " + formatName);
- else           System.out.println(Globals.lang("Could not find a suitable import format."));
-        }
-        if (entries != null) {
-          BibtexDatabase base=ImportFormatReader.createDatabase(entries);
-          ParserResult pr=new ParserResult(base,null,new HashMap());
-          loaded.add(pr);
+          if (formatName.equals(ImportFormatReader.BIBTEX_FORMAT)) {
+            ParserResult pr=(ParserResult)o[1];
+            loaded.add(pr);
+          }
+ else {
+            List entries=(java.util.List)o[1];
+            if (entries != null)             System.out.println(Globals.lang("Format used") + ": " + formatName);
+ else             System.out.println(Globals.lang("Could not find a suitable import format."));
+            if (entries != null) {
+              BibtexDatabase base=ImportFormatReader.createDatabase(entries);
+              ParserResult pr=new ParserResult(base,null,new HashMap());
+              loaded.add(pr);
+            }
+          }
         }
       }
  catch (      IOException ex) {
@@ -165,7 +172,7 @@ catch (          Exception ex) {
       Util.pr(ex.getMessage());
     }
   }
-  if (auxImExport.isInvoked()) {
+  if (!blank.isInvoked() && auxImExport.isInvoked()) {
     boolean usageMsg=false;
     if (loaded.size() > 0) {
       String[] data=auxImExport.getStringValue().split(",");
@@ -251,7 +258,7 @@ catch (          Exception ex) {
         }
       }
     }
-    if (prefs.getBoolean("openLastEdited") && (prefs.get("lastEdited") != null)) {
+    if (!blank.isInvoked() && prefs.getBoolean("openLastEdited") && (prefs.get("lastEdited") != null)) {
       String[] names=prefs.getStringArray("lastEdited");
       lastEdLoop:       for (int i=0; i < names.length; i++) {
         File fileToOpen=new File(names[i]);
@@ -277,6 +284,17 @@ catch (          Exception ex) {
     if (loadSess.isInvoked())     jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
     if (ss != null)     ss.dispose();
     jrf.setVisible(true);
+    for (int i=0; i < loaded.size(); i++) {
+      ParserResult pr=(ParserResult)loaded.elementAt(i);
+      if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
+        String[] wrns=pr.warnings();
+        StringBuffer wrn=new StringBuffer();
+        for (int j=0; j < wrns.length; j++)         wrn.append((j + 1) + ". " + wrns[j]+ "\n");
+        if (wrn.length() > 0)         wrn.deleteCharAt(wrn.length() - 1);
+        jrf.showBaseAt(i);
+        JOptionPane.showMessageDialog(jrf,wrn.toString(),Globals.lang("Warnings"),JOptionPane.WARNING_MESSAGE);
+      }
+    }
     if (loaded.size() > 0) {
       jrf.tabbedPane.setSelectedIndex(0);
       new FocusRequester(((BasePanel)jrf.tabbedPane.getComponentAt(0)).entryTable);

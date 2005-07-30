@@ -7,26 +7,22 @@
     pr=ImportFormatReader.loadDatabase(f,Globals.prefs.get("defaultEncoding"));
     BibtexDatabase onDisk=pr.getDatabase();
     MetaData mdOnDisk=new MetaData(pr.getMetaData(),onDisk);
-    EntrySorter sInTemp=inTemp.getSorter(new EntryComparator(true,true,true,sortBy[0],sortBy[1],sortBy[2]));
-    EntrySorter sOnDisk=onDisk.getSorter(new EntryComparator(true,true,true,sortBy[0],sortBy[1],sortBy[2]));
-    EntrySorter sInMem=inMem.getSorter(new EntryComparator(true,true,true,sortBy[0],sortBy[1],sortBy[2]));
+    EntryComparator comp=new EntryComparator(false,true,sortBy[2]);
+    comp=new EntryComparator(false,true,sortBy[1],comp);
+    comp=new EntryComparator(false,true,sortBy[0],comp);
+    EntrySorter sInTemp=inTemp.getSorter(comp);
+    comp=new EntryComparator(false,true,sortBy[2]);
+    comp=new EntryComparator(false,true,sortBy[1],comp);
+    comp=new EntryComparator(false,true,sortBy[0],comp);
+    EntrySorter sOnDisk=onDisk.getSorter(comp);
+    comp=new EntryComparator(false,true,sortBy[2]);
+    comp=new EntryComparator(false,true,sortBy[1],comp);
+    comp=new EntryComparator(false,true,sortBy[0],comp);
+    EntrySorter sInMem=inMem.getSorter(comp);
     scanPreamble(inMem,inTemp,onDisk);
     scanStrings(inMem,inTemp,onDisk);
     scanEntries(sInMem,sInTemp,sOnDisk);
     scanGroups(mdInMem,mdInTemp,mdOnDisk);
-    if (changes.getChildCount() > 0) {
-      SwingUtilities.invokeLater(new Runnable(){
-        public void run(){
-          ChangeDisplayDialog dial=new ChangeDisplayDialog(frame,panel,changes);
-          Util.placeDialog(dial,frame);
-          dial.show();
-        }
-      }
-);
-    }
- else {
-      JOptionPane.showMessageDialog(frame,Globals.lang("No actual changes found."),Globals.lang("External changes"),JOptionPane.INFORMATION_MESSAGE);
-    }
   }
  catch (  IOException ex) {
     ex.printStackTrace();

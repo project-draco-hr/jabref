@@ -2,5 +2,30 @@
   if (e.isPopupTrigger()) {
     int[] rows=table.getSelectedRows();
     popup.show(table,e.getX(),e.getY());
+    return;
+  }
+  final int col=table.columnAtPoint(e.getPoint()), row=table.rowAtPoint(e.getPoint());
+  if ((col == DUPL_COL) && (tableModel.getValueAt(row,col) != null)) {
+    BibtexEntry first=(BibtexEntry)entries.get(row);
+    BibtexEntry other=Util.containsDuplicate(panel.database(),first);
+    if (other != null) {
+      DuplicateResolverDialog diag=new DuplicateResolverDialog(frame,other,first,DuplicateResolverDialog.INSPECTION);
+      Util.placeDialog(diag,ImportInspectionDialog.this);
+      diag.setVisible(true);
+      ImportInspectionDialog.this.toFront();
+      if (diag.getSelected() == DuplicateResolverDialog.KEEP_UPPER) {
+        entriesToDelete.add(other);
+        tableModel.setValueAt(null,row,col);
+      }
+ else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_LOWER) {
+synchronized (entries) {
+          tableModel.removeRow(row);
+          entries.remove(row);
+        }
+      }
+ else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_BOTH) {
+        tableModel.setValueAt(null,row,col);
+      }
+    }
   }
 }

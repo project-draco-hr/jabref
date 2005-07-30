@@ -12,11 +12,20 @@
   _prefs.putBoolean("saveInStandardOrder",saveInStandardOrder.isSelected());
   _prefs.putBoolean("allowTableEditing",allowEditing.isSelected());
   _prefs.putBoolean("ctrlClick",ctrlClick.isSelected());
-  _prefs.putBoolean("preserveFieldFormatting",preserveFormatting.isSelected());
   _prefs.putBoolean("autoDoubleBraces",autoDoubleBraces.isSelected());
   _prefs.putBoolean("useImportInspectionDialog",useImportInspector.isSelected());
+  _prefs.putBoolean("useImportInspectionDialogForSingle",useImportInspectorForSingle.isSelected());
+  _prefs.putBoolean("warnAboutDuplicatesInInspection",inspectionWarnDupli.isSelected());
   _prefs.put("defaultOwner",defOwnerField.getText().trim());
   _prefs.put("defaultEncoding",(String)encodings.getSelectedItem());
+  boolean oldShowSource=_prefs.getBoolean("showSource");
+  _prefs.putBoolean("showSource",showSource.isSelected());
+  if (oldShowSource != showSource.isSelected()) {
+    for (int j=0; j < _frame.getTabbedPane().getTabCount(); j++) {
+      BasePanel bp=(BasePanel)_frame.getTabbedPane().getComponentAt(j);
+      bp.entryEditors.clear();
+    }
+  }
   if (!GUIGlobals.LANGUAGES.get(language.getSelectedItem()).equals(_prefs.get("language"))) {
     _prefs.put("language",GUIGlobals.LANGUAGES.get(language.getSelectedItem()).toString());
     Globals.setLanguage(GUIGlobals.LANGUAGES.get(language.getSelectedItem()).toString(),"");

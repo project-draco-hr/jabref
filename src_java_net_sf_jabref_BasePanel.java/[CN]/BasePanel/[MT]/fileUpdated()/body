@@ -3,8 +3,22 @@
   updatedExternally=true;
   Thread t=new Thread(){
     public void run(){
-      FileUpdatePanel pan=new FileUpdatePanel(frame,BasePanel.this,sidePaneManager,file);
-      sidePaneManager.add("fileUpdate",pan);
+      ChangeScanner scanner=new ChangeScanner(frame,BasePanel.this);
+      scanner.changeScan(BasePanel.this.file());
+      try {
+        scanner.join();
+      }
+ catch (      InterruptedException e) {
+        e.printStackTrace();
+      }
+      if (scanner.changesFound()) {
+        FileUpdatePanel pan=new FileUpdatePanel(frame,BasePanel.this,sidePaneManager,file,scanner);
+        sidePaneManager.add("fileUpdate",pan);
+        setUpdatedExternally(false);
+      }
+ else {
+        setUpdatedExternally(false);
+      }
     }
   }
 ;

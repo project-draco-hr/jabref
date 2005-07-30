@@ -1,0 +1,26 @@
+{
+  BibtexDatabase database=null;
+  if (panel != null)   database=panel.database();
+ else   database=new BibtexDatabase();
+  List keys=new ArrayList(entries.size());
+  for (Iterator i=entries.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=(BibtexEntry)i.next();
+    try {
+      entry.setId(Util.createNeutralId());
+      database.insertEntry(entry);
+    }
+ catch (    KeyCollisionException ex) {
+      ex.printStackTrace();
+    }
+    LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,entry);
+    keys.add(entry.getCiteKey());
+  }
+  for (Iterator i=entries.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=(BibtexEntry)i.next();
+    database.removeEntry(entry.getId());
+  }
+  if (addColumn) {
+    tableModel.addColumn("Bibtexkey",keys.toArray());
+    setWidths();
+  }
+}

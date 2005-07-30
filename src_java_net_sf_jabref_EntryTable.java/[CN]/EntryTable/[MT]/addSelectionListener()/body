@@ -5,17 +5,16 @@
       if (!e.getValueIsAdjusting()) {
         SwingUtilities.invokeLater(new Thread(){
           public void run(){
+            activeRow=resolveNewSelection(getSelectedRows());
             if (getSelectedRowCount() == 1) {
-              int row=getSelectedRow();
-              if (row >= 0) {
-                panel.updateViewToSelected();
-                ensureVisible(row);
-              }
+              panel.updateViewToSelected();
+              ensureVisible(activeRow);
             }
  else {
               if (prefs.getBoolean("disableOnMultipleSelection")) {
                 panel.setEntryEditorEnabled(false);
               }
+              if (activeRow >= 0)               panel.updateViewToSelected();
             }
           }
         }

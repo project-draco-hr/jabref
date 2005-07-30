@@ -3,6 +3,11 @@
   int pos=name.indexOf(" ");
   name=name.substring(pos + 1);
   final File fileToOpen=new File(name);
+  if (!fileToOpen.exists()) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("File not found") + ": " + fileToOpen.getName(),"Error",JOptionPane.ERROR_MESSAGE);
+    removeItem(name);
+    return;
+  }
   (new Thread(){
     public void run(){
       frame.open.openIt(fileToOpen,true);

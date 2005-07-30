@@ -3,13 +3,15 @@
     output(Globals.lang("No saved session found."));
     return;
   }
+  if (running)   return;
+ else   running=true;
   output(Globals.lang("Loading session..."));
   (new Thread(){
     public void run(){
       HashSet currentFiles=new HashSet();
       if (tabbedPane.getTabCount() > 0) {
         for (int i=0; i < tabbedPane.getTabCount(); i++) {
-          currentFiles.add(baseAt(i).file.getPath());
+          if (baseAt(i).file != null)           currentFiles.add(baseAt(i).file.getPath());
         }
       }
       int i0=tabbedPane.getTabCount();
@@ -23,6 +25,7 @@
         }
       }
       output(Globals.lang("Files opened") + ": " + (tabbedPane.getTabCount() - i0));
+      running=false;
     }
   }
 ).start();

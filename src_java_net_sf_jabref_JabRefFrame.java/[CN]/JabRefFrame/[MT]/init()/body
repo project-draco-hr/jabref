@@ -17,13 +17,14 @@
   medlineFetcher=new MedlineFetcher(sidePaneManager);
   citeSeerFetcher=new CiteSeerFetcher(sidePaneManager);
   citeSeerFetcherPanel=new CiteSeerFetcherPanel(sidePaneManager,(CiteSeerFetcher)citeSeerFetcher);
-  searchManager=new SearchManager2(sidePaneManager);
+  searchManager=new SearchManager2(this,sidePaneManager);
 {
     groupSelector=new GroupSelector(this,sidePaneManager);
     sidePaneManager.register("groups",groupSelector);
   }
   sidePaneManager.register("fetchMedline",medlineFetcher);
   sidePaneManager.register("search",searchManager);
+  if (Globals.prefs.getBoolean("searchPanelVisible"))   sidePaneManager.ensureVisible("search");
   sidePaneManager.register("CiteSeerPanel",citeSeerFetcherPanel);
   sidePaneManager.register("CiteSeerProgress",citeSeerFetcher);
   sidePaneManager.populatePanel();
@@ -40,6 +41,8 @@
         groupToggle.setSelected(sidePaneManager.isPanelVisible("groups"));
         searchToggle.setSelected(sidePaneManager.isPanelVisible("search"));
         previewToggle.setSelected(Globals.prefs.getBoolean("previewEnabled"));
+        highlightAny.setSelected(Globals.prefs.getBoolean("highlightGroupsMatchingAny"));
+        highlightAll.setSelected(Globals.prefs.getBoolean("highlightGroupsMatchingAll"));
         Globals.focusListener.setFocused(bp.entryTable);
         new FocusRequester(bp.entryTable);
       }

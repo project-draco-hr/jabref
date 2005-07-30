@@ -13,7 +13,7 @@
         clickedOn=entryTable.getSelectedRow();
       }
       if (clickedOn >= 0) {
-        String id=tableModel.getNameFromNumber(clickedOn);
+        String id=tableModel.getIdForRow(clickedOn);
         BibtexEntry be=database.getEntryById(id);
         showEntry(be);
         if (splitPane.getBottomComponent() != null) {
@@ -322,7 +322,7 @@ catch (            Throwable ex) {
               String citeKey="", message="";
               boolean first=true;
               for (int i=0; i < numSelected; i++) {
-                BibtexEntry bes=database.getEntryById(tableModel.getNameFromNumber(rows[i]));
+                BibtexEntry bes=database.getEntryById(tableModel.getIdForRow(rows[i]));
                 citeKey=(String)bes.getField(GUIGlobals.KEY_FIELD);
                 if (citeKey == null || citeKey.equals(""))                 continue;
                 if (first) {
@@ -512,77 +512,8 @@ catch (            Throwable ex) {
           prefs.put("workingDirectory",fileToOpen.getPath());
           String encoding=Globals.prefs.get("defaultEncoding");
           ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen,encoding);
-          BibtexDatabase db=pr.getDatabase();
-          MetaData meta=new MetaData(pr.getMetaData(),pr.getDatabase());
-          NamedCompound ce=new NamedCompound(Globals.lang("Append database"));
-          Vector appendedEntries=new Vector();
-          Vector originalEntries=new Vector();
-          BibtexEntry originalEntry;
-          if (importEntries) {
-            Iterator i=db.getKeySet().iterator();
-            while (i.hasNext()) {
-              originalEntry=db.getEntryById((String)i.next());
-              BibtexEntry be=(BibtexEntry)(originalEntry.clone());
-              be.setId(Util.createNeutralId());
-              database.insertEntry(be);
-              appendedEntries.add(be);
-              originalEntries.add(originalEntry);
-              ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
-            }
-          }
-          if (importStrings) {
-            BibtexString bs;
-            int pos=0;
-            Iterator i=db.getStringKeySet().iterator();
-            for (; i.hasNext(); ) {
-              bs=(BibtexString)(db.getString(i.next()).clone());
-              if (!database.hasStringLabel(bs.getName())) {
-                database.addString(bs);
-                ce.addEdit(new UndoableInsertString(BasePanel.this,database,bs));
-              }
-            }
-          }
-          if (importGroups) {
-            GroupTreeNode newGroups=meta.getGroups();
-            if (newGroups != null) {
-              if (newGroups.getGroup() instanceof AllEntriesGroup) {
-                ExplicitGroup group=new ExplicitGroup("Imported",AbstractGroup.INDEPENDENT);
-                newGroups.setGroup(group);
-                for (int i=0; i < appendedEntries.size(); ++i)                 group.addEntry((BibtexEntry)appendedEntries.elementAt(i));
-              }
-              frame.groupSelector.addGroups(newGroups,ce);
-              GroupTreeNode node;
-              ExplicitGroup group;
-              BibtexEntry entry;
-              for (Enumeration e=newGroups.preorderEnumeration(); e.hasMoreElements(); ) {
-                node=(GroupTreeNode)e.nextElement();
-                if (!(node.getGroup() instanceof ExplicitGroup))                 continue;
-                group=(ExplicitGroup)node.getGroup();
-                for (int i=0; i < originalEntries.size(); ++i) {
-                  entry=(BibtexEntry)originalEntries.elementAt(i);
-                  if (group.contains(entry)) {
-                    group.removeEntry(entry);
-                    group.addEntry((BibtexEntry)appendedEntries.elementAt(i));
-                  }
-                }
-              }
-              frame.groupSelector.revalidateGroups();
-            }
-          }
-          if (importSelectorWords) {
-            Iterator i=meta.iterator();
-            while (i.hasNext()) {
-              String s=(String)i.next();
-              if (s.startsWith(Globals.SELECTOR_META_PREFIX)) {
-                metaData.putData(s,meta.getData(s));
-              }
-            }
-          }
-          ce.end();
-          undoManager.addEdit(ce);
-          markBaseChanged();
-          refreshTable();
-          output("Imported from database '" + fileToOpen.getPath() + "':");
+          mergeFromBibtex(pr,importEntries,importStrings,importGroups,importSelectorWords);
+          output(Globals.lang("Imported from database") + " '" + fileToOpen.getPath()+ "'");
           fileToOpen=null;
         }
  catch (        Throwable ex) {
@@ -624,7 +555,6 @@ catch (            Throwable ex) {
                 final String[] typesToTry=new String[]{"html","ps","pdf"};
                 for (int i=0; i < typesToTry.length; i++) {
                   File f=new File(basefile + "." + typesToTry[i]);
-                  Util.pr("Checking for " + f);
                   if (f.exists()) {
                     field=typesToTry[i];
                     filepath=f.getPath();
@@ -827,6 +757,32 @@ catch (            Throwable ex) {
         updateViewToSelected();
       }
       frame.previewToggle.setSelected(enabled);
+    }
+  }
+);
+  actions.put("toggleHighlightGroupsMatchingAny",new BaseAction(){
+    public void action(){
+      boolean enabled=!Globals.prefs.getBoolean("highlightGroupsMatchingAny");
+      Globals.prefs.putBoolean("highlightGroupsMatchingAny",enabled);
+      frame.highlightAny.setSelected(enabled);
+      if (enabled) {
+        frame.highlightAll.setSelected(false);
+        Globals.prefs.putBoolean("highlightGroupsMatchingAll",false);
+      }
+      entryTable.groupsHighlightListener.valueChanged(null);
+    }
+  }
+);
+  actions.put("toggleHighlightGroupsMatchingAll",new BaseAction(){
+    public void action(){
+      boolean enabled=!Globals.prefs.getBoolean("highlightGroupsMatchingAll");
+      Globals.prefs.putBoolean("highlightGroupsMatchingAll",enabled);
+      frame.highlightAll.setSelected(enabled);
+      if (enabled) {
+        frame.highlightAny.setSelected(false);
+        Globals.prefs.putBoolean("highlightGroupsMatchingAny",false);
+      }
+      entryTable.groupsHighlightListener.valueChanged(null);
     }
   }
 );

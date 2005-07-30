@@ -1,7 +1,29 @@
 {
+  if (Globals.prefs.getBoolean("warnAboutDuplicatesInInspection")) {
+    for (int i=0; i < tableModel.getRowCount(); i++) {
+      if (tableModel.getValueAt(i,DUPL_COL) != null) {
+        CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("There are possible duplicates (marked with a 'D' icon) that haven't been resolved. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
+        int answer=JOptionPane.showConfirmDialog(ImportInspectionDialog.this,cbm,Globals.lang("Duplicates found"),JOptionPane.YES_NO_OPTION);
+        if (cbm.isSelected())         Globals.prefs.putBoolean("warnAboutDuplicatesInInspection",false);
+        if (answer == JOptionPane.NO_OPTION)         return;
+        break;
+      }
+    }
+  }
+  NamedCompound ce=new NamedCompound(undoName);
+  if (entriesToDelete.size() > 0) {
+    for (Iterator i=entriesToDelete.iterator(); i.hasNext(); ) {
+      BibtexEntry entry=(BibtexEntry)i.next();
+      ce.addEdit(new UndoableRemoveEntry(panel.database(),entry,panel));
+      panel.database().removeEntry(entry.getId());
+    }
+  }
+  if (autoGenerate.isSelected() && !generatedKeys) {
+    generateKeys(false);
+  }
+  Globals.prefs.putBoolean("generateKeysAfterInspection",autoGenerate.isSelected());
   final List selected=getSelectedEntries();
   if (selected.size() > 0) {
-    NamedCompound ce=new NamedCompound(undoName);
     if (newDatabase) {
       BibtexDatabase base=new BibtexDatabase();
       panel=new BasePanel(frame,base,null,new HashMap(),Globals.prefs);
@@ -14,7 +36,7 @@
         if (entry.getField(Globals.KEY_FIELD) == null) {
           int answer=JOptionPane.showConfirmDialog(ImportInspectionDialog.this,Globals.lang("Cannot add entries to group without generating keys. Generate keys now?"),Globals.lang("Add to group"),JOptionPane.YES_NO_OPTION);
           if (answer == JOptionPane.YES_OPTION) {
-            generateKeys();
+            generateKeys(false);
           }
  else           groupingCanceled=true;
         }

@@ -29,8 +29,19 @@
           i++;
         }
       }
+ else       if ((content.length() > i + 1) && (content.charAt(i + 1) != '\n')) {
+        content.deleteCharAt(i);
+        if (!Character.isWhitespace(content.charAt(i)) && (i > 0) && !Character.isWhitespace(content.charAt(i - 1)))         content.insert(i,' ');
+      }
  else       i++;
     }
+ else     if (c == ' ') {
+      if ((i > 0) && (content.charAt(i - 1) == ' ')) {
+        content.deleteCharAt(i);
+      }
+ else       i++;
+    }
+ else     if (c == '\t')     content.deleteCharAt(i);
  else     i++;
     prev=c;
   }

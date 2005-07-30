@@ -18,11 +18,8 @@
       consume('"');
     }
  else     if (c == '{') {
-      if (isStandardBibtexField || !Globals.prefs.getBoolean("preserveFieldFormatting")) {
-        StringBuffer text=parseBracketedTextExactly();
-        value.append(fieldContentParser.format(text));
-      }
- else       value.append(parseBracketedTextExactly());
+      StringBuffer text=parseBracketedTextExactly();
+      value.append(fieldContentParser.format(text));
     }
  else     if (Character.isDigit((char)c)) {
       String numString=parseTextToken();
@@ -40,7 +37,7 @@
     skipWhitespace();
   }
   if (Globals.prefs.getBoolean("autoDoubleBraces")) {
-    while ((value.charAt(0) == '{') && (value.charAt(value.length() - 1) == '}')) {
+    while ((value.length() > 1) && (value.charAt(0) == '{') && (value.charAt(value.length() - 1) == '}')) {
       value.deleteCharAt(value.length() - 1);
       value.deleteCharAt(0);
     }

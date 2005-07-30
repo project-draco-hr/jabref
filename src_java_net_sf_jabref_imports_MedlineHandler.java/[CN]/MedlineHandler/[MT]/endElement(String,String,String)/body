@@ -6,7 +6,10 @@
       }
     }
     title=Util.putBracesAroundCapitals(title);
-    keyword=Util.sortWordsAndRemoveDuplicates(descriptorName) + ", " + pubmedid;
+    StringBuffer sb=new StringBuffer(Util.sortWordsAndRemoveDuplicates(descriptorName));
+    if (sb.length() > 0)     sb.append(", ");
+    sb.append(pubmedid);
+    keyword=sb.toString();
     BibtexEntry b=new BibtexEntry(Util.createNeutralId(),Globals.getEntryType("article"));
     if (!author.equals("")) {
       b.setField("author",ImportFormatReader.expandAuthorInitials(author));
@@ -15,7 +18,7 @@
     if (!title.equals(""))     b.setField("title",title);
     if (!journal.equals(""))     b.setField("journal",journal);
     if (!year.equals(""))     b.setField("year",year);
-    if (!page.equals(""))     b.setField("pages",page);
+    if (!page.equals(""))     b.setField("pages",fixPageRange(page));
     if (!volume.equals(""))     b.setField("volume",volume);
     if (!abstractText.equals(""))     b.setField("abstract",abstractText.replaceAll("%","\\\\%"));
     if (!keyword.equals(""))     b.setField("keywords",keyword);
@@ -26,6 +29,7 @@
       b.setField("url","http://dx.doi.org/" + doi);
     }
     if (!pii.equals(""))     b.setField("pii",pii);
+    if (!pubmedid.equals(""))     b.setField("pmid",pubmedid);
     bibitems.add(b);
     abstractText="";
     author="";

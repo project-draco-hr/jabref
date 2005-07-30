@@ -3,6 +3,7 @@
   if (!isCellEditable(row,col) && (e.getClickCount() == 2)) {
     try {
       panel.runCommand("edit");
+      return;
     }
  catch (    Throwable ex) {
       ex.printStackTrace();
@@ -23,7 +24,7 @@
     (new Thread(){
       public void run(){
         panel.output(Globals.lang("External viewer called") + ".");
-        BibtexEntry be=panel.database().getEntryById(tableModel.getNameFromNumber(row));
+        BibtexEntry be=panel.database().getEntryById(tableModel.getIdForRow(row));
         if (be == null) {
           Globals.logger("Error: could not find entry.");
           return;

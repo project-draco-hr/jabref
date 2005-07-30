@@ -23,11 +23,8 @@
   getTableHeader().addMouseListener(new MouseAdapter(){
     public void mouseClicked(    MouseEvent e){
       int col=getTableHeader().columnAtPoint(e.getPoint());
-      if (col >= tableModel.padleft) {
+      if (col >= 1) {
         String s=tableModel.getFieldName(col);
-        if (s.equals("")) {
-          return;
-        }
         Point p=e.getPoint();
         int colindex=getTableHeader().columnAtPoint(p);
         if (colindex >= 0) {
@@ -45,7 +42,11 @@
             return;
           }
         }
-        if (!s.equals(prefs.get("priSort")))         prefs.put("priSort",s);
+        if (!s.equals(prefs.get("priSort"))) {
+          prefs.put("priSort",s);
+          if (tableModel.getIconTypeForColumn(col) == null)           prefs.putBoolean("priBinary",false);
+ else           prefs.putBoolean("priBinary",true);
+        }
  else         prefs.putBoolean("priDescending",!prefs.getBoolean("priDescending"));
         tableModel.remap();
         panel.refreshTable();
@@ -65,6 +66,15 @@
   }
 );
   addSelectionListener();
+  groupsHighlightListener=new ListSelectionListener(){
+    public void valueChanged(    ListSelectionEvent e){
+      if (Globals.prefs.getBoolean("highlightGroupsMatchingAny"))       panel.getGroupSelector().showMatchingGroups(panel.getSelectedEntries(),false);
+ else       if (Globals.prefs.getBoolean("highlightGroupsMatchingAll"))       panel.getGroupSelector().showMatchingGroups(panel.getSelectedEntries(),true);
+ else       panel.getGroupSelector().showMatchingGroups(null,true);
+    }
+  }
+;
+  getSelectionModel().addListSelectionListener(groupsHighlightListener);
   setWidths();
   sp.getViewport().setBackground(GUIGlobals.tableBackground);
   updateFont();
