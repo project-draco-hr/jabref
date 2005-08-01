@@ -1,0 +1,32 @@
+{
+  Font font=loadFont("ASTROLYT.TTF");
+  font1=font.deriveFont(Font.BOLD,(float)14.0);
+  font2=font.deriveFont(Font.BOLD,(float)20.0);
+  font=loadFont("AUGIE.TTF");
+  font3=font.deriveFont(Font.BOLD,(float)14.0);
+  versionStr="Version " + Globals.VERSION;
+  buildStr=" build " + Globals.BUILD;
+  image=new ImageIcon(getClass().getResource("/images/autumn.png"));
+  filter=new HighlightFilter(false,5);
+  filter.setMiddle(image.getIconWidth(),image.getIconHeight());
+  iProducer=new FilteredImageSource(image.getImage().getSource(),filter);
+  HEIGHT=image.getIconHeight();
+  WIDTH=image.getIconWidth();
+  FontMetrics fm=getFontMetrics(font2);
+  TOP=2 * fm.getHeight();
+  fm=getFontMetrics(font1);
+  BOTTOM=2 * fm.getHeight();
+  borders=new int[4];
+  borders[0]=0;
+  borders[1]=WIDTH;
+  borders[2]=TOP;
+  borders[3]=HEIGHT - TOP - BOTTOM;
+  paintWidth=borders[1] - borders[0];
+  setForeground(Color.black);
+  setBackground(Color.white);
+  setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+  textBlocks=new Vector(50);
+  loadAboutText();
+  this.setDoubleBuffered(true);
+  thread=new AnimationThread();
+}
