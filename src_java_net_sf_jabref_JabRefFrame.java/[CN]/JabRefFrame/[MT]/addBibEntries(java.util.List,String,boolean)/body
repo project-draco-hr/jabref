@@ -5,10 +5,6 @@
   }
   int addedEntries=0;
   if (prefs.getBoolean("useOwner"))   Util.setDefaultOwner(bibentries,prefs.get("defaultOwner"));
-  if (bibentries == null) {
-    output(Globals.lang("No entries imported."));
-    return 0;
-  }
   if (intoNew || (tabbedPane.getTabCount() == 0)) {
     BibtexDatabase database=new BibtexDatabase();
     Iterator it=bibentries.iterator();
@@ -50,14 +46,14 @@
             DuplicateResolverDialog drd=new DuplicateResolverDialog(ths,existingEntry,entry,DuplicateResolverDialog.IMPORT_CHECK);
             drd.setVisible(true);
             int res=drd.getSelected();
-            if (res == drd.KEEP_LOWER) {
+            if (res == DuplicateResolverDialog.KEEP_LOWER) {
               dupli=true;
             }
- else             if (res == drd.KEEP_UPPER) {
+ else             if (res == DuplicateResolverDialog.KEEP_UPPER) {
               database.removeEntry(existingEntry.getId());
               ce.addEdit(new UndoableRemoveEntry(database,existingEntry,basePanel));
             }
- else             if (res == drd.BREAK) {
+ else             if (res == DuplicateResolverDialog.BREAK) {
               break mainLoop;
             }
             break loop;
