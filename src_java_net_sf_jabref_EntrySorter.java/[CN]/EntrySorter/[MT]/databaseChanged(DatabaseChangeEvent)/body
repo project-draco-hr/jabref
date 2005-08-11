@@ -2,17 +2,14 @@
 synchronized (set) {
     if (e.getType() == DatabaseChangeEvent.ADDED_ENTRY) {
       set.add(e.getEntry());
+      changed=true;
     }
  else     if (e.getType() == DatabaseChangeEvent.REMOVED_ENTRY) {
       set.remove(e.getEntry());
-    }
- else     if (e.getType() == DatabaseChangeEvent.CHANGING_ENTRY) {
-      set.remove(e.getEntry());
-      changing=true;
+      changed=true;
     }
  else     if (e.getType() == DatabaseChangeEvent.CHANGED_ENTRY) {
-      set.add(e.getEntry());
-      changing=false;
+      changed=true;
     }
   }
 }
