@@ -10,7 +10,9 @@
     BibtexEntry be=new BibtexEntry(id,type);
     try {
       database.insertEntry(be);
-      if (prefs.getBoolean("useOwner"))       be.setField(Globals.OWNER,prefs.get("defaultOwner"));
+      ArrayList list=new ArrayList();
+      list.add(be);
+      Util.setAutomaticFields(list);
       undoManager.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
       output(Globals.lang("Added new") + " '" + type.getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
       refreshTable();
