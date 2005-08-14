@@ -1,0 +1,20 @@
+{
+  ths=this;
+  JabRefPreferences prefs=JabRefPreferences.getInstance();
+  Globals.prefs=prefs;
+  BibtexEntryType.loadCustomEntryTypes(prefs);
+  Globals.setLanguage(prefs.get("language"),"");
+  if (Globals.prefs.getBoolean("useRemoteServer")) {
+    remoteListener=RemoteListener.openRemoteListener(this);
+    if (remoteListener != null) {
+      remoteListener.start();
+    }
+  }
+  if (remoteListener == null) {
+    if (RemoteListener.sendToActiveJabRefInstance(args))     ;
+    System.exit(0);
+  }
+  System.runFinalizersOnExit(true);
+  Vector loaded=processArguments(args,true);
+  openWindow(loaded);
+}

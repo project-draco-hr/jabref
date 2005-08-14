@@ -1,0 +1,18 @@
+{
+  try {
+    InetAddress local=InetAddress.getByName("localhost");
+    Socket socket=new Socket(local,Globals.prefs.getInt("remoteServerPort"));
+    OutputStream out=socket.getOutputStream();
+    for (int i=0; i < args.length; i++) {
+      byte[] bytes=args[i].getBytes();
+      out.write(bytes);
+      out.write('\n');
+    }
+    out.close();
+    socket.close();
+    return true;
+  }
+ catch (  IOException e) {
+    return false;
+  }
+}

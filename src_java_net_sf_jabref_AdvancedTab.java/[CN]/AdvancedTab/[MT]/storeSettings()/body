@@ -1,6 +1,26 @@
 {
   _prefs.putBoolean("useDefaultLookAndFeel",!useDefault.isSelected());
   _prefs.put("lookAndFeel",className.getText());
+  try {
+    int port=Integer.parseInt(remoteServerPort.getText());
+    if (port != oldPort) {
+      _prefs.putInt("remoteServerPort",port);
+    }
+  }
+ catch (  NumberFormatException ex) {
+    ex.printStackTrace();
+  }
+  _prefs.putBoolean("useRemoteServer",useRemoteServer.isSelected());
+  if (useRemoteServer.isSelected() && (JabRef.remoteListener == null)) {
+    JabRef.remoteListener=RemoteListener.openRemoteListener(JabRef.ths);
+    if (JabRef.remoteListener != null) {
+      JabRef.remoteListener.start();
+    }
+  }
+ else   if (!useRemoteServer.isSelected() && (JabRef.remoteListener != null)) {
+    JabRef.remoteListener.disable();
+    JabRef.remoteListener=null;
+  }
   if ((useDefault.isSelected() == oldUseDef) || !oldLnf.equals(className.getText())) {
     JOptionPane.showMessageDialog(null,Globals.lang("You have changed the look and feel setting. " + "You must restart JabRef for this to come into effect."),Globals.lang("Changed look and feel settings"),JOptionPane.WARNING_MESSAGE);
   }

@@ -1,0 +1,101 @@
+{
+  if (!graphicFailure && !disableGui.isInvoked()) {
+    Util.performCompatibilityUpdate();
+    System.setProperty("apple.laf.useScreenMenuBar","true");
+    if (!Globals.ON_MAC) {
+      int fontSizes=Globals.prefs.getInt("menuFontSize");
+      String defaultLookAndFeel;
+      if (Globals.ON_WIN)       defaultLookAndFeel=GUIGlobals.windowsDefaultLookAndFeel;
+ else       defaultLookAndFeel=GUIGlobals.linuxDefaultLookAndFeel;
+      String lookAndFeel=null;
+      if (!Globals.prefs.getBoolean("useDefaultLookAndFeel"))       lookAndFeel=Globals.prefs.get("lookAndFeel");
+ else       lookAndFeel=defaultLookAndFeel;
+      LookAndFeel lnf=null;
+      Object objLnf=null;
+      try {
+        if (lookAndFeel != null)         objLnf=Class.forName(lookAndFeel).newInstance();
+ else         objLnf=Class.forName(defaultLookAndFeel).newInstance();
+      }
+ catch (      Exception ex) {
+        ex.printStackTrace();
+        try {
+          objLnf=Class.forName(defaultLookAndFeel).newInstance();
+        }
+ catch (        Exception ex2) {
+        }
+      }
+      if (objLnf != null)       lnf=(LookAndFeel)objLnf;
+      if ((lnf != null) && (lnf instanceof Plastic3DLookAndFeel)) {
+        Plastic3DLookAndFeel plLnf=(Plastic3DLookAndFeel)lnf;
+        plLnf.setFontSizeHints(new FontSizeHints(fontSizes,fontSizes,fontSizes,fontSizes));
+      }
+ else       if ((lnf != null) && (lnf instanceof ExtWindowsLookAndFeel)) {
+        ExtWindowsLookAndFeel plLnf=(ExtWindowsLookAndFeel)lnf;
+        plLnf.setFontSizeHints(new FontSizeHints(fontSizes,fontSizes,fontSizes,fontSizes));
+      }
+      if (lnf != null) {
+        try {
+          UIManager.setLookAndFeel(lnf);
+          if (!Globals.ON_WIN) {
+            UIManager.put("SimpleInternalFrame.activeTitleBackground",GUIGlobals.gradientBlue);
+          }
+        }
+ catch (        Throwable ex) {
+          ex.printStackTrace();
+          System.err.println("Trying to set system default Look&Feel...");
+          try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          }
+ catch (          Throwable e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    }
+    if (!blank.isInvoked() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
+      String[] names=Globals.prefs.getStringArray("lastEdited");
+      lastEdLoop:       for (int i=0; i < names.length; i++) {
+        File fileToOpen=new File(names[i]);
+        for (int j=0; j < loaded.size(); j++) {
+          ParserResult pr=(ParserResult)loaded.elementAt(j);
+          if ((pr.getFile() != null) && pr.getFile().equals(fileToOpen))           continue lastEdLoop;
+        }
+        if (fileToOpen.exists()) {
+          ParserResult pr=openBibFile(names[i]);
+          if (pr != null)           loaded.add(pr);
+        }
+      }
+    }
+    GUIGlobals.init();
+    GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get("fontFamily"),Globals.prefs.getInt("fontStyle"),Globals.prefs.getInt("fontSize"));
+    jrf=new JabRefFrame();
+    if (loaded.size() > 0) {
+      for (int i=0; i < loaded.size(); i++) {
+        ParserResult pr=(ParserResult)loaded.elementAt(i);
+        jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),(i == 0));
+      }
+    }
+    if (loadSess.isInvoked())     jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
+    if (splashScreen != null) {
+      splashScreen.dispose();
+      splashScreen=null;
+    }
+    jrf.setVisible(true);
+    for (int i=0; i < loaded.size(); i++) {
+      ParserResult pr=(ParserResult)loaded.elementAt(i);
+      if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
+        String[] wrns=pr.warnings();
+        StringBuffer wrn=new StringBuffer();
+        for (int j=0; j < wrns.length; j++)         wrn.append((j + 1) + ". " + wrns[j]+ "\n");
+        if (wrn.length() > 0)         wrn.deleteCharAt(wrn.length() - 1);
+        jrf.showBaseAt(i);
+        JOptionPane.showMessageDialog(jrf,wrn.toString(),Globals.lang("Warnings"),JOptionPane.WARNING_MESSAGE);
+      }
+    }
+    if (loaded.size() > 0) {
+      jrf.tabbedPane.setSelectedIndex(0);
+      new FocusRequester(((BasePanel)jrf.tabbedPane.getComponentAt(0)).entryTable);
+    }
+  }
+ else   System.exit(0);
+}
