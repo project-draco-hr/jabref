@@ -2,12 +2,26 @@
   try {
     InetAddress local=InetAddress.getByName("localhost");
     Socket socket=new Socket(local,Globals.prefs.getInt("remoteServerPort"));
+    InputStream in=socket.getInputStream();
     OutputStream out=socket.getOutputStream();
+    int c;
+    StringBuffer sb=new StringBuffer();
+    while ((c=in.read()) != '\0') {
+      sb.append((char)c);
+    }
+    if (!IDENTIFIER.equals(sb.toString())) {
+      String error=Globals.lang("Cannot use port %0 for remote operation; another" + "application may be using it. Try specifying another port.",new String[]{String.valueOf(Globals.prefs.getInt("remoteServerPort"))});
+      System.out.println(error);
+      return false;
+    }
     for (int i=0; i < args.length; i++) {
       byte[] bytes=args[i].getBytes();
       out.write(bytes);
       out.write('\n');
     }
+    out.write('\0');
+    out.flush();
+    in.close();
     out.close();
     socket.close();
     return true;
