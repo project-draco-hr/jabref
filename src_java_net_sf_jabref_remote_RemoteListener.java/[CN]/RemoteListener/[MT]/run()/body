@@ -2,6 +2,7 @@
   while (active) {
     try {
       Socket newSocket=socket.accept();
+      newSocket.setSoTimeout(1000);
       if (toStop) {
         active=false;
         return;
@@ -13,33 +14,40 @@
       out.flush();
       int c;
       StringBuffer sb=new StringBuffer();
-      while ((c=in.read()) != '\0') {
-        sb.append((char)c);
-      }
-      String[] args=sb.toString().split("\n");
-      Vector loaded=jabref.processArguments(args,false);
-      for (int i=0; i < loaded.size(); i++) {
-        ParserResult pr=(ParserResult)loaded.elementAt(i);
-        if (!pr.toOpenTab()) {
-          jabref.jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),(i == 0));
+      try {
+        while ((c=in.read()) != '\0') {
+          sb.append((char)c);
         }
- else {
-          BasePanel panel=jabref.jrf.basePanel();
-          if (panel == null) {
+        String[] args=sb.toString().split("\n");
+        Vector loaded=jabref.processArguments(args,false);
+        for (int i=0; i < loaded.size(); i++) {
+          ParserResult pr=(ParserResult)loaded.elementAt(i);
+          if (!pr.toOpenTab()) {
             jabref.jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),(i == 0));
           }
  else {
-            List entries=new ArrayList(pr.getDatabase().getEntries());
-            jabref.jrf.addImportedEntries(panel,entries,"",false,this);
+            BasePanel panel=jabref.jrf.basePanel();
+            if (panel == null) {
+              jabref.jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),(i == 0));
+            }
+ else {
+              List entries=new ArrayList(pr.getDatabase().getEntries());
+              jabref.jrf.addImportedEntries(panel,entries,"",false,this);
+            }
           }
         }
+        in.close();
+        out.close();
+        newSocket.close();
       }
-      in.close();
-      out.close();
-      newSocket.close();
+ catch (      SocketTimeoutException ex) {
+        in.close();
+        out.close();
+        newSocket.close();
+      }
     }
  catch (    SocketException ex) {
-      active=false;
+      ex.printStackTrace();
     }
 catch (    IOException e) {
       e.printStackTrace();
