@@ -15,8 +15,11 @@
       int c;
       StringBuffer sb=new StringBuffer();
       try {
-        while ((c=in.read()) != '\0') {
+        while (((c=in.read()) != '\0') && (c >= 0)) {
           sb.append((char)c);
+        }
+        if (sb.length() == 0) {
+          continue;
         }
         String[] args=sb.toString().split("\n");
         Vector loaded=jabref.processArguments(args,false);
@@ -47,7 +50,7 @@
       }
     }
  catch (    SocketException ex) {
-      ex.printStackTrace();
+      active=false;
     }
 catch (    IOException e) {
       e.printStackTrace();
