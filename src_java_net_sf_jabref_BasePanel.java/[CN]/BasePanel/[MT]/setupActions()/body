@@ -545,19 +545,16 @@ catch (            Throwable ex) {
               Object key=bes[0].getField(Globals.KEY_FIELD);
               if (key != null) {
                 basefile=key.toString();
-                String dir=prefs.get("pdfDirectory");
-                if (dir.endsWith(System.getProperty("file.separator"))) {
-                  basefile=dir + basefile;
-                }
- else {
-                  basefile=dir + System.getProperty("file.separator") + basefile;
-                }
-                final String[] typesToTry=new String[]{"html","ps","pdf"};
-                for (int i=0; i < typesToTry.length; i++) {
-                  File f=new File(basefile + "." + typesToTry[i]);
-                  if (f.exists()) {
-                    field=typesToTry[i];
-                    filepath=f.getPath();
+                final String[] types=new String[]{"pdf","ps"};
+                final String sep=System.getProperty("file.separator");
+                for (int i=0; i < types.length; i++) {
+                  String dir=prefs.get(types[i] + "Directory");
+                  if (dir.endsWith(sep)) {
+                    dir=dir.substring(0,dir.length() - sep.length());
+                  }
+                  String found=Util.findPdf(basefile,types[i],dir,new OpenFileFilter("." + types[i]));
+                  if (found != null) {
+                    filepath=dir + sep + found;
                     break;
                   }
                 }
@@ -867,7 +864,7 @@ catch (            Throwable ex) {
 );
   actions.put("test",new AbstractWorker(){
     public void init(){
-      output("Downloading.");
+      new FieldWeightDialog(frame).setVisible(true);
     }
     public void run(){
     }

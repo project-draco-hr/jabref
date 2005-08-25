@@ -1,0 +1,21 @@
+{
+  FormLayout layout=new FormLayout("right:pref, 4dlu, fill:pref, 8dlu, right:pref, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  builder.appendSeparator(Globals.lang("Field sizes"));
+  TreeSet fields=new TreeSet();
+  sliders.clear();
+  for (int i=0; i < GUIGlobals.ALL_FIELDS.length; i++) {
+    fields.add(GUIGlobals.ALL_FIELDS[i]);
+  }
+  fields.remove("bibtexkey");
+  for (Iterator i=fields.iterator(); i.hasNext(); ) {
+    String field=(String)i.next();
+    builder.append(field);
+    int weight=(int)(100 * GUIGlobals.getFieldWeight(field) / GUIGlobals.MAX_FIELD_WEIGHT);
+    JSlider slider=new JSlider(0,100,weight);
+    sliders.put(slider,new SliderInfo(field,weight));
+    builder.append(slider);
+  }
+  builder.appendSeparator();
+  return builder.getPanel();
+}

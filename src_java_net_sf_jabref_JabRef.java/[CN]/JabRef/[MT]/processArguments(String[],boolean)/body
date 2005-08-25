@@ -32,14 +32,23 @@
     }
   }
   Vector loaded=new Vector();
+  Vector toImport=new Vector();
   if (!blank.isInvoked() && (leftOver.length > 0)) {
     for (int i=0; i < leftOver.length; i++) {
       ParserResult pr=openBibFile(leftOver[i]);
-      if (pr != null)       loaded.add(pr);
+      if (pr != null) {
+        if (pr == ParserResult.INVALID_FORMAT)         toImport.add(leftOver[i]);
+ else         loaded.add(pr);
+      }
+ else {
+      }
     }
   }
   if (!blank.isInvoked() && importFile.isInvoked()) {
-    String[] data=importFile.getStringValue().split(",");
+    toImport.add(importFile.getStringValue());
+  }
+  if (toImport.size() > 0)   for (int i=0; i < toImport.size(); i++) {
+    String[] data=((String)toImport.elementAt(i)).split(",");
     try {
       if ((data.length > 1) && !"*".equals(data[1])) {
         System.out.println(Globals.lang("Importing") + ": " + data[0]);
@@ -52,7 +61,10 @@
         System.out.println(Globals.lang("Importing in unknown format") + ": " + data[0]);
         Object[] o=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
         String formatName=(String)o[0];
-        if (formatName.equals(ImportFormatReader.BIBTEX_FORMAT)) {
+        if (formatName == null) {
+          System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "'");
+        }
+ else         if (formatName.equals(ImportFormatReader.BIBTEX_FORMAT)) {
           ParserResult pr=(ParserResult)o[1];
           loaded.add(pr);
         }
