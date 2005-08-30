@@ -1,0 +1,23 @@
+{
+  JTextComponent jtc=getTextComponent(e);
+  if (jtc != null && SetMarkCommandAction.isMarked(jtc)) {
+    int start, end;
+    if (SetMarkCommandAction.getCaretPosition() < jtc.getCaretPosition()) {
+      start=SetMarkCommandAction.getCaretPosition();
+      end=jtc.getCaretPosition();
+    }
+ else {
+      start=jtc.getCaretPosition();
+      end=SetMarkCommandAction.getCaretPosition();
+    }
+    if (start != end) {
+      jtc.select(start,end);
+      SetMarkCommandAction.reset();
+      KillRing.getInstance().add(jtc.getSelectedText());
+      jtc.cut();
+    }
+ else {
+      jtc.getToolkit().beep();
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  JTextComponent jtc=getTextComponent(event);
+  if (jtc != null) {
+    try {
+      int start=jtc.getCaretPosition();
+      int end=getWordEnd(jtc,start);
+      jtc.setSelectionStart(start);
+      jtc.setSelectionEnd(end);
+      String word=jtc.getText(start,end - start);
+      jtc.replaceSelection(word.toUpperCase());
+      jtc.setCaretPosition(end);
+    }
+ catch (    BadLocationException ble) {
+      jtc.getToolkit().beep();
+    }
+  }
+}

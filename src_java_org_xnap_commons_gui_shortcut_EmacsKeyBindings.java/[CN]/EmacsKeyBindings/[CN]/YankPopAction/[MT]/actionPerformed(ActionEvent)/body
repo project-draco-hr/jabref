@@ -1,0 +1,15 @@
+{
+  JTextComponent jtc=getTextComponent(event);
+  if (jtc != null && KillRing.getInstance().getCurrentTextComponent() == jtc && jtc.getCaretPosition() == YankAction.end && !KillRing.getInstance().isEmpty()) {
+    jtc.setSelectionStart(YankAction.start);
+    jtc.setSelectionEnd(YankAction.end);
+    String toYank=KillRing.getInstance().next();
+    if (toYank != null) {
+      jtc.replaceSelection(toYank);
+      YankAction.end=jtc.getCaretPosition();
+    }
+ else {
+      jtc.getToolkit().beep();
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  JTextComponent jtc=getTextComponent(event);
+  if (jtc != null) {
+    try {
+      int start=jtc.getCaretPosition();
+      int end=getWordEnd(jtc,start);
+      jtc.setSelectionStart(start);
+      jtc.setSelectionEnd(end);
+      String word=jtc.getText(start,end - start);
+      jtc.replaceSelection(word.toLowerCase());
+      int offs=Utilities.getWordStart(jtc,start);
+      String c=jtc.getText(offs,1);
+      if (c.equals(" ")) {
+        offs=Utilities.getWordStart(jtc,++offs);
+        c=jtc.getText(offs,1);
+      }
+      if (Character.isLetter(c.charAt(0))) {
+        jtc.setSelectionStart(offs);
+        jtc.setSelectionEnd(offs + 1);
+        jtc.replaceSelection(c.toUpperCase());
+      }
+      end=Utilities.getWordEnd(jtc,offs);
+      jtc.setCaretPosition(end);
+    }
+ catch (    BadLocationException ble) {
+      jtc.getToolkit().beep();
+    }
+  }
+}
