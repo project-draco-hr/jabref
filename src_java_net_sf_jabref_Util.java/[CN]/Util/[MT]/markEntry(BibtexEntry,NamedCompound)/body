@@ -1,0 +1,15 @@
+{
+  Object o=be.getField(Globals.MARKED);
+  if ((o != null) && (o.toString().indexOf(Globals.prefs.WRAPPED_USERNAME) >= 0))   return;
+  String newValue;
+  if (o == null) {
+    newValue=Globals.prefs.WRAPPED_USERNAME;
+  }
+ else {
+    StringBuffer sb=new StringBuffer(o.toString());
+    sb.append(Globals.prefs.WRAPPED_USERNAME);
+    newValue=sb.toString();
+  }
+  ce.addEdit(new UndoableFieldChange(be,Globals.MARKED,be.getField(Globals.MARKED),newValue));
+  be.setField(Globals.MARKED,newValue);
+}
