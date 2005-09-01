@@ -49,10 +49,14 @@
   binary.add(Boolean.FALSE);
   if (sorter != null)   db.removeDatabaseChangeListener(sorter);
   int piv=Math.min(directions.size() - 1,3);
-  EntryComparator comp=new EntryComparator(((Boolean)binary.get(piv)).booleanValue(),((Boolean)directions.get(piv)).booleanValue(),(String)fields.get(piv));
+  Comparator comp=new EntryComparator(((Boolean)binary.get(piv)).booleanValue(),((Boolean)directions.get(piv)).booleanValue(),(String)fields.get(piv));
   piv--;
   while (piv >= 0) {
-    comp=new EntryComparator(((Boolean)binary.get(piv)).booleanValue(),((Boolean)directions.get(piv)).booleanValue(),(String)fields.get(piv),comp);
+    String field=(String)fields.get(piv);
+    if (field.equals(Globals.MARKED)) {
+      comp=new MarkedComparator(comp);
+    }
+ else     comp=new EntryComparator(((Boolean)binary.get(piv)).booleanValue(),((Boolean)directions.get(piv)).booleanValue(),field,comp);
     piv--;
   }
   sorter=db.getSorter(comp);
