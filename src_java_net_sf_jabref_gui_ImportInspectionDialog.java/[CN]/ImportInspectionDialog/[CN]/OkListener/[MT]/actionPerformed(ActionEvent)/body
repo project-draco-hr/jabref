@@ -1,6 +1,8 @@
 {
   if (Globals.prefs.getBoolean("warnAboutDuplicatesInInspection")) {
     for (int i=0; i < tableModel.getRowCount(); i++) {
+      Boolean sel=(Boolean)table.getValueAt(i,0);
+      if (!sel.booleanValue())       continue;
       if (tableModel.getValueAt(i,DUPL_COL) != null) {
         CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("There are possible duplicates (marked with a 'D' icon) that haven't been resolved. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
         int answer=JOptionPane.showConfirmDialog(ImportInspectionDialog.this,cbm,Globals.lang("Duplicates found"),JOptionPane.YES_NO_OPTION);
