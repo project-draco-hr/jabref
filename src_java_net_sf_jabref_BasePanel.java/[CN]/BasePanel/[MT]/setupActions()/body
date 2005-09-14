@@ -654,32 +654,8 @@ catch (            Throwable ex) {
       Util.placeDialog(tidialog,BasePanel.this);
       tidialog.setVisible(true);
       if (tidialog.okPressed()) {
+        Util.setAutomaticFields(Arrays.asList(new BibtexEntry[]{bibEntry}));
         insertEntry(bibEntry);
-      }
-    }
-  }
-);
-  actions.put("importPlainText",new BaseAction(){
-    public void action(){
-      BibtexEntry bibEntry=null;
-      BibtexEntry[] bes=entryTable.getSelectedEntries();
-      if ((bes != null) && (bes.length > 0))       bibEntry=bes[0];
-      if (bibEntry != null) {
-        undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,BasePanel.this));
-        TextInputDialog tidialog=new TextInputDialog(frame,BasePanel.this,"import",true,bibEntry);
-        Util.placeDialog(tidialog,BasePanel.this);
-        tidialog.setVisible(true);
-        if (tidialog.okPressed()) {
-          output(Globals.lang("changed ") + " '" + bibEntry.getType().getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
-          refreshTable();
-          int row=tableModel.getNumberFromName(bibEntry.getId());
-          entryTable.clearSelection();
-          entryTable.scrollTo(row);
-          markBaseChanged();
-          if (prefs.getBoolean("autoOpenForm")) {
-            showEntry(bibEntry);
-          }
-        }
       }
     }
   }

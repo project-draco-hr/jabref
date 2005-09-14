@@ -8,7 +8,10 @@ class Downloader extends Thread {
       }
       public void run(){
         URL url;
+        String textToSet=editor.getText();
+        editor.setEnabled(false);
         try {
+          editor.setText(Globals.lang("Downloading..."));
           url=new URL(res);
           String suffix=off.getSuffix(res);
           if (suffix == null)           suffix="." + fieldName.toLowerCase();
@@ -26,7 +29,7 @@ class Downloader extends Thread {
             udl.download();
           }
  catch (          IOException e2) {
-            JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL"),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL: " + e2.getMessage()),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
             Globals.logger("Error while downloading " + url.toString());
           }
           output(Globals.lang("Download completed"));
@@ -39,16 +42,20 @@ class Downloader extends Thread {
             }
             filename=relPath;
           }
-          editor.setText(filename);
+          textToSet=filename;
           SwingUtilities.invokeLater(new Thread(){
             public void run(){
-              entryEditor.updateField(editor);
+              if (entryEditor != null)               entryEditor.updateField(editor);
             }
           }
 );
         }
  catch (        MalformedURLException e1) {
-          JOptionPane.showMessageDialog(parent,"Invalid URL","Download file",JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(parent,"Invalid URL: " + e1.getMessage(),"Download file",JOptionPane.ERROR_MESSAGE);
+        }
+ finally {
+          editor.setText(textToSet);
+          editor.setEnabled(true);
         }
       }
     }
