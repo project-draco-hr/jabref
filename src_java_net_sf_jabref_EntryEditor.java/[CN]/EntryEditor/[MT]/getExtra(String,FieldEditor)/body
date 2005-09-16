@@ -7,6 +7,17 @@
     ((JComponent)editor).addMouseListener(new ExternalViewerListener());
     return null;
   }
+ else   if ((s != null) && s.equals("journalNames")) {
+    JPanel controls=new JPanel();
+    controls.setLayout(new BorderLayout());
+    if (panel.metaData.getData(Globals.SELECTOR_META_PREFIX + editor.getFieldName()) != null) {
+      FieldContentSelector ws=new FieldContentSelector(frame,panel,frame,editor,panel.metaData,storeFieldAction,false);
+      contentSelectors.add(ws);
+      controls.add(ws,BorderLayout.NORTH);
+    }
+    controls.add(Globals.journalAbbrev.getNameSwitcher(this,editor,panel.undoManager),BorderLayout.SOUTH);
+    return controls;
+  }
  else   if (panel.metaData.getData(Globals.SELECTOR_META_PREFIX + editor.getFieldName()) != null) {
     FieldContentSelector ws=new FieldContentSelector(frame,panel,frame,editor,panel.metaData,storeFieldAction,false);
     contentSelectors.add(ws);

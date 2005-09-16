@@ -1,0 +1,21 @@
+{
+  JButton button=new JButton(Globals.lang("Toggle abbreviation"));
+  button.setToolTipText(TOOLTIPTEXT);
+  button.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      String text=editor.getText();
+      if (isKnownName(text)) {
+        String s=null;
+        if (isAbbreviatedName(text))         s=getFullName(text);
+ else         s=getAbbreviatedName(text,true);
+        if (s != null) {
+          editor.setText(s);
+          entryEditor.storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
+          undoManager.addEdit(new UndoableFieldChange(entryEditor.entry,editor.getFieldName(),text,s));
+        }
+      }
+    }
+  }
+);
+  return button;
+}
