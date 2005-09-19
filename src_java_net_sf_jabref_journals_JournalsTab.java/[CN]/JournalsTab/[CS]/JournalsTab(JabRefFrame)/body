@@ -1,0 +1,22 @@
+{
+  this.frame=frame;
+  FormLayout layout=new FormLayout("1dlu, 8dlu, fill:180dlu, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  JPanel pan=new JPanel();
+  JLabel description=new JLabel("<HTML>" + Globals.lang("JabRef can switch journal names between " + "abbreviated and full form. Since it knows only a limited number of journal names, " + "you may need to add your own definitions.") + "</HTML>");
+  builder.append(pan);
+  builder.append(description);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(personalFile);
+  BrowseAction action=new BrowseAction(personalFile,false);
+  JButton browse=new JButton(Globals.lang("Browse"));
+  browse.addActionListener(action);
+  builder.append(browse);
+  builder.nextLine();
+  table=new JTable(Globals.journalAbbrev.getTableModel());
+  builder.append(pan);
+  builder.append(new JScrollPane(table));
+  setLayout(new BorderLayout());
+  add(builder.getPanel(),BorderLayout.CENTER);
+}

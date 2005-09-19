@@ -3,6 +3,7 @@
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   Globals.prefs=prefs;
   BibtexEntryType.loadCustomEntryTypes(prefs);
+  Globals.initializeJournalNames();
   Globals.setLanguage(prefs.get("language"),"");
   if (Globals.prefs.getBoolean("useRemoteServer")) {
     remoteListener=RemoteListener.openRemoteListener(this);
@@ -11,6 +12,15 @@
     }
     if (remoteListener == null) {
       if (RemoteListener.sendToActiveJabRefInstance(args))       System.exit(0);
+    }
+  }
+  String personalJournalList=prefs.get("personalJournalList");
+  if (personalJournalList != null) {
+    try {
+      Globals.journalAbbrev.readJournalList(new File(personalJournalList));
+    }
+ catch (    FileNotFoundException e) {
+      e.printStackTrace();
     }
   }
   System.runFinalizersOnExit(true);

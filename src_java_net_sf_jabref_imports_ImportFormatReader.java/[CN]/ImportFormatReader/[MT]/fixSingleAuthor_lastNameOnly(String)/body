@@ -1,0 +1,34 @@
+{
+  int commaPos=name.indexOf(',');
+  if (commaPos == -1) {
+    String[] parts=name.split(" ");
+    int piv=parts.length - 1;
+    if (piv < 0)     return name;
+    StringBuffer sb=new StringBuffer();
+    while (Globals.JUNIOR_PARTICLES.contains(parts[piv])) {
+      if (sb.length() > 0)       sb.insert(0,' ');
+      sb.insert(0,parts[piv]);
+      piv--;
+    }
+    if (sb.length() > 0)     sb.insert(0,' ');
+    sb.insert(0,parts[piv]);
+    piv--;
+    while ((piv > 0) && isVonParticle(parts[piv])) {
+      sb.insert(0,' ');
+      sb.insert(0,parts[piv]);
+      piv--;
+    }
+    return sb.toString();
+  }
+ else {
+    StringBuffer sb=new StringBuffer(name.substring(0,commaPos));
+    String[] restParts=name.substring(commaPos).trim().split(" ");
+    int piv=restParts.length - 1;
+    while ((piv > 0) && isVonParticle(restParts[piv])) {
+      sb.insert(0,' ');
+      sb.insert(0,restParts[piv]);
+      piv--;
+    }
+    return sb.toString();
+  }
+}
