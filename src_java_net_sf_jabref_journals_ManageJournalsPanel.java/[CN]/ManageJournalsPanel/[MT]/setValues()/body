@@ -1,0 +1,15 @@
+{
+  System.out.println("Ju");
+  personalFile.setText(Globals.prefs.get("personalJournalList"));
+  JournalAbbreviations userAbbr=new JournalAbbreviations();
+  try {
+    userAbbr.readJournalList(new File(Globals.prefs.get("personalJournalList")));
+  }
+ catch (  FileNotFoundException e) {
+    e.printStackTrace();
+  }
+  AbbreviationsTableModel tableModel=new AbbreviationsTableModel(userAbbr.getJournals());
+  userTable=new JTable(tableModel);
+  userTable.addMouseListener(tableModel.getMouseListener());
+  userPanel.add(new JScrollPane(userTable),BorderLayout.CENTER);
+}
