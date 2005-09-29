@@ -1,4 +1,29 @@
 {
+  if (personalFile.getText().length() > 0) {
+    File f=new File(personalFile.getText());
+    FileWriter fw=null;
+    try {
+      fw=new FileWriter(f,false);
+      for (Iterator i=tableModel.getJournals().iterator(); i.hasNext(); ) {
+        JournalEntry entry=(JournalEntry)i.next();
+        fw.write(entry.name);
+        fw.write(" = ");
+        fw.write(entry.abbreviation);
+        fw.write(Globals.NEWLINE);
+      }
+    }
+ catch (    IOException e) {
+      e.printStackTrace();
+    }
+ finally {
+      if (fw != null)       try {
+        fw.close();
+      }
+ catch (      IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
   if (!personalFile.getText().trim().equals(Globals.prefs.get("personalJournalList"))) {
     Globals.prefs.put("personalJournalList",personalFile.getText());
     Globals.initializeJournalNames();

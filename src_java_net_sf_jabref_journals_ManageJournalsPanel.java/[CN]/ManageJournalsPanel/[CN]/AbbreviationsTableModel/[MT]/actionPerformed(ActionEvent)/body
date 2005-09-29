@@ -1,0 +1,24 @@
+{
+  if (e.getSource() == add) {
+    int sel=userTable.getSelectedRow();
+    if (sel < 0)     sel=0;
+    journals.add(sel,new JournalEntry("",""));
+    nameTf.setText("");
+    abbrTf.setText("");
+    if (JOptionPane.showConfirmDialog(dialog,journalEditPanel,Globals.lang("Edit journal"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+      setValueAt(nameTf.getText(),sel,0);
+      setValueAt(abbrTf.getText(),sel,1);
+      Collections.sort(journals);
+      fireTableDataChanged();
+    }
+  }
+ else   if (e.getSource() == remove) {
+    int[] rows=userTable.getSelectedRows();
+    if (rows.length > 0) {
+      for (int i=rows.length - 1; i >= 0; i--) {
+        journals.remove(rows[i]);
+      }
+      fireTableDataChanged();
+    }
+  }
+}

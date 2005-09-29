@@ -1,6 +1,6 @@
 {
   this.frame=frame;
-  FormLayout layout=new FormLayout("1dlu, 8dlu, fill:180dlu, 4dlu, fill:pref","");
+  FormLayout layout=new FormLayout("1dlu, 8dlu, fill:250dlu, 4dlu, fill:pref","40dlu, 20dlu, 200dlu, 200dlu");
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
   JPanel pan=new JPanel();
   JLabel description=new JLabel("<HTML>" + Globals.lang("JabRef can switch journal names between " + "abbreviated and full form. Since it knows only a limited number of journal names, " + "you may need to add your own definitions.") + "</HTML>");
@@ -18,14 +18,24 @@
   builtInTable=new JTable(Globals.journalAbbrev.getTableModel());
   builder.append(pan);
   builder.append(new JScrollPane(userPanel));
+  ButtonStackBuilder butBul=new ButtonStackBuilder();
+  butBul.addGridded(add);
+  butBul.addGridded(remove);
+  butBul.addGlue();
+  builder.append(butBul.getPanel());
   builder.nextLine();
   builder.append(pan);
   builder.append(new JScrollPane(builtInTable));
   setLayout(new BorderLayout());
   add(builder.getPanel(),BorderLayout.CENTER);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addGridded(ok);
+  bb.addGridded(cancel);
+  bb.addGlue();
   dialog=new JDialog(frame,Globals.lang("Journal abbrebiations"),false);
   dialog.getContentPane().add(this,BorderLayout.CENTER);
-  dialog.pack();
+  dialog.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   FormLayout layout2=new FormLayout("right:pref, 4dlu, fill:180dlu","");
   DefaultFormBuilder builder2=new DefaultFormBuilder(layout2);
   builder2.append(Globals.lang("Journal name"));
@@ -34,4 +44,18 @@
   builder2.append(Globals.lang("Abbreviation"));
   builder2.append(abbrTf);
   journalEditPanel=builder2.getPanel();
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      storeSettings();
+      dialog.dispose();
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      dialog.dispose();
+    }
+  }
+);
+  dialog.pack();
 }
