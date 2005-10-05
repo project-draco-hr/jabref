@@ -58,8 +58,17 @@
   if (used.size() < disk.getEntryCount()) {
     for (int i=0; i < disk.getEntryCount(); i++) {
       if (!used.contains("" + i)) {
-        EntryAddChange ec=new EntryAddChange(disk.getEntryAt(i));
-        changes.add(ec);
+        boolean hasAlready=false;
+        for (int j=0; j < mem.getEntryCount(); j++) {
+          if (Util.compareEntriesStrictly(mem.getEntryAt(j),disk.getEntryAt(i)) >= 1) {
+            hasAlready=true;
+            break;
+          }
+        }
+        if (!hasAlready) {
+          EntryAddChange ec=new EntryAddChange(disk.getEntryAt(i));
+          changes.add(ec);
+        }
       }
     }
   }

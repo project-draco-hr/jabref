@@ -1,8 +1,23 @@
 {
   BibtexEntry be=null;
   TreeMap types=new TreeMap();
+  boolean backup=prefs.getBoolean("backup");
+  int status=NOTHING;
   try {
-    initFile(file,prefs.getBoolean("backup"));
+    initFile(file,backup);
+    status=INIT_OK;
+  }
+ catch (  SaveException e) {
+    status=e.getStatus();
+    try {
+      repairAfterError(file,backup,status);
+      throw e;
+    }
+ catch (    IOException e2) {
+      e2.printStackTrace();
+    }
+  }
+  try {
     Writer fw=getWriter(file,encoding);
     writeBibFileHeader(fw,encoding);
     writePreamble(fw,database.getPreamble());
@@ -42,7 +57,7 @@
  catch (  Throwable ex) {
     ex.printStackTrace();
     try {
-      repairAfterError(file);
+      repairAfterError(file,backup,INIT_OK);
     }
  catch (    IOException e) {
       e.printStackTrace();

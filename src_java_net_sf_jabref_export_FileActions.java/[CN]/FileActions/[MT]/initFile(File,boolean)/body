@@ -1,22 +1,31 @@
 {
-  String name=file.getName();
-  String path=file.getParent();
-  File temp=new File(path,name + GUIGlobals.tempExt);
-  if (backup) {
-    File back=new File(path,name + GUIGlobals.backupExt);
-    if (back.exists()) {
-      Util.copyFile(back,temp,true);
+  int status=NOTHING;
+  try {
+    String name=file.getName();
+    String path=file.getParent();
+    File temp=new File(path,name + GUIGlobals.tempExt);
+    if (backup) {
+      File back=new File(path,name + GUIGlobals.backupExt);
+      if (back.exists()) {
+        Util.copyFile(back,temp,true);
+      }
+      status=COPIED_TO_TEMP;
+      if (file.exists()) {
+        Util.copyFile(file,back,true);
+      }
+      status=COPIED_TO_BACKUP;
+      if (temp.exists()) {
+        temp.delete();
+      }
     }
-    if (file.exists()) {
-      Util.copyFile(file,back,true);
-    }
-    if (temp.exists()) {
-      temp.delete();
-    }
-  }
  else {
-    if (file.exists()) {
-      Util.copyFile(file,temp,true);
+      if (file.exists()) {
+        Util.copyFile(file,temp,true);
+      }
     }
   }
+ catch (  IOException e) {
+    throw new SaveException(e.getMessage(),status);
+  }
+  return INIT_OK;
 }
