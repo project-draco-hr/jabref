@@ -1,5 +1,6 @@
 {
   this.frame=frame;
+  personalFile.setEditable(false);
   FormLayout layout=new FormLayout("1dlu, 8dlu, fill:250dlu, 4dlu, fill:pref","40dlu, 20dlu, 200dlu, 200dlu");
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
   JPanel pan=new JPanel();
@@ -9,10 +10,7 @@
   builder.nextLine();
   builder.append(pan);
   builder.append(personalFile);
-  BrowseAction action=new BrowseAction(personalFile,false);
-  JButton browse=new JButton(Globals.lang("Browse"));
-  browse.addActionListener(action);
-  builder.append(browse);
+  builder.append(change);
   builder.nextLine();
   userPanel.setLayout(new BorderLayout());
   builtInTable=new JTable(Globals.journalAbbrev.getTableModel());
@@ -44,6 +42,20 @@
   builder2.append(Globals.lang("Abbreviation"));
   builder2.append(abbrTf);
   journalEditPanel=builder2.getPanel();
+  change.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      File old=null;
+      if (!personalFile.getText().equals(""))       old=new File(personalFile.getText());
+      String name=Globals.getNewFile(frame,Globals.prefs,old,null,JFileChooser.OPEN_DIALOG,false);
+      if (name != null) {
+        if ((old != null) && (tableModel.getRowCount() > 0)) {
+        }
+        personalFile.setText(name);
+        setupUserTable();
+      }
+    }
+  }
+);
   ok.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       storeSettings();
@@ -57,5 +69,7 @@
     }
   }
 );
+  add.addActionListener(tableModel);
+  remove.addActionListener(tableModel);
   dialog.pack();
 }

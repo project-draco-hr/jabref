@@ -1,18 +1,4 @@
 {
   personalFile.setText(Globals.prefs.get("personalJournalList"));
-  JournalAbbreviations userAbbr=new JournalAbbreviations();
-  if (Globals.prefs.get("personalJournalList") != null) {
-    try {
-      userAbbr.readJournalList(new File(Globals.prefs.get("personalJournalList")));
-    }
- catch (    FileNotFoundException e) {
-      e.printStackTrace();
-    }
-  }
-  tableModel=new AbbreviationsTableModel(userAbbr.getJournals());
-  add.addActionListener(tableModel);
-  remove.addActionListener(tableModel);
-  userTable=new JTable(tableModel);
-  userTable.addMouseListener(tableModel.getMouseListener());
-  userPanel.add(new JScrollPane(userTable),BorderLayout.CENTER);
+  setupUserTable();
 }
