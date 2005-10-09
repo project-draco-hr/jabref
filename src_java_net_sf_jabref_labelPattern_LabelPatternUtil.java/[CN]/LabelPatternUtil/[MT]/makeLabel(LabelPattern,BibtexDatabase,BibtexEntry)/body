@@ -52,6 +52,9 @@
               if (num > fa.length())               num=fa.length();
               _sbvalue.append(fa.substring(0,num));
             }
+ else             if (val.matches("authors\\d+")) {
+              _sbvalue.append(NAuthors(_entry.getField("author").toString(),Integer.parseInt(val.substring(7))));
+            }
  else {
               _sbvalue.append(_entry.getField(val).toString());
             }
@@ -101,7 +104,10 @@
           }
  else           if (val.equals("shortyear")) {
             String ss=_entry.getField("year").toString();
-            if (ss.length() > 2) {
+            if (ss.startsWith("in") || ss.startsWith("sub")) {
+              _sbvalue.append("IP");
+            }
+ else             if (ss.length() > 2) {
               _sbvalue.append(ss.substring(ss.length() - 2));
             }
  else {
