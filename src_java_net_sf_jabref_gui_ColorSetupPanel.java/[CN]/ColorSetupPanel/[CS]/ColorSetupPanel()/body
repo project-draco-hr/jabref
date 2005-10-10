@@ -1,0 +1,22 @@
+{
+  FormLayout layout=new FormLayout("30dlu, 4dlu, fill:pref, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  buttons.add(new ColorButton("tableText",Globals.lang("Table text color")));
+  buttons.add(new ColorButton("tableBackground",Globals.lang("Table background color")));
+  buttons.add(new ColorButton("gridColor",Globals.lang("Table grid color")));
+  buttons.add(new ColorButton("tableReqFieldBackground",Globals.lang("Background color for required fields")));
+  buttons.add(new ColorButton("tableOptFieldBackground",Globals.lang("Background color for optional fields")));
+  buttons.add(new ColorButton("markedEntryBackground",Globals.lang("Background color for marked entries")));
+  buttons.add(new ColorButton("incompleteEntryBackground",Globals.lang("Color for marking incomplete entries")));
+  for (Iterator i=buttons.iterator(); i.hasNext(); ) {
+    ColorButton but=(ColorButton)i.next();
+    builder.append(but);
+    builder.append(but.getDefaultButton());
+    builder.append(but.getName());
+    builder.nextLine();
+    but.addActionListener(new ColorButtonListener(but));
+  }
+  setLayout(new BorderLayout());
+  add(builder.getPanel(),BorderLayout.CENTER);
+  setValues();
+}
