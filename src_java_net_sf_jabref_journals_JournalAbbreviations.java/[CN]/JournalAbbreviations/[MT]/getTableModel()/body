@@ -4,9 +4,14 @@
   for (Iterator i=fullNameIterator(); i.hasNext(); ) {
     String name=(String)i.next();
     cells[row][0]=getFullName(name);
-    cells[row][1]=getAbbreviatedName(name);
+    cells[row][1]=getAbbreviatedName(name,true);
     row++;
   }
-  DefaultTableModel tableModel=new DefaultTableModel(cells,new Object[]{Globals.lang("Full name"),Globals.lang("Abbreviation")});
+  DefaultTableModel tableModel=new DefaultTableModel(cells,new Object[]{Globals.lang("Full name"),Globals.lang("Abbreviation")}){
+    public boolean isCellEditable(    int row,    int column){
+      return false;
+    }
+  }
+;
   return tableModel;
 }
