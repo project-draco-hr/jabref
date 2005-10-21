@@ -15,22 +15,20 @@
     o=be.getType().getName();
   }
  else {
-    o=be.getField(columns[col - padleft]);
-    for (int i=0; i < nameCols.length; i++) {
-      if (col - padleft == nameCols[i]) {
-        if (o == null) {
-          return null;
-        }
-        if (!namesAsIs) {
-          if (namesFf) {
-            return ImportFormatReader.fixAuthor_firstNameFirst((String)o);
+    o=null;
+    if (showShort)     o=be.getField("short" + columns[col - padleft]);
+    if (o == null) {
+      o=be.getField(columns[col - padleft]);
+      for (int i=0; i < nameCols.length; i++) {
+        if (col - padleft == nameCols[i]) {
+          if (o == null) {
+            return null;
           }
- else           if (!namesLastOnly) {
-            return ImportFormatReader.fixAuthor_lastnameFirst((String)o);
-          }
- else {
-            return ImportFormatReader.fixAuthor_lastnameOnly((String)o);
-          }
+          if (namesAsIs)           return o;
+          if (namesNatbib)           o=ImportFormatReader.fixAuthor_Natbib((String)o);
+          if (namesFf)           o=ImportFormatReader.fixAuthor_firstNameFirstCommas((String)o,abbr_names);
+          if (namesLf)           o=ImportFormatReader.fixAuthor_lastnameFirstCommas((String)o,abbr_names);
+          return o;
         }
       }
     }

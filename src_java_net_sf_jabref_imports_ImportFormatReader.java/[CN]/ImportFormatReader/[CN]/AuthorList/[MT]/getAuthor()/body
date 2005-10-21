@@ -1,0 +1,97 @@
+{
+  tokens=new Vector();
+  von_start=-1;
+  last_start=-1;
+  comma_first=-1;
+  comma_second=-1;
+  token_loop:   while (true) {
+    int token=getToken();
+    cases: switch (token) {
+case TOKEN_EOF:
+case TOKEN_AND:
+      break token_loop;
+case TOKEN_COMMA:
+    if (comma_first < 0)     comma_first=tokens.size();
+ else     if (comma_second < 0)     comma_second=tokens.size();
+  break cases;
+case TOKEN_WORD:
+tokens.add(orig.substring(token_start,token_end));
+tokens.add(orig.substring(token_start,token_abbr));
+tokens.add(new Character(token_term));
+tokens.add(new Boolean(token_case));
+if (comma_first >= 0) break cases;
+if (last_start >= 0) break cases;
+if (von_start < 0) {
+if (!token_case) {
+von_start=tokens.size() - TOKEN_GROUP_LENGTH;
+break cases;
+}
+;
+}
+ else if (last_start < 0 && token_case) {
+last_start=tokens.size() - TOKEN_GROUP_LENGTH;
+break cases;
+}
+;
+}
+;
+}
+;
+if (tokens.size() == 0) return null;
+int first_part_start=-1, von_part_start=-1, last_part_start=-1, jr_part_start=-1;
+int first_part_end=0, von_part_end=0, last_part_end=0, jr_part_end=0;
+if (comma_first < 0) {
+if (von_start < 0) {
+last_part_end=tokens.size();
+last_part_start=tokens.size() - TOKEN_GROUP_LENGTH;
+first_part_end=last_part_start;
+if (first_part_end > 0) first_part_start=0;
+}
+ else {
+if (last_start >= 0) {
+last_part_end=tokens.size();
+last_part_start=last_start;
+von_part_end=last_part_start;
+}
+ else {
+von_part_end=tokens.size();
+}
+;
+von_part_start=von_start;
+first_part_end=von_part_start;
+if (first_part_end > 0) first_part_start=0;
+}
+;
+}
+ else {
+first_part_end=tokens.size();
+if (comma_second < 0) {
+if (comma_first < first_part_end) first_part_start=comma_first;
+}
+ else {
+if (comma_second < first_part_end) first_part_start=comma_second;
+jr_part_end=comma_second;
+if (comma_first < jr_part_end) jr_part_start=comma_first;
+}
+;
+if (von_start != 0) {
+last_part_end=comma_first;
+if (last_part_end > 0) last_part_start=0;
+}
+ else {
+if (last_start < 0) {
+von_part_end=comma_first;
+}
+ else {
+last_part_end=comma_first;
+last_part_start=last_start;
+von_part_end=last_part_start;
+}
+;
+von_part_start=0;
+}
+;
+}
+;
+return new Author((first_part_start < 0 ? null : concatTokens(first_part_start,first_part_end,OFFSET_TOKEN,false)),(first_part_start < 0 ? null : concatTokens(first_part_start,first_part_end,OFFSET_TOKEN_ABBR,true)),(von_part_start < 0 ? null : concatTokens(von_part_start,von_part_end,OFFSET_TOKEN,false)),(last_part_start < 0 ? null : concatTokens(last_part_start,last_part_end,OFFSET_TOKEN,false)),(jr_part_start < 0 ? null : concatTokens(jr_part_start,jr_part_end,OFFSET_TOKEN,false)));
+}
