@@ -11,8 +11,10 @@
   }
   s=getOptionalFields();
   if (s != null)   for (int i=0; i < s.length; i++) {
-    writeField(s[i],out,ff);
-    written.put(s[i],null);
+    if (!written.containsKey(s[i])) {
+      writeField(s[i],out,ff);
+      written.put(s[i],null);
+    }
   }
   TreeSet remainingFields=new TreeSet();
   for (Iterator i=_fields.keySet().iterator(); i.hasNext(); ) {

@@ -2,7 +2,10 @@
   String key=parseTextToken().toLowerCase();
   skipWhitespace();
   consume('=');
-  String content=parseFieldContent(GUIGlobals.isStandardField(key));
+  String content=parseFieldContent();
+  if (Globals.prefs.putBracesAroundCapitals(key)) {
+    content=Util.removeBracesAroundCapitals(content);
+  }
   if (content.length() > 0) {
     if (entry.getField(key) == null)     entry.setField(key,content);
  else {
