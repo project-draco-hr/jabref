@@ -18,7 +18,7 @@
   keyEmptyWarningDialog=new JCheckBox(Globals.lang("Show warning dialog when an empty BibTeX key is entered"));
   confirmDelete=new JCheckBox(Globals.lang("Show confirmation dialog when deleting entries"));
   saveInStandardOrder=new JCheckBox(Globals.lang("Always save database ordered by author name"));
-  autoDoubleBraces=new JCheckBox("<HTML>" + Globals.lang("Store fields with double braces, and remove extra braces when loading.<BR>" + "Double braces signal that BibTeX should preserve character case.") + "</HTML>");
+  autoDoubleBraces=new JCheckBox(Globals.lang("Remove double braces around BibTeX fields when loading."));
   useImportInspector=new JCheckBox(Globals.lang("Display imported entries in an inspection window before they are added."));
   useImportInspectorForSingle=new JCheckBox(Globals.lang("Use inspection window also when a single entry is imported."));
   JPanel general=new JPanel();
@@ -34,6 +34,7 @@
   defSource.setMargin(marg);
   inspectionWarnDupli.setMargin(marg);
   fontSize=new JTextField();
+  bracesAroundCapitalsFields=new JTextField(30);
   showSource.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
       defSource.setEnabled(showSource.isSelected());
@@ -64,6 +65,13 @@
   builder.nextLine();
   builder.append(pan);
   builder.append(autoDoubleBraces);
+  builder.nextLine();
+  JLabel label=new JLabel(Globals.lang("Store the following fields with braces around capital letters") + ":");
+  JPanel panel=new JPanel();
+  panel.add(label);
+  panel.add(bracesAroundCapitalsFields);
+  builder.append(pan);
+  builder.append(panel);
   builder.nextLine();
   builder.appendSeparator(Globals.lang("Entry editor"));
   builder.nextLine();
