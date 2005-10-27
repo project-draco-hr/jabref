@@ -1,5 +1,6 @@
 {
-  SaveSession session=null;
+  SaveSession session;
+  frame.block();
   try {
     if (!selectedOnly)     session=FileActions.saveDatabase(database,metaData,file,prefs,false,false,prefs.get("defaultEncoding"));
  else     session=FileActions.savePartOfDatabase(database,metaData,file,prefs,entryTable.getSelectedEntries(),prefs.get("defaultEncoding"));
@@ -15,6 +16,9 @@
  else     ex.printStackTrace();
     JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file") + ".\n" + ex.getMessage(),Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
     throw new SaveException("rt");
+  }
+ finally {
+    frame.unblock();
   }
   boolean commit=true;
   if (!session.getWriter().couldEncodeAll()) {

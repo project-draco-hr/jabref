@@ -24,8 +24,10 @@
     }
   }
 );
-  actions.put("save",new BaseAction(){
-    public void action() throws Throwable {
+  actions.put("save",new AbstractWorker(){
+    private boolean success=false;
+    public void init() throws Throwable {
+      success=false;
       if (file == null)       runCommand("saveAs");
  else {
         if (updatedExternally || Globals.fileUpdateMonitor.hasBeenModified(fileMonitorHandle)) {
@@ -45,7 +47,21 @@
             return;
           }
         }
+        frame.output(Globals.lang("Saving database") + "...");
         saving=true;
+      }
+    }
+    public void update(){
+      if (success) {
+        frame.setTabTitle(BasePanel.this,file.getName());
+        frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
+      }
+ else {
+        frame.output(Globals.lang("Save failed"));
+      }
+    }
+    public void run(){
+      try {
         saveDatabase(file,false);
         try {
           Globals.fileUpdateMonitor.updateTimeStamp(fileMonitorHandle);
@@ -53,12 +69,14 @@
  catch (        IllegalArgumentException ex) {
         }
         saving=false;
+        success=true;
         undoManager.markUnchanged();
         nonUndoableChange=false;
         baseChanged=false;
         updatedExternally=false;
-        frame.setTabTitle(BasePanel.this,file.getName());
-        frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
+      }
+ catch (      SaveException ex2) {
+        ex2.printStackTrace();
       }
     }
   }
