@@ -1,0 +1,23 @@
+{
+  if (workingOnPreview)   return;
+  final int mode=panel.getMode();
+  workingOnPreview=true;
+  final Runnable update=new Runnable(){
+    public void run(){
+      if (mode == BasePanel.SHOWING_NOTHING) {
+        panel.showPreview(preview);
+        panel.adjustSplitter();
+      }
+      workingOnPreview=false;
+    }
+  }
+;
+  final Runnable worker=new Runnable(){
+    public void run(){
+      preview.setEntry(toShow);
+      SwingUtilities.invokeLater(update);
+    }
+  }
+;
+  (new Thread(worker)).start();
+}

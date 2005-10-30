@@ -1,0 +1,29 @@
+{
+  EventList selected=e.getSourceList();
+  Object newSelected=null;
+  while (e.next()) {
+    if (e.getType() == ListEvent.INSERT) {
+      if (newSelected != null)       return;
+ else {
+        if (e.getIndex() < selected.size())         newSelected=selected.get(e.getIndex());
+      }
+    }
+  }
+  if (newSelected != null) {
+    final BibtexEntry toShow=(BibtexEntry)newSelected;
+    final int mode=panel.getMode();
+    if (mode == BasePanel.SHOWING_EDITOR) {
+      EntryEditor oldEditor=panel.getCurrentEditor();
+      EntryEditor newEditor=panel.getEntryEditor(toShow);
+      if (newEditor != oldEditor) {
+        newEditor.setSelectionListener(this);
+        panel.showEntryEditor(newEditor);
+      }
+    }
+ else {
+      if (previewActive) {
+        updatePreview(toShow);
+      }
+    }
+  }
+}

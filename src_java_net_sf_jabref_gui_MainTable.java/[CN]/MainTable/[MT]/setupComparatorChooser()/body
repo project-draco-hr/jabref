@@ -1,0 +1,24 @@
+{
+  java.util.List comparators=comparatorChooser.getComparatorsForColumn(0);
+  comparators.clear();
+  comparators.add(new FirstColumnComparator());
+  for (int i=1; i < tableFormat.padleft; i++) {
+    comparators=comparatorChooser.getComparatorsForColumn(i);
+    comparators.clear();
+    String[] iconField=tableFormat.getIconTypeForColumn(i);
+    comparators.add(new IconComparator(iconField));
+  }
+  for (int i=tableFormat.padleft; i < tableFormat.getColumnCount(); i++) {
+    comparators=comparatorChooser.getComparatorsForColumn(i);
+    comparators.clear();
+    comparators.add(new FieldComparator(tableFormat.getColumnName(i).toLowerCase()));
+  }
+  String[] sortFields=new String[]{Globals.prefs.get("priSort"),Globals.prefs.get("secSort"),Globals.prefs.get("terSort")};
+  boolean[] sortDirections=new boolean[]{Globals.prefs.getBoolean("priDescending"),Globals.prefs.getBoolean("secDescending"),Globals.prefs.getBoolean("terDescending")};
+  for (int i=0; i < sortFields.length; i++) {
+    int index=tableFormat.getColumnIndex(sortFields[i]);
+    if (index >= 0) {
+      comparatorChooser.appendComparator(index,0,sortDirections[i]);
+    }
+  }
+}

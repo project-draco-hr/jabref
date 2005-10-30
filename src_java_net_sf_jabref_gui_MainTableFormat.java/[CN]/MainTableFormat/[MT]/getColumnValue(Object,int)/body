@@ -1,0 +1,34 @@
+{
+  Object o;
+  BibtexEntry be=(BibtexEntry)object;
+  String[] iconType=getIconTypeForColumn(col);
+  if (col == 0) {
+    o="#";
+  }
+ else   if (iconType != null) {
+    int hasField=-1;
+    for (int i=iconType.length - 1; i >= 0; i--)     if (hasField(be,iconType[i]))     hasField=i;
+    if (hasField < 0)     return null;
+    o=GUIGlobals.getTableIcon(iconType[hasField]);
+  }
+ else   if (columns[col - padleft].equals(GUIGlobals.TYPE_HEADER)) {
+    o=be.getType().getName();
+  }
+ else {
+    o=be.getField(columns[col - padleft]);
+    for (int i=0; i < nameCols.length; i++) {
+      if (col - padleft == nameCols[i]) {
+        if (o == null) {
+          return null;
+        }
+        if (namesAsIs)         return o;
+        if (namesNatbib)         o=AuthorList.fixAuthor_Natbib((String)o);
+ else         if (namesLastOnly)         o=AuthorList.fixAuthor_lastNameOnlyCommas((String)o);
+ else         if (namesFf)         o=AuthorList.fixAuthor_firstNameFirstCommas((String)o,abbr_names);
+ else         if (namesLf)         o=AuthorList.fixAuthor_lastNameFirstCommas((String)o,abbr_names);
+        return o;
+      }
+    }
+  }
+  return o;
+}

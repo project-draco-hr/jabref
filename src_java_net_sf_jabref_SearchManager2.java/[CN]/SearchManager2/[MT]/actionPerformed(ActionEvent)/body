@@ -28,14 +28,8 @@
  catch (    Exception ex) {
     }
     searchRules.addRule(rule1);
-    if (reorder.isSelected()) {
-      DatabaseSearch search=new DatabaseSearch(this,searchOptions,searchRules,panel,Globals.SEARCH,true,true,select.isSelected());
-      search.start();
-    }
- else     if (highlight.isSelected()) {
-      DatabaseSearch search=new DatabaseSearch(this,searchOptions,searchRules,panel,Globals.SEARCH,false,true,select.isSelected());
-      search.start();
-    }
+    panel.setSearchMatcher(new SearchMatcher(searchRules,searchOptions));
+    panel.output(Globals.lang("Searched database. Number of hits") + ": " + panel.mainTable.getRowCount());
     searchField.select(0,searchField.getText().length());
   }
 }

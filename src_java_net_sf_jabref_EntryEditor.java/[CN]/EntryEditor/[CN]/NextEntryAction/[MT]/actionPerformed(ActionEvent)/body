@@ -1,17 +1,10 @@
 {
-  int thisRow=panel.tableModel.getNumberFromName(entry.getId());
+  int thisRow=panel.mainTable.findEntry(entry);
   String id=null;
   int newRow=-1;
   if ((thisRow + 1) < panel.database.getEntryCount())   newRow=thisRow + 1;
  else   if (thisRow > 0)   newRow=0;
  else   return;
-  id=panel.tableModel.getIdForRow(newRow);
-  switchTo(id);
-  final int nr=newRow;
-  (new Thread(){
-    public void run(){
-      scrollTo(nr);
-    }
-  }
-).start();
+  scrollTo(newRow);
+  panel.mainTable.setRowSelectionInterval(newRow,newRow);
 }

@@ -1,0 +1,14 @@
+{
+  list.getReadWriteLock().writeLock().lock();
+  if (e.getType() == DatabaseChangeEvent.ADDED_ENTRY) {
+    list.add(e.getEntry());
+  }
+ else   if (e.getType() == DatabaseChangeEvent.REMOVED_ENTRY) {
+    list.remove(e.getEntry());
+  }
+ else   if (e.getType() == DatabaseChangeEvent.CHANGED_ENTRY) {
+    int index=list.indexOf(e.getEntry());
+    list.set(index,e.getEntry());
+  }
+  list.getReadWriteLock().writeLock().unlock();
+}

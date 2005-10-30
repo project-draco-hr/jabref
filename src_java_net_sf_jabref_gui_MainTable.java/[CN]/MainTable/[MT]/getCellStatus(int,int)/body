@@ -1,0 +1,17 @@
+{
+  try {
+    BibtexEntry be=(BibtexEntry)list.get(row);
+    BibtexEntryType type=be.getType();
+    String columnName=tableFormat.getColumnName(col).toLowerCase();
+    if (columnName.equals(GUIGlobals.KEY_FIELD) || type.isRequired(columnName)) {
+      return REQUIRED;
+    }
+    if (type.isOptional(columnName)) {
+      return OPTIONAL;
+    }
+    return OTHER;
+  }
+ catch (  NullPointerException ex) {
+    return OTHER;
+  }
+}

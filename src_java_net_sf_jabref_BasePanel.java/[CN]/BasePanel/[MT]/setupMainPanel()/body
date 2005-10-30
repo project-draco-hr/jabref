@@ -1,17 +1,21 @@
 {
   splitPane=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
   splitPane.setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);
-  setupTable();
-  if (showing == null) {
-    splitPane.setBottomComponent(previewPanel[activePreview].getPane());
-    if ((previewPanel[activePreview] != null) && previewPanel[activePreview].hasEntry()) {
-      final int prevSize=GUIGlobals.PREVIEW_PANEL_HEIGHT;
-      splitPane.setDividerLocation(splitPane.getHeight() - prevSize);
-    }
- else     splitPane.setBottomComponent(null);
+  createMainTable();
+  splitPane.setTopComponent(mainTable.getPane());
+  if (mode == SHOWING_PREVIEW) {
+    mode=SHOWING_NOTHING;
+    int row=mainTable.findEntry(currentPreview.entry);
+    if (row >= 0)     mainTable.setRowSelectionInterval(row,row);
   }
- else   showEntry(showing);
+ else   if (mode == SHOWING_EDITOR) {
+    mode=SHOWING_NOTHING;
+  }
+ else   splitPane.setBottomComponent(null);
   setLayout(new BorderLayout());
+  removeAll();
   add(splitPane,BorderLayout.CENTER);
+  splitPane.revalidate();
   revalidate();
+  repaint();
 }

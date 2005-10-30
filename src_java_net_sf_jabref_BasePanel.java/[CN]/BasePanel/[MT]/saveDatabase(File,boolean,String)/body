@@ -3,14 +3,13 @@
   frame.block();
   try {
     if (!selectedOnly)     session=FileActions.saveDatabase(database,metaData,file,prefs,false,false,encoding);
- else     session=FileActions.savePartOfDatabase(database,metaData,file,prefs,entryTable.getSelectedEntries(),encoding);
+ else     session=FileActions.savePartOfDatabase(database,metaData,file,prefs,mainTable.getSelectedEntries(),encoding);
   }
  catch (  SaveException ex) {
     if (ex.specificEntry()) {
-      int row=tableModel.getNumberFromName(ex.getEntry().getId()), topShow=Math.max(0,row - 3);
-      entryTable.setRowSelectionInterval(row,row);
-      entryTable.setColumnSelectionInterval(0,entryTable.getColumnCount() - 1);
-      entryTable.scrollTo(topShow);
+      int row=mainTable.findEntry(ex.getEntry()), topShow=Math.max(0,row - 3);
+      mainTable.setRowSelectionInterval(row,row);
+      mainTable.scrollTo(topShow);
       showEntry(ex.getEntry());
     }
  else     ex.printStackTrace();
