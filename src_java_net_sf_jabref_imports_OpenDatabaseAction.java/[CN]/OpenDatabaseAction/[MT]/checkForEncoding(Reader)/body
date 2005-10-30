@@ -1,7 +1,4 @@
 {
-  Reader reader=getReader(fileToOpen,encoding);
-  if (!BibtexParser.isRecognizedFormat(reader))   return null;
-  reader=getReader(fileToOpen,encoding);
   String suppliedEncoding=null;
   StringBuffer headerText=new StringBuffer();
   try {
@@ -27,22 +24,5 @@
   }
  catch (  IOException ex) {
   }
-  if ((suppliedEncoding != null) && (!suppliedEncoding.equalsIgnoreCase(encoding))) {
-    Reader oldReader=reader;
-    try {
-      reader=getReader(fileToOpen,suppliedEncoding);
-      oldReader.close();
-    }
- catch (    IOException ex) {
-      reader=oldReader;
-    }
-  }
- else {
-    reader.close();
-    reader=getReader(fileToOpen,encoding);
-  }
-  BibtexParser bp=new BibtexParser(reader);
-  ParserResult pr=bp.parse();
-  pr.setEncoding(encoding);
-  return pr;
+  return suppliedEncoding;
 }

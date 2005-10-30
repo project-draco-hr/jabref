@@ -62,7 +62,7 @@
     }
     public void run(){
       try {
-        saveDatabase(file,false);
+        saveDatabase(file,false,prefs.get("defaultEncoding"));
         try {
           Globals.fileUpdateMonitor.updateTimeStamp(fileMonitorHandle);
         }
@@ -108,7 +108,7 @@
       if (chosenFile != null) {
         File expFile=new File(chosenFile);
         if (!expFile.exists() || (JOptionPane.showConfirmDialog(frame,"'" + expFile.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
-          saveDatabase(expFile,true);
+          saveDatabase(expFile,true,prefs.get("defaultEncoding"));
           frame.getFileHistory().newFile(expFile.getPath());
           frame.output(Globals.lang("Saved selected to") + " '" + expFile.getPath()+ "'.");
         }
@@ -529,7 +529,7 @@ catch (            Throwable ex) {
         try {
           prefs.put("workingDirectory",fileToOpen.getPath());
           String encoding=Globals.prefs.get("defaultEncoding");
-          ParserResult pr=ImportFormatReader.loadDatabase(fileToOpen,encoding);
+          ParserResult pr=OpenDatabaseAction.loadDatabase(fileToOpen,encoding);
           mergeFromBibtex(pr,importEntries,importStrings,importGroups,importSelectorWords);
           output(Globals.lang("Imported from database") + " '" + fileToOpen.getPath()+ "'");
           fileToOpen=null;
