@@ -45,18 +45,19 @@
     }
     public void run(){
       try {
-        saveDatabase(file,false,prefs.get("defaultEncoding"));
+        success=saveDatabase(file,false,prefs.get("defaultEncoding"));
         try {
           Globals.fileUpdateMonitor.updateTimeStamp(fileMonitorHandle);
         }
  catch (        IllegalArgumentException ex) {
         }
         saving=false;
-        success=true;
-        undoManager.markUnchanged();
-        nonUndoableChange=false;
-        baseChanged=false;
-        updatedExternally=false;
+        if (success) {
+          undoManager.markUnchanged();
+          nonUndoableChange=false;
+          baseChanged=false;
+          updatedExternally=false;
+        }
       }
  catch (      SaveException ex2) {
         ex2.printStackTrace();
