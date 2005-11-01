@@ -45,7 +45,7 @@
     }
     public void run(){
       try {
-        success=saveDatabase(file,false,prefs.get("defaultEncoding"));
+        success=saveDatabase(file,false,encoding);
         try {
           Globals.fileUpdateMonitor.updateTimeStamp(fileMonitorHandle);
         }
@@ -67,7 +67,7 @@
 );
   actions.put("saveAs",new BaseAction(){
     public void action() throws Throwable {
-      String chosenFile=Globals.getNewFile(frame,prefs,new File(prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
+      String chosenFile=Globals.getNewFile(frame,Globals.prefs,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
       if (chosenFile != null) {
         file=new File(chosenFile);
         if (!file.exists() || (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
@@ -78,7 +78,7 @@
  catch (          IOException ex) {
             ex.printStackTrace();
           }
-          prefs.put("workingDirectory",file.getParent());
+          Globals.prefs.put("workingDirectory",file.getParent());
           frame.getFileHistory().newFile(file.getPath());
         }
  else         file=null;
@@ -88,11 +88,11 @@
 );
   actions.put("saveSelectedAs",new BaseAction(){
     public void action() throws Throwable {
-      String chosenFile=Globals.getNewFile(frame,prefs,new File(prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
+      String chosenFile=Globals.getNewFile(frame,Globals.prefs,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
       if (chosenFile != null) {
         File expFile=new File(chosenFile);
         if (!expFile.exists() || (JOptionPane.showConfirmDialog(frame,"'" + expFile.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
-          saveDatabase(expFile,true,prefs.get("defaultEncoding"));
+          saveDatabase(expFile,true,Globals.prefs.get("defaultEncoding"));
           frame.getFileHistory().newFile(expFile.getPath());
           frame.output(Globals.lang("Saved selected to") + " '" + expFile.getPath()+ "'.");
         }
@@ -126,7 +126,6 @@
     public void action() throws Throwable {
       runCommand("copy");
       BibtexEntry[] bes=mainTable.getSelectedEntries();
-      int row0=mainTable.getSelectedRow();
       if ((bes != null) && (bes.length > 0)) {
         NamedCompound ce=new NamedCompound(Globals.lang(bes.length > 1 ? "cut entries" : "cut entry"));
         for (int i=0; i < bes.length; i++) {
@@ -239,7 +238,7 @@ catch (          Throwable ex) {
   actions.put("editPreamble",new BaseAction(){
     public void action(){
       if (preambleEditor == null) {
-        PreambleEditor form=new PreambleEditor(frame,BasePanel.this,database,prefs);
+        PreambleEditor form=new PreambleEditor(frame,BasePanel.this,database,Globals.prefs);
         Util.placeDialog(form,frame);
         form.setVisible(true);
         preambleEditor=form;
@@ -253,7 +252,7 @@ catch (          Throwable ex) {
   actions.put("editStrings",new BaseAction(){
     public void action(){
       if (stringDialog == null) {
-        StringDialog form=new StringDialog(frame,BasePanel.this,database,prefs);
+        StringDialog form=new StringDialog(frame,BasePanel.this,database,Globals.prefs);
         Util.placeDialog(form,frame);
         form.setVisible(true);
         stringDialog=form;
@@ -279,7 +278,7 @@ catch (          Throwable ex) {
       if (numSelected > 0) {
         Thread pushThread=new Thread(){
           public void run(){
-            String winEdt=prefs.get("winEdtPath");
+            String winEdt=Globals.prefs.get("winEdtPath");
             try {
               StringBuffer toSend=new StringBuffer("\"[InsText('\\cite{");
               String citeKey="";
@@ -336,11 +335,11 @@ catch (          Throwable ex) {
       loop:       for (Iterator i=entries.iterator(); i.hasNext(); ) {
         bes=(BibtexEntry)i.next();
         if (bes.getField(GUIGlobals.KEY_FIELD) != null) {
-          if (prefs.getBoolean("avoidOverwritingKey"))           i.remove();
- else           if (prefs.getBoolean("warnBeforeOverwritingKey")) {
+          if (Globals.prefs.getBoolean("avoidOverwritingKey"))           i.remove();
+ else           if (Globals.prefs.getBoolean("warnBeforeOverwritingKey")) {
             CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("One or more keys will be overwritten. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
             int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Overwrite keys"),JOptionPane.YES_NO_OPTION);
-            if (cbm.isSelected())             prefs.putBoolean("warnBeforeOverwritingKey",false);
+            if (cbm.isSelected())             Globals.prefs.putBoolean("warnBeforeOverwritingKey",false);
             if (answer == JOptionPane.NO_OPTION) {
               cancelled=true;
               return;
@@ -350,14 +349,14 @@ catch (          Throwable ex) {
         }
       }
       HashMap oldvals=new HashMap();
-      if (!prefs.getBoolean("avoidOverwritingKey"))       for (Iterator i=entries.iterator(); i.hasNext(); ) {
+      if (!Globals.prefs.getBoolean("avoidOverwritingKey"))       for (Iterator i=entries.iterator(); i.hasNext(); ) {
         bes=(BibtexEntry)i.next();
         oldvals.put(bes,bes.getField(GUIGlobals.KEY_FIELD));
         database.setCiteKeyForEntry(bes.getId(),null);
       }
       for (Iterator i=entries.iterator(); i.hasNext(); ) {
         bes=(BibtexEntry)i.next();
-        bes=LabelPatternUtil.makeLabel(prefs.getKeyPattern(),database,bes);
+        bes=LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);
         ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),(String)bes.getField(GUIGlobals.KEY_FIELD)));
       }
       ce.end();
@@ -454,7 +453,7 @@ catch (          Throwable ex) {
       Util.placeDialog(md,BasePanel.this);
       md.setVisible(true);
       if (md.okPressed) {
-        String chosenFile=Globals.getNewFile(frame,prefs,new File(prefs.get("workingDirectory")),null,JFileChooser.OPEN_DIALOG,false);
+        String chosenFile=Globals.getNewFile(frame,Globals.prefs,new File(Globals.prefs.get("workingDirectory")),null,JFileChooser.OPEN_DIALOG,false);
         if (chosenFile == null)         return;
         fileToOpen=new File(chosenFile);
         if (fileToOpen != null) {
@@ -471,7 +470,7 @@ catch (          Throwable ex) {
     void openIt(    boolean importEntries,    boolean importStrings,    boolean importGroups,    boolean importSelectorWords){
       if ((fileToOpen != null) && (fileToOpen.exists())) {
         try {
-          prefs.put("workingDirectory",fileToOpen.getPath());
+          Globals.prefs.put("workingDirectory",fileToOpen.getPath());
           String encoding=Globals.prefs.get("defaultEncoding");
           ParserResult pr=OpenDatabaseAction.loadDatabase(fileToOpen,encoding);
           mergeFromBibtex(pr,importEntries,importStrings,importGroups,importSelectorWords);
@@ -510,7 +509,7 @@ catch (          Throwable ex) {
                 final String[] types=new String[]{"pdf","ps"};
                 final String sep=System.getProperty("file.separator");
                 for (int i=0; i < types.length; i++) {
-                  String dir=prefs.get(types[i] + "Directory");
+                  String dir=Globals.prefs.get(types[i] + "Directory");
                   if (dir.endsWith(sep)) {
                     dir=dir.substring(0,dir.length() - sep.length());
                   }
@@ -524,7 +523,7 @@ catch (          Throwable ex) {
             }
             if (filepath != null) {
               try {
-                Util.openExternalViewer(filepath,field,prefs);
+                Util.openExternalViewer(filepath,field,Globals.prefs);
                 output(Globals.lang("External viewer called") + ".");
               }
  catch (              IOException ex) {
@@ -552,7 +551,7 @@ catch (          Throwable ex) {
         }
         if (link != null) {
           try {
-            Util.openExternalViewer(link.toString(),field,prefs);
+            Util.openExternalViewer(link.toString(),field,Globals.prefs);
             output(Globals.lang("External viewer called") + ".");
           }
  catch (          IOException ex) {
@@ -737,8 +736,8 @@ catch (          Throwable ex) {
       formats.put("HTML","html");
       formats.put("RTF (Harvard)","harvard/harvard");
       formats.put("Simple HTML","simplehtml");
-      for (int i=0; i < prefs.customExports.size(); i++) {
-        Object o=(prefs.customExports.getElementAt(i))[0];
+      for (int i=0; i < Globals.prefs.customExports.size(); i++) {
+        Object o=(Globals.prefs.customExports.getElementAt(i))[0];
         formats.put(o,o);
       }
       Object[] array=formats.keySet().toArray();
@@ -754,7 +753,7 @@ catch (          Throwable ex) {
       String dir=null;
       if (custom) {
         int index=list.getSelectedIndex() - Globals.STANDARD_EXPORT_COUNT;
-        dir=(String)(prefs.customExports.getElementAt(index)[1]);
+        dir=(String)(Globals.prefs.customExports.getElementAt(index)[1]);
         File f=new File(dir);
         lfName=f.getName();
         lfName=lfName.substring(0,lfName.indexOf("."));
@@ -788,8 +787,6 @@ catch (          Throwable ex) {
     public void init(){
     }
     public void run(){
-      Comparator comp=new EntryComparator(false,true,"author");
-      MainTableFormat.displayTable(BasePanel.this,database,comp);
     }
     public void update(){
       output(message);

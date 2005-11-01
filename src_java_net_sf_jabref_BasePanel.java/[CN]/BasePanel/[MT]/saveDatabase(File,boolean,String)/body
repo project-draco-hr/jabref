@@ -2,8 +2,8 @@
   SaveSession session;
   frame.block();
   try {
-    if (!selectedOnly)     session=FileActions.saveDatabase(database,metaData,file,prefs,false,false,encoding);
- else     session=FileActions.savePartOfDatabase(database,metaData,file,prefs,mainTable.getSelectedEntries(),encoding);
+    if (!selectedOnly)     session=FileActions.saveDatabase(database,metaData,file,Globals.prefs,false,false,encoding);
+ else     session=FileActions.savePartOfDatabase(database,metaData,file,Globals.prefs,mainTable.getSelectedEntries(),encoding);
   }
  catch (  SaveException ex) {
     if (ex.specificEntry()) {
@@ -36,7 +36,10 @@
  else     if (answer == JOptionPane.CANCEL_OPTION)     commit=false;
   }
   try {
-    if (commit)     session.commit();
+    if (commit) {
+      session.commit();
+      this.encoding=encoding;
+    }
  else     session.cancel();
   }
  catch (  IOException e) {
