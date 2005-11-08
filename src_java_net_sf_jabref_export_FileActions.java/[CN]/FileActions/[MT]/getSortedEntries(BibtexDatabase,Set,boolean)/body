@@ -18,11 +18,14 @@
     secD=false;
     terD=true;
   }
-  EntryComparator comp=new EntryComparator(false,false,Globals.KEY_FIELD);
-  comp=new EntryComparator(false,terD,ter,comp);
-  comp=new EntryComparator(false,secD,sec,comp);
-  comp=new EntryComparator(priBinary,priD,pri,comp);
-  TreeSet sorter=new TreeSet(new CrossRefEntryComparator(comp));
+  List comparators=new ArrayList();
+  comparators.add(new CrossRefEntryComparator());
+  comparators.add(new FieldComparator(pri,priD));
+  comparators.add(new FieldComparator(sec,secD));
+  comparators.add(new FieldComparator(ter,terD));
+  comparators.add(new FieldComparator(Globals.KEY_FIELD));
+  BasicEventList entryList=new BasicEventList();
+  SortedList sorter=new SortedList(entryList,new FieldComparatorStack(comparators));
   if (keySet == null)   keySet=database.getKeySet();
   if (keySet != null) {
     Iterator i=keySet.iterator();

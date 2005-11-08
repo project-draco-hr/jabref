@@ -1,0 +1,141 @@
+{
+  ArrayList bibitems=new ArrayList();
+  String paperNoStr=null;
+  this.line=0;
+  try {
+    String s="";
+    BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
+    String prevLine="";
+    boolean inOverviewSection=false;
+    s=readLine(in);
+    while (s != null) {
+      if (s.startsWith("-----------------------------")) {
+        inOverviewSection=prevLine.startsWith("In this issue we have");
+      }
+      if (s.matches("\\d+\\.\\s.*") && !inOverviewSection) {
+        paperNoStr=s.substring(0,s.indexOf('.'));
+        BibtexEntry be=new BibtexEntry(Util.createNeutralId());
+        be.setType(BibtexEntryType.getType("techreport"));
+        String title=s.substring(s.indexOf('.') + 1,s.length()).trim();
+        s=readLine(in).trim();
+        while (s != null && !s.equals("")) {
+          title+=" " + s;
+          s=readLine(in).trim();
+        }
+        be.setField("title",title);
+        s=readLine(in);
+        String authors="";
+        String institutions="";
+        while (s != null && !s.equals("")) {
+          String author=null;
+          String institution=null;
+          boolean institutionDone=false;
+          if (s.indexOf('(') >= 0) {
+            author=s.substring(0,s.indexOf('(')).trim();
+            institutionDone=s.indexOf(')') > 0;
+            institution=s.substring(s.indexOf('(') + 1,institutionDone ? s.indexOf(')') : s.length()).trim();
+          }
+ else {
+            author=s.substring(0,s.length()).trim();
+            institutionDone=true;
+          }
+          s=readLine(in).trim();
+          while (!institutionDone && s != null) {
+            institutionDone=s.indexOf(')') > 0;
+            institution=s.substring(s.indexOf('(') + 1,institutionDone ? s.indexOf(')') : s.length()).trim();
+            s=readLine(in).trim();
+          }
+          if (author != null) {
+            authors+=!authors.equals("") ? " and " + author : "" + author;
+          }
+          if (institution != null) {
+            institutions+=!institutions.equals("") ? "and " + institution : "" + institution;
+          }
+        }
+        if (!authors.equals("")) {
+          be.setField("author",authors);
+        }
+        if (!institutions.equals("")) {
+          be.setField("institution",institutions);
+        }
+        s=readLine(in);
+        String theabstract="";
+        while (s != null && !s.equals("") && !startsWithKeyword(s,recognizedFields)) {
+          theabstract+=" " + s.trim();
+          s=readLine(in);
+        }
+        theabstract=theabstract.trim();
+        if (!theabstract.equals("")) {
+          be.setField("abstract",theabstract);
+        }
+        while (startsWithKeyword(s,recognizedFields)) {
+          String field=s;
+          s=readLine(in);
+          while (s != null && !s.equals("") && !startsWithKeyword(s,recognizedFields)) {
+            field+=" " + s.trim();
+            s=readLine(in);
+          }
+          String content=field.substring(field.indexOf(':') + 1,field.length()).trim();
+          if (field.startsWith("Keywords:")) {
+            String[] keywords=content.split(",");
+            String keywordStr="";
+            for (int i=0; i < keywords.length; i++) {
+              keywordStr+=" '" + keywords[i].trim() + "'";
+            }
+            be.setField("keywords",keywordStr.trim());
+          }
+ else           if (field.startsWith("JEL:")) {
+            be.setField("jel",content);
+          }
+ else           if (field.startsWith("Date:")) {
+            Date date=null;
+            try {
+              date=new SimpleDateFormat("yyyy-MM-dd").parse(content);
+            }
+ catch (            ParseException e) {
+            }
+            if (date == null) {
+              try {
+                date=new SimpleDateFormat("yyyy-MM").parse(content);
+              }
+ catch (              ParseException e) {
+              }
+            }
+            Calendar cal=new GregorianCalendar();
+            if (date != null) {
+              cal.setTime(date);
+            }
+ else {
+              cal.setTime(new Date());
+            }
+            int year=cal.get(Calendar.YEAR);
+            int month=cal.get(Calendar.MONTH);
+            be.setField("year","" + year);
+            be.setField("month","" + month);
+          }
+ else           if (field.startsWith("URL:")) {
+            be.setField("url",content);
+          }
+        }
+        bibitems.add(be);
+        paperNoStr=null;
+      }
+      prevLine=s;
+      s=readLine(in);
+    }
+  }
+ catch (  Exception e) {
+    String message="Error in REPEC-NEP import on line " + this.line;
+    if (paperNoStr != null) {
+      message+=", paper no. " + paperNoStr + ": ";
+    }
+    message+=e.getMessage();
+    System.err.println(message);
+    if (!(e instanceof IOException)) {
+      e.printStackTrace();
+      e=new IOException(message);
+    }
+    throw (IOException)e;
+  }
+  return bibitems;
+}

@@ -292,7 +292,7 @@ catch (          Throwable ex) {
                   first=false;
                 }
  else {
-                  toSend.append("," + citeKey);
+                  toSend.append(",").append(citeKey);
                 }
               }
               if (first)               output(Globals.lang("Please define BibTeX key first"));
@@ -456,15 +456,13 @@ catch (          Throwable ex) {
         String chosenFile=Globals.getNewFile(frame,Globals.prefs,new File(Globals.prefs.get("workingDirectory")),null,JFileChooser.OPEN_DIALOG,false);
         if (chosenFile == null)         return;
         fileToOpen=new File(chosenFile);
-        if (fileToOpen != null) {
-          (new Thread(){
-            public void run(){
-              openIt(md.importEntries(),md.importStrings(),md.importGroups(),md.importSelectorWords());
-            }
+        (new Thread(){
+          public void run(){
+            openIt(md.importEntries(),md.importStrings(),md.importGroups(),md.importSelectorWords());
           }
-).start();
-          frame.getFileHistory().newFile(fileToOpen.getPath());
         }
+).start();
+        frame.getFileHistory().newFile(fileToOpen.getPath());
       }
     }
     void openIt(    boolean importEntries,    boolean importStrings,    boolean importGroups,    boolean importSelectorWords){

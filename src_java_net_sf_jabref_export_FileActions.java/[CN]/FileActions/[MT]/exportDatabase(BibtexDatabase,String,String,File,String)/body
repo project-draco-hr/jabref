@@ -1,0 +1,22 @@
+{
+  if (lfName.equals("oocalc")) {
+    OpenOfficeDocumentCreator.exportOpenOfficeCalc(outFile,database);
+    return;
+  }
+ else   if (lfName.equals("ods")) {
+    OpenDocumentSpreadsheetCreator.exportOpenDocumentSpreadsheet(outFile,database);
+    return;
+  }
+  SaveSession ss=new SaveSession(outFile,encoding,false);
+  VerifyingWriter ps=ss.getWriter();
+  exportDatabase(database,null,prefix,lfName,ps);
+  if (!ps.couldEncodeAll()) {
+    System.out.println("Could not encode...");
+  }
+  try {
+    ss.commit();
+  }
+ catch (  SaveException e) {
+    e.printStackTrace();
+  }
+}

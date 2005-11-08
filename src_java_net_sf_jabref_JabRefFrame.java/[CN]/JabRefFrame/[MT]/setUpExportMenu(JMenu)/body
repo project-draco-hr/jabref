@@ -37,6 +37,10 @@
         lfFileName="oocalc";
         extension=".sxc";
       }
+ else       if (source == odsItem) {
+        lfFileName="ods";
+        extension=".ods";
+      }
       File outFile;
       String chosenFile=Globals.getNewFile(ths,prefs,new File(prefs.get("workingDirectory")),extension,JFileChooser.SAVE_DIALOG,false);
       final String dir=(directory == null ? Globals.LAYOUT_PREFIX : Globals.LAYOUT_PREFIX + directory + "/");
@@ -49,7 +53,7 @@
       (new Thread(){
         public void run(){
           try {
-            FileActions.exportDatabase(basePanel().database,dir,lfName,oFile);
+            FileActions.exportDatabase(basePanel().database,dir,lfName,oFile,basePanel().getEncoding());
             output(Globals.lang("Exported database to file") + " '" + oFile.getPath()+ "'.");
           }
  catch (          Exception ex) {
@@ -76,7 +80,9 @@
   endnoteItem.addActionListener(listener);
   menu.add(endnoteItem);
   openofficeItem.addActionListener(listener);
+  odsItem.addActionListener(listener);
   menu.add(openofficeItem);
+  menu.add(odsItem);
   menu.add(exportCSV);
   menu.addSeparator();
   menu.add(expandEndnoteZip);

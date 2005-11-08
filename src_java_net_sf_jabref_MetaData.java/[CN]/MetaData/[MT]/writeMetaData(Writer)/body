@@ -4,9 +4,9 @@
     StringBuffer sb=new StringBuffer();
     Vector orderedData=(Vector)metaData.get(key);
     if (orderedData.size() > 0) {
-      sb.append("@comment{" + GUIGlobals.META_FLAG + key+ ":");
+      sb.append("@comment{").append(GUIGlobals.META_FLAG).append(key).append(":");
       for (int j=0; j < orderedData.size(); j++) {
-        sb.append(Util.quote((String)orderedData.elementAt(j),";",'\\') + ";");
+        sb.append(Util.quote((String)orderedData.elementAt(j),";",'\\')).append(";");
       }
       sb.append("}");
       sb.append(Globals.NEWLINE);
@@ -17,14 +17,14 @@
   }
   if (groupsRoot != null && groupsRoot.getChildCount() > 0) {
     StringBuffer sb=new StringBuffer();
-    sb.append("@comment{" + GUIGlobals.META_FLAG + "groupsversion:");
+    sb.append("@comment{").append(GUIGlobals.META_FLAG).append("groupsversion:");
     sb.append("" + VersionHandling.CURRENT_VERSION + ";");
     sb.append("}");
     sb.append(Globals.NEWLINE);
     sb.append(Globals.NEWLINE);
     out.write(sb.toString());
     sb=new StringBuffer();
-    sb.append("@comment{" + GUIGlobals.META_FLAG + "groupstree:");
+    sb.append("@comment{").append(GUIGlobals.META_FLAG).append("groupstree:");
     sb.append(Globals.NEWLINE);
     StringTokenizer tok=new StringTokenizer(groupsRoot.getTreeAsString(),Globals.NEWLINE);
     while (tok.hasMoreTokens()) {
