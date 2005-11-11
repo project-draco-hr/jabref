@@ -19,59 +19,72 @@
       String fieldName=fields[j].substring(0,linebreak).trim();
       String content=fields[j].substring(linebreak).trim();
       if (fieldName.indexOf("Author") == 0 && fieldName.indexOf("Author Keywords") == -1 && fieldName.indexOf("Author e-mail") == -1) {
-        String author;
-        String[] names;
-        if (content.indexOf(";") > 0) {
-          names=content.replaceAll("[^\\.A-Za-z,;\\- ]","").split(";");
-        }
- else {
-          names=content.split("  ");
-        }
-        StringBuffer buf=new StringBuffer();
-        for (int ii=0; ii < names.length; ii++) {
-          names[ii]=names[ii].trim();
-          int space=names[ii].indexOf(' ');
-          if (space >= 0) {
-            buf.append(names[ii].substring(0,space));
-            buf.append(',');
-            buf.append(names[ii].substring(space));
-          }
- else {
-            buf.append(names[ii]);
-          }
-          if (ii < names.length - 1)           buf.append(" and ");
-        }
-        h.put("author",buf.toString());
+        h.put("author",content);
       }
  else       if (fieldName.indexOf("Title") == 0)       h.put("title",content.replaceAll("\\[.+\\]",""));
+ else       if (fieldName.indexOf("Chapter Title") == 0)       h.put("chaptertitle",content);
  else       if (fieldName.indexOf("Source") == 0) {
-        String s=content;
-        Matcher matcher=ovid_src_pat.matcher(s);
-        boolean matchfound=matcher.find();
-        if (matchfound) {
+        Matcher matcher;
+        if ((matcher=ovid_src_pat.matcher(content)).find()) {
           h.put("journal",matcher.group(1));
           h.put("volume",matcher.group(2));
           h.put("issue",matcher.group(3));
           h.put("pages",matcher.group(4));
           h.put("year",matcher.group(5));
         }
- else {
-          matcher=ovid_src_pat_no_issue.matcher(s);
-          matchfound=matcher.find();
-          if (matchfound) {
-            h.put("journal",matcher.group(1));
-            h.put("volume",matcher.group(2));
-            h.put("pages",matcher.group(3));
-            h.put("year",matcher.group(4));
-          }
+ else         if ((matcher=ovid_src_pat_no_issue.matcher(content)).find()) {
+          h.put("journal",matcher.group(1));
+          h.put("volume",matcher.group(2));
+          h.put("pages",matcher.group(3));
+          h.put("year",matcher.group(4));
+        }
+ else         if ((matcher=ovid_src_pat_2.matcher(content)).find()) {
+          h.put("journal",matcher.group(1));
+          h.put("volume",matcher.group(2));
+          h.put("issue",matcher.group(3));
+          h.put("month",matcher.group(4));
+          h.put("year",matcher.group(5));
+          h.put("pages",matcher.group(6));
+        }
+ else         if ((matcher=incollection_pat.matcher(content)).find()) {
+          h.put("editor",matcher.group(1).replaceAll(" \\(Ed\\)",""));
+          h.put("year",matcher.group(2));
+          h.put("booktitle",matcher.group(3));
+          h.put("pages",matcher.group(4));
+        }
+ else         if ((matcher=book_pat.matcher(content)).find()) {
+          h.put("year",matcher.group(1));
+        }
+        if (h.get("pages") != null) {
+          h.put("pages",((String)h.get("pages")).replaceAll("-","--"));
         }
       }
  else       if (fieldName.equals("Abstract")) {
-        System.out.println("'" + content + "'");
         h.put("abstract",content);
       }
+ else       if (fieldName.equals("Publication Type")) {
+        if (content.indexOf("Book") >= 0)         h.put("entrytype","book");
+ else         if (content.indexOf("Journal") >= 0)         h.put("entrytype","article");
+      }
     }
-    BibtexEntry b=new BibtexEntry(Globals.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType("article"));
+    String auth=(String)h.get("author");
+    if ((auth != null) && (auth.indexOf(" [Ed]") >= 0)) {
+      h.remove("author");
+      h.put("editor",auth.replaceAll(" \\[Ed\\]",""));
+    }
+    auth=(String)h.get("author");
+    if (auth != null)     h.put("author",fixNames(auth));
+    auth=(String)h.get("editor");
+    if (auth != null)     h.put("editor",fixNames(auth));
+    String entryType=h.containsKey("entrytype") ? (String)h.get("entrytype") : "other";
+    h.remove("entrytype");
+    if (entryType.equals("book")) {
+      if (h.containsKey("chaptertitle")) {
+        entryType="incollection";
+        h.put("title",h.remove("chaptertitle"));
+      }
+    }
+    BibtexEntry b=new BibtexEntry(Util.createNeutralId(),Globals.getEntryType(entryType));
     b.setField(h);
     bibitems.add(b);
   }
