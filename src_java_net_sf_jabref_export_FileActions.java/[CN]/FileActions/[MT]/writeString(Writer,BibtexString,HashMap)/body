@@ -1,0 +1,16 @@
+{
+  remaining.remove(bs.getName());
+  String content=bs.getContent();
+  Matcher m;
+  while ((m=refPat.matcher(content)).find()) {
+    String foundLabel=m.group(1);
+    int restIndex=content.indexOf(foundLabel) + foundLabel.length();
+    content=content.substring(restIndex);
+    Object referred=remaining.get(foundLabel.substring(1,foundLabel.length() - 1));
+    if (referred != null)     writeString(fw,(BibtexString)referred,remaining);
+  }
+  fw.write("@STRING{" + bs.getName() + " = ");
+  if (!bs.getContent().equals(""))   fw.write((new LatexFieldFormatter()).format(bs.getContent(),Globals.BIBTEX_STRING));
+ else   fw.write("{}");
+  fw.write("}" + Globals.NEWLINE + Globals.NEWLINE);
+}

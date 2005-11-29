@@ -1,13 +1,16 @@
 {
-  TreeSet strings=new TreeSet(new BibtexStringComparator(true));
+  List strings=new ArrayList();
   for (Iterator i=database.getStringKeySet().iterator(); i.hasNext(); ) {
     strings.add(database.getString(i.next()));
   }
+  Collections.sort(strings,new BibtexStringComparator(false));
+  HashMap remaining=new HashMap();
+  for (Iterator i=strings.iterator(); i.hasNext(); ) {
+    BibtexString string=(BibtexString)i.next();
+    remaining.put(string.getName(),string);
+  }
   for (Iterator i=strings.iterator(); i.hasNext(); ) {
     BibtexString bs=(BibtexString)i.next();
-    fw.write("@STRING{" + bs.getName() + " = ");
-    if (!bs.getContent().equals(""))     fw.write((new LatexFieldFormatter()).format(bs.getContent(),"__dummy"));
- else     fw.write("{}");
-    fw.write("}" + Globals.NEWLINE + Globals.NEWLINE);
+    if (remaining.containsKey(bs.getName()))     writeString(fw,bs,remaining);
   }
 }
