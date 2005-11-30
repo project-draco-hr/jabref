@@ -23,10 +23,16 @@
   _prefs.put("timeStampFormat",timeStampFormat.getText().trim());
   _prefs.put("timeStampField",timeStampField.getText().trim());
   _prefs.put("defaultEncoding",(String)encodings.getSelectedItem());
+  boolean updateSpecialFields=false;
   if (!bracesAroundCapitalsFields.getText().trim().equals(_prefs.get("putBracesAroundCapitals"))) {
     _prefs.put("putBracesAroundCapitals",bracesAroundCapitalsFields.getText());
-    _prefs.updatePutBracesAroundCapitalsFields();
+    updateSpecialFields=true;
   }
+  if (!nonWrappableFields.getText().trim().equals(_prefs.get("nonWrappableFields"))) {
+    _prefs.put("nonWrappableFields",nonWrappableFields.getText());
+    updateSpecialFields=true;
+  }
+  if (updateSpecialFields)   _prefs.updateSpecialFieldHandling();
   boolean oldShowSource=_prefs.getBoolean("showSource");
   _prefs.putBoolean("showSource",showSource.isSelected());
   if (oldShowSource != showSource.isSelected()) {

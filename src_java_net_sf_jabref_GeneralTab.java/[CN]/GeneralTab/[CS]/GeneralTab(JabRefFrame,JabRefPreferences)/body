@@ -35,6 +35,7 @@
   inspectionWarnDupli.setMargin(marg);
   fontSize=new JTextField();
   bracesAroundCapitalsFields=new JTextField(30);
+  nonWrappableFields=new JTextField(30);
   showSource.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
       defSource.setEnabled(showSource.isSelected());
@@ -67,11 +68,14 @@
   builder.append(autoDoubleBraces);
   builder.nextLine();
   JLabel label=new JLabel(Globals.lang("Store the following fields with braces around capital letters") + ":");
-  JPanel panel=new JPanel();
-  panel.add(label);
-  panel.add(bracesAroundCapitalsFields);
+  DefaultFormBuilder builder3=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:pref",""));
+  builder3.append(label);
+  builder3.append(bracesAroundCapitalsFields);
+  label=new JLabel(Globals.lang("Do not wrap the following fields when saving") + ":");
+  builder3.append(label);
+  builder3.append(nonWrappableFields);
   builder.append(pan);
-  builder.append(panel);
+  builder.append(builder3.getPanel());
   builder.nextLine();
   builder.appendSeparator(Globals.lang("Entry editor"));
   builder.nextLine();
