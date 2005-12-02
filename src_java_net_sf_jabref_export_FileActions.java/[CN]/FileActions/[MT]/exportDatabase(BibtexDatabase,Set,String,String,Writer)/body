@@ -18,14 +18,17 @@
     ps.close();
     return;
   }
+  Layout beginLayout=null;
   try {
     reader=getReader(prefix + lfName + ".begin.layout");
-    while ((c=reader.read()) != -1) {
-      ps.write((char)c);
-    }
+    LayoutHelper layoutHelper=new LayoutHelper(reader);
+    beginLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
     reader.close();
   }
  catch (  IOException ex) {
+  }
+  if (beginLayout != null) {
+    ps.write(beginLayout.doLayout(database));
   }
   List sorted=getSortedEntries(database,entries,false);
   reader=getReader(prefix + lfName + ".layout");
@@ -53,14 +56,17 @@
     }
     ps.write(layout.doLayout(entry,database));
   }
+  Layout endLayout=null;
   try {
     reader=getReader(prefix + lfName + ".end.layout");
-    while ((c=reader.read()) != -1) {
-      ps.write((char)c);
-    }
+    layoutHelper=new LayoutHelper(reader);
+    endLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
     reader.close();
   }
  catch (  IOException ex) {
+  }
+  if (endLayout != null) {
+    ps.write(endLayout.doLayout(database));
   }
   ps.flush();
   ps.close();

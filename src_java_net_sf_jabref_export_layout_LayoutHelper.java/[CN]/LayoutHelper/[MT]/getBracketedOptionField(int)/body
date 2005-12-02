@@ -22,22 +22,21 @@
     }
     if ((c == '{') || (c == '}') || (c == ']')|| (c == '[')) {
       if ((c == '}') || (c == ']')) {
-        if (buffer != null) {
-          if (c == ']') {
-            option=buffer.toString();
-            buffer=null;
-            start=false;
+        if (c == ']' && buffer != null) {
+          option=buffer.toString();
+          buffer=null;
+          start=false;
+        }
+ else         if (c == '}') {
+          String parameter=buffer == null ? " " : buffer.toString();
+          if (option != null) {
+            tmp=parameter + "\n" + option;
           }
-          if (buffer != null) {
-            if (option != null) {
-              tmp=buffer.toString() + "\n" + option;
-            }
  else {
-              tmp=buffer.toString();
-            }
-            parsedEntries.add(new StringInt(tmp,IS_OPTION_FIELD));
-            return null;
+            tmp=parameter;
           }
+          parsedEntries.add(new StringInt(tmp,IS_OPTION_FIELD));
+          return null;
         }
       }
  else {
@@ -52,9 +51,7 @@
         if ((c == '}') || (c == ']')) {
         }
  else {
-          if (c != '\\') {
-            buffer.append((char)c);
-          }
+          buffer.append((char)c);
         }
       }
     }
