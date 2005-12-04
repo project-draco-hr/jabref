@@ -9,27 +9,6 @@
     oldFile.setEnabled(true);
   }
   setupUserTable();
-  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:pref:grow",""));
-  String[] externalFiles=Globals.prefs.getStringArray("externalJournalLists");
-  if ((externalFiles == null) || (externalFiles.length == 0)) {
-  }
- else {
-    for (int i=0; i < externalFiles.length; i++) {
-      ExternalFileEntry efe=new ExternalFileEntry(externalFiles[i]);
-      externals.add(efe);
-      builder.append(efe.getPanel());
-      builder.nextLine();
-    }
-  }
-  ExternalFileEntry efe=new ExternalFileEntry();
-  externals.add(efe);
-  builder.append(efe.getPanel());
-  builder.nextLine();
-  efe=new ExternalFileEntry();
-  externals.add(efe);
-  builder.append(efe.getPanel());
-  builder.nextLine();
-  builder.append(Box.createVerticalGlue());
-  externalFilesPanel.removeAll();
-  externalFilesPanel.add(builder.getPanel(),BorderLayout.CENTER);
+  setupExternals();
+  buildExternalsPanel();
 }
