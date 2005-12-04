@@ -34,5 +34,17 @@
   String filename=f.getPath();
   if (filename.equals(""))   filename=null;
   Globals.prefs.put("personalJournalList",filename);
+  ArrayList extFiles=new ArrayList();
+  for (Iterator i=externals.iterator(); i.hasNext(); ) {
+    ExternalFileEntry efe=(ExternalFileEntry)i.next();
+    if (!efe.getValue().equals("")) {
+      extFiles.add(efe.getValue());
+    }
+  }
+  if (extFiles.size() == 0)   Globals.prefs.put("externalJournalLists","");
+ else {
+    String[] list=(String[])extFiles.toArray(new String[extFiles.size()]);
+    Globals.prefs.putStringArray("externalJournalLists",list);
+  }
   Globals.initializeJournalNames();
 }
