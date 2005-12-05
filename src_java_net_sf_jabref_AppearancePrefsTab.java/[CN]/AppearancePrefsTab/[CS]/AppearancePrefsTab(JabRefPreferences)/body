@@ -1,0 +1,42 @@
+{
+  _prefs=prefs;
+  setLayout(new BorderLayout());
+  fontSize=new JTextField();
+  colorCodes=new JCheckBox(Globals.lang("Color codes for required and optional fields"));
+  antialias=new JCheckBox(Globals.lang("Use antialiasing font"));
+  FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  builder.setLeadingColumnOffset(2);
+  JLabel lab;
+  builder.appendSeparator(Globals.lang("General"));
+  JPanel p1=new JPanel();
+  lab=new JLabel(Globals.lang("Menu and label font size") + ":");
+  p1.add(lab);
+  p1.add(fontSize);
+  builder.append(p1);
+  builder.nextLine();
+  builder.append(antialias);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Table appearance"));
+  builder.append(colorCodes);
+  builder.nextLine();
+  builder.append(fontButton);
+  builder.nextLine();
+  builder.append(colorPanel);
+  JPanel upper=new JPanel(), sort=new JPanel(), namesp=new JPanel(), iconCol=new JPanel();
+  upper.setLayout(gbl);
+  sort.setLayout(gbl);
+  namesp.setLayout(gbl);
+  iconCol.setLayout(gbl);
+  fontButton.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      Font f=new FontSelectorDialog(null,GUIGlobals.CURRENTFONT).getSelectedFont();
+      if (f == null)       return;
+ else       font=f;
+    }
+  }
+);
+  JPanel pan=builder.getPanel();
+  pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  add(pan,BorderLayout.CENTER);
+}

@@ -1,10 +1,10 @@
 {
   source=new JTextArea(){
-    public void paintComponent(    Graphics g){
+    private boolean antialias=Globals.prefs.getBoolean("antialias");
+    public void paint(    Graphics g){
       Graphics2D g2=(Graphics2D)g;
-      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-      g2.setRenderingHint(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
-      super.paintComponent(g2);
+      if (antialias)       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+      super.paint(g2);
     }
   }
 ;
@@ -21,6 +21,7 @@
   source.setTabSize(GUIGlobals.INDENT);
   source.addFocusListener(new FieldEditorFocusListener());
   source.addFocusListener(Globals.focusListener);
+  source.setFont(new Font("Monospaced",Font.PLAIN,Globals.prefs.getInt("fontSize")));
   setupJTextComponent(source);
   updateSource();
   JScrollPane sp=new JScrollPane(source,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
