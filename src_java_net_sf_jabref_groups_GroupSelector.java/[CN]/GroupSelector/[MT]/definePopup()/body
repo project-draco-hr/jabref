@@ -1,27 +1,23 @@
 {
-  moveNodeUpAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,KeyEvent.CTRL_MASK));
-  moveNodeDownAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,KeyEvent.CTRL_MASK));
-  moveNodeLeftAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.CTRL_MASK));
-  moveNodeRightAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.CTRL_MASK));
-  groupsContextMenu.add(editGroupAction);
-  groupsContextMenu.add(addGroupAction);
-  groupsContextMenu.add(addSubgroupAction);
+  groupsContextMenu.add(editGroupPopupAction);
+  groupsContextMenu.add(addGroupPopupAction);
+  groupsContextMenu.add(addSubgroupPopupAction);
   groupsContextMenu.addSeparator();
-  groupsContextMenu.add(removeGroupAndSubgroupsAction);
-  groupsContextMenu.add(removeGroupKeepSubgroupsAction);
-  groupsContextMenu.add(removeSubgroupsAction);
+  groupsContextMenu.add(removeGroupAndSubgroupsPopupAction);
+  groupsContextMenu.add(removeGroupKeepSubgroupsPopupAction);
+  groupsContextMenu.add(removeSubgroupsPopupAction);
   groupsContextMenu.addSeparator();
-  groupsContextMenu.add(expandSubtreeAction);
-  groupsContextMenu.add(collapseSubtreeAction);
+  groupsContextMenu.add(expandSubtreePopupAction);
+  groupsContextMenu.add(collapseSubtreePopupAction);
   groupsContextMenu.addSeparator();
   groupsContextMenu.add(moveSubmenu);
-  sortSubmenu.add(sortDirectSubgroups);
-  sortSubmenu.add(sortAllSubgroups);
+  sortSubmenu.add(sortDirectSubgroupsPopupAction);
+  sortSubmenu.add(sortAllSubgroupsPopupAction);
   groupsContextMenu.add(sortSubmenu);
-  moveSubmenu.add(moveNodeUpAction);
-  moveSubmenu.add(moveNodeDownAction);
-  moveSubmenu.add(moveNodeLeftAction);
-  moveSubmenu.add(moveNodeRightAction);
+  moveSubmenu.add(moveNodeUpPopupAction);
+  moveSubmenu.add(moveNodeDownPopupAction);
+  moveSubmenu.add(moveNodeLeftPopupAction);
+  moveSubmenu.add(moveNodeRightPopupAction);
   groupsTree.addMouseListener(new MouseAdapter(){
     public void mousePressed(    MouseEvent e){
       if (e.isPopupTrigger())       showPopup(e);
@@ -37,6 +33,17 @@
       if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
         editGroupAction.actionPerformed(null);
       }
+    }
+  }
+);
+  groupsContextMenu.addPopupMenuListener(new PopupMenuListener(){
+    public void popupMenuWillBecomeVisible(    PopupMenuEvent e){
+    }
+    public void popupMenuWillBecomeInvisible(    PopupMenuEvent e){
+      groupsTree.setHighlightBorderCell(null);
+    }
+    public void popupMenuCanceled(    PopupMenuEvent e){
+      groupsTree.setHighlightBorderCell(null);
     }
   }
 );

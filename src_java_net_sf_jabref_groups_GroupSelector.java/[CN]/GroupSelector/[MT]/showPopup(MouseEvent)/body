@@ -1,40 +1,70 @@
 {
   final TreePath path=groupsTree.getPathForLocation(e.getPoint().x,e.getPoint().y);
-  addGroupAction.setEnabled(true);
-  addSubgroupAction.setEnabled(path != null);
-  editGroupAction.setEnabled(path != null);
-  removeGroupAndSubgroupsAction.setEnabled(path != null);
-  removeGroupKeepSubgroupsAction.setEnabled(path != null);
+  addGroupPopupAction.setEnabled(true);
+  addSubgroupPopupAction.setEnabled(path != null);
+  editGroupPopupAction.setEnabled(path != null);
+  removeGroupAndSubgroupsPopupAction.setEnabled(path != null);
+  removeGroupKeepSubgroupsPopupAction.setEnabled(path != null);
   moveSubmenu.setEnabled(path != null);
-  expandSubtreeAction.setEnabled(path != null);
-  collapseSubtreeAction.setEnabled(path != null);
-  removeSubgroupsAction.setEnabled(path != null);
+  expandSubtreePopupAction.setEnabled(path != null);
+  collapseSubtreePopupAction.setEnabled(path != null);
+  removeSubgroupsPopupAction.setEnabled(path != null);
   sortSubmenu.setEnabled(path != null);
   if (path != null) {
-    groupsTree.setSelectionPath(path);
     GroupTreeNode node=(GroupTreeNode)path.getLastPathComponent();
+    editGroupPopupAction.setNode(node);
+    addSubgroupPopupAction.setNode(node);
+    removeGroupAndSubgroupsPopupAction.setNode(node);
+    removeSubgroupsPopupAction.setNode(node);
+    removeGroupKeepSubgroupsPopupAction.setNode(node);
+    expandSubtreePopupAction.setNode(node);
+    collapseSubtreePopupAction.setNode(node);
+    sortDirectSubgroupsPopupAction.setNode(node);
+    sortAllSubgroupsPopupAction.setNode(node);
+    groupsTree.setHighlightBorderCell(node);
     AbstractGroup group=node.getGroup();
     if (group instanceof AllEntriesGroup) {
-      editGroupAction.setEnabled(false);
-      addGroupAction.setEnabled(false);
-      removeGroupAndSubgroupsAction.setEnabled(false);
-      removeGroupKeepSubgroupsAction.setEnabled(false);
+      editGroupPopupAction.setEnabled(false);
+      addGroupPopupAction.setEnabled(false);
+      removeGroupAndSubgroupsPopupAction.setEnabled(false);
+      removeGroupKeepSubgroupsPopupAction.setEnabled(false);
     }
  else {
-      editGroupAction.setEnabled(true);
-      addGroupAction.setEnabled(true);
-      removeGroupAndSubgroupsAction.setEnabled(true);
-      removeGroupKeepSubgroupsAction.setEnabled(true);
+      editGroupPopupAction.setEnabled(true);
+      addGroupPopupAction.setEnabled(true);
+      addGroupPopupAction.setNode(node);
+      removeGroupAndSubgroupsPopupAction.setEnabled(true);
+      removeGroupKeepSubgroupsPopupAction.setEnabled(true);
     }
-    expandSubtreeAction.setEnabled(groupsTree.isCollapsed(path) || groupsTree.hasCollapsedDescendant(path));
-    collapseSubtreeAction.setEnabled(groupsTree.isExpanded(path) || groupsTree.hasExpandedDescendant(path));
+    expandSubtreePopupAction.setEnabled(groupsTree.isCollapsed(path) || groupsTree.hasCollapsedDescendant(path));
+    collapseSubtreePopupAction.setEnabled(groupsTree.isExpanded(path) || groupsTree.hasExpandedDescendant(path));
     sortSubmenu.setEnabled(!node.isLeaf());
-    removeSubgroupsAction.setEnabled(!node.isLeaf());
-    moveNodeUpAction.setEnabled(node.canMoveUp());
-    moveNodeDownAction.setEnabled(node.canMoveDown());
-    moveNodeLeftAction.setEnabled(node.canMoveLeft());
-    moveNodeRightAction.setEnabled(node.canMoveRight());
-    moveSubmenu.setEnabled(moveNodeUpAction.isEnabled() || moveNodeDownAction.isEnabled() || moveNodeLeftAction.isEnabled()|| moveNodeRightAction.isEnabled());
+    removeSubgroupsPopupAction.setEnabled(!node.isLeaf());
+    moveNodeUpPopupAction.setEnabled(node.canMoveUp());
+    moveNodeDownPopupAction.setEnabled(node.canMoveDown());
+    moveNodeLeftPopupAction.setEnabled(node.canMoveLeft());
+    moveNodeRightPopupAction.setEnabled(node.canMoveRight());
+    moveSubmenu.setEnabled(moveNodeUpPopupAction.isEnabled() || moveNodeDownPopupAction.isEnabled() || moveNodeLeftPopupAction.isEnabled()|| moveNodeRightPopupAction.isEnabled());
+    moveNodeUpPopupAction.setNode(node);
+    moveNodeDownPopupAction.setNode(node);
+    moveNodeLeftPopupAction.setNode(node);
+    moveNodeRightPopupAction.setNode(node);
+  }
+ else {
+    editGroupPopupAction.setNode(null);
+    addGroupPopupAction.setNode(null);
+    addSubgroupPopupAction.setNode(null);
+    removeGroupAndSubgroupsPopupAction.setNode(null);
+    removeSubgroupsPopupAction.setNode(null);
+    removeGroupKeepSubgroupsPopupAction.setNode(null);
+    moveNodeUpPopupAction.setNode(null);
+    moveNodeDownPopupAction.setNode(null);
+    moveNodeLeftPopupAction.setNode(null);
+    moveNodeRightPopupAction.setNode(null);
+    expandSubtreePopupAction.setNode(null);
+    collapseSubtreePopupAction.setNode(null);
+    sortDirectSubgroupsPopupAction.setNode(null);
+    sortAllSubgroupsPopupAction.setNode(null);
   }
   groupsContextMenu.show(groupsTree,e.getPoint().x,e.getPoint().y);
 }

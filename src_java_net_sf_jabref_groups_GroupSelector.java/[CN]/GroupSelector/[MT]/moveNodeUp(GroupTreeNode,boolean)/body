@@ -1,0 +1,16 @@
+{
+  if (checkSingleSelection) {
+    if (groupsTree.getSelectionCount() != 1) {
+      frame.output(Globals.lang("Please select exactly one group to move."));
+      return false;
+    }
+  }
+  AbstractUndoableEdit undo=null;
+  if (!node.canMoveUp() || (undo=node.moveUp(GroupSelector.this)) == null) {
+    frame.output(Globals.lang("Cannot move group \"%0\" up.",node.getGroup().getName()));
+    return false;
+  }
+  revalidateGroups();
+  concludeMoveGroup(undo,node);
+  return true;
+}

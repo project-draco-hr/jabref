@@ -1,0 +1,17 @@
+{
+  if (checkSingleSelection) {
+    if (groupsTree.getSelectionCount() != 1) {
+      frame.output(Globals.lang("Please select exactly one group to move."));
+      return false;
+    }
+  }
+  AbstractUndoableEdit undo=null;
+  Enumeration expandedPaths=getExpandedPaths();
+  if (!node.canMoveLeft() || (undo=node.moveLeft(GroupSelector.this)) == null) {
+    frame.output(Globals.lang("Cannot move group \"%0\" left.",node.getGroup().getName()));
+    return false;
+  }
+  revalidateGroups(new TreePath[]{new TreePath(node.getPath())},groupsTree.refreshPaths(expandedPaths));
+  concludeMoveGroup(undo,node);
+  return true;
+}
