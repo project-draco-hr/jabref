@@ -56,6 +56,7 @@
     public void actionPerformed(    ActionEvent e){
       int row=customImporterTable.getSelectedRow();
       if (row != -1) {
+        customImporterTable.removeRowSelectionInterval(row,row);
         prefs.customImports.remove(((ImportTableModel)customImporterTable.getModel()).getImporter(row));
         Globals.importFormatReader.resetImportFormats();
         customImporterTable.revalidate();
@@ -79,9 +80,9 @@
   ImportTableModel tableModel=new ImportTableModel();
   customImporterTable=new JTable(tableModel);
   TableColumnModel cm=customImporterTable.getColumnModel();
-  cm.getColumn(0).setPreferredWidth(GUIGlobals.EXPORT_DIALOG_COL_0_WIDTH);
-  cm.getColumn(1).setPreferredWidth(GUIGlobals.EXPORT_DIALOG_COL_1_WIDTH);
-  cm.getColumn(2).setPreferredWidth(GUIGlobals.EXPORT_DIALOG_COL_2_WIDTH);
+  cm.getColumn(0).setPreferredWidth(GUIGlobals.IMPORT_DIALOG_COL_0_WIDTH);
+  cm.getColumn(1).setPreferredWidth(GUIGlobals.IMPORT_DIALOG_COL_1_WIDTH);
+  cm.getColumn(2).setPreferredWidth(GUIGlobals.IMPORT_DIALOG_COL_2_WIDTH);
   JScrollPane sp=new JScrollPane(customImporterTable,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
   customImporterTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   customImporterTable.setPreferredScrollableViewportSize(new Dimension(500,150));
