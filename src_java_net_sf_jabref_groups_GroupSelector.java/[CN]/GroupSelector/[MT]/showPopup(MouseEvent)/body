@@ -10,6 +10,9 @@
   collapseSubtreePopupAction.setEnabled(path != null);
   removeSubgroupsPopupAction.setEnabled(path != null);
   sortSubmenu.setEnabled(path != null);
+  addToGroup.setEnabled(false);
+  moveToGroup.setEnabled(false);
+  removeFromGroup.setEnabled(false);
   if (path != null) {
     GroupTreeNode node=(GroupTreeNode)path.getLastPathComponent();
     editGroupPopupAction.setNode(node);
@@ -49,6 +52,22 @@
     moveNodeDownPopupAction.setNode(node);
     moveNodeLeftPopupAction.setNode(node);
     moveNodeRightPopupAction.setNode(node);
+    BibtexEntry[] selection=frame.basePanel().getSelectedEntries();
+    if (selection.length > 0) {
+      if (node.getGroup().supportsAdd() && !node.getGroup().containsAll(selection)) {
+        addToGroup.setNode(node);
+        addToGroup.setBasePanel(panel);
+        addToGroup.setEnabled(true);
+        moveToGroup.setNode(node);
+        moveToGroup.setBasePanel(panel);
+        moveToGroup.setEnabled(true);
+      }
+      if (node.getGroup().supportsRemove() && node.getGroup().containsAny(selection)) {
+        removeFromGroup.setNode(node);
+        removeFromGroup.setBasePanel(panel);
+        removeFromGroup.setEnabled(true);
+      }
+    }
   }
  else {
     editGroupPopupAction.setNode(null);

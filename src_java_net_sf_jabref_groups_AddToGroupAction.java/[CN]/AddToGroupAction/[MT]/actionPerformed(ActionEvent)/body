@@ -1,5 +1,5 @@
 {
-  final BibtexEntry[] entries=panel.getSelectedEntries();
+  final BibtexEntry[] entries=m_panel.getSelectedEntries();
   final Vector removeGroupsNodes=new Vector();
   if (m_move) {
     Enumeration e=((GroupTreeNode)m_node.getRoot()).preorderEnumeration();
@@ -14,12 +14,12 @@
     AbstractGroup[] groups=new AbstractGroup[removeGroupsNodes.size() + 1];
     for (int i=0; i < removeGroupsNodes.size(); ++i)     groups[i]=((GroupTreeNode)removeGroupsNodes.elementAt(i)).getGroup();
     groups[groups.length - 1]=m_node.getGroup();
-    if (!Util.warnAssignmentSideEffects(groups,entries,panel.getDatabase(),panel.frame))     return;
+    if (!Util.warnAssignmentSideEffects(groups,entries,m_panel.getDatabase(),m_panel.frame()))     return;
   }
  else {
-    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{m_node.getGroup()},entries,panel.getDatabase(),panel.frame))     return;
+    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{m_node.getGroup()},entries,m_panel.getDatabase(),m_panel.frame()))     return;
   }
-  panel.storeCurrentEdit();
+  m_panel.storeCurrentEdit();
   NamedCompound undoAll=new NamedCompound(Globals.lang("change assignment of entries"));
   if (m_move) {
     for (int i=0; i < removeGroupsNodes.size(); ++i) {
@@ -35,8 +35,8 @@
     undoAll.addEdit(undoAdd);
   }
   undoAll.end();
-  panel.undoManager.addEdit(undoAll);
-  panel.markBaseChanged();
-  panel.updateEntryEditorIfShowing();
-  panel.getGroupSelector().valueChanged(null);
+  m_panel.undoManager.addEdit(undoAll);
+  m_panel.markBaseChanged();
+  m_panel.updateEntryEditorIfShowing();
+  m_panel.getGroupSelector().valueChanged(null);
 }
