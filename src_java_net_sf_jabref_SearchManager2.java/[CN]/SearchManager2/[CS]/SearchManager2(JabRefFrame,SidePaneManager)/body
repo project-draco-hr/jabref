@@ -8,17 +8,14 @@
   searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean("searchAll"));
   regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),Globals.prefs.getBoolean("regExpSearch"));
   increment=new JRadioButton(Globals.lang("Incremental"),false);
-  highlight=new JRadioButton(Globals.lang("Highlight"),true);
-  reorder=new JRadioButton(Globals.lang("Float"),false);
+  normal=new JRadioButton(Globals.lang("Normal"),true);
   types.add(increment);
-  types.add(highlight);
-  types.add(reorder);
+  types.add(normal);
   select=new JCheckBoxMenuItem(Globals.lang("Select matches"),false);
   increment.setToolTipText(Globals.lang("Incremental search"));
-  highlight.setToolTipText(Globals.lang("Gray out non-matching entries"));
-  reorder.setToolTipText(Globals.lang("Move matching entries to the top"));
+  normal.setToolTipText(Globals.lang("Gray out non-matching entries"));
   increment.addItemListener(this);
-  reorder.addItemListener(this);
+  normal.addItemListener(this);
   searchField.addFocusListener(Globals.focusListener);
   if (searchAll.isSelected()) {
     searchReq.setEnabled(false);
@@ -75,7 +72,6 @@
   help.setMargin(margin);
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.searchHelp,"Help"));
   if (Globals.prefs.getBoolean("incrementS"))   increment.setSelected(true);
- else   if (!Globals.prefs.getBoolean("selectS"))   reorder.setSelected(true);
   JPanel main=new JPanel();
   main.setLayout(gbl);
   con.gridwidth=GridBagConstraints.REMAINDER;
@@ -91,10 +87,8 @@
   con.insets=new Insets(0,2,0,0);
   gbl.setConstraints(increment,con);
   main.add(increment);
-  gbl.setConstraints(highlight,con);
-  main.add(highlight);
-  gbl.setConstraints(reorder,con);
-  main.add(reorder);
+  gbl.setConstraints(normal,con);
+  main.add(normal);
   con.insets=new Insets(0,0,0,0);
   JPanel pan=new JPanel();
   GridBagLayout gb=new GridBagLayout();
