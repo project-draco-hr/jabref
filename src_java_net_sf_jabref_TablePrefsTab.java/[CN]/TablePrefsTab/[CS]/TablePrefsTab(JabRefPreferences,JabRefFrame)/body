@@ -13,10 +13,21 @@
   pdfColumn=new JCheckBox(Globals.lang("Show PDF/PS column"));
   urlColumn=new JCheckBox(Globals.lang("Show URL/DOI column"));
   citeseerColumn=new JCheckBox(Globals.lang("Show CiteSeer column"));
+  priField=new JTextField(10);
   secField=new JTextField(10);
   terField=new JTextField(10);
+  priSort.insertItemAt(Globals.lang("<select>"),0);
   secSort.insertItemAt(Globals.lang("<select>"),0);
   terSort.insertItemAt(Globals.lang("<select>"),0);
+  priSort.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      if (priSort.getSelectedIndex() > 0) {
+        priField.setText(GUIGlobals.ALL_FIELDS[priSort.getSelectedIndex() - 1]);
+        priSort.setSelectedIndex(0);
+      }
+    }
+  }
+);
   secSort.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       if (secSort.getSelectedIndex() > 0) {
@@ -44,6 +55,7 @@
   bg2.add(lastNamesOnly);
   bg2.add(abbrNames);
   bg2.add(noAbbrNames);
+  priDesc=new JCheckBox(Globals.lang("Descending"));
   secDesc=new JCheckBox(Globals.lang("Descending"));
   terDesc=new JCheckBox(Globals.lang("Descending"));
   FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, fill:pref","");
@@ -76,9 +88,15 @@
   builder.append(pan);
   builder.append(nameBuilder.getPanel());
   builder.nextLine();
-  builder.appendSeparator(Globals.lang("Sort options"));
+  builder.appendSeparator(Globals.lang("Default sort criteria"));
   FormLayout layout2=new FormLayout("left:pref, 8dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, left:pref","");
   DefaultFormBuilder builder2=new DefaultFormBuilder(layout2);
+  lab=new JLabel(Globals.lang("Primary sort criterion"));
+  builder2.append(lab);
+  builder2.append(priSort);
+  builder2.append(priField);
+  builder2.append(priDesc);
+  builder2.nextLine();
   lab=new JLabel(Globals.lang("Secondary sort criterion"));
   builder2.append(lab);
   builder2.append(secSort);
