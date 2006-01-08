@@ -1,0 +1,26 @@
+{
+  super();
+  this.tableFormat=tableFormat;
+  sortedForTable=new SortedList(list,null);
+  sortedForSearch=new SortedList(sortedForTable,null);
+  sortedForGrouping=new SortedList(sortedForSearch,null);
+  searchMatcher=null;
+  groupMatcher=null;
+  searchComparator=null;
+  groupComparator=null;
+  EventTableModel tableModel=new EventTableModel(sortedForGrouping,tableFormat);
+  setModel(tableModel);
+  tableColorCodes=Globals.prefs.getBoolean("tableColorCodesOn");
+  selectionModel=new EventSelectionModel(list);
+  setSelectionModel(selectionModel);
+  pane=new JScrollPane(this);
+  pane.getViewport().setBackground(Globals.prefs.getColor("tableBackground"));
+  setGridColor(Globals.prefs.getColor("gridColor"));
+  comparatorChooser=new MyTableComparatorChooser(this,sortedForTable,true);
+  final EventList selected=getSelected();
+  setDragEnabled(true);
+  setTransferHandler(new EntryTableTransferHandler(this));
+  setupComparatorChooser();
+  refreshSorting();
+  setWidths();
+}

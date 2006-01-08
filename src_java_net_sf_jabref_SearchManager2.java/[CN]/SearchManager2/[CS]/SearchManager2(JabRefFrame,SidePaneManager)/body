@@ -8,14 +8,18 @@
   searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean("searchAll"));
   regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),Globals.prefs.getBoolean("regExpSearch"));
   increment=new JRadioButton(Globals.lang("Incremental"),false);
-  normal=new JRadioButton(Globals.lang("Normal"),true);
+  floatSearch=new JRadioButton(Globals.lang("Float"),true);
+  hideSearch=new JRadioButton(Globals.lang("Filter"),true);
   types.add(increment);
-  types.add(normal);
+  types.add(floatSearch);
+  types.add(hideSearch);
   select=new JCheckBoxMenuItem(Globals.lang("Select matches"),false);
   increment.setToolTipText(Globals.lang("Incremental search"));
-  normal.setToolTipText(Globals.lang("Gray out non-matching entries"));
+  floatSearch.setToolTipText(Globals.lang("Gray out non-matching entries"));
+  hideSearch.setToolTipText(Globals.lang("Hide non-matching entries"));
   increment.addItemListener(this);
-  normal.addItemListener(this);
+  floatSearch.addItemListener(this);
+  hideSearch.addItemListener(this);
   searchField.addFocusListener(Globals.focusListener);
   if (searchAll.isSelected()) {
     searchReq.setEnabled(false);
@@ -87,8 +91,10 @@
   con.insets=new Insets(0,2,0,0);
   gbl.setConstraints(increment,con);
   main.add(increment);
-  gbl.setConstraints(normal,con);
-  main.add(normal);
+  gbl.setConstraints(floatSearch,con);
+  main.add(floatSearch);
+  gbl.setConstraints(hideSearch,con);
+  main.add(hideSearch);
   con.insets=new Insets(0,0,0,0);
   JPanel pan=new JPanel();
   GridBagLayout gb=new GridBagLayout();

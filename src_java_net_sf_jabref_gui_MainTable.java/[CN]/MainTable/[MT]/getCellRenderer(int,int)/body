@@ -1,8 +1,12 @@
 {
-  int score=0;
+  int score=-3;
   TableCellRenderer renderer=defRenderer;
   int status=getCellStatus(row,column);
-  if (tableColorCodes) {
+  if (!showingFloatSearch || matches(row,searchMatcher))   score++;
+  if (!showingFloatGrouping || matches(row,groupMatcher))   score+=2;
+  if (score < -1)   renderer=veryGrayedOutRenderer;
+ else   if (score == -1)   renderer=grayedOutRenderer;
+ else   if (tableColorCodes) {
     if (column == 0) {
       if (!isComplete(row)) {
         incRenderer.setNumber(row);

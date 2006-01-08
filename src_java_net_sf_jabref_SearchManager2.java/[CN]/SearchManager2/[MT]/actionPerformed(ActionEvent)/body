@@ -4,7 +4,7 @@
     if (panel != null) {
       (new Thread(){
         public void run(){
-          panel.stopShowingSearchResults();
+          clearSearch();
         }
       }
 ).start();
@@ -28,8 +28,8 @@
  catch (    Exception ex) {
     }
     searchRules.addRule(rule1);
-    panel.setSearchMatcher(new SearchMatcher(searchRules,searchOptions));
-    panel.output(Globals.lang("Searched database. Number of hits") + ": " + panel.mainTable.getRowCount());
-    searchField.select(0,searchField.getText().length());
+    SearchWorker worker=new SearchWorker(searchRules,searchOptions);
+    worker.getWorker().run();
+    worker.getCallBack().update();
   }
 }

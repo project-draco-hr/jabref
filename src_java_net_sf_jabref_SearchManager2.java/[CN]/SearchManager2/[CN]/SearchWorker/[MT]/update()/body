@@ -1,0 +1,20 @@
+{
+  panel.output(Globals.lang("Searched database. Number of hits") + ": " + hits);
+  if (hideSearch.isSelected()) {
+    if (startedFloatSearch) {
+      panel.mainTable.stopShowingFloatSearch();
+      startedFloatSearch=false;
+    }
+    startedFilterSearch=true;
+    panel.setSearchMatcher(SearchMatcher.INSTANCE);
+  }
+ else {
+    if (startedFilterSearch) {
+      panel.stopShowingSearchResults();
+      startedFilterSearch=false;
+    }
+    startedFloatSearch=true;
+    panel.mainTable.showFloatSearch(SearchMatcher.INSTANCE);
+  }
+  searchField.select(0,searchField.getText().length());
+}

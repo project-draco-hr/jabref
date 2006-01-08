@@ -1,15 +1,12 @@
 {
-  Comparator comp=new FieldComparator("author");
-  GlazedEntrySorter eventList=new GlazedEntrySorter(database.getEntryMap(),comp);
+  GlazedEntrySorter eventList=new GlazedEntrySorter(database.getEntryMap(),null);
   database.addDatabaseChangeListener(eventList);
   groupFilterList=new FilterList(eventList.getTheList(),NoSearchMatcher.INSTANCE);
   searchFilterList=new FilterList(groupFilterList,NoSearchMatcher.INSTANCE);
-  final SortedList sortedList=new SortedList(searchFilterList,comp);
   MainTableFormat tableFormat=new MainTableFormat(this);
   tableFormat.updateTableFormat();
-  EventTableModel tableModel=new EventTableModel(sortedList,tableFormat);
-  mainTable=new MainTable(tableModel,tableFormat,sortedList);
-  selectionListener=new MainTableSelectionListener(this,sortedList,mainTable);
+  mainTable=new MainTable(tableFormat,searchFilterList);
+  selectionListener=new MainTableSelectionListener(this,mainTable);
   mainTable.updateFont();
   mainTable.addSelectionListener(selectionListener);
   mainTable.addMouseListener(selectionListener);
