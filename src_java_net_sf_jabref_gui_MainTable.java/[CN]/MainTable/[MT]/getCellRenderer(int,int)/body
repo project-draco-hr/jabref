@@ -4,8 +4,20 @@
   int status=getCellStatus(row,column);
   if (!showingFloatSearch || matches(row,searchMatcher))   score++;
   if (!showingFloatGrouping || matches(row,groupMatcher))   score+=2;
-  if (score < -1)   renderer=veryGrayedOutRenderer;
- else   if (score == -1)   renderer=grayedOutRenderer;
+  if (score < -1) {
+    if (column == 0) {
+      veryGrayedOutNumberRenderer.setNumber(row);
+      renderer=veryGrayedOutNumberRenderer;
+    }
+ else     renderer=veryGrayedOutRenderer;
+  }
+ else   if (score == -1) {
+    if (column == 0) {
+      grayedOutNumberRenderer.setNumber(row);
+      renderer=grayedOutNumberRenderer;
+    }
+ else     renderer=grayedOutRenderer;
+  }
  else   if (tableColorCodes) {
     if (column == 0) {
       if (!isComplete(row)) {
