@@ -1,0 +1,19 @@
+{
+  List entries=mainTable.getSelected();
+  StringBuffer result=new StringBuffer();
+  String citeKey="";
+  boolean first=true;
+  for (Iterator i=entries.iterator(); i.hasNext(); ) {
+    BibtexEntry bes=(BibtexEntry)i.next();
+    citeKey=(String)bes.getField(GUIGlobals.KEY_FIELD);
+    if (citeKey == null || citeKey.equals(""))     continue;
+    if (first) {
+      result.append(citeKey);
+      first=false;
+    }
+ else {
+      result.append(",").append(citeKey);
+    }
+  }
+  return result.toString();
+}
