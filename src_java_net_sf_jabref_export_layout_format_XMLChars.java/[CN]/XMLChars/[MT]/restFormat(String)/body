@@ -1,3 +1,32 @@
 {
-  return s.replaceAll("\\}","").replaceAll("\\{","").replaceAll("<","&#x3c;");
+  String fieldText=s.replaceAll("\\}","").replaceAll("\\{","");
+  int code;
+  char character;
+  StringBuffer buffer=new StringBuffer(fieldText.length() << 1);
+  for (int i=0; i < fieldText.length(); i++) {
+    character=fieldText.charAt(i);
+    code=((int)character) & 255;
+    if ((code < 40 && code != 32) || code > 125) {
+      buffer.append("&#" + code + ";");
+    }
+ else {
+      int[] forceReplace=new int[]{44,45,63,64,94,95,96,124};
+      boolean alphabet=true;
+      for (int ii=0; ii < forceReplace.length; ii++) {
+        if (code == forceReplace[ii]) {
+          buffer.append("&#" + code + ";");
+          alphabet=false;
+          break;
+        }
+      }
+      if (alphabet)       buffer.append((char)code);
+    }
+  }
+  fieldText=buffer.toString();
+  for (Iterator i=Globals.ASCII2XML_CHARS.keySet().iterator(); i.hasNext(); ) {
+    String ss=(String)i.next();
+    String repl=(String)Globals.ASCII2XML_CHARS.get(ss);
+    if (repl != null)     fieldText=fieldText.replaceAll(ss,repl);
+  }
+  return fieldText;
 }
