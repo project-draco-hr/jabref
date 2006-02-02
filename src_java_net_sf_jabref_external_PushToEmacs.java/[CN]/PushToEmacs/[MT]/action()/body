@@ -2,7 +2,7 @@
   int numSelected=panel.mainTable.getSelectedRowCount();
   if (numSelected > 0) {
     String keys=panel.getKeysForSelection();
-    StringBuffer command=new StringBuffer("(insert\"\\\\cite{");
+    StringBuffer command=new StringBuffer("(insert\"\\\\").append(Globals.prefs.get("citeCommand")).append("{");
     if (keys.length() == 0)     panel.output(Globals.lang("Please define BibTeX key first"));
  else {
       try {
@@ -25,7 +25,7 @@
               JOptionPane.showMessageDialog(panel.frame(),"<HTML>" + Globals.lang("Could not connect to a running gnuserv process. Make sure that " + "Emacs or XEmacs is running,<BR>and that the server has been started " + "(by running the command 'gnuserv-start').") + "</HTML>",Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
             }
  else {
-              Globals.lang("Pushed citations to Emacs");
+              panel.output(Globals.lang("Pushed citations to Emacs"));
             }
           }
         }

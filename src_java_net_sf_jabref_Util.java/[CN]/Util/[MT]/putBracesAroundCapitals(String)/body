@@ -1,11 +1,24 @@
 {
-  if (s.length() == 0)   return s;
+  boolean inString=false, isBracing=false, escaped=false;
+  int inBrace=0;
   StringBuffer buf=new StringBuffer();
-  Matcher mcr=titleCapitalPattern.matcher(s.substring(1));
-  while (mcr.find()) {
-    String replaceStr=mcr.group();
-    mcr.appendReplacement(buf,"{" + replaceStr + "}");
+  for (int i=0; i < s.length(); i++) {
+    int c=s.charAt(i);
+    if (c == '{')     inBrace++;
+ else     if (c == '}')     inBrace--;
+ else     if (!escaped && (c == '#'))     inString=!inString;
+    if ((inBrace == 0) && !isBracing && !inString&& Character.isLetter((char)c)&& Character.isUpperCase((char)c)) {
+      buf.append('{');
+      isBracing=true;
+    }
+    if (isBracing && !(Character.isLetter((char)c) && Character.isUpperCase((char)c))) {
+      buf.append('}');
+      isBracing=false;
+    }
+    buf.append((char)c);
+    if ((c == '\\') && !escaped)     escaped=true;
+ else     escaped=false;
   }
-  mcr.appendTail(buf);
-  return s.substring(0,1) + buf.toString();
+  if (isBracing)   buf.append('}');
+  return buf.toString();
 }

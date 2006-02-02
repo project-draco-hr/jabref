@@ -3,6 +3,17 @@
   Object o=GUIGlobals.FIELD_EXTRAS.get(string);
   final String fieldName=editor.getFieldName();
   String s=(String)o;
+  if (fieldName.equals(Globals.prefs.get("timeStampField"))) {
+    ((JTextArea)ed).addMouseListener(new MouseAdapter(){
+      public void mouseClicked(      MouseEvent e){
+        if (e.getClickCount() == 2) {
+          String date=Util.easyDateFormat();
+          ed.setText(date);
+        }
+      }
+    }
+);
+  }
   if ((s != null) && s.equals("external")) {
     ((JComponent)editor).addMouseListener(new ExternalViewerListener());
     return null;

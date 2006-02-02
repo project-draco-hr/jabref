@@ -15,10 +15,12 @@
   }
   String[] sortFields=new String[]{Globals.prefs.get("priSort"),Globals.prefs.get("secSort"),Globals.prefs.get("terSort")};
   boolean[] sortDirections=new boolean[]{Globals.prefs.getBoolean("priDescending"),Globals.prefs.getBoolean("secDescending"),Globals.prefs.getBoolean("terDescending")};
+  sortedForTable.getReadWriteLock().writeLock().lock();
   for (int i=0; i < sortFields.length; i++) {
     int index=tableFormat.getColumnIndex(sortFields[i]);
     if (index >= 0) {
       comparatorChooser.appendComparator(index,0,sortDirections[i]);
     }
   }
+  sortedForTable.getReadWriteLock().writeLock().unlock();
 }
