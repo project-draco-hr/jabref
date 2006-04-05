@@ -2,12 +2,13 @@
   if (e.getSource() == escape) {
     incSearch=false;
     if (panel != null) {
-      (new Thread(){
+      Thread t=new Thread(){
         public void run(){
           clearSearch();
         }
       }
-).start();
+;
+      SwingUtilities.invokeLater(t);
     }
   }
  else   if (((e.getSource() == searchField) || (e.getSource() == search)) && !increment.isSelected() && (panel != null)) {
@@ -31,5 +32,6 @@
     SearchWorker worker=new SearchWorker(searchRules,searchOptions);
     worker.getWorker().run();
     worker.getCallBack().update();
+    escape.setEnabled(true);
   }
 }
