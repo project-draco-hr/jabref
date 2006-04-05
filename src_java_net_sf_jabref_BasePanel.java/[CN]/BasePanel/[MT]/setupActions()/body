@@ -7,6 +7,11 @@
     }
   }
 );
+  actions.put("test",new BaseAction(){
+    public void action() throws Throwable {
+    }
+  }
+);
   actions.put("save",new AbstractWorker(){
     private boolean success=false;
     public void init() throws Throwable {
@@ -45,6 +50,24 @@
     }
     public void run(){
       try {
+        if (Globals.prefs.getBoolean("generateKeysBeforeSaving")) {
+          BibtexEntry bes;
+          NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
+          boolean any=false;
+          for (Iterator i=database.getKeySet().iterator(); i.hasNext(); ) {
+            bes=database.getEntryById((String)i.next());
+            String oldKey=bes.getCiteKey();
+            if ((oldKey == null) || (oldKey.equals(""))) {
+              LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);
+              ce.addEdit(new UndoableKeyChange(database,bes.getId(),null,(String)bes.getField(GUIGlobals.KEY_FIELD)));
+              any=true;
+            }
+          }
+          if (any) {
+            ce.end();
+            undoManager.addEdit(ce);
+          }
+        }
         success=saveDatabase(file,false,encoding);
         try {
           Globals.fileUpdateMonitor.updateTimeStamp(fileMonitorHandle);
@@ -271,51 +294,6 @@ catch (          Throwable ex) {
     }
   }
 );
-  actions.put("pushToLyX",new PushToLyx(BasePanel.this));
-  actions.put("pushToWinEdt",new BaseAction(){
-    public void action(){
-      final List entries=mainTable.getSelected();
-      final int numSelected=entries.size();
-      if (numSelected > 0) {
-        Thread pushThread=new Thread(){
-          public void run(){
-            String winEdt=Globals.prefs.get("winEdtPath");
-            try {
-              StringBuffer toSend=new StringBuffer("\"[InsText('\\").append(Globals.prefs.get("citeCommand")).append("{");
-              String citeKey="";
-              boolean first=true;
-              for (Iterator i=entries.iterator(); i.hasNext(); ) {
-                BibtexEntry bes=(BibtexEntry)i.next();
-                citeKey=(String)bes.getField(GUIGlobals.KEY_FIELD);
-                if (citeKey == null || citeKey.equals(""))                 continue;
-                if (first) {
-                  toSend.append(citeKey);
-                  first=false;
-                }
- else {
-                  toSend.append(",").append(citeKey);
-                }
-              }
-              if (first)               output(Globals.lang("Please define BibTeX key first"));
- else {
-                toSend.append("}');]\"");
-                Runtime.getRuntime().exec(winEdt + " " + toSend.toString());
-                Globals.lang("Pushed citations to WinEdt");
-              }
-            }
- catch (            IOException excep) {
-              output(Globals.lang("Error") + ": " + Globals.lang("Could not call executable")+ " '"+ winEdt+ "'.");
-              excep.printStackTrace();
-            }
-          }
-        }
-;
-        pushThread.start();
-      }
-    }
-  }
-);
-  actions.put("pushToEmacs",new PushToEmacs(BasePanel.this));
   actions.put("makeKey",new AbstractWorker(){
     List entries;
     int numSelected;
@@ -524,7 +502,7 @@ catch (          Throwable ex) {
             }
             if (filepath != null) {
               try {
-                Util.openExternalViewer(filepath,field,Globals.prefs);
+                Util.openExternalViewer(metaData(),filepath,field);
                 output(Globals.lang("External viewer called") + ".");
               }
  catch (              IOException ex) {
@@ -552,7 +530,7 @@ catch (          Throwable ex) {
         }
         if (link != null) {
           try {
-            Util.openExternalViewer(link.toString(),field,Globals.prefs);
+            Util.openExternalViewer(metaData(),link.toString(),field);
             output(Globals.lang("External viewer called") + ".");
           }
  catch (          IOException ex) {

@@ -1,15 +1,13 @@
 {
-synchronized (entries) {
-    int[] rows=table.getSelectedRows();
-    if (rows.length == 0)     return;
-    for (int i=0; i < rows.length; i++) {
-      BibtexEntry entry=(BibtexEntry)entries.get(rows[i]);
-      Set groups=(Set)groupAdditions.get(entry);
-      if (groups == null) {
-        groups=new HashSet();
-        groupAdditions.put(entry,groups);
-      }
-      groups.add(node);
+  selectionModel.getSelected().getReadWriteLock().writeLock().lock();
+  for (Iterator i=selectionModel.getSelected().iterator(); i.hasNext(); ) {
+    BibtexEntry entry=(BibtexEntry)i.next();
+    Set groups=(Set)groupAdditions.get(entry);
+    if (groups == null) {
+      groups=new HashSet();
+      groupAdditions.put(entry,groups);
     }
+    groups.add(node);
   }
+  selectionModel.getSelected().getReadWriteLock().writeLock().unlock();
 }

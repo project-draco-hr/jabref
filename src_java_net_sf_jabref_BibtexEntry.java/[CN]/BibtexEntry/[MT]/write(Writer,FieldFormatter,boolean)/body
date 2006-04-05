@@ -4,15 +4,16 @@
   out.write(((str == null) ? "" : str) + "," + Globals.NEWLINE);
   HashMap written=new HashMap();
   written.put(GUIGlobals.KEY_FIELD,null);
+  boolean hasWritten=false;
   String[] s=getRequiredFields();
   if (s != null)   for (int i=0; i < s.length; i++) {
-    writeField(s[i],out,ff);
+    hasWritten=hasWritten | writeField(s[i],out,ff,hasWritten);
     written.put(s[i],null);
   }
   s=getOptionalFields();
   if (s != null)   for (int i=0; i < s.length; i++) {
     if (!written.containsKey(s[i])) {
-      writeField(s[i],out,ff);
+      hasWritten=hasWritten | writeField(s[i],out,ff,hasWritten);
       written.put(s[i],null);
     }
   }
@@ -22,6 +23,6 @@
     boolean writeIt=(write ? GUIGlobals.isWriteableField(key) : GUIGlobals.isDisplayableField(key));
     if (!written.containsKey(key) && writeIt)     remainingFields.add(key);
   }
-  for (Iterator i=remainingFields.iterator(); i.hasNext(); )   writeField((String)i.next(),out,ff);
-  out.write("}" + Globals.NEWLINE);
+  for (Iterator i=remainingFields.iterator(); i.hasNext(); )   hasWritten=hasWritten | writeField((String)i.next(),out,ff,hasWritten);
+  out.write((hasWritten ? Globals.NEWLINE : "") + "}" + Globals.NEWLINE);
 }

@@ -6,7 +6,7 @@
     System.out.println(options.getHelp());
     String importFormats=Globals.importFormatReader.getImportFormatList();
     System.out.println(Globals.lang("Available import formats") + ":\n" + importFormats);
-    String outFormats=": bibtexml, docbook, html, simplehtml";
+    String outFormats=": bibtexml, docbook, endnote, harvard, html, mods, ods, oocalc, simplehtml";
     int length=outFormats.length();
     for (int i=0; i < Globals.prefs.customExports.size(); i++) {
       String[] format=Globals.prefs.customExports.getElementAt(i);
@@ -35,13 +35,19 @@
   Vector toImport=new Vector();
   if (!blank.isInvoked() && (leftOver.length > 0)) {
     for (int i=0; i < leftOver.length; i++) {
-      ParserResult pr=openBibFile(leftOver[i]);
-      if (pr != null) {
-        if (pr == ParserResult.INVALID_FORMAT)         toImport.add(leftOver[i]);
- else         loaded.add(pr);
-      }
+      boolean bibExtension=leftOver[i].toLowerCase().endsWith("bib");
+      ParserResult pr=null;
+      if (bibExtension)       pr=openBibFile(leftOver[i]);
+      if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
+        if (initialStartup) {
+          toImport.add(leftOver[i]);
+        }
  else {
+          ParserResult res=importToOpenBase(leftOver[i]);
+          if (res != null)           loaded.add(res);
+        }
       }
+ else       loaded.add(pr);
     }
   }
   if (!blank.isInvoked() && importFile.isInvoked()) {
@@ -85,41 +91,8 @@
     }
   }
   if (!blank.isInvoked() && importToOpenBase.isInvoked()) {
-    String[] data=importToOpenBase.getStringValue().split(",");
-    try {
-      if ((data.length > 1) && !"*".equals(data[1])) {
-        System.out.println(Globals.lang("Importing") + ": " + data[0]);
-        List entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")));
-        BibtexDatabase base=ImportFormatReader.createDatabase(entries);
-        ParserResult pr=new ParserResult(base,null,new HashMap());
-        pr.setToOpenTab(true);
-        loaded.add(pr);
-      }
- else {
-        System.out.println(Globals.lang("Importing in unknown format") + ": " + data[0]);
-        Object[] o=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
-        String formatName=(String)o[0];
-        if (formatName.equals(ImportFormatReader.BIBTEX_FORMAT)) {
-          ParserResult pr=(ParserResult)o[1];
-          pr.setToOpenTab(true);
-          loaded.add(pr);
-        }
- else {
-          List entries=(java.util.List)o[1];
-          if (entries != null)           System.out.println(Globals.lang("Format used") + ": " + formatName);
- else           System.out.println(Globals.lang("Could not find a suitable import format."));
-          if (entries != null) {
-            BibtexDatabase base=ImportFormatReader.createDatabase(entries);
-            ParserResult pr=new ParserResult(base,null,new HashMap());
-            pr.setToOpenTab(true);
-            loaded.add(pr);
-          }
-        }
-      }
-    }
- catch (    IOException ex) {
-      System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getMessage());
-    }
+    ParserResult res=importToOpenBase(importToOpenBase.getStringValue());
+    if (res != null)     loaded.add(res);
   }
   if (exportFile.isInvoked()) {
     if (loaded.size() > 0) {
@@ -161,7 +134,7 @@
         if (!foundCustom) {
           try {
             System.out.println(Globals.lang("Exporting") + ": " + data[0]);
-            FileActions.exportDatabase(pr.getDatabase(),data[1],new File(data[0]),pr.getEncoding());
+            FileActions.performExport(pr.getDatabase(),data[1],data[0],pr.getEncoding());
           }
  catch (          NullPointerException ex2) {
             System.err.println(Globals.lang("Unknown export format") + ": " + data[1]);

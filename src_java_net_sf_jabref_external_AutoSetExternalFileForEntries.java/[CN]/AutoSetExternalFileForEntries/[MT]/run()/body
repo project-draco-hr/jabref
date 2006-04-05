@@ -5,9 +5,9 @@
   brokenLinks=0;
   NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
   final OpenFileFilter off=Util.getFileFilterForField(fieldName);
-  ExternalFilePanel extPan=new ExternalFilePanel(fieldName,null,off);
+  ExternalFilePanel extPan=new ExternalFilePanel(fieldName,panel.metaData(),null,off);
   FieldTextField editor=new FieldTextField(fieldName,"",false);
-  String dir=Globals.prefs.get(fieldName + "Directory");
+  String dir=panel.metaData().getFileDirectory(fieldName);
   if (autoSet) {
     for (int i=0; i < sel.length; i++) {
       final Object old=sel[i].getField(fieldName);
@@ -37,7 +37,7 @@
           int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{(String)old,sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
 switch (answer) {
 case 1:
-            AttachFileDialog afd=new AttachFileDialog(panel.frame(),sel[i],fieldName);
+            AttachFileDialog afd=new AttachFileDialog(panel.frame(),panel.metaData(),sel[i],fieldName);
           Util.placeDialog(afd,panel.frame());
         afd.setVisible(true);
       if (!afd.cancelled()) {

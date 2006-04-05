@@ -1,12 +1,12 @@
 {
   if (e.isPopupTrigger()) {
-    int[] rows=table.getSelectedRows();
-    popup.show(table,e.getX(),e.getY());
+    int[] rows=glTable.getSelectedRows();
+    popup.show(glTable,e.getX(),e.getY());
     return;
   }
-  final int col=table.columnAtPoint(e.getPoint()), row=table.rowAtPoint(e.getPoint());
-  if ((col == DUPL_COL) && (tableModel.getValueAt(row,col) != null)) {
-    BibtexEntry first=(BibtexEntry)entries.get(row);
+  final int col=glTable.columnAtPoint(e.getPoint()), row=glTable.rowAtPoint(e.getPoint());
+  if ((col == DUPL_COL) && (glTable.getValueAt(row,col) != null)) {
+    BibtexEntry first=(BibtexEntry)sortedList.get(row);
     BibtexEntry other=Util.containsDuplicate(panel.database(),first);
     if (other != null) {
       DuplicateResolverDialog diag=new DuplicateResolverDialog(frame,other,first,DuplicateResolverDialog.INSPECTION);
@@ -15,16 +15,19 @@
       ImportInspectionDialog.this.toFront();
       if (diag.getSelected() == DuplicateResolverDialog.KEEP_UPPER) {
         entriesToDelete.add(other);
-        tableModel.setValueAt(null,row,col);
+        entries.getReadWriteLock().writeLock().lock();
+        first.setGroupHit(false);
+        entries.getReadWriteLock().writeLock().unlock();
       }
  else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_LOWER) {
-synchronized (entries) {
-          tableModel.removeRow(row);
-          entries.remove(row);
-        }
+        entries.getReadWriteLock().writeLock().lock();
+        entries.remove(first);
+        entries.getReadWriteLock().writeLock().unlock();
       }
  else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_BOTH) {
-        tableModel.setValueAt(null,row,col);
+        entries.getReadWriteLock().writeLock().lock();
+        first.setGroupHit(false);
+        entries.getReadWriteLock().writeLock().unlock();
       }
     }
   }

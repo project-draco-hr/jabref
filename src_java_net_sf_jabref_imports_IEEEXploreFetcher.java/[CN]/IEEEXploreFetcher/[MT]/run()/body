@@ -1,0 +1,47 @@
+{
+  frame.block();
+  shouldContinue=true;
+  parsed=0;
+  unparseable=0;
+  String address=makeUrl(0);
+  try {
+    URL url=new URL(address);
+    String page=getResults(url);
+    hits=getNumberOfHits(page,"Your search matched",hitsPattern);
+    frame.unblock();
+    if (hits == 0) {
+      dialog.dispose();
+      JOptionPane.showMessageDialog(frame,Globals.lang("No entries found for the search string '%0'",terms),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      return;
+    }
+ else {
+      fetchingAbstracts=fetchAstracts.isSelected();
+      if (fetchingAbstracts && (hits > MAX_ABSTRACT_FETCH)) {
+        fetchingAbstracts=false;
+        JOptionPane.showMessageDialog(frame,Globals.lang("%0 entries found. To reduce server load, abstracts " + "will only be downloaded for searches returning %1 hits or less.",new String[]{String.valueOf(hits),String.valueOf(MAX_ABSTRACT_FETCH)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      }
+      dialog.setVisible(true);
+    }
+    int maxHits=getNumberOfHits(page,"A maximum of",maxHitsPattern);
+    System.out.println("Number of hits: " + hits);
+    System.out.println("Maximum returned: " + maxHits);
+    if (hits > maxHits)     hits=maxHits;
+    parse(dialog,page,0,1);
+    int firstEntry=perPage;
+    while (shouldContinue && (firstEntry < hits)) {
+      System.out.println("Fetching from: " + firstEntry);
+      address=makeUrl(firstEntry);
+      page=getResults(new URL(address));
+      if (!shouldContinue)       break;
+      parse(dialog,page,0,1 + firstEntry);
+      firstEntry+=perPage;
+    }
+    dialog.entryListComplete();
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+  }
+}

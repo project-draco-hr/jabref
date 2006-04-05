@@ -4,11 +4,12 @@
     BibtexEntry toShow=(BibtexEntry)tableRows.get(row);
     editSignalled(toShow);
   }
+  final String[] iconType=table.getIconTypeForColumn(col);
   if (e.isPopupTrigger()) {
-    processPopupTrigger(e,row,col);
+    if (iconType == null)     processPopupTrigger(e,row);
+ else     showIconRightClickMenu(e,row,iconType);
     return;
   }
-  final String[] iconType=table.getIconTypeForColumn(col);
   if (iconType != null) {
     Object value=table.getValueAt(row,col);
     if (value == null)     return;
@@ -26,7 +27,7 @@
           return;
         }
         try {
-          Util.openExternalViewer((String)link,fieldName,Globals.prefs);
+          Util.openExternalViewer(panel.metaData(),(String)link,fieldName);
         }
  catch (        IOException ex) {
           panel.output(Globals.lang("Error") + ": " + ex.getMessage());

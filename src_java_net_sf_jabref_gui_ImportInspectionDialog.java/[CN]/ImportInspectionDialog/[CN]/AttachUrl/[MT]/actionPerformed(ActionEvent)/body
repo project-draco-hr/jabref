@@ -1,18 +1,16 @@
 {
-  int[] rows=table.getSelectedRows();
-  if (rows.length != 1)   return;
-  BibtexEntry entry=(BibtexEntry)entries.get(rows[0]);
+  if (selectionModel.getSelected().size() != 1)   return;
+  BibtexEntry entry=(BibtexEntry)selectionModel.getSelected().get(0);
   String result=JOptionPane.showInputDialog(ths,Globals.lang("Enter URL"),entry.getField("url"));
+  entries.getReadWriteLock().writeLock().lock();
   if (result != null) {
     if (result.equals("")) {
       entry.clearField("url");
-      tableModel.setValueAt(null,rows[0],3);
     }
  else {
       entry.setField("url",result);
-      JLabel lab=new JLabel(new ImageIcon(GUIGlobals.wwwIcon));
-      lab.setToolTipText(result);
-      tableModel.setValueAt(lab,rows[0],3);
     }
   }
+  entries.getReadWriteLock().writeLock().unlock();
+  glTable.repaint();
 }

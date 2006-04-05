@@ -1,6 +1,6 @@
 {
   mb.setBorder(null);
-  JMenu file=subMenu("File"), edit=subMenu("Edit"), bibtex=subMenu("BibTeX"), view=subMenu("View"), tools=subMenu("Tools"), options=subMenu("Options"), newSpec=subMenu("New entry..."), helpMenu=subMenu("Help");
+  JMenu file=subMenu("File"), edit=subMenu("Edit"), bibtex=subMenu("BibTeX"), view=subMenu("View"), tools=subMenu("Tools"), web=subMenu("Web search"), options=subMenu("Options"), newSpec=subMenu("New entry..."), helpMenu=subMenu("Help");
   setUpImportMenus();
   setUpExportMenu(exportMenu);
   setUpCustomExportMenu();
@@ -26,6 +26,7 @@
   file.add(close);
   file.add(quit);
   mb.add(file);
+  edit.add(test);
   edit.add(undo);
   edit.add(redo);
   edit.addSeparator();
@@ -44,6 +45,7 @@
   mb.add(edit);
   view.add(nextTab);
   view.add(prevTab);
+  view.add(sortTabs);
   view.addSeparator();
   view.add(toggleGroups);
   view.add(togglePreview);
@@ -75,9 +77,7 @@
   tools.add(emacsPushAction);
   tools.add(lyxPushAction);
   tools.add(winEdtPushAction);
-  tools.add(fetchMedline);
-  tools.add(citeSeerPanelAction);
-  tools.add(fetchCiteSeer);
+  tools.add(latexEditorPushAction);
   tools.addSeparator();
   tools.add(openFile);
   tools.add(openUrl);
@@ -91,6 +91,12 @@
   tools.add(abbreviateMedline);
   tools.add(unabbreviate);
   mb.add(tools);
+  web.add(fetchMedline);
+  web.add(citeSeerPanelAction);
+  web.add(fetchCiteSeer);
+  GeneralFetcher ieex=new GeneralFetcher(sidePaneManager,this,ieeexplorerFetcher);
+  web.add(ieex.getAction());
+  mb.add(web);
   options.add(showPrefs);
   AbstractAction customizeAction=new CustomizeEntryTypeAction();
   AbstractAction genFieldsCustomization=new GenFieldsCustomizationAction();
@@ -105,4 +111,6 @@
   helpMenu.addSeparator();
   helpMenu.add(about);
   mb.add(helpMenu);
+  helpMenu.addSeparator();
+  helpMenu.add(errorConsole);
 }

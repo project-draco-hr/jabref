@@ -1,35 +1,12 @@
 {
-synchronized (this.entries) {
-    for (Iterator i=entries.iterator(); i.hasNext(); ) {
-      BibtexEntry entry=(BibtexEntry)i.next();
-      this.entries.add(entry);
-      Object[] values=new Object[tableModel.getColumnCount()];
-      values[0]=Boolean.valueOf(defaultSelected);
-      if ((panel != null) && (Util.containsDuplicate(panel.database(),entry) != null)) {
-        JLabel lab=new JLabel(new ImageIcon(GUIGlobals.duplicateIcon));
-        lab.setToolTipText(Globals.lang("Possible duplicate of existing entry. Click to resolve."));
-        values[DUPL_COL]=lab;
-      }
-      if (entry.getField("pdf") != null) {
-        JLabel lab=new JLabel(new ImageIcon(GUIGlobals.pdfIcon));
-        lab.setToolTipText((String)entry.getField("pdf"));
-        values[PDF_COL]=lab;
-      }
- else       values[PDF_COL]=null;
-      if (entry.getField("ps") != null) {
-        JLabel lab=new JLabel(new ImageIcon(GUIGlobals.psIcon));
-        lab.setToolTipText((String)entry.getField("ps"));
-        values[PS_COL]=lab;
-      }
- else       values[PS_COL]=null;
-      if (entry.getField("url") != null) {
-        JLabel lab=new JLabel(new ImageIcon(GUIGlobals.wwwIcon));
-        lab.setToolTipText((String)entry.getField("url"));
-        values[URL_COL]=lab;
-      }
- else       values[URL_COL]=null;
-      for (int j=0; j < fields.length; j++)       values[PAD + j]=entry.getField(fields[j]);
-      tableModel.addRow(values);
+  for (Iterator i=entries.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=(BibtexEntry)i.next();
+    entry.setSearchHit(defaultSelected);
+    if ((panel != null) && (Util.containsDuplicate(panel.database(),entry) != null)) {
+      entry.setGroupHit(true);
     }
+    this.entries.getReadWriteLock().writeLock().lock();
+    this.entries.add(entry);
+    this.entries.getReadWriteLock().writeLock().unlock();
   }
 }

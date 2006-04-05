@@ -4,6 +4,7 @@
   StringBuffer buffer=null;
   int previous=-1;
   boolean justParsedTag=false;
+  boolean escaped=false;
   while (!_eof) {
     c=read();
     if (c == -1) {
@@ -11,22 +12,24 @@
       parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
       return null;
     }
-    if ((c == '\\') && (peek() != '\\') && (justParsedTag || (previous != '\\'))) {
+    if ((c == '\\') && (peek() != '\\') && !escaped) {
       if (buffer != null) {
         parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
         buffer=null;
       }
       parseField();
       justParsedTag=true;
+      escaped=false;
     }
  else {
       justParsedTag=false;
       if (buffer == null) {
         buffer=new StringBuffer(100);
       }
-      if (!((c == '\\') && (previous == '\\'))) {
+      if ((c != '\\') || escaped) {
         buffer.append((char)c);
       }
+      escaped=(c == '\\') && !escaped;
     }
     previous=c;
   }

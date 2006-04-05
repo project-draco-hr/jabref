@@ -2,12 +2,12 @@
   ActionListener listener=new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       JMenuItem source=(JMenuItem)e.getSource();
-      String lfFileName=null, extension=null, directory=null;
+      String lfFileName=null, extension=null;
       if (source == htmlItem) {
         lfFileName="html";
         extension=".html";
       }
-      if (source == simpleHtmlItem) {
+ else       if (source == simpleHtmlItem) {
         lfFileName="simplehtml";
         extension=".html";
       }
@@ -25,12 +25,10 @@
       }
  else       if (source == rtfItem) {
         lfFileName="harvard";
-        directory="harvard";
         extension=".rtf";
       }
  else       if (source == endnoteItem) {
-        lfFileName="EndNote";
-        directory="endnote";
+        lfFileName="endnote";
         extension=".txt";
       }
  else       if (source == openofficeItem) {
@@ -41,20 +39,14 @@
         lfFileName="ods";
         extension=".ods";
       }
-      File outFile;
-      String chosenFile=Globals.getNewFile(ths,prefs,new File(prefs.get("workingDirectory")),extension,JFileChooser.SAVE_DIALOG,false);
-      final String dir=(directory == null ? Globals.LAYOUT_PREFIX : Globals.LAYOUT_PREFIX + directory + "/");
-      if (chosenFile != null)       outFile=new File(chosenFile);
- else {
-        return;
-      }
-      final String lfName=lfFileName;
-      final File oFile=outFile;
+      final String chosenFile=Globals.getNewFile(ths,prefs,new File(prefs.get("workingDirectory")),extension,JFileChooser.SAVE_DIALOG,false);
+      final String exportName=lfFileName;
+      if (chosenFile == null)       return;
       (new Thread(){
         public void run(){
           try {
-            FileActions.exportDatabase(basePanel().database,dir,lfName,oFile,basePanel().getEncoding());
-            output(Globals.lang("Exported database to file") + " '" + oFile.getPath()+ "'.");
+            FileActions.performExport(basePanel().database(),exportName,chosenFile,basePanel().getEncoding());
+            output(Globals.lang("Exported database to file") + " '" + chosenFile+ "'.");
           }
  catch (          Exception ex) {
             ex.printStackTrace();

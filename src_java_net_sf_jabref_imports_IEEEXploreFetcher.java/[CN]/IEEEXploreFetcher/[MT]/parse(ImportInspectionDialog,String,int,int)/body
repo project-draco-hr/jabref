@@ -1,0 +1,16 @@
+{
+  piv=startIndex;
+  int entryNumber=firstEntryNumber;
+  List entries=new ArrayList();
+  BibtexEntry entry;
+  while (((entry=parseNextEntry(text,piv,entryNumber)) != null) && (shouldContinue)) {
+    if (entry.getField("title") != null) {
+      entries.add(entry);
+      dialog.addEntries(entries);
+      dialog.setProgress(parsed + unparseable,hits);
+      entries.clear();
+      parsed++;
+    }
+    entryNumber++;
+  }
+}

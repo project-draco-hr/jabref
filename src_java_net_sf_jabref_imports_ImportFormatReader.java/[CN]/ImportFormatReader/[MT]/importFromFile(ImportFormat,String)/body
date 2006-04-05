@@ -1,7 +1,20 @@
 {
-  File file=new File(filename);
-  InputStream stream=new FileInputStream(file);
-  if (!importer.isRecognizedFormat(stream))   throw new IOException(Globals.lang("Wrong file format"));
-  stream=new FileInputStream(file);
-  return importer.importEntries(stream);
+  List result=null;
+  InputStream stream=null;
+  try {
+    File file=new File(filename);
+    stream=new FileInputStream(file);
+    if (!importer.isRecognizedFormat(stream))     throw new IOException(Globals.lang("Wrong file format"));
+    stream=new FileInputStream(file);
+    result=importer.importEntries(stream);
+  }
+  finally {
+    try {
+      if (stream != null)       stream.close();
+    }
+ catch (    IOException ex) {
+      throw ex;
+    }
+  }
+  return result;
 }

@@ -1,4 +1,5 @@
 {
+  entries.getReadWriteLock().writeLock().lock();
   BibtexDatabase database=null;
   if (panel != null)   database=panel.database();
  else   database=new BibtexDatabase();
@@ -19,8 +20,6 @@
     BibtexEntry entry=(BibtexEntry)i.next();
     database.removeEntry(entry.getId());
   }
-  if (addColumn) {
-    tableModel.addColumn("Bibtexkey",keys.toArray());
-    setWidths();
-  }
+  entries.getReadWriteLock().writeLock().lock();
+  glTable.repaint();
 }

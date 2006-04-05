@@ -22,7 +22,9 @@ class Downloader extends Thread {
             if (plannedName == null)             return;
             if (!off.accept(plannedName))             plannedName+=suffix;
           }
-          File file=new File(new File(Globals.prefs.get(fieldName + "Directory")),plannedName);
+          String directory=metaData.getFileDirectory(fieldName);
+          System.out.println(directory);
+          File file=new File(new File(directory),plannedName);
           URLDownload udl=new URLDownload(parent,url,file);
           output(Globals.lang("Downloading..."));
           try {
@@ -34,7 +36,6 @@ class Downloader extends Thread {
           }
           output(Globals.lang("Download completed"));
           String filename=file.getPath();
-          String directory=Globals.prefs.get(fieldName + "Directory");
           if (filename.startsWith(directory)) {
             String relPath=filename.substring(directory.length(),filename.length());
             if (relPath.startsWith(File.separator)) {

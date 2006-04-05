@@ -1,15 +1,13 @@
 {
-  int[] rows=table.getSelectedRows();
-  if (rows.length != 1)   return;
-  BibtexEntry entry=(BibtexEntry)entries.get(rows[0]);
-  AttachFileDialog diag=new AttachFileDialog(ths,entry,fileType);
+  if (selectionModel.getSelected().size() != 1)   return;
+  BibtexEntry entry=(BibtexEntry)selectionModel.getSelected().get(0);
+  AttachFileDialog diag=new AttachFileDialog(ths,metaData,entry,fileType);
   Util.placeDialog(diag,ths);
   diag.setVisible(true);
   if (!diag.cancelled()) {
+    entries.getReadWriteLock().writeLock().lock();
     entry.setField(fileType,diag.getValue());
-    int column=(fileType.equals("pdf") ? PDF_COL : PS_COL);
-    JLabel lab=new JLabel(new ImageIcon((column == PDF_COL ? GUIGlobals.pdfIcon : GUIGlobals.psIcon)));
-    lab.setToolTipText((String)entry.getField(fileType));
-    tableModel.setValueAt(lab,rows[0],column);
+    entries.getReadWriteLock().writeLock().unlock();
+    glTable.repaint();
   }
 }

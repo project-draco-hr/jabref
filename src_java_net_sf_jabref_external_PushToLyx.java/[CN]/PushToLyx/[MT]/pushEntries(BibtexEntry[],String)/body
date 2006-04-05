@@ -1,0 +1,33 @@
+{
+  couldNotFindPipe=false;
+  couldNotWrite=false;
+  final File lyxpipe=new File(Globals.prefs.get("lyxpipe") + ".in");
+  if (!lyxpipe.exists() || !lyxpipe.canWrite()) {
+    couldNotFindPipe=true;
+    return;
+  }
+  Thread t=new Thread(new Runnable(){
+    public void run(){
+      try {
+        FileWriter fw=new FileWriter(lyxpipe);
+        BufferedWriter lyx_out=new BufferedWriter(fw);
+        String citeStr="";
+        citeStr="LYXCMD:sampleclient:citation-insert:" + keyString;
+        lyx_out.write(citeStr + "\n");
+        lyx_out.close();
+      }
+ catch (      IOException excep) {
+        couldNotWrite=true;
+        return;
+      }
+    }
+  }
+);
+  t.start();
+  try {
+    t.join();
+  }
+ catch (  InterruptedException e) {
+    e.printStackTrace();
+  }
+}

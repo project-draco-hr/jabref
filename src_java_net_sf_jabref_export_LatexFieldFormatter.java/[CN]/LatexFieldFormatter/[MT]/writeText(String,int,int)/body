@@ -1,10 +1,37 @@
 {
   sb.append(Globals.getOpeningBrace());
-  boolean escape=false;
+  boolean escape=false, inCommandName=false, inCommand=false, inCommandOption=false;
+  StringBuffer commandName=new StringBuffer();
   char c;
   for (int i=start_pos; i < end_pos; i++) {
     c=text.charAt(i);
-    if ((c == '&') && !escape)     sb.append("\\&");
+    if (Character.isLetter(c) && (escape || inCommandName)) {
+      inCommandName=true;
+      if (!inCommandOption)       commandName.append((char)c);
+    }
+ else     if (Character.isWhitespace(c) && (inCommand || inCommandOption)) {
+    }
+ else     if (inCommandName) {
+      if (c == '[') {
+        inCommandOption=true;
+      }
+ else       if (inCommandOption && (c == ']'))       inCommandOption=false;
+ else       if (!inCommandOption && (c == '{')) {
+        inCommandName=false;
+        inCommand=true;
+      }
+ else {
+        commandName.delete(0,commandName.length());
+        inCommandName=false;
+      }
+    }
+    if (inCommand && (c == '}')) {
+      commandName.delete(0,commandName.length());
+      inCommand=false;
+    }
+    if ((c == '&') && !escape && !(inCommand && commandName.toString().equals("url"))) {
+      sb.append("\\&");
+    }
  else     sb.append(c);
     escape=(c == '\\');
   }
