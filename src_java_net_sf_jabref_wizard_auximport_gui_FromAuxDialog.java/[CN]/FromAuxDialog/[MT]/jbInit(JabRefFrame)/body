@@ -1,5 +1,6 @@
 {
-  panel1.setLayout(borderLayout1);
+  JPanel panel1=new JPanel();
+  panel1.setLayout(new BorderLayout());
   okButton.setText(Globals.lang("Ok"));
   okButton.setEnabled(false);
   okButton.addActionListener(new FromAuxDialog_ok_actionAdapter(this));
@@ -9,16 +10,28 @@
   generateButton.addActionListener(new FromAuxDialog_generate_actionAdapter(this));
   initOptionsPanel(parent);
   initStatusPanel();
+  JPanel buttonPanel=new JPanel();
+  buttonPanel.add(generateButton,null);
+  buttonPanel.add(okButton,null);
+  buttonPanel.add(cancelButton,null);
   this.setModal(true);
   this.setResizable(false);
   this.setTitle(Globals.lang("AUX file import"));
   getContentPane().add(panel1);
-  panel1.add(optionsPanel,BorderLayout.NORTH);
-  panel1.add(jPanel2,BorderLayout.SOUTH);
-  jPanel2.add(generateButton,null);
-  jPanel2.add(okButton,null);
-  jPanel2.add(cancelButton,null);
-  panel1.add(statusPanel,BorderLayout.CENTER);
+  JPanel desc=getDescriptionPanel();
+  if (desc != null) {
+    panel1.add(desc,BorderLayout.NORTH);
+    panel1.add(buttonPanel,BorderLayout.SOUTH);
+    JPanel centerPane=new JPanel(new BorderLayout());
+    centerPane.add(optionsPanel,BorderLayout.NORTH);
+    centerPane.add(statusPanel,BorderLayout.CENTER);
+    panel1.add(centerPane,BorderLayout.CENTER);
+  }
+ else {
+    panel1.add(optionsPanel,BorderLayout.NORTH);
+    panel1.add(buttonPanel,BorderLayout.SOUTH);
+    panel1.add(statusPanel,BorderLayout.CENTER);
+  }
   ActionMap am=statusPanel.getActionMap();
   InputMap im=statusPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(parent.prefs().getKey("Close dialog"),"close");

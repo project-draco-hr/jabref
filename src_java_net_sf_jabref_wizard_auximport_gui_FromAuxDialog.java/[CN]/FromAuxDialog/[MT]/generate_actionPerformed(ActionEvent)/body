@@ -5,16 +5,20 @@
   statusInfos.setText(null);
   BibtexDatabase refBase=bp.getDatabase();
   String auxName=auxFileField.getText();
-  if (auxName != null)   if ((refBase != null) && (auxName.length() > 0)) {
-    auxParser.clear();
-    notFoundList.setListData(auxParser.generate(auxName,refBase));
-    statusInfos.append(Globals.lang("keys in database") + " " + refBase.getEntryCount());
-    statusInfos.append("\n" + Globals.lang("found in aux file") + " "+ auxParser.getFoundKeysInAux());
-    statusInfos.append("\n" + Globals.lang("resolved") + " "+ auxParser.getResolvedKeysCount());
-    statusInfos.append("\n" + Globals.lang("not found") + " "+ auxParser.getNotResolvedKeysCount());
-    int nested=auxParser.getNestedAuxCounter();
-    if (nested > 0)     statusInfos.append("\n" + Globals.lang("nested_aux_files") + " "+ nested);
-    okButton.setEnabled(true);
+  if (auxName != null) {
+    if ((refBase != null) && (auxName.length() > 0)) {
+      auxParser.clear();
+      notFoundList.setListData(auxParser.generate(auxName,refBase));
+      statusInfos.append(Globals.lang("keys in database") + " " + refBase.getEntryCount());
+      statusInfos.append("\n" + Globals.lang("found in aux file") + " "+ auxParser.getFoundKeysInAux());
+      statusInfos.append("\n" + Globals.lang("resolved") + " "+ auxParser.getResolvedKeysCount());
+      statusInfos.append("\n" + Globals.lang("not found") + " "+ auxParser.getNotResolvedKeysCount());
+      int nested=auxParser.getNestedAuxCounter();
+      if (nested > 0) {
+        statusInfos.append("\n" + Globals.lang("nested_aux_files") + " "+ nested);
+      }
+      okButton.setEnabled(true);
+    }
   }
   if (auxParser.getGeneratedDatabase().getEntryCount() < 1) {
     statusInfos.append("\n" + Globals.lang("empty database"));
