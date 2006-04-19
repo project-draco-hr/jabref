@@ -1,9 +1,9 @@
 {
   out.write("@" + _type.getName().toUpperCase() + "{");
-  String str=Util.shaveString((String)getField(GUIGlobals.KEY_FIELD));
+  String str=Util.shaveString((String)getField(BibtexFields.KEY_FIELD));
   out.write(((str == null) ? "" : str) + "," + Globals.NEWLINE);
   HashMap written=new HashMap();
-  written.put(GUIGlobals.KEY_FIELD,null);
+  written.put(BibtexFields.KEY_FIELD,null);
   boolean hasWritten=false;
   String[] s=getRequiredFields();
   if (s != null)   for (int i=0; i < s.length; i++) {
@@ -20,7 +20,7 @@
   TreeSet remainingFields=new TreeSet();
   for (Iterator i=_fields.keySet().iterator(); i.hasNext(); ) {
     String key=(String)i.next();
-    boolean writeIt=(write ? GUIGlobals.isWriteableField(key) : GUIGlobals.isDisplayableField(key));
+    boolean writeIt=(write ? BibtexFields.isWriteableField(key) : BibtexFields.isDisplayableField(key));
     if (!written.containsKey(key) && writeIt)     remainingFields.add(key);
   }
   for (Iterator i=remainingFields.iterator(); i.hasNext(); )   hasWritten=hasWritten | writeField((String)i.next(),out,ff,hasWritten);

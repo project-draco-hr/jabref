@@ -59,7 +59,7 @@
             String oldKey=bes.getCiteKey();
             if ((oldKey == null) || (oldKey.equals(""))) {
               LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);
-              ce.addEdit(new UndoableKeyChange(database,bes.getId(),null,(String)bes.getField(GUIGlobals.KEY_FIELD)));
+              ce.addEdit(new UndoableKeyChange(database,bes.getId(),null,(String)bes.getField(BibtexFields.KEY_FIELD)));
               any=true;
             }
           }
@@ -315,7 +315,7 @@ catch (          Throwable ex) {
       boolean hasShownWarning=false;
       loop:       for (Iterator i=entries.iterator(); i.hasNext(); ) {
         bes=(BibtexEntry)i.next();
-        if (bes.getField(GUIGlobals.KEY_FIELD) != null) {
+        if (bes.getField(BibtexFields.KEY_FIELD) != null) {
           if (Globals.prefs.getBoolean("avoidOverwritingKey"))           i.remove();
  else           if (Globals.prefs.getBoolean("warnBeforeOverwritingKey")) {
             CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("One or more keys will be overwritten. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
@@ -332,13 +332,13 @@ catch (          Throwable ex) {
       HashMap oldvals=new HashMap();
       if (!Globals.prefs.getBoolean("avoidOverwritingKey"))       for (Iterator i=entries.iterator(); i.hasNext(); ) {
         bes=(BibtexEntry)i.next();
-        oldvals.put(bes,bes.getField(GUIGlobals.KEY_FIELD));
+        oldvals.put(bes,bes.getField(BibtexFields.KEY_FIELD));
         database.setCiteKeyForEntry(bes.getId(),null);
       }
       for (Iterator i=entries.iterator(); i.hasNext(); ) {
         bes=(BibtexEntry)i.next();
         bes=LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);
-        ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),(String)bes.getField(GUIGlobals.KEY_FIELD)));
+        ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),(String)bes.getField(BibtexFields.KEY_FIELD)));
       }
       ce.end();
       undoManager.addEdit(ce);
@@ -386,7 +386,7 @@ catch (          Throwable ex) {
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
         Vector keys=new Vector();
-        for (int i=0; i < bes.length; i++)         if (bes[i].getField(Globals.KEY_FIELD) != null)         keys.add(bes[i].getField(Globals.KEY_FIELD));
+        for (int i=0; i < bes.length; i++)         if (bes[i].getField(BibtexFields.KEY_FIELD) != null)         keys.add(bes[i].getField(BibtexFields.KEY_FIELD));
         if (keys.size() == 0) {
           output("None of the selected entries have BibTeX keys.");
           return;
@@ -410,7 +410,7 @@ catch (          Throwable ex) {
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
         Vector keys=new Vector();
-        for (int i=0; i < bes.length; i++)         if (bes[i].getField(Globals.KEY_FIELD) != null)         keys.add(bes[i].getField(Globals.KEY_FIELD));
+        for (int i=0; i < bes.length; i++)         if (bes[i].getField(BibtexFields.KEY_FIELD) != null)         keys.add(bes[i].getField(BibtexFields.KEY_FIELD));
         if (keys.size() == 0) {
           output("None of the selected entries have BibTeX keys.");
           return;
@@ -482,7 +482,7 @@ catch (          Throwable ex) {
             }
  else {
               String basefile;
-              Object key=bes[0].getField(Globals.KEY_FIELD);
+              Object key=bes[0].getField(BibtexFields.KEY_FIELD);
               if (key != null) {
                 basefile=key.toString();
                 final String[] types=new String[]{"pdf","ps"};
