@@ -2,7 +2,7 @@
   final FieldEditor ed=editor;
   final String fieldName=editor.getFieldName();
   String s=BibtexFields.getFieldExtras(string);
-  if (fieldName.equals(Globals.prefs.get("timeStampField"))) {
+  if ((fieldName.equals(Globals.prefs.get("timeStampField"))) || ((s != null) && s.equals("datepicker"))) {
     ((JTextArea)ed).addMouseListener(new MouseAdapter(){
       public void mouseClicked(      MouseEvent e){
         if (e.getClickCount() == 2) {
@@ -12,6 +12,10 @@
       }
     }
 );
+    if ((s != null) && s.equals("datepicker")) {
+      DatePickerButton datePicker=new DatePickerButton(ed);
+      return datePicker.getDatePicker();
+    }
   }
   if ((s != null) && s.equals("external")) {
     ((JComponent)editor).addMouseListener(new ExternalViewerListener());
