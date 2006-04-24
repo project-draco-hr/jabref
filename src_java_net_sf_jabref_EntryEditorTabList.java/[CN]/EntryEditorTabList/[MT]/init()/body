@@ -4,12 +4,24 @@
   int i=0;
   String name;
   String[] fields;
-  while (Globals.prefs.hasKey(Globals.prefs.CUSTOM_TAB_NAME + i)) {
-    name=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_NAME + i);
-    fields=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_FIELDS + i).split(";");
-    List entry=Arrays.asList(fields);
-    names.add(name);
-    list.add(entry);
-    i++;
+  if (Globals.prefs.hasKey(Globals.prefs.CUSTOM_TAB_NAME + 0)) {
+    while (Globals.prefs.hasKey(Globals.prefs.CUSTOM_TAB_NAME + i)) {
+      name=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_NAME + i);
+      fields=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_FIELDS + i).split(";");
+      List entry=Arrays.asList(fields);
+      names.add(name);
+      list.add(entry);
+      i++;
+    }
+  }
+ else {
+    while (Globals.prefs.get(Globals.prefs.CUSTOM_TAB_NAME + "_def" + i) != null) {
+      name=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_NAME + "_def" + i);
+      fields=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_FIELDS + "_def" + i).split(";");
+      List entry=Arrays.asList(fields);
+      names.add(name);
+      list.add(entry);
+      i++;
+    }
   }
 }
