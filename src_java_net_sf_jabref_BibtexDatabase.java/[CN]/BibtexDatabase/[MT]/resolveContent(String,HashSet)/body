@@ -7,9 +7,18 @@
       int stringEnd=res.indexOf("#",next + 1);
       if (stringEnd >= 0) {
         String refLabel=res.substring(next + 1,stringEnd);
-        newRes.append(resolveString(refLabel,usedIds));
+        String resolved=resolveString(refLabel,usedIds);
+        if (refLabel.equals(resolved)) {
+          newRes.append(res.substring(next,stringEnd + 1));
+        }
+ else         newRes.append(resolved);
+        piv=stringEnd + 1;
       }
-      piv=stringEnd + 1;
+ else {
+        newRes.append(res.substring(next));
+        piv=res.length();
+        break;
+      }
     }
     if (piv < res.length() - 1)     newRes.append(res.substring(piv));
     res=newRes.toString();
