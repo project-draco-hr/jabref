@@ -90,7 +90,7 @@
 );
   actions.put("saveAs",new BaseAction(){
     public void action() throws Throwable {
-      String chosenFile=Globals.getNewFile(frame,Globals.prefs,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
+      String chosenFile=Globals.getNewFile(frame,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
       if (chosenFile != null) {
         file=new File(chosenFile);
         if (!file.exists() || (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
@@ -111,7 +111,7 @@
 );
   actions.put("saveSelectedAs",new BaseAction(){
     public void action() throws Throwable {
-      String chosenFile=Globals.getNewFile(frame,Globals.prefs,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
+      String chosenFile=Globals.getNewFile(frame,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
       if (chosenFile != null) {
         File expFile=new File(chosenFile);
         if (!expFile.exists() || (JOptionPane.showConfirmDialog(frame,"'" + expFile.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
@@ -428,42 +428,7 @@ catch (          Throwable ex) {
     }
   }
 );
-  actions.put("mergeDatabase",new BaseAction(){
-    public void action(){
-      final MergeDialog md=new MergeDialog(frame,Globals.lang("Append database"),true);
-      Util.placeDialog(md,BasePanel.this);
-      md.setVisible(true);
-      if (md.okPressed) {
-        String chosenFile=Globals.getNewFile(frame,Globals.prefs,new File(Globals.prefs.get("workingDirectory")),null,JFileChooser.OPEN_DIALOG,false);
-        if (chosenFile == null)         return;
-        fileToOpen=new File(chosenFile);
-        (new Thread(){
-          public void run(){
-            openIt(md.importEntries(),md.importStrings(),md.importGroups(),md.importSelectorWords());
-          }
-        }
-).start();
-        frame.getFileHistory().newFile(fileToOpen.getPath());
-      }
-    }
-    void openIt(    boolean importEntries,    boolean importStrings,    boolean importGroups,    boolean importSelectorWords){
-      if ((fileToOpen != null) && (fileToOpen.exists())) {
-        try {
-          Globals.prefs.put("workingDirectory",fileToOpen.getPath());
-          String encoding=Globals.prefs.get("defaultEncoding");
-          ParserResult pr=OpenDatabaseAction.loadDatabase(fileToOpen,encoding);
-          mergeFromBibtex(pr,importEntries,importStrings,importGroups,importSelectorWords);
-          output(Globals.lang("Imported from database") + " '" + fileToOpen.getPath()+ "'");
-          fileToOpen=null;
-        }
- catch (        Throwable ex) {
-          ex.printStackTrace();
-          JOptionPane.showMessageDialog(BasePanel.this,ex.getMessage(),"Open database",JOptionPane.ERROR_MESSAGE);
-        }
-      }
-    }
-  }
-);
+  actions.put("mergeDatabase",new AppendDatabaseAction(frame,this));
   actions.put("openFile",new BaseAction(){
     public void action(){
       (new Thread(){
