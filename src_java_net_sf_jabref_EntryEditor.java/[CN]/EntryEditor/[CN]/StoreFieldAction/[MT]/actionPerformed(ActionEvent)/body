@@ -26,6 +26,12 @@
         panel.undoManager.addEdit(new UndoableFieldChange(entry,fe.getFieldName(),oldValue,toSet));
         updateSource();
         panel.markBaseChanged();
+        SwingUtilities.invokeLater(new Runnable(){
+          public void run(){
+            panel.highlightEntry(entry);
+          }
+        }
+);
       }
  catch (      IllegalArgumentException ex) {
         JOptionPane.showMessageDialog(frame,"Error: " + ex.getMessage(),Globals.lang("Error setting field"),JOptionPane.ERROR_MESSAGE);
