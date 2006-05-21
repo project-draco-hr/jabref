@@ -1,7 +1,7 @@
 {
   final boolean intoNew=intoNew_;
   importMenu.removeAll();
-  importMenu.add(new ImportUnknownMenuItem(ths,intoNew));
+  importMenu.add(new ImportMenuItem(ths,intoNew,null));
   importMenu.addSeparator();
   SortedSet customImporters=Globals.importFormatReader.getCustomImportFormats();
   JMenu submenu=new JMenu(Globals.lang("Custom importers"));
@@ -13,13 +13,13 @@
  else {
     for (Iterator i=customImporters.iterator(); i.hasNext(); ) {
       ImportFormat imFo=(ImportFormat)i.next();
-      submenu.add(new ImportMenuItem(ths,imFo,intoNew));
+      submenu.add(new ImportMenuItem(ths,intoNew,imFo));
     }
   }
   importMenu.add(submenu);
   importMenu.addSeparator();
   for (Iterator i=Globals.importFormatReader.getBuiltInInputFormats().iterator(); i.hasNext(); ) {
     ImportFormat imFo=(ImportFormat)i.next();
-    importMenu.add(new ImportMenuItem(ths,imFo,intoNew));
+    importMenu.add(new ImportMenuItem(ths,intoNew,imFo));
   }
 }
