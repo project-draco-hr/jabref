@@ -5,9 +5,12 @@
         year=MedlineDate.substring(0,4);
       }
     }
-    StringBuffer sb=new StringBuffer(Util.sortWordsAndRemoveDuplicates(keywords));
-    if (sb.length() > 0)     sb.append(", ");
-    sb.append(pubmedid);
+    StringBuffer sb=new StringBuffer();
+    for (Iterator iterator=descriptors.iterator(); iterator.hasNext(); ) {
+      String s=(String)iterator.next();
+      sb.append(s);
+      if (iterator.hasNext())       sb.append(KEYWORD_SEPARATOR);
+    }
     keywords=sb.toString();
     BibtexEntry b=new BibtexEntry(Util.createNeutralId(),Globals.getEntryType("article"));
     if (!author.equals("")) {
@@ -51,6 +54,7 @@
     medlineID="";
     url="";
     MedlineDate="";
+    descriptors.clear();
   }
  else   if (localName.equals("ArticleTitle")) {
     inTitle=false;
