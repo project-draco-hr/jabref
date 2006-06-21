@@ -7,15 +7,8 @@
       throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
     }
     if (c == '"') {
-      consume('"');
-      while (!((peek() == '"') && (j != '\\'))) {
-        j=read();
-        if (_eof || (j == -1) || (j == 65535)) {
-          throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
-        }
-        value.append((char)j);
-      }
-      consume('"');
+      StringBuffer text=parseQuotedFieldExactly();
+      value.append(fieldContentParser.format(text));
     }
  else     if (c == '{') {
       StringBuffer text=parseBracketedTextExactly();
