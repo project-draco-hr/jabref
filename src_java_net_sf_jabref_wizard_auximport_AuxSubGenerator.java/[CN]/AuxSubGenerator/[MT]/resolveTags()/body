@@ -9,10 +9,17 @@
       notFoundList.add(str);
     }
  else {
-      try {
-        auxDB.insertEntry(entry);
-      }
- catch (      Exception e) {
+      insertEntry(auxDB,entry);
+      String crossref=(String)entry.getField("crossref");
+      if ((crossref != null) && (!mySet.contains(crossref))) {
+        BibtexEntry refEntry=db.getEntryByKey(crossref);
+        if (entry == null) {
+          notFoundList.add(crossref);
+        }
+ else {
+          insertEntry(auxDB,refEntry);
+          crossreferencedEntriesCount++;
+        }
       }
     }
   }
