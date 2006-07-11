@@ -1,0 +1,18 @@
+{
+  if (dropStr.startsWith("file:")) {
+    if (handleFileLinkSet(dropStr))     return true;
+  }
+ else   if (dropStr.startsWith("http:")) {
+    URL url=new URL(dropStr);
+    JOptionPane.showMessageDialog(null,"Making URL: " + url.toString());
+    return handleDropTransfer(url);
+  }
+  File tmpfile=java.io.File.createTempFile("jabrefimport","");
+  FileWriter fw=new FileWriter(tmpfile);
+  fw.write(dropStr);
+  fw.close();
+  System.out.println("importing from " + tmpfile.getAbsolutePath());
+  ImportMenuItem importer=new ImportMenuItem(frame,false);
+  importer.automatedImport(new String[]{tmpfile.getAbsolutePath()});
+  return true;
+}

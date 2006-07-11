@@ -1,22 +1,27 @@
 {
-  String[] author=string.split(", ");
-  if (author.length < 2)   return string;
-  char c;
-  String s;
-  StringBuffer sb=new StringBuffer(author[0] + ", ");
-  int index=author[1].indexOf(" ");
-  if (index == -1) {
-    c=author[1].charAt(0);
-    sb.append(c).append(".");
-  }
- else {
-    String[] nameParts=author[1].split(" ");
-    int i=0;
-    for (i=0; i < nameParts.length; i++) {
-      c=nameParts[i].charAt(0);
-      sb.append(c).append(".");
-    }
-  }
-  s=new String(sb);
-  return s;
+  String[] parts=author.split(",");
+  String last, first;
+switch (parts.length) {
+case 1:
+    return author;
+case 2:
+  last=parts[0].trim();
+first=parts[1].trim();
+break;
+case 3:
+last=parts[0].trim();
+first=parts[2].trim();
+break;
+default :
+throw new IllegalArgumentException("Authorname contained 3 or more commas");
+}
+StringBuffer sb=new StringBuffer();
+sb.append(last);
+sb.append(", ");
+String[] firstNames=first.split(" ");
+for (int i=0; i < firstNames.length; i++) {
+sb.append(firstNames[i].charAt(0));
+sb.append('.');
+}
+return sb.toString();
 }
