@@ -1,0 +1,29 @@
+{
+  OpenDatabaseAction openAction=new OpenDatabaseAction(frame,false);
+  ArrayList notBibFiles=new ArrayList();
+  String encoding=Globals.prefs.get("defaultEncoding");
+  for (int i=0; i < fileNames.length; i++) {
+    if (fileNames[i].endsWith(".bib")) {
+      File f=new File(fileNames[i]);
+      try {
+        ParserResult pr=OpenDatabaseAction.loadDatabase(f,encoding);
+        if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
+          notBibFiles.add(fileNames[i]);
+        }
+ else {
+          openAction.addNewDatabase(pr,f,false);
+        }
+      }
+ catch (      IOException e) {
+        notBibFiles.add(fileNames[i]);
+      }
+    }
+ else     notBibFiles.add(fileNames[i]);
+  }
+  if (notBibFiles.size() > 0) {
+    String[] toImport=new String[notBibFiles.size()];
+    notBibFiles.toArray(toImport);
+    ImportMenuItem importer=new ImportMenuItem(frame,false);
+    importer.automatedImport(toImport);
+  }
+}
