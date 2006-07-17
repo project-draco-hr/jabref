@@ -13,9 +13,10 @@
   }
 );
   actions.put("save",new AbstractWorker(){
-    private boolean success=false;
+    private boolean success=false, cancelled=false;
     public void init() throws Throwable {
       success=false;
+      cancelled=false;
       if (file == null)       runCommand("saveAs");
  else {
         if (updatedExternally || Globals.fileUpdateMonitor.hasBeenModified(fileMonitorHandle)) {
@@ -44,11 +45,15 @@
         frame.setTabTitle(BasePanel.this,file.getName());
         frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
       }
- else {
+ else       if (!cancelled) {
         frame.output(Globals.lang("Save failed"));
       }
     }
     public void run(){
+      if (file == null) {
+        cancelled=true;
+        return;
+      }
       try {
         if (Globals.prefs.getBoolean("generateKeysBeforeSaving")) {
           BibtexEntry bes;
