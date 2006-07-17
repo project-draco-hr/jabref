@@ -30,5 +30,19 @@
         entries.getReadWriteLock().writeLock().unlock();
       }
     }
+    other=internalDuplicate(entries,first);
+    if (other != null) {
+      int answer=DuplicateResolverDialog.resolveDuplicate(ImportInspectionDialog.this,first,other);
+      if (answer == DuplicateResolverDialog.KEEP_UPPER) {
+        entries.remove(other);
+        first.setGroupHit(false);
+      }
+ else       if (answer == DuplicateResolverDialog.KEEP_LOWER) {
+        entries.remove(first);
+      }
+ else       if (answer == DuplicateResolverDialog.KEEP_BOTH) {
+        first.setGroupHit(false);
+      }
+    }
   }
 }

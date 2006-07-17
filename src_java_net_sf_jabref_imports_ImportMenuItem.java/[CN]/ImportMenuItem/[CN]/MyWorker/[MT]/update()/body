@@ -18,8 +18,20 @@
         for (Iterator i=bibtexResult.getDatabase().getEntries().iterator(); i.hasNext(); ) {
           BibtexEntry entry=(BibtexEntry)i.next();
           try {
-            toAddTo.insertEntry(entry);
-            ce.addEdit(new UndoableInsertEntry(toAddTo,entry,panel));
+            boolean keepEntry=true;
+            BibtexEntry duplicate=Util.containsDuplicate(toAddTo,entry);
+            if (duplicate != null) {
+              int answer=DuplicateResolverDialog.resolveDuplicateInImport(frame,duplicate,entry);
+              if (answer == DuplicateResolverDialog.DO_NOT_IMPORT)               keepEntry=false;
+              if (answer == DuplicateResolverDialog.IMPORT_AND_DELETE_OLD) {
+                toAddTo.removeEntry(duplicate.getId());
+                ce.addEdit(new UndoableRemoveEntry(toAddTo,duplicate,panel));
+              }
+            }
+            if (keepEntry) {
+              toAddTo.insertEntry(entry);
+              ce.addEdit(new UndoableInsertEntry(toAddTo,entry,panel));
+            }
           }
  catch (          KeyCollisionException e) {
             e.printStackTrace();
