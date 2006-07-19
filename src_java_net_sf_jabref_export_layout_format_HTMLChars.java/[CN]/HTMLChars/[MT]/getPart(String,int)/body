@@ -2,10 +2,17 @@
   char c;
   int count=0;
   StringBuffer part=new StringBuffer();
-  while ((count >= 0) && (i < text.length())) {
-    i++;
+  i++;
+  for (; i < text.length(); ++i) {
+    if (!Character.isWhitespace(text.charAt(i)))     break;
+  }
+  for (; i < text.length(); ++i) {
     c=text.charAt(i);
-    if (c == '}')     count--;
+    if (count == 0 && Character.isWhitespace(c)) {
+      i--;
+      break;
+    }
+    if (c == '}' && --count <= 0)     break;
  else     if (c == '{')     count++;
     part.append((char)c);
   }

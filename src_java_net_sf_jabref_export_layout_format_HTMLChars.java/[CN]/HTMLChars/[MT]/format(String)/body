@@ -45,23 +45,43 @@
       }
     }
  else {
-      testContent:       if (!incommand || (!Character.isWhitespace(c) && (c != '{')))       sb.append((char)c);
- else {
-        if (i >= field.length() - 1)         break testContent;
-        if (c == '{') {
-          String command=currentCommand.toString();
-          if (command.equals("emph") || command.equals("textit")) {
-            IntAndString part=getPart(field,i);
-            i+=part.i;
-            sb.append("<em>").append(part.s).append("</em>");
-          }
- else           if (command.equals("textbf")) {
-            IntAndString part=getPart(field,i);
-            i+=part.i;
-            sb.append("<b>").append(part.s).append("</b>");
-          }
+      String argument=null;
+      if (!incommand) {
+        sb.append((char)c);
+      }
+ else       if (Character.isWhitespace(c) || c == '{') {
+        String command=currentCommand.toString();
+        if (command.equals("emph") || command.equals("textit")) {
+          IntAndString part=getPart(field,i);
+          i+=part.i;
+          sb.append("<em>").append(part.s).append("</em>");
         }
- else         sb.append((char)c);
+ else         if (command.equals("textbf")) {
+          IntAndString part=getPart(field,i);
+          i+=part.i;
+          sb.append("<b>").append(part.s).append("</b>");
+        }
+ else {
+          IntAndString part=getPart(field,i);
+          i+=part.i;
+          argument=part.s;
+        }
+      }
+ else       if (c == '}') {
+        argument="";
+      }
+ else {
+        System.err.println("Unreachable code??");
+      }
+      if (argument != null) {
+        String command=currentCommand.toString();
+        Object result=Globals.HTMLCHARS.get(command + argument);
+        if (result != null) {
+          sb.append((String)result);
+        }
+ else {
+          sb.append(argument);
+        }
       }
       incommand=false;
       escaped=false;
