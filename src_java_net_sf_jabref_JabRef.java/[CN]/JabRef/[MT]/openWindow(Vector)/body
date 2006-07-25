@@ -5,6 +5,7 @@
     System.setProperty("apple.laf.useScreenMenuBar","true");
     if (!Globals.ON_MAC) {
       int fontSizes=Globals.prefs.getInt("menuFontSize");
+      boolean overrideDefaultFonts=Globals.prefs.getBoolean("overrideDefaultFonts");
       String defaultLookAndFeel;
       if (Globals.ON_WIN)       defaultLookAndFeel=GUIGlobals.windowsDefaultLookAndFeel;
  else       defaultLookAndFeel=GUIGlobals.linuxDefaultLookAndFeel;
@@ -26,6 +27,21 @@
         }
       }
       if (objLnf != null)       lnf=(LookAndFeel)objLnf;
+      if ((lnf != null) && (lnf instanceof Plastic3DLookAndFeel)) {
+        MetalLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
+        if (overrideDefaultFonts) {
+          FontSet fontSet=FontSets.createDefaultFontSet(new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.BOLD,fontSizes));
+          FontPolicy fixedPolicy=FontPolicies.createFixedPolicy(fontSet);
+          Plastic3DLookAndFeel.setFontPolicy(fixedPolicy);
+        }
+      }
+ else       if ((lnf != null) && (lnf instanceof WindowsLookAndFeel)) {
+        if (overrideDefaultFonts) {
+          FontSet fontSet=FontSets.createDefaultFontSet(new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.BOLD,fontSizes));
+          FontPolicy fixedPolicy=FontPolicies.createFixedPolicy(fontSet);
+          WindowsLookAndFeel.setFontPolicy(fixedPolicy);
+        }
+      }
       if (lnf != null) {
         try {
           UIManager.setLookAndFeel(lnf);

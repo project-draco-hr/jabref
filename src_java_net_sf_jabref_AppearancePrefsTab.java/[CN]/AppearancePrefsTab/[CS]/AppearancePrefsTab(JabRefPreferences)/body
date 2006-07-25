@@ -1,9 +1,10 @@
 {
   _prefs=prefs;
   setLayout(new BorderLayout());
-  fontSize=new JTextField();
+  fontSize=new JTextField(5);
   colorCodes=new JCheckBox(Globals.lang("Color codes for required and optional fields"));
   antialias=new JCheckBox(Globals.lang("Use antialiasing font"));
+  overrideFonts=new JCheckBox(Globals.lang("Override default font settings"));
   FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, fill:pref","");
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
   builder.setLeadingColumnOffset(2);
@@ -15,9 +16,11 @@
   p1.add(fontSize);
   builder.append(p1);
   builder.nextLine();
-  builder.append(antialias);
+  builder.append(overrideFonts);
   builder.nextLine();
   builder.appendSeparator(Globals.lang("Table appearance"));
+  builder.append(antialias);
+  builder.nextLine();
   builder.append(colorCodes);
   builder.nextLine();
   builder.append(fontButton);
@@ -28,6 +31,12 @@
   sort.setLayout(gbl);
   namesp.setLayout(gbl);
   iconCol.setLayout(gbl);
+  overrideFonts.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      fontSize.setEnabled(overrideFonts.isSelected());
+    }
+  }
+);
   fontButton.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       Font f=new FontSelectorDialog(null,GUIGlobals.CURRENTFONT).getSelectedFont();
