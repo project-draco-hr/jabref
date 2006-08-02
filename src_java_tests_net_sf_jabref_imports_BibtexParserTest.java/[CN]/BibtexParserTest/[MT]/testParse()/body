@@ -1,0 +1,13 @@
+{
+  BibtexParser parser=new BibtexParser(new StringReader("@article{test,author={Ed von Test}}"));
+  ParserResult result=parser.parse();
+  Collection c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibtexEntry e=(BibtexEntry)c.iterator().next();
+  assertEquals("test",e.getCiteKey());
+  assertEquals(2,e.getAllFields().length);
+  Object[] o=e.getAllFields();
+  assertTrue(o[0].toString().equals("author") || o[1].toString().equals("author"));
+  assertEquals("Ed von Test",e.getField("author"));
+  assertEquals(result,parser.parse());
+}
