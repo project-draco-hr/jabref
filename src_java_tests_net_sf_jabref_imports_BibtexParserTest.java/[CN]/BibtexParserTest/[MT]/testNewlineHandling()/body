@@ -1,0 +1,10 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{canh05," + "title = {\nHallo \nWorld \nthis \n is\n\nnot \n\nan \n\n exercise \n \n.\n \n\n},\n" + "tabs = {\nHallo \tWorld \tthis \t is\t\tnot \t\tan \t\n exercise \t \n.\t \n\t},\n"+ "}"));
+  Collection c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibtexEntry e=(BibtexEntry)c.iterator().next();
+  assertEquals("canh05",e.getCiteKey());
+  assertEquals(BibtexEntryType.ARTICLE,e.getType());
+  assertEquals("Hallo World this is not an exercise .",e.getField("title"));
+  assertEquals("Hallo World this is not an exercise .",e.getField("tabs"));
+}

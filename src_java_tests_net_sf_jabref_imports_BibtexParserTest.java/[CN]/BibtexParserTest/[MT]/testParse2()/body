@@ -1,0 +1,11 @@
+{
+  BibtexParser parser=new BibtexParser(new StringReader("@article{test,author={Ed von Test}}"));
+  ParserResult result=parser.parse();
+  BibtexEntry e=new BibtexEntry("",BibtexEntryType.ARTICLE);
+  e.setField("author","Ed von Test");
+  e.setField("bibtexkey","test");
+  Collection c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibtexEntry e2=(BibtexEntry)c.iterator().next();
+  assertEquals(e,e2);
+}
