@@ -11,20 +11,24 @@
   setFieldsText();
   revert.setText(Globals.lang("Default"));
   revert.addActionListener(new GenFieldsCustomizer_revert_actionAdapter(this));
-  this.getContentPane().add(jPanel2,BorderLayout.SOUTH);
-  jPanel2.add(ok,null);
-  jPanel2.add(revert,null);
-  jPanel2.add(cancel,null);
-  jPanel2.add(Box.createHorizontalStrut(10));
-  jPanel2.add(helpBut,null);
+  this.getContentPane().add(buttons,BorderLayout.SOUTH);
+  ButtonBarBuilder bb=new ButtonBarBuilder(buttons);
+  buttons.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+  bb.addGlue();
+  bb.addGridded(ok);
+  bb.addGridded(revert);
+  bb.addGridded(cancel);
+  bb.addStrut(Sizes.DLUX5);
+  bb.addGridded(helpBut);
+  bb.addGlue();
   this.getContentPane().add(jPanel3,BorderLayout.CENTER);
   jPanel3.add(jLabel1,new GridBagConstraints(0,1,1,1,1.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(5,5,5,5),0,0));
   jPanel3.add(jPanel4,new GridBagConstraints(0,0,1,1,1.0,1.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(5,5,5,5),318,193));
   jPanel4.add(jScrollPane1,new GridBagConstraints(0,1,1,1,1.0,1.0,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(5,5,5,5),0,0));
   jScrollPane1.getViewport().add(fieldsArea,null);
   jPanel4.add(jLabel2,new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(5,5,5,5),0,0));
-  ActionMap am=jPanel2.getActionMap();
-  InputMap im=jPanel2.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  ActionMap am=buttons.getActionMap();
+  InputMap im=buttons.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",new AbstractAction(){
     public void actionPerformed(    ActionEvent e){

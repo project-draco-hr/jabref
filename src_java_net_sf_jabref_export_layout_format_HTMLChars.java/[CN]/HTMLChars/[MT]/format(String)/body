@@ -30,7 +30,7 @@
           c=field.charAt(i);
           String combody;
           if (c == '{') {
-            IntAndString part=getPart(field,i);
+            IntAndString part=getPart(field,i,false);
             i+=part.i;
             combody=part.s;
           }
@@ -52,17 +52,17 @@
  else       if (Character.isWhitespace(c) || c == '{') {
         String command=currentCommand.toString();
         if (command.equals("emph") || command.equals("textit")) {
-          IntAndString part=getPart(field,i);
+          IntAndString part=getPart(field,i,true);
           i+=part.i;
           sb.append("<em>").append(part.s).append("</em>");
         }
  else         if (command.equals("textbf")) {
-          IntAndString part=getPart(field,i);
+          IntAndString part=getPart(field,i,true);
           i+=part.i;
           sb.append("<b>").append(part.s).append("</b>");
         }
  else {
-          IntAndString part=getPart(field,i);
+          IntAndString part=getPart(field,i,true);
           i+=part.i;
           argument=part.s;
         }

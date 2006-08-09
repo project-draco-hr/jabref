@@ -3,7 +3,7 @@
   ArrayList notBibFiles=new ArrayList();
   String encoding=Globals.prefs.get("defaultEncoding");
   for (int i=0; i < fileNames.length; i++) {
-    if (fileNames[i].endsWith(".bib")) {
+    if (fileNames[i].toLowerCase().endsWith(".bib")) {
       File f=new File(fileNames[i]);
       try {
         ParserResult pr=OpenDatabaseAction.loadDatabase(f,encoding);
@@ -17,6 +17,8 @@
  catch (      IOException e) {
         notBibFiles.add(fileNames[i]);
       }
+    }
+ else     if (fileNames[i].toLowerCase().endsWith(".pdf") || fileNames[i].toLowerCase().endsWith(".ps")) {
     }
  else     notBibFiles.add(fileNames[i]);
   }
