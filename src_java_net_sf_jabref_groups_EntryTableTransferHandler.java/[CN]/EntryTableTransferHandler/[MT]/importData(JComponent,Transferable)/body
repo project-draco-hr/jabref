@@ -1,16 +1,20 @@
 {
+  int dropRow=-1;
+  if (comp instanceof JTable) {
+    dropRow=((JTable)comp).getSelectedRow();
+  }
   try {
     if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
       List l=(List)t.getTransferData(DataFlavor.javaFileListFlavor);
-      return handleDraggedFiles(l);
+      return handleDraggedFiles(l,dropRow);
     }
     if (t.isDataFlavorSupported(urlFlavor)) {
       URL dropLink=(URL)t.getTransferData(urlFlavor);
-      return handleDropTransfer(dropLink);
+      return handleDropTransfer(dropLink,dropRow);
     }
  else     if (t.isDataFlavorSupported(stringFlavor)) {
       String dropStr=(String)t.getTransferData(stringFlavor);
-      return handleDropTransfer(dropStr);
+      return handleDropTransfer(dropStr,dropRow);
     }
   }
  catch (  IOException ioe) {
