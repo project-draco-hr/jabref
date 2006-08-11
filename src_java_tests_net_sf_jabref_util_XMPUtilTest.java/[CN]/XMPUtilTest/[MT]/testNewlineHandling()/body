@@ -1,0 +1,12 @@
+{
+{
+    String bibtex="<bibtex:title>\nHallo\nWorld \nthis \n is\n\nnot \n\nan \n\n exercise \n \n.\n \n\n</bibtex:title>\n" + "<bibtex:tabs>\nHallo\tWorld \tthis \t is\t\tnot \t\tan \t\n exercise \t \n.\t \n\t</bibtex:tabs>\n";
+    writeManually(pdfFile,bibtexXPacket(bibtexDescription(bibtex)));
+    List l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+    assertEquals(1,l.size());
+    BibtexEntry e=(BibtexEntry)l.get(0);
+    assertNotNull(e);
+    assertEquals("Hallo World this is not an exercise .",e.getField("title"));
+    assertEquals("Hallo World this is not an exercise .",e.getField("tabs"));
+  }
+}

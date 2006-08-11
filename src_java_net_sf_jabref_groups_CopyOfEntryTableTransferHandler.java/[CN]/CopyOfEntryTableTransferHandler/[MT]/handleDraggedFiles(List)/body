@@ -1,0 +1,16 @@
+{
+  final String[] fileNames=new String[files.size()];
+  int i=0;
+  for (Iterator iterator=files.iterator(); iterator.hasNext(); ) {
+    File file=(File)iterator.next();
+    fileNames[i]=file.getAbsolutePath();
+    i++;
+  }
+  new Thread(new Runnable(){
+    public void run(){
+      loadOrImportFiles(fileNames);
+    }
+  }
+).start();
+  return true;
+}

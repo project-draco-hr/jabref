@@ -1,0 +1,20 @@
+{
+  PDDocument document=null;
+  try {
+    document=PDDocument.load(file.getAbsoluteFile());
+    if (document.isEncrypted()) {
+      throw new EncryptionNotSupportedException("Error: Cannot read metadata from encrypted document.");
+    }
+    PDDocumentCatalog catalog=document.getDocumentCatalog();
+    PDMetadata metaRaw=catalog.getMetadata();
+    if (metaRaw == null) {
+      return null;
+    }
+    XMPMetadata meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+    meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
+    return meta;
+  }
+  finally {
+    if (document != null)     document.close();
+  }
+}

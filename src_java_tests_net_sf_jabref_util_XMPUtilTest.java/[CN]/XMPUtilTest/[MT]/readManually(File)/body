@@ -1,0 +1,22 @@
+{
+  PDDocument document=null;
+  try {
+    document=PDDocument.load(tempFile.getAbsoluteFile());
+    if (document.isEncrypted()) {
+      System.err.println("Error: Cannot add metadata to encrypted document.");
+      System.exit(1);
+    }
+    PDDocumentCatalog catalog=document.getDocumentCatalog();
+    PDMetadata meta=catalog.getMetadata();
+    if (meta == null) {
+      return null;
+    }
+ else {
+      InputStreamReader is=new InputStreamReader(meta.createInputStream(),"UTF8");
+      return slurp(is).trim();
+    }
+  }
+  finally {
+    if (document != null)     document.close();
+  }
+}

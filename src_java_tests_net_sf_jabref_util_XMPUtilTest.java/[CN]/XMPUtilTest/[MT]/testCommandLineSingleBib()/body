@@ -1,0 +1,24 @@
+{
+  File tempBib=File.createTempFile("JabRef",".bib");
+  FileWriter fileWriter=null;
+  try {
+    fileWriter=new FileWriter(tempBib);
+    fileWriter.write(t1BibtexString());
+    fileWriter.close();
+    ByteArrayOutputStream s=new ByteArrayOutputStream();
+    PrintStream oldOut=System.out;
+    System.setOut(new PrintStream(s));
+    XMPUtil.main(new String[]{tempBib.getAbsolutePath()});
+    System.setOut(oldOut);
+    s.close();
+    String xmp=s.toString();
+    writeManually(pdfFile,xmp);
+    List l=XMPUtil.readXMP(pdfFile);
+    assertEquals(1,l.size());
+    assertEquals(t1BibtexEntry(),(BibtexEntry)l.get(0));
+  }
+  finally {
+    if (fileWriter != null)     fileWriter.close();
+    if (tempBib != null)     tempBib.delete();
+  }
+}

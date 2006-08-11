@@ -1,0 +1,17 @@
+{
+  List l=new LinkedList();
+  l.add(t2BibtexEntry());
+  l.add(t3BibtexEntry());
+  XMPUtil.writeXMP(pdfFile,l);
+  l=XMPUtil.readXMP(pdfFile);
+  assertEquals(2,l.size());
+  BibtexEntry a=(BibtexEntry)l.get(0);
+  BibtexEntry b=(BibtexEntry)l.get(1);
+  if (a.getCiteKey().equals("Clarkson06")) {
+    BibtexEntry tmp=a;
+    a=b;
+    b=tmp;
+  }
+  assertEquals(t2BibtexEntry(),a);
+  assertEquals(t3BibtexEntry(),b);
+}

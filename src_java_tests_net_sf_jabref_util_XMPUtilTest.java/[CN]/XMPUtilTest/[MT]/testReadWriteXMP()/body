@@ -1,0 +1,16 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{canh05," + "  author = {Crowston, K. and Annabi, H. and Howison, J. and Masango, C.}," + "\n"+ "  title = {Effective work practices for floss development: A model and propositions},"+ "\n"+ "  booktitle = {Hawaii International Conference On System Sciences (HICSS)},"+ "\n"+ "  year = {2005},"+ "\n"+ "  owner = {oezbek},"+ "\n"+ "  timestamp = {2006.05.29},"+ "\n"+ "  url = {http://james.howison.name/publications.html}"+ "\n"+ "}"));
+  Collection c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibtexEntry e=(BibtexEntry)c.iterator().next();
+  XMPUtil.writeXMP(pdfFile,e);
+  List l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+  assertEquals(1,l.size());
+  BibtexEntry x=(BibtexEntry)l.get(0);
+  assertEquals(e.getCiteKey(),x.getCiteKey());
+  assertEquals(e.getType(),x.getType());
+  Object[] o=e.getAllFields();
+  for (int i=0; i < o.length; i++) {
+    assertEquals(e.getField(o.toString()),x.getField(o.toString()));
+  }
+}

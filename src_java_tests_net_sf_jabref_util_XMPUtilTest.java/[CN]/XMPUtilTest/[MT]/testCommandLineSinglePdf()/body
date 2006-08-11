@@ -1,0 +1,41 @@
+{
+{
+    BibtexEntry e=t1BibtexEntry();
+    XMPUtil.writeXMP(pdfFile,e);
+    ByteArrayOutputStream s=new ByteArrayOutputStream();
+    PrintStream oldOut=System.out;
+    System.setOut(new PrintStream(s));
+    XMPUtil.main(new String[]{pdfFile.getAbsolutePath()});
+    System.setOut(oldOut);
+    s.close();
+    String bibtex=s.toString();
+    ParserResult result=BibtexParser.parse(new StringReader(bibtex));
+    Collection c=result.getDatabase().getEntries();
+    assertEquals(1,c.size());
+    BibtexEntry x=(BibtexEntry)c.iterator().next();
+    assertEquals(e,x);
+  }
+{
+    BibtexEntry e=t1BibtexEntry();
+    XMPUtil.writeXMP(pdfFile,e);
+    ByteArrayOutputStream s=new ByteArrayOutputStream();
+    PrintStream oldOut=System.out;
+    System.setOut(new PrintStream(s));
+    XMPUtil.main(new String[]{"-x",pdfFile.getAbsolutePath()});
+    System.setOut(oldOut);
+    s.close();
+    String xmp=s.toString();
+    assertTrue(xmp.contains("xpacket"));
+    assertTrue(xmp.contains("adobe:ns:meta"));
+    assertTrue(xmp.contains("<bibtex:bibtexkey>canh05</bibtex:bibtexkey>") || xmp.contains("bibtex:bibtexkey="));
+    assertTrue(xmp.contains("<rdf:li>K. Crowston</rdf:li>"));
+    assertTrue(xmp.contains("id='W5M0MpCehiHzreSzNTczkc9d'?>") || xmp.contains("id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"));
+    assertTrue(xmp.contains("xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'") || xmp.contains("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""));
+    assertTrue(xmp.contains("<rdf:Description"));
+    assertTrue(xmp.contains("<?xpacket end='w'?>") || xmp.contains("<?xpacket end=\"w\"?>"));
+    writeManually(pdfFile,xmp);
+    List l=XMPUtil.readXMP(pdfFile);
+    assertEquals(1,l.size());
+    assertEquals(t1BibtexEntry(),(BibtexEntry)l.get(0));
+  }
+}

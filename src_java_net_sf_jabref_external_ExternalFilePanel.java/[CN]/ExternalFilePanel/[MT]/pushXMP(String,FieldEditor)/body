@@ -1,0 +1,26 @@
+{
+  String dir=metaData.getFileDirectory(fieldName);
+  File file=null;
+  if (dir != null) {
+    File tmp=Util.expandFilename(editor.getText(),dir);
+    if (tmp != null)     file=tmp;
+  }
+  if (file == null) {
+    file=new File(editor.getText());
+  }
+  if (file == null) {
+    output(Globals.lang("No file associated"));
+  }
+  try {
+    XMPUtil.writeXMP(file,getEntry());
+    output(Globals.lang("Wrote BibtexEntry as XMP to " + file.getName()));
+  }
+ catch (  IOException e) {
+    JOptionPane.showMessageDialog(editor.getParent(),Globals.lang("Error writing XMP to file: " + e.getLocalizedMessage()),Globals.lang("Writing XMP"),JOptionPane.ERROR_MESSAGE);
+    Globals.logger("Error while writing XMP " + file.getAbsolutePath());
+  }
+catch (  TransformerException e) {
+    JOptionPane.showMessageDialog(editor.getParent(),Globals.lang("Error converting Bibtex to XMP: " + e.getLocalizedMessage()),Globals.lang("Writing XMP"),JOptionPane.ERROR_MESSAGE);
+    Globals.logger("Error while converting BibtexEntry to XMP " + file.getAbsolutePath());
+  }
+}
