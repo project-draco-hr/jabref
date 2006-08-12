@@ -1,17 +1,28 @@
 {
   AuthorList al;
   al=AuthorList.getAuthorList("");
-  assertEquals("",al.getAuthorsFirstFirst(true));
-  assertEquals("",al.getAuthorsFirstFirst(false));
+  assertEquals("",al.getAuthorsFirstFirst(true,false));
+  assertEquals("",al.getAuthorsFirstFirst(false,false));
+  assertEquals("",al.getAuthorsFirstFirst(true,true));
+  assertEquals("",al.getAuthorsFirstFirst(false,true));
   al=AuthorList.getAuthorList("John Smith");
-  assertEquals("John Smith",al.getAuthorsFirstFirst(false));
-  assertEquals("J. Smith",al.getAuthorsFirstFirst(true));
+  assertEquals("John Smith",al.getAuthorsFirstFirst(false,false));
+  assertEquals("J. Smith",al.getAuthorsFirstFirst(true,false));
+  assertEquals("John Smith",al.getAuthorsFirstFirst(false,true));
+  assertEquals("J. Smith",al.getAuthorsFirstFirst(true,true));
   al=AuthorList.getAuthorList("John Smith and Black Brown, Peter");
-  assertEquals("John Smith and Peter Black Brown",al.getAuthorsFirstFirst(false));
-  assertEquals("J. Smith and P. Black Brown",al.getAuthorsFirstFirst(true));
+  assertEquals("John Smith and Peter Black Brown",al.getAuthorsFirstFirst(false,false));
+  assertEquals("J. Smith and P. Black Brown",al.getAuthorsFirstFirst(true,false));
+  assertEquals("John Smith and Peter Black Brown",al.getAuthorsFirstFirst(false,true));
+  assertEquals("J. Smith and P. Black Brown",al.getAuthorsFirstFirst(true,true));
   al=AuthorList.getAuthorList("John von Neumann and John Smith and Black Brown, Peter");
-  assertEquals("John von Neumann, John Smith and Peter Black Brown",al.getAuthorsFirstFirst(false));
-  assertEquals("J. von Neumann, J. Smith and P. Black Brown",al.getAuthorsFirstFirst(true));
+  assertEquals("John von Neumann, John Smith and Peter Black Brown",al.getAuthorsFirstFirst(false,false));
+  assertEquals("J. von Neumann, J. Smith and P. Black Brown",al.getAuthorsFirstFirst(true,false));
+  assertEquals("John von Neumann, John Smith, and Peter Black Brown",al.getAuthorsFirstFirst(false,true));
+  assertEquals("J. von Neumann, J. Smith, and P. Black Brown",al.getAuthorsFirstFirst(true,true));
   al=AuthorList.getAuthorList("John Peter von Neumann");
-  assertEquals("J. P. von Neumann",al.getAuthorsFirstFirst(true));
+  assertEquals("John Peter von Neumann",al.getAuthorsFirstFirst(false,false));
+  assertEquals("John Peter von Neumann",al.getAuthorsFirstFirst(false,true));
+  assertEquals("J. P. von Neumann",al.getAuthorsFirstFirst(true,false));
+  assertEquals("J. P. von Neumann",al.getAuthorsFirstFirst(true,true));
 }
