@@ -1,5 +1,11 @@
 {
   link=link.replaceAll("&","\"&\"").replaceAll(" ","\" \"");
-  String cmd="cmd.exe /c start " + link;
+  String cmd;
+  if (Globals.osName.startsWith("Windows 9")) {
+    cmd="command.com /c start " + link;
+  }
+ else {
+    cmd="cmd.exe /c start " + link;
+  }
   Process child=Runtime.getRuntime().exec(cmd);
 }
