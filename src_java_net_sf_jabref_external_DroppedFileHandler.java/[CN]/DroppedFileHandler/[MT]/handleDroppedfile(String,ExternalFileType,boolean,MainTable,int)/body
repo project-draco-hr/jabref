@@ -1,0 +1,24 @@
+{
+  linkInPlace.setEnabled(localFile);
+  if (!localFile && linkInPlace.isSelected())   copyRename.setSelected(true);
+  BibtexEntry entry=mainTable.getEntryAt(dropRow);
+  String destFilename=entry.getCiteKey() + "." + fileType.getExtension();
+  copyRename.setText(Globals.lang("Copy to %0 directory, rename to '%1', and link from entry.",fileType.getName(),destFilename));
+  moveRename.setText(Globals.lang("Move to %0 directory, rename to '%1', and link from entry.",fileType.getName(),destFilename));
+  int reply=JOptionPane.showConfirmDialog(frame,optionsPanel,Globals.lang("Link to file"),JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+  if (reply != JOptionPane.OK_OPTION)   return;
+  boolean success=true;
+  if (linkInPlace.isSelected()) {
+    destFilename=fileName;
+  }
+ else   if (copyRename.isSelected()) {
+    success=doCopy(fileName,fileType,destFilename);
+  }
+ else   if (moveRename.isSelected()) {
+    success=doRename(fileName,fileType,destFilename);
+  }
+  if (success) {
+    doLink(entry,fileType,destFilename);
+    panel.markBaseChanged();
+  }
+}
