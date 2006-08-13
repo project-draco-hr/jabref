@@ -1,0 +1,12 @@
+{
+  XMPMetadata meta=readRawXMP(inputStream);
+  if (meta == null)   return null;
+  List schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
+  List result=new LinkedList();
+  Iterator it=schemas.iterator();
+  while (it.hasNext()) {
+    XMPSchemaBibtex bib=(XMPSchemaBibtex)it.next();
+    result.add(bib.getBibtexEntry());
+  }
+  return result;
+}
