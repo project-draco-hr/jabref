@@ -1,0 +1,25 @@
+{
+  comp=new JPanel();
+  comp.setLayout(new BorderLayout());
+  menuButton=new JButton(GUIGlobals.getImage("smallArrowDown"));
+  menuButton.setMargin(new Insets(0,0,0,0));
+  menuButton.setPreferredSize(new Dimension(menuButton.getIcon().getIconWidth(),menuButton.getIcon().getIconHeight()));
+  menuButton.addActionListener(new MenuButtonActionListener());
+  menuButton.setToolTipText(Globals.lang("Select external application"));
+  pushButton=new JButton();
+  if (Globals.prefs.hasKey("pushToApplication")) {
+    String appSelected=Globals.prefs.get("pushToApplication");
+    for (int i=0; i < pushActions.size(); i++) {
+      PushToApplication toApp=(PushToApplication)pushActions.get(i);
+      if (toApp.getName().equals(appSelected)) {
+        selected=i;
+        break;
+      }
+    }
+  }
+  setSelected(selected);
+  pushButton.addActionListener(this);
+  comp.add(pushButton,BorderLayout.CENTER);
+  comp.add(menuButton,BorderLayout.EAST);
+  comp.setMaximumSize(comp.getPreferredSize());
+}

@@ -47,11 +47,17 @@
         }
       }
       if (isEntry) {
-        BibtexEntry be=parseEntry(tp);
-        boolean duplicateKey=_db.insertEntry(be);
-        if (duplicateKey)         _pr.addWarning(Globals.lang("duplicate BibTeX key") + ": " + be.getCiteKey()+ " ("+ Globals.lang("grouping may not work for this entry")+ ")");
- else         if (be.getCiteKey() == null || be.getCiteKey().equals("")) {
-          _pr.addWarning(Globals.lang("empty BibTeX key") + ": " + be.getAuthorTitleYear(40)+ " ("+ Globals.lang("grouping may not work for this entry")+ ")");
+        try {
+          BibtexEntry be=parseEntry(tp);
+          boolean duplicateKey=_db.insertEntry(be);
+          if (duplicateKey)           _pr.addWarning(Globals.lang("duplicate BibTeX key") + ": " + be.getCiteKey()+ " ("+ Globals.lang("grouping may not work for this entry")+ ")");
+ else           if (be.getCiteKey() == null || be.getCiteKey().equals("")) {
+            _pr.addWarning(Globals.lang("empty BibTeX key") + ": " + be.getAuthorTitleYear(40)+ " ("+ Globals.lang("grouping may not work for this entry")+ ")");
+          }
+        }
+ catch (        IOException ex) {
+          ex.printStackTrace();
+          _pr.addWarning(Globals.lang("Error occured when parsing entry") + ": '" + ex.getMessage()+ "'. "+ Globals.lang("Skipped entry."));
         }
       }
       skipWhitespace();
