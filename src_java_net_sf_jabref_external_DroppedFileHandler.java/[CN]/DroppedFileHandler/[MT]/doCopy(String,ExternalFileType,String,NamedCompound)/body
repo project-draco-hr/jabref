@@ -4,7 +4,11 @@
     System.out.println("dir: " + dir + "\t ext: "+ fileType.getExtension());
     return false;
   }
+  toFile=new File(toFile).getName();
   File destFile=new File(new StringBuffer(dir).append(System.getProperty("file.separator")).append(toFile).toString());
+  if (destFile.equals(new File(fileName))) {
+    return true;
+  }
   if (destFile.exists()) {
     int answer=JOptionPane.showConfirmDialog(frame,"'" + destFile.getPath() + "' "+ Globals.lang("exists.Overwrite?"),Globals.lang("File exists"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
     if (answer == JOptionPane.NO_OPTION)     return false;

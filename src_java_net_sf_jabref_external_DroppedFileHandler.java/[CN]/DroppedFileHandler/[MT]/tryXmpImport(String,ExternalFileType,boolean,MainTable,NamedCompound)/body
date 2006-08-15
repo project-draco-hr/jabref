@@ -1,0 +1,61 @@
+{
+  if (!fileType.extension.equals("pdf")) {
+    return false;
+  }
+  List l;
+  try {
+    l=XMPUtil.readXMP(fileName);
+  }
+ catch (  Exception e) {
+    return false;
+  }
+  if (l.size() == 0) {
+    return false;
+  }
+  JLabel confirmationMessage=new JLabel(Globals.lang("The PDF contains one or several bibtex-records.\nDo you want to import these as new entries into the current database database?"));
+  int reply=JOptionPane.showConfirmDialog(frame,confirmationMessage,Globals.lang("XMP metadata found in PDF: %0",fileName),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+  if (reply == JOptionPane.CANCEL_OPTION) {
+    return true;
+  }
+  if (reply == JOptionPane.NO_OPTION) {
+    return false;
+  }
+  boolean isSingle=l.size() == 1;
+  BibtexEntry single=(isSingle ? (BibtexEntry)l.get(0) : null);
+  reply=showLinkMoveCopyRenameDialog(Globals.lang("Link to PDF %0",fileName),fileType,isSingle,(isSingle ? single.getCiteKey() : "Cannot rename for several entries."),false,!isSingle);
+  boolean success=true;
+  String destFilename;
+  if (linkInPlace.isSelected()) {
+    destFilename=fileName;
+  }
+ else {
+    if (renameCheckBox.isSelected()) {
+      destFilename=fileName;
+    }
+ else {
+      destFilename=single.getCiteKey() + "." + fileType.extension;
+    }
+    if (copyRadioButton.isSelected()) {
+      success=doCopy(fileName,fileType,destFilename,edits);
+    }
+ else     if (moveRadioButton.isSelected()) {
+      success=doRename(fileName,fileType,destFilename,edits);
+    }
+  }
+  if (success) {
+    Iterator it=l.iterator();
+    while (it.hasNext()) {
+      try {
+        BibtexEntry entry=(BibtexEntry)it.next();
+        entry.setId(Util.createNeutralId());
+        panel.getDatabase().insertEntry(entry);
+        doLink(entry,fileType,destFilename,edits);
+      }
+ catch (      KeyCollisionException ex) {
+      }
+    }
+    panel.markBaseChanged();
+    panel.updateEntryEditorIfShowing();
+  }
+  return true;
+}

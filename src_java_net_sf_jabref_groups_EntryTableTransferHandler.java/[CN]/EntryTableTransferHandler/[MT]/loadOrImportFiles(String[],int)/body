@@ -18,7 +18,7 @@
           notBibFiles.add(fileNames[i]);
         }
  else {
-          openAction.addNewDatabase(pr,f,false);
+          openAction.addNewDatabase(pr,f,true);
         }
       }
  catch (      IOException e) {
@@ -26,48 +26,10 @@
       }
       continue;
     }
-    if (extension.equals("pdf")) {
-      Collection c;
-      try {
-        c=XMPUtil.readXMP(fileNames[i]);
-      }
- catch (      IOException e1) {
-        c=null;
-        frame.output(Globals.lang("No XMP metadata found in " + fileNames[i]));
-      }
-      if (c != null && c.size() > 0) {
-        Iterator it=c.iterator();
-        BasePanel panel=frame.basePanel();
-        if (panel == null) {
-          BibtexDatabase database=new BibtexDatabase();
-          frame.addTab(database,null,null,Globals.prefs.get("defaultEncoding"),true);
-          frame.output(Globals.lang("New database created."));
-          panel=frame.basePanel();
-        }
-        BibtexDatabase database=frame.basePanel().database();
-        NamedCompound ce=new NamedCompound(Globals.lang("Drog PDF"));
-        while (it.hasNext()) {
-          BibtexEntry e=(BibtexEntry)it.next();
-          try {
-            e.setId(Util.createNeutralId());
-            database.insertEntry(e);
-            ce.addEdit(new UndoableInsertEntry(database,e,panel));
-          }
- catch (          Exception e2) {
-          }
-        }
-        ce.end();
-        panel.undoManager.addEdit(ce);
-        panel.markBaseChanged();
-        continue;
-      }
-    }
-    if (fileType != null) {
-      if (dropRow >= 0) {
-        boolean local=true;
-        DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
-        dfh.handleDroppedfile(fileNames[i],fileType,local,entryTable,dropRow);
-      }
+    if (fileType != null && dropRow >= 0) {
+      boolean local=true;
+      DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
+      dfh.handleDroppedfile(fileNames[i],fileType,local,entryTable,dropRow);
       continue;
     }
     notBibFiles.add(fileNames[i]);

@@ -1,0 +1,53 @@
+{
+  String dir=panel.metaData().getFileDirectory(fileType.getFieldName());
+  if ((dir == null) || !(new File(dir)).exists()) {
+    destDirLabel.setText(Globals.lang("%0 directory is not set or does not exist!",fileType.getName()));
+    copyRadioButton.setEnabled(false);
+    moveRadioButton.setEnabled(false);
+    linkInPlace.setSelected(true);
+  }
+ else {
+    destDirLabel.setText(Globals.lang("%0 directory is '%1':",fileType.getName(),dir));
+    copyRadioButton.setEnabled(true);
+    moveRadioButton.setEnabled(true);
+  }
+  ChangeListener cl=new ChangeListener(){
+    public void stateChanged(    ChangeEvent arg0){
+      renameCheckBox.setEnabled(!linkInPlace.isSelected() && allowRename && (!multipleEntries));
+    }
+  }
+;
+  if (newEntry) {
+    if (multipleEntries) {
+      linkInPlace.setText(Globals.lang("Link from new entries."));
+      copyRadioButton.setText(Globals.lang("Copy to %0 directory and link from new entries.",fileType.getName()));
+      moveRadioButton.setText(Globals.lang("Move to %0 directory and link from new entries.",fileType.getName()));
+    }
+ else {
+      linkInPlace.setText(Globals.lang("Link from new entry"));
+      copyRadioButton.setText(Globals.lang("Copy to %0 directory and link from new entry.",fileType.getName()));
+      moveRadioButton.setText(Globals.lang("Move to %0 directory and link from new entry.",fileType.getName()));
+    }
+  }
+ else {
+    if (multipleEntries) {
+      linkInPlace.setText(Globals.lang("Link from entries."));
+      copyRadioButton.setText(Globals.lang("Copy to %0 directory and link from entries.",fileType.getName()));
+      moveRadioButton.setText(Globals.lang("Move to %0 directory and link from entries.",fileType.getName()));
+    }
+ else {
+      linkInPlace.setText(Globals.lang("Link from entry"));
+      copyRadioButton.setText(Globals.lang("Copy to %0 directory and link from entry.",fileType.getName()));
+      moveRadioButton.setText(Globals.lang("Move to %0 directory and link from entry.",fileType.getName()));
+    }
+  }
+  renameCheckBox.setText("Rename to match citekey: " + citekeyOrReason);
+  linkInPlace.addChangeListener(cl);
+  cl.stateChanged(new ChangeEvent(linkInPlace));
+  try {
+    return JOptionPane.showConfirmDialog(frame,optionsPanel,dialogTitle,JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+  }
+  finally {
+    linkInPlace.removeChangeListener(cl);
+  }
+}

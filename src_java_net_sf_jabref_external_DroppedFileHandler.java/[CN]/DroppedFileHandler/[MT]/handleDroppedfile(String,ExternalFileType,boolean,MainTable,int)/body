@@ -1,24 +1,32 @@
 {
-  linkInPlace.setEnabled(localFile);
-  if (!localFile && linkInPlace.isSelected())   copyRename.setSelected(true);
+  NamedCompound edits=new NamedCompound(Globals.lang("Drop %0",fileType.extension));
+  if (tryXmpImport(fileName,fileType,localFile,mainTable,edits)) {
+    panel.undoManager.addEdit(edits);
+    return;
+  }
   BibtexEntry entry=mainTable.getEntryAt(dropRow);
-  String destFilename=entry.getCiteKey() + "." + fileType.getExtension();
-  copyRename.setText(Globals.lang("Copy to %0 directory, rename to '%1', and link from entry.",fileType.getName(),destFilename));
-  moveRename.setText(Globals.lang("Move to %0 directory, rename to '%1', and link from entry.",fileType.getName(),destFilename));
-  int reply=JOptionPane.showConfirmDialog(frame,optionsPanel,Globals.lang("Link to file"),JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+  boolean newEntry=false;
+  boolean rename=entry.getCiteKey() != null && entry.getCiteKey().length() > 0;
+  String citeKeyOrReason=(rename ? entry.getCiteKey() : "Entry has no citekey");
+  int reply=showLinkMoveCopyRenameDialog(Globals.lang("Link to file %0",fileName),fileType,rename,citeKeyOrReason,newEntry,false);
   if (reply != JOptionPane.OK_OPTION)   return;
   boolean success=true;
+  String destFilename;
   if (linkInPlace.isSelected()) {
     destFilename=fileName;
   }
- else   if (copyRename.isSelected()) {
-    success=doCopy(fileName,fileType,destFilename);
-  }
- else   if (moveRename.isSelected()) {
-    success=doRename(fileName,fileType,destFilename);
+ else {
+    destFilename=(renameCheckBox.isSelected() ? entry.getCiteKey() + "." + fileType.extension : fileName);
+    if (copyRadioButton.isSelected()) {
+      success=doCopy(fileName,fileType,destFilename,edits);
+    }
+ else     if (moveRadioButton.isSelected()) {
+      success=doRename(fileName,fileType,destFilename,edits);
+    }
   }
   if (success) {
-    doLink(entry,fileType,destFilename);
+    doLink(entry,fileType,destFilename,edits);
     panel.markBaseChanged();
   }
+  panel.undoManager.addEdit(edits);
 }
