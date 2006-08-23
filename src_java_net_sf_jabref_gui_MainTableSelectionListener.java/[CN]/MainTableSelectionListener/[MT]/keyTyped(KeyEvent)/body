@@ -1,0 +1,17 @@
+{
+  if ((!e.isActionKey()) && Character.isLetterOrDigit(e.getKeyChar())) {
+    int sortingColumn=table.getSortingColumn();
+    int c=e.getKeyChar();
+    if (sortingColumn == -1)     return;
+    for (int i=0; i < table.getRowCount(); i++) {
+      Object o=table.getValueAt(i,sortingColumn);
+      if (o == null)       continue;
+      String s=o.toString().toLowerCase();
+      if ((s.length() >= 1) && (s.charAt(0) == c)) {
+        table.setRowSelectionInterval(i,i);
+        table.ensureVisible(i);
+        return;
+      }
+    }
+  }
+}
