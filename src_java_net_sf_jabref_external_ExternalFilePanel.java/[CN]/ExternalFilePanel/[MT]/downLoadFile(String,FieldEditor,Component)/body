@@ -14,7 +14,9 @@ class Downloader extends Thread {
         editor.setEnabled(false);
         boolean updateEditor=true;
         try {
+          String originalText=editor.getText();
           editor.setText(Globals.lang("Downloading..."));
+          output(Globals.lang("Downloading..."));
           url=new URL(res);
           String suffix=off.getSuffix(res);
           if (suffix == null)           suffix="." + fieldName.toLowerCase();
@@ -29,13 +31,15 @@ class Downloader extends Thread {
           System.out.println(directory);
           File file=new File(new File(directory),plannedName);
           URLDownload udl=new URLDownload(parent,url,file);
-          output(Globals.lang("Downloading..."));
+          boolean success;
           try {
             udl.download();
+            success=true;
           }
  catch (          IOException e2) {
             JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL: " + e2.getMessage()),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
             Globals.logger("Error while downloading " + url.toString());
+            success=false;
           }
           updateEditor=(entryEditor == null) || (entryEditor.getEntry() == targetEntry);
           output(Globals.lang("Download completed"));
@@ -47,7 +51,7 @@ class Downloader extends Thread {
             }
             filename=relPath;
           }
-          textToSet=filename;
+          textToSet=success ? filename : originalText;
           if (updateEditor)           SwingUtilities.invokeLater(new Thread(){
             public void run(){
               if (entryEditor != null)               entryEditor.updateField(editor);
@@ -55,7 +59,7 @@ class Downloader extends Thread {
           }
 );
  else {
-            targetEntry.setField(fieldName,textToSet);
+            if (success)             targetEntry.setField(fieldName,textToSet);
           }
         }
  catch (        MalformedURLException e1) {
