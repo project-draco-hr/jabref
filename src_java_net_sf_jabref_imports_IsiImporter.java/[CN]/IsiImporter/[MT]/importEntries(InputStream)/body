@@ -14,7 +14,7 @@
       }
  else {
         sb.append("EOLEOL");
-        sb.append(str.substring(2,str.length()));
+        sb.append(str.trim());
       }
     }
   }
@@ -31,8 +31,7 @@
       if (fields[j].length() <= 2)       continue;
       fields[j]=fields[j].replaceAll(" - ","");
       String beg=fields[j].substring(0,2);
-      String value=fields[j].substring(2);
-      value=value.trim();
+      String value=fields[j].substring(2).trim();
       if (beg.equals("PT")) {
         PT=value.replaceAll("Journal","article").replaceAll("J","article");
         Type="article";
@@ -42,7 +41,7 @@
       }
  else       if (beg.equals("JO"))       hm.put("booktitle",value);
  else       if (beg.equals("AU")) {
-        String author=isiAuthorConvert(AuthorList.fixAuthor_lastNameFirst(value.replaceAll("EOLEOL"," and ")));
+        String author=isiAuthorsConvert(value.replaceAll("EOLEOL"," and "));
         if (hm.get("author") != null)         author=(String)hm.get("author") + " and " + author;
         hm.put("author",author);
       }
@@ -79,6 +78,7 @@
  else       if (beg.equals("CR"))       hm.put("CitedReferences",value.replaceAll("EOLEOL"," ; ").trim());
     }
     if (!"".equals(pages))     hm.put("pages",pages);
+    if (hm.size() == 0)     continue;
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
     ArrayList toRemove=new ArrayList();
     for (Iterator it=hm.keySet().iterator(); it.hasNext(); ) {
