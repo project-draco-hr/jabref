@@ -1,0 +1,23 @@
+{
+  String[] subsup={"title","abstract","review","notes"};
+  for (int i=0; i < subsup.length; i++) {
+    if (map.containsKey(subsup[i])) {
+      Matcher m=subsupPattern.matcher((String)map.get(subsup[i]));
+      StringBuffer sb=new StringBuffer();
+      while (m.find()) {
+        String group2=m.group(2);
+        if (group2.length() > 1) {
+          group2="{" + group2 + "}";
+        }
+        if (m.group(1).equals("sub")) {
+          m.appendReplacement(sb,"\\$_" + group2 + "\\$");
+        }
+ else {
+          m.appendReplacement(sb,"\\$^" + group2 + "\\$");
+        }
+      }
+      m.appendTail(sb);
+      map.put(subsup[i],sb.toString());
+    }
+  }
+}
