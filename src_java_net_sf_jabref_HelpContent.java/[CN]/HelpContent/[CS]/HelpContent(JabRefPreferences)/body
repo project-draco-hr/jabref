@@ -1,5 +1,7 @@
 {
+  super();
   pane=new JScrollPane(this,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+  pane.setDoubleBuffered(true);
   prefs=prefs_;
   history=new Stack();
   forw=new Stack();
@@ -7,4 +9,13 @@
   setContentType("text/html");
   setText("");
   setEditable(false);
+  final HyperlinkListener hyperLinkListener=new HyperlinkListener(){
+    public void hyperlinkUpdate(    final HyperlinkEvent e){
+      if (e.getDescription().startsWith("#")) {
+        scrollToReference(e.getDescription().substring(1));
+      }
+    }
+  }
+;
+  addHyperlinkListener(hyperLinkListener);
 }

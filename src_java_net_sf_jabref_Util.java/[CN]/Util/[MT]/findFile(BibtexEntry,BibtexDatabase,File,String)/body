@@ -1,0 +1,87 @@
+{
+  if (file.startsWith("/")) {
+    directory=new File(".");
+    file=file.substring(1);
+  }
+  Matcher m=Pattern.compile("([^\\\\])\\\\([^\\\\])").matcher(file);
+  StringBuffer s=new StringBuffer();
+  while (m.find()) {
+    m.appendReplacement(s,m.group(1) + "/" + m.group(2));
+  }
+  m.appendTail(s);
+  file=s.toString();
+  String[] fileParts=file.split("/");
+  if (fileParts.length == 0)   return null;
+  if (fileParts.length > 1) {
+    for (int i=0; i < fileParts.length - 1; i++) {
+      String dirToProcess=fileParts[i];
+      dirToProcess=expandBrackets(dirToProcess,entry,database);
+      if (dirToProcess.matches("^.:$")) {
+        directory=new File(dirToProcess + "/");
+        continue;
+      }
+      if (dirToProcess.equals(".")) {
+        continue;
+      }
+      if (dirToProcess.equals("..")) {
+        directory=new File(directory.getParent());
+        continue;
+      }
+      if (dirToProcess.equals("*")) {
+        File[] subDirs=directory.listFiles();
+        if (subDirs == null)         return null;
+        String restOfFileString=join(fileParts,"/",i + 1,fileParts.length);
+        for (int sub=0; sub < subDirs.length; sub++) {
+          if (subDirs[sub].isDirectory()) {
+            String result=findFile(entry,database,subDirs[sub],restOfFileString);
+            if (result != null)             return result;
+          }
+        }
+        return null;
+      }
+      if (dirToProcess.equals("**")) {
+        List toDo=new LinkedList();
+        toDo.add(directory);
+        String restOfFileString=join(fileParts,"/",i + 1,fileParts.length);
+        String result=findFile(entry,database,directory,restOfFileString);
+        if (result != null)         return result;
+        while (!toDo.isEmpty()) {
+          File[] subDirs=((File)toDo.remove(0)).listFiles();
+          if (subDirs == null)           continue;
+          toDo.addAll(Arrays.asList(subDirs));
+          for (int sub=0; sub < subDirs.length; sub++) {
+            if (!subDirs[sub].isDirectory())             continue;
+            result=findFile(entry,database,subDirs[sub],restOfFileString);
+            if (result != null)             return result;
+          }
+        }
+        return null;
+      }
+      final Pattern toMatch=Pattern.compile(dirToProcess.replaceAll("\\\\\\\\","\\\\"));
+      File[] matches=directory.listFiles(new FilenameFilter(){
+        public boolean accept(        File arg0,        String arg1){
+          return toMatch.matcher(arg1).matches();
+        }
+      }
+);
+      if (matches == null || matches.length == 0)       return null;
+      directory=matches[0];
+      if (!directory.exists())       return null;
+    }
+  }
+  String filenameToLookFor=expandBrackets(fileParts[fileParts.length - 1],entry,database);
+  final Pattern toMatch=Pattern.compile("^" + filenameToLookFor.replaceAll("\\\\\\\\","\\\\") + "$");
+  File[] matches=directory.listFiles(new FilenameFilter(){
+    public boolean accept(    File arg0,    String arg1){
+      return toMatch.matcher(arg1).matches();
+    }
+  }
+);
+  if (matches == null || matches.length == 0)   return null;
+  try {
+    return matches[0].getCanonicalPath();
+  }
+ catch (  IOException e) {
+    return null;
+  }
+}

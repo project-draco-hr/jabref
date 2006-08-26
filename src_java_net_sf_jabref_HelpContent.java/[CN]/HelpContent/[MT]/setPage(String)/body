@@ -1,17 +1,28 @@
 {
+  int indexOf=filename.indexOf('#');
+  String file;
+  String reference;
+  if (indexOf != -1) {
+    file=filename.substring(0,indexOf);
+    reference=filename.substring(indexOf + 1);
+  }
+ else {
+    file=filename;
+    reference="";
+  }
   String middle=prefs.get("language") + "/";
   if (middle.equals("en/"))   middle="";
   URL old=getPage();
-  URL translatedFile=JabRef.class.getResource(GUIGlobals.helpPre + middle + filename);
   try {
-    super.setPage(translatedFile);
+    super.setPage(new URL(JabRef.class.getResource(GUIGlobals.helpPre + middle + file).toString() + "#" + reference));
   }
  catch (  IOException ex) {
-    URL file=HelpContent.class.getResource(GUIGlobals.helpPre + filename);
-    setPageOnly(file);
-    forw.removeAllElements();
-    if (old != null)     history.push(old);
-    return;
+    try {
+      setPageOnly(new URL(HelpContent.class.getResource(GUIGlobals.helpPre + file) + "#" + reference));
+    }
+ catch (    MalformedURLException e) {
+      setPageOnly(HelpContent.class.getResource(GUIGlobals.helpPre + file));
+    }
   }
   forw.removeAllElements();
   if (old != null)   history.push(old);
