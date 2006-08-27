@@ -1,3 +1,36 @@
 {
-  fail("Not yet implemented");
+  XMPMetadata xmp=new XMPMetadata();
+  XMPSchemaBibtex bibtex=new XMPSchemaBibtex(xmp);
+  bibtex.addSequenceValue("author","Tom DeMarco");
+  bibtex.addSequenceValue("author","Kent Beck");
+{
+    List l=bibtex.getSequenceList("author");
+    assertEquals(2,l.size());
+    assertEquals("Tom DeMarco",l.get(0));
+    assertEquals("Kent Beck",l.get(1));
+  }
+{
+    bibtex.removeSequenceValue("author","Tom DeMarco");
+    List l=bibtex.getSequenceList("author");
+    assertEquals(1,l.size());
+    assertTrue(l.get(0).equals("Kent Beck"));
+  }
+{
+    bibtex.removeSequenceValue("author","Tom DeMarco");
+    List l=bibtex.getSequenceList("author");
+    assertEquals(1,l.size());
+    assertTrue(l.get(0).equals("Kent Beck"));
+  }
+{
+    bibtex.addSequenceValue("author","Kent Beck");
+    List l=bibtex.getSequenceList("author");
+    assertEquals(2,l.size());
+    assertTrue(l.get(0).equals("Kent Beck"));
+    assertTrue(l.get(1).equals("Kent Beck"));
+  }
+{
+    bibtex.removeSequenceValue("author","Kent Beck");
+    List l=bibtex.getSequenceList("author");
+    assertEquals(0,l.size());
+  }
 }
