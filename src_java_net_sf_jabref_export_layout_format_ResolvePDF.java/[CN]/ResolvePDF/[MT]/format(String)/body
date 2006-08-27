@@ -1,5 +1,8 @@
 {
   String dir=Globals.prefs.get("pdfDirectory");
   File f=Util.expandFilename(field,new String[]{dir,"."});
-  return (f != null ? "file://" + f.getPath() : field);
+  if (Globals.ON_WIN && f != null) {
+    field="file://" + f.getPath().replaceAll("\\\\","/");
+  }
+  return field;
 }
