@@ -17,7 +17,7 @@
     public void init() throws Throwable {
       success=false;
       cancelled=false;
-      if (file == null)       runCommand("saveAs");
+      if (getFile() == null)       runCommand("saveAs");
  else {
         if (updatedExternally || Globals.fileUpdateMonitor.hasBeenModified(fileMonitorHandle)) {
           String[] opts=new String[]{Globals.lang("Review changes"),Globals.lang("Save"),Globals.lang("Cancel")};
@@ -25,7 +25,7 @@
           if (answer == JOptionPane.CANCEL_OPTION)           return;
  else           if (answer == JOptionPane.YES_OPTION) {
             ChangeScanner scanner=new ChangeScanner(frame,BasePanel.this);
-            scanner.changeScan(file());
+            scanner.changeScan(getFile());
             setUpdatedExternally(false);
             SwingUtilities.invokeLater(new Runnable(){
               public void run(){
@@ -42,15 +42,15 @@
     }
     public void update(){
       if (success) {
-        frame.setTabTitle(BasePanel.this,file.getName(),file.getAbsolutePath());
-        frame.output(Globals.lang("Saved database") + " '" + file.getPath()+ "'.");
+        frame.setTabTitle(BasePanel.this,getFile().getName(),getFile().getAbsolutePath());
+        frame.output(Globals.lang("Saved database") + " '" + getFile().getPath()+ "'.");
       }
  else       if (!cancelled) {
         frame.output(Globals.lang("Save failed"));
       }
     }
     public void run(){
-      if (file == null) {
+      if (getFile() == null) {
         cancelled=true;
         return;
       }
@@ -73,7 +73,7 @@
             undoManager.addEdit(ce);
           }
         }
-        success=saveDatabase(file,false,encoding);
+        success=saveDatabase(getFile(),false,encoding);
         try {
           Globals.fileUpdateMonitor.updateTimeStamp(fileMonitorHandle);
         }
@@ -97,19 +97,21 @@
     public void action() throws Throwable {
       String chosenFile=Globals.getNewFile(frame,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
       if (chosenFile != null) {
-        file=new File(chosenFile);
-        if (!file.exists() || (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
+        metaData.setFile(new File(chosenFile));
+        if (!metaData.getFile().exists() || (JOptionPane.showConfirmDialog(frame,"'" + metaData.getFile().getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
           runCommand("save");
           try {
-            fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(BasePanel.this,file);
+            fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(BasePanel.this,getFile());
           }
  catch (          IOException ex) {
             ex.printStackTrace();
           }
-          Globals.prefs.put("workingDirectory",file.getParent());
-          frame.getFileHistory().newFile(file.getPath());
+          Globals.prefs.put("workingDirectory",metaData.getFile().getParent());
+          frame.getFileHistory().newFile(metaData.getFile().getPath());
         }
- else         file=null;
+ else {
+          metaData.setFile(null);
+        }
       }
     }
   }

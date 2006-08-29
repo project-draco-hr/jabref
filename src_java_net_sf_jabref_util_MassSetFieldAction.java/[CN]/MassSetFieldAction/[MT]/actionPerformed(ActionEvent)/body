@@ -1,0 +1,19 @@
+{
+  BasePanel bp=frame.basePanel();
+  if (bp == null)   return;
+  BibtexEntry[] entries=bp.getSelectedEntries();
+  if (diag == null)   createDialog();
+  cancelled=true;
+  prepareDialog(entries.length > 0);
+  Util.placeDialog(diag,frame);
+  diag.setVisible(true);
+  if (cancelled)   return;
+  Collection entryList;
+  if (all.isSelected())   entryList=bp.database().getEntries();
+ else   entryList=Arrays.asList(entries);
+  String toSet=text.getText();
+  if (toSet.length() == 0)   toSet=null;
+  UndoableEdit ce=Util.massSetField(entryList,field.getText().trim(),set.isSelected() ? toSet : null,overwrite.isSelected());
+  bp.undoManager.addEdit(ce);
+  bp.markBaseChanged();
+}

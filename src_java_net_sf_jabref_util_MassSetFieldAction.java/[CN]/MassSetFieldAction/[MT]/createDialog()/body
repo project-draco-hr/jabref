@@ -1,0 +1,66 @@
+{
+  diag=new JDialog(frame,Globals.lang("Set field"),true);
+  field=new JTextField();
+  text=new JTextField();
+  ok=new JButton(Globals.lang("Ok"));
+  cancel=new JButton(Globals.lang("Cancel"));
+  all=new JRadioButton(Globals.lang("All entries"));
+  selected=new JRadioButton(Globals.lang("Selected entries"));
+  clear=new JRadioButton(Globals.lang("Clear field"));
+  set=new JRadioButton(Globals.lang("Set field"));
+  set.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent e){
+      text.setEnabled(set.isSelected());
+      overwrite.setEnabled(set.isSelected());
+    }
+  }
+);
+  overwrite=new JCheckBox("Overwrite existing field values",true);
+  ButtonGroup bg=new ButtonGroup();
+  bg.add(all);
+  bg.add(selected);
+  bg=new ButtonGroup();
+  bg.add(clear);
+  bg.add(set);
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:100dlu",""));
+  builder.appendSeparator(Globals.lang("Field name"));
+  builder.append(Globals.lang("Field name"));
+  builder.append(field);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Include entries"));
+  builder.append(all,3);
+  builder.nextLine();
+  builder.append(selected,3);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("New field value"));
+  builder.append(set);
+  builder.append(text);
+  builder.nextLine();
+  builder.append(clear);
+  builder.nextLine();
+  builder.append(overwrite,3);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addGridded(ok);
+  bb.addGridded(cancel);
+  bb.addGlue();
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  diag.pack();
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      cancelled=false;
+      diag.dispose();
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      cancelled=true;
+      diag.dispose();
+    }
+  }
+);
+}

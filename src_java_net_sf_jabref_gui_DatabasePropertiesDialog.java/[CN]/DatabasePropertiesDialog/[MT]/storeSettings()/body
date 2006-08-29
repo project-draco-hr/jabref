@@ -1,5 +1,7 @@
 {
-  panel.setEncoding((String)encoding.getSelectedItem());
+  String oldEncoding=panel.getEncoding();
+  String newEncoding=(String)encoding.getSelectedItem();
+  panel.setEncoding(newEncoding);
   Vector dir=new Vector(1);
   String text=pdfDir.getText().trim();
   if (text.length() > 0) {
@@ -14,4 +16,6 @@
     metaData.putData("psDirectory",dir);
   }
  else   metaData.remove("psDirectory");
+  boolean changed=!newEncoding.equals(oldEncoding) || !oldPdfVal.equals(pdfDir.getText()) || !oldPsVal.equals(psDir.getText());
+  if (changed)   panel.markNonUndoableBaseChanged();
 }

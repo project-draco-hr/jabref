@@ -2,7 +2,14 @@
   String key=fieldName + "Directory";
   String dir;
   Vector vec=getData(key);
-  if ((vec != null) && (vec.size() > 0))   dir=(String)vec.get(0);
+  if ((vec != null) && (vec.size() > 0)) {
+    dir=(String)vec.get(0);
+    if (!(new File(dir)).isAbsolute() && (file != null)) {
+      String relDir=new StringBuffer(file.getParent()).append(System.getProperty("file.separator")).append(dir).toString();
+      if ((new File(relDir)).exists())       dir=relDir;
+    }
+  }
  else   dir=Globals.prefs.get(key);
+  System.out.println("MetaData: dir: '" + dir + "' relative: "+ (new File(dir)).isAbsolute());
   return dir;
 }
