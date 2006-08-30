@@ -1,14 +1,26 @@
 {
   String[] s=author.split(",");
   if (s.length != 2)   return author;
-  String last=s[0].trim();
-  String first=s[1].trim();
-  first=first.replaceAll("\\.|\\s","");
   StringBuffer sb=new StringBuffer();
+  String last=s[0].trim();
   sb.append(last).append(", ");
-  for (int i=0; i < first.length(); i++) {
-    sb.append(first.charAt(i)).append(".");
-    if (i < first.length() - 1)     sb.append(" ");
+  String first=s[1].trim();
+  String[] firstParts=first.split("\\s+");
+  for (int i=0; i < firstParts.length; i++) {
+    first=firstParts[i];
+    if (first.toUpperCase().equals(first)) {
+      first=first.replaceAll("\\.","");
+      for (int j=0; j < first.length(); j++) {
+        sb.append(first.charAt(j)).append(".");
+        if (j < first.length() - 1)         sb.append(" ");
+      }
+    }
+ else {
+      sb.append(first);
+    }
+    if (i < firstParts.length - 1) {
+      sb.append(" ");
+    }
   }
   return sb.toString();
 }

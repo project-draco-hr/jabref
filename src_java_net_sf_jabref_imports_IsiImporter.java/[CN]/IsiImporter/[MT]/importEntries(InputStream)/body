@@ -55,30 +55,19 @@
         if (detpos != -1)         value=value.substring(0,detpos);
         pages=pages + "--" + value;
       }
+ else       if (beg.equals("PS")) {
+        pages=parsePages(value);
+      }
  else       if (beg.equals("AR"))       pages=value;
  else       if (beg.equals("IS"))       hm.put("number",value);
  else       if (beg.equals("PY"))       hm.put("year",value);
  else       if (beg.equals("VL"))       hm.put("volume",value);
  else       if (beg.equals("PU"))       hm.put("publisher",value);
  else       if (beg.equals("PD")) {
-        String[] parts=value.split(" ");
-        for (int ii=0; ii < parts.length; ii++) {
-          if (Globals.MONTH_STRINGS.containsKey(parts[ii].toLowerCase())) {
-            hm.put("month","#" + parts[ii].toLowerCase() + "#");
-            continue nextField;
-          }
-        }
-        for (int ii=0; ii < parts.length; ii++) {
-          int number;
-          try {
-            number=Integer.parseInt(parts[ii]);
-            if (number >= 1 && number <= 12) {
-              hm.put("month","#" + Globals.MONTHS[number - 1] + "#");
-              continue nextField;
-            }
-          }
- catch (          NumberFormatException e) {
-          }
+        String month=parseMonth(value);
+        if (month != null) {
+          hm.put("month",month);
+          continue nextField;
         }
       }
  else       if (beg.equals("DT")) {
