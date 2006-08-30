@@ -12,24 +12,7 @@
   }
 );
   initLabelMaker();
-  sidePaneManager=new SidePaneManager(this);
-  Globals.sidePaneManager=this.sidePaneManager;
-  Globals.helpDiag=this.helpDiag;
-  medlineFetcher=new MedlineFetcher(sidePaneManager);
-  citeSeerFetcher=new CiteSeerFetcher(sidePaneManager);
-  citeSeerFetcherPanel=new CiteSeerFetcherPanel(sidePaneManager,(CiteSeerFetcher)citeSeerFetcher);
-  ieeexplorerFetcher=new IEEEXploreFetcher();
-  searchManager=new SearchManager2(this,sidePaneManager);
-{
-    groupSelector=new GroupSelector(this,sidePaneManager);
-    sidePaneManager.register("groups",groupSelector);
-  }
-  sidePaneManager.register("fetchMedline",medlineFetcher);
-  sidePaneManager.register("search",searchManager);
-  if (Globals.prefs.getBoolean("searchPanelVisible"))   sidePaneManager.ensureVisible("search");
-  sidePaneManager.register("CiteSeerPanel",citeSeerFetcherPanel);
-  sidePaneManager.register("CiteSeerProgress",citeSeerFetcher);
-  sidePaneManager.populatePanel();
+  initSidePane();
   setupLayout();
   if (Globals.prefs.getBoolean("rememberWindowLocation")) {
     setSize(new Dimension(prefs.getInt("sizeX"),prefs.getInt("sizeY")));
@@ -42,8 +25,8 @@
       markActiveBasePanel();
       BasePanel bp=basePanel();
       if (bp != null) {
-        groupToggle.setSelected(sidePaneManager.isPanelVisible("groups"));
-        searchToggle.setSelected(sidePaneManager.isPanelVisible("search"));
+        groupToggle.setSelected(sidePaneManager.isComponentVisible("groups"));
+        searchToggle.setSelected(sidePaneManager.isComponentVisible("search"));
         previewToggle.setSelected(Globals.prefs.getBoolean("previewEnabled"));
         highlightAny.setSelected(Globals.prefs.getBoolean("highlightGroupsMatchingAny"));
         highlightAll.setSelected(Globals.prefs.getBoolean("highlightGroupsMatchingAll"));

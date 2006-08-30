@@ -1,3 +1,12 @@
 {
-  sidePaneManager.add(fetcher.getTitle(),GeneralFetcher.this);
+  String fetcherTitle=fetcher.getTitle();
+  if (!sidePaneManager.hasComponent(fetcherTitle)) {
+    sidePaneManager.register(fetcherTitle,GeneralFetcher.this);
+  }
+  if (frame.getTabbedPane().getTabCount() > 0) {
+    sidePaneManager.toggle(fetcherTitle);
+    if (sidePaneManager.isComponentVisible(fetcherTitle)) {
+      new FocusRequester(getTextField());
+    }
+  }
 }
