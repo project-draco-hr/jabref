@@ -1,78 +1,86 @@
 {
-  String res=JOptionPane.showInputDialog(parent,Globals.lang("Enter URL to download"));
-  if ((res != null) && (res.trim().length() > 0)) {
-class Downloader extends Thread {
-      String res;
-      BibtexEntry targetEntry=null;
-      public Downloader(      String res){
-        this.res=res;
-        if (entryEditor != null)         targetEntry=entryEditor.getEntry();
-      }
-      public void run(){
-        URL url;
-        String textToSet=editor.getText();
-        editor.setEnabled(false);
-        boolean updateEditor=true;
-        try {
-          String originalText=editor.getText();
-          editor.setText(Globals.lang("Downloading..."));
-          output(Globals.lang("Downloading..."));
-          url=new URL(res);
-          String suffix=off.getSuffix(res);
-          if (suffix == null)           suffix="." + fieldName.toLowerCase();
-          String plannedName=null;
-          if (getKey() != null)           plannedName=getKey() + suffix;
+  final String res=JOptionPane.showInputDialog(parent,Globals.lang("Enter URL to download"));
+  if (res == null || res.trim().length() == 0)   return;
+  final BibtexEntry targetEntry;
+  if (entryEditor != null)   targetEntry=entryEditor.getEntry();
+ else   targetEntry=null;
+  (new Thread(){
+    public String getPlannedFileName(    String res){
+      String suffix=off.getSuffix(res);
+      if (suffix == null)       suffix="." + fieldName.toLowerCase();
+      String plannedName=null;
+      if (getKey() != null)       plannedName=getKey() + suffix;
  else {
-            plannedName=JOptionPane.showInputDialog(parent,Globals.lang("BibTeX key not set. Enter a name for the downloaded file"));
-            if (plannedName == null)             return;
-            if (!off.accept(plannedName))             plannedName+=suffix;
+        plannedName=JOptionPane.showInputDialog(parent,Globals.lang("BibTeX key not set. Enter a name for the downloaded file"));
+        if (plannedName != null && !off.accept(plannedName))         plannedName+=suffix;
+      }
+      if (Globals.ON_WIN) {
+        plannedName=plannedName.replaceAll("\\?|\\*|\\<|\\>|\\||\\\"|\\:|\\.$|\\[|\\]","");
+      }
+ else       if (Globals.ON_MAC) {
+        plannedName=plannedName.replaceAll(":","");
+      }
+      return plannedName;
+    }
+    public void run(){
+      String originalText=fieldEditor.getText();
+      fieldEditor.setEnabled(false);
+      boolean updateEditor=true;
+      try {
+        fieldEditor.setText(Globals.lang("Downloading..."));
+        output(Globals.lang("Downloading..."));
+        String plannedName=getPlannedFileName(res);
+        String directory=metaData.getFileDirectory(fieldName);
+        if (!new File(directory).exists()) {
+          JOptionPane.showMessageDialog(parent,Globals.lang("Could not find directory for %0-files: %1",fieldName,directory),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          Globals.logger(Globals.lang("Could not find directory for %0-files: %1",fieldName,directory));
+          return;
+        }
+        File file=new File(new File(directory),plannedName);
+        URL url=new URL(res);
+        URLDownload udl=new URLDownload(parent,url,file);
+        try {
+          udl.download();
+        }
+ catch (        IOException e2) {
+          JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL: " + e2.getMessage()),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          Globals.logger("Error while downloading " + url.toString());
+          return;
+        }
+        output(Globals.lang("Download completed"));
+        String textToSet=file.getPath();
+        if (textToSet.startsWith(directory)) {
+          textToSet=textToSet.substring(directory.length(),textToSet.length());
+          if (textToSet.startsWith(File.separator)) {
+            textToSet=textToSet.substring(File.separator.length());
           }
-          String directory=metaData.getFileDirectory(fieldName);
-          System.out.println(directory);
-          File file=new File(new File(directory),plannedName);
-          URLDownload udl=new URLDownload(parent,url,file);
-          boolean success;
-          try {
-            udl.download();
-            success=true;
-          }
- catch (          IOException e2) {
-            JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL: " + e2.getMessage()),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
-            Globals.logger("Error while downloading " + url.toString());
-            success=false;
-          }
-          updateEditor=(entryEditor == null) || (entryEditor.getEntry() == targetEntry);
-          output(Globals.lang("Download completed"));
-          String filename=file.getPath();
-          if (filename.startsWith(directory)) {
-            String relPath=filename.substring(directory.length(),filename.length());
-            if (relPath.startsWith(File.separator)) {
-              relPath=relPath.substring(File.separator.length(),relPath.length());
-            }
-            filename=relPath;
-          }
-          textToSet=success ? filename : originalText;
-          if (updateEditor)           SwingUtilities.invokeLater(new Thread(){
+        }
+        if (entryEditor == null || entryEditor.getEntry() != targetEntry) {
+          targetEntry.setField(fieldName,textToSet);
+          updateEditor=false;
+        }
+ else {
+          fieldEditor.setText(textToSet);
+          fieldEditor.setEnabled(true);
+          updateEditor=false;
+          SwingUtilities.invokeLater(new Thread(){
             public void run(){
-              if (entryEditor != null)               entryEditor.updateField(editor);
+              entryEditor.updateField(fieldEditor);
             }
           }
 );
- else {
-            if (success)             targetEntry.setField(fieldName,textToSet);
-          }
         }
- catch (        MalformedURLException e1) {
-          JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL"),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
-        }
+      }
+ catch (      MalformedURLException e1) {
+        JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL"),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+      }
  finally {
-          if (updateEditor) {
-            editor.setText(textToSet);
-            editor.setEnabled(true);
-          }
+        if (updateEditor) {
+          fieldEditor.setText(originalText);
+          fieldEditor.setEnabled(true);
         }
       }
     }
-    (new Downloader(res)).start();
   }
+).start();
 }
