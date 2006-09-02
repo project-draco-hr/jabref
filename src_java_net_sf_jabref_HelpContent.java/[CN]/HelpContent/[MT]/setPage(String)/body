@@ -14,15 +14,16 @@
   if (middle.equals("en/"))   middle="";
   URL old=getPage();
   try {
-    super.setPage(new URL(JabRef.class.getResource(GUIGlobals.helpPre + middle + file).toString() + "#" + reference));
-  }
- catch (  IOException ex) {
-    try {
+    URL resource=JabRef.class.getResource(GUIGlobals.helpPre + middle + file);
+    if (resource != null) {
+      super.setPage(new URL(resource.toString() + "#" + reference));
+    }
+ else {
       setPageOnly(new URL(HelpContent.class.getResource(GUIGlobals.helpPre + file) + "#" + reference));
     }
- catch (    MalformedURLException e) {
-      setPageOnly(HelpContent.class.getResource(GUIGlobals.helpPre + file));
-    }
+  }
+ catch (  IOException ex) {
+    ex.printStackTrace();
   }
   forw.removeAllElements();
   if (old != null)   history.push(old);
