@@ -1,0 +1,9 @@
+{
+  String layoutFile="<font face=\"arial\">\\begin{abstract}<BR><BR><b>Abstract: </b> \\format[HTMLChars]{\\abstract} \\end{abstract}</font>";
+  StringReader sr=new StringReader(layoutFile.replaceAll("__NEWLINE__","\n"));
+  Layout layout=new LayoutHelper(sr).getLayoutFromText(Globals.FORMATTER_PACKAGE);
+  StringBuffer sb=new StringBuffer();
+  sb.append(layout.doLayout(t1BibtexEntry(),null));
+  String layoutText=sb.toString();
+  assertEquals("<font face=\"arial\"><BR><BR><b>Abstract: </b> &ntilde; &ntilde; &iacute; &#305; &#305;</font>",layoutText);
+}
