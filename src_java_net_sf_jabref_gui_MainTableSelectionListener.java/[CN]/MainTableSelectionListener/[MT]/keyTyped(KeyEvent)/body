@@ -3,15 +3,26 @@
     int c=e.getKeyChar();
     int sortingColumn=table.getSortingColumn(0);
     if (sortingColumn == -1)     return;
-    for (int i=0; i < table.getRowCount(); i++) {
-      Object o=table.getValueAt(i,sortingColumn);
-      if (o == null)       continue;
-      String s=o.toString().toLowerCase();
-      if ((s.length() >= 1) && (s.charAt(0) == c)) {
-        table.setRowSelectionInterval(i,i);
-        table.ensureVisible(i);
-        return;
+    int startRow=0;
+    if ((c == lastPressed) && (lastQuickJumpRow >= 0)) {
+      if (lastQuickJumpRow < table.getRowCount() - 1)       startRow=lastQuickJumpRow + 1;
+    }
+    lastPressed=c;
+    boolean done=false;
+    while (!done) {
+      for (int i=startRow; i < table.getRowCount(); i++) {
+        Object o=table.getValueAt(i,sortingColumn);
+        if (o == null)         continue;
+        String s=o.toString().toLowerCase();
+        if ((s.length() >= 1) && (s.charAt(0) == c)) {
+          table.setRowSelectionInterval(i,i);
+          table.ensureVisible(i);
+          lastQuickJumpRow=i;
+          return;
+        }
       }
+      if (startRow > 0)       startRow=0;
+ else       done=true;
     }
   }
 }
