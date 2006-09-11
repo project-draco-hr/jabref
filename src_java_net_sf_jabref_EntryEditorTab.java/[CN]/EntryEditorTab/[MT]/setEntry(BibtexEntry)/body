@@ -1,8 +1,15 @@
 {
-  for (Iterator i=editors.keySet().iterator(); i.hasNext(); ) {
-    String field=(String)i.next();
-    FieldEditor ed=(FieldEditor)editors.get(field);
-    Object content=entry.getField(ed.getFieldName());
-    ed.setText((content == null) ? "" : content.toString());
+  try {
+    updating=true;
+    Iterator i=editors.values().iterator();
+    while (i.hasNext()) {
+      FieldEditor editor=(FieldEditor)i.next();
+      Object content=entry.getField(editor.getFieldName());
+      editor.setText((content == null) ? "" : content.toString());
+    }
+    this.entry=entry;
+  }
+  finally {
+    updating=false;
   }
 }

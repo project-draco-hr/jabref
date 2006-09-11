@@ -1,6 +1,7 @@
 {
-  InputMap im=ta.getInputMap(JComponent.WHEN_FOCUSED);
-  ActionMap am=ta.getActionMap();
+  component.addFocusListener(fieldListener);
+  InputMap im=component.getInputMap(JComponent.WHEN_FOCUSED);
+  ActionMap am=component.getActionMap();
   im.put(Globals.prefs.getKey("Entry editor, previous entry"),"prev");
   am.put("prev",parent.prevEntryAction);
   im.put(Globals.prefs.getKey("Entry editor, next entry"),"next");
@@ -22,14 +23,14 @@
   im.put(Globals.prefs.getKey("Previous tab"),"prevtab");
   am.put("prevtab",parent.frame.prevTab);
   try {
-    HashSet keys=new HashSet(ta.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+    HashSet keys=new HashSet(component.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
     keys.clear();
     keys.add(AWTKeyStroke.getAWTKeyStroke("pressed TAB"));
-    ta.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,keys);
-    keys=new HashSet(ta.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
+    component.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,keys);
+    keys=new HashSet(component.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
     keys.clear();
     keys.add(KeyStroke.getKeyStroke("shift pressed TAB"));
-    ta.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,keys);
+    component.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,keys);
   }
  catch (  Throwable t) {
     System.err.println(t);

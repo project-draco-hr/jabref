@@ -4,10 +4,9 @@
   panel.setLayout(gbl);
   double totalWeight=0;
   for (int i=0; i < fields.length; i++) {
-    FieldTextArea ta=new FieldTextArea(fields[i],null);
+    final FieldTextArea ta=new FieldTextArea(fields[i],null);
     JComponent ex=parent.getExtra(fields[i],ta);
     setupJTextComponent(ta);
-    ta.addFocusListener(new FieldListener(ta));
     editors.put(fields[i],ta);
     if (i == 0)     activeField=ta;
     con.insets=new Insets(5,5,0,0);
@@ -46,15 +45,14 @@
     con.weightx=0;
     con.fill=GridBagConstraints.HORIZONTAL;
     con.anchor=GridBagConstraints.SOUTHWEST;
-    FieldTextField tf=new FieldTextField(BibtexFields.KEY_FIELD,(String)parent.getEntry().getField(BibtexFields.KEY_FIELD),true);
+    final FieldTextField tf=new FieldTextField(BibtexFields.KEY_FIELD,(String)parent.getEntry().getField(BibtexFields.KEY_FIELD),true);
+    setupJTextComponent(tf);
     editors.put("bibtexkey",tf);
     if (editors.size() == 1)     activeField=tf;
     gbl.setConstraints(tf.getLabel(),con);
     panel.add(tf.getLabel());
     con.gridwidth=GridBagConstraints.REMAINDER;
     con.weightx=1;
-    setupJTextComponent(tf);
-    tf.addFocusListener(new FieldListener(tf));
     gbl.setConstraints(tf,con);
     panel.add(tf);
   }
