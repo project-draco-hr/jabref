@@ -6,16 +6,12 @@
   SortedSet customImporters=Globals.importFormatReader.getCustomImportFormats();
   JMenu submenu=new JMenu(Globals.lang("Custom importers"));
   submenu.setMnemonic(KeyEvent.VK_S);
-  if (customImporters.size() == 0) {
-    submenu.setEnabled(false);
-    submenu.setToolTipText(Globals.lang("No custom imports registered yet."));
+  for (Iterator i=customImporters.iterator(); i.hasNext(); ) {
+    ImportFormat imFo=(ImportFormat)i.next();
+    submenu.add(new ImportMenuItem(ths,intoNew,imFo));
   }
- else {
-    for (Iterator i=customImporters.iterator(); i.hasNext(); ) {
-      ImportFormat imFo=(ImportFormat)i.next();
-      submenu.add(new ImportMenuItem(ths,intoNew,imFo));
-    }
-  }
+  if (customImporters.size() > 0)   submenu.addSeparator();
+  submenu.add(customImpAction);
   importMenu.add(submenu);
   importMenu.addSeparator();
   for (Iterator i=Globals.importFormatReader.getBuiltInInputFormats().iterator(); i.hasNext(); ) {
