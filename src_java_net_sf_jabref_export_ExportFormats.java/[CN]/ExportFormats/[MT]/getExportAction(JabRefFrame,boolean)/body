@@ -1,0 +1,40 @@
+{
+class ExportAction extends MnemonicAwareAction {
+    private JabRefFrame frame;
+    private boolean selectedOnly;
+    public ExportAction(    JabRefFrame frame,    boolean selectedOnly){
+      this.frame=frame;
+      this.selectedOnly=selectedOnly;
+      putValue(NAME,selectedOnly ? "Export selected entries" : "Export");
+    }
+    public void actionPerformed(    ActionEvent e){
+      ExportFormats.initAllExports();
+      JFileChooser fc=ExportFormats.createExportFileChooser("/home/alver/Documents");
+      fc.showSaveDialog(frame);
+      File file=fc.getSelectedFile();
+      if (file == null)       return;
+      FileFilter ff=fc.getFileFilter();
+      if (ff instanceof ExportFileFilter) {
+        try {
+          ExportFormat format=((ExportFileFilter)ff).getExportFormat();
+          Set entryIds=null;
+          if (selectedOnly) {
+            BibtexEntry[] selected=frame.basePanel().getSelectedEntries();
+            entryIds=new HashSet();
+            for (int i=0; i < selected.length; i++) {
+              BibtexEntry bibtexEntry=selected[i];
+              entryIds.add(bibtexEntry.getId());
+            }
+          }
+          format.performExport(frame.basePanel().database(),file.getPath(),"UTF8",entryIds);
+          Globals.prefs.put("lastUsedExport",format.getConsoleName());
+        }
+ catch (        Exception ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+  }
+  ;
+  return new ExportAction(frame,selectedOnly);
+}

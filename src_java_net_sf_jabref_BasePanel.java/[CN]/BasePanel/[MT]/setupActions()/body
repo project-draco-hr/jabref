@@ -9,6 +9,17 @@
 );
   actions.put("test",new BaseAction(){
     public void action() throws Throwable {
+      ExportFormats.initAllExports();
+      JFileChooser fc=ExportFormats.createExportFileChooser("/home/alver/Documents");
+      fc.showSaveDialog(frame);
+      File file=fc.getSelectedFile();
+      if (file == null)       return;
+      FileFilter ff=fc.getFileFilter();
+      if (ff instanceof ExportFileFilter) {
+        ExportFormat format=((ExportFileFilter)ff).getExportFormat();
+        format.performExport(database,file.getPath(),"UTF8",null);
+        Globals.prefs.put("lastUsedExport",format.getConsoleName());
+      }
     }
   }
 );
@@ -714,7 +725,7 @@ catch (          Throwable ex) {
       try {
         BibtexEntry[] bes=mainTable.getSelectedEntries();
         StringWriter sw=new StringWriter();
-        FileActions.exportEntries(database,bes,format,custom,directory,sw);
+        System.out.println("actual export to clipboard not implemented...");
         ClipboardOwner owner=new ClipboardOwner(){
           public void lostOwnership(          Clipboard clipboard,          Transferable content){
           }

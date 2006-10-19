@@ -1,0 +1,14 @@
+{
+  String lastUsedFormat=Globals.prefs.get("lastUsedExport");
+  FileFilter defaultFilter=null;
+  JFileChooser fc=new JFileChooser(currentDir);
+  for (Iterator i=exportFormats.keySet().iterator(); i.hasNext(); ) {
+    String formatName=(String)i.next();
+    ExportFormat format=(ExportFormat)exportFormats.get(formatName);
+    fc.addChoosableFileFilter(format.getFileFilter());
+    if (formatName.equals(lastUsedFormat))     defaultFilter=format.getFileFilter();
+  }
+  fc.setAcceptAllFileFilterUsed(false);
+  if (defaultFilter != null)   fc.setFileFilter(defaultFilter);
+  return fc;
+}

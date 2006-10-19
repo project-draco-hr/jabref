@@ -10,20 +10,8 @@
     System.out.println(options.getHelp());
     String importFormats=Globals.importFormatReader.getImportFormatList();
     System.out.println(Globals.lang("Available import formats") + ":\n" + importFormats);
-    String outFormats=": bibtexml, docbook, endnote, harvard, html, mods, ods, oocalc, simplehtml";
-    int length=outFormats.length();
-    for (int i=0; i < Globals.prefs.customExports.size(); i++) {
-      String[] format=Globals.prefs.customExports.getElementAt(i);
-      if ((length + format[0].length()) > 50) {
-        outFormats=outFormats + ",\n\t" + format[0];
-        length=format[0].length();
-      }
- else {
-        outFormats=outFormats + ", " + format[0];
-        length+=(1 + format[0].length());
-      }
-    }
-    System.out.println(Globals.lang("Available export formats") + outFormats + ".");
+    String outFormats=ExportFormats.getConsoleExportList(70,20,"\t");
+    System.out.println(Globals.lang("Available export formats") + ": " + outFormats+ ".");
     System.exit(0);
   }
   if (initialStartup && !disableGui.isInvoked()) {
@@ -118,35 +106,17 @@
       }
  else       if (data.length == 2) {
         ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
-        boolean foundCustom=false;
-        for (int i=0; i < Globals.prefs.customExports.size(); i++) {
-          String[] format=Globals.prefs.customExports.getElementAt(i);
-          if (format[0].equals(data[1])) {
-            try {
-              File lfFile=new File(format[1]);
-              String fname=(lfFile.getName().split("\\."))[0];
-              FileActions.exportDatabase(pr.getDatabase(),lfFile.getParent() + File.separator,fname,new File(data[0]),pr.getEncoding());
-              System.out.println(Globals.lang("Exporting") + ": " + data[0]);
-            }
- catch (            Exception ex) {
-              System.err.println(Globals.lang("Could not export file") + " '" + data[0]+ "': "+ ex.getMessage());
-            }
-            foundCustom=true;
-            break;
-          }
-        }
-        if (!foundCustom) {
+        System.out.println(Globals.lang("Exporting") + ": " + data[0]);
+        ExportFormat format=ExportFormats.getExportFormat(data[1]);
+        if (format != null) {
           try {
-            System.out.println(Globals.lang("Exporting") + ": " + data[0]);
-            FileActions.performExport(pr.getDatabase(),data[1],data[0],pr.getEncoding());
+            format.performExport(pr.getDatabase(),data[0],pr.getEncoding(),null);
           }
- catch (          NullPointerException ex2) {
-            System.err.println(Globals.lang("Unknown export format") + ": " + data[1]);
-          }
-catch (          Exception ex) {
+ catch (          Exception ex) {
             System.err.println(Globals.lang("Could not export file") + " '" + data[0]+ "': "+ ex.getMessage());
           }
         }
+ else         System.err.println(Globals.lang("Unknown export format") + ": " + data[1]);
       }
     }
  else     System.err.println(Globals.lang("The output option depends on a valid import option."));
