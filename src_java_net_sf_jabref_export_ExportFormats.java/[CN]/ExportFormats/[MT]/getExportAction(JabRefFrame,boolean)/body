@@ -16,7 +16,14 @@ class ExportAction extends MnemonicAwareAction {
       FileFilter ff=fc.getFileFilter();
       if (ff instanceof ExportFileFilter) {
         try {
-          ExportFormat format=((ExportFileFilter)ff).getExportFormat();
+          ExportFileFilter eff=(ExportFileFilter)ff;
+          String path=file.getPath();
+          if (!path.endsWith(eff.getExportFormat().getExtension()))           path=path + eff.getExportFormat().getExtension();
+          file=new File(path);
+          if (file.exists()) {
+            if (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)             return;
+          }
+          ExportFormat format=eff.getExportFormat();
           Set entryIds=null;
           if (selectedOnly) {
             BibtexEntry[] selected=frame.basePanel().getSelectedEntries();
@@ -26,7 +33,7 @@ class ExportAction extends MnemonicAwareAction {
               entryIds.add(bibtexEntry.getId());
             }
           }
-          format.performExport(frame.basePanel().database(),file.getPath(),"UTF8",entryIds);
+          format.performExport(frame.basePanel().database(),file.getPath(),frame.basePanel().getEncoding(),entryIds);
           Globals.prefs.put("lastUsedExport",format.getConsoleName());
         }
  catch (        Exception ex) {
