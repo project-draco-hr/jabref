@@ -9,7 +9,7 @@ class ExportAction extends MnemonicAwareAction {
     }
     public void actionPerformed(    ActionEvent e){
       ExportFormats.initAllExports();
-      JFileChooser fc=ExportFormats.createExportFileChooser("/home/alver/Documents");
+      JFileChooser fc=ExportFormats.createExportFileChooser(Globals.prefs.get("exportWorkingDirectory"));
       fc.showSaveDialog(frame);
       File file=fc.getSelectedFile();
       if (file == null)       return;
@@ -35,6 +35,7 @@ class ExportAction extends MnemonicAwareAction {
           }
           format.performExport(frame.basePanel().database(),file.getPath(),frame.basePanel().getEncoding(),entryIds);
           Globals.prefs.put("lastUsedExport",format.getConsoleName());
+          Globals.prefs.put("exportWorkingDirectory",file.getParent());
         }
  catch (        Exception ex) {
           ex.printStackTrace();
