@@ -33,16 +33,17 @@ class ExportAction extends MnemonicAwareAction {
               entryIds.add(bibtexEntry.getId());
             }
           }
-          format.performExport(frame.basePanel().database(),file.getPath(),frame.basePanel().getEncoding(),entryIds);
           Globals.prefs.put("lastUsedExport",format.getConsoleName());
           Globals.prefs.put("exportWorkingDirectory",file.getParent());
+          format.performExport(frame.basePanel().database(),file.getPath(),frame.basePanel().getEncoding(),entryIds);
         }
  catch (        Exception ex) {
           ex.printStackTrace();
+          frame.output(Globals.lang("Could not save file") + " - " + ex.getMessage());
+          JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file") + ".\n" + ex.getMessage(),Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
         }
       }
     }
   }
-  ;
   return new ExportAction(frame,selectedOnly);
 }
