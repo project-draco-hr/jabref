@@ -2,14 +2,12 @@
   skipWhitespace();
   int c;
   StringBuffer buffer=null;
-  int previous=-1;
-  boolean justParsedTag=false;
   boolean escaped=false;
   while (!_eof) {
     c=read();
     if (c == -1) {
       _eof=true;
-      parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
+      if (buffer != null)       parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
       return null;
     }
     if ((c == '\\') && (peek() != '\\') && !escaped) {
@@ -18,11 +16,9 @@
         buffer=null;
       }
       parseField();
-      justParsedTag=true;
       escaped=false;
     }
  else {
-      justParsedTag=false;
       if (buffer == null) {
         buffer=new StringBuffer(100);
       }
@@ -31,7 +27,6 @@
       }
       escaped=(c == '\\') && !escaped;
     }
-    previous=c;
   }
   return null;
 }
