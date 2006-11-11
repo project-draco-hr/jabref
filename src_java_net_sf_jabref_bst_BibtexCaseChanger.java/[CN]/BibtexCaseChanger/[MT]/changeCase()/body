@@ -1,0 +1,39 @@
+{
+  char[] c=s.toCharArray();
+  StringBuffer sb=new StringBuffer();
+  int i=0;
+  while (i < n) {
+    if (c[i] == '{') {
+      braceLevel++;
+      if (braceLevel != 1 || i + 4 > n || c[i + 1] != '\\') {
+        prevColon=false;
+        sb.append(c[i]);
+        i++;
+        continue;
+      }
+      if (format == 't' && (i == 0 || (prevColon && Character.isWhitespace(c[i - 1])))) {
+        sb.append(c[i]);
+        i++;
+        prevColon=false;
+        continue;
+      }
+      i=convertSpecialChar(sb,c,i,format);
+      continue;
+    }
+    if (c[i] == '}') {
+      sb.append(c[i]);
+      i++;
+      braceLevel=decrBraceLevel(s,braceLevel);
+      prevColon=false;
+      continue;
+    }
+    if (braceLevel == 0) {
+      i=convertChar0(c,i,sb,format);
+      continue;
+    }
+    sb.append(c[i]);
+    i++;
+  }
+  checkBrace(s,braceLevel);
+  return sb.toString();
+}

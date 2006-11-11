@@ -1,0 +1,19 @@
+{
+  Iterator i=entries.iterator();
+  while (i.hasNext()) {
+    BstEntry e=(BstEntry)i.next();
+    Iterator j=e.fields.entrySet().iterator();
+    while (j.hasNext()) {
+      Map.Entry mEntry=(Map.Entry)j.next();
+      Object fieldValue=e.entry.getField((String)mEntry.getKey());
+      mEntry.setValue((fieldValue == null ? null : fieldValue.toString()));
+    }
+  }
+  i=entries.iterator();
+  while (i.hasNext()) {
+    BstEntry e=(BstEntry)i.next();
+    if (!e.fields.containsKey("crossref")) {
+      e.fields.put("crossref",null);
+    }
+  }
+}

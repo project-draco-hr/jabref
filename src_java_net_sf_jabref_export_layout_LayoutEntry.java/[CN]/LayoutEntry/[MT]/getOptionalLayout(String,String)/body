@@ -1,27 +1,25 @@
 {
-  String[] formatters=formatterName.split(",");
-  LayoutFormatter[] formatter=new LayoutFormatter[formatters.length];
-  for (int i=0; i < formatter.length; i++) {
+  ArrayList formatterStrings=Util.parseMethodsCalls(formatterName);
+  ArrayList results=new ArrayList(formatterStrings.size());
+  Map userNameFormatter=NameFormatterTab.getNameFormatters();
+  for (int i=0; i < formatterStrings.size(); i++) {
+    String[] strings=(String[])formatterStrings.get(i);
+    String className=strings[0].trim();
     try {
-      try {
-        formatter[i]=(LayoutFormatter)Class.forName(classPrefix + formatters[i]).newInstance();
+      LayoutFormatter f=getLayoutFormatter(className,classPrefix);
+      results.add(f);
+    }
+ catch (    Exception e) {
+      String formatterParameter=(String)userNameFormatter.get(className);
+      if (formatterParameter == null) {
+        throw new Exception(Globals.lang("Formatter not found") + ": " + className);
       }
- catch (      Throwable ex2) {
-        formatter[i]=(LayoutFormatter)Class.forName(formatters[i]).newInstance();
+ else {
+        NameFormat nf=new NameFormat();
+        nf.setParameter(formatterParameter);
+        results.add(nf);
       }
-    }
- catch (    ClassNotFoundException ex) {
-      throw new Exception(Globals.lang("Formatter not found") + ": " + formatters[i]);
-    }
-catch (    InstantiationException ex) {
-      throw new Exception(formatterName + " can not be instantiated.");
-    }
-catch (    IllegalAccessException ex) {
-      throw new Exception(formatterName + " can't be accessed.");
-    }
-    if (formatter == null) {
-      throw new Exception(Globals.lang("Formatter not found") + ": " + formatters[i]);
     }
   }
-  return formatter;
+  return (LayoutFormatter[])results.toArray(new LayoutFormatter[]{});
 }

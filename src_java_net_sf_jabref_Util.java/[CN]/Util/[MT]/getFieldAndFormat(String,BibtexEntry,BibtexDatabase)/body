@@ -1,12 +1,24 @@
 {
   fieldAndFormat=stripBrackets(fieldAndFormat);
-  String[] fieldAndFormatStrings=fieldAndFormat.split(":");
-  if (fieldAndFormatStrings.length == 0)   return null;
-  String fieldValue=getField(fieldAndFormatStrings[0].trim(),entry,database);
+  int colon=fieldAndFormat.indexOf(':');
+  String beforeColon, afterColon;
+  if (colon == -1) {
+    beforeColon=fieldAndFormat;
+    afterColon=null;
+  }
+ else {
+    beforeColon=fieldAndFormat.substring(0,colon);
+    afterColon=fieldAndFormat.substring(colon + 1);
+  }
+  beforeColon=beforeColon.trim();
+  if (beforeColon.length() == 0) {
+    return null;
+  }
+  String fieldValue=getField(beforeColon,entry,database);
   if (fieldValue == null)   return null;
-  if (fieldAndFormatStrings.length == 1)   return fieldValue;
+  if (afterColon == null || afterColon.length() == 0)   return fieldValue;
   try {
-    LayoutFormatter[] formatters=LayoutEntry.getOptionalLayout(fieldAndFormatStrings[1],"");
+    LayoutFormatter[] formatters=LayoutEntry.getOptionalLayout(afterColon,"");
     for (int i=0; i < formatters.length; i++) {
       fieldValue=formatters[i].format(fieldValue);
     }

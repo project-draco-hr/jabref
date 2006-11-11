@@ -1,0 +1,31 @@
+{
+  if (stop < 0)   stop=Integer.MAX_VALUE;
+  int result=0;
+  int i=0;
+  char[] c=token.toCharArray();
+  int n=c.length;
+  int braceLevel=0;
+  while (i < n && result < stop) {
+    i++;
+    if (c[i - 1] == '{') {
+      braceLevel++;
+      if (braceLevel == 1 && i < n && c[i] == '\\') {
+        i++;
+        while (i < n && braceLevel > 0) {
+          if (c[i] == '}') {
+            braceLevel--;
+          }
+ else           if (c[i] == '{') {
+            braceLevel++;
+          }
+          i++;
+        }
+      }
+    }
+ else     if (c[i - 1] == '}') {
+      braceLevel--;
+    }
+    result++;
+  }
+  return result;
+}

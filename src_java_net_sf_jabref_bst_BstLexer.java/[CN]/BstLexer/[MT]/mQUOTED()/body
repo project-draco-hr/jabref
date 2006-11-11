@@ -1,0 +1,20 @@
+{
+  try {
+    ruleNestingLevel++;
+    int type=QUOTED;
+    int start=getCharIndex();
+    int line=getLine();
+    int charPosition=getCharPositionInLine();
+    int channel=Token.DEFAULT_CHANNEL;
+{
+      match('\'');
+      mIDENTIFIER();
+    }
+    if (token == null && ruleNestingLevel == 1) {
+      emit(type,line,charPosition,channel,start,getCharIndex() - 1);
+    }
+  }
+  finally {
+    ruleNestingLevel--;
+  }
+}

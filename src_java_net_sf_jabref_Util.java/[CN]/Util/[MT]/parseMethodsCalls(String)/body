@@ -1,0 +1,32 @@
+{
+  ArrayList result=new ArrayList();
+  char[] c=calls.toCharArray();
+  int i=0;
+  while (i < c.length) {
+    int start=i;
+    if (Character.isJavaIdentifierStart(c[i])) {
+      i++;
+      while (i < c.length && (Character.isJavaIdentifierPart(c[i]) || c[i] == '.')) {
+        i++;
+      }
+      if (i < c.length && c[i] == '(') {
+        String method=calls.substring(start,i);
+        i++;
+        i++;
+        int startParam=i;
+        i++;
+        while (i + 1 < c.length && !(c[i] == '"' && c[i + 1] == ')')) {
+          i++;
+        }
+        String param=calls.substring(startParam,i);
+        result.add(new String[]{method,param});
+      }
+ else {
+        String method=calls.substring(start,i);
+        result.add(new String[]{method});
+      }
+    }
+    i++;
+  }
+  return result;
+}

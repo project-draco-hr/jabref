@@ -1,0 +1,21 @@
+{
+  if (table.isEditing()) {
+    int col=table.getEditingColumn(), row=table.getEditingRow();
+    table.getCellEditor(row,col).stopCellEditing();
+  }
+  if (tableChanged) {
+    int i=0;
+    while (i < tableRows.size()) {
+      if (((TableRow)tableRows.elementAt(i)).name.equals(""))       tableRows.removeElementAt(i);
+ else       i++;
+    }
+    String[] names=new String[tableRows.size()], formats=new String[tableRows.size()];
+    for (i=0; i < tableRows.size(); i++) {
+      TableRow tr=(TableRow)tableRows.elementAt(i);
+      names[i]=tr.name;
+      formats[i]=tr.format;
+    }
+    Globals.prefs.putStringArray(NAME_FORMATER_KEY,names);
+    Globals.prefs.putStringArray(NAME_FORMATTER_VALUE,formats);
+  }
+}

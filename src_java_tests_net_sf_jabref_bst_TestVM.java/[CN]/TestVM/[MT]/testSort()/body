@@ -1,0 +1,14 @@
+{
+  VM vm=new VM("" + "ENTRY  { title }  { }  { label }" + "FUNCTION {presort} { cite$ 'sort.key$ := } ITERATE { presort } SORT");
+  Vector v=new Vector();
+  v.add(bibtexString2BibtexEntry("@article{a, author=\"AAA\"}"));
+  v.add(bibtexString2BibtexEntry("@article{b, author=\"BBB\"}"));
+  v.add(bibtexString2BibtexEntry("@article{d, author=\"DDD\"}"));
+  v.add(bibtexString2BibtexEntry("@article{c, author=\"CCC\"}"));
+  vm.run(v);
+  Vector v2=vm.getEntries();
+  assertEquals("a",((BstEntry)v2.get(0)).getBibtexEntry().getCiteKey());
+  assertEquals("b",((BstEntry)v2.get(1)).getBibtexEntry().getCiteKey());
+  assertEquals("c",((BstEntry)v2.get(2)).getBibtexEntry().getCiteKey());
+  assertEquals("d",((BstEntry)v2.get(3)).getBibtexEntry().getCiteKey());
+}

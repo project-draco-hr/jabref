@@ -1,0 +1,17 @@
+{
+  VM vm=new VM("" + "ENTRY  { " + "  address "+ "  author "+ "  title "+ "  type "+ "}  {}  { label } "+ "FUNCTION {test}{ cite$ } "+ "READ "+ "ITERATE { test }");
+  Vector v=new Vector();
+  v.add(t1BibtexEntry());
+  v.add(bibtexString2BibtexEntry("@article{test, title=\"BLA\"}"));
+  vm.run(v);
+  assertEquals(2,vm.getStack().size());
+  String s1=(String)vm.getStack().pop();
+  String s2=(String)vm.getStack().pop();
+  if (s1.equals("canh05")) {
+    assertEquals("test",s2);
+  }
+ else {
+    assertEquals("canh05",s2);
+    assertEquals("test",s1);
+  }
+}

@@ -1,0 +1,20 @@
+{
+  sb.append(c[i]);
+  i++;
+  while (i < c.length && braceLevel > 0) {
+    sb.append(c[i]);
+    i++;
+    String s=findSpecialChar(c,i);
+    if (s != null) {
+      i=convertAccented(c,i,s,sb,format);
+    }
+    while (i < c.length && braceLevel > 0 && c[i] != '\\') {
+      if (c[i] == '}')       braceLevel--;
+ else       if (c[i] == '{') {
+        braceLevel++;
+      }
+      i=convertNonControl(c,i,sb,format);
+    }
+  }
+  return i;
+}

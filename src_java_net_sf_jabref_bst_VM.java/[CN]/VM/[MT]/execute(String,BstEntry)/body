@@ -1,0 +1,29 @@
+{
+  if (context != null) {
+    if (context.fields.containsKey(name)) {
+      stack.push(context.fields.get(name));
+      return;
+    }
+    if (context.strings.containsKey(name)) {
+      stack.push(context.strings.get(name));
+      return;
+    }
+    if (context.integers.containsKey(name)) {
+      stack.push(context.integers.get(name));
+      return;
+    }
+  }
+  if (strings.containsKey(name)) {
+    stack.push(strings.get(name));
+    return;
+  }
+  if (integers.containsKey(name)) {
+    stack.push(integers.get(name));
+    return;
+  }
+  if (functions.containsKey(name)) {
+    ((BstFunction)functions.get(name)).execute(context);
+    return;
+  }
+  throw new VMException("No matching identifier found: " + name);
+}
