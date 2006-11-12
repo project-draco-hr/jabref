@@ -16,8 +16,12 @@
     }
  else     if (Character.isDigit((char)c)) {
       String numString=parseTextToken();
-      int numVal=Integer.parseInt(numString);
-      value.append((new Integer(numVal)).toString());
+      try {
+        value.append(String.valueOf(Integer.parseInt(numString)));
+      }
+ catch (      NumberFormatException e) {
+        value.append(numString);
+      }
     }
  else     if (c == '#') {
       consume('#');
