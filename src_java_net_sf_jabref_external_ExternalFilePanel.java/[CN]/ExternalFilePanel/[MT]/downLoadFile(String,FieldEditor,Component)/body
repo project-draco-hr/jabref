@@ -3,7 +3,7 @@
   if (res == null || res.trim().length() == 0)   return;
   final BibtexEntry targetEntry;
   if (entryEditor != null)   targetEntry=entryEditor.getEntry();
- else   targetEntry=null;
+ else   targetEntry=entry;
   (new Thread(){
     public String getPlannedFileName(    String res){
       String suffix=off.getSuffix(res);
@@ -57,6 +57,10 @@
         }
         if (entryEditor == null || entryEditor.getEntry() != targetEntry) {
           targetEntry.setField(fieldName,textToSet);
+          if (fieldEditor != null) {
+            fieldEditor.setText(textToSet);
+            fieldEditor.setEnabled(true);
+          }
           updateEditor=false;
         }
  else {
