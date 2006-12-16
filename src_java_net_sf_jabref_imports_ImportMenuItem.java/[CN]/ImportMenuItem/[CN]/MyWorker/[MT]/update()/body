@@ -14,6 +14,7 @@
         diag.toFront();
       }
  else {
+        boolean generateKeys=Globals.prefs.getBoolean("generateKeysAfterInspection");
         NamedCompound ce=new NamedCompound(Globals.lang("Import entries"));
         for (Iterator i=bibtexResult.getDatabase().getEntries().iterator(); i.hasNext(); ) {
           BibtexEntry entry=(BibtexEntry)i.next();
@@ -30,6 +31,9 @@
             }
             if (keepEntry) {
               toAddTo.insertEntry(entry);
+              if (generateKeys) {
+                LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),toAddTo,entry);
+              }
               ce.addEdit(new UndoableInsertEntry(toAddTo,entry,panel));
             }
           }
