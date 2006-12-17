@@ -5,6 +5,10 @@
     if (document.isEncrypted()) {
       throw new EncryptionNotSupportedException("Error: Cannot add metadata to encrypted document.");
     }
+    if (writePDFInfo && bibtexEntries.size() == 1) {
+      writeDocumentInformation(document,(BibtexEntry)bibtexEntries.iterator().next());
+      writeDublinCore(document,bibtexEntries);
+    }
     PDDocumentCatalog catalog=document.getDocumentCatalog();
     PDMetadata metaRaw=catalog.getMetadata();
     XMPMetadata meta;

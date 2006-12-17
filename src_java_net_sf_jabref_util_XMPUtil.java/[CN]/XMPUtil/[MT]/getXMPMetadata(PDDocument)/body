@@ -1,0 +1,10 @@
+{
+  PDDocumentCatalog catalog=document.getDocumentCatalog();
+  PDMetadata metaRaw=catalog.getMetadata();
+  if (metaRaw == null) {
+    return null;
+  }
+  XMPMetadata meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+  meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
+  return meta;
+}
