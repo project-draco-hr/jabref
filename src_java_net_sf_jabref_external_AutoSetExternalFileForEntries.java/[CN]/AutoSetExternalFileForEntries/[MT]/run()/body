@@ -3,6 +3,12 @@
     panel.output(Globals.lang("No entries selected."));
     return;
   }
+  panel.frame().setProgressBarValue(0);
+  panel.frame().setProgressBarVisible(true);
+  int weightAutoSet=10;
+  int progressBarMax=(autoSet ? weightAutoSet * sel.length : 0) + (checkExisting ? sel.length : 0);
+  panel.frame().setProgressBarMaximum(progressBarMax);
+  int progress=0;
   skipped=0;
   entriesChanged=0;
   brokenLinks=0;
@@ -13,6 +19,8 @@
   String dir=panel.metaData().getFileDirectory(fieldName);
   if (autoSet) {
     for (int i=0; i < sel.length; i++) {
+      progress+=weightAutoSet;
+      panel.frame().setProgressBarValue(progress);
       final Object old=sel[i].getField(fieldName);
       if ((old != null) && !old.equals("") && !overWriteAllowed)       continue;
       extPan.setEntry(sel[i]);
@@ -33,6 +41,7 @@
   }
   if (checkExisting) {
     mainLoop:     for (int i=0; i < sel.length; i++) {
+      panel.frame().setProgressBarValue(progress++);
       final Object old=sel[i].getField(fieldName);
       if ((old != null) && !((String)old).equals("")) {
         File file=Util.expandFilename((String)old,new String[]{dir,"."});
