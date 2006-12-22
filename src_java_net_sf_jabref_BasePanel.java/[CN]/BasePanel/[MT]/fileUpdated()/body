@@ -1,27 +1,32 @@
 {
   if (saving)   return;
   updatedExternally=true;
+  final ChangeScanner scanner=new ChangeScanner(frame,BasePanel.this);
   Thread t=new Thread(){
     public void run(){
-      ChangeScanner scanner=new ChangeScanner(frame,BasePanel.this);
-      scanner.changeScan(BasePanel.this.getFile());
-      try {
-        scanner.join();
+      boolean hasAlready=sidePaneManager.hasComponent(FileUpdatePanel.NAME);
+      if (hasAlready) {
+        sidePaneManager.hideComponent(FileUpdatePanel.NAME);
+        sidePaneManager.unregisterComponent(FileUpdatePanel.NAME);
       }
- catch (      InterruptedException e) {
-        e.printStackTrace();
-      }
-      if (scanner.changesFound()) {
-        FileUpdatePanel pan=new FileUpdatePanel(frame,BasePanel.this,sidePaneManager,getFile(),scanner);
-        sidePaneManager.register("fileUpdate",pan);
-        sidePaneManager.show("fileUpdate");
-        setUpdatedExternally(false);
-      }
- else {
-        setUpdatedExternally(false);
-      }
+      FileUpdatePanel pan=new FileUpdatePanel(frame,BasePanel.this,sidePaneManager,getFile(),scanner);
+      sidePaneManager.register(FileUpdatePanel.NAME,pan);
+      sidePaneManager.show(FileUpdatePanel.NAME);
+      setUpdatedExternally(false);
     }
   }
 ;
-  SwingUtilities.invokeLater(t);
+  scanner.changeScan(BasePanel.this.getFile());
+  try {
+    scanner.join();
+  }
+ catch (  InterruptedException e) {
+    e.printStackTrace();
+  }
+  if (scanner.changesFound()) {
+    SwingUtilities.invokeLater(t);
+  }
+ else {
+    setUpdatedExternally(false);
+  }
 }
