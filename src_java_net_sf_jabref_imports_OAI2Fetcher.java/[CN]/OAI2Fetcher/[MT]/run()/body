@@ -16,11 +16,9 @@
       }
       frame.output("Processing " + key);
       if (!shouldContinue)       break;
-      BibtexEntry be=new BibtexEntry(Util.createNeutralId(),BibtexEntryType.ARTICLE);
-      be.setField(OAI2_IDENTIFIER_FIELD,key);
-      importOai2Entry(be);
+      BibtexEntry be=importOai2Entry(key);
       if (shouldWait())       lastCall=new Date();
-      dialog.addEntry(be);
+      if (be != null)       dialog.addEntry(be);
       dialog.setProgress(i + 1,keys.length);
     }
     dialog.entryListComplete();

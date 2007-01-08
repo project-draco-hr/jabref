@@ -1,0 +1,25 @@
+{
+  key=fixKey(key);
+  String url=constructUrl(key);
+  try {
+    URL oai2Url=new URL(url);
+    HttpURLConnection oai2Connection=(HttpURLConnection)oai2Url.openConnection();
+    oai2Connection.setRequestProperty("User-Agent","Jabref");
+    InputStream inputStream=oai2Connection.getInputStream();
+    BibtexEntry be=new BibtexEntry(Util.createNeutralId(),BibtexEntryType.ARTICLE);
+    be.setField(OAI2_IDENTIFIER_FIELD,key);
+    DefaultHandler handlerBase=new OAI2Handler(be);
+    saxParser.parse(inputStream,handlerBase);
+    return be;
+  }
+ catch (  IOException e) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("An Exception ocurred while accessing '%0'",url) + "\n\n" + e.toString(),Globals.lang(getKeyName()),JOptionPane.ERROR_MESSAGE);
+  }
+catch (  SAXException e) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("An SAXException ocurred while parsing '%0':",url) + "\n\n" + e.getMessage(),Globals.lang(getKeyName()),JOptionPane.ERROR_MESSAGE);
+  }
+catch (  RuntimeException e) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("An Error occurred while fetching from OAI2 source (%0):",url) + "\n\n" + e.getMessage(),Globals.lang(getKeyName()),JOptionPane.ERROR_MESSAGE);
+  }
+  return null;
+}
