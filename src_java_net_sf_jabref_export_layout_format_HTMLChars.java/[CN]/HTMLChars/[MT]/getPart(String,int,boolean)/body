@@ -3,10 +3,10 @@
   int count=0;
   StringBuffer part=new StringBuffer();
   i++;
-  for (; i < text.length(); ++i) {
-    if (!Character.isWhitespace(text.charAt(i)))     break;
+  while (i < text.length() && Character.isWhitespace(text.charAt(i))) {
+    i++;
   }
-  for (; i < text.length(); ++i) {
+  while (i < text.length()) {
     c=text.charAt(i);
     if (!terminateOnEndBraceOnly && count == 0 && Character.isWhitespace(c)) {
       i--;
@@ -15,6 +15,7 @@
     if (c == '}' && --count < 0)     break;
  else     if (c == '{')     count++;
     part.append((char)c);
+    i++;
   }
   return new IntAndString(part.length(),format(part.toString()));
 }

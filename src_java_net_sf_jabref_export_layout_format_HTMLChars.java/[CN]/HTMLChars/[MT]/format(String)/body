@@ -1,7 +1,7 @@
 {
   int i;
-  field=firstFormat(field);
-  StringBuffer sb=new StringBuffer("");
+  field=field.replaceAll("&|\\\\&","&amp;").replaceAll("[\\n]{1,}","<p>");
+  StringBuffer sb=new StringBuffer();
   StringBuffer currentCommand=null;
   char c;
   boolean escaped=false, incommand=false;
@@ -12,6 +12,16 @@
       escaped=false;
     }
  else     if (c == '\\') {
+      if (incommand) {
+        String command=currentCommand.toString();
+        Object result=Globals.HTMLCHARS.get(command);
+        if (result != null) {
+          sb.append((String)result);
+        }
+ else {
+          sb.append(command);
+        }
+      }
       escaped=true;
       incommand=true;
       currentCommand=new StringBuffer();
@@ -42,6 +52,18 @@
           incommand=false;
           escaped=false;
         }
+ else {
+          if (i + 1 == field.length()) {
+            String command=currentCommand.toString();
+            Object result=Globals.HTMLCHARS.get(command);
+            if (result != null) {
+              sb.append((String)result);
+            }
+ else {
+              sb.append(command);
+            }
+          }
+        }
       }
     }
  else {
@@ -61,26 +83,35 @@
           i+=part.i;
           sb.append("<b>").append(part.s).append("</b>");
         }
- else {
+ else         if (c == '{') {
           IntAndString part=getPart(field,i,true);
           i+=part.i;
           argument=part.s;
+          if (argument != null) {
+            Object result=Globals.HTMLCHARS.get(command + argument);
+            if (result != null) {
+              sb.append((String)result);
+            }
+ else {
+              sb.append(argument);
+            }
+          }
+        }
+ else {
+          Object result=Globals.HTMLCHARS.get(command);
+          if (result != null) {
+            sb.append((String)result);
+          }
+ else {
+            sb.append(command);
+          }
+          sb.append(' ');
         }
       }
  else       if (c == '}') {
         argument="";
       }
  else {
-      }
-      if (argument != null) {
-        String command=currentCommand.toString();
-        Object result=Globals.HTMLCHARS.get(command + argument);
-        if (result != null) {
-          sb.append((String)result);
-        }
- else {
-          sb.append(argument);
-        }
       }
       incommand=false;
       escaped=false;
