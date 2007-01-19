@@ -1,25 +1,9 @@
 {
   StringBuffer sb=new StringBuffer(100);
-  String fieldText;
-  boolean previousSkipped=false;
   for (int i=0; i < layoutEntries.length; i++) {
-    fieldText=layoutEntries[i].doLayout(bibtex,database);
+    String fieldText=layoutEntries[i].doLayout(bibtex,database);
     if (fieldText == null)     fieldText="";
-{
-      if (previousSkipped) {
-        int eol=0;
-        while ((eol < fieldText.length()) && ((fieldText.charAt(eol) == '\n') || (fieldText.charAt(eol) == '\r'))) {
-          eol++;
-        }
-        if (eol < fieldText.length()) {
-          sb.append(fieldText.substring(eol));
-        }
-      }
- else {
-        sb.append(fieldText);
-      }
-    }
-    previousSkipped=false;
+    sb.append(fieldText);
   }
   return sb.toString();
 }
