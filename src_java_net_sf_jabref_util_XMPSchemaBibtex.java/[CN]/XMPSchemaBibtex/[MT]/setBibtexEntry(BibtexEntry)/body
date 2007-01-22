@@ -1,11 +1,29 @@
 {
   Object[] fields=entry.getAllFields();
-  for (int i=0; i < fields.length; i++) {
-    if (fields[i].equals("author") || fields[i].equals("editor")) {
-      setPersonList(fields[i].toString(),entry.getField(fields[i].toString()).toString());
+  Object[] results;
+  int resultsSize;
+  JabRefPreferences prefs=JabRefPreferences.getInstance();
+  if (prefs.getBoolean("useXmpPrivacyFilter")) {
+    TreeSet filters=new TreeSet(Arrays.asList(prefs.getStringArray("xmpPrivacyFilter")));
+    results=new Object[fields.length];
+    resultsSize=0;
+    for (int i=0; i < fields.length; i++) {
+      if (!filters.contains(fields[i])) {
+        results[resultsSize++]=fields[i];
+      }
+    }
+  }
+ else {
+    results=fields;
+    resultsSize=fields.length;
+  }
+  for (int i=0; i < resultsSize; i++) {
+    String s=results[i].toString();
+    if (s.equals("author") || s.equals("editor")) {
+      setPersonList(s,entry.getField(s).toString());
     }
  else {
-      setTextProperty(fields[i].toString(),entry.getField(fields[i].toString()).toString());
+      setTextProperty(s,entry.getField(s).toString());
     }
   }
   setTextProperty("entrytype",entry.getType().getName());
