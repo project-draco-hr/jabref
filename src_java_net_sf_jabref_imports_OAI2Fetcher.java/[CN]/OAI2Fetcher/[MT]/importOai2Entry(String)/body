@@ -10,6 +10,11 @@
     be.setField(OAI2_IDENTIFIER_FIELD,key);
     DefaultHandler handlerBase=new OAI2Handler(be);
     saxParser.parse(inputStream,handlerBase);
+    Object[] fields=be.getAllFields();
+    for (int i=0; i < fields.length; i++) {
+      String name=fields[i].toString();
+      be.setField(name,correctLineBreaks(be.getField(name).toString()));
+    }
     return be;
   }
  catch (  IOException e) {
