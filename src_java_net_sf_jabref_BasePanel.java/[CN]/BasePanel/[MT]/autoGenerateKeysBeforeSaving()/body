@@ -1,0 +1,20 @@
+{
+  if (Globals.prefs.getBoolean("generateKeysBeforeSaving")) {
+    BibtexEntry bes;
+    NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
+    boolean any=false;
+    for (Iterator i=database.getKeySet().iterator(); i.hasNext(); ) {
+      bes=database.getEntryById((String)i.next());
+      String oldKey=bes.getCiteKey();
+      if ((oldKey == null) || (oldKey.equals(""))) {
+        LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);
+        ce.addEdit(new UndoableKeyChange(database,bes.getId(),null,(String)bes.getField(BibtexFields.KEY_FIELD)));
+        any=true;
+      }
+    }
+    if (any) {
+      ce.end();
+      undoManager.addEdit(ce);
+    }
+  }
+}

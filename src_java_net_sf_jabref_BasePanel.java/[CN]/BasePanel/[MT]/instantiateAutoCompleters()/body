@@ -1,0 +1,12 @@
+{
+  autoCompleters.clear();
+  String[] completeFields=Globals.prefs.getStringArray("autoCompleteFields");
+  for (int i=0; i < completeFields.length; i++) {
+    String field=completeFields[i];
+    autoCompleters.put(field,new AutoCompleter(field));
+  }
+  for (Iterator i=database.getKeySet().iterator(); i.hasNext(); ) {
+    BibtexEntry entry=database.getEntryById((String)i.next());
+    Util.updateCompletersForEntry(autoCompleters,entry);
+  }
+}

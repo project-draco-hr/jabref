@@ -66,24 +66,7 @@
         return;
       }
       try {
-        if (Globals.prefs.getBoolean("generateKeysBeforeSaving")) {
-          BibtexEntry bes;
-          NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
-          boolean any=false;
-          for (Iterator i=database.getKeySet().iterator(); i.hasNext(); ) {
-            bes=database.getEntryById((String)i.next());
-            String oldKey=bes.getCiteKey();
-            if ((oldKey == null) || (oldKey.equals(""))) {
-              LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);
-              ce.addEdit(new UndoableKeyChange(database,bes.getId(),null,(String)bes.getField(BibtexFields.KEY_FIELD)));
-              any=true;
-            }
-          }
-          if (any) {
-            ce.end();
-            undoManager.addEdit(ce);
-          }
-        }
+        autoGenerateKeysBeforeSaving();
         success=saveDatabase(getFile(),false,encoding);
         try {
           Globals.fileUpdateMonitor.updateTimeStamp(fileMonitorHandle);
@@ -106,10 +89,28 @@
 );
   actions.put("saveAs",new BaseAction(){
     public void action() throws Throwable {
-      String chosenFile=Globals.getNewFile(frame,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false);
-      if (chosenFile != null) {
-        metaData.setFile(new File(chosenFile));
-        if (!metaData.getFile().exists() || (JOptionPane.showConfirmDialog(frame,"'" + metaData.getFile().getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
+      JPanel options=new JPanel();
+      DefaultFormBuilder builder=new DefaultFormBuilder(options,new FormLayout("left:pref","pref, pref, pref"));
+      ButtonGroup bg=new ButtonGroup();
+      JRadioButton sAll=new JRadioButton("<html>All entries</html>");
+      JRadioButton sSel=new JRadioButton("<html>Selected<br>entries</html>");
+      sAll.setSelected(true);
+      bg.add(sAll);
+      bg.add(sSel);
+      builder.append(Globals.lang("Include") + ":");
+      builder.append(sAll);
+      builder.append(sSel);
+      builder.appendGlueRow();
+      options.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+      String chosenFile=Globals.getNewFile(frame,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false,options);
+      if (chosenFile == null)       return;
+      Globals.prefs.put("workingDirectory",metaData.getFile().getParent());
+      if ((new File(chosenFile)).exists() && (JOptionPane.showConfirmDialog(frame,"'" + metaData.getFile().getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)) {
+        return;
+      }
+      if (sAll.isSelected()) {
+        if (chosenFile != null) {
+          metaData.setFile(new File(chosenFile));
           runCommand("save");
           try {
             fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(BasePanel.this,getFile());
@@ -117,12 +118,14 @@
  catch (          IOException ex) {
             ex.printStackTrace();
           }
-          Globals.prefs.put("workingDirectory",metaData.getFile().getParent());
           frame.getFileHistory().newFile(metaData.getFile().getPath());
         }
+      }
  else {
-          metaData.setFile(null);
-        }
+        File expFile=new File(chosenFile);
+        saveDatabase(expFile,true,encoding);
+        frame.getFileHistory().newFile(expFile.getPath());
+        frame.output(Globals.lang("Saved selected to") + " '" + expFile.getPath()+ "'.");
       }
     }
   }
@@ -552,13 +555,6 @@ catch (          Throwable ex) {
   actions.put("dupliCheck",new BaseAction(){
     public void action(){
       DuplicateSearch ds=new DuplicateSearch(BasePanel.this);
-      ds.start();
-    }
-  }
-);
-  actions.put("strictDupliCheck",new BaseAction(){
-    public void action(){
-      StrictDuplicateSearch ds=new StrictDuplicateSearch(BasePanel.this);
       ds.start();
     }
   }

@@ -10,6 +10,12 @@ first=new JButton(Globals.lang("Remove old entry"));
 second=new JButton(Globals.lang("Remove entry from import"));
 both=new JButton(Globals.lang("Keep both"));
 break;
+case DUPLICATE_SEARCH_WITH_EXACT:
+first=new JButton(Globals.lang("Keep upper"));
+second=new JButton(Globals.lang("Keep lower"));
+both=new JButton(Globals.lang("Keep both"));
+removeExact=new JButton(Globals.lang("Automatically remove exact duplicates"));
+break;
 default :
 first=new JButton(Globals.lang("Import and remove old entry"));
 second=new JButton(Globals.lang("Do not import entry"));
@@ -56,6 +62,7 @@ gbl.setConstraints(sp,con);
 source.add(sp);
 tabbed.add(Globals.lang("Short form"),main);
 tabbed.add(Globals.lang("Complete record"),source);
+if (removeExact != null) options.add(removeExact);
 options.add(first);
 options.add(second);
 options.add(both);
@@ -82,6 +89,14 @@ dispose();
 both.addActionListener(new ActionListener(){
 public void actionPerformed(ActionEvent e){
 status=KEEP_BOTH;
+block=false;
+dispose();
+}
+}
+);
+if (removeExact != null) removeExact.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent e){
+status=AUTOREMOVE_EXACT;
 block=false;
 dispose();
 }
