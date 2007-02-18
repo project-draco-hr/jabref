@@ -1,0 +1,18 @@
+{
+  _prefs.putBoolean("autoOpenForm",autoOpenForm.isSelected());
+  _prefs.putBoolean("defaultShowSource",defSource.isSelected());
+  _prefs.putBoolean("enableSourceEditing",editSource.isSelected());
+  _prefs.putBoolean("disableOnMultipleSelection",disableOnMultiple.isSelected());
+  boolean oldAutoComplete=_prefs.getBoolean("autoComplete");
+  boolean oldShowSource=_prefs.getBoolean("showSource");
+  String oldAutoCompFields=_prefs.get("autoCompleteFields");
+  _prefs.putBoolean("autoComplete",autoComplete.isSelected());
+  _prefs.put("autoCompleteFields",autoCompFields.getText());
+  _prefs.putBoolean("showSource",showSource.isSelected());
+  if ((oldShowSource != showSource.isSelected()) || (oldAutoComplete != autoComplete.isSelected()) || (!oldAutoCompFields.equals(autoCompFields.getText()))) {
+    for (int j=0; j < _frame.getTabbedPane().getTabCount(); j++) {
+      BasePanel bp=(BasePanel)_frame.getTabbedPane().getComponentAt(j);
+      bp.entryEditors.clear();
+    }
+  }
+}

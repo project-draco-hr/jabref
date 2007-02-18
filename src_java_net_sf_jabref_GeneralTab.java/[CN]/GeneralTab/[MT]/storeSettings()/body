@@ -1,10 +1,6 @@
 {
-  _prefs.putBoolean("autoOpenForm",autoOpenForm.isSelected());
   _prefs.putBoolean("backup",backup.isSelected());
   _prefs.putBoolean("openLastEdited",openLast.isSelected());
-  _prefs.putBoolean("defaultShowSource",defSource.isSelected());
-  _prefs.putBoolean("enableSourceEditing",editSource.isSelected());
-  _prefs.putBoolean("disableOnMultipleSelection",disableOnMultiple.isSelected());
   _prefs.putBoolean("useOwner",useOwner.isSelected());
   _prefs.putBoolean("useTimeStamp",useTimeStamp.isSelected());
   _prefs.putBoolean("dialogWarningForDuplicateKey",keyDuplicateWarningDialog.isSelected());
@@ -34,14 +30,6 @@
     updateSpecialFields=true;
   }
   if (updateSpecialFields)   _prefs.updateSpecialFieldHandling();
-  boolean oldShowSource=_prefs.getBoolean("showSource");
-  _prefs.putBoolean("showSource",showSource.isSelected());
-  if (oldShowSource != showSource.isSelected()) {
-    for (int j=0; j < _frame.getTabbedPane().getTabCount(); j++) {
-      BasePanel bp=(BasePanel)_frame.getTabbedPane().getComponentAt(j);
-      bp.entryEditors.clear();
-    }
-  }
   if (!GUIGlobals.LANGUAGES.get(language.getSelectedItem()).equals(_prefs.get("language"))) {
     _prefs.put("language",GUIGlobals.LANGUAGES.get(language.getSelectedItem()).toString());
     Globals.setLanguage(GUIGlobals.LANGUAGES.get(language.getSelectedItem()).toString(),"");
