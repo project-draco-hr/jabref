@@ -27,7 +27,15 @@
           return;
         }
         try {
-          Util.openExternalViewer(panel.metaData(),(String)link,fieldName);
+          if (fieldName.equals(GUIGlobals.FILE_FIELD)) {
+            FileListTableModel fileList=new FileListTableModel();
+            fileList.setContent((String)link);
+            if (fileList.getRowCount() > 0) {
+              FileListEntry entry=fileList.getEntry(0);
+              Util.openExternalFileAnyFormat(panel.metaData(),entry.getLink(),entry.getType());
+            }
+          }
+ else           Util.openExternalViewer(panel.metaData(),(String)link,fieldName);
         }
  catch (        IOException ex) {
           panel.output(Globals.lang("Error") + ": " + ex.getMessage());

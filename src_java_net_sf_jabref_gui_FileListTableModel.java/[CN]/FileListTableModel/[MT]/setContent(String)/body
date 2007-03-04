@@ -1,0 +1,33 @@
+{
+  if (value == null)   value="";
+  ArrayList newList=new ArrayList();
+  StringBuilder sb=new StringBuilder();
+  ArrayList thisEntry=new ArrayList();
+  boolean escaped=false;
+  for (int i=0; i < value.length(); i++) {
+    char c=value.charAt(i);
+    if (!escaped && (c == '\\')) {
+      escaped=true;
+      continue;
+    }
+ else     if (!escaped && (c == ':')) {
+      thisEntry.add(sb.toString());
+      sb=new StringBuilder();
+    }
+ else     if (!escaped && (c == ';')) {
+      thisEntry.add(sb.toString());
+      sb=new StringBuilder();
+      newList.add(decodeEntry(thisEntry));
+      thisEntry.clear();
+    }
+ else     sb.append(c);
+    escaped=false;
+  }
+  if (sb.length() > 0)   thisEntry.add(sb.toString());
+  if (thisEntry.size() > 0)   newList.add(decodeEntry(thisEntry));
+synchronized (list) {
+    list.clear();
+    list.addAll(newList);
+  }
+  fireTableChanged(new TableModelEvent(this));
+}

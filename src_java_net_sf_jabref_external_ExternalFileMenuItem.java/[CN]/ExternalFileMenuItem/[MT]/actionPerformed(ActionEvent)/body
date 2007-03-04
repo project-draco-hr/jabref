@@ -1,6 +1,14 @@
 {
   try {
-    Util.openExternalFileAnyFormat(metaData,link);
+    if (this.fileType != null)     Util.openExternalFileAnyFormat(metaData,link,fileType);
+ else {
+      File file=new File(link);
+      String name=file.getName();
+      int pos=name.indexOf('.');
+      String extension=((pos >= 0) && (pos < name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
+      ExternalFileType fileType=Globals.prefs.getExternalFileTypeByExt(extension);
+      Util.openExternalFileAnyFormat(metaData,link,fileType);
+    }
   }
  catch (  IOException e1) {
     e1.printStackTrace();

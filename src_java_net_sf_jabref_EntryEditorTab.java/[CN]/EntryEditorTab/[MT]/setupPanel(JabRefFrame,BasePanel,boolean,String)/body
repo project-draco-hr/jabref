@@ -1,0 +1,68 @@
+{
+  InputMap im=panel.getInputMap(JComponent.WHEN_FOCUSED);
+  ActionMap am=panel.getActionMap();
+  im.put(Globals.prefs.getKey("Entry editor, previous entry"),"prev");
+  am.put("prev",parent.prevEntryAction);
+  im.put(Globals.prefs.getKey("Entry editor, next entry"),"next");
+  am.put("next",parent.nextEntryAction);
+  im.put(Globals.prefs.getKey("Entry editor, store field"),"store");
+  am.put("store",parent.storeFieldAction);
+  im.put(Globals.prefs.getKey("Entry editor, next panel"),"right");
+  im.put(Globals.prefs.getKey("Entry editor, next panel 2"),"right");
+  am.put("left",parent.switchLeftAction);
+  im.put(Globals.prefs.getKey("Entry editor, previous panel"),"left");
+  im.put(Globals.prefs.getKey("Entry editor, previous panel 2"),"left");
+  am.put("right",parent.switchRightAction);
+  im.put(Globals.prefs.getKey("Help"),"help");
+  am.put("help",parent.helpAction);
+  im.put(Globals.prefs.getKey("Save database"),"save");
+  am.put("save",parent.saveDatabaseAction);
+  im.put(Globals.prefs.getKey("Next tab"),"nexttab");
+  am.put("nexttab",parent.frame.nextTab);
+  im.put(Globals.prefs.getKey("Previous tab"),"prevtab");
+  am.put("prevtab",parent.frame.prevTab);
+  panel.setName(title);
+  String colSpec="fill:pref, 1dlu, fill:pref:grow, 1dlu, fill:pref";
+  StringBuffer sb=new StringBuffer();
+  for (int i=0; i < fields.length; i++) {
+    sb.append("fill:pref:grow, ");
+  }
+  if (addKeyField)   sb.append("4dlu, fill:pref");
+ else   sb.delete(sb.length() - 2,sb.length());
+  String rowSpec=sb.toString();
+  DefaultFormBuilder builder=new DefaultFormBuilder(panel,new FormLayout(colSpec,rowSpec));
+  for (int i=0; i < fields.length; i++) {
+    int editorType=BibtexFields.getEditorType(fields[i]);
+    final FieldEditor ta;
+    if (editorType == GUIGlobals.FILE_LIST_EDITOR)     ta=new FileListEditor(frame,fields[i],null);
+ else     ta=new FieldTextArea(fields[i],null);
+    JComponent ex=parent.getExtra(fields[i],ta);
+    setupJTextComponent(ta.getTextComponent());
+    AutoCompleter autoComp=bPanel.getAutoCompleter(fields[i]);
+    if (autoComp != null) {
+      ta.getTextComponent().addKeyListener(new AutoCompleteListener(autoComp));
+    }
+    editors.put(fields[i],ta);
+    if (i == 0)     activeField=ta;
+    ta.getPane().setPreferredSize(new Dimension(100,(int)(50.0 * BibtexFields.getFieldWeight(fields[i]))));
+    builder.append(ta.getLabel());
+    if (ex == null)     builder.append(ta.getPane(),3);
+ else {
+      builder.append(ta.getPane());
+      JPanel pan=new JPanel();
+      pan.setLayout(new BorderLayout());
+      pan.add(ex,BorderLayout.NORTH);
+      builder.append(pan);
+    }
+    builder.nextLine();
+  }
+  if (addKeyField) {
+    final FieldTextField tf=new FieldTextField(BibtexFields.KEY_FIELD,(String)parent.getEntry().getField(BibtexFields.KEY_FIELD),true);
+    setupJTextComponent(tf);
+    editors.put("bibtexkey",tf);
+    if (editors.size() == 1)     activeField=tf;
+    builder.nextLine();
+    builder.append(tf.getLabel());
+    builder.append(tf,3);
+  }
+}

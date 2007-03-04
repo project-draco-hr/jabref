@@ -1,0 +1,54 @@
+{
+  this.entry=entry;
+  types=new JComboBox(Globals.prefs.getExternalFileTypeSelection());
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:150dlu",""));
+  builder.append(Globals.lang("Link"));
+  builder.append(link);
+  builder.nextLine();
+  builder.append(Globals.lang("Description"));
+  builder.append(description);
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  builder.nextLine();
+  builder.append(Globals.lang("File type"));
+  builder.append(types);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addGridded(ok);
+  bb.addGridded(cancel);
+  bb.addGlue();
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      diag.dispose();
+      storeSettings(FileListEntryEditor.this.entry);
+      okPressed=true;
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      diag.dispose();
+    }
+  }
+);
+  link.addFocusListener(new FocusListener(){
+    public void focusGained(    FocusEvent e){
+    }
+    public void focusLost(    FocusEvent e){
+      if ((types.getSelectedIndex() == -1) && (link.getText().trim().length() > 0)) {
+        String theLink=link.getText().trim();
+        int index=theLink.indexOf('.');
+        if ((index >= 0) && (index < theLink.length() - 1)) {
+          ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(theLink.substring(index + 1));
+          if (type != null)           types.setSelectedItem(type);
+        }
+      }
+    }
+  }
+);
+  diag=new JDialog(parent,Globals.lang("Edit file link"),true);
+  diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  diag.pack();
+  Util.placeDialog(diag,parent);
+  setValues(entry);
+}

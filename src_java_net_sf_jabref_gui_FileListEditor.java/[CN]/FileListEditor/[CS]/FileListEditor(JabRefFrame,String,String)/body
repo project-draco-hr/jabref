@@ -1,0 +1,34 @@
+{
+  this.frame=frame;
+  this.fieldName=fieldName;
+  label=new FieldNameLabel(" " + Util.nCase(fieldName) + " ");
+  tableModel=new FileListTableModel();
+  setText(content);
+  setModel(tableModel);
+  sPane=new JScrollPane(this);
+  setTableHeader(null);
+  addMouseListener(new TableClickListener());
+  add=new JButton(GUIGlobals.getImage("add"));
+  remove=new JButton(GUIGlobals.getImage("remove"));
+  add.setMargin(new Insets(0,0,0,0));
+  remove.setMargin(new Insets(0,0,0,0));
+  add.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      addEntry();
+    }
+  }
+);
+  remove.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      removeEntries();
+    }
+  }
+);
+  JToolBar tlb=new JToolBar(JToolBar.VERTICAL);
+  tlb.add(add);
+  tlb.add(remove);
+  panel=new JPanel();
+  panel.setLayout(new BorderLayout());
+  panel.add(sPane,BorderLayout.CENTER);
+  panel.add(tlb,BorderLayout.EAST);
+}
