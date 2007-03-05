@@ -1,0 +1,13 @@
+{
+  File initial=new File(comp.getText().trim());
+  if (comp.getText().trim().length() == 0) {
+    initial=new File(Globals.prefs.get("fileWorkingDirectory"));
+  }
+  String chosen=Globals.getNewFile(parent,initial,Globals.NONE,JFileChooser.OPEN_DIALOG,false);
+  if (chosen != null) {
+    File newFile=new File(chosen);
+    Globals.prefs.put("fileWorkingDirectory",newFile.getParent());
+    comp.setText(newFile.getPath());
+    comp.requestFocus();
+  }
+}

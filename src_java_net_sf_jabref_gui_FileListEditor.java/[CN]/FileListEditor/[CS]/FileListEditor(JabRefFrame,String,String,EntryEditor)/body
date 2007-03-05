@@ -1,6 +1,7 @@
 {
   this.frame=frame;
   this.fieldName=fieldName;
+  this.entryEditor=entryEditor;
   label=new FieldNameLabel(" " + Util.nCase(fieldName) + " ");
   tableModel=new FileListTableModel();
   setText(content);
@@ -10,8 +11,12 @@
   addMouseListener(new TableClickListener());
   add=new JButton(GUIGlobals.getImage("add"));
   remove=new JButton(GUIGlobals.getImage("remove"));
+  up=new JButton(GUIGlobals.getImage("up"));
+  down=new JButton(GUIGlobals.getImage("down"));
   add.setMargin(new Insets(0,0,0,0));
   remove.setMargin(new Insets(0,0,0,0));
+  up.setMargin(new Insets(0,0,0,0));
+  down.setMargin(new Insets(0,0,0,0));
   add.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       addEntry();
@@ -24,11 +29,26 @@
     }
   }
 );
-  JToolBar tlb=new JToolBar(JToolBar.VERTICAL);
-  tlb.add(add);
-  tlb.add(remove);
+  up.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      moveEntry(-1);
+    }
+  }
+);
+  down.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      moveEntry(1);
+    }
+  }
+);
+  JPanel buttons=new JPanel();
+  buttons.setLayout(new GridLayout(2,2));
+  buttons.add(add);
+  buttons.add(up);
+  buttons.add(remove);
+  buttons.add(down);
   panel=new JPanel();
   panel.setLayout(new BorderLayout());
   panel.add(sPane,BorderLayout.CENTER);
-  panel.add(tlb,BorderLayout.EAST);
+  panel.add(buttons,BorderLayout.EAST);
 }
