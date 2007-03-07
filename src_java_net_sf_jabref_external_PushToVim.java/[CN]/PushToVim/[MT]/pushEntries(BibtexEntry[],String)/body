@@ -1,0 +1,37 @@
+{
+  couldNotConnect=false;
+  couldNotRunVim=false;
+  try {
+    String[] com=Globals.ON_WIN ? new String[]{"vim","--remote-send","\\\\" + Globals.prefs.get("citeCommand") + "{"+ keys+ "}"} : new String[]{"vim","--remote-send","\\" + Globals.prefs.get("citeCommand") + "{"+ keys+ "}"};
+    final Process p=Runtime.getRuntime().exec(com);
+    Runnable errorListener=new Runnable(){
+      public void run(){
+        InputStream out=p.getErrorStream();
+        int c;
+        StringBuffer sb=new StringBuffer();
+        try {
+          while ((c=out.read()) != -1)           sb.append((char)c);
+        }
+ catch (        IOException e) {
+          e.printStackTrace();
+        }
+        if (sb.toString().trim().length() > 0) {
+          System.out.println(sb.toString());
+          couldNotConnect=true;
+          return;
+        }
+      }
+    }
+;
+    Thread t=new Thread(errorListener);
+    t.start();
+    t.join();
+  }
+ catch (  IOException excep) {
+    couldNotRunVim=true;
+    return;
+  }
+catch (  InterruptedException e) {
+    e.printStackTrace();
+  }
+}
