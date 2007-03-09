@@ -13,6 +13,7 @@
   remove=new JButton(GUIGlobals.getImage("remove"));
   up=new JButton(GUIGlobals.getImage("up"));
   down=new JButton(GUIGlobals.getImage("down"));
+  auto=new JButton(Globals.lang("Auto"));
   add.setMargin(new Insets(0,0,0,0));
   remove.setMargin(new Insets(0,0,0,0));
   up.setMargin(new Insets(0,0,0,0));
@@ -41,14 +42,20 @@
     }
   }
 );
-  JPanel buttons=new JPanel();
-  buttons.setLayout(new GridLayout(2,2));
-  buttons.add(add);
-  buttons.add(up);
-  buttons.add(remove);
-  buttons.add(down);
+  auto.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      autoSetLinks();
+    }
+  }
+);
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:pref,1dlu,fill:pref,1dlu,fill:pref","fill:pref,fill:pref"));
+  builder.append(up);
+  builder.append(add);
+  builder.append(auto);
+  builder.append(down);
+  builder.append(remove);
   panel=new JPanel();
   panel.setLayout(new BorderLayout());
   panel.add(sPane,BorderLayout.CENTER);
-  panel.add(buttons,BorderLayout.EAST);
+  panel.add(builder.getPanel(),BorderLayout.EAST);
 }
