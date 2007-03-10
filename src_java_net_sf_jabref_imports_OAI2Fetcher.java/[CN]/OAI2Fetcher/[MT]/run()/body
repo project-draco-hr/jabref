@@ -9,12 +9,12 @@
       if (shouldWait() && lastCall != null) {
         long elapsed=new Date().getTime() - lastCall.getTime();
         while (elapsed < waitTime) {
-          frame.output("Waiting for ArXiv..." + ((waitTime - elapsed) / 1000) + " s");
+          frame.output(Globals.lang("Waiting for ArXiv...") + ((waitTime - elapsed) / 1000) + " s");
           Thread.sleep(1000);
           elapsed=new Date().getTime() - lastCall.getTime();
         }
       }
-      frame.output("Processing " + key);
+      frame.output(Globals.lang("Processing ") + key);
       if (!shouldContinue)       break;
       BibtexEntry be=importOai2Entry(key);
       if (shouldWait())       lastCall=new Date();
@@ -25,7 +25,7 @@
     frame.output("");
   }
  catch (  Exception e) {
-    frame.output("Error while fetching from OIA2: " + e.getMessage());
+    frame.output(Globals.lang("Error while fetching from OIA2: ") + e.getMessage());
     e.printStackTrace();
   }
 }
