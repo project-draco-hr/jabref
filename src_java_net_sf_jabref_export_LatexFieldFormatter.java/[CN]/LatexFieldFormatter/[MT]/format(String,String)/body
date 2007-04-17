@@ -2,7 +2,20 @@
   if (Globals.prefs.putBracesAroundCapitals(fieldName) && !Globals.BIBTEX_STRING.equals(fieldName)) {
     text=Util.putBracesAroundCapitals(text);
   }
-  if (!BibtexFields.isStandardField(fieldName) && !Globals.BIBTEX_STRING.equals(fieldName)) {
+  boolean resolveStrings=true;
+  if (Globals.prefs.getBoolean("resolveStringsAllFields")) {
+    String[] exceptions=Globals.prefs.getStringArray("doNotResolveStringsFor");
+    for (int i=0; i < exceptions.length; i++) {
+      if (exceptions[i].equals(fieldName)) {
+        resolveStrings=false;
+        break;
+      }
+    }
+  }
+ else {
+    resolveStrings=BibtexFields.isStandardField(fieldName) || Globals.BIBTEX_STRING.equals(fieldName);
+  }
+  if (!resolveStrings) {
     int brc=0;
     boolean ok=true;
     for (int i=0; i < text.length(); i++) {
