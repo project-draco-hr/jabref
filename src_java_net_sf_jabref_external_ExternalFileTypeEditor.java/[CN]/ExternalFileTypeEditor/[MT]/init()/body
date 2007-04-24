@@ -1,0 +1,49 @@
+{
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      storeSettings();
+      dispose();
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+  add.addActionListener(new AddListener());
+  remove.addActionListener(new RemoveListener());
+  edit.addActionListener(new EditListener());
+  fileTypes=new ArrayList<ExternalFileType>();
+  setValues();
+  tableModel=new FileTypeTableModel();
+  table=new JTable(tableModel);
+  table.setDefaultRenderer(ImageIcon.class,new IconRenderer());
+  table.getColumnModel().getColumn(0).setMaxWidth(24);
+  table.getColumnModel().getColumn(0).setMinWidth(24);
+  table.getColumnModel().getColumn(1).setMinWidth(170);
+  table.getColumnModel().getColumn(2).setMinWidth(60);
+  table.getColumnModel().getColumn(3).setMinWidth(100);
+  table.getColumnModel().getColumn(0).setResizable(false);
+  JScrollPane sp=new JScrollPane(table);
+  JPanel upper=new JPanel();
+  upper.setLayout(new BorderLayout());
+  upper.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  upper.add(sp,BorderLayout.CENTER);
+  getContentPane().add(upper,BorderLayout.CENTER);
+  ButtonStackBuilder bs=new ButtonStackBuilder();
+  bs.addGridded(add);
+  bs.addGridded(remove);
+  bs.addGridded(edit);
+  upper.add(bs.getPanel(),BorderLayout.EAST);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addGridded(ok);
+  bb.addGridded(cancel);
+  bb.addGlue();
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  pack();
+  setLocationRelativeTo(frame);
+}

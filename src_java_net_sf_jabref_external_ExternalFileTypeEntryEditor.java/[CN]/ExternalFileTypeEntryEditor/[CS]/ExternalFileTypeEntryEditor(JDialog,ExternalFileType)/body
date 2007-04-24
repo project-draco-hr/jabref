@@ -1,0 +1,46 @@
+{
+  this.entry=entry;
+  icon.setText(null);
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:150dlu, 4dlu, fill:pref",""));
+  builder.append(Globals.lang("Icon"));
+  builder.append(icon);
+  builder.nextLine();
+  builder.append(Globals.lang("Name"));
+  builder.append(name);
+  builder.nextLine();
+  builder.append(Globals.lang("Extension"));
+  builder.append(extension);
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  builder.nextLine();
+  builder.append(Globals.lang("Application"));
+  builder.append(application);
+  BrowseListener browse=new BrowseListener(parent,application);
+  JButton browseBut=new JButton(Globals.lang("Browse"));
+  browseBut.addActionListener(browse);
+  builder.append(browseBut);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addGridded(ok);
+  bb.addGridded(cancel);
+  bb.addGlue();
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      diag.dispose();
+      storeSettings(ExternalFileTypeEntryEditor.this.entry);
+      okPressed=true;
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      diag.dispose();
+    }
+  }
+);
+  diag=new JDialog(parent,Globals.lang("Edit file type"),true);
+  diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  diag.pack();
+  Util.placeDialog(diag,parent);
+  setValues(entry);
+}
