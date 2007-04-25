@@ -12,6 +12,16 @@
     }
   }
 );
+  toDefaults.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      java.util.List<ExternalFileType> list=Globals.prefs.getDefaultExternalFileTypes();
+      fileTypes.clear();
+      fileTypes.addAll(list);
+      Collections.sort(fileTypes);
+      tableModel.fireTableDataChanged();
+    }
+  }
+);
   add.addActionListener(new AddListener());
   remove.addActionListener(new RemoveListener());
   edit.addActionListener(new EditListener());
@@ -36,6 +46,8 @@
   bs.addGridded(add);
   bs.addGridded(remove);
   bs.addGridded(edit);
+  bs.addRelatedGap();
+  bs.addGridded(toDefaults);
   upper.add(bs.getPanel(),BorderLayout.EAST);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
