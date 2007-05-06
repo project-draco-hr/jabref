@@ -98,7 +98,7 @@
     if (loaded.size() > 0) {
       for (Iterator i=loaded.iterator(); i.hasNext(); ) {
         ParserResult pr=(ParserResult)i.next();
-        jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),pr.getEncoding(),first);
+        BasePanel panel=jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),pr.getEncoding(),first);
         first=false;
       }
     }
@@ -119,6 +119,11 @@
         jrf.showBaseAt(i);
         JOptionPane.showMessageDialog(jrf,wrn.toString(),Globals.lang("Warnings"),JOptionPane.WARNING_MESSAGE);
       }
+    }
+    for (int i=0; i < loaded.size(); i++) {
+      ParserResult pr=(ParserResult)loaded.elementAt(i);
+      BasePanel panel=jrf.baseAt(i);
+      OpenDatabaseAction.performPostOpenActions(panel,pr,true);
     }
     if (loaded.size() > 0) {
       jrf.tabbedPane.setSelectedIndex(0);
