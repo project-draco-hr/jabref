@@ -1,6 +1,12 @@
 {
   this.entry=entry;
   types=new JComboBox(Globals.prefs.getExternalFileTypeSelection());
+  types.addItemListener(new ItemListener(){
+    public void itemStateChanged(    ItemEvent itemEvent){
+      ok.setEnabled(types.getSelectedItem() != null);
+    }
+  }
+);
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:150dlu, 4dlu, fill:pref",""));
   builder.append(Globals.lang("Link"));
   builder.append(link);

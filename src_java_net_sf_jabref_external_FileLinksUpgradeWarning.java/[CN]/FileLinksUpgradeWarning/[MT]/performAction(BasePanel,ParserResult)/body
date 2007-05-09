@@ -1,7 +1,33 @@
 {
+  boolean offerChangeSettings=!Globals.prefs.getBoolean("fileColumn");
+  boolean offerChangeDatabase=linksFound(pr.getDatabase(),FIELDS_TO_LOOK_FOR);
+  if (!offerChangeDatabase && !offerChangeSettings)   return;
+  JCheckBox changeSettings=new JCheckBox("Change table column and General fields settings to use the new feature",offerChangeSettings);
+  JCheckBox changeDatabase=new JCheckBox("Upgrade old external file links to use the new feature",offerChangeDatabase);
+  JCheckBox doNotShowDialog=new JCheckBox("Do not show these options in the future",false);
   StringBuilder sb=new StringBuilder("<html>");
   sb.append(Globals.lang("This database was written using an older version of JabRef."));
+  sb.append("<br>");
+  sb.append(Globals.lang("The current version features a new way of handling links to external files.<br>" + "To take advantage of this, your links must be changed into the new format, and<br>" + "JabRef must be configured to show the new links."));
+  sb.append("<p>");
+  sb.append(Globals.lang("Do you want JabRef to do the following operations?"));
   sb.append("</html>");
-  int answer=JOptionPane.showConfirmDialog(panel.frame(),sb.toString());
-  if (answer == JOptionPane.OK_OPTION)   makeChanges(panel,pr);
+  JPanel message=new JPanel();
+  DefaultFormBuilder b=new DefaultFormBuilder(message,new FormLayout("left:pref",""));
+  b.append(new JLabel(sb.toString()));
+  b.nextLine();
+  if (offerChangeSettings) {
+    b.append(changeSettings);
+    b.nextLine();
+  }
+  if (offerChangeDatabase) {
+    b.append(changeDatabase);
+    b.nextLine();
+  }
+  b.append("");
+  b.nextLine();
+  b.append(doNotShowDialog);
+  int answer=JOptionPane.showConfirmDialog(panel.frame(),message,Globals.lang("Upgrade file"),JOptionPane.YES_NO_OPTION);
+  if (doNotShowDialog.isSelected())   Globals.prefs.putBoolean("showFileLinksUpgradeWarning",false);
+  if (answer == JOptionPane.YES_OPTION)   makeChanges(panel,pr,changeSettings.isSelected(),changeDatabase.isSelected());
 }

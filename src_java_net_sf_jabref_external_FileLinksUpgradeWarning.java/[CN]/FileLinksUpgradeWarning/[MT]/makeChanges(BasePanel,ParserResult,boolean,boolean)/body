@@ -1,0 +1,20 @@
+{
+  if (upgradeDatabase) {
+    NamedCompound ce=Util.upgradePdfPsToFile(pr.getDatabase(),FIELDS_TO_LOOK_FOR);
+    panel.undoManager.addEdit(ce);
+    panel.markBaseChanged();
+  }
+  if (upgradePrefs) {
+    Globals.prefs.putBoolean("pdfColumn",Boolean.FALSE);
+    Globals.prefs.putBoolean("fileColumn",Boolean.TRUE);
+    String genF=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_FIELDS + "_def0");
+    if (!Pattern.compile("\\b" + GUIGlobals.FILE_FIELD + "\\b").matcher(genF).matches()) {
+      StringBuilder sb=new StringBuilder(GUIGlobals.FILE_FIELD).append(';').append(genF);
+      Globals.prefs.put(Globals.prefs.CUSTOM_TAB_FIELDS + "_def0",sb.toString());
+      System.out.println(sb.toString());
+      Globals.prefs.updateEntryEditorTabList();
+      panel.frame().removeCachedEntryEditors();
+    }
+    panel.frame().setupAllTables();
+  }
+}
