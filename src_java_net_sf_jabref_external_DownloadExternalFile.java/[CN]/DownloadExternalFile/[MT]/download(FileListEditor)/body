@@ -1,0 +1,61 @@
+{
+  final String res=JOptionPane.showInputDialog(frame,Globals.lang("Enter URL to download"));
+  if (res == null || res.trim().length() == 0)   return;
+  final File tmp=File.createTempFile("jabref_download","tmp");
+  tmp.deleteOnExit();
+  (new Thread(){
+    public void run(){
+      try {
+        URL url=new URL(res);
+        URLDownload udl=new URLDownload(frame,url,tmp);
+        try {
+          udl.download();
+        }
+ catch (        IOException e2) {
+          JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL: " + e2.getMessage()),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          Globals.logger("Error while downloading " + url.toString());
+          return;
+        }
+        SwingUtilities.invokeLater(new Runnable(){
+          public void run(){
+            downloadFinished();
+          }
+        }
+);
+      }
+ catch (      MalformedURLException e1) {
+        JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL"),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+      }
+    }
+  }
+).start();
+  String suffix=getSuffix(res);
+  String suggestedName=getSuggestedFileName(res,suffix);
+  String directory=getFileDirectory(res);
+  File file=new File(new File(directory),suggestedName);
+  FileListEntry entry=new FileListEntry("",file.getPath(),Globals.prefs.getExternalFileTypeByExt(suffix));
+  editor=new FileListEntryEditor(frame,entry,true);
+  editor.getProgressBar().setIndeterminate(true);
+  editor.setOkEnabled(false);
+  editor.setVisible(true);
+  if (editor.okPressed()) {
+    File toFile=new File(entry.getLink());
+    if (!toFile.isAbsolute()) {
+      toFile=new File(directory + System.getProperty("file.separator") + entry.getLink());
+    }
+    try {
+      boolean success=Util.copyFile(tmp,toFile,false);
+      if (!success) {
+        System.out.println("File already exists! DownloadExternalFile.download()");
+      }
+      callback.downloadComplete(entry);
+    }
+ catch (    IOException ex) {
+      ex.printStackTrace();
+    }
+    tmp.delete();
+  }
+ else {
+    if (downloadFinished)     tmp.delete();
+  }
+}
