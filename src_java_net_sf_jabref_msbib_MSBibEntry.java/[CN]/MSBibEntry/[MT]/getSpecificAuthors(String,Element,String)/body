@@ -1,0 +1,19 @@
+{
+  List result=null;
+  NodeList nodeLst=authors.getElementsByTagName(_bcol + type);
+  if (nodeLst.getLength() <= 0)   return result;
+  nodeLst=((Element)(nodeLst.item(0))).getElementsByTagName(_bcol + "NameList");
+  if (nodeLst.getLength() <= 0)   return result;
+  result=new LinkedList();
+  for (int i=0; i < nodeLst.getLength(); i++) {
+    NodeList firstName=((Element)(nodeLst.item(i))).getElementsByTagName(_bcol + "First");
+    NodeList lastName=((Element)(nodeLst.item(i))).getElementsByTagName(_bcol + "Last");
+    NodeList middleName=((Element)(nodeLst.item(i))).getElementsByTagName(_bcol + "Middle");
+    PersonName name=new PersonName();
+    if (firstName.getLength() > 0)     name.setFirstname(firstName.item(0).getTextContent());
+    if (middleName.getLength() > 0)     name.setMiddlename(middleName.item(0).getTextContent());
+    if (lastName.getLength() > 0)     name.setSurname(lastName.item(0).getTextContent());
+    result.add(name);
+  }
+  return result;
+}
