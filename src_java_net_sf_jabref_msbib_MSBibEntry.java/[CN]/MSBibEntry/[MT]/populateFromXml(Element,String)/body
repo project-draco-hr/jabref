@@ -3,7 +3,14 @@
   sourceType=getFromXml(_bcol + "SourceType",entry);
   tag=getFromXml(_bcol + "Tag",entry);
   temp=getFromXml(_bcol + "LCID",entry);
-  if (temp != null)   LCID=Integer.parseInt(temp);
+  if (temp != null) {
+    try {
+      LCID=Integer.parseInt(temp);
+    }
+ catch (    Exception e) {
+      LCID=0;
+    }
+  }
   title=getFromXml(_bcol + "Title",entry);
   year=getFromXml(_bcol + "Year",entry);
   month=getFromXml(_bcol + "Month",entry);
@@ -13,8 +20,7 @@
   temp=getFromXml(_bcol + "Pages",entry);
   if (temp != null)   pages=new PageNumbers(temp);
   volume=getFromXml(_bcol + "Volume",entry);
-  temp=getFromXml(_bcol + "NumberVolumes",entry);
-  if (temp != null)   numberOfVolumes=Integer.parseInt(temp);
+  numberOfVolumes=getFromXml(_bcol + "NumberVolumes",entry);
   edition=getFromXml(_bcol + "Edition",entry);
   standardNumber=getFromXml(_bcol + "StandardNumber",entry);
   publisher=getFromXml(_bcol + "Publisher",entry);
@@ -28,11 +34,9 @@
   address=address.trim();
   if (address.equals("") || address.equals(","))   address=null;
   bookTitle=getFromXml(_bcol + "BookTitle",entry);
-  temp=getFromXml(_bcol + "ChapterNumber",entry);
-  if (temp != null)   chapterNumber=Integer.parseInt(temp);
+  chapterNumber=getFromXml(_bcol + "ChapterNumber",entry);
   journalName=getFromXml(_bcol + "JournalName",entry);
-  temp=getFromXml(_bcol + "Issue",entry);
-  if (temp != null)   issue=Integer.parseInt(temp);
+  issue=getFromXml(_bcol + "Issue",entry);
   periodicalTitle=getFromXml(_bcol + "PeriodicalTitle",entry);
   conferenceName=getFromXml(_bcol + "ConferenceName",entry);
   department=getFromXml(_bcol + "Department",entry);
