@@ -4,11 +4,13 @@
   if (nodeLst.getLength() <= 0)   return result;
   nodeLst=((Element)(nodeLst.item(0))).getElementsByTagName(_bcol + "NameList");
   if (nodeLst.getLength() <= 0)   return result;
+  NodeList person=((Element)(nodeLst.item(0))).getElementsByTagName(_bcol + "Person");
+  if (person.getLength() <= 0)   return result;
   result=new LinkedList();
-  for (int i=0; i < nodeLst.getLength(); i++) {
-    NodeList firstName=((Element)(nodeLst.item(i))).getElementsByTagName(_bcol + "First");
-    NodeList lastName=((Element)(nodeLst.item(i))).getElementsByTagName(_bcol + "Last");
-    NodeList middleName=((Element)(nodeLst.item(i))).getElementsByTagName(_bcol + "Middle");
+  for (int i=0; i < person.getLength(); i++) {
+    NodeList firstName=((Element)(person.item(i))).getElementsByTagName(_bcol + "First");
+    NodeList lastName=((Element)(person.item(i))).getElementsByTagName(_bcol + "Last");
+    NodeList middleName=((Element)(person.item(i))).getElementsByTagName(_bcol + "Middle");
     PersonName name=new PersonName();
     if (firstName.getLength() > 0)     name.setFirstname(firstName.item(0).getTextContent());
     if (middleName.getLength() > 0)     name.setMiddlename(middleName.item(0).getTextContent());
