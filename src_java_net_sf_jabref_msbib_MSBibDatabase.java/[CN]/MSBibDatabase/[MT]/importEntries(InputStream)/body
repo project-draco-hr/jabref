@@ -1,0 +1,27 @@
+{
+  entries=new HashSet();
+  ArrayList bibitems=new ArrayList();
+  Document docin=null;
+  try {
+    DocumentBuilder dbuild=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    docin=dbuild.parse(stream);
+  }
+ catch (  Exception e) {
+    System.out.println("Exception caught..." + e);
+    e.printStackTrace();
+  }
+  String bcol="b:";
+  NodeList rootLst=docin.getElementsByTagName("b:Sources");
+  if (rootLst.getLength() == 0) {
+    rootLst=docin.getElementsByTagName("Sources");
+    bcol="";
+  }
+  if (rootLst.getLength() == 0)   return bibitems;
+  NodeList sourceList=((Element)(rootLst.item(0))).getElementsByTagName(bcol + "Source");
+  for (int i=0; i < sourceList.getLength(); i++) {
+    MSBibEntry entry=new MSBibEntry((Element)sourceList.item(i),bcol);
+    entries.add(entry);
+    bibitems.add(entry.getBibtexRepresentation());
+  }
+  return bibitems;
+}
