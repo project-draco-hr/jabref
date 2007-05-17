@@ -40,13 +40,17 @@
   editor.setVisible(true);
   if (editor.okPressed()) {
     File toFile=new File(entry.getLink());
+    String dirPrefix=directory + System.getProperty("file.separator");
     if (!toFile.isAbsolute()) {
-      toFile=new File(directory + System.getProperty("file.separator") + entry.getLink());
+      toFile=new File(dirPrefix + entry.getLink());
     }
     try {
       boolean success=Util.copyFile(tmp,toFile,false);
       if (!success) {
         System.out.println("File already exists! DownloadExternalFile.download()");
+      }
+      if (entry.getLink().startsWith(directory) && (entry.getLink().length() > dirPrefix.length())) {
+        entry.setLink(entry.getLink().substring(dirPrefix.length()));
       }
       callback.downloadComplete(entry);
     }

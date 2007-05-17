@@ -4,8 +4,10 @@
   int pos=name.indexOf('.');
   String extension=((pos >= 0) && (pos < name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
   String dir=metaData.getFileDirectory(extension);
+  String fileDir=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
+  String databaseDir=metaData.getFile().getParent();
   if (dir != null) {
-    File tmp=expandFilename(link,new String[]{dir,"."});
+    File tmp=expandFilename(link,new String[]{dir,fileDir,databaseDir});
     if (tmp != null)     file=tmp;
   }
   if (file.exists() && (fileType != null)) {
