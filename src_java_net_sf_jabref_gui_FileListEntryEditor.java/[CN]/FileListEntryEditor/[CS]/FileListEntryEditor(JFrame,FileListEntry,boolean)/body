@@ -33,6 +33,11 @@
   bb.addGlue();
   ok.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
+      if (externalConfirm != null) {
+        FileListEntry testEntry=new FileListEntry("","",null);
+        storeSettings(testEntry);
+        if (!externalConfirm.confirmClose(testEntry))         return;
+      }
       diag.dispose();
       storeSettings(FileListEntryEditor.this.entry);
       okPressed=true;
