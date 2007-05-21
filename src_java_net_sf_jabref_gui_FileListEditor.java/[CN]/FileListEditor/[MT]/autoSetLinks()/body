@@ -3,9 +3,11 @@
   String field=null;
   boolean foundAny=false;
   ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
+  ArrayList dirs=new ArrayList();
+  if (Globals.prefs.hasKey(GUIGlobals.FILE_FIELD + "Directory"))   dirs.add(Globals.prefs.get(GUIGlobals.FILE_FIELD + "Directory"));
   for (int i=0; i < types.length; i++) {
     ExternalFileType type=types[i];
-    String found=Util.findFile(entry,type,new ArrayList());
+    String found=Util.findFile(entry,type,dirs);
     if (found != null) {
       File f=new File(found);
       boolean alreadyHas=false;

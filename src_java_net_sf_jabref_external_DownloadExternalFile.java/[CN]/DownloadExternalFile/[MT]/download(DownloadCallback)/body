@@ -30,16 +30,20 @@
   }
 ).start();
   String suffix=getSuffix(res);
-  String suggestedName=getSuggestedFileName(res,suffix);
+  String suggestedName=bibtexKey != null ? getSuggestedFileName(res,suffix) : "";
   final String directory=getFileDirectory(res);
   File file=new File(new File(directory),suggestedName);
-  FileListEntry entry=new FileListEntry("",file.getPath(),Globals.prefs.getExternalFileTypeByExt(suffix));
+  FileListEntry entry=new FileListEntry("",bibtexKey != null ? file.getPath() : "",Globals.prefs.getExternalFileTypeByExt(suffix));
   editor=new FileListEntryEditor(frame,entry,true);
   editor.getProgressBar().setIndeterminate(true);
   editor.setOkEnabled(false);
   editor.setExternalConfirm(new ConfirmCloseFileListEntryEditor(){
     public boolean confirmClose(    FileListEntry entry){
       File f=expandFilename(directory,entry.getLink());
+      if (f.isDirectory()) {
+        JOptionPane.showMessageDialog(frame,Globals.lang("Target file cannot be a directory."),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+        return false;
+      }
       if (f.exists()) {
         return JOptionPane.showConfirmDialog(frame,"'" + f.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Download file"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
       }

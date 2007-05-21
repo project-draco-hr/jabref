@@ -6,13 +6,22 @@
 switch (i) {
 case DUPL_COL:
       return entry.isGroupHit() ? duplLabel : null;
-case PDF_COL:
-    o=entry.getField("pdf");
+case FILE_COL:
+    o=entry.getField(GUIGlobals.FILE_FIELD);
   if (o != null) {
-    pdfLabel.setToolTipText((String)o);
-    return pdfLabel;
+    FileListTableModel model=new FileListTableModel();
+    model.setContent((String)o);
+    fileLabel.setToolTipText(model.getToolTipHTMLRepresentation());
+    return fileLabel;
   }
  else   return null;
+case PDF_COL:
+o=entry.getField("pdf");
+if (o != null) {
+pdfLabel.setToolTipText((String)o);
+return pdfLabel;
+}
+ else return null;
 case PS_COL:
 o=entry.getField("ps");
 if (o != null) {
