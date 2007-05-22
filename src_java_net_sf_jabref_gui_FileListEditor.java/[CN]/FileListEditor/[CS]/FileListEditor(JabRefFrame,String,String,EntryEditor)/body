@@ -66,4 +66,21 @@
   panel.setLayout(new BorderLayout());
   panel.add(sPane,BorderLayout.CENTER);
   panel.add(builder.getPanel(),BorderLayout.EAST);
+  getInputMap().put(KeyStroke.getKeyStroke("DELETE"),"delete");
+  getActionMap().put("delete",new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      int row=getSelectedRow();
+      removeEntries();
+      row=Math.min(row,getRowCount() - 1);
+      if (row >= 0)       setRowSelectionInterval(row,row);
+    }
+  }
+);
+  getInputMap().put(KeyStroke.getKeyStroke("INSERT"),"insert");
+  getActionMap().put("insert",new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      addEntry();
+    }
+  }
+);
 }
