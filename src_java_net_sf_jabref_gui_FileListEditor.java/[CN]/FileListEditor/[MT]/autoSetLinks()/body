@@ -1,31 +1,4 @@
 {
   BibtexEntry entry=entryEditor.getEntry();
-  String field=null;
-  boolean foundAny=false;
-  ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
-  ArrayList dirs=new ArrayList();
-  if (Globals.prefs.hasKey(GUIGlobals.FILE_FIELD + "Directory"))   dirs.add(Globals.prefs.get(GUIGlobals.FILE_FIELD + "Directory"));
-  for (int i=0; i < types.length; i++) {
-    ExternalFileType type=types[i];
-    String found=Util.findFile(entry,type,dirs);
-    if (found != null) {
-      File f=new File(found);
-      boolean alreadyHas=false;
-      for (int j=0; j < tableModel.getRowCount(); j++) {
-        FileListEntry existingEntry=tableModel.getEntry(j);
-        if (new File(existingEntry.getLink()).equals(f)) {
-          alreadyHas=true;
-          break;
-        }
-      }
-      if (!alreadyHas) {
-        FileListEntry flEntry=new FileListEntry(f.getName(),found,type);
-        tableModel.addEntry(tableModel.getRowCount(),flEntry);
-        foundAny=true;
-      }
-    }
-  }
-  if (foundAny) {
-    entryEditor.updateField(this);
-  }
+  if (autoSetLinks(entry,tableModel))   entryEditor.updateField(this);
 }

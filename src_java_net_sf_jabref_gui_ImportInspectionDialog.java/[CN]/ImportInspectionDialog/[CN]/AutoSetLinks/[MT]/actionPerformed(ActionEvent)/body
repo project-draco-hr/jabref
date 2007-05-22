@@ -1,0 +1,13 @@
+{
+  if (selectionModel.getSelected().size() != 1)   return;
+  BibtexEntry entry=(BibtexEntry)selectionModel.getSelected().get(0);
+  FileListTableModel model=new FileListTableModel();
+  String oldVal=(String)entry.getField(GUIGlobals.FILE_FIELD);
+  if (oldVal != null)   model.setContent(oldVal);
+  if (FileListEditor.autoSetLinks(entry,model)) {
+    entries.getReadWriteLock().writeLock().lock();
+    entry.setField(GUIGlobals.FILE_FIELD,model.getStringRepresentation());
+    entries.getReadWriteLock().writeLock().unlock();
+    glTable.repaint();
+  }
+}
