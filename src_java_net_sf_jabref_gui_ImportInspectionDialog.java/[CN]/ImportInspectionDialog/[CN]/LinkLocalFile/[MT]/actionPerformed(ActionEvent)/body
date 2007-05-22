@@ -1,0 +1,17 @@
+{
+  if (selectionModel.getSelected().size() != 1)   return;
+  entry=(BibtexEntry)selectionModel.getSelected().get(0);
+  FileListEntry flEntry=new FileListEntry("","",null);
+  FileListEntryEditor editor=new FileListEntryEditor(frame,flEntry,false);
+  editor.setVisible(true);
+  if (editor.okPressed()) {
+    FileListTableModel model=new FileListTableModel();
+    String oldVal=(String)entry.getField(GUIGlobals.FILE_FIELD);
+    if (oldVal != null)     model.setContent(oldVal);
+    model.addEntry(model.getRowCount(),flEntry);
+    entries.getReadWriteLock().writeLock().lock();
+    entry.setField(GUIGlobals.FILE_FIELD,model.getStringRepresentation());
+    entries.getReadWriteLock().writeLock().unlock();
+    glTable.repaint();
+  }
+}
