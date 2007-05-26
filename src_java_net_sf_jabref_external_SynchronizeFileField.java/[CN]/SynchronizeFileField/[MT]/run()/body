@@ -1,0 +1,81 @@
+{
+  if (!goOn) {
+    panel.output(Globals.lang("No entries selected."));
+    return;
+  }
+  panel.frame().setProgressBarValue(0);
+  panel.frame().setProgressBarVisible(true);
+  int weightAutoSet=10;
+  int progressBarMax=(autoSet ? weightAutoSet * sel.length : 0) + (checkExisting ? sel.length : 0);
+  panel.frame().setProgressBarMaximum(progressBarMax);
+  int progress=0;
+  skipped=0;
+  entriesChanged=0;
+  brokenLinks=0;
+  final NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
+  String dir=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  if (autoSet) {
+    for (int i=0; i < sel.length; i++) {
+      progress+=weightAutoSet;
+      panel.frame().setProgressBarValue(progress);
+      Object old=sel[i].getField(fieldName);
+      FileListTableModel tableModel=new FileListTableModel();
+      if (old != null)       tableModel.setContent((String)old);
+      Thread t=FileListEditor.autoSetLinks(sel[i],tableModel,null,null);
+      try {
+        t.join();
+      }
+ catch (      InterruptedException e) {
+        e.printStackTrace();
+      }
+      if (!tableModel.getStringRepresentation().equals(old)) {
+        String toSet=tableModel.getStringRepresentation();
+        if (toSet.length() == 0)         toSet=null;
+        ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,toSet));
+        sel[i].setField(fieldName,toSet);
+        entriesChanged++;
+      }
+    }
+  }
+  if (checkExisting) {
+    mainLoop:     for (int i=0; i < sel.length; i++) {
+      panel.frame().setProgressBarValue(progress++);
+      final Object old=sel[i].getField(fieldName);
+      if ((old != null) && !old.equals("")) {
+        FileListTableModel tableModel=new FileListTableModel();
+        tableModel.setContent((String)old);
+        for (int j=0; j < tableModel.getRowCount(); j++) {
+          FileListEntry flEntry=tableModel.getEntry(j);
+          File file=Util.expandFilename(flEntry.getLink(),new String[]{dir,"."});
+          if ((file == null) || !file.exists()) {
+            int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+switch (answer) {
+case 1:
+              FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false);
+            flEditor.setVisible(true);
+          break;
+case 2:
+        tableModel.removeEntry(j);
+      j--;
+    break;
+case 3:
+  break mainLoop;
+}
+brokenLinks++;
+}
+}
+if (!tableModel.getStringRepresentation().equals(old)) {
+String toSet=tableModel.getStringRepresentation();
+if (toSet.length() == 0) toSet=null;
+ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,toSet));
+sel[i].setField(fieldName,toSet);
+entriesChanged++;
+}
+}
+}
+}
+if (entriesChanged > 0) {
+ce.end();
+panel.undoManager.addEdit(ce);
+}
+}

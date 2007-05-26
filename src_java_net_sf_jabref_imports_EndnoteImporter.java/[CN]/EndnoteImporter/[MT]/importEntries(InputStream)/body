@@ -21,12 +21,12 @@
   }
   String[] entries=sb.toString().split(ENDOFRECORD);
   HashMap hm=new HashMap();
-  String Author="", Type="", Editor="";
+  String author="", Type="", editor="";
   for (int i=0; i < entries.length; i++) {
     hm.clear();
-    Author="";
+    author="";
     Type="";
-    Editor="";
+    editor="";
     boolean IsEditedBook=false;
     String[] fields=entries[i].trim().substring(1).split("\n%");
     for (int j=0; j < fields.length; j++) {
@@ -34,12 +34,12 @@
       String prefix=fields[j].substring(0,1);
       String val=fields[j].substring(2);
       if (prefix.equals("A")) {
-        if (Author.equals(""))         Author=val;
- else         Author+=" and " + val;
+        if (author.equals(""))         author=val;
+ else         author+=" and " + val;
       }
  else       if (prefix.equals("E")) {
-        if (Editor.equals(""))         Editor=val;
- else         Editor+=" and " + val;
+        if (editor.equals(""))         editor=val;
+ else         editor+=" and " + val;
       }
  else       if (prefix.equals("T"))       hm.put("title",val);
  else       if (prefix.equals("0")) {
@@ -85,12 +85,12 @@
       }
  else       if (prefix.equals("F"))       hm.put(BibtexFields.KEY_FIELD,Util.checkLegalKey(val));
     }
-    if (IsEditedBook && Editor.equals("")) {
-      Editor=Author;
-      Author="";
+    if (IsEditedBook && editor.equals("")) {
+      editor=author;
+      author="";
     }
-    if (!Author.equals(""))     hm.put("author",fixAuthor(Author));
-    if (!Editor.equals(""))     hm.put("editor",fixAuthor(Editor));
+    if (!author.equals(""))     hm.put("author",fixAuthor(author));
+    if (!editor.equals(""))     hm.put("editor",fixAuthor(editor));
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
     b.setField(hm);
     if (b.getAllFields().length > 0)     bibitems.add(b);

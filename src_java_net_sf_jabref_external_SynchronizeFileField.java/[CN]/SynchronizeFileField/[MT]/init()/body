@@ -1,0 +1,16 @@
+{
+  Collection col=panel.database().getEntries();
+  sel=new BibtexEntry[col.size()];
+  sel=(BibtexEntry[])col.toArray(sel);
+  if (optDiag == null)   optDiag=new SynchronizeFileField.OptionsDialog(panel.frame(),fieldName);
+  Util.placeDialog(optDiag,panel.frame());
+  optDiag.setVisible(true);
+  if (optDiag.canceled()) {
+    goOn=false;
+    return;
+  }
+  autoSet=!optDiag.autoSetNone.isSelected();
+  overWriteAllowed=optDiag.autoSetAll.isSelected();
+  checkExisting=optDiag.checkLinks.isSelected();
+  panel.output(Globals.lang("Synchronizing %0 links...",fieldName.toUpperCase()));
+}

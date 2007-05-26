@@ -9,7 +9,7 @@
   }
   String[] entries=sb.toString().split("ER  -");
   for (int i=0; i < entries.length - 1; i++) {
-    String Type="", Author="", Editor="", StartPage="", EndPage="", comment="";
+    String type="", author="", editor="", startPage="", endPage="", comment="";
     HashMap hm=new HashMap();
     String[] fields=entries[i].split("\n");
     for (int j=0; j < fields.length; j++) {
@@ -29,35 +29,35 @@
         String lab=entry.substring(0,2);
         String val=entry.substring(6).trim();
         if (lab.equals("TY")) {
-          if (val.equals("BOOK"))           Type="book";
- else           if (val.equals("JOUR") || val.equals("MGZN"))           Type="article";
- else           if (val.equals("THES"))           Type="phdthesis";
- else           if (val.equals("UNPB"))           Type="unpublished";
- else           if (val.equals("RPRT"))           Type="techreport";
- else           if (val.equals("CONF"))           Type="inproceedings";
- else           if (val.equals("CHAP"))           Type="incollection";
- else           Type="other";
+          if (val.equals("BOOK"))           type="book";
+ else           if (val.equals("JOUR") || val.equals("MGZN"))           type="article";
+ else           if (val.equals("THES"))           type="phdthesis";
+ else           if (val.equals("UNPB"))           type="unpublished";
+ else           if (val.equals("RPRT"))           type="techreport";
+ else           if (val.equals("CONF"))           type="inproceedings";
+ else           if (val.equals("CHAP"))           type="incollection";
+ else           type="other";
         }
  else         if (lab.equals("T1") || lab.equals("TI"))         hm.put("title",val);
  else         if (lab.equals("T2") || lab.equals("T3") || lab.equals("BT")) {
           hm.put("booktitle",val);
         }
  else         if (lab.equals("A1") || lab.equals("AU")) {
-          if (Author.equals(""))           Author=val;
- else           Author+=" and " + val;
+          if (author.equals(""))           author=val;
+ else           author+=" and " + val;
         }
  else         if (lab.equals("A2")) {
-          if (Editor.equals(""))           Editor=val;
- else           Editor+=" and " + val;
+          if (editor.equals(""))           editor=val;
+ else           editor+=" and " + val;
         }
  else         if (lab.equals("JA") || lab.equals("JF") || lab.equals("JO")) {
-          if (Type.equals("inproceedings"))           hm.put("booktitle",val);
+          if (type.equals("inproceedings"))           hm.put("booktitle",val);
  else           hm.put("journal",val);
         }
- else         if (lab.equals("SP"))         StartPage=val;
+ else         if (lab.equals("SP"))         startPage=val;
  else         if (lab.equals("PB"))         hm.put("publisher",val);
  else         if (lab.equals("AD") || lab.equals("CY"))         hm.put("address",val);
- else         if (lab.equals("EP"))         EndPage=val;
+ else         if (lab.equals("EP"))         endPage=val;
  else         if (lab.equals("SN"))         hm.put("issn",val);
  else         if (lab.equals("VL"))         hm.put("volume",val);
  else         if (lab.equals("IS"))         hm.put("number",val);
@@ -91,19 +91,19 @@
  else         if (lab.equals("ID"))         hm.put("refid",val);
       }
     }
-    if (Author.length() > 0) {
-      Author=AuthorList.fixAuthor_lastNameFirst(Author);
-      hm.put("author",Author);
+    if (author.length() > 0) {
+      author=AuthorList.fixAuthor_lastNameFirst(author);
+      hm.put("author",author);
     }
-    if (Editor.length() > 0) {
-      Editor=AuthorList.fixAuthor_lastNameFirst(Editor);
-      hm.put("editor",Editor);
+    if (editor.length() > 0) {
+      editor=AuthorList.fixAuthor_lastNameFirst(editor);
+      hm.put("editor",editor);
     }
     if (comment.length() > 0) {
       hm.put("comment",comment);
     }
-    hm.put("pages",StartPage + "--" + EndPage);
-    BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
+    hm.put("pages",startPage + "--" + endPage);
+    BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(type));
     ArrayList toRemove=new ArrayList();
     for (Iterator it=hm.keySet().iterator(); it.hasNext(); ) {
       Object key=it.next();
