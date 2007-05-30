@@ -1,0 +1,17 @@
+{
+  HashMap<BibtexEntry,List<File>> result=new HashMap<BibtexEntry,List<File>>();
+  Set<File> filesWithExtension=findFiles(extensions,directories);
+  for (  BibtexEntry entry : entries) {
+    result.put(entry,new ArrayList<File>());
+  }
+  nextFile:   for (  File file : filesWithExtension) {
+    String name=file.getName();
+    for (    BibtexEntry entry : entries) {
+      if (name.contains(entry.getCiteKey())) {
+        result.get(entry).add(file);
+        continue nextFile;
+      }
+    }
+  }
+  return result;
+}
