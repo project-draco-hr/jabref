@@ -10,33 +10,25 @@
   panel.frame().setProgressBarMaximum(progressBarMax);
   int progress=0;
   skipped=0;
-  entriesChanged=0;
   brokenLinks=0;
   final NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
   String dir=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  Set<BibtexEntry> changedEntries=new HashSet<BibtexEntry>();
   if (autoSet) {
+    Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
     for (int i=0; i < sel.length; i++) {
-      progress+=weightAutoSet;
-      panel.frame().setProgressBarValue(progress);
-      Object old=sel[i].getField(fieldName);
-      FileListTableModel tableModel=new FileListTableModel();
-      if (old != null)       tableModel.setContent((String)old);
-      Thread t=FileListEditor.autoSetLinks(sel[i],tableModel,null,null);
-      try {
-        t.join();
-      }
- catch (      InterruptedException e) {
-        e.printStackTrace();
-      }
-      if (!tableModel.getStringRepresentation().equals(old)) {
-        String toSet=tableModel.getStringRepresentation();
-        if (toSet.length() == 0)         toSet=null;
-        ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,toSet));
-        sel[i].setField(fieldName,toSet);
-        entriesChanged++;
-      }
+      entries.add(sel[i]);
+    }
+    Thread t=FileListEditor.autoSetLinks(entries,ce,changedEntries);
+    try {
+      t.join();
+    }
+ catch (    InterruptedException e) {
+      e.printStackTrace();
     }
   }
+  progress+=sel.length * weightAutoSet;
+  panel.frame().setProgressBarValue(progress);
   if (checkExisting) {
     mainLoop:     for (int i=0; i < sel.length; i++) {
       panel.frame().setProgressBarValue(progress++);
@@ -69,12 +61,13 @@ String toSet=tableModel.getStringRepresentation();
 if (toSet.length() == 0) toSet=null;
 ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,toSet));
 sel[i].setField(fieldName,toSet);
-entriesChanged++;
+changedEntries.add(sel[i]);
 }
 }
 }
 }
-if (entriesChanged > 0) {
+entriesChangedCount=changedEntries.size();
+if (entriesChangedCount > 0) {
 ce.end();
 panel.undoManager.addEdit(ce);
 }
