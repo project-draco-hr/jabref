@@ -1,0 +1,14 @@
+{
+  boolean enableAboutMenu=(target != null && aboutHandler != null);
+  if (enableAboutMenu) {
+    setHandler(new OSXAdapter("handleAbout",target,aboutHandler));
+  }
+  try {
+    Method enableAboutMethod=macOSXApplication.getClass().getDeclaredMethod("setEnabledAboutMenu",new Class[]{boolean.class});
+    enableAboutMethod.invoke(macOSXApplication,new Object[]{Boolean.valueOf(enableAboutMenu)});
+  }
+ catch (  Exception ex) {
+    System.err.println("OSXAdapter could not access the About Menu");
+    ex.printStackTrace();
+  }
+}
