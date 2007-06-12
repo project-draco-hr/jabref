@@ -1,5 +1,6 @@
 {
 class ExportAction extends MnemonicAwareAction {
+    private static final long serialVersionUID=639463604530580554L;
     private JabRefFrame frame;
     private boolean selectedOnly;
     public ExportAction(    JabRefFrame frame,    boolean selectedOnly){
@@ -24,10 +25,10 @@ class ExportAction extends MnemonicAwareAction {
             if (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)             return;
           }
           ExportFormat format=eff.getExportFormat();
-          Set entryIds=null;
+          Set<String> entryIds=null;
           if (selectedOnly) {
             BibtexEntry[] selected=frame.basePanel().getSelectedEntries();
-            entryIds=new HashSet();
+            entryIds=new HashSet<String>();
             for (int i=0; i < selected.length; i++) {
               BibtexEntry bibtexEntry=selected[i];
               entryIds.add(bibtexEntry.getId());
