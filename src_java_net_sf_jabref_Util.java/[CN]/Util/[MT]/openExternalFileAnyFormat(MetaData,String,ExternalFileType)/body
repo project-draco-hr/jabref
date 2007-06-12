@@ -15,7 +15,10 @@
         Runtime.getRuntime().exec(cmd);
       }
  else       if (Globals.ON_WIN) {
-        openFileOnWindows(file.getPath(),true);
+        if ((fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0)) {
+          openFileWithApplicationOnWindows(file.getPath(),fileType.getOpenWith());
+        }
+ else         openFileOnWindows(file.getPath(),true);
       }
  else {
         String[] cmdArray=new String[]{fileType.getOpenWith(),file.getPath()};
