@@ -3,11 +3,11 @@ switch (type) {
 case LayoutHelper.IS_LAYOUT_TEXT:
     return text;
 case LayoutHelper.IS_SIMPLE_FIELD:
-  return getField(bibtex,text,database);
+  return BibtexDatabase.getResolvedField(text,bibtex,database);
 case LayoutHelper.IS_FIELD_START:
 case LayoutHelper.IS_GROUP_START:
 {
-  String field=getField(bibtex,text,database);
+  String field=BibtexDatabase.getResolvedField(text,bibtex,database);
   if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && (field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())))) {
     return null;
   }
@@ -58,7 +58,7 @@ if (text.equals("bibtextype")) {
 fieldEntry=bibtex.getType().getName();
 }
  else {
-String field=text.startsWith("\\") ? getField(bibtex,text.substring(1),database) : getText(text,database);
+String field=text.startsWith("\\") ? BibtexDatabase.getResolvedField(text.substring(1),bibtex,database) : BibtexDatabase.getText(text,database);
 if (field == null) {
   fieldEntry="";
 }

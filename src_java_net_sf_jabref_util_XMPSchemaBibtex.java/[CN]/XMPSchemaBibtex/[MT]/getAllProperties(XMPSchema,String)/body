@@ -1,6 +1,6 @@
 {
   NodeList nodes=schema.getElement().getChildNodes();
-  Map result=new HashMap();
+  Map<String,String> result=new HashMap<String,String>();
   if (nodes == null) {
     return result;
   }
@@ -42,12 +42,9 @@
       result.put(split[1],attr.getNodeValue());
     }
   }
-  Set entries=result.entrySet();
-  Iterator it=entries.iterator();
-  while (it.hasNext()) {
-    Map.Entry entry=(Map.Entry)it.next();
-    String key=(String)entry.getKey();
-    if (preserveWhiteSpace.containsKey(key))     continue;
+  for (  Map.Entry<String,String> entry : result.entrySet()) {
+    String key=entry.getKey();
+    if (preserveWhiteSpace.contains(key))     continue;
     entry.setValue(((String)entry.getValue()).replaceAll("\\s+"," ").trim());
   }
   return result;
