@@ -7,6 +7,11 @@
   if (chosen != null) {
     File newFile=new File(chosen);
     Globals.prefs.put("fileWorkingDirectory",newFile.getParent());
+    ArrayList<File> dirs=new ArrayList<File>();
+    dirs.add(new File(metaData.getFileDirectory(GUIGlobals.FILE_FIELD)));
+    if (dirs.size() > 0) {
+      newFile=FileListEditor.relativizePath(newFile,dirs);
+    }
     comp.setText(newFile.getPath());
     comp.requestFocus();
   }
