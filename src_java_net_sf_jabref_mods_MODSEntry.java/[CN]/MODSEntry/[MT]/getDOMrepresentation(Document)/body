@@ -6,7 +6,7 @@
     if (title != null) {
       Element titleInfo=d.createElement("titleInfo");
       Element mainTitle=d.createElement("title");
-      mainTitle.appendChild(d.createTextNode(title));
+      mainTitle.appendChild(d.createTextNode(stripNonValidXMLCharacters(title)));
       titleInfo.appendChild(mainTitle);
       mods.appendChild(titleInfo);
     }
@@ -18,13 +18,13 @@
         if (name.getSurname() != null) {
           Element namePart=d.createElement("namePart");
           namePart.setAttribute("type","family");
-          namePart.appendChild(d.createTextNode(name.getSurname()));
+          namePart.appendChild(d.createTextNode(stripNonValidXMLCharacters(name.getSurname())));
           modsName.appendChild(namePart);
         }
         if (name.getGivenNames() != null) {
           Element namePart=d.createElement("namePart");
           namePart.setAttribute("type","given");
-          namePart.appendChild(d.createTextNode(name.getGivenNames()));
+          namePart.appendChild(d.createTextNode(stripNonValidXMLCharacters(name.getGivenNames())));
           modsName.appendChild(namePart);
         }
         Element role=d.createElement("role");
@@ -40,30 +40,30 @@
     mods.appendChild(originInfo);
     if (this.publisher != null) {
       Element publisher=d.createElement("publisher");
-      publisher.appendChild(d.createTextNode(this.publisher));
+      publisher.appendChild(d.createTextNode(stripNonValidXMLCharacters(this.publisher)));
       originInfo.appendChild(publisher);
     }
     if (date != null) {
       Element dateIssued=d.createElement("dateIssued");
-      dateIssued.appendChild(d.createTextNode(date));
+      dateIssued.appendChild(d.createTextNode(stripNonValidXMLCharacters(date)));
       originInfo.appendChild(dateIssued);
     }
     Element issuance=d.createElement("issuance");
-    issuance.appendChild(d.createTextNode(this.issuance));
+    issuance.appendChild(d.createTextNode(stripNonValidXMLCharacters(this.issuance)));
     originInfo.appendChild(issuance);
     if (id != null) {
       Element idref=d.createElement("identifier");
-      idref.appendChild(d.createTextNode(id));
+      idref.appendChild(d.createTextNode(stripNonValidXMLCharacters(id)));
       mods.appendChild(idref);
       mods.setAttribute("ID",id);
     }
     Element typeOfResource=d.createElement("typeOfResource");
-    typeOfResource.appendChild(d.createTextNode(type));
+    typeOfResource.appendChild(d.createTextNode(stripNonValidXMLCharacters(type)));
     mods.appendChild(typeOfResource);
     if (genre != null) {
       Element genreElement=d.createElement("genre");
       genreElement.setAttribute("authority","marc");
-      genreElement.appendChild(d.createTextNode(genre));
+      genreElement.appendChild(d.createTextNode(stripNonValidXMLCharacters(genre)));
       mods.appendChild(genreElement);
     }
     if (host != null) {
@@ -81,7 +81,7 @@
       String value=(String)theEntry.getValue();
       if (handledExtensions.contains(field))       continue;
       Element theData=d.createElement(field);
-      theData.appendChild(d.createTextNode(value));
+      theData.appendChild(d.createTextNode(stripNonValidXMLCharacters(value)));
       extension.appendChild(theData);
       mods.appendChild(extension);
     }
