@@ -1,0 +1,17 @@
+{
+  if (pluginLayoutFormatter == null) {
+    pluginLayoutFormatter=new HashMap<String,LayoutFormatter>();
+    JabRefPlugin plugin=JabRefPlugin.getInstance(PluginCore.getManager());
+    if (plugin != null) {
+      for (      LayoutFormatterExtension e : plugin.getLayoutFormatterExtensions()) {
+        LayoutFormatter formatter=e.getLayoutFormatter();
+        String name=e.getName();
+        if (name == null)         name=e.getId();
+        if (formatter != null) {
+          pluginLayoutFormatter.put(name,formatter);
+        }
+      }
+    }
+  }
+  return pluginLayoutFormatter.get(formatterName);
+}

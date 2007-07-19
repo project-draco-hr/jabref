@@ -8,11 +8,19 @@
   putFormat(new ExportFormat(Globals.lang("HTML table"),"tablerefs","tablerefs","tablerefs",".html"));
   putFormat(new ExportFormat(Globals.lang("HTML table (with Abstract & BibTeX)"),"tablerefsabsbib","tablerefsabsbib","tablerefsabsbib",".html"));
   putFormat(new ExportFormat(Globals.lang("Harvard RTF"),"harvard","harvard","harvard",".rtf"));
-  putFormat(new ExportFormat(Globals.lang("MIS Quarterly"),"misq","misq","misq",".rtf"));
   putFormat(new ExportFormat(Globals.lang("Endnote"),"endnote","EndNote","endnote",".txt"));
   putFormat(new OpenOfficeDocumentCreator());
   putFormat(new OpenDocumentSpreadsheetCreator());
   putFormat(new MSBibExportFormat());
+  JabRefPlugin plugin=JabRefPlugin.getInstance(PluginCore.getManager());
+  if (plugin != null) {
+    for (    ExportFormatTemplateExtension e : plugin.getExportFormatTemplateExtensions()) {
+      ExportFormat format=PluginBasedExportFormat.getFormat(e);
+      if (format != null) {
+        putFormat(format);
+      }
+    }
+  }
   TreeMap customExports=Globals.prefs.customExports.getCustomExportFormats();
   for (Iterator i=customExports.keySet().iterator(); i.hasNext(); ) {
     putFormat((ExportFormat)customExports.get(i.next()));

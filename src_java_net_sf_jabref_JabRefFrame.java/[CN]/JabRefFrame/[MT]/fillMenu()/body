@@ -99,10 +99,11 @@
   web.add(fetchMedline);
   web.add(citeSeerPanelAction);
   web.add(fetchCiteSeer);
-  ieex=new GeneralFetcher(sidePaneManager,this,ieeexplorerFetcher);
-  arxiv=new GeneralFetcher(sidePaneManager,this,arxivFetcher);
-  web.add(ieex.getAction());
-  web.add(arxiv.getAction());
+  for (  EntryFetcher fetcher : fetchers) {
+    GeneralFetcher generalFetcher=new GeneralFetcher(sidePaneManager,this,fetcher);
+    web.add(generalFetcher.getAction());
+    fetcherActions.add(generalFetcher.getAction());
+  }
   mb.add(web);
   options.add(showPrefs);
   AbstractAction customizeAction=new CustomizeEntryTypeAction();

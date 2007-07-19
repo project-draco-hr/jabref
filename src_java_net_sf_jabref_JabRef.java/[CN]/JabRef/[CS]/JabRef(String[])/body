@@ -1,5 +1,5 @@
 {
-  ths=this;
+  singleton=this;
   System.setProperty("java.net.useSystemProxies","true");
   System.getProperties().put("proxySet","true");
   JabRefPreferences prefs=JabRefPreferences.getInstance();
@@ -11,14 +11,14 @@
   Globals.initializeJournalNames();
   if (Globals.prefs.getBoolean("useRemoteServer")) {
     remoteListener=RemoteListener.openRemoteListener(this);
-    if (remoteListener != null) {
-      remoteListener.start();
-    }
     if (remoteListener == null) {
       if (RemoteListener.sendToActiveJabRefInstance(args)) {
         System.out.println(Globals.lang("Arguments passed on to running JabRef instance. Shutting down."));
         System.exit(0);
       }
+    }
+ else {
+      remoteListener.start();
     }
   }
   String personalJournalList=prefs.get("personalJournalList");
@@ -30,7 +30,5 @@
       e.printStackTrace();
     }
   }
-  System.runFinalizersOnExit(true);
-  Vector loaded=processArguments(args,true);
-  openWindow(loaded);
+  openWindow(processArguments(args,true));
 }

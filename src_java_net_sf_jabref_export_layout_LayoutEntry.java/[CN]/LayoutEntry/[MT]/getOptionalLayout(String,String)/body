@@ -1,25 +1,29 @@
 {
-  ArrayList formatterStrings=Util.parseMethodsCalls(formatterName);
+  ArrayList<String[]> formatterStrings=Util.parseMethodsCalls(formatterName);
   ArrayList<LayoutFormatter> results=new ArrayList<LayoutFormatter>(formatterStrings.size());
-  Map userNameFormatter=NameFormatterTab.getNameFormatters();
-  for (int i=0; i < formatterStrings.size(); i++) {
-    String[] strings=(String[])formatterStrings.get(i);
+  Map<String,String> userNameFormatter=NameFormatterTab.getNameFormatters();
+  for (  String[] strings : formatterStrings) {
     String className=strings[0].trim();
     try {
-      LayoutFormatter f=getLayoutFormatter(className,classPrefix);
+      LayoutFormatter f=getLayoutFormatterByClassName(className,classPrefix);
       results.add(f);
+      continue;
     }
  catch (    Exception e) {
-      String formatterParameter=(String)userNameFormatter.get(className);
-      if (formatterParameter == null) {
-        throw new Exception(Globals.lang("Formatter not found") + ": " + className);
-      }
- else {
-        NameFormat nf=new NameFormat();
-        nf.setParameter(formatterParameter);
-        results.add(nf);
-      }
     }
+    String formatterParameter=(String)userNameFormatter.get(className);
+    if (formatterParameter != null) {
+      NameFormat nf=new NameFormat();
+      nf.setParameter(formatterParameter);
+      results.add(nf);
+      continue;
+    }
+    LayoutFormatter f=getLayoutFormatterFromPlugins(className);
+    if (f != null) {
+      results.add(f);
+      continue;
+    }
+    throw new Exception(Globals.lang("Formatter not found") + ": " + className);
   }
-  return (LayoutFormatter[])results.toArray(new LayoutFormatter[]{});
+  return results.toArray(new LayoutFormatter[]{});
 }

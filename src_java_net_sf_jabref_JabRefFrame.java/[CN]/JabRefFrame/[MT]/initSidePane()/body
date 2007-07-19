@@ -2,8 +2,15 @@
   sidePaneManager=new SidePaneManager(this);
   Globals.sidePaneManager=this.sidePaneManager;
   Globals.helpDiag=this.helpDiag;
-  ieeexplorerFetcher=new IEEEXploreFetcher();
-  arxivFetcher=new OAI2Fetcher();
+  JabRefPlugin jabrefPlugin=JabRefPlugin.getInstance(PluginCore.getManager());
+  if (jabrefPlugin != null) {
+    for (    EntryFetcherExtension ext : jabrefPlugin.getEntryFetcherExtensions()) {
+      EntryFetcher fetcher=ext.getEntryFetcher();
+      if (fetcher != null) {
+        fetchers.add(fetcher);
+      }
+    }
+  }
   medlineFetcher=new MedlineFetcher(sidePaneManager);
   citeSeerFetcher=new CiteSeerFetcher(sidePaneManager);
   citeSeerFetcherPanel=new CiteSeerFetcherPanel(sidePaneManager,(CiteSeerFetcher)citeSeerFetcher);

@@ -1,0 +1,23 @@
+{
+  URL reso=extension.getDirAsUrl(filename);
+  Globals.logger(reso.toExternalForm());
+  Reader reader;
+  if (reso != null) {
+    try {
+      reader=new InputStreamReader(reso.openStream());
+    }
+ catch (    FileNotFoundException ex) {
+      throw new IOException(Globals.lang("Could not find layout file") + ": '" + filename+ "'.");
+    }
+  }
+ else {
+    File f=new File(filename);
+    try {
+      reader=new FileReader(f);
+    }
+ catch (    FileNotFoundException ex) {
+      throw new IOException(Globals.lang("Could not find layout file") + ": '" + filename+ "'.");
+    }
+  }
+  return reader;
+}

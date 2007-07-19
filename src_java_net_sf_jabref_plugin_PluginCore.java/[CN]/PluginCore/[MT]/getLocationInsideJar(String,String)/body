@@ -1,0 +1,12 @@
+{
+  URL jar=PluginCore.class.getResource(Util.joinPath(context,manifest));
+  if (jar != null && jar.getProtocol().toLowerCase().startsWith("jar")) {
+    try {
+      return new StandardPluginLocation(new URL(jar.toExternalForm().replaceFirst("!(.*?)$",Util.joinPath("!",context))),jar);
+    }
+ catch (    MalformedURLException e) {
+      return null;
+    }
+  }
+  return null;
+}

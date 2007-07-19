@@ -1,14 +1,11 @@
 {
   File outFile=new File(file);
   SaveSession ss=getSaveSession(encoding,outFile);
-  final String dir;
-  if (customExport)   dir="";
- else   dir=(directory == null ? Globals.LAYOUT_PREFIX : Globals.LAYOUT_PREFIX + directory + "/");
   VerifyingWriter ps=ss.getWriter();
   Layout beginLayout=null;
   Reader reader;
   try {
-    reader=FileActions.getReader(dir + lfFileName + ".begin.layout");
+    reader=getReader(lfFileName + ".begin.layout");
     LayoutHelper layoutHelper=new LayoutHelper(reader);
     beginLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
     reader.close();
@@ -19,7 +16,7 @@
     ps.write(beginLayout.doLayout(database));
   }
   List sorted=FileActions.getSortedEntries(database,entries,false);
-  reader=FileActions.getReader(dir + lfFileName + ".layout");
+  reader=getReader(lfFileName + ".layout");
   LayoutHelper layoutHelper=new LayoutHelper(reader);
   Layout defLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
   reader.close();
@@ -32,7 +29,7 @@
     if (layouts.containsKey(type))     layout=(Layout)layouts.get(type);
  else {
       try {
-        reader=FileActions.getReader(dir + lfFileName + "."+ type+ ".layout");
+        reader=getReader(lfFileName + "." + type+ ".layout");
         layoutHelper=new LayoutHelper(reader);
         layout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
         layouts.put(type,layout);
@@ -46,7 +43,7 @@
   }
   Layout endLayout=null;
   try {
-    reader=FileActions.getReader(dir + lfFileName + ".end.layout");
+    reader=getReader(lfFileName + ".end.layout");
     layoutHelper=new LayoutHelper(reader);
     endLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
     reader.close();
