@@ -1,7 +1,7 @@
 {
   if (Globals.prefs.getBoolean("warnAboutDuplicatesInInspection")) {
-    for (Iterator i=entries.iterator(); i.hasNext(); ) {
-      BibtexEntry entry=(BibtexEntry)i.next();
+    for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
+      BibtexEntry entry=i.next();
       if (!entry.isSearchHit())       continue;
       if (entry.isGroupHit()) {
         CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("There are possible duplicates (marked with a 'D' icon) that haven't been resolved. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
@@ -14,8 +14,8 @@
   }
   NamedCompound ce=new NamedCompound(undoName);
   if (entriesToDelete.size() > 0) {
-    for (Iterator i=entriesToDelete.iterator(); i.hasNext(); ) {
-      BibtexEntry entry=(BibtexEntry)i.next();
+    for (Iterator<BibtexEntry> i=entriesToDelete.iterator(); i.hasNext(); ) {
+      BibtexEntry entry=i.next();
       ce.addEdit(new UndoableRemoveEntry(panel.database(),entry,panel));
       panel.database().removeEntry(entry.getId());
     }
@@ -24,7 +24,7 @@
     generateKeys(false);
   }
   Globals.prefs.putBoolean("generateKeysAfterInspection",autoGenerate.isSelected());
-  final List selected=getSelectedEntries();
+  final List<BibtexEntry> selected=getSelectedEntries();
   if (selected.size() > 0) {
     if (newDatabase) {
       BibtexDatabase base=new BibtexDatabase();
@@ -32,11 +32,11 @@
     }
     boolean groupingCanceled=false;
     Util.setAutomaticFields(selected);
-    for (Iterator i=selected.iterator(); i.hasNext(); ) {
-      BibtexEntry entry=(BibtexEntry)i.next();
+    for (Iterator<BibtexEntry> i=selected.iterator(); i.hasNext(); ) {
+      BibtexEntry entry=i.next();
       entry.setSearchHit(false);
       entry.setGroupHit(false);
-      Set groups=(Set)groupAdditions.get(entry);
+      Set groups=groupAdditions.get(entry);
       if (!groupingCanceled && (groups != null)) {
         if (entry.getField(BibtexFields.KEY_FIELD) == null) {
           int answer=JOptionPane.showConfirmDialog(ImportInspectionDialog.this,Globals.lang("Cannot add entries to group without generating keys. Generate keys now?"),Globals.lang("Add to group"),JOptionPane.YES_NO_OPTION);
@@ -78,8 +78,8 @@
         frame.addTab(panel,null,true);
       }
       panel.markBaseChanged();
-      for (Iterator i=callBacks.iterator(); i.hasNext(); ) {
-        ((CallBack)i.next()).done(selected.size());
+      for (Iterator<CallBack> i=callBacks.iterator(); i.hasNext(); ) {
+        i.next().done(selected.size());
       }
     }
   }

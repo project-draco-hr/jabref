@@ -1,5 +1,5 @@
 {
-  ArrayList bibitems=new ArrayList();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
   StringBuffer sb=new StringBuffer();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
@@ -10,7 +10,7 @@
   String[] entries=sb.toString().split("ER  -");
   for (int i=0; i < entries.length - 1; i++) {
     String type="", author="", editor="", startPage="", endPage="", comment="";
-    HashMap hm=new HashMap();
+    HashMap<String,String> hm=new HashMap<String,String>();
     String[] fields=entries[i].split("\n");
     for (int j=0; j < fields.length; j++) {
       StringBuffer current=new StringBuffer(fields[j]);
@@ -80,7 +80,7 @@
  else         if (lab.equals("KW")) {
           if (!hm.containsKey("keywords"))           hm.put("keywords",val);
  else {
-            String kw=(String)hm.get("keywords");
+            String kw=hm.get("keywords");
             hm.put("keywords",kw + ", " + val);
           }
         }
@@ -104,13 +104,13 @@
     }
     hm.put("pages",startPage + "--" + endPage);
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(type));
-    ArrayList toRemove=new ArrayList();
-    for (Iterator it=hm.keySet().iterator(); it.hasNext(); ) {
+    ArrayList<Object> toRemove=new ArrayList<Object>();
+    for (Iterator<String> it=hm.keySet().iterator(); it.hasNext(); ) {
       Object key=it.next();
-      String content=(String)hm.get(key);
+      String content=hm.get(key);
       if ((content == null) || (content.trim().length() == 0))       toRemove.add(key);
     }
-    for (Iterator iterator=toRemove.iterator(); iterator.hasNext(); ) {
+    for (Iterator<Object> iterator=toRemove.iterator(); iterator.hasNext(); ) {
       hm.remove(iterator.next());
     }
     b.setField(hm);

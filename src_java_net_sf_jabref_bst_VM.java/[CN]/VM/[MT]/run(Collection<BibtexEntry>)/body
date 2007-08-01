@@ -1,0 +1,46 @@
+{
+  reset();
+{
+    entries=new Vector<BstEntry>(bibtex.size());
+    ListIterator<BstEntry> i=entries.listIterator();
+    for (    BibtexEntry entry : bibtex) {
+      i.add(new BstEntry(entry));
+    }
+  }
+  for (int i=0; i < tree.getChildCount(); i++) {
+    Tree child=tree.getChild(i);
+switch (child.getType()) {
+case BstParser.STRINGS:
+      strings(child);
+    break;
+case BstParser.INTEGERS:
+  integers(child);
+break;
+case BstParser.FUNCTION:
+function(child);
+break;
+case BstParser.EXECUTE:
+execute(child);
+break;
+case BstParser.SORT:
+sort(child);
+break;
+case BstParser.ITERATE:
+iterate(child);
+break;
+case BstParser.REVERSE:
+reverse(child);
+break;
+case BstParser.ENTRY:
+entry(child);
+break;
+case BstParser.READ:
+read();
+break;
+case BstParser.MACRO:
+macro(child);
+break;
+}
+}
+return bbl.toString();
+}

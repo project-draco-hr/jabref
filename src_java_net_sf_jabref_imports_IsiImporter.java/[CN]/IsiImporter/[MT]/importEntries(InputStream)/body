@@ -2,7 +2,7 @@
   if (stream == null) {
     throw new IOException("No stream given.");
   }
-  ArrayList bibitems=new ArrayList();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
   StringBuffer sb=new StringBuffer();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
@@ -22,7 +22,7 @@
     }
   }
   String[] entries=sb.toString().split("::");
-  HashMap hm=new HashMap();
+  HashMap<String,String> hm=new HashMap<String,String>();
   for (int i=0; i < entries.length; i++) {
     String[] fields=entries[i].split(" ## ");
     if (fields.length == 0)     fields=entries[i].split("\n");
@@ -54,14 +54,14 @@
  else       if (beg.equals("JO"))       hm.put("booktitle",value);
  else       if (beg.equals("AU")) {
         String author=isiAuthorsConvert(value.replaceAll("EOLEOL"," and "));
-        if (hm.get("author") != null)         author=(String)hm.get("author") + " and " + author;
+        if (hm.get("author") != null)         author=hm.get("author") + " and " + author;
         hm.put("author",author);
       }
  else       if (beg.equals("TI"))       hm.put("title",value.replaceAll("EOLEOL"," "));
  else       if (beg.equals("SO") || beg.equals("JA"))       hm.put("journal",value.replaceAll("EOLEOL"," "));
  else       if (beg.equals("ID") || beg.equals("KW")) {
         value=value.replaceAll("EOLEOL"," ");
-        String existingKeywords=(String)hm.get("keywords");
+        String existingKeywords=hm.get("keywords");
         if (existingKeywords != null && existingKeywords.indexOf(value) == -1) {
           existingKeywords+=", " + value;
         }
@@ -116,13 +116,13 @@
     if (!"".equals(pages))     hm.put("pages",pages);
     if (hm.size() == 0)     continue;
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
-    ArrayList toRemove=new ArrayList();
-    for (Iterator it=hm.keySet().iterator(); it.hasNext(); ) {
+    ArrayList<Object> toRemove=new ArrayList<Object>();
+    for (Iterator<String> it=hm.keySet().iterator(); it.hasNext(); ) {
       Object key=it.next();
-      String content=(String)hm.get(key);
+      String content=hm.get(key);
       if ((content == null) || (content.trim().length() == 0))       toRemove.add(key);
     }
-    for (Iterator iterator=toRemove.iterator(); iterator.hasNext(); ) {
+    for (Iterator<Object> iterator=toRemove.iterator(); iterator.hasNext(); ) {
       hm.remove(iterator.next());
     }
     processSubSup(hm);

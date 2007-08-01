@@ -1,12 +1,11 @@
 {
-  ArrayList bibitems=new ArrayList();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
   StringBuffer sb=new StringBuffer();
-  HashMap hm=new HashMap();
+  HashMap<String,String> hm=new HashMap<String,String>();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String Type=null;
   String str;
   boolean first=true;
-  int rline=1;
   line=1;
   str=readLine(in);
   while (true) {
@@ -18,7 +17,7 @@
           Type="article";
         }
         if (Type.equals("article") && hm.get("booktitle") != null) {
-          String booktitle=(String)hm.get("booktitle");
+          String booktitle=hm.get("booktitle");
           hm.remove("booktitle");
           hm.put("journal",booktitle);
         }
@@ -30,7 +29,6 @@
       first=true;
       if (str == null)       break;
       str=readLine(in);
-      rline=line;
       continue;
     }
     int fline=line;
@@ -58,7 +56,6 @@
           throw new IOException("format error at line " + fline + ": DN out of order");
         }
         first=false;
-        rline=fline;
       }
  else       if (first == true) {
         throw new IOException("format error at line " + fline + ": missing DN");
@@ -107,7 +104,7 @@
  else       if (fabbr.equals("PY")) {
         ftype="year";
         if (hm.get("year") != null) {
-          String oyear=(String)hm.get("year");
+          String oyear=hm.get("year");
           if (!fstr.equals(oyear)) {
             StringBuffer note=new StringBuffer();
             note.append("Source Year: ");

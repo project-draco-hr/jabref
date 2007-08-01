@@ -12,7 +12,7 @@
   st.start();
   int current=0;
   DuplicateResolverDialog drd=null;
-  final ArrayList toRemove=new ArrayList();
+  final ArrayList<BibtexEntry> toRemove=new ArrayList<BibtexEntry>();
   while (!st.finished() || (current < duplicates.size())) {
     if (current >= duplicates.size()) {
 synchronized (duplicates) {
@@ -24,7 +24,7 @@ synchronized (duplicates) {
       }
     }
  else {
-      BibtexEntry[] be=(BibtexEntry[])duplicates.get(current);
+      BibtexEntry[] be=duplicates.get(current);
       current++;
       if (!toRemove.contains(be[0]) && !toRemove.contains(be[1])) {
         boolean askAboutExact=false;
@@ -62,8 +62,8 @@ synchronized (duplicates) {
   SwingUtilities.invokeLater(new Runnable(){
     public void run(){
       if (toRemove.size() > 0) {
-        for (Iterator iterator=toRemove.iterator(); iterator.hasNext(); ) {
-          BibtexEntry entry=(BibtexEntry)iterator.next();
+        for (Iterator<BibtexEntry> iterator=toRemove.iterator(); iterator.hasNext(); ) {
+          BibtexEntry entry=iterator.next();
           panel.database.removeEntry(entry.getId());
           ce.addEdit(new UndoableRemoveEntry(panel.database,entry,panel));
         }

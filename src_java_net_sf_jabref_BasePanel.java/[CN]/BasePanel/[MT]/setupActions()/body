@@ -337,11 +337,11 @@ catch (          Throwable ex) {
   }
 );
   actions.put("makeKey",new AbstractWorker(){
-    List entries;
+    List<BibtexEntry> entries;
     int numSelected;
     boolean cancelled=false;
     public void init(){
-      entries=new ArrayList(Arrays.asList(getSelectedEntries()));
+      entries=new ArrayList<BibtexEntry>(Arrays.asList(getSelectedEntries()));
       numSelected=entries.size();
       if (entries.size() == 0) {
         JOptionPane.showMessageDialog(frame,Globals.lang("First select the entries you want keys to be generated for."),Globals.lang("Autogenerate BibTeX key"),JOptionPane.INFORMATION_MESSAGE);
@@ -353,10 +353,8 @@ catch (          Throwable ex) {
     public void run(){
       BibtexEntry bes=null;
       NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
-      Object oldValue;
-      boolean hasShownWarning=false;
-      loop:       for (Iterator i=entries.iterator(); i.hasNext(); ) {
-        bes=(BibtexEntry)i.next();
+      loop:       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
+        bes=i.next();
         if (bes.getField(BibtexFields.KEY_FIELD) != null) {
           if (Globals.prefs.getBoolean("avoidOverwritingKey"))           i.remove();
  else           if (Globals.prefs.getBoolean("warnBeforeOverwritingKey")) {
@@ -371,14 +369,14 @@ catch (          Throwable ex) {
           }
         }
       }
-      HashMap oldvals=new HashMap();
-      if (!Globals.prefs.getBoolean("avoidOverwritingKey"))       for (Iterator i=entries.iterator(); i.hasNext(); ) {
-        bes=(BibtexEntry)i.next();
+      HashMap<BibtexEntry,Object> oldvals=new HashMap<BibtexEntry,Object>();
+      if (!Globals.prefs.getBoolean("avoidOverwritingKey"))       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
+        bes=i.next();
         oldvals.put(bes,bes.getField(BibtexFields.KEY_FIELD));
         database.setCiteKeyForEntry(bes.getId(),null);
       }
-      for (Iterator i=entries.iterator(); i.hasNext(); ) {
-        bes=(BibtexEntry)i.next();
+      for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
+        bes=i.next();
         bes=LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);
         ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),(String)bes.getField(BibtexFields.KEY_FIELD)));
       }
@@ -427,7 +425,7 @@ catch (          Throwable ex) {
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
-        Vector keys=new Vector();
+        Vector<Object> keys=new Vector<Object>();
         for (int i=0; i < bes.length; i++)         if (bes[i].getField(BibtexFields.KEY_FIELD) != null)         keys.add(bes[i].getField(BibtexFields.KEY_FIELD));
         if (keys.size() == 0) {
           output("None of the selected entries have BibTeX keys.");
@@ -451,7 +449,7 @@ catch (          Throwable ex) {
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
-        Vector keys=new Vector();
+        Vector<Object> keys=new Vector<Object>();
         for (int i=0; i < bes.length; i++)         if (bes[i].getField(BibtexFields.KEY_FIELD) != null)         keys.add(bes[i].getField(BibtexFields.KEY_FIELD));
         if (keys.size() == 0) {
           output("None of the selected entries have BibTeX keys.");

@@ -1,5 +1,5 @@
 {
-  fieldSet=new HashMap();
+  fieldSet=new HashMap<String,BibtexSingleField>();
   BibtexSingleField dummy=null;
   add(new BibtexSingleField("address",true,GUIGlobals.SMALL_W));
   add(new BibtexSingleField("annote",true,GUIGlobals.LARGE_W));
@@ -91,13 +91,12 @@
   dummy.setDisplayable(false);
   add(dummy);
   readXML(Globals.additionalFields);
-  Vector pFields=new Vector(fieldSet.size());
-  for (Iterator iter=fieldSet.values().iterator(); iter.hasNext(); ) {
-    BibtexSingleField sField=(BibtexSingleField)iter.next();
+  Vector<String> pFields=new Vector<String>(fieldSet.size());
+  for (  BibtexSingleField sField : fieldSet.values()) {
     if (sField.isPublic()) {
       pFields.add(sField.getFieldName());
     }
   }
-  PUBLIC_FIELDS=pFields.toArray();
+  PUBLIC_FIELDS=pFields.toArray(new String[pFields.size()]);
   java.util.Arrays.sort(PUBLIC_FIELDS);
 }

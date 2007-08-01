@@ -40,12 +40,12 @@ catch (IOException ioex) {
 logger.log(Level.WARNING,"!should not happen!",ioex);
 }
 try {
-List filelist=(List)tsf.getTransferData(DataFlavor.javaFileListFlavor);
+@SuppressWarnings("unchecked") List<File> filelist=(List<File>)tsf.getTransferData(DataFlavor.javaFileListFlavor);
 if (filelist.size() > 1) {
 JOptionPane.showMessageDialog((Component)editor,Globals.lang("Only one item is supported"),Globals.lang("Drag and Drop Error"),JOptionPane.ERROR_MESSAGE);
 return;
 }
-File fl=(File)filelist.get(0);
+File fl=filelist.get(0);
 feditor.setText(fl.toURI().toURL().toString());
 editor.updateField(feditor);
 }

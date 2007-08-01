@@ -1,7 +1,6 @@
 {
   NamedCompound ce=new NamedCompound(Globals.lang("Move external links to 'file' field"));
-  for (Iterator i=database.getEntryMap().keySet().iterator(); i.hasNext(); ) {
-    BibtexEntry entry=(BibtexEntry)database.getEntryMap().get(i.next());
+  for (  BibtexEntry entry : database.getEntryMap().values()) {
     FileListTableModel tableModel=new FileListTableModel();
     Object oldFileContent=entry.getField(GUIGlobals.FILE_FIELD);
     if (oldFileContent != null) {
@@ -14,10 +13,6 @@
         String s=(String)o;
         if (s.trim().length() > 0) {
           File f=new File(s);
-          String extension="";
-          if ((s.lastIndexOf('.') >= 0) && (s.lastIndexOf('.') < s.length() - 1)) {
-            extension=s.substring(s.lastIndexOf('.') + 1);
-          }
           FileListEntry flEntry=new FileListEntry(f.getName(),s,Globals.prefs.getExternalFileTypeByExt(fields[j]));
           tableModel.addEntry(tableModel.getRowCount(),flEntry);
           entry.clearField(fields[j]);

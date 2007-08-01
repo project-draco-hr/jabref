@@ -1,16 +1,15 @@
 {
-  DefaultListModel listModel=new DefaultListModel();
-  Iterator it=bindHM.keySet().iterator();
+  Iterator<String> it=bindHM.keySet().iterator();
   String[][] tableData=new String[bindHM.size()][3];
   int i=0;
   while (it.hasNext()) {
-    String s=(String)it.next();
+    String s=it.next();
     tableData[i][2]=s;
-    tableData[i][1]=(String)bindHM.get(s);
+    tableData[i][1]=bindHM.get(s);
     tableData[i][0]=Globals.lang(s);
     i++;
   }
-  TreeMap sorted=new TreeMap();
+  TreeMap<String,String[]> sorted=new TreeMap<String,String[]>();
   for (i=0; i < tableData.length; i++)   sorted.put(tableData[i][0],tableData[i]);
   tableModel=new KeystrokeTableModel(sorted);
   table=new KeystrokeTable(tableModel);

@@ -40,13 +40,13 @@
         return null;
       }
       if (dirToProcess.equals("**")) {
-        List toDo=new LinkedList();
+        List<File> toDo=new LinkedList<File>();
         toDo.add(directory);
         String restOfFileString=join(fileParts,"/",i + 1,fileParts.length);
         String result=findFile(entry,database,directory,restOfFileString);
         if (result != null)         return result;
         while (!toDo.isEmpty()) {
-          File[] subDirs=((File)toDo.remove(0)).listFiles();
+          File[] subDirs=toDo.remove(0).listFiles();
           if (subDirs == null)           continue;
           toDo.addAll(Arrays.asList(subDirs));
           for (int sub=0; sub < subDirs.length; sub++) {

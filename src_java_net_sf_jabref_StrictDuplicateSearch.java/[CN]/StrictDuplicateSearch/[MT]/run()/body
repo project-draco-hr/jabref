@@ -1,7 +1,6 @@
 {
-  HashSet toRemove=new HashSet();
+  HashSet<BibtexEntry> toRemove=new HashSet<BibtexEntry>();
   NamedCompound ce=new NamedCompound(Globals.lang("Remove duplicates"));
-  int duplicateCounter=0;
   panel.output(Globals.lang("Searching for duplicates..."));
   Object[] keys=panel.database.getKeySet().toArray();
   if ((keys == null) || (keys.length < 2))   return;
@@ -23,8 +22,8 @@
   int answer=JOptionPane.showConfirmDialog(panel.frame(),Globals.lang("Duplicates found") + ": " + toRemove.size()+ ". "+ Globals.lang("Remove all?"),Globals.lang("Remove duplicates"),JOptionPane.OK_CANCEL_OPTION);
   if (answer == JOptionPane.CANCEL_OPTION)   return;
   panel.output(Globals.lang("Duplicates removed") + ": " + toRemove.size());
-  for (Iterator i=toRemove.iterator(); i.hasNext(); ) {
-    BibtexEntry entry=(BibtexEntry)i.next();
+  for (Iterator<BibtexEntry> i=toRemove.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=i.next();
     panel.database.removeEntry(entry.getId());
     ce.addEdit(new UndoableRemoveEntry(panel.database,entry,panel));
   }

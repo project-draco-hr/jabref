@@ -15,12 +15,11 @@ synchronized (mutex) {
     }
     if (mode == 1) {
       int counter=0;
-      for (Enumeration myE=textBlocks.elements(); myE.hasMoreElements(); ) {
-        TextBlock block=(TextBlock)myE.nextElement();
+      for (Enumeration<TextBlock> myE=textBlocks.elements(); myE.hasMoreElements(); ) {
+        TextBlock block=myE.nextElement();
         AboutTextLine head=block.getHeading();
         counter=performStep(head);
-        for (Enumeration myEnum=block.getEnumeration(); myEnum.hasMoreElements(); ) {
-          AboutTextLine line=(AboutTextLine)myEnum.nextElement();
+        for (        AboutTextLine line : block) {
           counter+=performStep(line);
         }
       }

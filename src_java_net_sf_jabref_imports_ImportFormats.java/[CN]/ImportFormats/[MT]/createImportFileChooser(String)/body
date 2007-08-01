@@ -1,25 +1,16 @@
 {
-  SortedSet builtImporters=Globals.importFormatReader.getBuiltInInputFormats();
-  SortedSet customImporters=Globals.importFormatReader.getCustomImportFormats();
-  SortedSet importers=new TreeSet();
-  for (Iterator i=builtImporters.iterator(); i.hasNext(); ) {
-    importers.add(i.next());
-  }
-  for (Iterator i=customImporters.iterator(); i.hasNext(); ) {
-    importers.add(i.next());
-  }
+  SortedSet<ImportFormat> importers=Globals.importFormatReader.getImportFormats();
   String lastUsedFormat=Globals.prefs.get("lastUsedImport");
   FileFilter defaultFilter=null;
   JFileChooser fc=new JFileChooser(currentDir);
-  TreeSet filters=new TreeSet();
-  for (Iterator i=importers.iterator(); i.hasNext(); ) {
-    ImportFormat format=(ImportFormat)i.next();
+  TreeSet<ImportFileFilter> filters=new TreeSet<ImportFileFilter>();
+  for (  ImportFormat format : importers) {
     ImportFileFilter filter=new ImportFileFilter(format);
     filters.add(filter);
     if (format.getFormatName().equals(lastUsedFormat))     defaultFilter=filter;
   }
-  for (Iterator i=filters.iterator(); i.hasNext(); ) {
-    fc.addChoosableFileFilter((ImportFileFilter)i.next());
+  for (  ImportFileFilter filter : filters) {
+    fc.addChoosableFileFilter(filter);
   }
   if (defaultFilter != null)   fc.setFileFilter(defaultFilter);
  else   fc.setFileFilter(fc.getAcceptAllFileFilter());

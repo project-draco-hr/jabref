@@ -1,6 +1,6 @@
 {
   BibtexDatabase database=null;
-  List bibentries=null;
+  List<BibtexEntry> bibentries=null;
   File f=new File(filename);
   if (!f.exists())   throw new IOException(Globals.lang("File not found") + ": " + filename);
   try {
@@ -12,9 +12,9 @@
   if (bibentries == null)   throw new IOException(Globals.lang("Import failed"));
   purgeEmptyEntries(bibentries);
   database=new BibtexDatabase();
-  Iterator it=bibentries.iterator();
+  Iterator<BibtexEntry> it=bibentries.iterator();
   while (it.hasNext()) {
-    BibtexEntry entry=(BibtexEntry)it.next();
+    BibtexEntry entry=it.next();
     try {
       entry.setId(Util.createNeutralId());
       database.insertEntry(entry);
