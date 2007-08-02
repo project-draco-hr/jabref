@@ -1,29 +1,6 @@
 {
   if (singleton == null) {
-    ObjectFactory objectFactory=ObjectFactory.newInstance();
-    singleton=objectFactory.createManager();
-    try {
-      DefaultPluginsCollector collector=new DefaultPluginsCollector();
-      ExtendedProperties ep=new ExtendedProperties();
-      ep.setProperty("org.java.plugin.boot.pluginsRepositories","./src/plugins,./plugins");
-      collector.configure(ep);
-      Collection<PluginLocation> plugins=collector.collectPluginLocations();
-      PluginLocation location;
-      location=getLocationInsideJar("/plugins/net.sf.jabref.core/","plugin.xml");
-      if (location != null)       plugins.add(location);
-      location=getLocationInsideJar("/plugins/net.sf.jabref.export.misq/","plugin.xml");
-      if (location != null)       plugins.add(location);
-      if (plugins.size() <= 0) {
-        net.sf.jabref.Globals.logger("No plugins found. At least net.sf.jabref.core should be there.");
-      }
- else {
-        net.sf.jabref.Globals.logger(plugins.size() + " plugin(s) found.");
-      }
-      singleton.publishPlugins(plugins.toArray(new PluginLocation[]{}));
-    }
- catch (    Exception e) {
-      e.printStackTrace();
-    }
+    singleton=PluginCore.initialize();
   }
   return singleton;
 }
