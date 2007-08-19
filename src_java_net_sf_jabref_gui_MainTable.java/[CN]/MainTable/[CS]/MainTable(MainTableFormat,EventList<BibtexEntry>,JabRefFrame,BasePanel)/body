@@ -1,0 +1,29 @@
+{
+  super();
+  this.tableFormat=tableFormat;
+  sortedForTable=new SortedList<BibtexEntry>(list,null);
+  sortedForMarking=new SortedList<BibtexEntry>(sortedForTable,null);
+  sortedForSearch=new SortedList<BibtexEntry>(sortedForMarking,null);
+  sortedForGrouping=new SortedList<BibtexEntry>(sortedForSearch,null);
+  searchMatcher=null;
+  groupMatcher=null;
+  searchComparator=null;
+  groupComparator=null;
+  EventTableModel<BibtexEntry> tableModel=new EventTableModel<BibtexEntry>(sortedForGrouping,tableFormat);
+  setModel(tableModel);
+  tableColorCodes=Globals.prefs.getBoolean("tableColorCodesOn");
+  selectionModel=new EventSelectionModel<BibtexEntry>(sortedForGrouping);
+  setSelectionModel(selectionModel);
+  pane=new JScrollPane(this);
+  pane.getViewport().setBackground(Globals.prefs.getColor("tableBackground"));
+  setGridColor(Globals.prefs.getColor("gridColor"));
+  comparatorChooser=new MyTableComparatorChooser(this,sortedForTable,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  getSelected();
+  setDragEnabled(true);
+  TransferHandler xfer=new EntryTableTransferHandler(this,frame,panel);
+  setTransferHandler(xfer);
+  pane.setTransferHandler(xfer);
+  setupComparatorChooser();
+  refreshSorting();
+  setWidths();
+}

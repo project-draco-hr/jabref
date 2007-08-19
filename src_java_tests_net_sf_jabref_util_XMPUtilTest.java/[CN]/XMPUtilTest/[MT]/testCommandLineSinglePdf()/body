@@ -10,7 +10,7 @@
     s.close();
     String bibtex=s.toString();
     ParserResult result=BibtexParser.parse(new StringReader(bibtex));
-    Collection c=result.getDatabase().getEntries();
+    Collection<BibtexEntry> c=result.getDatabase().getEntries();
     assertEquals(1,c.size());
     BibtexEntry x=(BibtexEntry)c.iterator().next();
     assertEquals(e,x);
@@ -34,7 +34,7 @@
     assertTrue(0 < xmp.indexOf("<rdf:Description"));
     assertTrue(0 < xmp.indexOf("<?xpacket end='w'?>") || 0 < xmp.indexOf("<?xpacket end=\"w\"?>"));
     writeManually(pdfFile,xmp);
-    List l=XMPUtil.readXMP(pdfFile);
+    List<BibtexEntry> l=XMPUtil.readXMP(pdfFile);
     assertEquals(1,l.size());
     assertEquals(t1BibtexEntry(),(BibtexEntry)l.get(0));
   }

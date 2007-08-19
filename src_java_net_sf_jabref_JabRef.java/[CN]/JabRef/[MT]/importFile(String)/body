@@ -1,0 +1,25 @@
+{
+  String[] data=argument.split(",");
+  try {
+    if ((data.length > 1) && !"*".equals(data[1])) {
+      System.out.println(Globals.lang("Importing") + ": " + data[0]);
+      List<BibtexEntry> entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")));
+      return new ParserResult(entries);
+    }
+ else {
+      System.out.println(Globals.lang("Importing in unknown format") + ": " + data[0]);
+      Pair<String,ParserResult> importResult=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
+      if (importResult != null) {
+        System.out.println(Globals.lang("Format used") + ": " + importResult.p);
+        return importResult.v;
+      }
+ else {
+        System.out.println(Globals.lang("Could not find a suitable import format."));
+      }
+    }
+  }
+ catch (  IOException ex) {
+    System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getLocalizedMessage());
+  }
+  return null;
+}

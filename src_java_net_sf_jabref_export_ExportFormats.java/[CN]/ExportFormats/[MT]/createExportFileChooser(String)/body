@@ -3,13 +3,13 @@
   FileFilter defaultFilter=null;
   JFileChooser fc=new JFileChooser(currentDir);
   TreeSet<FileFilter> filters=new TreeSet<FileFilter>();
-  for (Iterator i=exportFormats.keySet().iterator(); i.hasNext(); ) {
-    String formatName=(String)i.next();
-    ExportFormat format=(ExportFormat)exportFormats.get(formatName);
+  for (Iterator<String> i=exportFormats.keySet().iterator(); i.hasNext(); ) {
+    String formatName=i.next();
+    ExportFormat format=exportFormats.get(formatName);
     filters.add(format.getFileFilter());
     if (formatName.equals(lastUsedFormat))     defaultFilter=format.getFileFilter();
   }
-  for (Iterator i=filters.iterator(); i.hasNext(); ) {
+  for (Iterator<FileFilter> i=filters.iterator(); i.hasNext(); ) {
     fc.addChoosableFileFilter((ExportFileFilter)i.next());
   }
   fc.setAcceptAllFileFilterUsed(false);

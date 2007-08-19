@@ -1,5 +1,5 @@
 {
-  ArrayList bibitems=new ArrayList();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
   StringBuffer sb=new StringBuffer();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
@@ -19,12 +19,11 @@
     }
   }
   String[] entries=sb.toString().split("::");
-  HashMap hm=new HashMap();
+  HashMap<String,String> hm=new HashMap<String,String>();
   for (int i=0; i < entries.length; i++) {
     String[] fields=entries[i].split(" ## ");
     if (fields.length == 0)     fields=entries[i].split("\n");
     String Type="";
-    String PT="";
     String pages="";
     String shortauthor="";
     String fullauthor="";
@@ -36,7 +35,6 @@
       String value=fields[j].substring(6);
       value=value.trim();
       if (beg.equals("PT  - ")) {
-        PT=value.replaceAll("JOURNAL ARTICLE","article").replaceAll("Journal Article","article");
         Type="article";
       }
  else       if (beg.equals("TY  - ")) {

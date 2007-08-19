@@ -23,8 +23,8 @@
       System.err.println(Globals.lang("Unable to create graphical interface") + ".");
     }
   }
-  Vector loaded=new Vector();
-  Vector toImport=new Vector();
+  Vector<ParserResult> loaded=new Vector<ParserResult>();
+  Vector<String> toImport=new Vector<String>();
   if (!blank.isInvoked() && (leftOver.length > 0)) {
     for (int i=0; i < leftOver.length; i++) {
       boolean bibExtension=leftOver[i].toLowerCase().endsWith("bib");
@@ -45,42 +45,9 @@
   if (!blank.isInvoked() && importFile.isInvoked()) {
     toImport.add(importFile.getStringValue());
   }
-  if (toImport.size() > 0)   for (int i=0; i < toImport.size(); i++) {
-    String[] data=((String)toImport.elementAt(i)).split(",");
-    try {
-      if ((data.length > 1) && !"*".equals(data[1])) {
-        System.out.println(Globals.lang("Importing") + ": " + data[0]);
-        List entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")));
-        BibtexDatabase base=ImportFormatReader.createDatabase(entries);
-        ParserResult pr=new ParserResult(base,null,new HashMap());
-        loaded.add(pr);
-      }
- else {
-        System.out.println(Globals.lang("Importing in unknown format") + ": " + data[0]);
-        Object[] o=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
-        String formatName=(String)o[0];
-        if (formatName == null) {
-          System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "'");
-        }
- else         if (formatName.equals(ImportFormatReader.BIBTEX_FORMAT)) {
-          ParserResult pr=(ParserResult)o[1];
-          loaded.add(pr);
-        }
- else {
-          List entries=(java.util.List)o[1];
-          if (entries != null)           System.out.println(Globals.lang("Format used") + ": " + formatName);
- else           System.out.println(Globals.lang("Could not find a suitable import format."));
-          if (entries != null) {
-            BibtexDatabase base=ImportFormatReader.createDatabase(entries);
-            ParserResult pr=new ParserResult(base,null,new HashMap());
-            loaded.add(pr);
-          }
-        }
-      }
-    }
- catch (    IOException ex) {
-      System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getMessage());
-    }
+  for (  String filenameString : toImport) {
+    ParserResult pr=importFile(filenameString);
+    if (pr != null)     loaded.add(pr);
   }
   if (!blank.isInvoked() && importToOpenBase.isInvoked()) {
     ParserResult res=importToOpenBase(importToOpenBase.getStringValue());
@@ -91,7 +58,7 @@
       String[] data=exportFile.getStringValue().split(",");
       if (data.length == 1) {
         if (loaded.size() > 0) {
-          ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
+          ParserResult pr=loaded.elementAt(loaded.size() - 1);
           try {
             System.out.println(Globals.lang("Saving") + ": " + data[0]);
             SaveSession session=FileActions.saveDatabase(pr.getDatabase(),new MetaData(pr.getMetaData(),pr.getDatabase()),new File(data[0]),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"));
@@ -105,7 +72,7 @@
  else         System.err.println(Globals.lang("The output option depends on a valid import option."));
       }
  else       if (data.length == 2) {
-        ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
+        ParserResult pr=loaded.elementAt(loaded.size() - 1);
         System.out.println(Globals.lang("Exporting") + ": " + data[0]);
         ExportFormat format=ExportFormats.getExportFormat(data[1]);
         if (format != null) {
@@ -143,7 +110,7 @@
     if (loaded.size() > 0) {
       String[] data=auxImExport.getStringValue().split(",");
       if (data.length == 2) {
-        ParserResult pr=(ParserResult)loaded.firstElement();
+        ParserResult pr=loaded.firstElement();
         AuxCommandLine acl=new AuxCommandLine(data[0],pr.getDatabase());
         BibtexDatabase newBase=acl.perform();
         boolean notSavedMsg=false;

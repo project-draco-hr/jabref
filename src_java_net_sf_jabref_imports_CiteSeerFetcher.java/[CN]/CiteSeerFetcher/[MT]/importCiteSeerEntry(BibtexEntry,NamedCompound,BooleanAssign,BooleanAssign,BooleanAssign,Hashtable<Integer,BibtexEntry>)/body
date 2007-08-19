@@ -1,0 +1,33 @@
+{
+  boolean abortOperation=false;
+  String identifier=generateCanonicalIdentifier(be);
+  try {
+    if (identifier != null) {
+      StringBuffer citeseerURLString=new StringBuffer();
+      citeseerURLString.append(OAI_URL);
+      citeseerURLString.append(OAI_ACTION);
+      citeseerURLString.append("&" + OAI_METADATAPREFIX);
+      citeseerURLString.append("&" + "identifier=").append(identifier);
+      URL citeseerUrl=new URL(citeseerURLString.toString());
+      HttpURLConnection citeseerConnection=(HttpURLConnection)citeseerUrl.openConnection();
+      InputStream inputStream=citeseerConnection.getInputStream();
+      DefaultHandler handlerBase=new CiteSeerUndoHandler(citeseerNC,be,panel,newValue,overwriteAll,overwriteNone);
+      saxParser.parse(inputStream,handlerBase);
+    }
+ else {
+      int row=panel.mainTable.findEntry(be);
+      rejectedEntries.put(new Integer(row + 1),be);
+    }
+  }
+ catch (  IOException e) {
+    ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
+    SwingUtilities.invokeLater(dialog);
+    abortOperation=true;
+  }
+catch (  SAXException e) {
+    System.out.println("SAXException: " + e.getLocalizedMessage());
+    e.printStackTrace();
+    abortOperation=true;
+  }
+  return abortOperation;
+}

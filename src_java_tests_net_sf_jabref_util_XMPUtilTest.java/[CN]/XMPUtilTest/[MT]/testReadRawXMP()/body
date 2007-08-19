@@ -5,12 +5,12 @@
   BibtexEntry e=(BibtexEntry)c.iterator().next();
   XMPUtil.writeXMP(pdfFile,e,null);
   XMPMetadata metadata=XMPUtil.readRawXMP(pdfFile);
-  List schemas=metadata.getSchemas();
+  List<XMPSchema> schemas=metadata.getSchemas();
   assertEquals(2,schemas.size());
   schemas=metadata.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
   assertEquals(1,schemas.size());
   XMPSchemaBibtex bib=(XMPSchemaBibtex)schemas.get(0);
-  List authors=bib.getSequenceList("author");
+  List<String> authors=bib.getSequenceList("author");
   assertEquals(4,authors.size());
   assertEquals("K. Crowston",authors.get(0));
   assertEquals("H. Annabi",authors.get(1));

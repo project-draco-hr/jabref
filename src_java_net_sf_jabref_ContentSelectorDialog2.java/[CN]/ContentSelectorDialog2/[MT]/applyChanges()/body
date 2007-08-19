@@ -1,21 +1,21 @@
 {
   boolean changedFieldSet=false;
-  for (Iterator i=removedFields.iterator(); i.hasNext(); ) {
-    String fieldName=(String)i.next();
+  for (Iterator<String> i=removedFields.iterator(); i.hasNext(); ) {
+    String fieldName=i.next();
     metaData.remove(Globals.SELECTOR_META_PREFIX + fieldName);
     changedFieldSet=true;
   }
-  loop:   for (Iterator i=wordListModels.keySet().iterator(); i.hasNext(); ) {
-    String fieldName=(String)i.next();
+  loop:   for (Iterator<String> i=wordListModels.keySet().iterator(); i.hasNext(); ) {
+    String fieldName=i.next();
     if ((fieldName == null) || FIELD_FIRST_LINE.equals(fieldName))     continue loop;
-    DefaultListModel lm=(DefaultListModel)wordListModels.get(fieldName);
+    DefaultListModel lm=wordListModels.get(fieldName);
     int start=0;
     if (lm.size() > 0)     while ((start < lm.size()) && ((String)lm.get(start)).equals(WORD_FIRSTLINE_TEXT))     start++;
-    Vector data=metaData.getData(Globals.SELECTOR_META_PREFIX + fieldName);
+    Vector<String> data=metaData.getData(Globals.SELECTOR_META_PREFIX + fieldName);
     boolean newField=false;
     if (data == null) {
       newField=true;
-      data=new Vector();
+      data=new Vector<String>();
       changedFieldSet=true;
     }
  else     data.clear();

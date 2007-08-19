@@ -1,14 +1,12 @@
 {
   int nTmp=onTmp.getStringCount(), nDisk=onDisk.getStringCount();
   if ((nTmp == 0) && (nDisk == 0))   return;
-  HashSet used=new HashSet();
-  HashSet usedInMem=new HashSet();
-  HashSet notMatched=new HashSet(onTmp.getStringCount());
-  mainLoop:   for (Iterator i=onTmp.getStringKeySet().iterator(); i.hasNext(); ) {
-    Object tmpId=i.next();
-    BibtexString tmp=onTmp.getString(tmpId);
-    for (Iterator j=onDisk.getStringKeySet().iterator(); j.hasNext(); ) {
-      Object diskId=j.next();
+  HashSet<Object> used=new HashSet<Object>();
+  HashSet<Object> usedInMem=new HashSet<Object>();
+  HashSet<String> notMatched=new HashSet<String>(onTmp.getStringCount());
+  mainLoop:   for (  String key : onTmp.getStringKeySet()) {
+    BibtexString tmp=onTmp.getString(key);
+    for (    String diskId : onDisk.getStringKeySet()) {
       if (!used.contains(diskId)) {
         BibtexString disk=onDisk.getString(diskId);
         if (disk.getName().equals(tmp.getName())) {
@@ -25,23 +23,19 @@
     notMatched.add(tmp.getId());
   }
   if (notMatched.size() > 0) {
-    for (Iterator i=notMatched.iterator(); i.hasNext(); ) {
-      Object nmId=i.next();
-      BibtexString tmp=onTmp.getString(nmId);
-      String tmpContent=tmp.getContent();
-      for (Iterator j=onDisk.getStringKeySet().iterator(); j.hasNext(); ) {
-        Object diskId=j.next();
+    for (Iterator<String> i=notMatched.iterator(); i.hasNext(); ) {
+      BibtexString tmp=onTmp.getString(i.next());
+      for (      String diskId : onDisk.getStringKeySet()) {
         if (!used.contains(diskId)) {
           BibtexString disk=onDisk.getString(diskId);
           if (disk.getContent().equals(tmp.getContent())) {
             BibtexString bsMem=null;
-            findInMem:             for (Iterator k=inMem.getStringKeySet().iterator(); k.hasNext(); ) {
-              Object memId=k.next();
+            for (            String memId : inMem.getStringKeySet()) {
               BibtexString bsMem_cand=inMem.getString(memId);
               if (bsMem_cand.getContent().equals(disk.getContent()) && !usedInMem.contains(memId)) {
                 usedInMem.add(memId);
                 bsMem=bsMem_cand;
-                break findInMem;
+                break;
               }
             }
             changes.add(new StringNameChange(bsMem,bsMem.getName(),tmp.getName(),disk.getName(),tmp.getContent()));
@@ -53,8 +47,8 @@
     }
   }
   if (notMatched.size() > 0) {
-    for (Iterator i=notMatched.iterator(); i.hasNext(); ) {
-      Object nmId=i.next();
+    for (Iterator<String> i=notMatched.iterator(); i.hasNext(); ) {
+      String nmId=i.next();
       BibtexString tmp=onTmp.getString(nmId);
       BibtexString mem=findString(inMem,tmp.getName(),usedInMem);
       if (mem != null) {
@@ -62,8 +56,8 @@
       }
     }
   }
-  for (Iterator i=onDisk.getStringKeySet().iterator(); i.hasNext(); ) {
-    Object diskId=i.next();
+  for (Iterator<String> i=onDisk.getStringKeySet().iterator(); i.hasNext(); ) {
+    String diskId=i.next();
     if (!used.contains(diskId)) {
       BibtexString disk=onDisk.getString(diskId);
       used.add(diskId);

@@ -1,8 +1,8 @@
 {
-  GlazedEntrySorter eventList=new GlazedEntrySorter(database.getEntryMap(),null);
+  GlazedEntrySorter eventList=new GlazedEntrySorter(database.getEntryMap());
   database.addDatabaseChangeListener(eventList);
-  groupFilterList=new FilterList(eventList.getTheList(),NoSearchMatcher.INSTANCE);
-  searchFilterList=new FilterList(groupFilterList,NoSearchMatcher.INSTANCE);
+  groupFilterList=new FilterList<BibtexEntry>(eventList.getTheList(),NoSearchMatcher.INSTANCE);
+  searchFilterList=new FilterList<BibtexEntry>(groupFilterList,NoSearchMatcher.INSTANCE);
   MainTableFormat tableFormat=new MainTableFormat(this);
   tableFormat.updateTableFormat();
   mainTable=new MainTable(tableFormat,searchFilterList,frame,this);
@@ -12,8 +12,8 @@
   mainTable.addMouseListener(selectionListener);
   mainTable.addKeyListener(selectionListener);
   mainTable.addFocusListener(selectionListener);
-  groupsHighlightListener=new ListEventListener(){
-    public void listChanged(    ListEvent listEvent){
+  groupsHighlightListener=new ListEventListener<BibtexEntry>(){
+    public void listChanged(    ListEvent<BibtexEntry> listEvent){
       if (Globals.prefs.getBoolean("highlightGroupsMatchingAny"))       getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),false);
  else       if (Globals.prefs.getBoolean("highlightGroupsMatchingAll"))       getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),true);
  else       getGroupSelector().showMatchingGroups(null,true);

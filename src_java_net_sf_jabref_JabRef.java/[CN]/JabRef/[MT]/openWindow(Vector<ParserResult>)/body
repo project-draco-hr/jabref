@@ -1,0 +1,133 @@
+{
+  if (!graphicFailure && !disableGui.isInvoked()) {
+    Util.performCompatibilityUpdate();
+    GUIGlobals.setUpIconTheme();
+    Globals.prefs.updateExternalFileTypes();
+    System.setProperty("apple.laf.useScreenMenuBar","true");
+    if (!Globals.ON_MAC) {
+      int fontSizes=Globals.prefs.getInt("menuFontSize");
+      boolean overrideDefaultFonts=Globals.prefs.getBoolean("overrideDefaultFonts");
+      String defaultLookAndFeel;
+      if (Globals.ON_WIN)       defaultLookAndFeel=GUIGlobals.windowsDefaultLookAndFeel;
+ else       defaultLookAndFeel=GUIGlobals.linuxDefaultLookAndFeel;
+      String lookAndFeel=null;
+      if (!Globals.prefs.getBoolean("useDefaultLookAndFeel"))       lookAndFeel=Globals.prefs.get("lookAndFeel");
+ else       lookAndFeel=defaultLookAndFeel;
+      LookAndFeel lnf=null;
+      Object objLnf=null;
+      try {
+        if (lookAndFeel != null)         objLnf=Class.forName(lookAndFeel).newInstance();
+ else         objLnf=Class.forName(defaultLookAndFeel).newInstance();
+      }
+ catch (      Exception ex) {
+        ex.printStackTrace();
+        try {
+          objLnf=Class.forName(defaultLookAndFeel).newInstance();
+        }
+ catch (        Exception ex2) {
+        }
+      }
+      if (objLnf != null)       lnf=(LookAndFeel)objLnf;
+      if ((lnf != null) && (lnf instanceof Plastic3DLookAndFeel)) {
+        MetalLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
+        int defaultIconSize=GUIGlobals.getImage("open").getIconWidth();
+        com.jgoodies.looks.Options.setDefaultIconSize(new Dimension(defaultIconSize,defaultIconSize));
+        if (overrideDefaultFonts) {
+          FontSet fontSet=FontSets.createDefaultFontSet(new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.BOLD,fontSizes));
+          FontPolicy fixedPolicy=FontPolicies.createFixedPolicy(fontSet);
+          Plastic3DLookAndFeel.setFontPolicy(fixedPolicy);
+        }
+      }
+ else       if ((lnf != null) && (lnf instanceof WindowsLookAndFeel)) {
+        int defaultIconSize=GUIGlobals.getImage("open").getIconWidth();
+        com.jgoodies.looks.Options.setDefaultIconSize(new Dimension(defaultIconSize,defaultIconSize));
+        if (overrideDefaultFonts) {
+          FontSet fontSet=FontSets.createDefaultFontSet(new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.BOLD,fontSizes));
+          FontPolicy fixedPolicy=FontPolicies.createFixedPolicy(fontSet);
+          WindowsLookAndFeel.setFontPolicy(fixedPolicy);
+        }
+      }
+      if (lnf != null) {
+        try {
+          UIManager.setLookAndFeel(lnf);
+          if (!Globals.ON_WIN) {
+            UIManager.put("SimpleInternalFrame.activeTitleBackground",GUIGlobals.gradientBlue);
+          }
+          if (!Globals.ON_WIN && !Globals.ON_MAC) {
+            UIDefaults def=UIManager.getDefaults();
+            InputMap im=(InputMap)def.get("Button.focusInputMap");
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0,false),"pressed");
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0,true),"released");
+          }
+        }
+ catch (        Throwable ex) {
+          ex.printStackTrace();
+          System.err.println("Trying to set system default Look&Feel...");
+          try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          }
+ catch (          Throwable e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    }
+    if (!blank.isInvoked() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
+      String[] names=Globals.prefs.getStringArray("lastEdited");
+      lastEdLoop:       for (int i=0; i < names.length; i++) {
+        File fileToOpen=new File(names[i]);
+        for (int j=0; j < loaded.size(); j++) {
+          ParserResult pr=loaded.elementAt(j);
+          if ((pr.getFile() != null) && pr.getFile().equals(fileToOpen))           continue lastEdLoop;
+        }
+        if (fileToOpen.exists()) {
+          ParserResult pr=openBibFile(names[i]);
+          if (pr != null) {
+            if (pr == ParserResult.INVALID_FORMAT) {
+              System.out.println(Globals.lang("Error opening file") + " '" + fileToOpen.getPath()+ "'");
+            }
+ else             loaded.add(pr);
+          }
+        }
+      }
+    }
+    GUIGlobals.init();
+    GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get("fontFamily"),Globals.prefs.getInt("fontStyle"),Globals.prefs.getInt("fontSize"));
+    jrf=new JabRefFrame();
+    boolean first=true;
+    if (loaded.size() > 0) {
+      for (      ParserResult pr : loaded) {
+        jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),pr.getEncoding(),first);
+        first=false;
+      }
+    }
+    if (loadSess.isInvoked())     jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
+    if (splashScreen != null) {
+      splashScreen.dispose();
+      splashScreen=null;
+    }
+    jrf.setVisible(true);
+    startOOPlugin(jrf);
+    for (int i=0; i < loaded.size(); i++) {
+      ParserResult pr=loaded.elementAt(i);
+      if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
+        String[] wrns=pr.warnings();
+        StringBuffer wrn=new StringBuffer();
+        for (int j=0; j < wrns.length; j++)         wrn.append(j + 1).append(". ").append(wrns[j]).append("\n");
+        if (wrn.length() > 0)         wrn.deleteCharAt(wrn.length() - 1);
+        jrf.showBaseAt(i);
+        JOptionPane.showMessageDialog(jrf,wrn.toString(),Globals.lang("Warnings"),JOptionPane.WARNING_MESSAGE);
+      }
+    }
+    for (int i=0; i < loaded.size(); i++) {
+      ParserResult pr=loaded.elementAt(i);
+      BasePanel panel=jrf.baseAt(i);
+      OpenDatabaseAction.performPostOpenActions(panel,pr,true);
+    }
+    if (loaded.size() > 0) {
+      jrf.tabbedPane.setSelectedIndex(0);
+      new FocusRequester(((BasePanel)jrf.tabbedPane.getComponentAt(0)).mainTable);
+    }
+  }
+ else   System.exit(0);
+}

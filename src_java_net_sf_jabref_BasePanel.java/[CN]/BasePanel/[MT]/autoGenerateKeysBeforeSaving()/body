@@ -1,10 +1,8 @@
 {
   if (Globals.prefs.getBoolean("generateKeysBeforeSaving")) {
-    BibtexEntry bes;
     NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
     boolean any=false;
-    for (Iterator i=database.getKeySet().iterator(); i.hasNext(); ) {
-      bes=database.getEntryById((String)i.next());
+    for (    BibtexEntry bes : database.getEntries()) {
       String oldKey=bes.getCiteKey();
       if ((oldKey == null) || (oldKey.equals(""))) {
         LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);

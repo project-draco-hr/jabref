@@ -1,8 +1,8 @@
 {
-  BibtexEntry be=null;
-  TreeMap types=new TreeMap();
+  TreeMap<String,BibtexEntryType> types=new TreeMap<String,BibtexEntryType>();
   boolean backup=prefs.getBoolean("backup");
   SaveSession session;
+  BibtexEntry exceptionCause=null;
   try {
     session=new SaveSession(file,encoding,backup);
   }
@@ -16,10 +16,10 @@
     writeBibFileHeader(fw,encoding);
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
-    List sorter=getSortedEntries(database,null,true);
+    List<BibtexEntry> sorter=getSortedEntries(database,null,true);
     FieldFormatter ff=new LatexFieldFormatter();
-    for (Iterator i=sorter.iterator(); i.hasNext(); ) {
-      be=(BibtexEntry)(i.next());
+    for (    BibtexEntry be : sorter) {
+      exceptionCause=be;
       BibtexEntryType tp=be.getType();
       if (BibtexEntryType.getStandardType(tp.getName()) == null) {
         types.put(tp.getName(),tp);
@@ -40,7 +40,7 @@
       metaData.writeMetaData(fw);
     }
     if (types.size() > 0) {
-      for (Iterator i=types.keySet().iterator(); i.hasNext(); ) {
+      for (Iterator<String> i=types.keySet().iterator(); i.hasNext(); ) {
         CustomEntryType tp=(CustomEntryType)types.get(i.next());
         tp.save(fw);
         fw.write(Globals.NEWLINE);
@@ -57,7 +57,7 @@
       e.printStackTrace();
       throw new SaveException(ex.getMessage() + "\n" + Globals.lang("Warning: could not complete file repair; your file may " + "have been corrupted. Error message: ")+ e.getMessage());
     }
-    throw new SaveException(ex.getMessage(),be);
+    throw new SaveException(ex.getMessage(),exceptionCause);
   }
   return session;
 }

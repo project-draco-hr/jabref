@@ -208,9 +208,7 @@
 );
   actions.put("delete",new BaseAction(){
     public void action(){
-      boolean cancelled=false;
       BibtexEntry[] bes=mainTable.getSelectedEntries();
-      int row0=mainTable.getSelectedRow();
       if ((bes != null) && (bes.length > 0)) {
         boolean goOn=showDeleteConfirmationDialog(bes.length);
         if (!goOn) {
@@ -249,20 +247,12 @@ catch (          IOException ex) {
           }
         }
  else         if (content.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-          int[] rows=mainTable.getSelectedRows();
           try {
             BibtexParser bp=new BibtexParser(new java.io.StringReader((String)(content.getTransferData(DataFlavor.stringFlavor))));
             BibtexDatabase db=bp.parse().getDatabase();
             Util.pr("Parsed " + db.getEntryCount() + " entries from clipboard text");
             if (db.getEntryCount() > 0) {
-              Set keySet=db.getKeySet();
-              if (keySet != null) {
-                bes=new BibtexEntry[db.getEntryCount()];
-                Iterator it=keySet.iterator();
-                for (int i=0; it.hasNext(); i++) {
-                  bes[i]=db.getEntryById((String)(it.next()));
-                }
-              }
+              bes=db.getEntries().toArray(new BibtexEntry[db.getEntryCount()]);
             }
           }
  catch (          UnsupportedFlavorException ex) {
@@ -556,7 +546,9 @@ catch (          Throwable ex) {
       int counter=0;
       NamedCompound ce=new NamedCompound(Globals.lang("Replace string"));
       if (!rsd.selOnly()) {
-        for (Iterator i=database.getKeySet().iterator(); i.hasNext(); )         counter+=rsd.replace(database.getEntryById((String)i.next()),ce);
+        for (        BibtexEntry entry : database.getEntries()) {
+          counter+=rsd.replace(entry,ce);
+        }
       }
  else {
         BibtexEntry[] bes=mainTable.getSelectedEntries();
@@ -639,9 +631,7 @@ catch (          Throwable ex) {
   actions.put("unmarkAll",new BaseAction(){
     public void action(){
       NamedCompound ce=new NamedCompound(Globals.lang("Unmark all"));
-      Set keySet=database.getKeySet();
-      for (Iterator i=keySet.iterator(); i.hasNext(); ) {
-        BibtexEntry be=database.getEntryById((String)i.next());
+      for (      BibtexEntry be : database.getEntries()) {
         Util.unmarkEntry(be,database,ce);
       }
       ce.end();

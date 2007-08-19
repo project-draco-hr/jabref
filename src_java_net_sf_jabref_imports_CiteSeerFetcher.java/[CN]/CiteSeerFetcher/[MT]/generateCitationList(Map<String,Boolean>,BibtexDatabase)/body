@@ -1,0 +1,38 @@
+{
+  try {
+    NamedCompound dummyNamedCompound=new NamedCompound(Globals.lang("Import Data from CiteSeer Database"));
+    BooleanAssign dummyBoolean=new BooleanAssign(false);
+    if ((citationHashTable != null) && (citationHashTable.size() > 0)) {
+      int citationCounter=0;
+      for (      String key : citationHashTable.keySet()) {
+        String id=Util.createNeutralId();
+        BibtexEntry newEntry=new BibtexEntry(id);
+        StringBuffer citeseerURLString=new StringBuffer();
+        citeseerURLString.append(OAI_URL);
+        citeseerURLString.append(OAI_ACTION);
+        citeseerURLString.append("&" + OAI_METADATAPREFIX);
+        citeseerURLString.append("&" + "identifier=").append(key);
+        URL citeseerUrl=new URL(citeseerURLString.toString());
+        HttpURLConnection citeseerConnection=(HttpURLConnection)citeseerUrl.openConnection();
+        saxParser.parse(citeseerConnection.getInputStream(),new CiteSeerUndoHandler(dummyNamedCompound,newEntry,panel,dummyBoolean));
+        database.insertEntry(newEntry);
+        citationCounter++;
+        UpdateProgressBarTwoValue updateValue=new UpdateProgressBarTwoValue(citationCounter);
+        SwingUtilities.invokeLater(updateValue);
+      }
+    }
+  }
+ catch (  SAXException e) {
+    System.out.println("SAXException: " + e.getLocalizedMessage());
+    e.printStackTrace();
+  }
+catch (  IOException e) {
+    ShowNoConnectionDialog dialog=new ShowNoConnectionDialog(OAI_HOST);
+    SwingUtilities.invokeLater(dialog);
+  }
+catch (  KeyCollisionException e) {
+    System.out.println("KeyCollisionException: " + e.getLocalizedMessage());
+    e.printStackTrace();
+  }
+  return citationHashTable;
+}

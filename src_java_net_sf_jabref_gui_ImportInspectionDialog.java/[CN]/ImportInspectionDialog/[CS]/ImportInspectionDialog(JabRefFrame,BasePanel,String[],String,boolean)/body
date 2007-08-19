@@ -7,8 +7,8 @@
   this.newDatabase=newDatabase;
   preview=new PreviewPanel(metaData,Globals.prefs.get("preview1"));
   duplLabel.setToolTipText(Globals.lang("Possible duplicate of existing entry. Click to resolve."));
-  sortedList=new SortedList(entries);
-  EventTableModel tableModelGl=new EventTableModel(sortedList,new EntryTableFormat());
+  sortedList=new SortedList<BibtexEntry>(entries);
+  EventTableModel<BibtexEntry> tableModelGl=new EventTableModel<BibtexEntry>(sortedList,new EntryTableFormat());
   glTable=new EntryTable(tableModelGl);
   GeneralRenderer renderer=new GeneralRenderer(Color.white,true);
   glTable.setDefaultRenderer(JLabel.class,renderer);
@@ -16,10 +16,10 @@
   glTable.getInputMap().put(Globals.prefs.getKey("Delete"),"delete");
   DeleteListener deleteListener=new DeleteListener();
   glTable.getActionMap().put("delete",deleteListener);
-  selectionModel=new EventSelectionModel(sortedList);
+  selectionModel=new EventSelectionModel<BibtexEntry>(sortedList);
   glTable.setSelectionModel(selectionModel);
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
-  comparatorChooser=new TableComparatorChooser(glTable,sortedList,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  comparatorChooser=new TableComparatorChooser<BibtexEntry>(glTable,sortedList,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
   setupComparatorChooser();
   glTable.addMouseListener(new TableClickListener());
   setWidths();

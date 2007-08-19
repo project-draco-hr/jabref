@@ -1,33 +1,20 @@
 {
-  Object entryList=null;
-  String usedFormat=null;
+  Pair<String,ParserResult> result=null;
   int bestResult=0;
   for (  ImportFormat imFo : getImportFormats()) {
-    try {
-      List<BibtexEntry> entries=importFromFile(imFo,filename);
-      if (entries != null)       purgeEmptyEntries(entries);
-      int entryCount=((entries != null) ? entries.size() : 0);
-      if (entryCount > bestResult) {
-        bestResult=entryCount;
-        usedFormat=imFo.getFormatName();
-        entryList=entries;
-      }
-    }
- catch (    Exception e) {
+    List<BibtexEntry> entries=importFromFile(imFo,filename);
+    if (entries != null)     purgeEmptyEntries(entries);
+    int entryCount=((entries != null) ? entries.size() : 0);
+    if (entryCount > bestResult) {
+      bestResult=entryCount;
+      result=new Pair<String,ParserResult>(imFo.getFormatName(),new ParserResult(entries));
     }
   }
-  System.out.println("Used format: " + usedFormat);
-  if (entryList == null) {
-    try {
-      ParserResult pr=OpenDatabaseAction.loadDatabase(new File(filename),Globals.prefs.get("defaultEncoding"));
-      if ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0)) {
-        entryList=pr;
-        pr.setFile(new File(filename));
-        usedFormat=BIBTEX_FORMAT;
-      }
-    }
- catch (    Throwable ex) {
-    }
+  if (result != null)   return result;
+  ParserResult pr=OpenDatabaseAction.loadDatabase(new File(filename),Globals.prefs.get("defaultEncoding"));
+  if ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0)) {
+    pr.setFile(new File(filename));
+    return new Pair<String,ParserResult>(BIBTEX_FORMAT,pr);
   }
-  return new Object[]{usedFormat,entryList};
+  return null;
 }

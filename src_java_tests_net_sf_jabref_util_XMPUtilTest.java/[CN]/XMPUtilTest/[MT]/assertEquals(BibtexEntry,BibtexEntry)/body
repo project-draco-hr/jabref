@@ -1,16 +1,15 @@
 {
   assertEquals(expected.getCiteKey(),actual.getCiteKey());
   assertEquals(expected.getType(),actual.getType());
-  Object[] o=expected.getAllFields();
-  for (int i=0; i < o.length; i++) {
-    if (o[i].toString().toLowerCase().equals("author") || o[i].toString().toLowerCase().equals("editor")) {
-      AuthorList expectedAuthors=AuthorList.getAuthorList(expected.getField(o[i].toString()).toString());
-      AuthorList actualAuthors=AuthorList.getAuthorList(actual.getField(o[i].toString()).toString());
+  for (  String field : expected.getAllFields()) {
+    if (field.toString().toLowerCase().equals("author") || field.toString().toLowerCase().equals("editor")) {
+      AuthorList expectedAuthors=AuthorList.getAuthorList(expected.getField(field.toString()).toString());
+      AuthorList actualAuthors=AuthorList.getAuthorList(actual.getField(field.toString()).toString());
       assertEquals(expectedAuthors,actualAuthors);
     }
  else {
-      assertEquals("" + expected.getField(o[i].toString()).toString(),expected.getField(o[i].toString()).toString(),actual.getField(o[i].toString()).toString());
+      assertEquals("" + expected.getField(field.toString()).toString(),expected.getField(field.toString()).toString(),actual.getField(field.toString()).toString());
     }
   }
-  assertEquals(expected.getAllFields().length,actual.getAllFields().length);
+  assertEquals(expected.getAllFields().size(),actual.getAllFields().size());
 }

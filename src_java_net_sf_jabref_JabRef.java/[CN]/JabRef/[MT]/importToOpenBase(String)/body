@@ -1,38 +1,5 @@
 {
-  String[] data=argument.split(",");
-  try {
-    if ((data.length > 1) && !"*".equals(data[1])) {
-      System.out.println(Globals.lang("Importing") + ": " + data[0]);
-      List entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")));
-      BibtexDatabase base=ImportFormatReader.createDatabase(entries);
-      ParserResult pr=new ParserResult(base,null,new HashMap());
-      pr.setToOpenTab(true);
-      return pr;
-    }
- else {
-      System.out.println(Globals.lang("Importing in unknown format") + ": " + data[0]);
-      Object[] o=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
-      String formatName=(String)o[0];
-      if (formatName.equals(ImportFormatReader.BIBTEX_FORMAT)) {
-        ParserResult pr=(ParserResult)o[1];
-        pr.setToOpenTab(true);
-        return pr;
-      }
- else {
-        List entries=(java.util.List)o[1];
-        if (entries != null)         System.out.println(Globals.lang("Format used") + ": " + formatName);
- else         System.out.println(Globals.lang("Could not find a suitable import format."));
-        if (entries != null) {
-          BibtexDatabase base=ImportFormatReader.createDatabase(entries);
-          ParserResult pr=new ParserResult(base,null,new HashMap());
-          pr.setToOpenTab(true);
-          return pr;
-        }
-      }
-    }
-  }
- catch (  IOException ex) {
-    System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getMessage());
-  }
-  return null;
+  ParserResult result=importFile(argument);
+  if (result != null)   result.setToOpenTab(true);
+  return result;
 }

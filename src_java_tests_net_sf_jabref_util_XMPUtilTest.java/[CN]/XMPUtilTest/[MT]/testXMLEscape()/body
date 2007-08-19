@@ -1,10 +1,10 @@
 {
   ParserResult result=BibtexParser.parse(new StringReader("@article{canh05," + "  author = {Crowston, K. and Annabi, H. and Howison, J. and Masango, C.}," + "\n"+ "  title = {</bibtex:title> \" bla \" '' '' && &  for floss development: A model and propositions},"+ "\n"+ "  booktitle = {<randomXML>},"+ "\n"+ "  year = {2005},"+ "\n"+ "  owner = {oezbek},"+ "\n"+ "  timestamp = {2006.05.29},"+ "\n"+ "  url = {http://james.howison.name/publications.html}"+ "\n"+ "}"));
-  Collection c=result.getDatabase().getEntries();
+  Collection<BibtexEntry> c=result.getDatabase().getEntries();
   assertEquals(1,c.size());
   BibtexEntry e=(BibtexEntry)c.iterator().next();
   XMPUtil.writeXMP(pdfFile,e,null);
-  List l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+  List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
   assertEquals(1,l.size());
   BibtexEntry x=(BibtexEntry)l.get(0);
   assertEquals(e,x);

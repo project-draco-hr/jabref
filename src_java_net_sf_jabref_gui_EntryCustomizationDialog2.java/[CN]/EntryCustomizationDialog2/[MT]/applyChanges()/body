@@ -1,12 +1,11 @@
 {
   valueChanged(new ListSelectionEvent(new JList(),0,0,false));
   List types=typeComp.getFields();
-  boolean globalChangesMade=false;
-  for (Iterator i=reqLists.keySet().iterator(); i.hasNext(); ) {
-    String typeName=(String)i.next();
+  for (Iterator<String> i=reqLists.keySet().iterator(); i.hasNext(); ) {
+    String typeName=i.next();
     if (!types.contains(typeName))     continue;
-    List reqFields=(List)reqLists.get(typeName);
-    List optFields=(List)optLists.get(typeName);
+    List reqFields=reqLists.get(typeName);
+    List optFields=optLists.get(typeName);
     String[] reqStr=new String[reqFields.size()];
     reqFields.toArray(reqStr);
     String[] optStr=new String[optFields.size()];
@@ -16,7 +15,6 @@
       String nm=Util.nCase(typeName);
       BibtexEntryType.removeType(nm);
       updateTypesForEntries(nm);
-      globalChangesMade=true;
       continue;
     }
     BibtexEntryType oldType=BibtexEntryType.getType(typeName);
@@ -28,18 +26,17 @@
       CustomEntryType typ=new CustomEntryType(Util.nCase(typeName),reqStr,optStr);
       BibtexEntryType.ALL_TYPES.put(typeName.toLowerCase(),typ);
       updateTypesForEntries(typ.getName());
-      globalChangesMade=true;
     }
   }
-  Set toRemove=new HashSet();
-  for (Iterator i=BibtexEntryType.ALL_TYPES.keySet().iterator(); i.hasNext(); ) {
+  Set<Object> toRemove=new HashSet<Object>();
+  for (Iterator<String> i=BibtexEntryType.ALL_TYPES.keySet().iterator(); i.hasNext(); ) {
     Object o=i.next();
     if (!types.contains(o)) {
       toRemove.add(o);
     }
   }
   if (toRemove.size() > 0) {
-    for (Iterator i=toRemove.iterator(); i.hasNext(); )     typeDeletion((String)i.next());
+    for (Iterator<Object> i=toRemove.iterator(); i.hasNext(); )     typeDeletion((String)i.next());
   }
   updateTables();
 }

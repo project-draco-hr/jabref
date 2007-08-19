@@ -1,12 +1,11 @@
 {
   int errorCode=0;
-  Iterator targetIterator=targetDatabase.getKeySet().iterator();
+  Iterator<String> targetIterator=targetDatabase.getKeySet().iterator();
   boolean abortOperation=false;
   String currentKey;
   BibtexEntry currentEntry;
-  Enumeration newEntryEnum;
-  Hashtable citationHashTable=new Hashtable();
-  Hashtable rejectedEntries=new Hashtable();
+  Map<String,Boolean> citationHashTable=new HashMap<String,Boolean>();
+  Hashtable<Integer,BibtexEntry> rejectedEntries=new Hashtable<Integer,BibtexEntry>();
   InitializeProgressBar initializeProgressBar=new InitializeProgressBar();
   InitializeProgressBarTwo initializeProgressBarTwo=new InitializeProgressBarTwo();
   UpdateProgressBarMaximum updateMaximum=new UpdateProgressBarMaximum(targetDatabase.getEntryCount());
@@ -36,7 +35,6 @@
   progressStatus=new UpdateProgressStatus(Globals.lang("Fetching Citations"));
   SwingUtilities.invokeLater(progressStatus);
   generateCitationList(citationHashTable,newDatabase);
-  newEntryEnum=citationHashTable.elements();
   progressStatus=new UpdateProgressStatus(Globals.lang("Done"));
   SwingUtilities.invokeLater(progressStatus);
   if (abortOperation)   errorCode=-2;

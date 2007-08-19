@@ -1,16 +1,16 @@
 {
-  List strings=new ArrayList();
-  for (Iterator i=database.getStringKeySet().iterator(); i.hasNext(); ) {
-    strings.add(database.getString(i.next()));
+  List<BibtexString> strings=new ArrayList<BibtexString>();
+  for (  String s : database.getStringKeySet()) {
+    strings.add(database.getString(s));
   }
   Collections.sort(strings,new BibtexStringComparator(false));
-  HashMap remaining=new HashMap();
-  for (Iterator i=strings.iterator(); i.hasNext(); ) {
-    BibtexString string=(BibtexString)i.next();
+  HashMap<String,BibtexString> remaining=new HashMap<String,BibtexString>();
+  for (Iterator<BibtexString> i=strings.iterator(); i.hasNext(); ) {
+    BibtexString string=i.next();
     remaining.put(string.getName(),string);
   }
-  for (Iterator i=strings.iterator(); i.hasNext(); ) {
-    BibtexString bs=(BibtexString)i.next();
+  for (Iterator<BibtexString> i=strings.iterator(); i.hasNext(); ) {
+    BibtexString bs=i.next();
     if (remaining.containsKey(bs.getName()))     writeString(fw,bs,remaining);
   }
 }

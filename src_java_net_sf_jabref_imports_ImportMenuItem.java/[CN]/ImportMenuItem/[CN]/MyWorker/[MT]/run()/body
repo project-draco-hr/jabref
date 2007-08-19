@@ -1,14 +1,18 @@
 {
   if (!fileOk)   return;
-  List imports=new ArrayList();
-  for (int i=0; i < filenames.length; i++) {
-    String filename=filenames[i];
-    if (importer != null)     try {
-      imports.add(new Object[]{importer.getFormatName(),Globals.importFormatReader.importFromFile(importer,filename)});
+  List<Pair<String,ParserResult>> imports=new ArrayList<Pair<String,ParserResult>>();
+  for (  String filename : filenames) {
+    try {
+      if (importer != null) {
+        ParserResult pr=new ParserResult(Globals.importFormatReader.importFromFile(importer,filename));
+        imports.add(new Pair<String,ParserResult>(importer.getFormatName(),pr));
+      }
+ else {
+        imports.add(Globals.importFormatReader.importUnknownFormat(filename));
+      }
     }
  catch (    IOException e) {
     }
- else     imports.add(Globals.importFormatReader.importUnknownFormat(filename));
   }
   bibtexResult=mergeImportResults(imports);
 }

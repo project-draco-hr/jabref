@@ -8,16 +8,11 @@
   this.diskEntry=diskEntry;
   isModifiedLocally=!(Util.compareEntriesStrictly(memEntry,tmpEntry) > 1);
   modificationsAgree=(Util.compareEntriesStrictly(memEntry,diskEntry) > 1);
-  TreeSet allFields=new TreeSet();
-  Object[] o=memEntry.getAllFields();
-  for (int i=0; i < o.length; i++)   allFields.add(o[i]);
-  o=tmpEntry.getAllFields();
-  for (int i=0; i < o.length; i++)   allFields.add(o[i]);
-  o=diskEntry.getAllFields();
-  for (int i=0; i < o.length; i++)   allFields.add(o[i]);
-  int score=0;
-  for (Iterator fld=allFields.iterator(); fld.hasNext(); ) {
-    String field=(String)fld.next();
+  TreeSet<String> allFields=new TreeSet<String>();
+  allFields.addAll(memEntry.getAllFields());
+  allFields.addAll(tmpEntry.getAllFields());
+  allFields.addAll(diskEntry.getAllFields());
+  for (  String field : allFields) {
     String mem=(String)memEntry.getField(field), tmp=(String)tmpEntry.getField(field), disk=(String)diskEntry.getField(field);
     if ((tmp != null) && (disk != null)) {
       if (!tmp.equals(disk)) {

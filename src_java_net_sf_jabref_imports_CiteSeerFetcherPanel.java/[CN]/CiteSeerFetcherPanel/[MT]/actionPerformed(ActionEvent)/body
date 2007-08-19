@@ -21,9 +21,9 @@ class Update implements ImportInspectionDialog.CallBack {
           diag.setVisible(true);
           diag.setProgress(0,1);
         }
-        NamedCompound undoEdit=new NamedCompound(Globals.lang("CiteSeer import entries")), dummyCompound=new NamedCompound(Globals.lang("Ok"));
+        NamedCompound dummyCompound=new NamedCompound(Globals.lang("Ok"));
         BooleanAssign overwriteAll=new BooleanAssign(true), overwriteNone=new BooleanAssign(false), newValue=new BooleanAssign(false);
-        Hashtable rejectedEntries=new Hashtable();
+        Hashtable<Integer,BibtexEntry> rejectedEntries=new Hashtable<Integer,BibtexEntry>();
         String text=tf.getText().replaceAll(",",";");
         String[] ids=text.split(";");
         BibtexEntry[] entries=new BibtexEntry[ids.length];
@@ -31,7 +31,7 @@ class Update implements ImportInspectionDialog.CallBack {
         for (int i=0; i < entries.length; i++) {
           entries[i]=new BibtexEntry(Util.createNeutralId(),BibtexEntryType.getType("article"));
           entries[i].setField("citeseerurl",ids[i].trim());
-          boolean newValues=citeSeerFetcher.importCiteSeerEntry(entries[i],dummyCompound,overwriteAll,overwriteNone,newValue,rejectedEntries);
+          citeSeerFetcher.importCiteSeerEntry(entries[i],dummyCompound,overwriteAll,overwriteNone,newValue,rejectedEntries);
           if (diag != null) {
             diag.addEntry(entries[i]);
             diag.setProgress(i + 1,entries.length);

@@ -1,5 +1,5 @@
 {
-  TreeMap types=new TreeMap();
+  TreeMap<String,BibtexEntryType> types=new TreeMap<String,BibtexEntryType>();
   BibtexEntry be=null;
   boolean backup=prefs.getBoolean("backup");
   SaveSession session;
@@ -15,9 +15,8 @@
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
     String pri, sec, ter;
-    boolean priD, secD, terD, priBinary=false;
+    boolean priD, secD, terD;
     if (!prefs.getBoolean("saveInStandardOrder")) {
-      priBinary=prefs.getBoolean("priBinary");
       pri=prefs.get("priSort");
       sec=prefs.get("secSort");
       ter=prefs.get("terSort");
@@ -33,20 +32,20 @@
       secD=false;
       terD=true;
     }
-    List comparators=new ArrayList();
+    List<Comparator<BibtexEntry>> comparators=new ArrayList<Comparator<BibtexEntry>>();
     comparators.add(new CrossRefEntryComparator());
     comparators.add(new FieldComparator(pri,priD));
     comparators.add(new FieldComparator(sec,secD));
     comparators.add(new FieldComparator(ter,terD));
     comparators.add(new FieldComparator(BibtexFields.KEY_FIELD));
     BasicEventList entryList=new BasicEventList();
-    SortedList sorter=new SortedList(entryList,new FieldComparatorStack(comparators));
+    SortedList sorter=new SortedList(entryList,new FieldComparatorStack<BibtexEntry>(comparators));
     if ((bes != null) && (bes.length > 0))     for (int i=0; i < bes.length; i++) {
       sorter.add(bes[i]);
     }
     FieldFormatter ff=new LatexFieldFormatter();
-    for (Iterator i=sorter.iterator(); i.hasNext(); ) {
-      be=(BibtexEntry)(i.next());
+    for (Iterator<BibtexEntry> i=sorter.iterator(); i.hasNext(); ) {
+      be=(i.next());
       BibtexEntryType tp=be.getType();
       if (BibtexEntryType.getStandardType(tp.getName()) == null) {
         types.put(tp.getName(),tp);
@@ -58,7 +57,7 @@
       metaData.writeMetaData(fw);
     }
     if (types.size() > 0) {
-      for (Iterator i=types.keySet().iterator(); i.hasNext(); ) {
+      for (Iterator<String> i=types.keySet().iterator(); i.hasNext(); ) {
         CustomEntryType tp=(CustomEntryType)types.get(i.next());
         tp.save(fw);
         fw.write(Globals.NEWLINE);

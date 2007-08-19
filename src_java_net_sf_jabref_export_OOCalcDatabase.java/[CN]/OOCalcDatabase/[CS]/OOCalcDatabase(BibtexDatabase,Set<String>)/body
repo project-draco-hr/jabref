@@ -1,0 +1,12 @@
+{
+  List<FieldComparator> comparators=new ArrayList<FieldComparator>();
+  comparators.add(new FieldComparator("author"));
+  comparators.add(new FieldComparator("year"));
+  comparators.add(new FieldComparator(BibtexFields.KEY_FIELD));
+  BasicEventList entryList=new BasicEventList();
+  if (keySet == null)   entryList.addAll(bibtex.getEntries());
+ else {
+    for (    String key : keySet)     entryList.add(bibtex.getEntryById(key));
+  }
+  entries=new SortedList(entryList,new FieldComparatorStack(comparators));
+}

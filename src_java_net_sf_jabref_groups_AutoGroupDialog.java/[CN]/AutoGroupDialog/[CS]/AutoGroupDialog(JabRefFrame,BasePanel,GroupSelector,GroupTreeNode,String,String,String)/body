@@ -13,16 +13,14 @@
       ok_pressed=true;
       dispose();
       GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Globals.lang("Automatically created groups"),AbstractGroup.INCLUDING));
-      HashSet hs=null;
+      HashSet<String> hs=null;
       if (nd.isSelected()) {
         hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field().toLowerCase().trim(),deliminator.getText());
       }
  else {
         hs=Util.findAllWordsInField(panel.getDatabase(),field().toLowerCase().trim(),remove());
       }
-      Iterator i=hs.iterator();
-      while (i.hasNext()) {
-        String keyword=i.next().toString();
+      for (      String keyword : hs) {
         KeywordGroup group=new KeywordGroup(keyword,field(),keyword,false,false,AbstractGroup.INDEPENDENT);
         autoGroupsRoot.add(new GroupTreeNode(group));
       }
