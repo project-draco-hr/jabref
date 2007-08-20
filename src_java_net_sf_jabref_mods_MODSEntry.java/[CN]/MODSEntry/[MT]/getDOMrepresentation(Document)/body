@@ -1,5 +1,4 @@
 {
-  Node result=null;
   try {
     Element mods=d.createElement(entryType);
     mods.setAttribute("version","3.0");
@@ -74,11 +73,10 @@
     if (pages != null) {
       mods.appendChild(pages.getDOMrepresentation(d));
     }
-    for (Iterator iter=extensionFields.entrySet().iterator(); iter.hasNext(); ) {
+    for (    Map.Entry<String,String> theEntry : extensionFields.entrySet()) {
       Element extension=d.createElement("extension");
-      Map.Entry theEntry=(Map.Entry)iter.next();
-      String field=(String)theEntry.getKey();
-      String value=(String)theEntry.getValue();
+      String field=theEntry.getKey();
+      String value=theEntry.getValue();
       if (handledExtensions.contains(field))       continue;
       Element theData=d.createElement(field);
       theData.appendChild(d.createTextNode(stripNonValidXMLCharacters(value)));

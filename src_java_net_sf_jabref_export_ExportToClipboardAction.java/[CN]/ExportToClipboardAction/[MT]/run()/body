@@ -6,15 +6,14 @@
     getCallBack().update();
     return;
   }
-  Map m=ExportFormats.getExportFormats();
+  Map<String,ExportFormat> m=ExportFormats.getExportFormats();
   ExportFormat[] formats=new ExportFormat[m.size()];
-  int piv=0;
-  for (Iterator iterator=m.keySet().iterator(); iterator.hasNext(); ) {
-    formats[piv++]=(ExportFormat)m.get(iterator.next());
-  }
   String[] array=new String[formats.length];
-  for (int i=0; i < formats.length; i++) {
-    array[i]=formats[i].getDisplayName();
+  int piv=0;
+  for (  ExportFormat format : m.values()) {
+    formats[piv]=format;
+    array[piv]=format.getDisplayName();
+    piv++;
   }
   JList list=new JList(array);
   list.setBorder(BorderFactory.createEtchedBorder());
@@ -29,8 +28,8 @@
     tmp=File.createTempFile("jabrefCb",".tmp");
     tmp.deleteOnExit();
     BibtexEntry[] bes=panel.getSelectedEntries();
-    HashSet entries=new HashSet(bes.length);
-    for (int i=0; i < bes.length; i++)     entries.add(bes[i].getId());
+    HashSet<String> entries=new HashSet<String>(bes.length);
+    for (    BibtexEntry be : bes)     entries.add(be.getId());
     format.performExport(database,tmp.getPath(),panel.getEncoding(),entries);
     StringBuffer sb=new StringBuffer();
     reader=new InputStreamReader(new FileInputStream(tmp),panel.getEncoding());
