@@ -1,12 +1,23 @@
 {
   URL jar=PluginCore.class.getResource(Util.joinPath(context,manifest));
-  if (jar != null && jar.getProtocol().toLowerCase().startsWith("jar")) {
-    try {
+  if (jar == null) {
+    return null;
+  }
+  String protocol=jar.getProtocol().toLowerCase();
+  try {
+    if (protocol.startsWith("jar")) {
       return new StandardPluginLocation(new URL(jar.toExternalForm().replaceFirst("!(.*?)$",Util.joinPath("!",context))),jar);
     }
- catch (    MalformedURLException e) {
-      return null;
+ else     if (protocol.startsWith("file")) {
+      File f=new File(jar.toURI());
+      return new StandardPluginLocation(f.getParentFile(),manifest);
     }
+  }
+ catch (  URISyntaxException e) {
+    return null;
+  }
+catch (  MalformedURLException e) {
+    return null;
   }
   return null;
 }

@@ -6,11 +6,11 @@
     getCallBack().update();
     return;
   }
-  Map<String,ExportFormat> m=ExportFormats.getExportFormats();
-  ExportFormat[] formats=new ExportFormat[m.size()];
+  Map<String,IExportFormat> m=ExportFormats.getExportFormats();
+  IExportFormat[] formats=new ExportFormat[m.size()];
   String[] array=new String[formats.length];
   int piv=0;
-  for (  ExportFormat format : m.values()) {
+  for (  IExportFormat format : m.values()) {
     formats[piv]=format;
     array[piv]=format.getDisplayName();
     piv++;
@@ -21,7 +21,7 @@
   list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   int answer=JOptionPane.showOptionDialog(frame,list,Globals.lang("Select format"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,new String[]{Globals.lang("Ok"),Globals.lang("Cancel")},Globals.lang("Ok"));
   if (answer == JOptionPane.NO_OPTION)   return;
-  ExportFormat format=formats[list.getSelectedIndex()];
+  IExportFormat format=formats[list.getSelectedIndex()];
   File tmp=null;
   Reader reader=null;
   try {

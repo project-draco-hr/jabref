@@ -19,12 +19,12 @@ class ExportAction extends MnemonicAwareAction {
         try {
           ExportFileFilter eff=(ExportFileFilter)ff;
           String path=file.getPath();
-          if (!path.endsWith(eff.getExportFormat().getExtension()))           path=path + eff.getExportFormat().getExtension();
+          if (!path.endsWith(eff.getExtension()))           path=path + eff.getExtension();
           file=new File(path);
           if (file.exists()) {
             if (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)             return;
           }
-          ExportFormat format=eff.getExportFormat();
+          IExportFormat format=eff.getExportFormat();
           Set<String> entryIds=null;
           if (selectedOnly) {
             BibtexEntry[] selected=frame.basePanel().getSelectedEntries();

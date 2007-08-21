@@ -20,8 +20,33 @@
         putFormat(format);
       }
     }
+    for (    final ExportFormatExtension e : plugin.getExportFormatExtensions()) {
+      putFormat(new IExportFormat(){
+        public String getConsoleName(){
+          return e.getConsoleName();
+        }
+        public String getDisplayName(){
+          return e.getDisplayName();
+        }
+        public FileFilter getFileFilter(){
+          return new ExportFileFilter(this,e.getExtension());
+        }
+        IExportFormat wrapped;
+        public void performExport(        BibtexDatabase database,        String file,        String encoding,        Set<String> entryIds) throws Exception {
+          if (wrapped == null)           wrapped=e.getExportFormat();
+          wrapped.performExport(database,file,encoding,entryIds);
+        }
+      }
+);
+    }
+    for (    ExportFormatProviderExtension e : plugin.getExportFormatProviderExtensions()) {
+      IExportFormatProvider formatProvider=e.getFormatProvider();
+      for (      IExportFormat exportFormat : formatProvider.getExportFormats()) {
+        putFormat(exportFormat);
+      }
+    }
   }
-  for (  ExportFormat format : Globals.prefs.customExports.getCustomExportFormats().values()) {
+  for (  IExportFormat format : Globals.prefs.customExports.getCustomExportFormats().values()) {
     putFormat(format);
   }
 }
