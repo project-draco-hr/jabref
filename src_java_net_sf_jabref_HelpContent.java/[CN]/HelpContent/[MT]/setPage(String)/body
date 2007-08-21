@@ -15,12 +15,14 @@
   URL old=getPage();
   try {
     URL resource=JabRef.class.getResource(GUIGlobals.helpPre + middle + file);
-    if (resource != null) {
-      super.setPage(new URL(resource.toString() + "#" + reference));
+    if (resource == null) {
+      resource=JabRef.class.getResource(GUIGlobals.helpPre + file);
     }
- else {
-      setPageOnly(new URL(HelpContent.class.getResource(GUIGlobals.helpPre + file) + "#" + reference));
+    if (resource == null) {
+      log.error("Could not find html-help for file '" + file + "'.");
+      return;
     }
+    setPageOnly(new URL(resource.toString() + "#" + reference));
   }
  catch (  IOException ex) {
     ex.printStackTrace();
