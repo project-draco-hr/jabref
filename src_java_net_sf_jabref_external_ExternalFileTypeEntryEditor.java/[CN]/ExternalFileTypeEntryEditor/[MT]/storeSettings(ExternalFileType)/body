@@ -1,5 +1,12 @@
 {
   entry.setName(name.getText().trim());
   entry.setExtension(extension.getText().trim());
-  entry.setOpenWith(application.getText().trim());
+  if (selectedIcon != null)   entry.setIconName(selectedIcon);
+  if (!Globals.ON_WIN) {
+    entry.setOpenWith(application.getText().trim());
+  }
+ else {
+    if (useDefault.isSelected() || (application.getText().trim().length() == 0))     entry.setOpenWith("");
+ else     entry.setOpenWith(application.getText().trim());
+  }
 }

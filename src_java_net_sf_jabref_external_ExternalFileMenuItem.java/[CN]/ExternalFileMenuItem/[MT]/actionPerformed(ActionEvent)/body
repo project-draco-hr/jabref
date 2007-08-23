@@ -7,11 +7,16 @@
       int pos=name.indexOf('.');
       String extension=((pos >= 0) && (pos < name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
       type=Globals.prefs.getExternalFileTypeByExt(extension);
+      fileType=type;
     }
     if (type instanceof UnknownExternalFileType)     Util.openExternalFileUnknown(frame,entry,metaData,link,(UnknownExternalFileType)type);
  else     Util.openExternalFileAnyFormat(metaData,link,type);
   }
  catch (  IOException e1) {
+    if ((fileType != null) && (fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0)&& (e1.getMessage().indexOf(fileType.getOpenWith()) >= 0)) {
+      JOptionPane.showMessageDialog(frame,Globals.lang("Unable to open link. " + "The application '%0' associated with the file type '%1' could not be called.",fileType.getOpenWith(),fileType.getName()),Globals.lang("Could not open link"),JOptionPane.ERROR_MESSAGE);
+      return;
+    }
     e1.printStackTrace();
   }
 }

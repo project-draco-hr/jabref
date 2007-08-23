@@ -10,11 +10,12 @@
   if (upgradePrefs) {
     Globals.prefs.putBoolean("pdfColumn",Boolean.FALSE);
     Globals.prefs.putBoolean("fileColumn",Boolean.TRUE);
-    String genF=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_FIELDS + "_def0");
-    if (!Pattern.compile("\\b" + GUIGlobals.FILE_FIELD + "\\b").matcher(genF).matches()) {
-      StringBuilder sb=new StringBuilder(GUIGlobals.FILE_FIELD).append(';').append(genF);
-      Globals.prefs.put(Globals.prefs.CUSTOM_TAB_FIELDS + "_def0",sb.toString());
-      System.out.println(sb.toString());
+    if (!showsFileInGenFields()) {
+      String gfs=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_FIELDS + "0");
+      StringBuffer sb=new StringBuffer(gfs);
+      if (gfs.length() > 0)       sb.append(";");
+      sb.append(GUIGlobals.FILE_FIELD);
+      Globals.prefs.put(Globals.prefs.CUSTOM_TAB_FIELDS + "0",sb.toString());
       Globals.prefs.updateEntryEditorTabList();
       panel.frame().removeCachedEntryEditors();
     }

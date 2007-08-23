@@ -28,7 +28,7 @@
     }
  else     if (!incommand && (c == '{' || c == '}')) {
     }
- else     if (Character.isLetter((char)c) || (Globals.SPECIAL_COMMAND_CHARS.indexOf("" + (char)c) >= 0)) {
+ else     if (Character.isLetter((char)c) || (c == '%') || (Globals.SPECIAL_COMMAND_CHARS.indexOf(String.valueOf((char)c)) >= 0)) {
       escaped=false;
       if (!incommand)       sb.append((char)c);
  else {
@@ -71,7 +71,7 @@
       if (!incommand) {
         sb.append((char)c);
       }
- else       if (Character.isWhitespace(c) || c == '{') {
+ else       if (Character.isWhitespace(c) || (c == '{') || (c == '}')) {
         String command=currentCommand.toString();
         if (command.equals("emph") || command.equals("textit")) {
           IntAndString part=getPart(field,i,true);
@@ -97,6 +97,15 @@
             }
           }
         }
+ else         if (c == '}') {
+          Object result=Globals.HTMLCHARS.get(command);
+          if (result != null) {
+            sb.append((String)result);
+          }
+ else {
+            sb.append(command);
+          }
+        }
  else {
           Object result=Globals.HTMLCHARS.get(command);
           if (result != null) {
@@ -107,9 +116,6 @@
           }
           sb.append(' ');
         }
-      }
- else       if (c == '}') {
-        argument="";
       }
  else {
       }

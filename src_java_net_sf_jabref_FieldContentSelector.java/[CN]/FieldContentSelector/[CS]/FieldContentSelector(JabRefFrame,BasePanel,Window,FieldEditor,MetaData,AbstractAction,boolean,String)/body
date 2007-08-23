@@ -1,9 +1,10 @@
 {
-  this.frame=jabRefFrame;
+  this.frame=frame;
   this.editor=editor;
   this.metaData=metaData;
   this.panel=panel;
-  this.owner=ownerFrameOrDialog;
+  this.owner=owner;
+  this.action=action;
   this.delimiter=delimiter;
   comboBox=new JComboBox(){
     public Dimension getPreferredSize(){
@@ -26,14 +27,15 @@
   comboBox.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       if (e.getActionCommand().equals("comboBoxChanged") && (e.getModifiers() == 0))       return;
-      if (comboBox.getSelectedIndex() == 0)       return;
-      String chosen=(String)comboBox.getSelectedItem();
-      if (chosen == null || chosen.equals(""))       return;
-      if (!editor.getText().equals(""))       editor.append(FieldContentSelector.this.delimiter);
-      editor.append(chosen);
-      comboBox.setSelectedIndex(0);
-      if (action != null)       action.actionPerformed(new ActionEvent(editor,0,""));
-      editor.requestFocus();
+      selectionMade();
+    }
+  }
+);
+  comboBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),"enter");
+  comboBox.getActionMap().put("enter",new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      selectionMade();
+      comboBox.setPopupVisible(false);
     }
   }
 );
@@ -44,8 +46,8 @@
   add(manage);
   manage.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      ContentSelectorDialog2 csd=owner instanceof Frame ? new ContentSelectorDialog2((Frame)owner,frame,panel,true,metaData,editor.getFieldName()) : new ContentSelectorDialog2((Dialog)owner,frame,panel,true,metaData,editor.getFieldName());
-      Util.placeDialog(csd,frame);
+      ContentSelectorDialog2 csd=FieldContentSelector.this.owner instanceof Frame ? new ContentSelectorDialog2((Frame)FieldContentSelector.this.owner,FieldContentSelector.this.frame,panel,true,metaData,editor.getFieldName()) : new ContentSelectorDialog2((Dialog)FieldContentSelector.this.owner,FieldContentSelector.this.frame,panel,true,metaData,editor.getFieldName());
+      Util.placeDialog(csd,FieldContentSelector.this.frame);
       csd.setVisible(true);
       rebuildComboBox();
     }

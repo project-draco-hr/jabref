@@ -1,5 +1,5 @@
 {
-  boolean offerChangeSettings=!Globals.prefs.getBoolean("fileColumn");
+  boolean offerChangeSettings=!Globals.prefs.getBoolean("fileColumn") || !showsFileInGenFields();
   boolean offerChangeDatabase=linksFound(pr.getDatabase(),FIELDS_TO_LOOK_FOR);
   boolean offerSetFileDir=!Globals.prefs.hasKey(GUIGlobals.FILE_FIELD + "Directory") && (Globals.prefs.hasKey("pdfDirectory") || Globals.prefs.hasKey("psDirectory"));
   if (!offerChangeDatabase && !offerChangeSettings && !offerSetFileDir)   return;
@@ -33,6 +33,9 @@
     JPanel pan=new JPanel();
     pan.add(setFileDir);
     pan.add(fileDir);
+    JButton browse=new JButton(Globals.lang("Browse"));
+    browse.addActionListener(new BrowseAction(null,fileDir,true));
+    pan.add(browse);
     b.append(pan);
     b.nextLine();
   }

@@ -1,4 +1,5 @@
 {
+  BibtexEntry entry=null;
   String toFind=new StringBuffer().append("<div align=\"left\"><strong>").append(entryNumber).append(".</strong></div>").toString();
   int index=allText.indexOf(toFind,startIndex);
   int endIndex=allText.indexOf("</table>",index + 1);
@@ -6,6 +7,27 @@
   if (index >= 0) {
     piv=index + 1;
     String text=allText.substring(index,endIndex);
+    if (fetchingAbstracts) {
+      Matcher number=ieeeArticleNumberPattern.matcher(text);
+      if (number.find()) {
+        try {
+          entry=parseEntryRis(number.group(1));
+        }
+ catch (        IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    if (entry != null) {
+      int pgInd=text.indexOf("Digital Object Identifier ");
+      if (pgInd >= 0) {
+        int fieldEnd=text.indexOf("<br>",pgInd);
+        if (fieldEnd >= 0) {
+          entry.setField("doi",text.substring(pgInd + 26,fieldEnd).trim());
+        }
+      }
+      return entry;
+    }
     BibtexEntryType type;
     String sourceField;
     if (text.indexOf("IEEE JNL") >= 0) {
@@ -17,7 +39,7 @@
       sourceField="booktitle";
     }
     index=0;
-    BibtexEntry entry=new BibtexEntry(Util.createNeutralId(),type);
+    entry=new BibtexEntry(Util.createNeutralId(),type);
     Matcher m1=entryPattern1.matcher(text);
     Matcher m2=entryPattern2.matcher(text);
     Matcher m3=entryPattern3.matcher(text);
@@ -92,21 +114,6 @@
         int fieldEnd=rest.indexOf("<br>",pgInd);
         if (fieldEnd >= 0) {
           entry.setField("doi",rest.substring(pgInd + 26,fieldEnd).trim());
-        }
-      }
-    }
-    if (fetchingAbstracts) {
-      Matcher abstractLink=abstractLinkPattern.matcher(text);
-      if (abstractLink.find()) {
-        StringBuffer sb=new StringBuffer(startUrl).append(abstractLink.group(1));
-        try {
-          String abstractText=fetchAbstract(sb.toString());
-          if ((abstractText != null) && (abstractText.length() > 0) && !abstractText.equalsIgnoreCase("not available")) {
-            entry.setField("abstract",convertHTMLChars(abstractText));
-          }
-        }
- catch (        IOException e) {
-          e.printStackTrace();
         }
       }
     }

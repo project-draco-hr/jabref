@@ -16,33 +16,50 @@ class ExportAction extends MnemonicAwareAction {
       if (file == null)       return;
       FileFilter ff=fc.getFileFilter();
       if (ff instanceof ExportFileFilter) {
-        try {
-          ExportFileFilter eff=(ExportFileFilter)ff;
-          String path=file.getPath();
-          if (!path.endsWith(eff.getExtension()))           path=path + eff.getExtension();
-          file=new File(path);
-          if (file.exists()) {
-            if (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)             return;
+        ExportFileFilter eff=(ExportFileFilter)ff;
+        String path=file.getPath();
+        if (!path.endsWith(eff.getExtension()))         path=path + eff.getExtension();
+        file=new File(path);
+        if (file.exists()) {
+          if (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)           return;
+        }
+        final IExportFormat format=eff.getExportFormat();
+        Set<String> entryIds=null;
+        if (selectedOnly) {
+          BibtexEntry[] selected=frame.basePanel().getSelectedEntries();
+          entryIds=new HashSet<String>();
+          for (int i=0; i < selected.length; i++) {
+            BibtexEntry bibtexEntry=selected[i];
+            entryIds.add(bibtexEntry.getId());
           }
-          IExportFormat format=eff.getExportFormat();
-          Set<String> entryIds=null;
-          if (selectedOnly) {
-            BibtexEntry[] selected=frame.basePanel().getSelectedEntries();
-            entryIds=new HashSet<String>();
-            for (int i=0; i < selected.length; i++) {
-              BibtexEntry bibtexEntry=selected[i];
-              entryIds.add(bibtexEntry.getId());
+        }
+        Globals.prefs.put("lastUsedExport",format.getConsoleName());
+        Globals.prefs.put("exportWorkingDirectory",file.getParent());
+        final File finFile=file;
+        final Set<String> finEntryIDs=entryIds;
+        AbstractWorker exportWorker=new AbstractWorker(){
+          String errorMessage=null;
+          public void run(){
+            try {
+              format.performExport(frame.basePanel().database(),finFile.getPath(),frame.basePanel().getEncoding(),finEntryIDs);
+            }
+ catch (            Exception ex) {
+              errorMessage=ex.getMessage();
             }
           }
-          Globals.prefs.put("lastUsedExport",format.getConsoleName());
-          Globals.prefs.put("exportWorkingDirectory",file.getParent());
-          format.performExport(frame.basePanel().database(),file.getPath(),frame.basePanel().getEncoding(),entryIds);
+          public void update(){
+            if (errorMessage == null) {
+              frame.output(Globals.lang("%0 export successful",format.getDisplayName()));
+            }
+ else {
+              frame.output(Globals.lang("Could not save file") + " - " + errorMessage);
+              JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file") + ".\n" + errorMessage,Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
+            }
+          }
         }
- catch (        Exception ex) {
-          ex.printStackTrace();
-          frame.output(Globals.lang("Could not save file") + " - " + ex.getMessage());
-          JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file") + ".\n" + ex.getMessage(),Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
-        }
+;
+        (exportWorker.getWorker()).run();
+        exportWorker.update();
       }
     }
   }

@@ -37,6 +37,8 @@
         tableModel.setContent(old);
         for (int j=0; j < tableModel.getRowCount(); j++) {
           FileListEntry flEntry=tableModel.getEntry(j);
+          boolean httpLink=flEntry.getLink().toLowerCase().startsWith("http");
+          if (httpLink)           continue;
           File file=Util.expandFilename(flEntry.getLink(),new String[]{dir,"."});
           if ((file == null) || !file.exists()) {
             int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);

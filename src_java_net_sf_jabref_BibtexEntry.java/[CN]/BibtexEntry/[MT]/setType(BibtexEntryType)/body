@@ -2,5 +2,12 @@
   if (type == null) {
     throw new NullPointerException("Every BibtexEntry must have a type.  Instead of null, use type OTHER");
   }
-  _type=type;
+  BibtexEntryType oldType=_type;
+  try {
+    _type=type;
+    firePropertyChangedEvent(GUIGlobals.TYPE_HEADER,oldType != null ? oldType.getName() : null,type != null ? type.getName() : null);
+  }
+ catch (  PropertyVetoException pve) {
+    pve.printStackTrace();
+  }
 }

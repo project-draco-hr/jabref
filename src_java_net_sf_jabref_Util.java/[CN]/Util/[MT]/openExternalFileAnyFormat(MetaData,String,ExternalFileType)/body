@@ -1,34 +1,41 @@
 {
+  boolean httpLink=link.toLowerCase().startsWith("http");
   File file=new File(link);
   String name=file.getName();
   int pos=name.lastIndexOf('.');
   String extension=((pos >= 0) && (pos < name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
   String dir=metaData.getFileDirectory(extension);
   String fileDir=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
-  String databaseDir=metaData.getFile().getParent();
-  File tmp=expandFilename(link,new String[]{dir,fileDir,databaseDir});
-  if (tmp != null)   file=tmp;
-  if (file.exists() && (fileType != null)) {
+  String[] dirs;
+  if (metaData.getFile() != null) {
+    String databaseDir=metaData.getFile().getParent();
+    dirs=new String[]{dir,fileDir,databaseDir};
+  }
+ else   dirs=new String[]{dir,fileDir};
+  if (!httpLink) {
+    File tmp=expandFilename(link,dirs);
+    if (tmp != null)     file=tmp;
+  }
+  if ((httpLink || file.exists()) && (fileType != null)) {
     try {
+      String filePath=httpLink ? link : file.getPath();
       if (Globals.ON_MAC) {
-        String[] cmd={"/usr/bin/open","-a",fileType.getOpenWith(),file.getPath()};
+        String[] cmd={"/usr/bin/open","-a",fileType.getOpenWith(),filePath};
         Runtime.getRuntime().exec(cmd);
       }
  else       if (Globals.ON_WIN) {
         if ((fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0)) {
-          openFileWithApplicationOnWindows(file.getPath(),fileType.getOpenWith());
+          openFileWithApplicationOnWindows(filePath,fileType.getOpenWith());
         }
- else         openFileOnWindows(file.getPath(),true);
+ else         openFileOnWindows(filePath,true);
       }
  else {
-        String[] cmdArray=new String[]{fileType.getOpenWith(),file.getPath()};
+        String[] cmdArray=new String[]{fileType.getOpenWith(),filePath};
         Runtime.getRuntime().exec(cmdArray);
       }
     }
  catch (    IOException e) {
-      e.printStackTrace();
-      System.err.println("An error occured on the command: " + fileType.getOpenWith() + " #"+ link);
-      System.err.println(e.getMessage());
+      throw e;
     }
   }
  else {

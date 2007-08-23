@@ -12,7 +12,9 @@
         }
         if (answer == JOptionPane.YES_OPTION) {
           try {
-            basePanel().runCommand("save");
+            SaveDatabaseAction saveAction=new SaveDatabaseAction(basePanel());
+            saveAction.runCommand();
+            if (saveAction.isCancelled() || !saveAction.isSuccess())             close=false;
           }
  catch (          Throwable ex) {
             close=false;

@@ -51,13 +51,19 @@
     }
   }
 );
-  link.addFocusListener(new FocusListener(){
-    public void focusGained(    FocusEvent e){
+  link.getDocument().addDocumentListener(new DocumentListener(){
+    public void insertUpdate(    DocumentEvent documentEvent){
+      checkExtension();
     }
-    public void focusLost(    FocusEvent e){
+    public void removeUpdate(    DocumentEvent documentEvent){
+    }
+    public void changedUpdate(    DocumentEvent documentEvent){
+      checkExtension();
+    }
+    private void checkExtension(){
       if ((types.getSelectedIndex() == -1) && (link.getText().trim().length() > 0)) {
         String theLink=link.getText().trim();
-        int index=theLink.indexOf('.');
+        int index=theLink.lastIndexOf('.');
         if ((index >= 0) && (index < theLink.length() - 1)) {
           ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(theLink.substring(index + 1));
           if (type != null)           types.setSelectedItem(type);
