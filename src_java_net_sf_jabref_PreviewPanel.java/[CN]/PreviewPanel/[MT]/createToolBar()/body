@@ -1,0 +1,20 @@
+{
+  JToolBar tlb=new JToolBar(JToolBar.VERTICAL);
+  JabRefPreferences prefs=JabRefPreferences.getInstance();
+  AbstractAction printAction=new PrintAction();
+  AbstractAction closeAction=new CloseAction();
+  tlb.setMargin(new Insets(0,0,0,2));
+  ActionMap am=tlb.getActionMap();
+  InputMap im=tlb.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(prefs.getKey("Close entry preview"),"close");
+  am.put("close",closeAction);
+  im.put(prefs.getKey("Print entry preview"),"print");
+  am.put("print",printAction);
+  tlb.setFloatable(false);
+  tlb.add(closeAction);
+  tlb.addSeparator();
+  tlb.add(printAction);
+  Component[] comps=tlb.getComponents();
+  for (int i=0; i < comps.length; i++)   ((JComponent)comps[i]).setOpaque(false);
+  return tlb;
+}
