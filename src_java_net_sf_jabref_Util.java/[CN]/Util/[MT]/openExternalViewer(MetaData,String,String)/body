@@ -14,7 +14,11 @@
   }
  else   if (fieldName.equals("doi")) {
     fieldName="url";
+    link=sanitizeUrl(link);
     if (!link.startsWith("http://")) {
+      if (link.matches("^doi:/*.*")) {
+        link=link.replaceFirst("^doi:/*","");
+      }
       link=Globals.DOI_LOOKUP_PREFIX + link;
     }
   }
@@ -26,7 +30,6 @@
   String cmdArray[]=new String[2];
   if (fieldName.equals("url")) {
     try {
-      if (link.startsWith("\\url{") && link.endsWith("}"))       link=link.substring(5,link.length() - 1);
       link=sanitizeUrl(link);
       if (Globals.ON_MAC) {
         String[] cmd={"/usr/bin/open","-a",Globals.prefs.get("htmlviewer"),link};

@@ -1,4 +1,12 @@
 {
+  if (link.startsWith("\\url{") && link.endsWith("}"))   link=link.substring(5,link.length() - 1);
+  if (link.matches("^doi:/*.*")) {
+    link=link.replaceFirst("^doi:/*","");
+    link=Globals.DOI_LOOKUP_PREFIX + link;
+  }
+  if (link.startsWith("10.")) {
+    link=Globals.DOI_LOOKUP_PREFIX + link;
+  }
   link=link.replaceAll("\\+","%2B");
   try {
     link=URLDecoder.decode(link,"UTF-8");
