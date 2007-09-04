@@ -12,6 +12,7 @@
   putFormat(new OpenOfficeDocumentCreator());
   putFormat(new OpenDocumentSpreadsheetCreator());
   putFormat(new MSBibExportFormat());
+  putFormat(new MySqlExport());
   JabRefPlugin plugin=JabRefPlugin.getInstance(PluginCore.getManager());
   if (plugin != null) {
     for (    ExportFormatTemplateExtension e : plugin.getExportFormatTemplateExtensions()) {
@@ -32,9 +33,9 @@
           return new ExportFileFilter(this,e.getExtension());
         }
         IExportFormat wrapped;
-        public void performExport(        BibtexDatabase database,        String file,        String encoding,        Set<String> entryIds) throws Exception {
+        public void performExport(        BibtexDatabase database,        MetaData metaData,        String file,        String encoding,        Set<String> entryIds) throws Exception {
           if (wrapped == null)           wrapped=e.getExportFormat();
-          wrapped.performExport(database,file,encoding,entryIds);
+          wrapped.performExport(database,metaData,file,encoding,entryIds);
         }
       }
 );
