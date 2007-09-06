@@ -1,0 +1,24 @@
+{
+  String sql="";
+  String val="";
+  String insert="INSERT INTO entries (entry_types_id, cite_key, " + fieldstr + ") VALUES ((SELECT entry_types_id FROM entry_types WHERE label=\"";
+  for (  BibtexEntry entry : entries) {
+    sql=insert + entry.getType().getName().toLowerCase() + "\")";
+    sql=sql + ", \"" + entry.getCiteKey()+ "\"";
+    for (int i=0; i < fields.size(); i++) {
+      sql=sql + ", ";
+      val=entry.getField((String)fields.get(i));
+      if (val != null) {
+        sql=sql + "\"" + val.replaceAll("\"","\\\\\"")+ "\"";
+      }
+ else {
+        sql=sql + "NULL";
+      }
+    }
+    sql=sql + ");";
+    if (out instanceof PrintStream) {
+      out.println(sql);
+    }
+  }
+  return;
+}

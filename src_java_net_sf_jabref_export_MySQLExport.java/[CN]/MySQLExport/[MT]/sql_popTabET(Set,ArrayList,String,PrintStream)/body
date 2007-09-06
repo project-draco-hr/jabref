@@ -1,0 +1,33 @@
+{
+  String sql="";
+  String insert="INSERT INTO entry_types (label, " + fieldstr + ") VALUES (";
+  ArrayList fieldID=new ArrayList();
+  for (int i=0; i < fields.size(); i++)   fieldID.add(null);
+  Integer cnt=0;
+  for (Iterator iter=mappings.iterator(); iter.hasNext(); ) {
+    Map.Entry me=(Map.Entry)iter.next();
+    BibtexEntryType val=(BibtexEntryType)me.getValue();
+    for (int i=0; i < fieldID.size(); i++) {
+      fieldID.set(i,"");
+    }
+    fieldID=setFieldID(fields,fieldID,val.getRequiredFields(),"req");
+    fieldID=setFieldID(fields,fieldID,val.getOptionalFields(),"opt");
+    fieldID=setFieldID(fields,fieldID,val.getGeneralFields(),"gen");
+    fieldID=setFieldID(fields,fieldID,val.getUtilityFields(),"uti");
+    sql=insert + "\"" + val.getName().toLowerCase()+ "\"";
+    for (int i=0; i < fieldID.size(); i++) {
+      sql=sql + ", ";
+      if (fieldID.get(i) != "") {
+        sql=sql + "\"" + fieldID.get(i)+ "\"";
+      }
+ else {
+        sql=sql + "NULL";
+      }
+    }
+    sql=sql + ");";
+    if (out instanceof PrintStream) {
+      out.println(sql);
+    }
+  }
+  return;
+}
