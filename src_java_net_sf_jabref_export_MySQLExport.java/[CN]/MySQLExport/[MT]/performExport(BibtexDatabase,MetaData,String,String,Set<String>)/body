@@ -1,10 +1,6 @@
 {
-  TreeMap<String,BibtexEntryType> ALL_TYPES=BibtexEntryType.ALL_TYPES;
-  ArrayList<String> fields=new ArrayList();
-  Set mappings=ALL_TYPES.entrySet();
-  for (Iterator iter=mappings.iterator(); iter.hasNext(); ) {
-    Map.Entry me=(Map.Entry)iter.next();
-    BibtexEntryType val=(BibtexEntryType)me.getValue();
+  ArrayList<String> fields=new ArrayList<String>();
+  for (  BibtexEntryType val : BibtexEntryType.ALL_TYPES.values()) {
     fields=processFields(fields,val.getRequiredFields());
     fields=processFields(fields,val.getOptionalFields());
     fields=processFields(fields,val.getGeneralFields());
@@ -23,7 +19,7 @@
     fieldstr=fieldstr + fields.get(i);
   }
   List<BibtexEntry> entries=FileActions.getSortedEntries(database,keySet,false);
-  sql_popTabET(mappings,fields,fieldstr,fout);
+  sql_popTabET(fields,fieldstr,fout);
   sql_popTabFD(entries,fields,fieldstr,fout);
   fout.close();
 }
