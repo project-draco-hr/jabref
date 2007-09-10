@@ -1,4 +1,12 @@
 {
+  try {
+    if (new File("jabref.xml").exists()) {
+      importPreferences("jabref.xml");
+    }
+  }
+ catch (  IOException e) {
+    Globals.logger("Could not import preferences from jabref.xml:" + e.getLocalizedMessage());
+  }
   prefs=Preferences.userNodeForPackage(JabRef.class);
   if (Globals.osName.equals(Globals.MAC)) {
     defaults.put("pdfviewer","/Applications/Preview.app");
@@ -102,6 +110,7 @@
   defaults.put("groupsVisibleRows",new Integer(8));
   defaults.put("defaultOwner",System.getProperty("user.name"));
   defaults.put("preserveFieldFormatting",Boolean.FALSE);
+  defaults.put("memoryStickMode",Boolean.FALSE);
   defaults.put("generalFields","crossref;keywords;file;doi;url;urldate;citeseerurl;" + "pdf;comment;owner");
   defaults.put("useCustomIconTheme",Boolean.FALSE);
   defaults.put("customIconThemeFile","/home/alver/div/crystaltheme_16/Icons.properties");
