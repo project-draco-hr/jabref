@@ -1,10 +1,9 @@
 {
   String sql="";
   String val="";
-  String insert="INSERT INTO entries (entry_types_id, cite_key, " + fieldstr + ") VALUES ((SELECT entry_types_id FROM entry_types WHERE label=\"";
+  String insert="INSERT INTO entries (jabref_eid, entry_types_id, cite_key, " + fieldstr + ") VALUES (";
   for (  BibtexEntry entry : entries) {
-    sql=insert + entry.getType().getName().toLowerCase() + "\")";
-    sql=sql + ", \"" + entry.getCiteKey()+ "\"";
+    sql=insert + "\"" + entry.getId()+ "\""+ ", (SELECT entry_types_id FROM entry_types WHERE label=\""+ entry.getType().getName().toLowerCase()+ "\"), \""+ entry.getCiteKey()+ "\"";
     for (int i=0; i < fields.size(); i++) {
       sql=sql + ", ";
       val=entry.getField(fields.get(i));
