@@ -13,6 +13,13 @@
     for (    String name : be.getAllFields()) {
       be.setField(name,correctLineBreaks(be.getField(name).toString()));
     }
+    if (key.matches("\\d\\d\\d\\d\\..*")) {
+      be.setField("year","20" + key.substring(0,2));
+      int month=Integer.parseInt(key.substring(2,4));
+      if (month >= 1 && month <= 12) {
+        be.setField("month","#" + Globals.MONTHS[month - 1] + "#");
+      }
+    }
     return be;
   }
  catch (  IOException e) {
