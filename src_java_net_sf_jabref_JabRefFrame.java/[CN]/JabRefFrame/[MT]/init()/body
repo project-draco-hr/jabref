@@ -16,8 +16,34 @@
   initLayout();
   initActions();
   if (Globals.prefs.getBoolean("rememberWindowLocation")) {
-    setSize(new Dimension(prefs.getInt("sizeX"),prefs.getInt("sizeY")));
-    setLocation(new Point(prefs.getInt("posX"),prefs.getInt("posY")));
+    int sizeX=prefs.getInt("sizeX");
+    int sizeY=prefs.getInt("sizeY");
+    int posX=prefs.getInt("posX");
+    int posY=prefs.getInt("posY");
+    if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length == 1) {
+      Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
+      int height=(int)dim.getHeight();
+      int width=(int)dim.getWidth();
+      if (posX + sizeX > width) {
+        if (sizeX <= width) {
+          posX=width - sizeX;
+        }
+ else {
+          posX=prefs.getIntDefault("posX");
+          sizeX=prefs.getIntDefault("sizeX");
+        }
+      }
+      if (posY + sizeY > height) {
+        if (sizeY <= height) {
+          posY=height - sizeY;
+        }
+ else {
+          posY=prefs.getIntDefault("posY");
+          sizeY=prefs.getIntDefault("sizeY");
+        }
+      }
+    }
+    setBounds(posX,posY,sizeX,sizeY);
   }
   tabbedPane.setBorder(null);
   tabbedPane.setForeground(GUIGlobals.inActiveTabbed);
