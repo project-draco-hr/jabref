@@ -195,6 +195,51 @@ catch (          Throwable ex) {
     }
   }
 );
+  actions.put("dbConnect",new AbstractWorker(){
+    String errorMessage=null;
+    public void init(){
+      DBStrings dbs=metaData.getDBStrings();
+      if (!dbs.isInitialized()) {
+        String[] servers={Globals.lang("MySQL")};
+        dbs.setServerTypes(servers);
+        dbs.setServerType(Globals.lang("MySQL"));
+        dbs.setServerHostname(Globals.lang("localhost"));
+        dbs.setDatabase(Globals.lang("jabref"));
+        dbs.setUsername(Globals.lang("root"));
+        dbs.setPassword("");
+        dbs.isInitialized(true);
+      }
+      DBConnectDialog dbd=new DBConnectDialog(frame(),dbs);
+      Util.placeDialog(dbd,BasePanel.this);
+      dbd.setVisible(true);
+      dbs=dbd.getDBStrings();
+      metaData.setDBStrings(dbs);
+      dbd.dispose();
+    }
+    public void run(){
+      DBStrings dbs=metaData.getDBStrings();
+      try {
+        Connection conn=SQLutils.connect_mysql(dbs.getJdbcUrl(),dbs.getUsername(),dbs.getPassword());
+        conn.close();
+      }
+ catch (      Exception ex) {
+        errorMessage=ex.getMessage();
+      }
+    }
+    public void update(){
+      String url=metaData.getDBStrings().getJdbcUrl();
+      if (errorMessage == null) {
+        frame.output(Globals.lang("%0 export successful",url));
+      }
+ else {
+        String preamble="Could not export to SQL database";
+        frame.output(Globals.lang(preamble) + " - " + errorMessage);
+        JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + ".\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
+        errorMessage=null;
+      }
+    }
+  }
+);
   actions.put("makeKey",new AbstractWorker(){
     List<BibtexEntry> entries;
     int numSelected;

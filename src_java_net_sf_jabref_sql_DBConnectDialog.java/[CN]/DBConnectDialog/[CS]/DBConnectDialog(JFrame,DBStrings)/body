@@ -1,0 +1,74 @@
+{
+  super(parent,Globals.lang("Connect to SQL Database"),true);
+  this.setResizable(false);
+  this.setLocationRelativeTo(parent);
+  dbStrings=dbs;
+  lhs.add(lblServerType);
+  lhs.add(lblServerHostname);
+  lhs.add(lblDatabase);
+  lhs.add(lblUsername);
+  lhs.add(lblPassword);
+  rhs.add(cmbServerType);
+  rhs.add(txtServerHostname);
+  rhs.add(txtDatabase);
+  rhs.add(txtUsername);
+  rhs.add(pwdPassword);
+  lblServerType.setText(Globals.lang("Server Type :"));
+  lblServerHostname.setText(Globals.lang("Server Hostname :"));
+  lblDatabase.setText(Globals.lang("Database :"));
+  lblUsername.setText(Globals.lang("Username :"));
+  lblPassword.setText(Globals.lang("Password :"));
+  for (Iterator it=lhs.iterator(); it.hasNext(); ) {
+    JLabel lbl=(JLabel)it.next();
+    lbl.setHorizontalAlignment(JLabel.RIGHT);
+  }
+  btnConnect.setText(Globals.lang("Connect"));
+  btnCancel.setText(Globals.lang("Cancel"));
+  String[] srv=dbStrings.getServerTypes();
+  for (int i=0; i < srv.length; i++) {
+    cmbServerType.addItem(srv[i]);
+  }
+  txtServerHostname.setText(dbStrings.getServerHostname());
+  txtDatabase.setText(dbStrings.getDatabase());
+  txtUsername.setText(dbStrings.getUsername());
+  pwdPassword.setText(dbStrings.getPassword());
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("right:pref, 4dlu, fill:pref",""));
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  builder.append(lblServerType);
+  builder.append(cmbServerType);
+  builder.nextLine();
+  builder.append(lblServerHostname);
+  builder.append(txtServerHostname);
+  builder.nextLine();
+  builder.append(lblDatabase);
+  builder.append(txtDatabase);
+  builder.nextLine();
+  builder.append(lblUsername);
+  builder.append(txtUsername);
+  builder.nextLine();
+  builder.append(lblPassword);
+  builder.append(pwdPassword);
+  builder.nextLine();
+  getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addGridded(btnConnect);
+  bb.addGridded(btnCancel);
+  bb.addGlue();
+  getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  pack();
+  btnConnect.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      storeSettings();
+      setVisible(false);
+    }
+  }
+);
+  btnCancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      setVisible(false);
+      dispose();
+    }
+  }
+);
+}
