@@ -1,5 +1,22 @@
 {
-  Connection conn=SQLutil.connect_mysql(dbStrings.getJdbcUrl(),dbStrings.getUsername(),dbStrings.getPassword());
-  exportDatabase_worker(database,metaData,keySet,conn);
-  conn.close();
+  DBTYPE dbtype=getDBType(dbStrings);
+  Connection conn=null;
+  try {
+    conn=SQLutil.connectToDB(dbStrings);
+    exportDatabase_worker(dbtype,database,metaData,keySet,conn);
+    if (!conn.getAutoCommit()) {
+      conn.commit();
+      conn.setAutoCommit(true);
+    }
+    conn.close();
+  }
+ catch (  SQLException ex) {
+    ex.printStackTrace();
+    if (conn != null) {
+      if (!conn.getAutoCommit()) {
+        conn.rollback();
+      }
+    }
+    throw (Exception)ex.getCause();
+  }
 }

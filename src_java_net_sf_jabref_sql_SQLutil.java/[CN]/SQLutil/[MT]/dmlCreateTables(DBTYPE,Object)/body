@@ -2,13 +2,28 @@
   if (fields == null) {
     refreshFields();
   }
-  String dml1=SQLutil.fieldsAsCols(fields," VARCHAR(3)  DEFAULT NULL");
-  String dml2=SQLutil.fieldsAsCols(fields," TEXT DEFAULT NULL");
-  String dml="";
+  String dml="", dml1="", dml2="";
 switch (dbtype) {
 case MYSQL:
-    dmlTable_mysql(dml1,dml2,out);
-  break;
+    processDML(out,"DROP TABLE IF EXISTS entry_types;");
+  processDML(out,"DROP TABLE IF EXISTS entries;");
+processDML(out,"DROP TABLE IF EXISTS groups;");
+processDML(out,"DROP TABLE IF EXISTS entry_group;");
+dml1=SQLutil.fieldsAsCols(fields," VARCHAR(3) DEFAULT NULL");
+dml2=SQLutil.fieldsAsCols(fields," TEXT DEFAULT NULL");
+dmlTable_mysql(dml1,dml2,out);
+break;
+case DERBY:
+if (out instanceof Connection) {
+Connection conn=(Connection)out;
+boolean commitNow=conn.getAutoCommit();
+conn.setAutoCommit(true);
+conn.setAutoCommit(commitNow);
+}
+dml1=SQLutil.fieldsAsCols(fields," VARCHAR(3) DEFAULT NULL");
+dml2=SQLutil.fieldsAsCols(fields," LONG VARCHAR DEFAULT NULL");
+dmlTable_derby(dml1,dml2,out);
+break;
 default :
 System.err.println("Error: Do not recognize database enumeration.");
 System.exit(0);
