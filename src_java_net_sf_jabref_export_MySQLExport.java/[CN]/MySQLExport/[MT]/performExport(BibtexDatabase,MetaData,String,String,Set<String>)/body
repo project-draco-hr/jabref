@@ -1,29 +1,15 @@
 {
-  ArrayList<String> fields=new ArrayList<String>();
-  for (  BibtexEntryType val : BibtexEntryType.ALL_TYPES.values()) {
-    fields=processFields(fields,val.getRequiredFields());
-    fields=processFields(fields,val.getOptionalFields());
-    fields=processFields(fields,val.getGeneralFields());
-    fields=processFields(fields,val.getUtilityFields());
-  }
   File outfile=new File(file);
   if (outfile.exists())   outfile.delete();
-  PrintStream fout=new PrintStream(outfile);
-  String sql1=sql_fieldColumns(fields,"\tVARCHAR(3)\t\tDEFAULT NULL");
-  String sql2=sql_fieldColumns(fields,"\tTEXT\t\tDEFAULT NULL");
-  String sql=sql_createTables(sql1,sql2);
-  fout.println(sql);
-  String fieldstr="";
-  for (int i=0; i < fields.size(); i++) {
-    if (i > 0)     fieldstr=fieldstr + ", ";
-    fieldstr=fieldstr + fields.get(i);
-  }
+  PrintStream fout=null;
+  fout=new PrintStream(outfile);
   List<BibtexEntry> entries=FileActions.getSortedEntries(database,keySet,false);
-  sql_popTabET(fields,fieldstr,fout);
-  sql_popTabFD(entries,fields,fieldstr,fout);
+  SQLutil.dmlCreateTables(SQLutil.DBTYPE.MYSQL,fout);
+  SQLutil.dmlPopTab_ET(fout);
+  SQLutil.dmlPopTab_FD(entries,fout);
   GroupTreeNode gtn=metaData.getGroups();
-  int cnt1=sql_popTabGP(gtn,1,1,fout);
-  int cnt2=sql_popTabEG(gtn,1,1,fout);
+  SQLutil.dmlPopTab_GP(gtn,fout);
+  SQLutil.dmlPopTab_EG(gtn,fout);
   fout.close();
   return;
 }

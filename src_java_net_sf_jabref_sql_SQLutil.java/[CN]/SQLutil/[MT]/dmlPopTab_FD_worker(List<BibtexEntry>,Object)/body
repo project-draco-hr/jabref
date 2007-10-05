@@ -1,0 +1,21 @@
+{
+  String dml="";
+  String val="";
+  String insert="INSERT INTO entries (jabref_eid, entry_types_id, cite_key, " + fieldstr + ") VALUES (";
+  for (  BibtexEntry entry : entries) {
+    dml=insert + "\"" + entry.getId()+ "\""+ ", (SELECT entry_types_id FROM entry_types WHERE label=\""+ entry.getType().getName().toLowerCase()+ "\"), \""+ entry.getCiteKey()+ "\"";
+    for (int i=0; i < fields.size(); i++) {
+      dml=dml + ", ";
+      val=entry.getField(fields.get(i));
+      if (val != null) {
+        dml=dml + "\"" + val.replaceAll("\"","\\\\\"")+ "\"";
+      }
+ else {
+        dml=dml + "NULL";
+      }
+    }
+    dml=dml + ");";
+    processDML(out,dml);
+  }
+  return;
+}
