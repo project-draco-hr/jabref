@@ -47,6 +47,8 @@
     abstractText="";
     affiliation="";
     pubmedid="";
+    majorTopic="";
+    minorTopics="";
     month="";
     volume="";
     lastname="";
@@ -98,6 +100,12 @@
     lastname="";
   }
  else   if (localName.equals("DescriptorName"))   inDescriptorName=false;
+ else   if (localName.equals("QualifierName"))   inQualifierName=false;
+ else   if (localName.equals("MeshHeading")) {
+    inMeshHeader=false;
+    if (minorTopics.equals(""))     descriptors.add(majorTopic);
+ else     descriptors.add(majorTopic + ", " + minorTopics);
+  }
  else   if (localName.equals("LastName")) {
     inLastName=false;
   }
