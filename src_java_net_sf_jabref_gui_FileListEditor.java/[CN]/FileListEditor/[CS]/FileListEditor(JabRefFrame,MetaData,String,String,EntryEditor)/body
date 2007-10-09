@@ -11,7 +11,9 @@
   setTableHeader(null);
   addMouseListener(new TableClickListener());
   add=new JButton(GUIGlobals.getImage("add"));
+  add.setToolTipText(Globals.lang("New file link (INSERT)"));
   remove=new JButton(GUIGlobals.getImage("remove"));
+  remove.setToolTipText(Globals.lang("Remove file link (DELETE)"));
   up=new JButton(GUIGlobals.getImage("up"));
   down=new JButton(GUIGlobals.getImage("down"));
   auto=new JButton(Globals.lang("Auto"));
@@ -67,6 +69,9 @@
   panel.setLayout(new BorderLayout());
   panel.add(sPane,BorderLayout.CENTER);
   panel.add(builder.getPanel(),BorderLayout.EAST);
+  TransferHandler th=new FileListEditorTransferHandler();
+  setTransferHandler(th);
+  panel.setTransferHandler(th);
   getInputMap().put(KeyStroke.getKeyStroke("DELETE"),"delete");
   getActionMap().put("delete",new AbstractAction(){
     public void actionPerformed(    ActionEvent actionEvent){
@@ -81,6 +86,13 @@
   getActionMap().put("insert",new AbstractAction(){
     public void actionPerformed(    ActionEvent actionEvent){
       addEntry();
+    }
+  }
+);
+  menu.add(item);
+  item.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      openSelectedFile();
     }
   }
 );

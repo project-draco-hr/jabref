@@ -17,10 +17,18 @@
     }
   }
   if (link == null)   return "";
-  String dir=Globals.prefs.get(GUIGlobals.FILE_FIELD + "Directory");
-  File f=Util.expandFilename(link,new String[]{dir,"."});
+  String dir;
+  if (Globals.prefs.fileDirForDatabase != null)   dir=Globals.prefs.fileDirForDatabase;
+ else   dir=Globals.prefs.get(GUIGlobals.FILE_FIELD + "Directory");
+  File f=Util.expandFilename(link,new String[]{dir});
   if (f != null) {
-    return f.getPath();
+    try {
+      return f.getCanonicalPath();
+    }
+ catch (    IOException e) {
+      e.printStackTrace();
+      return f.getPath();
+    }
   }
  else {
     return link;

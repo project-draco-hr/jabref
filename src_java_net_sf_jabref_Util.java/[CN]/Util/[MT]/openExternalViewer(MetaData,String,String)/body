@@ -11,6 +11,7 @@
       if (split[split.length - 1].equalsIgnoreCase("pdf"))       fieldName="pdf";
  else       if (split[split.length - 1].equalsIgnoreCase("ps") || (split.length >= 3 && split[split.length - 2].equalsIgnoreCase("ps")))       fieldName="ps";
     }
+    ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(fieldName);
   }
  else   if (fieldName.equals("doi")) {
     fieldName="url";
@@ -51,14 +52,18 @@
  else   if (fieldName.equals("ps")) {
     try {
       if (Globals.ON_MAC) {
-        String[] cmd={"/usr/bin/open","-a",Globals.prefs.get("psviewer"),link};
+        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("ps");
+        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get("psviewer");
+        String[] cmd={"/usr/bin/open","-a",viewer,link};
         Runtime.getRuntime().exec(cmd);
       }
  else       if (Globals.ON_WIN) {
         openFileOnWindows(link,true);
       }
  else {
-        cmdArray[0]=Globals.prefs.get("psviewer");
+        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("ps");
+        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get("psviewer");
+        cmdArray[0]=viewer;
         cmdArray[1]=link;
         Runtime.getRuntime().exec(cmdArray);
       }
@@ -70,14 +75,18 @@
  else   if (fieldName.equals("pdf")) {
     try {
       if (Globals.ON_MAC) {
-        String[] cmd={"/usr/bin/open","-a",Globals.prefs.get("pdfviewer"),link};
+        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("pdf");
+        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get("psviewer");
+        String[] cmd={"/usr/bin/open","-a",viewer,link};
         Runtime.getRuntime().exec(cmd);
       }
  else       if (Globals.ON_WIN) {
         openFileOnWindows(link,true);
       }
  else {
-        cmdArray[0]=Globals.prefs.get("pdfviewer");
+        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("pdf");
+        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get("psviewer");
+        cmdArray[0]=viewer;
         cmdArray[1]=link;
         Runtime.getRuntime().exec(cmdArray);
       }

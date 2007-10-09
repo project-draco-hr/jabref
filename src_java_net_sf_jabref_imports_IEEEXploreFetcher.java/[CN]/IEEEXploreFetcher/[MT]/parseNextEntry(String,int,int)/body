@@ -7,99 +7,104 @@
   if (index >= 0) {
     piv=index + 1;
     String text=allText.substring(index,endIndex);
-    if (fetchingAbstracts) {
+    BibtexEntryType type=null;
+    String sourceField=null;
+    if (text.indexOf("JNL") >= 0) {
+      type=BibtexEntryType.getType("article");
+      sourceField="journal";
+    }
+ else     if (text.indexOf("CNF") >= 0) {
+      type=BibtexEntryType.getType("inproceedings");
+      sourceField="booktitle";
+    }
+ else     if (text.indexOf("STD") >= 0) {
+      type=BibtexEntryType.getType("Standard");
+    }
+ else {
+      System.err.println("Type detection failed.");
+    }
+    if (fetchRis == true) {
       Matcher number=ieeeArticleNumberPattern.matcher(text);
       if (number.find()) {
         try {
-          entry=parseEntryRis(number.group(1));
+          entry=parseEntryRis(number.group(1),fetchingAbstracts,type.getName() == "Standard");
         }
  catch (        IOException e) {
           e.printStackTrace();
         }
       }
-    }
-    if (entry != null) {
-      int pgInd=text.indexOf("Digital Object Identifier ");
-      if (pgInd >= 0) {
-        int fieldEnd=text.indexOf("<br>",pgInd);
-        if (fieldEnd >= 0) {
-          entry.setField("doi",text.substring(pgInd + 26,fieldEnd).trim());
+      if (entry != null) {
+        int pgInd=text.indexOf("Digital Object Identifier ");
+        if (pgInd >= 0) {
+          int fieldEnd=text.indexOf("<br>",pgInd);
+          if (fieldEnd >= 0) {
+            entry.setField("doi",text.substring(pgInd + 26,fieldEnd).trim());
+          }
         }
+        return cleanup(entry);
       }
-      return entry;
-    }
-    BibtexEntryType type;
-    String sourceField;
-    if (text.indexOf("IEEE JNL") >= 0) {
-      type=BibtexEntryType.getType("article");
-      sourceField="journal";
-    }
- else {
-      type=BibtexEntryType.getType("inproceedings");
-      sourceField="booktitle";
     }
     index=0;
     entry=new BibtexEntry(Util.createNeutralId(),type);
-    Matcher m1=entryPattern1.matcher(text);
-    Matcher m2=entryPattern2.matcher(text);
-    Matcher m3=entryPattern3.matcher(text);
-    Matcher m4=entryPattern4.matcher(text);
-    Matcher m;
+    if (type.getName() == "Standard") {
+      Matcher mstd=stdEntryPattern.matcher(text);
+      if (mstd.find()) {
+        entry.setField("title",convertHTMLChars(mstd.group(1)));
+        entry.setField("year",convertHTMLChars(mstd.group(2)));
+        entry.setField("organization","IEEE");
+        return entry;
+      }
+      System.err.println("Standard entry parsing failed.");
+    }
+    Matcher m=paperEntryPattern.matcher(text);
     String tmp;
     String rest="";
-    if (m1.find()) {
-      m=m1;
+    if (m.find()) {
       entry.setField("title",convertHTMLChars(m.group(1)));
       tmp=convertHTMLChars(m.group(2));
       if (tmp.charAt(tmp.length() - 1) == ';')       tmp=tmp.substring(0,tmp.length() - 1);
       entry.setField("author",tmp.replaceAll("; "," and "));
-      tmp=m.group(4);
-      entry.setField(sourceField,convertHTMLChars(tmp));
-      entry.setField("volume",convertHTMLChars(m.group(5)));
-      entry.setField("month",convertHTMLChars(m.group(6)));
-      entry.setField("year",m.group(7));
-    }
- else     if (m2.find()) {
-      m=m2;
-      entry.setField("title",convertHTMLChars(m.group(1)));
-      tmp=convertHTMLChars(m.group(2));
-      if (tmp.charAt(tmp.length() - 1) == ';')       tmp=tmp.substring(0,tmp.length() - 1);
-      entry.setField("author",tmp.replaceAll("; "," and "));
-      tmp=m.group(4);
-      entry.setField(sourceField,convertHTMLChars(tmp));
-      entry.setField("volume",convertHTMLChars(m.group(5)));
-      entry.setField("number",convertHTMLChars(m.group(6)));
-      entry.setField("month",convertHTMLChars(m.group(7)));
-      entry.setField("year",m.group(8));
-    }
- else     if (m3.find()) {
-      m=m3;
-      entry.setField("title",convertHTMLChars(m.group(1)));
-      tmp=convertHTMLChars(m.group(2));
-      if (tmp.charAt(tmp.length() - 1) == ';')       tmp=tmp.substring(0,tmp.length() - 1);
-      entry.setField("author",tmp.replaceAll("; "," and "));
-      tmp=m.group(4);
-      entry.setField(sourceField,convertHTMLChars(tmp));
-      entry.setField("volume",convertHTMLChars(m.group(5)));
-      entry.setField("number",convertHTMLChars(m.group(6)));
-      entry.setField("month",convertHTMLChars(m.group(8)));
-      entry.setField("year",m.group(9));
-    }
- else     if (m4.find()) {
-      m=m4;
-      entry.setField("title",convertHTMLChars(m.group(1)));
-      tmp=convertHTMLChars(m.group(2));
-      if (tmp.charAt(tmp.length() - 1) == ';')       tmp=tmp.substring(0,tmp.length() - 1);
-      entry.setField("author",tmp.replaceAll("; "," and "));
-      tmp=m.group(4);
-      entry.setField(sourceField,convertHTMLChars(tmp));
-      entry.setField("month",convertHTMLChars(m.group(5)));
-      entry.setField("year",m.group(6));
+      tmp=m.group(3);
+      String fullName=convertHTMLChars(tmp);
+      entry.setField(sourceField,fullName);
+      String misc=m.group(4);
+      for (int i=5; i < 8; i++) {
+        tmp=m.group(i);
+        if (tmp.startsWith("Page") == false)         misc+=tmp;
+ else         break;
+      }
+      Matcher ms1=volumePattern.matcher(misc);
+      if (ms1.find()) {
+        entry.setField("volume",convertHTMLChars(ms1.group(1)));
+        misc=ms1.group(2);
+      }
+      Matcher ms2=numberPattern.matcher(misc);
+      if (ms2.find()) {
+        entry.setField("number",convertHTMLChars(ms2.group(1)));
+        misc=ms2.group(2);
+      }
+      Matcher ms3=partPattern.matcher(misc);
+      if (ms3.find()) {
+        entry.setField("part",ms3.group(1));
+        misc=ms3.group(2);
+      }
+      Matcher ms4=datePattern.matcher(misc);
+      if (ms4.find()) {
+        entry.setField("month",convertHTMLChars(ms4.group(1)).replaceAll("-","--"));
+        entry.setField("year",ms4.group(2));
+      }
+ else {
+        Matcher ms5=datePattern.matcher(fullName);
+        if (ms5.find()) {
+          entry.setField("year",ms5.group(2));
+        }
+      }
     }
  else {
       System.err.println("---no structure match---");
       System.err.println(text);
       unparseable++;
+      return null;
     }
     int pgInd=text.indexOf("Page(s):");
     if (pgInd >= 0) {
@@ -107,6 +112,10 @@
       pgInd=rest.indexOf("<br>");
       if (pgInd >= 0) {
         tmp=rest.substring(0,pgInd);
+        pgInd=tmp.indexOf("vol");
+        if (pgInd >= 0)         tmp=tmp.substring(0,pgInd);
+        pgInd=tmp.indexOf("Vol");
+        if (pgInd >= 0)         tmp=tmp.substring(0,pgInd);
         entry.setField("pages",tmp.replaceAll("\\s+","").replaceAll("-","--"));
       }
       pgInd=rest.indexOf("Digital Object Identifier ",pgInd);
@@ -117,7 +126,7 @@
         }
       }
     }
-    return entry;
+    return cleanup(entry);
   }
   return null;
 }

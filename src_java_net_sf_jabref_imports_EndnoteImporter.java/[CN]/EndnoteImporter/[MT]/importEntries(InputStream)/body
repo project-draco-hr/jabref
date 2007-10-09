@@ -21,12 +21,13 @@
   }
   String[] entries=sb.toString().split(ENDOFRECORD);
   HashMap<String,String> hm=new HashMap<String,String>();
-  String author="", Type="", editor="";
+  String author="", Type="", editor="", artnum="";
   for (int i=0; i < entries.length; i++) {
     hm.clear();
     author="";
     Type="";
     editor="";
+    artnum="";
     boolean IsEditedBook=false;
     String[] fields=entries[i].trim().substring(1).split("\n%");
     for (int j=0; j < fields.length; j++) {
@@ -76,7 +77,15 @@
  else       if (prefix.equals("V"))       hm.put("volume",val);
  else       if (prefix.equals("N"))       hm.put("number",val);
  else       if (prefix.equals("U"))       hm.put("url",val);
- else       if (prefix.equals("O"))       hm.put("note",val);
+ else       if (prefix.equals("O")) {
+        if (val.startsWith("Artn")) {
+          String[] tokens=val.split("\\s");
+          artnum=tokens[1];
+        }
+ else {
+          hm.put("note",val);
+        }
+      }
  else       if (prefix.equals("K"))       hm.put("keywords",val);
  else       if (prefix.equals("X"))       hm.put("abstract",val);
  else       if (prefix.equals("9")) {
@@ -91,6 +100,7 @@
     }
     if (!author.equals(""))     hm.put("author",fixAuthor(author));
     if (!editor.equals(""))     hm.put("editor",fixAuthor(editor));
+    if (hm.get("pages").equals("-") && !artnum.equals(""))     hm.put("pages",artnum);
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
     b.setField(hm);
     if (b.getAllFields().size() > 0)     bibitems.add(b);

@@ -89,12 +89,13 @@
   }
 );
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.journalAbbrHelp));
-  cancel.addActionListener(new ActionListener(){
+  AbstractAction cancelAction=new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
       dialog.dispose();
     }
   }
-);
+;
+  cancel.addActionListener(cancelAction);
   add.addActionListener(tableModel);
   remove.addActionListener(tableModel);
   addExt.addActionListener(new ActionListener(){
@@ -104,6 +105,10 @@
     }
   }
 );
+  ActionMap am=getActionMap();
+  InputMap im=getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",cancelAction);
   int xSize=getPreferredSize().width;
   dialog.setSize(xSize + 10,700);
 }

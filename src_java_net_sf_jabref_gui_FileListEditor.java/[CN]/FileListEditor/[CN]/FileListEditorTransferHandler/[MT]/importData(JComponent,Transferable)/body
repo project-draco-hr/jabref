@@ -1,0 +1,56 @@
+{
+  int dropRow=-1;
+  if (comp instanceof JTable) {
+    dropRow=((JTable)comp).getSelectedRow();
+  }
+  try {
+    List files=null;
+    if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+      files=(List)t.getTransferData(DataFlavor.javaFileListFlavor);
+    }
+    if (t.isDataFlavorSupported(urlFlavor)) {
+      URL dropLink=(URL)t.getTransferData(urlFlavor);
+      System.out.println("URL: " + dropLink);
+    }
+    if (t.isDataFlavorSupported(stringFlavor)) {
+      String dropStr=(String)t.getTransferData(stringFlavor);
+      files=EntryTableTransferHandler.getFilesFromDraggedFilesString(dropStr);
+    }
+    if (files != null) {
+      final List theFiles=files;
+      SwingUtilities.invokeLater(new Runnable(){
+        public void run(){
+          for (Iterator i=theFiles.iterator(); i.hasNext(); ) {
+            File f=(File)i.next();
+            String name=f.getAbsolutePath();
+            String extension="";
+            ExternalFileType fileType=null;
+            int index=name.lastIndexOf('.');
+            if ((index >= 0) && (index < name.length())) {
+              extension=name.substring(index + 1).toLowerCase();
+              fileType=Globals.prefs.getExternalFileTypeByExt(extension);
+            }
+            if (fileType != null) {
+              DroppedFileHandler dfh=new DroppedFileHandler(frame,frame.basePanel());
+              dfh.handleDroppedfile(name,fileType,true,entryEditor.getEntry());
+            }
+          }
+        }
+      }
+);
+      return true;
+    }
+  }
+ catch (  IOException ioe) {
+    System.err.println("failed to read dropped data: " + ioe.toString());
+  }
+catch (  UnsupportedFlavorException ufe) {
+    System.err.println("drop type error: " + ufe.toString());
+  }
+  System.err.println("can't transfer input: ");
+  DataFlavor inflavs[]=t.getTransferDataFlavors();
+  for (int i=0; i < inflavs.length; i++) {
+    System.out.println("  " + inflavs[i].toString());
+  }
+  return false;
+}

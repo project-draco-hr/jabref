@@ -18,7 +18,10 @@
     for (int i=0; i < sel.length; i++) {
       entries.add(sel[i]);
     }
-    Thread t=FileListEditor.autoSetLinks(entries,ce,changedEntries);
+    ArrayList<File> dirs=new ArrayList<File>();
+    String dr=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+    if (dr != null)     dirs.add(new File(dr));
+    Thread t=FileListEditor.autoSetLinks(entries,ce,changedEntries,dirs);
     try {
       t.join();
     }

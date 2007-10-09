@@ -1,5 +1,7 @@
 {
-  InputStream input=new BufferedInputStream(source.openStream());
+  URLConnection con=source.openConnection();
+  con.setRequestProperty("User-Agent","Jabref");
+  InputStream input=new BufferedInputStream(con.getInputStream());
   OutputStream output=new BufferedOutputStream(new FileOutputStream(dest));
   try {
     copy(input,output);

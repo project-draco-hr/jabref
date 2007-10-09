@@ -2,29 +2,46 @@
   if (!goOn)   return;
   for (int i=0; i < entries.length; i++) {
     BibtexEntry entry=entries[i];
+    List<File> files=new ArrayList<File>();
     String pdf=(String)entry.getField("pdf");
     String dir=panel.metaData().getFileDirectory("pdf");
-    File file=Util.expandFilename(pdf,new String[]{dir,"."});
+    File f=Util.expandFilename(pdf,new String[]{dir,"."});
+    if (f != null)     files.add(f);
+    dir=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+    String field=(String)entry.getField(GUIGlobals.FILE_FIELD);
+    if (field != null) {
+      FileListTableModel tm=new FileListTableModel();
+      tm.setContent(field);
+      for (int j=0; j < tm.getRowCount(); j++) {
+        FileListEntry flEntry=tm.getEntry(j);
+        if ((flEntry.getType() != null) && (flEntry.getType().getName().toLowerCase().equals("pdf"))) {
+          f=Util.expandFilename(flEntry.getLink(),new String[]{dir,"."});
+          if (f != null)           files.add(f);
+        }
+      }
+    }
     optDiag.progressArea.append(entry.getCiteKey() + "\n");
-    if (file == null) {
+    if (files.size() == 0) {
       skipped++;
       optDiag.progressArea.append("  " + Globals.lang("Skipped - No PDF linked") + ".\n");
     }
- else     if (!file.exists()) {
-      skipped++;
-      optDiag.progressArea.append("  " + Globals.lang("Skipped - PDF does not exist") + ":\n");
-      optDiag.progressArea.append("    " + file.getPath() + "\n");
-    }
- else {
-      try {
-        XMPUtil.writeXMP(file,entry,database);
-        optDiag.progressArea.append("  " + Globals.lang("Ok") + ".\n");
-        entriesChanged++;
+ else     for (    File file : files) {
+      if (!file.exists()) {
+        skipped++;
+        optDiag.progressArea.append("  " + Globals.lang("Skipped - PDF does not exist") + ":\n");
+        optDiag.progressArea.append("    " + file.getPath() + "\n");
       }
- catch (      Exception e) {
-        optDiag.progressArea.append("  " + Globals.lang("Error while writing") + " '"+ file.getPath()+ "':\n");
-        optDiag.progressArea.append("    " + e.getLocalizedMessage() + "\n");
-        errors++;
+ else {
+        try {
+          XMPUtil.writeXMP(file,entry,database);
+          optDiag.progressArea.append("  " + Globals.lang("Ok") + ".\n");
+          entriesChanged++;
+        }
+ catch (        Exception e) {
+          optDiag.progressArea.append("  " + Globals.lang("Error while writing") + " '"+ file.getPath()+ "':\n");
+          optDiag.progressArea.append("    " + e.getLocalizedMessage() + "\n");
+          errors++;
+        }
       }
     }
     if (optDiag.canceled) {

@@ -1,32 +1,4 @@
 {
-  NamedCompound edits=new NamedCompound(Globals.lang("Drop %0",fileType.extension));
-  if (tryXmpImport(fileName,fileType,localFile,mainTable,edits)) {
-    panel.undoManager.addEdit(edits);
-    return;
-  }
   BibtexEntry entry=mainTable.getEntryAt(dropRow);
-  boolean newEntry=false;
-  boolean rename=entry.getCiteKey() != null && entry.getCiteKey().length() > 0;
-  String citeKeyOrReason=(rename ? entry.getCiteKey() : Globals.lang("Entry has no citekey"));
-  int reply=showLinkMoveCopyRenameDialog(Globals.lang("Link to file %0",fileName),fileType,rename,citeKeyOrReason,newEntry,false);
-  if (reply != JOptionPane.OK_OPTION)   return;
-  boolean success=true;
-  String destFilename;
-  if (linkInPlace.isSelected()) {
-    destFilename=fileName;
-  }
- else {
-    destFilename=(renameCheckBox.isSelected() ? entry.getCiteKey() + "." + fileType.extension : fileName);
-    if (copyRadioButton.isSelected()) {
-      success=doCopy(fileName,fileType,destFilename,edits);
-    }
- else     if (moveRadioButton.isSelected()) {
-      success=doRename(fileName,fileType,destFilename,edits);
-    }
-  }
-  if (success) {
-    doLink(entry,fileType,destFilename,edits);
-    panel.markBaseChanged();
-  }
-  panel.undoManager.addEdit(edits);
+  handleDroppedfile(fileName,fileType,localFile,entry);
 }

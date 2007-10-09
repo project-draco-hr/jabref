@@ -3,6 +3,15 @@
   if (content.indexOf(";") > 0) {
     names=content.replaceAll("[^\\.A-Za-z,;\\- ]","").replaceAll(";"," and");
   }
+ else   if (content.indexOf("  ") > 0) {
+    String[] sNames=content.split("  ");
+    StringBuilder sb=new StringBuilder();
+    for (int i=0; i < sNames.length; i++) {
+      if (i > 0)       sb.append(" and ");
+      sb.append(sNames[i].replaceFirst(" ",", "));
+    }
+    names=sb.toString();
+  }
  else   names=content;
   return AuthorList.fixAuthor_lastNameFirst(names);
 }

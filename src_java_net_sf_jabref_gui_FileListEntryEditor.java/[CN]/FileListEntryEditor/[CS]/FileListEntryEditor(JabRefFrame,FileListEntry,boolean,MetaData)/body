@@ -1,0 +1,89 @@
+{
+  this.frame=frame;
+  this.entry=entry;
+  this.metaData=metaData;
+  okAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      if (!ok.isEnabled())       return;
+      if (externalConfirm != null) {
+        FileListEntry testEntry=new FileListEntry("","",null);
+        storeSettings(testEntry);
+        if (!externalConfirm.confirmClose(testEntry))         return;
+      }
+      diag.dispose();
+      storeSettings(FileListEntryEditor.this.entry);
+      okPressed=true;
+    }
+  }
+;
+  types=new JComboBox();
+  types.addItemListener(new ItemListener(){
+    public void itemStateChanged(    ItemEvent itemEvent){
+      ok.setEnabled(types.getSelectedItem() != null);
+    }
+  }
+);
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:150dlu, 4dlu, fill:pref",""));
+  builder.append(Globals.lang("Link"));
+  builder.append(link);
+  BrowseListener browse=new BrowseListener(frame,link);
+  JButton browseBut=new JButton(Globals.lang("Browse"));
+  browseBut.addActionListener(browse);
+  builder.append(browseBut);
+  builder.nextLine();
+  builder.append(Globals.lang("Description"));
+  builder.append(description);
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  builder.nextLine();
+  builder.append(Globals.lang("File type"));
+  builder.append(types);
+  if (showProgressBar) {
+    builder.nextLine();
+    builder.append(downloadLabel);
+    builder.append(prog);
+  }
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addGridded(open);
+  bb.addRelatedGap();
+  bb.addGridded(ok);
+  bb.addGridded(cancel);
+  bb.addGlue();
+  ok.addActionListener(okAction);
+  link.addActionListener(okAction);
+  description.addActionListener(okAction);
+  open.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      openFile();
+    }
+  }
+);
+  AbstractAction cancelAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      diag.dispose();
+    }
+  }
+;
+  cancel.addActionListener(cancelAction);
+  ActionMap am=builder.getPanel().getActionMap();
+  InputMap im=builder.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",cancelAction);
+  link.getDocument().addDocumentListener(new DocumentListener(){
+    public void insertUpdate(    DocumentEvent documentEvent){
+      checkExtension();
+    }
+    public void removeUpdate(    DocumentEvent documentEvent){
+    }
+    public void changedUpdate(    DocumentEvent documentEvent){
+      checkExtension();
+    }
+  }
+);
+  diag=new JDialog(frame,Globals.lang("Edit file link"),true);
+  diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  diag.pack();
+  Util.placeDialog(diag,frame);
+  setValues(entry);
+}
