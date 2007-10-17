@@ -3,7 +3,8 @@
   BibtexEntry result=new BibtexEntry(id,tp);
   skipWhitespace();
   consume('{','(');
-  skipWhitespace();
+  int c=peek();
+  if ((c != '\n') && (c != '\r'))   skipWhitespace();
   String key=null;
   boolean doAgain=true;
   while (doAgain) {
@@ -13,7 +14,7 @@
  else       key=parseKey();
     }
  catch (    NoLabelException ex) {
-      char c=(char)peek();
+      c=(char)peek();
       if (Character.isWhitespace(c) || (c == '{') || (c == '\"')) {
         String fieldName=ex.getMessage().trim().toLowerCase();
         String cont=parseFieldContent();
@@ -30,7 +31,7 @@
   if (result != null)   result.setField(BibtexFields.KEY_FIELD,key);
   skipWhitespace();
   while (true) {
-    int c=peek();
+    c=peek();
     if ((c == '}') || (c == ')')) {
       break;
     }
