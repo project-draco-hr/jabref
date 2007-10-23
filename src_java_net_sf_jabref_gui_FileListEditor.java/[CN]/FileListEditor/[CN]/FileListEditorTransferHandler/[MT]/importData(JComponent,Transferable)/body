@@ -1,12 +1,8 @@
 {
-  int dropRow=-1;
-  if (comp instanceof JTable) {
-    dropRow=((JTable)comp).getSelectedRow();
-  }
   try {
-    List files=null;
+    List<File> files=null;
     if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-      files=(List)t.getTransferData(DataFlavor.javaFileListFlavor);
+      files=(List<File>)t.getTransferData(DataFlavor.javaFileListFlavor);
     }
     if (t.isDataFlavorSupported(urlFlavor)) {
       URL dropLink=(URL)t.getTransferData(urlFlavor);
@@ -17,11 +13,10 @@
       files=EntryTableTransferHandler.getFilesFromDraggedFilesString(dropStr);
     }
     if (files != null) {
-      final List theFiles=files;
+      final List<File> theFiles=files;
       SwingUtilities.invokeLater(new Runnable(){
         public void run(){
-          for (Iterator i=theFiles.iterator(); i.hasNext(); ) {
-            File f=(File)i.next();
+          for (          File f : theFiles) {
             String name=f.getAbsolutePath();
             String extension="";
             ExternalFileType fileType=null;
