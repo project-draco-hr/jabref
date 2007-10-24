@@ -195,40 +195,75 @@ catch (          Throwable ex) {
     }
   }
 );
-  actions.put("dbConnect",new AbstractWorker(){
-    String errorMessage=null;
-    boolean connectToDB=false;
-    public void init(){
+  actions.put("dbConnect",new BaseAction(){
+    public void action(){
       DBStrings dbs=metaData.getDBStrings();
       if (!dbs.isInitialized()) {
-        String[] servers={Globals.lang("MySQL")};
-        dbs.setServerTypes(servers);
-        dbs.setServerType(Globals.lang("MySQL"));
-        dbs.setServerHostname(Globals.lang("localhost"));
-        dbs.setDatabase(Globals.lang("jabref"));
-        dbs.setUsername(Globals.lang("root"));
-        dbs.setPassword("");
-        dbs.isInitialized(true);
+        dbs.initialize();
       }
       DBConnectDialog dbd=new DBConnectDialog(frame(),dbs);
       Util.placeDialog(dbd,BasePanel.this);
       dbd.setVisible(true);
-      connectToDB=dbd.getConnectToDB();
-      if (connectToDB) {
+      if (dbd.getConnectToDB()) {
         dbs=dbd.getDBStrings();
-        metaData.setDBStrings(dbs);
-        dbd.dispose();
+        try {
+          frame.output(Globals.lang("Establishing SQL connection..."));
+          Connection conn=SQLutil.connectToDB(dbs);
+          conn.close();
+          dbs.isConfigValid(true);
+          frame.output(Globals.lang("SQL connection established."));
+        }
+ catch (        Exception ex) {
+          String errorMessage=SQLutil.getExceptionMessage(ex,SQLutil.DBTYPE.MYSQL);
+          dbs.isConfigValid(false);
+          String preamble="Could not connect to SQL database for the following reason:";
+          frame.output(Globals.lang(preamble) + "  " + errorMessage);
+          JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Connect to SQL database"),JOptionPane.ERROR_MESSAGE);
+        }
+ finally {
+          metaData.setDBStrings(dbs);
+          dbd.dispose();
+        }
+      }
+    }
+  }
+);
+  actions.put("dbExport",new AbstractWorker(){
+    String errorMessage=null;
+    boolean connectToDB=false;
+    public void init(){
+      DBStrings dbs=metaData.getDBStrings();
+      if (!dbs.isConfigValid()) {
+        if (!dbs.isInitialized()) {
+          dbs.initialize();
+        }
+        DBConnectDialog dbd=new DBConnectDialog(frame(),dbs);
+        Util.placeDialog(dbd,BasePanel.this);
+        dbd.setVisible(true);
+        connectToDB=dbd.getConnectToDB();
+        if (connectToDB) {
+          dbs=dbd.getDBStrings();
+          metaData.setDBStrings(dbs);
+          dbd.dispose();
+        }
+      }
+ else {
+        connectToDB=true;
       }
     }
     public void run(){
       if (connectToDB) {
         DBStrings dbs=metaData.getDBStrings();
         try {
+          frame.output(Globals.lang("Attempting SQL export..."));
           SQLutil.exportDatabase(database,metaData,null,dbs);
+          dbs.isConfigValid(true);
         }
  catch (        Exception ex) {
           errorMessage=SQLutil.getExceptionMessage(ex,SQLutil.DBTYPE.MYSQL);
+          dbs.isConfigValid(false);
         }
+        metaData.setDBStrings(dbs);
       }
     }
     public void update(){
@@ -239,9 +274,9 @@ catch (          Throwable ex) {
         }
       }
  else {
-        String preamble="Could not export to SQL database";
-        frame.output(Globals.lang(preamble) + " - " + errorMessage);
-        JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + ".\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
+        String preamble="Could not export to SQL database for the following reason:";
+        frame.output(Globals.lang(preamble) + "  " + errorMessage);
+        JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         errorMessage=null;
       }
     }
