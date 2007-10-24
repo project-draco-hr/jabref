@@ -1,0 +1,31 @@
+{
+  String msg=null;
+  if (ex instanceof SQLException) {
+    SQLException sqlex=(SQLException)ex;
+    if (sqlex.getSQLState() == "42000") {
+      msg=Globals.lang(sqlex.getMessage());
+    }
+    if (sqlex.getSQLState() == "28000") {
+      msg=Globals.lang(sqlex.getMessage());
+    }
+    if (sqlex.getSQLState() == "08S01") {
+      msg=Globals.lang("Cannot connect to SQL server at the specified host.");
+    }
+    if (false) {
+      System.out.println("-------------------------------------");
+      System.out.println(sqlex.getErrorCode());
+      System.out.println(sqlex.getSQLState());
+      System.out.println(sqlex.getMessage());
+      System.out.println("-------------------------------------");
+    }
+  }
+  if (msg == null) {
+    if (ex.getMessage() == null) {
+      msg=ex.toString();
+    }
+ else {
+      msg=ex.getMessage();
+    }
+  }
+  return msg;
+}
