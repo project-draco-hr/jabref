@@ -197,6 +197,7 @@ catch (          Throwable ex) {
 );
   actions.put("dbConnect",new AbstractWorker(){
     String errorMessage=null;
+    boolean connectToDB=false;
     public void init(){
       DBStrings dbs=metaData.getDBStrings();
       if (!dbs.isInitialized()) {
@@ -212,23 +213,30 @@ catch (          Throwable ex) {
       DBConnectDialog dbd=new DBConnectDialog(frame(),dbs);
       Util.placeDialog(dbd,BasePanel.this);
       dbd.setVisible(true);
-      dbs=dbd.getDBStrings();
-      metaData.setDBStrings(dbs);
-      dbd.dispose();
+      connectToDB=dbd.getConnectToDB();
+      if (connectToDB) {
+        dbs=dbd.getDBStrings();
+        metaData.setDBStrings(dbs);
+        dbd.dispose();
+      }
     }
     public void run(){
-      DBStrings dbs=metaData.getDBStrings();
-      try {
-        SQLutil.exportDatabase(database,metaData,null,dbs);
-      }
- catch (      Exception ex) {
-        errorMessage=SQLutil.getExceptionMessage(ex,SQLutil.DBTYPE.MYSQL);
+      if (connectToDB) {
+        DBStrings dbs=metaData.getDBStrings();
+        try {
+          SQLutil.exportDatabase(database,metaData,null,dbs);
+        }
+ catch (        Exception ex) {
+          errorMessage=SQLutil.getExceptionMessage(ex,SQLutil.DBTYPE.MYSQL);
+        }
       }
     }
     public void update(){
       String url=SQLutil.createJDBCurl(metaData.getDBStrings());
       if (errorMessage == null) {
-        frame.output(Globals.lang("%0 export successful",url));
+        if (connectToDB) {
+          frame.output(Globals.lang("%0 export successful",url));
+        }
       }
  else {
         String preamble="Could not export to SQL database";
