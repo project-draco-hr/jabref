@@ -58,9 +58,15 @@
   pack();
   btnConnect.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      storeSettings();
-      setVisible(false);
-      setConnectToDB(true);
+      String errorMessage=checkInput();
+      if (errorMessage == null) {
+        storeSettings();
+        setVisible(false);
+        setConnectToDB(true);
+      }
+ else {
+        JOptionPane.showMessageDialog(null,errorMessage,"Input Error",JOptionPane.ERROR_MESSAGE);
+      }
     }
   }
 );
