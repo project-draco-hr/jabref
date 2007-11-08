@@ -1,14 +1,38 @@
 {
+  List<ExternalFileType> types=getDefaultExternalFileTypes();
   if (prefs.get("externalFileTypes",null) == null) {
     externalFileTypes.clear();
-    List<ExternalFileType> list=getDefaultExternalFileTypes();
-    externalFileTypes.addAll(list);
+    externalFileTypes.addAll(types);
+    return;
   }
- else {
-    String[][] vals=Util.decodeStringDoubleArray(prefs.get("externalFileTypes",""));
-    for (int i=0; i < vals.length; i++) {
-      ExternalFileType type=new ExternalFileType(vals[i]);
-      externalFileTypes.add(type);
+  String[][] vals=Util.decodeStringDoubleArray(prefs.get("externalFileTypes",""));
+  for (int i=0; i < vals.length; i++) {
+    if ((vals[i].length == 2) && (vals[i][1].equals(FILE_TYPE_REMOVED_FLAG))) {
+      ExternalFileType toRemove=null;
+      for (      ExternalFileType type : types) {
+        if (type.getName().equals(vals[i][0])) {
+          toRemove=type;
+          break;
+        }
+      }
+      if (toRemove != null)       types.remove(toRemove);
     }
+ else {
+      ExternalFileType type=new ExternalFileType(vals[i]);
+      ExternalFileType toRemove=null;
+      for (      ExternalFileType defType : types) {
+        if (type.getName().equals(defType.getName())) {
+          toRemove=defType;
+          break;
+        }
+      }
+      if (toRemove != null) {
+        types.remove(toRemove);
+      }
+      types.add(type);
+    }
+  }
+  for (  ExternalFileType type : types) {
+    externalFileTypes.add(type);
   }
 }

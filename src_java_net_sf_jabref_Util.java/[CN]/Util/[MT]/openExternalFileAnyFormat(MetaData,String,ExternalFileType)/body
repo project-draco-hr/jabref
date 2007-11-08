@@ -17,20 +17,25 @@
     if (tmp != null)     file=tmp;
   }
   if ((httpLink || file.exists()) && (fileType != null)) {
-    String filePath=httpLink ? link : file.getPath();
-    if (Globals.ON_MAC) {
-      String[] cmd={"/usr/bin/open","-a",fileType.getOpenWith(),filePath};
-      Runtime.getRuntime().exec(cmd);
-    }
- else     if (Globals.ON_WIN) {
-      if ((fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0)) {
-        openFileWithApplicationOnWindows(filePath,fileType.getOpenWith());
+    try {
+      String filePath=httpLink ? link : file.getPath();
+      if (Globals.ON_MAC) {
+        String[] cmd={"/usr/bin/open","-a",fileType.getOpenWith(),filePath};
+        Runtime.getRuntime().exec(cmd);
       }
- else       openFileOnWindows(filePath,true);
-    }
+ else       if (Globals.ON_WIN) {
+        if ((fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0)) {
+          openFileWithApplicationOnWindows(filePath,fileType.getOpenWith());
+        }
+ else         openFileOnWindows(filePath,true);
+      }
  else {
-      String[] cmdArray=new String[]{fileType.getOpenWith(),filePath};
-      Runtime.getRuntime().exec(cmdArray);
+        String[] cmdArray=new String[]{fileType.getOpenWith(),filePath};
+        Runtime.getRuntime().exec(cmdArray);
+      }
+    }
+ catch (    IOException e) {
+      throw e;
     }
   }
  else {

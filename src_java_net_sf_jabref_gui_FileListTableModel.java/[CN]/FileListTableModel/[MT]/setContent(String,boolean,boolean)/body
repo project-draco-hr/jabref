@@ -26,9 +26,9 @@
  else     if (!escaped && (c == ';') && !inXmlChar) {
       thisEntry.add(sb.toString());
       sb=new StringBuilder();
-      if (firstOnly)       return decodeEntry(thisEntry);
+      if (firstOnly)       return decodeEntry(thisEntry,deduceUnknownTypes);
  else {
-        newList.add(decodeEntry(thisEntry));
+        newList.add(decodeEntry(thisEntry,deduceUnknownTypes));
         thisEntry.clear();
       }
     }
@@ -37,8 +37,8 @@
   }
   if (sb.length() > 0)   thisEntry.add(sb.toString());
   if (thisEntry.size() > 0) {
-    if (firstOnly)     return decodeEntry(thisEntry);
- else     newList.add(decodeEntry(thisEntry));
+    if (firstOnly)     return decodeEntry(thisEntry,deduceUnknownTypes);
+ else     newList.add(decodeEntry(thisEntry,deduceUnknownTypes));
   }
 synchronized (list) {
     list.clear();

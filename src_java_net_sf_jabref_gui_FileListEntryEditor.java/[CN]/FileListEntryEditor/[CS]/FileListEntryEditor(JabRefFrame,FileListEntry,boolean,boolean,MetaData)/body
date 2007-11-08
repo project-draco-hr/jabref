@@ -18,33 +18,32 @@
   types=new JComboBox();
   types.addItemListener(new ItemListener(){
     public void itemStateChanged(    ItemEvent itemEvent){
-      ok.setEnabled(types.getSelectedItem() != null);
+      if (!okDisabledExternally)       ok.setEnabled(types.getSelectedItem() != null);
     }
   }
 );
-  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:150dlu, 4dlu, fill:pref",""));
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:150dlu, 4dlu, fill:pref, 4dlu, fill:pref",""));
   builder.append(Globals.lang("Link"));
   builder.append(link);
   BrowseListener browse=new BrowseListener(frame,link);
   JButton browseBut=new JButton(Globals.lang("Browse"));
   browseBut.addActionListener(browse);
   builder.append(browseBut);
+  if (showOpenButton)   builder.append(open);
   builder.nextLine();
   builder.append(Globals.lang("Description"));
-  builder.append(description);
+  builder.append(description,3);
   builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   builder.nextLine();
   builder.append(Globals.lang("File type"));
-  builder.append(types);
+  builder.append(types,3);
   if (showProgressBar) {
     builder.nextLine();
     builder.append(downloadLabel);
-    builder.append(prog);
+    builder.append(prog,3);
   }
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
-  bb.addGridded(open);
-  bb.addRelatedGap();
   bb.addGridded(ok);
   bb.addGridded(cancel);
   bb.addGlue();
