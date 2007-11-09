@@ -5,7 +5,7 @@
   mainLoop:   for (piv1=0; piv1 < tmp.getEntryCount(); piv1++) {
     double comp=-1;
     if (!used.contains("" + piv2) && (piv2 < disk.getEntryCount())) {
-      comp=Util.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(piv2));
+      comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(piv2));
     }
     if (comp > 1) {
       used.add("" + piv2);
@@ -14,7 +14,7 @@
     }
     if (piv2 < disk.getEntryCount() - 1) {
       for (int i=piv2 + 1; i < disk.getEntryCount(); i++) {
-        if (!used.contains("" + i))         comp=Util.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
+        if (!used.contains("" + i))         comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
  else         comp=-1;
         if (comp > 1) {
           used.add("" + i);
@@ -34,7 +34,7 @@
       if (piv2 < disk.getEntryCount() - 1) {
         for (int i=piv2; i < disk.getEntryCount(); i++) {
           if (!used.contains("" + i)) {
-            comp=Util.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
+            comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
           }
  else           comp=-1;
           if (comp > bestMatch) {
@@ -60,7 +60,7 @@
       if (!used.contains("" + i)) {
         boolean hasAlready=false;
         for (int j=0; j < mem.getEntryCount(); j++) {
-          if (Util.compareEntriesStrictly(mem.getEntryAt(j),disk.getEntryAt(i)) >= 1) {
+          if (DuplicateCheck.compareEntriesStrictly(mem.getEntryAt(j),disk.getEntryAt(i)) >= 1) {
             hasAlready=true;
             break;
           }
