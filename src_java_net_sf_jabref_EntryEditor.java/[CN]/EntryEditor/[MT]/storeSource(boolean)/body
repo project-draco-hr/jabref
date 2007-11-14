@@ -5,7 +5,7 @@
     if (db.getEntryCount() > 1)     throw new Exception("More than one entry found.");
     if (db.getEntryCount() < 1)     throw new Exception("No entries found.");
     NamedCompound compound=new NamedCompound(Globals.lang("source edit"));
-    BibtexEntry nu=db.getEntryById((String)db.getKeySet().iterator().next());
+    BibtexEntry nu=db.getEntryById(db.getKeySet().iterator().next());
     String id=entry.getId();
     String newKey=nu.getCiteKey();
     boolean anyChanged=false;
@@ -25,7 +25,7 @@
     }
     for (    String field : nu.getAllFields()) {
       if (entry.getField(field.toString()) != nu.getField(field.toString())) {
-        String toSet=(String)nu.getField(field.toString());
+        String toSet=nu.getField(field.toString());
         (new LatexFieldFormatter()).format(toSet,field.toString());
         compound.addEdit(new UndoableFieldChange(entry,field.toString(),entry.getField(field.toString()),toSet));
         entry.setField(field.toString(),toSet);

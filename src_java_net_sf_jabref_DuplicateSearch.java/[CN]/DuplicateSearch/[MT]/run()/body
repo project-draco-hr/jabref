@@ -11,7 +11,6 @@
   st.setPriority(Thread.MIN_PRIORITY);
   st.start();
   int current=0;
-  DuplicateResolverDialog drd=null;
   final ArrayList<BibtexEntry> toRemove=new ArrayList<BibtexEntry>();
   while (!st.finished() || (current < duplicates.size())) {
     if (current >= duplicates.size()) {
@@ -57,7 +56,6 @@ synchronized (duplicates) {
       }
     }
   }
-  if (drd != null)   drd.dispose();
   final int dupliC=duplicateCounter;
   SwingUtilities.invokeLater(new Runnable(){
     public void run(){
@@ -70,10 +68,8 @@ synchronized (duplicates) {
         panel.markBaseChanged();
       }
       panel.output(Globals.lang("Duplicate pairs found") + ": " + duplicates.size()+ " "+ Globals.lang("pairs processed")+ ": "+ dupliC);
-      if (ce != null) {
-        ce.end();
-        panel.undoManager.addEdit(ce);
-      }
+      ce.end();
+      panel.undoManager.addEdit(ce);
     }
   }
 );

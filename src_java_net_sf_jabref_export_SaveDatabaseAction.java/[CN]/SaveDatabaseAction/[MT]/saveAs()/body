@@ -1,9 +1,7 @@
 {
-  boolean repeat=true;
   String chosenFile=null;
   File f=null;
-  while (repeat) {
-    repeat=false;
+  while (f == null) {
     chosenFile=Globals.getNewFile(frame,new File(Globals.prefs.get("workingDirectory")),".bib",JFileChooser.SAVE_DIALOG,false,null);
     if (chosenFile == null) {
       cancelled=true;
@@ -11,7 +9,7 @@
     }
     f=new File(chosenFile);
     if (f.exists() && (JOptionPane.showConfirmDialog(frame,"'" + f.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)) {
-      repeat=true;
+      f=null;
     }
   }
   if (chosenFile != null) {

@@ -4,24 +4,22 @@
  else {
     file=new File(name);
   }
-  if (file != null) {
-    if (!file.exists() && (dir != null)) {
-      if (dir.endsWith(System.getProperty("file.separator")))       name=dir + name;
- else       name=dir + System.getProperty("file.separator") + name;
-      file=new File(name);
-      if (file.exists())       return file;
-      if (Globals.ON_WIN) {
-        try {
-          name=name.replaceAll("/","\\\\");
-        }
- catch (        java.lang.StringIndexOutOfBoundsException exc) {
-          System.err.println("An internal Java error was caused by the entry " + "\"" + name + "\"");
-        }
+  if (!file.exists() && (dir != null)) {
+    if (dir.endsWith(System.getProperty("file.separator")))     name=dir + name;
+ else     name=dir + System.getProperty("file.separator") + name;
+    file=new File(name);
+    if (file.exists())     return file;
+    if (Globals.ON_WIN) {
+      try {
+        name=name.replaceAll("/","\\\\");
       }
- else       name=name.replaceAll("\\\\","/");
-      file=new File(name);
-      if (!file.exists())       file=null;
+ catch (      java.lang.StringIndexOutOfBoundsException exc) {
+        System.err.println("An internal Java error was caused by the entry " + "\"" + name + "\"");
+      }
     }
+ else     name=name.replaceAll("\\\\","/");
+    file=new File(name);
+    if (!file.exists())     file=null;
   }
   return file;
 }

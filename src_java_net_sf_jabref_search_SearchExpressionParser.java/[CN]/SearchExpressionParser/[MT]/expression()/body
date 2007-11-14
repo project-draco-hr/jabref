@@ -8,7 +8,7 @@ case FIELDTYPE:
 {
       expressionSearch();
       astFactory.addASTChild(currentAST,returnAST);
-      expression_AST=(AST)currentAST.root;
+      expression_AST=currentAST.root;
       break;
     }
 case LPAREN:
@@ -17,7 +17,7 @@ case LPAREN:
     condition();
     astFactory.addASTChild(currentAST,returnAST);
     match(RPAREN);
-    expression_AST=(AST)currentAST.root;
+    expression_AST=currentAST.root;
     break;
   }
 default :
@@ -26,13 +26,13 @@ if ((LA(1) == LITERAL_not) && (LA(2) == STRING || LA(2) == FIELDTYPE)) {
   expressionSearch();
   astFactory.addASTChild(currentAST,returnAST);
   if (inputState.guessing == 0) {
-    expression_AST=(AST)currentAST.root;
-    expression_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(Not)).add(expression_AST));
+    expression_AST=currentAST.root;
+    expression_AST=astFactory.make((new ASTArray(2)).add(astFactory.create(Not)).add(expression_AST));
     currentAST.root=expression_AST;
     currentAST.child=expression_AST != null && expression_AST.getFirstChild() != null ? expression_AST.getFirstChild() : expression_AST;
     currentAST.advanceChildToEnd();
   }
-  expression_AST=(AST)currentAST.root;
+  expression_AST=currentAST.root;
 }
  else if ((LA(1) == LITERAL_not) && (LA(2) == LPAREN)) {
   match(LITERAL_not);
@@ -41,13 +41,13 @@ if ((LA(1) == LITERAL_not) && (LA(2) == STRING || LA(2) == FIELDTYPE)) {
   astFactory.addASTChild(currentAST,returnAST);
   match(RPAREN);
   if (inputState.guessing == 0) {
-    expression_AST=(AST)currentAST.root;
-    expression_AST=(AST)astFactory.make((new ASTArray(2)).add(astFactory.create(Not)).add(expression_AST));
+    expression_AST=currentAST.root;
+    expression_AST=astFactory.make((new ASTArray(2)).add(astFactory.create(Not)).add(expression_AST));
     currentAST.root=expression_AST;
     currentAST.child=expression_AST != null && expression_AST.getFirstChild() != null ? expression_AST.getFirstChild() : expression_AST;
     currentAST.advanceChildToEnd();
   }
-  expression_AST=(AST)currentAST.root;
+  expression_AST=currentAST.root;
 }
  else {
   throw new NoViableAltException(LT(1),getFilename());

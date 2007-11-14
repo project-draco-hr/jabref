@@ -16,10 +16,6 @@
       if (!(o1 instanceof Integer && o2 instanceof Integer)) {
         throw new VMException("Can only compare two integers with >");
       }
-      if (o1 == null ^ o2 == null) {
-        stack.push(VM.FALSE);
-        return;
-      }
       if (o1 == o2) {
         stack.push(VM.FALSE);
         return;
@@ -40,10 +36,6 @@
       Object o1=stack.pop();
       if (!(o1 instanceof Integer && o2 instanceof Integer)) {
         throw new VMException("Can only compare two integers with <");
-      }
-      if (o1 == null ^ o2 == null) {
-        stack.push(VM.FALSE);
-        return;
       }
       if (o1 == o2) {
         stack.push(VM.FALSE);
@@ -211,7 +203,7 @@
         throw new VMException("Can only perform chr.to.int$ on string with length 1");
       }
       String s=(String)o1;
-      stack.push(new Integer((int)s.charAt(0)));
+      stack.push(new Integer(s.charAt(0)));
     }
   }
 );

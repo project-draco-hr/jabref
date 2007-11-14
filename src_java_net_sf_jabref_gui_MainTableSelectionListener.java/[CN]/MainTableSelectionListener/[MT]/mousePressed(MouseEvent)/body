@@ -1,7 +1,7 @@
 {
   final int col=table.columnAtPoint(e.getPoint()), row=table.rowAtPoint(e.getPoint());
   if (e.getClickCount() == 2) {
-    BibtexEntry toShow=(BibtexEntry)tableRows.get(row);
+    BibtexEntry toShow=tableRows.get(row);
     editSignalled(toShow);
   }
   final String[] iconType=table.getIconTypeForColumn(col);
@@ -14,7 +14,7 @@
   if (iconType != null) {
     Object value=table.getValueAt(row,col);
     if (value == null)     return;
-    final BibtexEntry entry=(BibtexEntry)tableRows.get(row);
+    final BibtexEntry entry=tableRows.get(row);
     int hasField=-1;
     for (int i=iconType.length - 1; i >= 0; i--)     if (entry.getField(iconType[i]) != null)     hasField=i;
     if (hasField == -1)     return;
@@ -23,7 +23,7 @@
       public void run(){
         panel.output(Globals.lang("External viewer called") + ".");
         Object link=entry.getField(fieldName);
-        if (iconType == null) {
+        if (link == null) {
           Globals.logger("Error: no link to " + fieldName + ".");
           return;
         }

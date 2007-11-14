@@ -1,9 +1,8 @@
 {
   BibtexEntry oldValue=_entries.remove(id);
+  if (oldValue == null)   return null;
   removeKeyFromSet(oldValue.getCiteKey());
-  if (oldValue != null) {
-    oldValue.removePropertyChangeListener(listener);
-  }
+  oldValue.removePropertyChangeListener(listener);
   fireDatabaseChanged(new DatabaseChangeEvent(this,DatabaseChangeEvent.REMOVED_ENTRY,oldValue));
   return oldValue;
 }
