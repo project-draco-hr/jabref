@@ -2,7 +2,7 @@
   couldNotConnect=false;
   couldNotRunClient=false;
   try {
-    String[] com=Globals.ON_WIN ? new String[]{"gnuclient","-qe","(insert \\\"\\\\" + Globals.prefs.get("citeCommand") + "{"+ keys+ "}\\\")"} : new String[]{"gnuclient","-batch","-eval","(insert \"\\\\" + Globals.prefs.get("citeCommand") + "{"+ keys+ "}\")"};
+    String[] com=Globals.ON_WIN ? new String[]{"gnuclient","-qe","(insert \\\"\\\\" + Globals.prefs.get("citeCommandEmacs").replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\\\")"} : new String[]{"gnuclient","-batch","-eval","(insert \"" + Globals.prefs.get("citeCommandEmacs").replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\")"};
     final Process p=Runtime.getRuntime().exec(com);
     Runnable errorListener=new Runnable(){
       public void run(){
