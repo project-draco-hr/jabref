@@ -1,0 +1,49 @@
+{
+  this.dialog=dialog;
+  this.frame=frame;
+  query=query.replace(';',',');
+  if (query.matches("\\d+[,\\d+]*")) {
+    frame.output(Globals.lang("Fetching Medline by id..."));
+    dialog.setVisible(true);
+    List<BibtexEntry> bibs=MedlineImporter.fetchMedline(query);
+    if (bibs.size() == 0) {
+      JOptionPane.showMessageDialog(frame,Globals.lang("No references found"));
+    }
+    dialog.addEntries(bibs);
+    dialog.entryListComplete();
+    return;
+  }
+  if (query.length() > 0) {
+    frame.output(Globals.lang("Fetching Medline by term..."));
+    dialog.setVisible(true);
+    String searchTerm=toSearchTerm(query);
+    SearchResult result=getIds(searchTerm,0,1);
+    if (result.count == 0) {
+      JOptionPane.showMessageDialog(frame,Globals.lang("No references found"));
+      return;
+    }
+    int numberToFetch=result.count;
+    if (numberToFetch > PACING) {
+      String strCount=JOptionPane.showInputDialog(Globals.lang("References found") + ": " + numberToFetch+ "  "+ Globals.lang("Number of references to fetch?"),Integer.toString(numberToFetch));
+      try {
+        numberToFetch=Integer.parseInt(strCount.trim());
+      }
+ catch (      NumberFormatException ex) {
+        dialog.dispose();
+        frame.output("");
+        JOptionPane.showMessageDialog(frame,Globals.lang("Not a valid number"));
+        return;
+      }
+    }
+    for (int i=0; i < numberToFetch; i+=PACING) {
+      if (!shouldContinue)       break;
+      result=getIds(searchTerm,i,Math.min(PACING,numberToFetch - i));
+      List<BibtexEntry> bibs=MedlineImporter.fetchMedline(result.ids);
+      dialog.addEntries(bibs);
+      dialog.setProgress(i + PACING,numberToFetch);
+    }
+    dialog.entryListComplete();
+    return;
+  }
+  JOptionPane.showMessageDialog(frame,Globals.lang("Please enter a comma separated list of Medline IDs (numbers) or search terms."),Globals.lang("Input error"),JOptionPane.ERROR_MESSAGE);
+}
