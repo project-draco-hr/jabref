@@ -1,7 +1,6 @@
 {
-  this.dialog=dialog;
-  this.frame=frame;
-  query=query.replace(';',',');
+  shouldContinue=true;
+  query=query.trim().replace(';',',');
   if (query.matches("\\d+[,\\d+]*")) {
     frame.output(Globals.lang("Fetching Medline by id..."));
     dialog.setVisible(true);
@@ -24,15 +23,21 @@
     }
     int numberToFetch=result.count;
     if (numberToFetch > PACING) {
-      String strCount=JOptionPane.showInputDialog(Globals.lang("References found") + ": " + numberToFetch+ "  "+ Globals.lang("Number of references to fetch?"),Integer.toString(numberToFetch));
-      try {
-        numberToFetch=Integer.parseInt(strCount.trim());
-      }
- catch (      NumberFormatException ex) {
-        dialog.dispose();
-        frame.output("");
-        JOptionPane.showMessageDialog(frame,Globals.lang("Not a valid number"));
-        return;
+      while (true) {
+        String strCount=JOptionPane.showInputDialog(Globals.lang("References found") + ": " + numberToFetch+ "  "+ Globals.lang("Number of references to fetch?"),Integer.toString(numberToFetch));
+        if (strCount == null) {
+          dialog.dispose();
+          frame.output(Globals.lang("Medline import canceled"));
+          return;
+        }
+        try {
+          numberToFetch=Integer.parseInt(strCount.trim());
+          break;
+        }
+ catch (        RuntimeException ex) {
+          dialog.dispose();
+          frame.output("Please enter a valid number");
+        }
       }
     }
     for (int i=0; i < numberToFetch; i+=PACING) {
