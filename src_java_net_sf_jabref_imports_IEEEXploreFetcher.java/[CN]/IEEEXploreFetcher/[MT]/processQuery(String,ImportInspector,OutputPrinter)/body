@@ -1,0 +1,56 @@
+{
+  this.dialog=dialog;
+  this.status=status;
+  this.terms=query;
+  piv=0;
+  shouldContinue=true;
+  parsed=0;
+  unparseable=0;
+  String address=makeUrl(0);
+  try {
+    URL url=new URL(address);
+    String page=getResults(url);
+    if (page.indexOf("You have entered an invalid search") >= 0) {
+      status.showMessage(Globals.lang("You have entered an invalid search '%0'.",terms),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    if (page.indexOf("No results") >= 0) {
+      status.showMessage(Globals.lang("No entries found for the search string '%0'",terms),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    hits=getNumberOfHits(page,"Your search matched",hitsPattern);
+    int maxHits=getNumberOfHits(page,"A maximum of",maxHitsPattern);
+    if (hits > maxHits)     hits=maxHits;
+    fetchingAbstracts=fetchAstracts.isSelected();
+    if (hits > MAX_RIS_FETCH) {
+      if (fetchingAbstracts == true) {
+        status.showMessage(Globals.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(MAX_RIS_FETCH)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+        fetchRis=true;
+        hits=MAX_RIS_FETCH;
+      }
+ else {
+        fetchRis=false;
+      }
+    }
+    parse(dialog,page,0,1);
+    int firstEntry=perPage;
+    while (shouldContinue && (firstEntry < hits)) {
+      address=makeUrl(firstEntry);
+      page=getResults(new URL(address));
+      if (!shouldContinue)       break;
+      parse(dialog,page,0,1 + firstEntry);
+      firstEntry+=perPage;
+    }
+    return true;
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+  }
+catch (  ConnectException e) {
+    status.showMessage(Globals.lang("Connection to IEEEXplore failed"),Globals.lang("Search IEEExplore"),JOptionPane.ERROR_MESSAGE);
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+  }
+  return false;
+}

@@ -1,0 +1,19 @@
+{
+  FutureTask<Boolean> future=new FutureTask<Boolean>(new Callable<Boolean>(){
+    public Boolean call() throws Exception {
+      return fetcher.processQuery(query,ImportInspectionCommandLine.this,status);
+    }
+  }
+);
+  new Thread(future).start();
+  try {
+    if (future.get()) {
+      return entries;
+    }
+  }
+ catch (  InterruptedException e) {
+  }
+catch (  ExecutionException e) {
+  }
+  return null;
+}

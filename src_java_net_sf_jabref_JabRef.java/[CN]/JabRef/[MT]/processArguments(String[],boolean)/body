@@ -14,7 +14,8 @@
     System.out.println(Globals.lang("Available export formats") + ": " + outFormats+ ".");
     System.exit(0);
   }
-  if (initialStartup && !disableGui.isInvoked() && !disableSplash.isInvoked()) {
+  boolean commandmode=disableGui.isInvoked() || fetcherEngine.isInvoked();
+  if (initialStartup && !commandmode && !disableSplash.isInvoked()) {
     try {
       splashScreen=SplashScreen.splash();
     }
@@ -51,6 +52,10 @@
   }
   if (!blank.isInvoked() && importToOpenBase.isInvoked()) {
     ParserResult res=importToOpenBase(importToOpenBase.getStringValue());
+    if (res != null)     loaded.add(res);
+  }
+  if (!blank.isInvoked() && fetcherEngine.isInvoked()) {
+    ParserResult res=fetch(fetcherEngine.getStringValue());
     if (res != null)     loaded.add(res);
   }
   if (exportFile.isInvoked()) {

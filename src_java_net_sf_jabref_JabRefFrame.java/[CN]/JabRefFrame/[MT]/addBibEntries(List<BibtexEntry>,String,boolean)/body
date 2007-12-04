@@ -1,6 +1,6 @@
 {
   if (bibentries == null || bibentries.size() == 0) {
-    JOptionPane.showMessageDialog(ths,Globals.lang("No entries found. Please make sure you are " + "using the correct import filter."),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(JabRefFrame.this,Globals.lang("No entries found. Please make sure you are " + "using the correct import filter."),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
     return 0;
   }
   int addedEntries=0;
@@ -17,7 +17,7 @@
       }
     }
     HashMap<String,String> meta=new HashMap<String,String>();
-    BasePanel bp=new BasePanel(ths,database,null,meta,Globals.prefs.get("defaultEncoding"));
+    BasePanel bp=new BasePanel(JabRefFrame.this,database,null,meta,Globals.prefs.get("defaultEncoding"));
     addedEntries=database.getEntryCount();
     tabbedPane.add(GUIGlobals.untitledTitle,bp);
     bp.markBaseChanged();
@@ -36,7 +36,7 @@
         loop:         for (Iterator<String> i2=database.getKeySet().iterator(); i2.hasNext(); ) {
           BibtexEntry existingEntry=database.getEntryById(i2.next());
           if (DuplicateCheck.isDuplicate(entry,existingEntry)) {
-            DuplicateResolverDialog drd=new DuplicateResolverDialog(ths,existingEntry,entry,DuplicateResolverDialog.IMPORT_CHECK);
+            DuplicateResolverDialog drd=new DuplicateResolverDialog(JabRefFrame.this,existingEntry,entry,DuplicateResolverDialog.IMPORT_CHECK);
             drd.setVisible(true);
             int res=drd.getSelected();
             if (res == DuplicateResolverDialog.KEEP_LOWER) {
