@@ -30,7 +30,10 @@
  else         openFileOnWindows(filePath,true);
       }
  else {
-        String[] cmdArray=new String[]{fileType.getOpenWith(),filePath};
+        String[] openWith=fileType.getOpenWith().split(" ");
+        String[] cmdArray=new String[openWith.length + 1];
+        System.arraycopy(openWith,0,cmdArray,0,openWith.length);
+        cmdArray[cmdArray.length - 1]=filePath;
         Runtime.getRuntime().exec(cmdArray);
       }
     }
@@ -48,7 +51,10 @@
       openFileOnWindows(link,false);
     }
  else {
-      String[] cmdArray=new String[]{Globals.prefs.get("htmlviewer"),link};
+      String[] openWith=Globals.prefs.get("htmlviewer").split(" ");
+      String[] cmdArray=new String[openWith.length + 1];
+      System.arraycopy(openWith,0,cmdArray,0,openWith.length);
+      cmdArray[cmdArray.length - 1]=link;
       Runtime.getRuntime().exec(cmdArray);
     }
   }
