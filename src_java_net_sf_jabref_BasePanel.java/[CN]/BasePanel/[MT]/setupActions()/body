@@ -526,6 +526,28 @@ catch (          Throwable ex) {
     }
   }
 );
+  actions.put("openSpires",new BaseAction(){
+    public void action(){
+      BibtexEntry[] bes=mainTable.getSelectedEntries();
+      if ((bes != null) && (bes.length == 1)) {
+        Object link=null;
+        if (bes[0].getField("eprint") != null)         link=SPIRESFetcher.constructUrlFromEprint(bes[0].getField("eprint").toString());
+ else         if (bes[0].getField("slaccitation") != null)         link=SPIRESFetcher.constructUrlFromSlaccitation(bes[0].getField("slaccitation").toString());
+        if (link != null) {
+          try {
+            Util.openExternalViewer(metaData(),link.toString(),"url");
+            output(Globals.lang("External viewer called") + ".");
+          }
+ catch (          IOException ex) {
+            output(Globals.lang("Error") + ": " + ex.getMessage());
+          }
+        }
+ else         output(Globals.lang("No url defined") + ".");
+      }
+ else       output(Globals.lang("No entries or multiple entries selected."));
+    }
+  }
+);
   actions.put("replaceAll",new BaseAction(){
     public void action(){
       ReplaceStringDialog rsd=new ReplaceStringDialog(frame);
