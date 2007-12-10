@@ -436,20 +436,20 @@ catch (          Throwable ex) {
               Object key=bes[0].getField(BibtexFields.KEY_FIELD);
               if (key != null) {
                 basefile=key.toString();
-                final String[] types=new String[]{"pdf","ps"};
+                final ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
                 final String sep=System.getProperty("file.separator");
-                for (int i=0; i < types.length; i++) {
-                  String dir=Globals.prefs.get(types[i] + "Directory");
-                  if (dir != null) {
-                    if (dir.endsWith(sep)) {
-                      dir=dir.substring(0,dir.length() - sep.length());
-                    }
+                String dir=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
+                if ((dir != null) && (dir.length() > 0)) {
+                  if (dir.endsWith(sep)) {
+                    dir=dir.substring(0,dir.length() - sep.length());
                   }
- else                   dir="";
-                  String found=Util.findPdf(basefile,types[i],dir,new OpenFileFilter("." + types[i]));
-                  if (found != null) {
-                    filepath=dir + sep + found;
-                    break;
+                  System.out.println(dir);
+                  for (int i=0; i < types.length; i++) {
+                    String found=Util.findPdf(basefile,types[i].getExtension(),dir,new OpenFileFilter("." + types[i].getExtension()));
+                    if (found != null) {
+                      filepath=dir + sep + found;
+                      break;
+                    }
                   }
                 }
               }
