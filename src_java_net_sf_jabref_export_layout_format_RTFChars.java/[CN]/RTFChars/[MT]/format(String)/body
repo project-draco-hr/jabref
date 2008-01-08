@@ -44,10 +44,23 @@
       }
     }
  else {
-      testContent:       if (!incommand || (!Character.isWhitespace(c) && (c != '{')))       sb.append(c);
+      testContent:       if (!incommand || (!Character.isWhitespace(c) && (c != '{') && (c != '}')))       sb.append(c);
  else {
+        if ((c == '{') && (currentCommand.length() == 0)) {
+          continue;
+        }
+ else         if ((c == '}') && (currentCommand.length() > 0)) {
+          String command=currentCommand.toString();
+          String result=Globals.RTFCHARS.get(command);
+          if (result != null) {
+            sb.append(result);
+          }
+          incommand=false;
+          escaped=false;
+          continue;
+        }
         if (i >= field.length() - 1)         break testContent;
-        if (c == '{') {
+        if ((c == '{') && (currentCommand.length() > 0)) {
           String command=currentCommand.toString();
           if (command.equals("emph") || command.equals("textit")) {
             IntAndString part=getPart(field,i);

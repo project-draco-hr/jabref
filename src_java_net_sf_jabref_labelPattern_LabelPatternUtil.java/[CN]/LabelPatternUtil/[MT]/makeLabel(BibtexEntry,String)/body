@@ -49,7 +49,7 @@
         return NAuthors(authString,Integer.parseInt(val.substring(7)));
       }
  else {
-        return _entry.getField(val).toString();
+        return getField(_entry,val);
       }
     }
  else     if (val.startsWith("ed")) {
@@ -86,7 +86,7 @@
         return fa.substring(0,num);
       }
  else {
-        return _entry.getField(val).toString();
+        return getField(_entry,val);
       }
     }
  else     if (val.equals("firstpage")) {
@@ -116,7 +116,7 @@
  else     if (val.matches("keyword\\d+")) {
       StringBuilder sb=new StringBuilder();
       int num=Integer.parseInt(val.substring(7));
-      String kw=_entry.getField("keywords").toString();
+      String kw=getField(_entry,"keywords");
       if (kw != null) {
         String[] keywords=kw.split("[,;]\\s*");
         if ((num > 0) && (num < keywords.length))         sb.append(keywords[num - 1].trim());
@@ -124,7 +124,7 @@
       return sb.toString();
     }
  else {
-      return _entry.getField(val);
+      return getField(_entry,val);
     }
   }
  catch (  NullPointerException ex) {
