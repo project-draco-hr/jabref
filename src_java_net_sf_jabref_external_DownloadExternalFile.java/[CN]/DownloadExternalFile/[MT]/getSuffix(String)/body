@@ -1,14 +1,25 @@
 {
+  String strippedLink=link;
   try {
     URL url=new URL(link);
     if ((url.getQuery() != null) && (url.getQuery().length() < link.length() - 1)) {
-      link=link.substring(0,link.length() - url.getQuery().length() - 1);
-      System.out.println(link);
+      strippedLink=link.substring(0,link.length() - url.getQuery().length() - 1);
     }
   }
  catch (  MalformedURLException e) {
   }
-  int index=link.lastIndexOf('.');
-  if ((index <= 0) || (index == link.length() - 1))   return null;
-  return link.substring(index + 1);
+  String suffix;
+  int index=strippedLink.lastIndexOf('.');
+  if ((index <= 0) || (index == strippedLink.length() - 1))   suffix=null;
+ else   suffix=strippedLink.substring(index + 1);
+  System.out.println(Globals.prefs.getExternalFileTypeByExt(suffix));
+  if (Globals.prefs.getExternalFileTypeByExt(suffix) != null) {
+    return suffix;
+  }
+ else {
+    String suffix2;
+    index=link.lastIndexOf('.');
+    if ((index <= 0) || (index == strippedLink.length() - 1))     return suffix;
+ else     return link.substring(index + 1);
+  }
 }

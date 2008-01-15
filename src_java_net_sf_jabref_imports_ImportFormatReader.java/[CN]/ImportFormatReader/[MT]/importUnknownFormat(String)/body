@@ -2,12 +2,16 @@
   Pair<String,ParserResult> result=null;
   int bestResult=0;
   for (  ImportFormat imFo : getImportFormats()) {
-    List<BibtexEntry> entries=importFromFile(imFo,filename);
-    if (entries != null)     purgeEmptyEntries(entries);
-    int entryCount=((entries != null) ? entries.size() : 0);
-    if (entryCount > bestResult) {
-      bestResult=entryCount;
-      result=new Pair<String,ParserResult>(imFo.getFormatName(),new ParserResult(entries));
+    try {
+      List<BibtexEntry> entries=importFromFile(imFo,filename);
+      if (entries != null)       purgeEmptyEntries(entries);
+      int entryCount=((entries != null) ? entries.size() : 0);
+      if (entryCount > bestResult) {
+        bestResult=entryCount;
+        result=new Pair<String,ParserResult>(imFo.getFormatName(),new ParserResult(entries));
+      }
+    }
+ catch (    IOException ex) {
     }
   }
   if (result != null)   return result;
