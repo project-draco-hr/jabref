@@ -5,13 +5,18 @@
       String fileName=file.getPath();
       Globals.prefs.put("workingDirectory",file.getPath());
       String encoding=Globals.prefs.get("defaultEncoding");
-      ParserResult pr=loadDatabase(file,encoding);
+      final ParserResult pr=loadDatabase(file,encoding);
       if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
         JOptionPane.showMessageDialog(null,Globals.lang("Error opening file" + " '" + fileName + "'"),Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
         return;
       }
-      BasePanel panel=addNewDatabase(pr,file,raisePanel);
-      performPostOpenActions(panel,pr,true);
+      final BasePanel panel=addNewDatabase(pr,file,raisePanel);
+      SwingUtilities.invokeLater(new Runnable(){
+        public void run(){
+          performPostOpenActions(panel,pr,true);
+        }
+      }
+);
     }
  catch (    Exception ex) {
       Util.showQuickErrorDialog(frame,Globals.lang("Open database"),ex);
