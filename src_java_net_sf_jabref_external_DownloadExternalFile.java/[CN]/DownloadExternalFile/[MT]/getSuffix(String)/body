@@ -12,14 +12,18 @@
   int index=strippedLink.lastIndexOf('.');
   if ((index <= 0) || (index == strippedLink.length() - 1))   suffix=null;
  else   suffix=strippedLink.substring(index + 1);
-  System.out.println(Globals.prefs.getExternalFileTypeByExt(suffix));
   if (Globals.prefs.getExternalFileTypeByExt(suffix) != null) {
     return suffix;
   }
  else {
-    String suffix2;
     index=link.lastIndexOf('.');
-    if ((index <= 0) || (index == strippedLink.length() - 1))     return suffix;
- else     return link.substring(index + 1);
+    if ((index <= 0) || (index == strippedLink.length() - 1)) {
+      if (suffix.indexOf('/') > 0)       return "";
+ else       return suffix;
+    }
+ else {
+      if (link.substring(index + 1).indexOf('/') > 0)       return "";
+ else       return link.substring(index + 1);
+    }
   }
 }
