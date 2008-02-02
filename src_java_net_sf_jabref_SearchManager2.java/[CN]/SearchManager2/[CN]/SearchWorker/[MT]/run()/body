@@ -1,7 +1,19 @@
 {
-  for (  BibtexEntry entry : panel.getDatabase().getEntries()) {
-    boolean hit=rules.applyRule(searchTerm,entry) > 0;
-    entry.setSearchHit(hit);
-    if (hit)     hits++;
+  if (!searchAllBases.isSelected()) {
+    for (    BibtexEntry entry : panel.getDatabase().getEntries()) {
+      boolean hit=rules.applyRule(searchTerm,entry) > 0;
+      entry.setSearchHit(hit);
+      if (hit)       hits++;
+    }
+  }
+ else {
+    for (int i=0; i < frame.getTabbedPane().getTabCount(); i++) {
+      BasePanel p=frame.baseAt(i);
+      for (      BibtexEntry entry : p.getDatabase().getEntries()) {
+        boolean hit=rules.applyRule(searchTerm,entry) > 0;
+        entry.setSearchHit(hit);
+        if (hit)         hits++;
+      }
+    }
   }
 }

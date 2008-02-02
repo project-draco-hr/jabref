@@ -1,6 +1,41 @@
 {
   panel.output(Globals.lang("Searched database. Number of hits") + ": " + hits);
-  if (hideSearch.isSelected()) {
+  if (searchAllBases.isSelected()) {
+    if (startedFloatSearch) {
+      panel.mainTable.stopShowingFloatSearch();
+      startedFloatSearch=false;
+    }
+    if (startedFilterSearch) {
+      panel.stopShowingSearchResults();
+      startedFilterSearch=false;
+    }
+    instantiateSearchDialog();
+    searchDialog.clear();
+    for (int i=0; i < frame.getTabbedPane().getTabCount(); i++) {
+      BasePanel p=frame.baseAt(i);
+      for (      BibtexEntry entry : p.getDatabase().getEntries()) {
+        if (entry.isSearchHit())         searchDialog.addEntry(entry,p);
+      }
+    }
+    searchDialog.setVisible(true);
+  }
+ else   if (showResultsInDialog.isSelected()) {
+    if (startedFloatSearch) {
+      panel.mainTable.stopShowingFloatSearch();
+      startedFloatSearch=false;
+    }
+    if (startedFilterSearch) {
+      panel.stopShowingSearchResults();
+      startedFilterSearch=false;
+    }
+    instantiateSearchDialog();
+    searchDialog.clear();
+    for (    BibtexEntry entry : panel.getDatabase().getEntries()) {
+      if (entry.isSearchHit())       searchDialog.addEntry(entry,panel);
+    }
+    searchDialog.setVisible(true);
+  }
+ else   if (hideSearch.isSelected()) {
     if (startedFloatSearch) {
       panel.mainTable.stopShowingFloatSearch();
       startedFloatSearch=false;

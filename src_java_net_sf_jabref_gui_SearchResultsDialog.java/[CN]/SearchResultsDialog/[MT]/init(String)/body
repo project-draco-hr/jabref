@@ -1,0 +1,24 @@
+{
+  diag=new JDialog(frame,title,false);
+  preview=new PreviewPanel(null,new MetaData(),Globals.prefs.get("preview1"));
+  sortedEntries=new SortedList<BibtexEntry>(entries,new EntryComparator(false,true,"author"));
+  model=new EventTableModel(sortedEntries,new EntryTableFormat());
+  entryTable=new JTable(model);
+  TableComparatorChooser<BibtexEntry> tableSorter=new TableComparatorChooser<BibtexEntry>(entryTable,sortedEntries,true);
+  JScrollPane sp=new JScrollPane(entryTable);
+  EventSelectionModel<BibtexEntry> selectionModel=new EventSelectionModel<BibtexEntry>(sortedEntries);
+  entryTable.setSelectionModel(selectionModel);
+  selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
+  entryTable.addMouseListener(new TableClickListener());
+  contentPane.setTopComponent(sp);
+  contentPane.setBottomComponent(new JScrollPane(preview));
+  diag.addWindowListener(new WindowAdapter(){
+    public void windowOpened(    WindowEvent e){
+      contentPane.setDividerLocation(0.5f);
+    }
+  }
+);
+  diag.getContentPane().add(contentPane,BorderLayout.CENTER);
+  diag.pack();
+  diag.setLocationRelativeTo(frame);
+}

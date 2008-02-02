@@ -10,16 +10,22 @@
   increment=new JRadioButton(Globals.lang("Incremental"),false);
   floatSearch=new JRadioButton(Globals.lang("Float"),true);
   hideSearch=new JRadioButton(Globals.lang("Filter"),true);
+  showResultsInDialog=new JRadioButton(Globals.lang("Show results in dialog"),true);
+  searchAllBases=new JRadioButton(Globals.lang("Global search"),Globals.prefs.getBoolean("searchAllBases"));
   types.add(increment);
   types.add(floatSearch);
   types.add(hideSearch);
+  types.add(showResultsInDialog);
+  types.add(searchAllBases);
   select=new JCheckBoxMenuItem(Globals.lang("Select matches"),false);
   increment.setToolTipText(Globals.lang("Incremental search"));
   floatSearch.setToolTipText(Globals.lang("Gray out non-matching entries"));
   hideSearch.setToolTipText(Globals.lang("Hide non-matching entries"));
+  showResultsInDialog.setToolTipText(Globals.lang("Show search results in a window"));
   increment.addItemListener(this);
   floatSearch.addItemListener(this);
   hideSearch.addItemListener(this);
+  showResultsInDialog.addItemListener(this);
   searchField.addFocusListener(Globals.focusListener);
   if (searchAll.isSelected()) {
     searchReq.setEnabled(false);
@@ -78,6 +84,10 @@
   help.setMargin(margin);
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.searchHelp,"Help"));
   if (Globals.prefs.getBoolean("incrementS"))   increment.setSelected(true);
+ else   if (Globals.prefs.getBoolean("grayOutNonHits"))   floatSearch.setSelected(true);
+ else   if (Globals.prefs.getBoolean("showSearchInDialog"))   showResultsInDialog.setSelected(true);
+ else   if (Globals.prefs.getBoolean("searchAllBases"))   searchAllBases.setSelected(true);
+ else   hideSearch.setSelected(true);
   JPanel main=new JPanel();
   main.setLayout(gbl);
   con.gridwidth=GridBagConstraints.REMAINDER;
@@ -97,6 +107,10 @@
   main.add(floatSearch);
   gbl.setConstraints(hideSearch,con);
   main.add(hideSearch);
+  gbl.setConstraints(showResultsInDialog,con);
+  main.add(showResultsInDialog);
+  gbl.setConstraints(searchAllBases,con);
+  main.add(searchAllBases);
   con.insets=new Insets(0,0,0,0);
   JPanel pan=new JPanel();
   GridBagLayout gb=new GridBagLayout();
