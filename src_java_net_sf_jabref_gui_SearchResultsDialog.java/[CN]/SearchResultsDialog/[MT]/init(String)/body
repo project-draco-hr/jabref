@@ -4,14 +4,19 @@
   sortedEntries=new SortedList<BibtexEntry>(entries,new EntryComparator(false,true,"author"));
   model=new EventTableModel(sortedEntries,new EntryTableFormat());
   entryTable=new JTable(model);
-  TableComparatorChooser<BibtexEntry> tableSorter=new TableComparatorChooser<BibtexEntry>(entryTable,sortedEntries,true);
+  GeneralRenderer renderer=new GeneralRenderer(Color.white);
+  entryTable.setDefaultRenderer(JLabel.class,renderer);
+  entryTable.setDefaultRenderer(String.class,renderer);
+  setWidths();
+  TableComparatorChooser<BibtexEntry> tableSorter=new TableComparatorChooser<BibtexEntry>(entryTable,sortedEntries,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  setupComparatorChooser(tableSorter);
   JScrollPane sp=new JScrollPane(entryTable);
   EventSelectionModel<BibtexEntry> selectionModel=new EventSelectionModel<BibtexEntry>(sortedEntries);
   entryTable.setSelectionModel(selectionModel);
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
   entryTable.addMouseListener(new TableClickListener());
   contentPane.setTopComponent(sp);
-  contentPane.setBottomComponent(new JScrollPane(preview));
+  contentPane.setBottomComponent(preview);
   AbstractAction closeAction=new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
       diag.dispose();
@@ -26,9 +31,13 @@
     public void windowOpened(    WindowEvent e){
       contentPane.setDividerLocation(0.5f);
     }
+    public void windowClosing(    WindowEvent event){
+      Globals.prefs.putInt("searchDialogWidth",diag.getSize().width);
+      Globals.prefs.putInt("searchDialogHeight",diag.getSize().height);
+    }
   }
 );
   diag.getContentPane().add(contentPane,BorderLayout.CENTER);
-  diag.pack();
+  diag.setSize(new Dimension(Globals.prefs.getInt("searchDialogWidth"),Globals.prefs.getInt("searchDialogHeight")));
   diag.setLocationRelativeTo(frame);
 }

@@ -1,0 +1,20 @@
+{
+  java.util.List<Comparator<BibtexEntry>> comparators=comparatorChooser.getComparatorsForColumn(0);
+  comparators.clear();
+  comparators=comparatorChooser.getComparatorsForColumn(1);
+  comparators.clear();
+  for (int i=2; i < PAD; i++) {
+    comparators=comparatorChooser.getComparatorsForColumn(i);
+    comparators.clear();
+    if (i == FILE_COL)     comparators.add(new IconComparator(new String[]{GUIGlobals.FILE_FIELD}));
+ else     if (i == URL_COL)     comparators.add(new IconComparator(new String[]{"url"}));
+  }
+  for (int i=PAD; i < PAD + fields.length; i++) {
+    comparators=comparatorChooser.getComparatorsForColumn(i);
+    comparators.clear();
+    comparators.add(new FieldComparator(fields[i - PAD]));
+  }
+  sortedEntries.getReadWriteLock().writeLock().lock();
+  comparatorChooser.appendComparator(PAD,0,false);
+  sortedEntries.getReadWriteLock().writeLock().unlock();
+}
