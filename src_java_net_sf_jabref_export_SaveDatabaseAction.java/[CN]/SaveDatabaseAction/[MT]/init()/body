@@ -6,18 +6,57 @@
     if (panel.isUpdatedExternally() || Globals.fileUpdateMonitor.hasBeenModified(panel.getFileMonitorHandle())) {
       String[] opts=new String[]{Globals.lang("Review changes"),Globals.lang("Save"),Globals.lang("Cancel")};
       int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("File has been updated externally. " + "What do you want to do?"),Globals.lang("File updated externally"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,opts,opts[0]);
-      if (answer == JOptionPane.CANCEL_OPTION)       return;
+      if (answer == JOptionPane.CANCEL_OPTION) {
+        cancelled=true;
+        return;
+      }
  else       if (answer == JOptionPane.YES_OPTION) {
-        ChangeScanner scanner=new ChangeScanner(panel.frame(),panel);
-        scanner.changeScan(panel.getFile());
-        panel.setUpdatedExternally(false);
-        SwingUtilities.invokeLater(new Runnable(){
+        cancelled=true;
+        (new Thread(new Runnable(){
           public void run(){
-            panel.getSidePaneManager().hide("fileUpdate");
+            ChangeScanner scanner=new ChangeScanner(panel.frame(),panel);
+            scanner.changeScan(panel.getFile());
+            try {
+              scanner.join();
+            }
+ catch (            InterruptedException e) {
+              e.printStackTrace();
+            }
+            if (scanner.changesFound()) {
+              scanner.displayResult(new ChangeScanner.DisplayResultCallback(){
+                public void scanResultsResolved(                boolean resolved){
+                  if (!resolved) {
+                    cancelled=true;
+                  }
+ else {
+                    panel.setUpdatedExternally(false);
+                    SwingUtilities.invokeLater(new Runnable(){
+                      public void run(){
+                        panel.getSidePaneManager().hide("fileUpdate");
+                      }
+                    }
+);
+                  }
+                }
+              }
+);
+            }
           }
         }
-);
+)).start();
         return;
+      }
+ else {
+        Vector<String> pd=panel.metaData().getData(Globals.PROTECTED_FLAG_META);
+        boolean databaseProtectionFlag=(pd != null) && Boolean.parseBoolean(pd.get(0));
+        if (databaseProtectionFlag) {
+          JOptionPane.showMessageDialog(frame,Globals.lang("Database is protected. Cannot save until external changes have been reviewed."),Globals.lang("Protected database"),JOptionPane.ERROR_MESSAGE);
+          cancelled=true;
+        }
+ else {
+          panel.setUpdatedExternally(false);
+          panel.getSidePaneManager().hide("fileUpdate");
+        }
       }
     }
     panel.frame().output(Globals.lang("Saving database") + "...");

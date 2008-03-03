@@ -23,6 +23,12 @@
     metaData.putData("psDirectory",dir);
   }
  else   metaData.remove("psDirectory");
-  boolean changed=!newEncoding.equals(oldEncoding) || !oldPdfVal.equals(pdfDir.getText()) || !oldPsVal.equals(psDir.getText());
+  if (protect.isSelected()) {
+    dir=new Vector<String>(1);
+    dir.add("true");
+    metaData.putData(Globals.PROTECTED_FLAG_META,dir);
+  }
+ else   metaData.remove(Globals.PROTECTED_FLAG_META);
+  boolean changed=!newEncoding.equals(oldEncoding) || !oldPdfVal.equals(pdfDir.getText()) || !oldPsVal.equals(psDir.getText())|| (oldProtectVal != protect.isSelected());
   if (changed)   panel.markNonUndoableBaseChanged();
 }
