@@ -36,26 +36,13 @@
         cmdArray[cmdArray.length - 1]=filePath;
         Runtime.getRuntime().exec(cmdArray);
       }
+      return true;
     }
  catch (    IOException e) {
       throw e;
     }
   }
  else {
-    link=sanitizeUrl(link);
-    if (Globals.ON_MAC) {
-      String[] cmd={"/usr/bin/open","-a",Globals.prefs.get("htmlviewer"),link};
-      Runtime.getRuntime().exec(cmd);
-    }
- else     if (Globals.ON_WIN) {
-      openFileOnWindows(link,false);
-    }
- else {
-      String[] openWith=Globals.prefs.get("htmlviewer").split(" ");
-      String[] cmdArray=new String[openWith.length + 1];
-      System.arraycopy(openWith,0,cmdArray,0,openWith.length);
-      cmdArray[cmdArray.length - 1]=link;
-      Runtime.getRuntime().exec(cmdArray);
-    }
+    return false;
   }
 }

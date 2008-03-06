@@ -34,7 +34,10 @@
             if (fileList.getRowCount() > 0) {
               FileListEntry flEntry=fileList.getEntry(0);
               ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.getLink(),flEntry.getType().getIcon(),panel.metaData(),flEntry.getType());
-              item.actionPerformed(null);
+              boolean success=item.openLink();
+              if (!success) {
+                panel.output(Globals.lang("Unable to open link."));
+              }
             }
           }
  else {

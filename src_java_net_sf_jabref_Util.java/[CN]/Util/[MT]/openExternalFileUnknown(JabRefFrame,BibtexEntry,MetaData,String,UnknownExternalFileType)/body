@@ -5,7 +5,7 @@
   int answer=JOptionPane.showOptionDialog(frame,Globals.lang("This external link is of the type '%0', which is undefined. What do you want to do?",fileType.getName()),Globals.lang("Undefined file type"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,defOption);
   if (answer == JOptionPane.CANCEL_OPTION) {
     frame.output(cancelMessage);
-    return;
+    return false;
   }
  else   if (answer == JOptionPane.YES_OPTION) {
     ExternalFileType newType=new ExternalFileType(fileType.getName(),"","","new");
@@ -20,11 +20,11 @@
       fileTypes.add(newType);
       Collections.sort(fileTypes);
       Globals.prefs.setExternalFileTypes(fileTypes);
-      openExternalFileAnyFormat(metaData,link,newType);
+      return openExternalFileAnyFormat(metaData,link,newType);
     }
  else {
       frame.output(cancelMessage);
-      return;
+      return false;
     }
   }
  else {
@@ -50,11 +50,11 @@
       entry.setField(GUIGlobals.FILE_FIELD,newValue);
       frame.basePanel().undoManager.addEdit(ce);
       frame.basePanel().markBaseChanged();
-      openExternalFileAnyFormat(metaData,flEntry.getLink(),flEntry.getType());
+      return openExternalFileAnyFormat(metaData,flEntry.getLink(),flEntry.getType());
     }
  else {
       frame.output(cancelMessage);
-      return;
+      return false;
     }
   }
 }
