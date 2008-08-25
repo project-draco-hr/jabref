@@ -3,7 +3,9 @@
   SaveSession ss=getSaveSession(encoding,outFile);
   VerifyingWriter ps=ss.getWriter();
   Layout beginLayout=null;
-  Reader reader;
+  Reader reader=null;
+  HashMap<String,String> customNameFormatters=readFormatterFile(lfFileName);
+  Globals.prefs.customExportNameFormatters=customNameFormatters;
   try {
     reader=getReader(lfFileName + ".begin.layout");
     LayoutHelper layoutHelper=new LayoutHelper(reader);
@@ -51,5 +53,6 @@
   if (endLayout != null) {
     ps.write(endLayout.doLayout(database,encoding));
   }
+  Globals.prefs.customExportNameFormatters=null;
   finalizeSaveSession(ss);
 }
