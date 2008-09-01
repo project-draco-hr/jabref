@@ -1,8 +1,12 @@
 {
   if (entry == null)   return null;
   if (entry.getType().getName() == "Standard")   return entry;
-  String month=entry.getField("month");
-  entry.setField("month",month);
+  String author=(String)entry.getField("author");
+  if (author != null) {
+    author=author.replaceAll("\\.",". ");
+    author=author.replaceAll("  "," ");
+    entry.setField("author",author);
+  }
   BibtexEntryType type=entry.getType();
   String sourceField;
   if (type.getName() == "Article") {

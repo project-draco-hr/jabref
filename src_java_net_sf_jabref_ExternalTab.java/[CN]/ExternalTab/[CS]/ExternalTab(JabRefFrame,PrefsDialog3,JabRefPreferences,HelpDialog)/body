@@ -16,17 +16,10 @@
   led=new JTextField(30);
   editFileTypes=new JButton(Globals.lang("Manage external file types"));
   regExpTextField=new JTextField(30);
-  useRegExpComboBox=new JCheckBox(Globals.lang("Use Regular Expression Search"));
+  useRegExpComboBox=new JRadioButton(Globals.lang("Use Regular Expression Search"));
   regExpListener=new ItemListener(){
     public void itemStateChanged(    ItemEvent e){
       regExpTextField.setEditable(useRegExpComboBox.isSelected());
-      if (useRegExpComboBox.isSelected()) {
-        regExpTextField.setText(Globals.prefs.get(JabRefPreferences.REG_EXP_SEARCH_EXPRESSION_KEY));
-      }
- else {
-        Globals.prefs.put(JabRefPreferences.REG_EXP_SEARCH_EXPRESSION_KEY,regExpTextField.getText());
-        regExpTextField.setText(Globals.prefs.get(JabRefPreferences.DEFAULT_REG_EXP_SEARCH_EXPRESSION_KEY));
-      }
     }
   }
 ;
@@ -35,6 +28,7 @@
   ButtonGroup bg=new ButtonGroup();
   bg.add(matchExactKeyOnly);
   bg.add(matchStartsWithKey);
+  bg.add(useRegExpComboBox);
   BrowseAction browse;
   FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:170dlu, 4dlu, fill:pref","");
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
@@ -46,6 +40,23 @@
   builder.append(fileDir);
   browse=new BrowseAction(_frame,fileDir,true);
   builder.append(new JButton(browse));
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(matchStartsWithKey,3);
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(matchExactKeyOnly,3);
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(useRegExpComboBox);
+  builder.append(regExpTextField);
+  HelpAction helpAction=new HelpAction(helpDialog,GUIGlobals.regularExpressionSearchHelp,Globals.lang("Help on Regular Expression Search"),GUIGlobals.getIconUrl("helpSmall"));
+  builder.append(helpAction.getIconButton());
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Legacy file fields"));
+  pan=new JPanel();
+  builder.append(pan);
+  builder.append(new JLabel("<html>" + Globals.lang("Note that these settings are used for the legacy " + "<b>pdf</b> and <b>ps</b> fields only.<br>For most users, setting the <b>Main file directory</b> " + "above should be sufficient.") + "</html>"),5);
   builder.nextLine();
   pan=new JPanel();
   builder.append(pan);
@@ -62,12 +73,6 @@
   builder.append(psDir);
   browse=new BrowseAction(_frame,psDir,true);
   builder.append(new JButton(browse));
-  builder.nextLine();
-  builder.append(new JPanel());
-  builder.append(matchStartsWithKey,3);
-  builder.nextLine();
-  builder.append(new JPanel());
-  builder.append(matchExactKeyOnly,3);
   builder.nextLine();
   builder.appendSeparator(Globals.lang("External programs"));
   builder.nextLine();

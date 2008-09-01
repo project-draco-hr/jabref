@@ -1,5 +1,13 @@
 {
-  columns=Globals.prefs.getStringArray("columnNames");
+  String[] colSettings=Globals.prefs.getStringArray("columnNames");
+  columns=new String[colSettings.length][];
+  for (int i=0; i < colSettings.length; i++) {
+    String[] fields=colSettings[i].split(COL_DEFINITION_FIELD_SEPARATOR);
+    columns[i]=new String[fields.length];
+    for (int j=0; j < fields.length; j++) {
+      columns[i][j]=fields[j];
+    }
+  }
   showShort=Globals.prefs.getBoolean("showShort");
   namesNatbib=Globals.prefs.getBoolean("namesNatbib");
   namesLastOnly=Globals.prefs.getBoolean("namesLastOnly");
@@ -9,19 +17,21 @@
   namesLf=!(namesAsIs || namesFf || namesNatbib|| namesLastOnly);
   iconCols.clear();
   int coln=1;
-  if (Globals.prefs.getBoolean("fileColumn"))   iconCols.put(new Integer(coln++),FILE);
-  if (Globals.prefs.getBoolean("pdfColumn"))   iconCols.put(new Integer(coln++),PDF);
-  if (Globals.prefs.getBoolean("urlColumn"))   iconCols.put(new Integer(coln++),URL_);
-  if (Globals.prefs.getBoolean("citeseerColumn"))   iconCols.put(new Integer(coln++),CITESEER);
+  if (Globals.prefs.getBoolean("fileColumn"))   iconCols.put(coln++,FILE);
+  if (Globals.prefs.getBoolean("pdfColumn"))   iconCols.put(coln++,PDF);
+  if (Globals.prefs.getBoolean("urlColumn"))   iconCols.put(coln++,URL_);
+  if (Globals.prefs.getBoolean("citeseerColumn"))   iconCols.put(coln++,CITESEER);
   padleft=1 + iconCols.size();
-  Vector<Integer> tmp=new Vector<Integer>(2,1);
+  Vector<int[]> tmp=new Vector<int[]>(2,1);
   for (int i=0; i < columns.length; i++) {
-    if (columns[i].equals("author") || columns[i].equals("editor")) {
-      tmp.add(new Integer(i));
+    for (int j=0; j < columns[i].length; j++) {
+      if (columns[i][j].equals("author") || columns[i][j].equals("editor")) {
+        tmp.add(new int[]{i,j});
+      }
     }
   }
-  nameCols=new int[tmp.size()];
+  nameCols=new int[tmp.size()][];
   for (int i=0; i < nameCols.length; i++) {
-    nameCols[i]=tmp.elementAt(i).intValue();
+    nameCols[i]=tmp.elementAt(i);
   }
 }

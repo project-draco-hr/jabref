@@ -7,7 +7,7 @@
   if (index >= 0) {
     piv=index + 1;
     String text=allText.substring(index,endIndex);
-    BibtexEntryType type=BibtexEntryType.getType("article");
+    BibtexEntryType type=null;
     String sourceField=null;
     if (text.indexOf("JNL") >= 0) {
       type=BibtexEntryType.getType("article");
@@ -18,12 +18,12 @@
       sourceField="booktitle";
     }
  else     if (text.indexOf("STD") >= 0) {
-      type=BibtexEntryType.getType("Standard");
+      type=BibtexEntryType.getType("standard");
     }
  else {
       System.err.println("Type detection failed.");
     }
-    if (fetchRis == true) {
+    if (fetchingRIS == true) {
       Matcher number=ieeeArticleNumberPattern.matcher(text);
       if (number.find()) {
         try {
@@ -104,6 +104,10 @@
       System.err.println("---no structure match---");
       System.err.println(text);
       unparseable++;
+    }
+    if (entry == null) {
+      System.err.println("Parse failed");
+      System.err.println(text);
       return null;
     }
     int pgInd=text.indexOf("Page(s):");
@@ -116,7 +120,7 @@
         if (pgInd >= 0)         tmp=tmp.substring(0,pgInd);
         pgInd=tmp.indexOf("Vol");
         if (pgInd >= 0)         tmp=tmp.substring(0,pgInd);
-        entry.setField("pages",tmp.replaceAll("\\s+","").replaceAll("-","--"));
+        entry.setField("pages",tmp.replaceAll(" - ","--").replaceAll("\\s+",""));
       }
       pgInd=rest.indexOf("Digital Object Identifier ",pgInd);
       if (pgInd >= 0) {

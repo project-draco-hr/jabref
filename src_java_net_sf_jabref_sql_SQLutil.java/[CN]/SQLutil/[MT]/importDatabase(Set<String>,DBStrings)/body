@@ -1,0 +1,14 @@
+{
+  DBTYPE dbtype=getDBType(dbStrings);
+  Object[] result=null;
+  Connection conn=null;
+  try {
+    conn=SQLutil.connectToDB(dbStrings);
+    result=importDatabase_worker(dbtype,keySet,conn);
+    conn.close();
+  }
+ catch (  SQLException ex) {
+    throw ex;
+  }
+  return result;
+}

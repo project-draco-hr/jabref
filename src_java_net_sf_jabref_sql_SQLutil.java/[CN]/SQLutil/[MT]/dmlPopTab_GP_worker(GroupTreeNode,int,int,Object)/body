@@ -1,5 +1,21 @@
 {
-  processDML(out,"INSERT INTO groups (groups_id, label, parent_id) " + "VALUES (" + ID + ", \""+ cursor.getGroup().getName()+ "\", "+ parentID+ ");");
+  AbstractGroup group=cursor.getGroup();
+  String searchField=null, searchExpr=null, caseSensitive=null, reg_exp=null;
+  int hierContext=group.getHierarchicalContext();
+  if (group instanceof KeywordGroup) {
+    searchField=((KeywordGroup)group).getSearchField();
+    searchExpr=((KeywordGroup)group).getSearchExpression();
+    caseSensitive=((KeywordGroup)group).isCaseSensitive() ? "1" : "0";
+    reg_exp=((KeywordGroup)group).isRegExp() ? "1" : "0";
+  }
+ else   if (group instanceof SearchGroup) {
+    searchExpr=((SearchGroup)group).getSearchExpression();
+    caseSensitive=((SearchGroup)group).isCaseSensitive() ? "1" : "0";
+    reg_exp=((SearchGroup)group).isRegExp() ? "1" : "0";
+  }
+  if (searchField != null)   searchField=Util.quote(searchField,"\"",'\\');
+  if (searchExpr != null)   searchExpr=Util.quote(searchExpr,"\"",'\\');
+  processDML(out,"INSERT INTO groups (groups_id, label, parent_id, group_types_id, search_field, " + "search_expression, case_sensitive, reg_exp, hierarchical_context) " + "VALUES (" + ID + ", \""+ cursor.getGroup().getName()+ "\", "+ parentID+ ", (SELECT group_types_id FROM group_types where label=\""+ group.getTypeId()+ "\")"+ ", "+ (searchField != null ? "\"" + searchField + "\"" : "NULL")+ ", "+ (searchExpr != null ? "\"" + searchExpr + "\"" : "NULL")+ ", "+ (caseSensitive != null ? "\"" + caseSensitive + "\"" : "NULL")+ ", "+ (reg_exp != null ? "\"" + reg_exp + "\"" : "NULL")+ ", "+ hierContext+ ");");
   int myID=ID;
   for (Enumeration<GroupTreeNode> e=cursor.children(); e.hasMoreElements(); )   ID=dmlPopTab_GP_worker(e.nextElement(),myID,++ID,out);
   return ID;

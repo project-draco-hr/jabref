@@ -2,26 +2,19 @@
   saveAction=new SaveDatabaseAction(this);
   actions.put("undo",undoAction);
   actions.put("redo",redoAction);
+  actions.put("focusTable",new BaseAction(){
+    public void action() throws Throwable {
+      new FocusRequester(mainTable);
+    }
+  }
+);
   actions.put("edit",new BaseAction(){
     public void action(){
       selectionListener.editSignalled();
     }
   }
 );
-  actions.put("test",new BaseAction(){
-    public void action() throws Throwable {
-      SearchResultsDialog diag=new SearchResultsDialog(frame,"Test");
-      diag.setVisible(true);
-      List<BibtexEntry> list=new ArrayList<BibtexEntry>();
-      BibtexEntry[] entries=getSelectedEntries();
-      for (int i=0; i < entries.length; i++) {
-        BibtexEntry entry=entries[i];
-        list.add(entry);
-      }
-      diag.addEntries(list,BasePanel.this);
-    }
-  }
-);
+  actions.put("test",new AccessLinksForEntries.SaveWithLinkedFiles(this));
   actions.put("save",saveAction);
   actions.put("saveAs",new BaseAction(){
     public void action() throws Throwable {
@@ -204,39 +197,7 @@ catch (          Throwable ex) {
     }
   }
 );
-  actions.put("dbConnect",new BaseAction(){
-    public void action(){
-      DBStrings dbs=metaData.getDBStrings();
-      if (!dbs.isInitialized()) {
-        dbs.initialize();
-      }
-      DBConnectDialog dbd=new DBConnectDialog(frame(),dbs);
-      Util.placeDialog(dbd,BasePanel.this);
-      dbd.setVisible(true);
-      if (dbd.getConnectToDB()) {
-        dbs=dbd.getDBStrings();
-        try {
-          frame.output(Globals.lang("Establishing SQL connection..."));
-          Connection conn=SQLutil.connectToDB(dbs);
-          conn.close();
-          dbs.isConfigValid(true);
-          frame.output(Globals.lang("SQL connection established."));
-        }
- catch (        Exception ex) {
-          String errorMessage=SQLutil.getExceptionMessage(ex,SQLutil.DBTYPE.MYSQL);
-          dbs.isConfigValid(false);
-          String preamble="Could not connect to SQL database for the following reason:";
-          frame.output(Globals.lang(preamble) + "  " + errorMessage);
-          JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Connect to SQL database"),JOptionPane.ERROR_MESSAGE);
-        }
- finally {
-          metaData.setDBStrings(dbs);
-          dbd.dispose();
-        }
-      }
-    }
-  }
-);
+  actions.put("dbConnect",new DbConnectAction(this));
   actions.put("dbExport",new AbstractWorker(){
     String errorMessage=null;
     boolean connectToDB=false;
@@ -431,6 +392,27 @@ catch (          Throwable ex) {
           BibtexEntry[] bes=mainTable.getSelectedEntries();
           String field="ps";
           if ((bes != null) && (bes.length == 1)) {
+            FileListEntry entry=null;
+            FileListTableModel tm=new FileListTableModel();
+            tm.setContent(bes[0].getField("file"));
+            for (int i=0; i < tm.getRowCount(); i++) {
+              FileListEntry flEntry=tm.getEntry(i);
+              if (flEntry.getType().getName().toLowerCase().equals("pdf") || flEntry.getType().getName().toLowerCase().equals("ps")) {
+                entry=flEntry;
+                break;
+              }
+            }
+            if (entry != null) {
+              try {
+                Util.openExternalFileAnyFormat(metaData,entry.getLink(),entry.getType());
+                output(Globals.lang("External viewer called") + ".");
+              }
+ catch (              IOException e) {
+                output(Globals.lang("Could not open link"));
+                e.printStackTrace();
+              }
+              return;
+            }
             Object link=bes[0].getField("ps");
             if (bes[0].getField("pdf") != null) {
               link=bes[0].getField("pdf");
@@ -441,26 +423,6 @@ catch (          Throwable ex) {
               filepath=link.toString();
             }
  else {
-              String basefile;
-              Object key=bes[0].getField(BibtexFields.KEY_FIELD);
-              if (key != null) {
-                basefile=key.toString();
-                final ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
-                final String sep=System.getProperty("file.separator");
-                String dir=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
-                if ((dir != null) && (dir.length() > 0)) {
-                  if (dir.endsWith(sep)) {
-                    dir=dir.substring(0,dir.length() - sep.length());
-                  }
-                  for (int i=0; i < types.length; i++) {
-                    String found=Util.findPdf(basefile,types[i].getExtension(),dir,new OpenFileFilter("." + types[i].getExtension()));
-                    if (found != null) {
-                      filepath=dir + sep + found;
-                      break;
-                    }
-                  }
-                }
-              }
             }
             if (filepath != null) {
               try {
@@ -500,7 +462,7 @@ catch (          Throwable ex) {
             }
             FileListEntry flEntry=tableModel.getEntry(0);
             ExternalFileMenuItem item=new ExternalFileMenuItem(frame(),bes[0],"",flEntry.getLink(),flEntry.getType().getIcon(),metaData(),flEntry.getType());
-            item.actionPerformed(null);
+            item.openLink();
           }
  else           output(Globals.lang("No entries or multiple entries selected."));
         }

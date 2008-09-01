@@ -1,5 +1,5 @@
 {
-  Object o;
+  Object o=null;
   String[] iconType=getIconTypeForColumn(col);
   if (col == 0) {
     o="#";
@@ -13,22 +13,20 @@
     }
  else     o=GUIGlobals.getTableIcon(iconType[hasField]);
   }
- else   if (columns[col - padleft].equals(GUIGlobals.TYPE_HEADER)) {
-    o=be.getType().getName();
-  }
  else {
-    o=be.getField(columns[col - padleft]);
+    String[] fld=columns[col - padleft];
+    int j=0;
+    for (int i=0; i < fld.length; i++) {
+      if (fld[i].equals(GUIGlobals.TYPE_HEADER))       o=be.getType().getName();
+ else       o=be.getField(fld[i]);
+      if (o != null) {
+        j=i;
+        break;
+      }
+    }
     for (int i=0; i < nameCols.length; i++) {
-      if (col - padleft == nameCols[i]) {
-        if (o == null) {
-          return null;
-        }
-        if (namesAsIs)         return o;
-        if (namesNatbib)         o=AuthorList.fixAuthor_Natbib((String)o);
- else         if (namesLastOnly)         o=AuthorList.fixAuthor_lastNameOnlyCommas((String)o,false);
- else         if (namesFf)         o=AuthorList.fixAuthor_firstNameFirstCommas((String)o,abbr_names,false);
- else         if (namesLf)         o=AuthorList.fixAuthor_lastNameFirstCommas((String)o,abbr_names,false);
-        return o;
+      if ((col - padleft == nameCols[i][0]) && (nameCols[i][1] == j)) {
+        return formatName(o);
       }
     }
   }

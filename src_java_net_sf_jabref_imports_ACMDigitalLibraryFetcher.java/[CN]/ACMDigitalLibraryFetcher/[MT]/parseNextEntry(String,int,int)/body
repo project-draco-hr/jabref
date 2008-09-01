@@ -1,0 +1,28 @@
+{
+  String toFind=new StringBuffer().append("<strong>").append(entryNumber).append("</strong>").toString();
+  int index=allText.indexOf(toFind,startIndex);
+  int endIndex=allText.indexOf("</table>",index + 1);
+  endIndex=allText.length();
+  BibtexEntry entry=null;
+  if (index >= 0) {
+    piv=index + 1;
+    String text=allText.substring(index,endIndex);
+    Matcher fullCitation=fullCitationPattern.matcher(text);
+    if (fullCitation.find()) {
+      try {
+        entry=parseEntryRis(fullCitation.group(1),fetchingAbstracts);
+      }
+ catch (      IOException e) {
+        e.printStackTrace();
+      }
+    }
+ else {
+      System.out.printf("Citation Unmatched %d\n",entryNumber);
+      System.out.printf(text);
+    }
+    if (entry != null) {
+      return entry;
+    }
+  }
+  return null;
+}

@@ -1,6 +1,27 @@
 {
   JPanel pan=new JPanel();
   pan.setLayout(new BorderLayout());
-  pan.add(fetchAstracts,BorderLayout.CENTER);
+  htmlButton.setSelected(true);
+  ButtonGroup group=new ButtonGroup();
+  group.add(htmlButton);
+  group.add(risButton);
+  pan.add(fetchAbstracts,BorderLayout.NORTH);
+  pan.add(htmlButton,BorderLayout.CENTER);
+  pan.add(risButton,BorderLayout.EAST);
+  fetchAbstracts.addItemListener(new ItemListener(){
+    public void itemStateChanged(    ItemEvent event){
+      if (fetchAbstracts.isSelected()) {
+        risButton.setSelected(true);
+        risButton.setEnabled(false);
+        htmlButton.setEnabled(false);
+      }
+ else {
+        risButton.setEnabled(true);
+        htmlButton.setEnabled(true);
+        htmlButton.setSelected(true);
+      }
+    }
+  }
+);
   return pan;
 }

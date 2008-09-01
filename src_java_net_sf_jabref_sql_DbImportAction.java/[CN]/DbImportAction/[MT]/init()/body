@@ -1,0 +1,22 @@
+{
+  dbs=new DBStrings();
+  dbs.initialize();
+  DBConnectDialog dbd=new DBConnectDialog(frame,dbs);
+  dbs=dbd.getDBStrings();
+  if (!dbs.isConfigValid()) {
+    if (!dbs.isInitialized()) {
+      dbs.initialize();
+    }
+    dbd=new DBConnectDialog(frame,dbs);
+    Util.placeDialog(dbd,frame);
+    dbd.setVisible(true);
+    connectToDB=dbd.getConnectToDB();
+    if (connectToDB) {
+      dbs=dbd.getDBStrings();
+      dbd.dispose();
+    }
+  }
+ else {
+    connectToDB=true;
+  }
+}

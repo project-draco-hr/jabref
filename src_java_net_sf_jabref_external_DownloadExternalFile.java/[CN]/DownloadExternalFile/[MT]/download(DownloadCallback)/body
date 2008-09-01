@@ -1,42 +1,61 @@
 {
+  dontShowDialog=false;
   final String res=JOptionPane.showInputDialog(frame,Globals.lang("Enter URL to download"));
   if (res == null || res.trim().length() == 0)   return;
   final File tmp=File.createTempFile("jabref_download","tmp");
   tmp.deleteOnExit();
+  URL url=null;
+  URLDownload udl=null;
+  try {
+    url=new URL(res);
+    udl=new URLDownload(frame,url,tmp);
+    udl.openConnectionOnly();
+  }
+ catch (  MalformedURLException ex1) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL"),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+    return;
+  }
+catch (  IOException ex) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + ex.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+    Globals.logger("Error while downloading " + "'" + res + "'");
+    return;
+  }
+  final URL urlF=url;
+  final URLDownload udlF=udl;
   (new Thread(){
     public void run(){
       try {
-        URL url=new URL(res);
-        URLDownload udl=new URLDownload(frame,url,tmp);
-        try {
-          udl.download();
+        udlF.download();
+      }
+ catch (      IOException e2) {
+        dontShowDialog=true;
+        if ((editor != null) && (editor.isVisible()))         editor.setVisible(false);
+        JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + e2.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+        Globals.logger("Error while downloading " + "'" + urlF.toString() + "'");
+        return;
+      }
+      SwingUtilities.invokeLater(new Runnable(){
+        public void run(){
+          downloadFinished();
         }
- catch (        IOException e2) {
-          JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + e2.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
-          Globals.logger("Error while downloading " + url.toString());
-          return;
-        }
-        SwingUtilities.invokeLater(new Runnable(){
-          public void run(){
-            downloadFinished();
-          }
-        }
+      }
 );
-      }
- catch (      MalformedURLException e1) {
-        JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL"),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
-      }
     }
   }
 ).start();
+  ExternalFileType suggestedType=null;
+  if (udl.getMimeType() != null) {
+    suggestedType=Globals.prefs.getExternalFileTypeByMimeType(udl.getMimeType());
+  }
   String suffix=getSuffix(res);
+  if (suggestedType == null)   suggestedType=Globals.prefs.getExternalFileTypeByExt(suffix);
   String suggestedName=bibtexKey != null ? getSuggestedFileName(res,suffix) : "";
   String fDirectory=getFileDirectory(res);
   if (fDirectory.trim().equals(""))   fDirectory=null;
   final String directory=fDirectory;
   final String suggestDir=directory != null ? directory : System.getProperty("user.home");
   File file=new File(new File(suggestDir),suggestedName);
-  FileListEntry entry=new FileListEntry("",bibtexKey != null ? file.getPath() : "",Globals.prefs.getExternalFileTypeByExt(suffix));
+  FileListEntry entry=new FileListEntry("",bibtexKey != null ? file.getCanonicalPath() : "",suggestedType);
   editor=new FileListEntryEditor(frame,entry,true,false,metaData);
   editor.getProgressBar().setIndeterminate(true);
   editor.setOkEnabled(false);
@@ -54,7 +73,8 @@
     }
   }
 );
-  editor.setVisible(true);
+  if (!dontShowDialog)   editor.setVisible(true);
+ else   return;
   if (editor.okPressed()) {
     File toFile=directory != null ? expandFilename(directory,entry.getLink()) : new File(entry.getLink());
     String dirPrefix;

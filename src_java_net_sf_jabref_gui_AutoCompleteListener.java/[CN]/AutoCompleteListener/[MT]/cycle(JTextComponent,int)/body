@@ -3,14 +3,14 @@
   if (lastShownCompletion >= lastCompletions.length)   lastShownCompletion=0;
  else   if (lastShownCompletion < 0)   lastShownCompletion=lastCompletions.length - 1;
   String sno=(String)(lastCompletions[lastShownCompletion]);
-  toSetIn=sno.substring(lastBeginning.length());
+  toSetIn=sno.substring(lastBeginning.length() - 1);
   StringBuffer alltext=new StringBuffer(comp.getText());
   int deletedChars=comp.getSelectionEnd() - comp.getSelectionStart();
   alltext.delete(comp.getSelectionStart(),comp.getSelectionEnd());
   int cp=comp.getCaretPosition() - deletedChars;
-  alltext.insert(cp,toSetIn);
+  alltext.insert(cp,toSetIn.substring(1));
   comp.setText(alltext.toString());
-  comp.setCaretPosition(cp + toSetIn.length());
+  comp.setCaretPosition(cp + toSetIn.length() - 1);
   comp.select(cp,cp + sno.length() - lastBeginning.length());
   lastCaretPosition=comp.getCaretPosition();
 }

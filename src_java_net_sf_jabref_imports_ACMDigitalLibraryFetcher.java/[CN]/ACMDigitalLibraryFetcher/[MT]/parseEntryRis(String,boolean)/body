@@ -1,0 +1,39 @@
+{
+  URL url;
+  try {
+    url=new URL(startUrl + fullCitation);
+    String page=getResults(url);
+    Matcher bibtexAddr=risPattern.matcher(page);
+    if (bibtexAddr.find()) {
+      URL bibtexUrl=new URL(startUrl + bibtexAddr.group(1));
+      BufferedReader in=new BufferedReader(new InputStreamReader(bibtexUrl.openStream()));
+      ParserResult result=BibtexParser.parse(in);
+      in.close();
+      Collection item=result.getDatabase().getEntries();
+      BibtexEntry entry=(BibtexEntry)item.iterator().next();
+      if (abs == true) {
+        Matcher absMatch=absPattern.matcher(page);
+        if (absMatch.find()) {
+          String absBlock=absMatch.group(1);
+          entry.setField("abstract",convertHTMLChars(absBlock).trim());
+        }
+ else {
+        }
+      }
+      return entry;
+    }
+ else     return null;
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+    return null;
+  }
+catch (  ConnectException e) {
+    e.printStackTrace();
+    return null;
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+    return null;
+  }
+}

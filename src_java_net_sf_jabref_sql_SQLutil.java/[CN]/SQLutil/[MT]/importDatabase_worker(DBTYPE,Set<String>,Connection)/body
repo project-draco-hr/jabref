@@ -1,0 +1,67 @@
+{
+  BibtexDatabase database=new BibtexDatabase();
+  HashMap<String,BibtexEntryType> types=new HashMap<String,BibtexEntryType>();
+  Object res=processDMLWithResults(conn,"SELECT entry_types_id,label FROM entry_types;");
+  if (res instanceof Statement) {
+    Statement statement=(Statement)res;
+    ResultSet rs=statement.getResultSet();
+    while (rs.next()) {
+      types.put(rs.getString(1),BibtexEntryType.getType(rs.getString(2)));
+    }
+    statement.close();
+  }
+  for (Iterator<String> iterator=types.keySet().iterator(); iterator.hasNext(); ) {
+    iterator.next();
+  }
+  res=processDMLWithResults(conn,"SHOW columns FROM entries;");
+  ArrayList<String> colNames=new ArrayList<String>();
+  if (res instanceof Statement) {
+    Statement statement=(Statement)res;
+    ResultSet rs=statement.getResultSet();
+    boolean started=false;
+    while (rs.next()) {
+      if (started)       colNames.add(rs.getString(1));
+ else       if (rs.getString(1).equals("cite_key"))       started=true;
+    }
+    statement.close();
+  }
+  HashMap<String,BibtexEntry> entries=new HashMap<String,BibtexEntry>();
+  res=processDMLWithResults(conn,"SELECT * FROM entries;");
+  if (res instanceof Statement) {
+    Statement statement=(Statement)res;
+    ResultSet rs=statement.getResultSet();
+    while (rs.next()) {
+      String id=rs.getString("entries_id");
+      BibtexEntry entry=new BibtexEntry(Util.createNeutralId(),types.get(rs.getString(3)));
+      entry.setField(BibtexFields.KEY_FIELD,rs.getString("cite_key"));
+      for (Iterator<String> iterator=colNames.iterator(); iterator.hasNext(); ) {
+        String col=iterator.next();
+        String value=rs.getString(col);
+        if (value != null)         entry.setField(col,value);
+      }
+      entries.put(id,entry);
+      database.insertEntry(entry);
+    }
+    statement.close();
+  }
+  res=processDMLWithResults(conn,"SELECT * FROM strings;");
+  if (res instanceof Statement) {
+    Statement statement=(Statement)res;
+    ResultSet rs=statement.getResultSet();
+    while (rs.next()) {
+      String label=rs.getString("label"), content=rs.getString("content");
+      if (label.equals("@PREAMBLE")) {
+        database.setPreamble(content);
+      }
+ else {
+        BibtexString string=new BibtexString(Util.createNeutralId(),label,content);
+        database.addString(string);
+      }
+    }
+    statement.close();
+  }
+  MetaData metaData=new MetaData();
+  metaData.initializeNewDatabase();
+  importGroupsTree(dbtype,metaData,entries,conn);
+  return new Object[]{database,metaData};
+}

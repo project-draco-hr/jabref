@@ -10,13 +10,22 @@
         lastBeginning=lastBeginning + ch;
         e.consume();
         lastCaretPosition=comp.getCaretPosition();
+        lastCompletions=findCompletions(lastBeginning,comp);
+        lastShownCompletion=0;
+        for (int i=0; i < lastCompletions.length; i++) {
+          Object lastCompletion=lastCompletions[i];
+          if (((String)lastCompletion).endsWith(toSetIn)) {
+            lastShownCompletion=i;
+            break;
+          }
+        }
         if (toSetIn.length() < 2)         toSetIn=null;
         return;
       }
     }
     if ((toSetIn != null) && ((toSetIn.length() <= 1) || (ch != toSetIn.charAt(1)))) {
       lastBeginning=lastBeginning + ch;
-      Object[] completed=completer.complete(lastBeginning);
+      Object[] completed=findCompletions(lastBeginning,comp);
       if ((completed != null) && (completed.length > 0)) {
         lastShownCompletion=0;
         lastCompletions=completed;
@@ -38,7 +47,7 @@
     StringBuffer currentword=getCurrentWord(comp);
     if (currentword == null)     return;
     currentword.append(ch);
-    Object[] completed=completer.complete(currentword.toString());
+    Object[] completed=findCompletions(currentword.toString(),comp);
     int no=0;
     if ((completed != null) && (completed.length > 0)) {
       lastShownCompletion=0;

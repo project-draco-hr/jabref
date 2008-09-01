@@ -20,17 +20,15 @@
     }
     hits=getNumberOfHits(page,"Your search matched",hitsPattern);
     int maxHits=getNumberOfHits(page,"A maximum of",maxHitsPattern);
-    if (hits > maxHits)     hits=maxHits;
-    fetchingAbstracts=fetchAstracts.isSelected();
-    if (hits > MAX_RIS_FETCH) {
-      if (fetchingAbstracts == true) {
-        status.showMessage(Globals.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(MAX_RIS_FETCH)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
-        fetchRis=true;
-        hits=MAX_RIS_FETCH;
-      }
- else {
-        fetchRis=false;
-      }
+    fetchingAbstracts=fetchAbstracts.isSelected();
+    fetchingRIS=risButton.isSelected();
+    if (hits > maxHits && !fetchingRIS) {
+      status.showMessage(Globals.lang("Your search matched %0 entries. But " + "only %1 results are displayed.",new String[]{String.valueOf(hits),String.valueOf(maxHits)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      hits=maxHits;
+    }
+    if (fetchingRIS && hits > MAX_RIS_FETCH) {
+      status.showMessage(Globals.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded. Choose the HTML parser for more results.",new String[]{String.valueOf(hits),String.valueOf(MAX_RIS_FETCH)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      hits=MAX_RIS_FETCH;
     }
     parse(dialog,page,0,1);
     int firstEntry=perPage;
@@ -47,9 +45,10 @@
     e.printStackTrace();
   }
 catch (  ConnectException e) {
-    status.showMessage(Globals.lang("Connection to IEEEXplore failed"),Globals.lang("Search IEEExplore"),JOptionPane.ERROR_MESSAGE);
+    status.showMessage(Globals.lang("Connection to IEEEXplore failed"),Globals.lang("Search IEEEXplore"),JOptionPane.ERROR_MESSAGE);
   }
 catch (  IOException e) {
+    status.showMessage(Globals.lang(e.getMessage()),Globals.lang("Search IEEEXplore"),JOptionPane.ERROR_MESSAGE);
     e.printStackTrace();
   }
   return false;

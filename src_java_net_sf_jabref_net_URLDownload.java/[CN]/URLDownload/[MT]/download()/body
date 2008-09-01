@@ -1,6 +1,9 @@
 {
-  URLConnection con=source.openConnection();
-  con.setRequestProperty("User-Agent","Jabref");
+  if (con == null) {
+    con=source.openConnection();
+    con.setRequestProperty("User-Agent","Jabref");
+    mimeType=con.getContentType();
+  }
   InputStream input=new BufferedInputStream(con.getInputStream());
   OutputStream output=new BufferedOutputStream(new FileOutputStream(dest));
   try {

@@ -7,7 +7,12 @@
         final ExternalFileType type=types[i];
         extensions.add(type.getExtension());
       }
-      Map<BibtexEntry,java.util.List<File>> result=Util.findAssociatedFiles(entries,extensions,dirs);
+      Map<BibtexEntry,java.util.List<File>> result;
+      if (Globals.prefs.getBoolean(JabRefPreferences.USE_REG_EXP_SEARCH_KEY)) {
+        String regExp=Globals.prefs.get(JabRefPreferences.REG_EXP_SEARCH_EXPRESSION_KEY);
+        result=RegExpFileSearch.findFilesForSet(entries,extensions,dirs,regExp);
+      }
+ else       result=Util.findAssociatedFiles(entries,extensions,dirs);
       for (Iterator<BibtexEntry> i=result.keySet().iterator(); i.hasNext(); ) {
         BibtexEntry anEntry=i.next();
         FileListTableModel tableModel=new FileListTableModel();
@@ -27,7 +32,7 @@
           if (!alreadyHas) {
             int index=f.getPath().lastIndexOf('.');
             if ((index >= 0) && (index < f.getPath().length() - 1)) {
-              ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(f.getPath().substring(index + 1));
+              ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(f.getPath().substring(index + 1).toLowerCase());
               FileListEntry flEntry=new FileListEntry(f.getName(),f.getPath(),type);
               tableModel.addEntry(tableModel.getRowCount(),flEntry);
             }

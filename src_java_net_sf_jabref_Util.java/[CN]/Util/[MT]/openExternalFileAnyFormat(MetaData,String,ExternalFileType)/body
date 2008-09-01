@@ -30,7 +30,9 @@
  else         openFileOnWindows(filePath,true);
       }
  else {
-        String[] openWith=fileType.getOpenWith().split(" ");
+        String[] openWith;
+        if ((fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0))         openWith=fileType.getOpenWith().split(" ");
+ else         openWith=new String[]{"xdg-open"};
         String[] cmdArray=new String[openWith.length + 1];
         System.arraycopy(openWith,0,cmdArray,0,openWith.length);
         cmdArray[cmdArray.length - 1]=filePath;
