@@ -1,7 +1,7 @@
 {
-  if (showing == be) {
+  if (getShowing() == be) {
     if (splitPane.getBottomComponent() == null) {
-      showing=null;
+      newEntryShowing(null);
       showEntry(be);
     }
  else {
@@ -12,10 +12,10 @@
   EntryEditor form;
   int divLoc=-1;
   String visName=null;
-  if (showing != null) {
+  if (getShowing() != null) {
     visName=((EntryEditor)splitPane.getBottomComponent()).getVisiblePanelName();
   }
-  if (showing != null)   divLoc=splitPane.getDividerLocation();
+  if (getShowing() != null)   divLoc=splitPane.getDividerLocation();
   if (entryEditors.containsKey(be.getType().getName())) {
     form=entryEditors.get((be.getType().getName()));
     form.switchTo(be);
@@ -32,6 +32,6 @@
     splitPane.setDividerLocation(divLoc);
   }
  else   splitPane.setDividerLocation(GUIGlobals.VERTICAL_DIVIDER_LOCATION);
-  showing=be;
+  newEntryShowing(be);
   setEntryEditorEnabled(true);
 }
