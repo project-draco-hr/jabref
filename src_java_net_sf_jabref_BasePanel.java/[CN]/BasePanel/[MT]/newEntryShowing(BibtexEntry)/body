@@ -1,4 +1,17 @@
 {
-  sho_wing=entry;
-  System.out.println("entryShowing");
+  if (backOrForwardInProgress) {
+    showing=entry;
+    backOrForwardInProgress=false;
+    setBackAndForwardEnabledState();
+    return;
+  }
+  nextEntries.clear();
+  if (entry != showing) {
+    if (showing != null) {
+      previousEntries.add(showing);
+      if (previousEntries.size() > GUIGlobals.MAX_BACK_HISTORY_SIZE)       previousEntries.remove(0);
+    }
+    showing=entry;
+    setBackAndForwardEnabledState();
+  }
 }
