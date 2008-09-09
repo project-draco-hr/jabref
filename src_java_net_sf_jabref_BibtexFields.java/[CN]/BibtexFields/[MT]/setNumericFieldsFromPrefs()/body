@@ -1,0 +1,20 @@
+{
+  String[] numFields=Globals.prefs.getStringArray("numericFields");
+  if (numFields == null)   return;
+  HashSet<String> nF=new HashSet<String>();
+  for (int i=0; i < numFields.length; i++) {
+    nF.add(numFields[i]);
+  }
+  for (  String fieldName : runtime.fieldSet.keySet()) {
+    BibtexSingleField field=runtime.fieldSet.get(fieldName);
+    if (!field.isNumeric() && nF.contains(fieldName)) {
+      field.setNumeric(nF.contains(fieldName));
+    }
+    nF.remove(fieldName);
+  }
+  for (  String fieldName : nF) {
+    BibtexSingleField field=new BibtexSingleField(fieldName,false);
+    field.setNumeric(true);
+    runtime.fieldSet.put(fieldName,field);
+  }
+}
