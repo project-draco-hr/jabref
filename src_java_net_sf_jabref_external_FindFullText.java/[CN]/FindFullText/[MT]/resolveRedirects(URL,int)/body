@@ -1,0 +1,17 @@
+{
+  URLConnection uc=url.openConnection();
+  if (uc instanceof HttpURLConnection) {
+    HttpURLConnection huc=(HttpURLConnection)uc;
+    huc.setInstanceFollowRedirects(false);
+    huc.connect();
+    int responseCode=huc.getResponseCode();
+    String location=huc.getHeaderField("location");
+    huc.disconnect();
+    if ((responseCode == HttpURLConnection.HTTP_MOVED_TEMP) && (redirectCount < 5)) {
+      System.out.println(location);
+      return resolveRedirects(new URL(location),redirectCount + 1);
+    }
+ else     return url;
+  }
+ else   return url;
+}

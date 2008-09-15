@@ -1,0 +1,97 @@
+{
+  String res=url.toString();
+  URLDownload udl=null;
+  final File tmp=File.createTempFile("jabref_download","tmp");
+  tmp.deleteOnExit();
+  try {
+    udl=new URLDownload(frame,url,tmp);
+    udl.openConnectionOnly();
+  }
+ catch (  IOException ex) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + ex.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+    Globals.logger("Error while downloading " + "'" + res + "'");
+    return;
+  }
+  final URL urlF=url;
+  final URLDownload udlF=udl;
+  (new Thread(){
+    public void run(){
+      try {
+        udlF.download();
+      }
+ catch (      IOException e2) {
+        dontShowDialog=true;
+        if ((editor != null) && (editor.isVisible()))         editor.setVisible(false);
+        JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + e2.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+        Globals.logger("Error while downloading " + "'" + urlF.toString() + "'");
+        return;
+      }
+      SwingUtilities.invokeLater(new Runnable(){
+        public void run(){
+          downloadFinished();
+        }
+      }
+);
+    }
+  }
+).start();
+  ExternalFileType suggestedType=null;
+  if (udl.getMimeType() != null) {
+    System.out.println("mimetype:" + udl.getMimeType());
+    suggestedType=Globals.prefs.getExternalFileTypeByMimeType(udl.getMimeType());
+  }
+  String suffix=getSuffix(res);
+  if (suggestedType == null)   suggestedType=Globals.prefs.getExternalFileTypeByExt(suffix);
+  String suggestedName=bibtexKey != null ? getSuggestedFileName(res,suffix) : "";
+  String fDirectory=getFileDirectory(res);
+  if (fDirectory.trim().equals(""))   fDirectory=null;
+  final String directory=fDirectory;
+  final String suggestDir=directory != null ? directory : System.getProperty("user.home");
+  File file=new File(new File(suggestDir),suggestedName);
+  FileListEntry entry=new FileListEntry("",bibtexKey != null ? file.getCanonicalPath() : "",suggestedType);
+  editor=new FileListEntryEditor(frame,entry,true,false,metaData);
+  editor.getProgressBar().setIndeterminate(true);
+  editor.setOkEnabled(false);
+  editor.setExternalConfirm(new ConfirmCloseFileListEntryEditor(){
+    public boolean confirmClose(    FileListEntry entry){
+      File f=directory != null ? expandFilename(directory,entry.getLink()) : new File(entry.getLink());
+      if (f.isDirectory()) {
+        JOptionPane.showMessageDialog(frame,Globals.lang("Target file cannot be a directory."),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+        return false;
+      }
+      if (f.exists()) {
+        return JOptionPane.showConfirmDialog(frame,"'" + f.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Download file"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+      }
+ else       return true;
+    }
+  }
+);
+  if (!dontShowDialog)   editor.setVisible(true);
+ else   return;
+  if (editor.okPressed()) {
+    File toFile=directory != null ? expandFilename(directory,entry.getLink()) : new File(entry.getLink());
+    String dirPrefix;
+    if (directory != null) {
+      if (!directory.endsWith(System.getProperty("file.separator")))       dirPrefix=directory + System.getProperty("file.separator");
+ else       dirPrefix=directory;
+    }
+ else     dirPrefix=null;
+    try {
+      boolean success=Util.copyFile(tmp,toFile,true);
+      if (!success) {
+        System.out.println("File already exists! DownloadExternalFile.download()");
+      }
+      if ((directory != null) && entry.getLink().startsWith(directory) && (entry.getLink().length() > dirPrefix.length())) {
+        entry.setLink(entry.getLink().substring(dirPrefix.length()));
+      }
+      callback.downloadComplete(entry);
+    }
+ catch (    IOException ex) {
+      ex.printStackTrace();
+    }
+    tmp.delete();
+  }
+ else {
+    if (downloadFinished)     tmp.delete();
+  }
+}
