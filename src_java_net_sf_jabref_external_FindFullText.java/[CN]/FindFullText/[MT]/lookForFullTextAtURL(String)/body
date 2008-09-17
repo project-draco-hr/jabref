@@ -1,5 +1,4 @@
 {
-  String pageText=null;
   try {
     URL url=new URL(urlText);
     url=resolveRedirects(url,0);
@@ -7,13 +6,7 @@
     for (    FullTextFinder finder : finders) {
       if (finder.supportsSite(url)) {
         domainKnown=true;
-        if (pageText == null)         try {
-          pageText=loadPage(url);
-        }
- catch (        IOException ex) {
-          return new FindResult(IO_EXCEPTION,url);
-        }
-        URL result=finder.findFullTextURL(url,pageText);
+        URL result=finder.findFullTextURL(url);
         if (result != null) {
           try {
             URLDownload udl=new URLDownload(null,result,null);
@@ -23,6 +16,8 @@
               return new FindResult(result,url);
             }
  else {
+              udl=new URLDownload(null,result,new File("page.html"));
+              udl.download();
               return new FindResult(WRONG_MIME_TYPE,url);
             }
           }
@@ -40,6 +35,7 @@
     e.printStackTrace();
   }
 catch (  IOException e) {
+    e.printStackTrace();
   }
   return null;
 }

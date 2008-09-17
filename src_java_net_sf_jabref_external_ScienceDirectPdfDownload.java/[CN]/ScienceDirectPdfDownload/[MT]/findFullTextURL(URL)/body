@@ -1,4 +1,5 @@
 {
+  String pageSource=FindFullText.loadPage(url);
   int index=pageSource.indexOf("PDF (");
   if (index > -1) {
     String leading=pageSource.substring(0,index);
@@ -6,8 +7,7 @@
     if ((index > -1) && (index + 9 < leading.length())) {
       int endIndex=leading.indexOf("\"",index + 9);
       try {
-        URL pdfUrl=new URL(leading.substring(index + 9,endIndex));
-        return pdfUrl;
+        return new URL(leading.substring(index + 9,endIndex));
       }
  catch (      MalformedURLException e) {
         return null;
