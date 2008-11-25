@@ -14,5 +14,15 @@
       }
     }
   }
-  return pluginLayoutFormatter.get(formatterName);
+  if (pluginLayoutFormatter.containsKey(formatterName)) {
+    Class<? extends LayoutFormatter> c=pluginLayoutFormatter.get(formatterName).getClass();
+    try {
+      return c.getConstructor().newInstance();
+    }
+ catch (    Throwable e) {
+      e.printStackTrace();
+    }
+    return pluginLayoutFormatter.get(formatterName);
+  }
+ else   return null;
 }

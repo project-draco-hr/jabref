@@ -1,13 +1,20 @@
 {
+  frame.output(Globals.lang("External viewer called") + ".");
   try {
     ExternalFileType type=fileType;
     if (this.fileType == null) {
-      File file=new File(link);
-      String name=file.getName();
-      int pos=name.indexOf('.');
-      String extension=((pos >= 0) && (pos < name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
-      type=Globals.prefs.getExternalFileTypeByExt(extension);
-      fileType=type;
+      if (this.fieldName != null) {
+        Util.openExternalViewer(frame.basePanel().metaData(),link,fieldName);
+        return true;
+      }
+ else {
+        File file=new File(link);
+        String name=file.getName();
+        int pos=name.indexOf('.');
+        String extension=((pos >= 0) && (pos < name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
+        type=Globals.prefs.getExternalFileTypeByExt(extension);
+        fileType=type;
+      }
     }
     if (type instanceof UnknownExternalFileType)     return Util.openExternalFileUnknown(frame,entry,metaData,link,(UnknownExternalFileType)type);
  else     return Util.openExternalFileAnyFormat(metaData,link,type);

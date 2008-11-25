@@ -40,9 +40,15 @@
     System.out.println("mimetype:" + udl.getMimeType());
     suggestedType=Globals.prefs.getExternalFileTypeByMimeType(udl.getMimeType());
   }
-  String suffix=getSuffix(res);
-  if (suggestedType == null)   suggestedType=Globals.prefs.getExternalFileTypeByExt(suffix);
-  String suggestedName=bibtexKey != null ? getSuggestedFileName(res,suffix) : "";
+  String suffix;
+  if (suggestedType != null) {
+    suffix=suggestedType.getExtension();
+  }
+ else {
+    suffix=getSuffix(res);
+    suggestedType=Globals.prefs.getExternalFileTypeByExt(suffix);
+  }
+  String suggestedName=bibtexKey != null ? getSuggestedFileName(suffix) : "";
   String fDirectory=getFileDirectory(res);
   if (fDirectory.trim().equals(""))   fDirectory=null;
   final String directory=fDirectory;

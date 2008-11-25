@@ -2,12 +2,15 @@
   if (updateSource) {
     StringWriter sw=new StringWriter(200);
     try {
-      entry.write(sw,new net.sf.jabref.export.LatexFieldFormatter(),false);
+      LatexFieldFormatter formatter=new LatexFieldFormatter();
+      formatter.setNeverFailOnHashes(true);
+      entry.write(sw,formatter,false);
       String srcString=sw.getBuffer().toString();
       source.setText(srcString);
       lastSourceStringAccepted=srcString;
     }
  catch (    IOException ex) {
+      System.out.println("Her");
       source.setText(ex.getMessage() + "\n\n" + Globals.lang("Correct the entry, and " + "reopen editor to display/edit source."));
       source.setEditable(false);
     }

@@ -1,6 +1,15 @@
 {
   File outFile=new File(file);
-  SaveSession ss=getSaveSession(encoding,outFile);
+  SaveSession ss=null;
+  if (this.encoding != null) {
+    try {
+      ss=getSaveSession(this.encoding,outFile);
+    }
+ catch (    IOException ex) {
+      ex.printStackTrace();
+    }
+  }
+  if (ss == null)   ss=getSaveSession(encoding,outFile);
   VerifyingWriter ps=ss.getWriter();
   Layout beginLayout=null;
   Reader reader=null;

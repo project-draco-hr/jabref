@@ -40,8 +40,15 @@ if (comma_first < 0) {
 if (von_start < 0) {
 last_part_end=tokens.size();
 last_part_start=tokens.size() - TOKEN_GROUP_LENGTH;
+int index=tokens.size() - 2 * TOKEN_GROUP_LENGTH + OFFSET_TOKEN_TERM;
+if (index > 0) {
+Character ch=(Character)tokens.elementAt(index);
+if (ch.charValue() == '-') last_part_start-=TOKEN_GROUP_LENGTH;
+}
 first_part_end=last_part_start;
-if (first_part_end > 0) first_part_start=0;
+if (first_part_end > 0) {
+first_part_start=0;
+}
 }
  else {
 if (last_start >= 0) {
@@ -82,6 +89,12 @@ von_part_end=last_part_start;
 }
 von_part_start=0;
 }
+}
+if ((first_part_start == -1) && (last_part_start == -1) && (von_part_start != -1)) {
+last_part_start=von_part_start;
+last_part_end=von_part_end;
+von_part_start=-1;
+von_part_end=-1;
 }
 return new Author((first_part_start < 0 ? null : concatTokens(first_part_start,first_part_end,OFFSET_TOKEN,false)),(first_part_start < 0 ? null : concatTokens(first_part_start,first_part_end,OFFSET_TOKEN_ABBR,true)),(von_part_start < 0 ? null : concatTokens(von_part_start,von_part_end,OFFSET_TOKEN,false)),(last_part_start < 0 ? null : concatTokens(last_part_start,last_part_end,OFFSET_TOKEN,false)),(jr_part_start < 0 ? null : concatTokens(jr_part_start,jr_part_end,OFFSET_TOKEN,false)));
 }

@@ -18,23 +18,9 @@
         field=false;
       }
  else       if (field) {
-        String[] parts=val.split(":");
+        String[] parts=parseFieldMarker(val);
         String label=makeLabel(_entry,parts[0]);
-        if (parts.length > 1)         for (int j=1; j < parts.length; j++) {
-          String modifier=parts[j];
-          if (modifier.equals("lower")) {
-            label=label.toLowerCase();
-          }
- else           if (modifier.equals("abbr")) {
-            StringBuffer abbr=new StringBuffer();
-            String[] words=label.toString().replaceAll("[\\{\\}']","").split("[ \r\n\"]");
-            for (int word=0; word < words.length; word++)             if (words[word].length() > 0)             abbr.append(words[word].charAt(0));
-            label=abbr.toString();
-          }
- else {
-            Globals.logger("Key generator warning: unknown modifier '" + modifier + "'.");
-          }
-        }
+        if (parts.length > 1)         label=applyModifiers(label,parts,1);
         _sb.append(label);
       }
  else {

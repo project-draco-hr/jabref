@@ -423,6 +423,45 @@ catch (          Throwable ex) {
               filepath=link.toString();
             }
  else {
+              if (Globals.prefs.getBoolean("runAutomaticFileSearch")) {
+                final Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
+                entries.add(bes[0]);
+                ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
+                ArrayList<File> dirs=new ArrayList<File>();
+                if (metaData.getFileDirectory(GUIGlobals.FILE_FIELD) != null)                 dirs.add(new File(metaData.getFileDirectory(GUIGlobals.FILE_FIELD)));
+                Collection<String> extensions=new ArrayList<String>();
+                for (int i=0; i < types.length; i++) {
+                  final ExternalFileType type=types[i];
+                  extensions.add(type.getExtension());
+                }
+                Map<BibtexEntry,java.util.List<File>> result;
+                if (Globals.prefs.getBoolean(JabRefPreferences.USE_REG_EXP_SEARCH_KEY)) {
+                  String regExp=Globals.prefs.get(JabRefPreferences.REG_EXP_SEARCH_EXPRESSION_KEY);
+                  result=RegExpFileSearch.findFilesForSet(entries,extensions,dirs,regExp);
+                }
+ else                 result=Util.findAssociatedFiles(entries,extensions,dirs);
+                if (result.get(bes[0]) != null) {
+                  List<File> res=result.get(bes[0]);
+                  if (res.size() > 0) {
+                    filepath=res.get(0).getPath();
+                    int index=filepath.lastIndexOf('.');
+                    if ((index >= 0) && (index < filepath.length() - 1)) {
+                      String extension=filepath.substring(index + 1);
+                      ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(extension);
+                      if (type != null) {
+                        try {
+                          Util.openExternalFileAnyFormat(metaData,filepath,type);
+                          output(Globals.lang("External viewer called") + ".");
+                          return;
+                        }
+ catch (                        IOException ex) {
+                          output(Globals.lang("Error") + ": " + ex.getMessage());
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
             if (filepath != null) {
               try {
