@@ -7,20 +7,21 @@
       throw new EncryptionNotSupportedException("Error: Cannot read metadata from encrypted document.");
     }
     XMPMetadata meta=getXMPMetadata(document);
-    if (meta == null)     return null;
-    List<XMPSchema> schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
-    Iterator<XMPSchema> it=schemas.iterator();
-    while (it.hasNext()) {
-      XMPSchemaBibtex bib=(XMPSchemaBibtex)it.next();
-      result.add(bib.getBibtexEntry());
-    }
-    if (result.size() == 0) {
-      schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
-      it=schemas.iterator();
+    if (meta != null) {
+      List<XMPSchema> schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
+      Iterator<XMPSchema> it=schemas.iterator();
       while (it.hasNext()) {
-        XMPSchemaDublinCore dc=(XMPSchemaDublinCore)it.next();
-        BibtexEntry entry=getBibtexEntryFromDublinCore(dc);
-        if (entry != null)         result.add(entry);
+        XMPSchemaBibtex bib=(XMPSchemaBibtex)it.next();
+        result.add(bib.getBibtexEntry());
+      }
+      if (result.size() == 0) {
+        schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
+        it=schemas.iterator();
+        while (it.hasNext()) {
+          XMPSchemaDublinCore dc=(XMPSchemaDublinCore)it.next();
+          BibtexEntry entry=getBibtexEntryFromDublinCore(dc);
+          if (entry != null)           result.add(entry);
+        }
       }
     }
     if (result.size() == 0) {
@@ -31,5 +32,6 @@
   finally {
     if (document != null)     document.close();
   }
+  if (result.size() == 0)   return null;
   return result;
 }
