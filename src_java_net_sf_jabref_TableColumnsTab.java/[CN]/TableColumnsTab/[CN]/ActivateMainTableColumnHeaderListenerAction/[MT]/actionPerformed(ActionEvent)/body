@@ -1,0 +1,22 @@
+{
+  Object source=e.getSource();
+  if (source == null || !(source instanceof JCheckBox)) {
+    return;
+  }
+  boolean selected=((JCheckBox)source).isSelected();
+  _prefs.putBoolean(PersistenceTableColumnListener.ACTIVATE_PREF_KEY,selected);
+  if (selected) {
+    updateWitdhs.actionPerformed(e);
+  }
+  for (int i=0; i < frame.baseCount(); i++) {
+    MainTable table=frame.baseAt(i).mainTable;
+    TableColumnModel columnModel=table.getColumnModel();
+    PersistenceTableColumnListener columnListener=table.getTableColumnListener();
+    if (selected) {
+      columnModel.addColumnModelListener(columnListener);
+    }
+ else {
+      columnModel.removeColumnModelListener(columnListener);
+    }
+  }
+}
