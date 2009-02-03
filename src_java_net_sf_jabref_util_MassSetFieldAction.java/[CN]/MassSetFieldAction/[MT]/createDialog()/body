@@ -1,17 +1,33 @@
 {
-  diag=new JDialog(frame,Globals.lang("Set/clear fields"),true);
+  diag=new JDialog(frame,Globals.lang("Set/clear/rename fields"),true);
   field=new JTextField();
   text=new JTextField();
+  text.setEnabled(false);
+  renameTo=new JTextField();
+  renameTo.setEnabled(false);
   ok=new JButton(Globals.lang("Ok"));
   cancel=new JButton(Globals.lang("Cancel"));
   all=new JRadioButton(Globals.lang("All entries"));
   selected=new JRadioButton(Globals.lang("Selected entries"));
   clear=new JRadioButton(Globals.lang("Clear fields"));
   set=new JRadioButton(Globals.lang("Set fields"));
+  rename=new JRadioButton(Globals.lang("Rename field to:"));
+  rename.setToolTipText(Globals.lang("Move contents of a field into a field with a different name"));
   set.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent e){
       text.setEnabled(set.isSelected());
-      overwrite.setEnabled(set.isSelected());
+    }
+  }
+);
+  clear.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      overwrite.setEnabled(!clear.isSelected());
+    }
+  }
+);
+  rename.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent e){
+      renameTo.setEnabled(rename.isSelected());
     }
   }
 );
@@ -22,6 +38,7 @@
   bg=new ButtonGroup();
   bg.add(clear);
   bg.add(set);
+  bg.add(rename);
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:100dlu",""));
   builder.appendSeparator(Globals.lang("Field name"));
   builder.append(Globals.lang("Field name"));
@@ -37,6 +54,9 @@
   builder.append(text);
   builder.nextLine();
   builder.append(clear);
+  builder.nextLine();
+  builder.append(rename);
+  builder.append(renameTo);
   builder.nextLine();
   builder.append(overwrite,3);
   ButtonBarBuilder bb=new ButtonBarBuilder();

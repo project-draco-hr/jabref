@@ -15,8 +15,17 @@
   if (toSet.length() == 0)   toSet=null;
   String[] fields=getFieldNames(field.getText().trim().toLowerCase());
   NamedCompound ce=new NamedCompound(Globals.lang("Set field"));
-  for (int i=0; i < fields.length; i++) {
-    ce.addEdit(Util.massSetField(entryList,fields[i],set.isSelected() ? toSet : null,overwrite.isSelected()));
+  if (rename.isSelected()) {
+    if (fields.length > 1) {
+    }
+ else {
+      ce.addEdit(Util.massRenameField(entryList,fields[0],renameTo.getText(),overwrite.isSelected()));
+    }
+  }
+ else {
+    for (int i=0; i < fields.length; i++) {
+      ce.addEdit(Util.massSetField(entryList,fields[i],set.isSelected() ? toSet : null,overwrite.isSelected()));
+    }
   }
   ce.end();
   bp.undoManager.addEdit(ce);
