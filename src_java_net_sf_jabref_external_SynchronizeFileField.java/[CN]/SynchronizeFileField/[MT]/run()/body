@@ -32,6 +32,7 @@
   progress+=sel.length * weightAutoSet;
   panel.frame().setProgressBarValue(progress);
   if (checkExisting) {
+    boolean removeAllBroken=false;
     mainLoop:     for (int i=0; i < sel.length; i++) {
       panel.frame().setProgressBarValue(progress++);
       final String old=sel[i].getField(fieldName);
@@ -45,11 +46,17 @@
           boolean deleted=false;
           File file=Util.expandFilename(flEntry.getLink(),new String[]{dir,"."});
           if ((file == null) || !file.exists()) {
-            int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+            int answer;
+            if (!removeAllBroken) {
+              answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+            }
+ else {
+              answer=2;
+            }
 switch (answer) {
 case 1:
               FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.metaData());
-            flEditor.setVisible(true);
+            flEditor.setVisible(true,true);
           break;
 case 2:
         tableModel.removeEntry(j);
@@ -57,6 +64,12 @@ case 2:
     j--;
   break;
 case 3:
+tableModel.removeEntry(j);
+deleted=true;
+j--;
+removeAllBroken=true;
+break;
+case 4:
 break mainLoop;
 }
 brokenLinks++;
@@ -75,7 +88,7 @@ if (editor.okPressed()) {
 java.util.List<ExternalFileType> fileTypes=new ArrayList<ExternalFileType>();
 ExternalFileType[] oldTypes=Globals.prefs.getExternalFileTypeSelection();
 for (int k=0; k < oldTypes.length; k++) {
-  fileTypes.add(oldTypes[k]);
+fileTypes.add(oldTypes[k]);
 }
 fileTypes.add(newType);
 Collections.sort(fileTypes);
@@ -85,7 +98,7 @@ panel.mainTable.repaint();
 }
  else {
 FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.metaData());
-editor.setVisible(true);
+editor.setVisible(true,false);
 }
 }
 }

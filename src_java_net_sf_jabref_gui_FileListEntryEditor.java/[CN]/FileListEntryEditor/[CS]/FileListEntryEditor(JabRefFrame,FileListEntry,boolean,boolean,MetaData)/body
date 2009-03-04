@@ -25,8 +25,8 @@
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:150dlu, 4dlu, fill:pref, 4dlu, fill:pref",""));
   builder.append(Globals.lang("Link"));
   builder.append(link);
-  BrowseListener browse=new BrowseListener(frame,link);
-  JButton browseBut=new JButton(Globals.lang("Browse"));
+  final BrowseListener browse=new BrowseListener(frame,link);
+  final JButton browseBut=new JButton(Globals.lang("Browse"));
   browseBut.addActionListener(browse);
   builder.append(browseBut);
   if (showOpenButton)   builder.append(open);
@@ -84,5 +84,22 @@
   diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   diag.pack();
   Util.placeDialog(diag,frame);
+  diag.addWindowListener(new WindowAdapter(){
+    public void windowActivated(    WindowEvent event){
+      if (openBrowseWhenShown && !dontOpenBrowseUntilDisposed) {
+        dontOpenBrowseUntilDisposed=true;
+        SwingUtilities.invokeLater(new Runnable(){
+          public void run(){
+            browse.actionPerformed(new ActionEvent(browseBut,0,""));
+          }
+        }
+);
+      }
+    }
+    @Override public void windowClosed(    WindowEvent event){
+      dontOpenBrowseUntilDisposed=false;
+    }
+  }
+);
   setValues(entry);
 }
