@@ -19,7 +19,12 @@
   pane=new JScrollPane(this);
   pane.getViewport().setBackground(Globals.prefs.getColor("tableBackground"));
   setGridColor(Globals.prefs.getColor("gridColor"));
+  this.setTableHeader(new PreventDraggingJTableHeader(this.getColumnModel()));
   comparatorChooser=new MyTableComparatorChooser(this,sortedForTable,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  this.tableColumnListener=new PersistenceTableColumnListener(this);
+  if (Globals.prefs.getBoolean(PersistenceTableColumnListener.ACTIVATE_PREF_KEY)) {
+    getColumnModel().addColumnModelListener(this.tableColumnListener);
+  }
   getSelected();
   setDragEnabled(true);
   TransferHandler xfer=new EntryTableTransferHandler(this,frame,panel);
@@ -28,9 +33,4 @@
   setupComparatorChooser();
   refreshSorting();
   setWidths();
-  this.tableColumnListener=new PersistenceTableColumnListener(this);
-  if (Globals.prefs.getBoolean(PersistenceTableColumnListener.ACTIVATE_PREF_KEY)) {
-    getColumnModel().addColumnModelListener(this.tableColumnListener);
-  }
-  this.setTableHeader(new PreventDraggingJTableHeader(this.getColumnModel()));
 }
