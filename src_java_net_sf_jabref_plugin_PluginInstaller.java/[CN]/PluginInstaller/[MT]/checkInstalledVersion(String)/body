@@ -1,15 +1,16 @@
 {
   String[] nav=getNameAndVersion(filename);
   VersionNumber vn=new VersionNumber(nav[1]);
-  System.out.println("Name: '" + nav[0] + "'");
-  System.out.println("Version: '" + nav[1] + "'");
   List<VersionNumber> versions=getInstalledVersions(nav[0]);
-  System.out.println("Installed versions:");
   for (Iterator<VersionNumber> stringIterator=versions.iterator(); stringIterator.hasNext(); ) {
     System.out.println(stringIterator.next().toString());
   }
   boolean hasSame=versions.size() > 0 && (vn.compareTo(versions.get(0)) == 0);
   boolean hasNewer=versions.size() > 0 && (vn.compareTo(versions.get(0)) > 0);
-  System.out.println("Has same? " + hasSame);
-  System.out.println("Has newer? " + hasNewer);
+  if (versions.size() == 0) {
+    return NO_VERSIONS_INSTALLED;
+  }
+  if (hasNewer)   return NEWER_VERSION_INSTALLED;
+  if (hasSame)   return SAME_VERSION_INSTALLED;
+  return OLDER_VERSION_INSTALLED;
 }

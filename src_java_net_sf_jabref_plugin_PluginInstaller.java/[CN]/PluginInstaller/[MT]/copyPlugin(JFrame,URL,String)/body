@@ -1,14 +1,19 @@
 {
   if (destFileName == null)   destFileName=source.getFile();
-  System.out.println("Destination name: '" + destFileName + "'");
+  if (!PluginCore.userPluginDir.exists()) {
+    boolean created=PluginCore.userPluginDir.mkdirs();
+    if (!created) {
+      return UNABLE_TO_CREATE_DIR;
+    }
+  }
   File destFile=new File(PluginCore.userPluginDir,destFileName);
   URLDownload ud=new URLDownload(frame,source,destFile);
   try {
     ud.download();
-    return true;
+    return SUCCESS;
   }
  catch (  IOException e) {
     e.printStackTrace();
-    return false;
+    return UNABLE_TO_COPY_FILE;
   }
 }
