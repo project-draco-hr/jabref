@@ -1,0 +1,15 @@
+{
+  String[] nav=getNameAndVersion(filename);
+  if (nav == null)   return false;
+  boolean success=true;
+  VersionNumber num=new VersionNumber(nav[1]);
+  List<VersionNumber> versions=getInstalledVersions(nav[0]);
+  for (Iterator<VersionNumber> iterator=versions.iterator(); iterator.hasNext(); ) {
+    VersionNumber versionNumber=iterator.next();
+    if (num.compareTo(versionNumber) < 0) {
+      String file=buildFileName(nav[0],versionNumber.toString());
+      success=(new File(file)).delete() && success;
+    }
+  }
+  return success;
+}

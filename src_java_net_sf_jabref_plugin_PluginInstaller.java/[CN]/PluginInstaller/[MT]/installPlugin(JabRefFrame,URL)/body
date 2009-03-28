@@ -31,7 +31,13 @@ result=copyPlugin(frame,source,fileName);
 if (result == SUCCESS) {
 int answer=JOptionPane.showConfirmDialog(frame,Globals.lang("One or more older versions of this plugin is installed. Delete old versions?"),Globals.lang("Plugin installer"),JOptionPane.YES_NO_OPTION);
 if (answer == JOptionPane.YES_OPTION) {
-System.out.println("implement delete old");
+boolean success=deleteOlderVersions(fileName);
+if (success) {
+JOptionPane.showMessageDialog(frame,Globals.lang("Old versions deleted successfully."),Globals.lang("Plugin installer"),JOptionPane.INFORMATION_MESSAGE);
+}
+ else {
+JOptionPane.showMessageDialog(frame,Globals.lang("Deletion of old versions failed."),Globals.lang("Plugin installer"),JOptionPane.ERROR_MESSAGE);
+}
 }
 }
  else {
