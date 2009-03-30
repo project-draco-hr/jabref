@@ -1,6 +1,10 @@
 {
   this.frame=frame;
   diag=new JDialog(frame,Globals.lang("Plugin manager"),false);
+  help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.pluginHelp,"Help"));
+  JLabel lab=new JLabel(Globals.lang("Plugins installed in your user plugin directory (%0) are listed below:",PluginCore.userPluginDir.getPath()));
+  lab.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(lab,BorderLayout.NORTH);
   table=new JTable();
   buildList();
   diag.getContentPane().add(new JScrollPane(table),BorderLayout.CENTER);
@@ -8,8 +12,9 @@
   b.addGlue();
   b.addGridded(install);
   b.addGridded(remove);
-  b.addRelatedGap();
   b.addGridded(close);
+  b.addRelatedGap();
+  b.addGridded(help);
   b.addGlue();
   b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   diag.getContentPane().add(b.getPanel(),BorderLayout.SOUTH);
