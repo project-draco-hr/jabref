@@ -7,10 +7,20 @@
     }
   }
 );
+  List<String> urls=new ArrayList<String>();
+  Collection<PluginDescriptor> descriptors=PluginCore.getManager().getRegistry().getPluginDescriptors();
+  for (  PluginDescriptor desc : descriptors) {
+    urls.add(desc.getLocation().getFile());
+  }
   for (int i=0; i < files.length; i++) {
     String[] nav=getNameAndVersion(files[i]);
     if (nav != null) {
-      plugins.add(new NameAndVersion(nav[0],new VersionNumber(nav[1])));
+      VersionNumber vn=nav[1] != null ? new VersionNumber(nav[1]) : null;
+      NameAndVersion nameAndVersion=new NameAndVersion(nav[0],vn);
+      for (      String loc : urls) {
+        if (loc.indexOf(nav[0]) >= 0)         nameAndVersion.setStatus(LOADED);
+      }
+      plugins.add(nameAndVersion);
     }
   }
   return plugins;
