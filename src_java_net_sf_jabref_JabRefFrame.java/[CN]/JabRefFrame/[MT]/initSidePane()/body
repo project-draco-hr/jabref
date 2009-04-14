@@ -5,9 +5,15 @@
   JabRefPlugin jabrefPlugin=JabRefPlugin.getInstance(PluginCore.getManager());
   if (jabrefPlugin != null) {
     for (    EntryFetcherExtension ext : jabrefPlugin.getEntryFetcherExtensions()) {
-      EntryFetcher fetcher=ext.getEntryFetcher();
-      if (fetcher != null) {
-        fetchers.add(fetcher);
+      try {
+        EntryFetcher fetcher=ext.getEntryFetcher();
+        if (fetcher != null) {
+          fetchers.add(fetcher);
+        }
+      }
+ catch (      ClassCastException ex) {
+        PluginCore.getManager().disablePlugin(ext.getDeclaringPlugin().getDescriptor());
+        ex.printStackTrace();
       }
     }
   }
