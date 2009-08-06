@@ -1,6 +1,7 @@
 {
   success=false;
   cancelled=false;
+  fileLockedError=false;
   if (panel.getFile() == null)   saveAs();
  else {
     if (panel.isUpdatedExternally() || Globals.fileUpdateMonitor.hasBeenModified(panel.getFileMonitorHandle())) {
@@ -14,6 +15,9 @@
         cancelled=true;
         (new Thread(new Runnable(){
           public void run(){
+            if (!Util.waitForFileLock(panel.getFile(),10)) {
+              System.err.println("File locked, this will be trouble.");
+            }
             ChangeScanner scanner=new ChangeScanner(panel.frame(),panel);
             scanner.changeScan(panel.getFile());
             try {

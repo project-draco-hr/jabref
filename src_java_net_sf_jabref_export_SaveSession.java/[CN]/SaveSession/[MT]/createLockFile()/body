@@ -1,0 +1,17 @@
+{
+  File lock=new File(file.getPath() + LOCKFILE_SUFFIX);
+  if (lock.exists()) {
+    return true;
+  }
+  FileOutputStream out=new FileOutputStream(lock);
+  out.write(0);
+  try {
+    out.close();
+  }
+ catch (  IOException ex) {
+    System.err.println("Error when creating lock file");
+    ex.printStackTrace();
+  }
+  lock.deleteOnExit();
+  return false;
+}

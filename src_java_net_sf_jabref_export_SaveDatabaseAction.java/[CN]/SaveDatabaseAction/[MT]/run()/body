@@ -5,11 +5,17 @@
   try {
     panel.storeCurrentEdit();
     panel.autoGenerateKeysBeforeSaving();
-    success=saveDatabase(panel.getFile(),false,panel.getEncoding());
-    try {
-      Globals.fileUpdateMonitor.updateTimeStamp(panel.getFileMonitorHandle());
+    if (!Util.waitForFileLock(panel.getFile(),10)) {
+      success=false;
+      fileLockedError=true;
     }
- catch (    IllegalArgumentException ex) {
+ else {
+      success=saveDatabase(panel.getFile(),false,panel.getEncoding());
+      try {
+        Globals.fileUpdateMonitor.updateTimeStamp(panel.getFileMonitorHandle());
+      }
+ catch (      IllegalArgumentException ex) {
+      }
     }
     panel.setSaving(false);
     if (success) {

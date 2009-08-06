@@ -15,6 +15,11 @@
     }
   }
 ;
+  if ((BasePanel.this.getFile() != null) && !Util.waitForFileLock(BasePanel.this.getFile(),10)) {
+    System.err.println("File updated externally, but change scan failed because the file is locked.");
+    Globals.fileUpdateMonitor.perturbTimestamp(getFileMonitorHandle());
+    return;
+  }
   scanner.changeScan(BasePanel.this.getFile());
   try {
     scanner.join();
