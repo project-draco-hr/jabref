@@ -1,2 +1,49 @@
 {
+  final int col=table.columnAtPoint(e.getPoint()), row=table.rowAtPoint(e.getPoint());
+  if (e.getClickCount() == 2) {
+    BibtexEntry toShow=tableRows.get(row);
+    editSignalled(toShow);
+  }
+  final String[] iconType=table.getIconTypeForColumn(col);
+  if (Globals.ON_WIN && (iconType != null) && (e.getButton() != MouseEvent.BUTTON1))   return;
+  if (iconType != null) {
+    Object value=table.getValueAt(row,col);
+    if (value == null)     return;
+    final BibtexEntry entry=tableRows.get(row);
+    int hasField=-1;
+    for (int i=iconType.length - 1; i >= 0; i--)     if (entry.getField(iconType[i]) != null)     hasField=i;
+    if (hasField == -1)     return;
+    final String fieldName=iconType[hasField];
+    (new Thread(){
+      public void run(){
+        panel.output(Globals.lang("External viewer called") + ".");
+        Object link=entry.getField(fieldName);
+        if (link == null) {
+          Globals.logger("Error: no link to " + fieldName + ".");
+          return;
+        }
+        try {
+          if (fieldName.equals(GUIGlobals.FILE_FIELD)) {
+            FileListTableModel fileList=new FileListTableModel();
+            fileList.setContent((String)link);
+            if (fileList.getRowCount() > 0) {
+              FileListEntry flEntry=fileList.getEntry(0);
+              ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.getLink(),flEntry.getType().getIcon(),panel.metaData(),flEntry.getType());
+              boolean success=item.openLink();
+              if (!success) {
+                panel.output(Globals.lang("Unable to open link."));
+              }
+            }
+          }
+ else {
+            Util.openExternalViewer(panel.metaData(),(String)link,fieldName);
+          }
+        }
+ catch (        IOException ex) {
+          panel.output(Globals.lang("Error") + ": " + ex.getMessage());
+        }
+      }
+    }
+).start();
+  }
 }
