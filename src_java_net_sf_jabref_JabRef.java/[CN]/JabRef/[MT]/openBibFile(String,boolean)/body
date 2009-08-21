@@ -1,0 +1,36 @@
+{
+  System.out.println(Globals.lang("Opening") + ": " + name);
+  File file=new File(name);
+  try {
+    if (!ignoreAutosave) {
+      boolean autoSaveFound=AutoSaveManager.newerAutoSaveExists(file);
+      if (autoSaveFound) {
+        ParserResult postp=new ParserResult(null,null,null);
+        postp.setPostponedAutosaveFound(true);
+        postp.setFile(file);
+        return postp;
+      }
+    }
+    String encoding=Globals.prefs.get("defaultEncoding");
+    ParserResult pr=OpenDatabaseAction.loadDatabase(file,encoding);
+    if (pr == null) {
+      pr=new ParserResult(null,null,null);
+      pr.setFile(file);
+      pr.setInvalid(true);
+      return pr;
+    }
+    pr.setFile(file);
+    if (pr.hasWarnings()) {
+      String[] warn=pr.warnings();
+      for (int i=0; i < warn.length; i++)       System.out.println(Globals.lang("Warning") + ": " + warn[i]);
+    }
+    return pr;
+  }
+ catch (  Throwable ex) {
+    ParserResult pr=new ParserResult(null,null,null);
+    pr.setFile(file);
+    pr.setInvalid(true);
+    pr.setErrorMessage(ex.getMessage());
+    return pr;
+  }
+}

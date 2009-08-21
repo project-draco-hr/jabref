@@ -1,6 +1,7 @@
 {
   FieldComparatorStack<BibtexEntry> comparatorStack=null;
-  if (Globals.prefs.getBoolean("saveInOriginalOrder")) {
+  boolean inOriginalOrder=isSaveOperation ? Globals.prefs.getBoolean("saveInOriginalOrder") : Globals.prefs.getBoolean("exportInOriginalOrder");
+  if (inOriginalOrder) {
     List<Comparator<BibtexEntry>> comparators=new ArrayList<Comparator<BibtexEntry>>();
     comparators.add(new CrossRefEntryComparator());
     comparators.add(new IdComparator());
@@ -9,7 +10,8 @@
  else {
     String pri, sec, ter;
     boolean priD, secD, terD=false;
-    if (!isSaveOperation || !Globals.prefs.getBoolean("saveInStandardOrder")) {
+    boolean inStandardOrder=isSaveOperation ? Globals.prefs.getBoolean("saveInStandardOrder") : Globals.prefs.getBoolean("exportInStandardOrder");
+    if (!inStandardOrder) {
       pri=Globals.prefs.get("priSort");
       sec=Globals.prefs.get("secSort");
       ter=Globals.prefs.get("terSort");

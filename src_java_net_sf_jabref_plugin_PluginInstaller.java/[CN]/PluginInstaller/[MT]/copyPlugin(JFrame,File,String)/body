@@ -1,0 +1,40 @@
+{
+  if (destFileName == null)   destFileName=source.getName();
+  if (!PluginCore.userPluginDir.exists()) {
+    boolean created=PluginCore.userPluginDir.mkdirs();
+    if (!created) {
+      return UNABLE_TO_CREATE_DIR;
+    }
+  }
+  File destFile=new File(PluginCore.userPluginDir,destFileName);
+  BufferedInputStream in=null;
+  BufferedOutputStream out=null;
+  try {
+    in=new BufferedInputStream(new FileInputStream(source));
+    out=new BufferedOutputStream(new FileOutputStream(destFile));
+    byte[] buf=new byte[1024];
+    int count;
+    while ((count=in.read(buf,0,buf.length)) > 0) {
+      out.write(buf,0,count);
+    }
+  }
+ catch (  IOException ex) {
+    ex.printStackTrace();
+    return UNABLE_TO_COPY_FILE;
+  }
+ finally {
+    if (in != null)     try {
+      in.close();
+    }
+ catch (    IOException ex) {
+      return UNABLE_TO_COPY_FILE;
+    }
+    if (out != null)     try {
+      out.close();
+    }
+ catch (    IOException ex) {
+      return UNABLE_TO_COPY_FILE;
+    }
+  }
+  return SUCCESS;
+}

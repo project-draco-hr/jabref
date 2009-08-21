@@ -1,4 +1,17 @@
 {
-  PluginInstaller.installPlugin(frame,url);
-  buildList();
+  try {
+    File tmpFile=File.createTempFile("jabref-plugin",".jar");
+    tmpFile.deleteOnExit();
+    URLDownload ud=new URLDownload(frame,url,tmpFile);
+    ud.download();
+    String path=url.getPath();
+    int pos=path.lastIndexOf('/');
+    if ((pos >= 0) && (pos < path.length() - 1))     path=path.substring(pos + 1);
+    PluginInstaller.installPlugin(frame,tmpFile,path);
+    tmpFile.delete();
+    buildList();
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+  }
 }

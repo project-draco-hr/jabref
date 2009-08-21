@@ -30,7 +30,7 @@
     for (int i=0; i < leftOver.length; i++) {
       boolean bibExtension=leftOver[i].toLowerCase().endsWith("bib");
       ParserResult pr=null;
-      if (bibExtension)       pr=openBibFile(leftOver[i]);
+      if (bibExtension)       pr=openBibFile(leftOver[i],false);
       if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
         if (initialStartup) {
           toImport.add(leftOver[i]);
@@ -38,6 +38,7 @@
  else {
           ParserResult res=importToOpenBase(leftOver[i]);
           if (res != null)           loaded.add(res);
+ else           loaded.add(ParserResult.INVALID_FORMAT);
         }
       }
  else       loaded.add(pr);
@@ -66,7 +67,7 @@
           ParserResult pr=loaded.elementAt(loaded.size() - 1);
           try {
             System.out.println(Globals.lang("Saving") + ": " + data[0]);
-            SaveSession session=FileActions.saveDatabase(pr.getDatabase(),new MetaData(pr.getMetaData(),pr.getDatabase()),new File(data[0]),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"));
+            SaveSession session=FileActions.saveDatabase(pr.getDatabase(),new MetaData(pr.getMetaData(),pr.getDatabase()),new File(data[0]),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"),false);
             if (!session.getWriter().couldEncodeAll())             System.err.println(Globals.lang("Warning") + ": " + Globals.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding())+ session.getWriter().getProblemCharacters());
             session.commit();
           }
@@ -127,7 +128,7 @@
             String subName=Util.getCorrectFileName(data[1],"bib");
             try {
               System.out.println(Globals.lang("Saving") + ": " + subName);
-              SaveSession session=FileActions.saveDatabase(newBase,new MetaData(),new File(subName),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"));
+              SaveSession session=FileActions.saveDatabase(newBase,new MetaData(),new File(subName),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"),false);
               if (!session.getWriter().couldEncodeAll())               System.err.println(Globals.lang("Warning") + ": " + Globals.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding())+ session.getWriter().getProblemCharacters());
               session.commit();
             }

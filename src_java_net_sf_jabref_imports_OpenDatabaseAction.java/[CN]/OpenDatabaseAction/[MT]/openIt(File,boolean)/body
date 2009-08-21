@@ -1,25 +1,54 @@
 {
   if ((file != null) && (file.exists())) {
+    File fileToLoad=file;
     frame.output(Globals.lang("Opening") + ": '" + file.getPath()+ "'");
-    try {
+    boolean tryingAutosave=false;
+    boolean autoSaveFound=AutoSaveManager.newerAutoSaveExists(file);
+    if (autoSaveFound && !Globals.prefs.getBoolean("promptBeforeUsingAutosave")) {
+      fileToLoad=AutoSaveManager.getAutoSaveFile(file);
+      tryingAutosave=true;
+    }
+ else     if (autoSaveFound) {
+      int answer=JOptionPane.showConfirmDialog(null,"<html>" + Globals.lang("An autosave file was found for this database. This could indicate " + "that JabRef didn't shut down cleanly last time the file was used.") + "<br>"+ Globals.lang("Do you want to recover the database from the autosave file?")+ "</html>",Globals.lang("Recover from autosave"),JOptionPane.YES_NO_OPTION);
+      if (answer == JOptionPane.YES_OPTION) {
+        fileToLoad=AutoSaveManager.getAutoSaveFile(file);
+        tryingAutosave=true;
+      }
+    }
+    boolean done=false;
+    while (!done) {
       String fileName=file.getPath();
       Globals.prefs.put("workingDirectory",file.getPath());
       String encoding=Globals.prefs.get("defaultEncoding");
-      final ParserResult pr=loadDatabase(file,encoding);
-      if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
-        JOptionPane.showMessageDialog(null,Globals.lang("Error opening file" + " '" + fileName + "'"),Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
-        return;
+      ParserResult pr;
+      String errorMessage=null;
+      try {
+        pr=loadDatabase(fileToLoad,encoding);
       }
+ catch (      Exception ex) {
+        errorMessage=ex.getMessage();
+        pr=null;
+      }
+      if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
+        String message="<html>" + errorMessage + "<p>"+ (tryingAutosave ? Globals.lang("Error opening autosave of '%0'. Trying to load '%0' instead.",file.getName()) : "")+ "</html>";
+        JOptionPane.showMessageDialog(null,message,Globals.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
+        if (tryingAutosave) {
+          tryingAutosave=false;
+          fileToLoad=file;
+        }
+ else         done=true;
+        continue;
+      }
+ else       done=true;
       final BasePanel panel=addNewDatabase(pr,file,raisePanel);
+      if (tryingAutosave)       panel.markNonUndoableBaseChanged();
+      final ParserResult prf=pr;
       SwingUtilities.invokeLater(new Runnable(){
         public void run(){
-          performPostOpenActions(panel,pr,true);
+          performPostOpenActions(panel,prf,true);
         }
       }
 );
-    }
- catch (    Exception ex) {
-      Util.showQuickErrorDialog(frame,Globals.lang("Open database"),ex);
     }
   }
 }

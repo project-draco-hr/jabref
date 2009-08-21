@@ -7,7 +7,16 @@ case LayoutHelper.IS_SIMPLE_FIELD:
 case LayoutHelper.IS_FIELD_START:
 case LayoutHelper.IS_GROUP_START:
 {
-  String field=BibtexDatabase.getResolvedField(text,bibtex,database);
+  String field;
+  if (type == LayoutHelper.IS_GROUP_START)   field=BibtexDatabase.getResolvedField(text,bibtex,database);
+ else {
+    String[] parts=text.split(";");
+    field=null;
+    for (int i=0; i < parts.length; i++) {
+      field=BibtexDatabase.getResolvedField(parts[i],bibtex,database);
+      if (field == null)       break;
+    }
+  }
   if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && (field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())))) {
     return null;
   }

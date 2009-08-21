@@ -1,0 +1,15 @@
+{
+  String[] nav=getNameAndVersion(f);
+  if (nav == null)   return UNKNOWN_VERSION;
+  VersionNumber vn=new VersionNumber(nav[1]);
+  Map<VersionNumber,File> versions=getInstalledVersions(nav[0]);
+  if (versions.size() == 0) {
+    return NO_VERSIONS_INSTALLED;
+  }
+  VersionNumber thenum=versions.keySet().iterator().next();
+  boolean hasSame=vn.compareTo(thenum) == 0;
+  boolean hasNewer=vn.compareTo(thenum) > 0;
+  if (hasNewer)   return NEWER_VERSION_INSTALLED;
+  if (hasSame)   return SAME_VERSION_INSTALLED;
+  return OLDER_VERSION_INSTALLED;
+}

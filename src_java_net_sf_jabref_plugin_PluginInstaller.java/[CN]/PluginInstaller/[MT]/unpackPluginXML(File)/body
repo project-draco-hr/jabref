@@ -1,0 +1,37 @@
+{
+  InputStream in=null;
+  OutputStream out=null;
+  try {
+    JarFile jar=new JarFile(f);
+    ZipEntry entry=jar.getEntry(PLUGIN_XML_FILE);
+    if (entry == null) {
+      return null;
+    }
+    File dest=File.createTempFile("jabref_plugin",".xml");
+    dest.deleteOnExit();
+    in=new BufferedInputStream(jar.getInputStream(entry));
+    out=new BufferedOutputStream(new FileOutputStream(dest));
+    byte[] buffer=new byte[2048];
+    for (; ; ) {
+      int nBytes=in.read(buffer);
+      if (nBytes <= 0)       break;
+      out.write(buffer,0,nBytes);
+    }
+    out.flush();
+    return dest;
+  }
+ catch (  IOException ex) {
+    ex.printStackTrace();
+    return null;
+  }
+ finally {
+    try {
+      if (out != null)       out.close();
+      if (in != null)       in.close();
+    }
+ catch (    IOException ex) {
+      ex.printStackTrace();
+      return null;
+    }
+  }
+}

@@ -3,9 +3,14 @@
   _prefs.putBoolean("openLastEdited",openLast.isSelected());
   _prefs.putBoolean("saveInStandardOrder",saveAuthorOrder.isSelected());
   _prefs.putBoolean("saveInOriginalOrder",saveOriginalOrder.isSelected());
+  _prefs.putBoolean("exportInStandardOrder",exportAuthorOrder.isSelected());
+  _prefs.putBoolean("exportInOriginalOrder",exportOriginalOrder.isSelected());
   _prefs.putBoolean("autoDoubleBraces",autoDoubleBraces.isSelected());
   _prefs.putBoolean("resolveStringsAllFields",resolveStringsAll.isSelected());
   _prefs.put("doNotResolveStringsFor",doNotResolveStringsFor.getText().trim());
+  _prefs.putBoolean("autoSave",autoSave.isSelected());
+  _prefs.putBoolean("promptBeforeUsingAutosave",promptBeforeUsingAutoSave.isSelected());
+  _prefs.putInt("autoSaveInterval",(Integer)autoSaveInterval.getValue());
   doNotResolveStringsFor.setText(_prefs.get("doNotResolveStringsFor"));
   boolean updateSpecialFields=false;
   if (!bracesAroundCapitalsFields.getText().trim().equals(_prefs.get("putBracesAroundCapitals"))) {
@@ -17,4 +22,10 @@
     updateSpecialFields=true;
   }
   if (updateSpecialFields)   _prefs.updateSpecialFieldHandling();
+  if (!origAutoSaveSetting && autoSave.isSelected()) {
+    Globals.startAutoSaveManager(_frame);
+  }
+ else   if (origAutoSaveSetting && !autoSave.isSelected()) {
+    Globals.stopAutoSaveManager();
+  }
 }
