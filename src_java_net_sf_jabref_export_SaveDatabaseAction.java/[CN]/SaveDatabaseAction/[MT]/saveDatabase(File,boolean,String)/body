@@ -10,6 +10,9 @@
     throw new SaveException("rt");
   }
 catch (  SaveException ex) {
+    if (ex == SaveException.FILE_LOCKED) {
+      throw ex;
+    }
     if (ex.specificEntry()) {
       int row=panel.mainTable.findEntry(ex.getEntry()), topShow=Math.max(0,row - 3);
       panel.mainTable.setRowSelectionInterval(row,row);

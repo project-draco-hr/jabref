@@ -20,6 +20,10 @@
       String fileName=file.getPath();
       Globals.prefs.put("workingDirectory",file.getPath());
       String encoding=Globals.prefs.get("defaultEncoding");
+      if (!Util.waitForFileLock(file,10)) {
+        JOptionPane.showMessageDialog(null,Globals.lang("Error opening file") + " '" + fileName+ "'. "+ Globals.lang("File is locked by another JabRef instance."),Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
+        return;
+      }
       ParserResult pr;
       String errorMessage=null;
       try {
@@ -30,6 +34,7 @@
         pr=null;
       }
       if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
+        JOptionPane.showMessageDialog(null,Globals.lang("Error opening file") + " '" + fileName+ "'",Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
         String message="<html>" + errorMessage + "<p>"+ (tryingAutosave ? Globals.lang("Error opening autosave of '%0'. Trying to load '%0' instead.",file.getName()) : "")+ "</html>";
         JOptionPane.showMessageDialog(null,message,Globals.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
         if (tryingAutosave) {

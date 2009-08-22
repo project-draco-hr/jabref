@@ -14,7 +14,9 @@
   try {
     if (useLockFile) {
       try {
-        createLockFile();
+        if (createLockFile()) {
+          if (!Util.waitForFileLock(file,10))           throw SaveException.FILE_LOCKED;
+        }
       }
  catch (      IOException ex) {
         System.err.println("Error when creating lock file");
