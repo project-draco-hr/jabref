@@ -37,11 +37,12 @@
     if (editorType == GUIGlobals.FILE_LIST_EDITOR)     ta=new FileListEditor(frame,bPanel.metaData(),fields[i],null,parent);
  else     ta=new FieldTextArea(fields[i],null);
     JComponent ex=parent.getExtra(fields[i],ta);
-    setupJTextComponent(ta.getTextComponent());
     AutoCompleter autoComp=bPanel.getAutoCompleter(fields[i]);
+    AutoCompleteListener acl=null;
     if (autoComp != null) {
-      ta.getTextComponent().addKeyListener(new AutoCompleteListener(autoComp));
+      acl=new AutoCompleteListener(autoComp);
     }
+    setupJTextComponent(ta.getTextComponent(),acl);
     editors.put(fields[i],ta);
     if (i == 0)     activeField=ta;
     ta.getPane().setPreferredSize(new Dimension(100,(int)(50.0 * BibtexFields.getFieldWeight(fields[i]))));
@@ -58,7 +59,7 @@
   }
   if (addKeyField) {
     final FieldTextField tf=new FieldTextField(BibtexFields.KEY_FIELD,parent.getEntry().getField(BibtexFields.KEY_FIELD),true);
-    setupJTextComponent(tf);
+    setupJTextComponent(tf,null);
     editors.put("bibtexkey",tf);
     if (editors.size() == 1)     activeField=tf;
     builder.nextLine();
