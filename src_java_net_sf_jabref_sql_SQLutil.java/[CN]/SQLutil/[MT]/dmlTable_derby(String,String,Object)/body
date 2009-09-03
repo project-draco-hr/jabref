@@ -1,7 +1,7 @@
 {
   processDML(out,"CREATE TABLE entry_types ( " + "entry_types_id INT  NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " + dml1 + ", "+ "label LONG VARCHAR"+ ")");
   processDML(out,"CREATE TABLE entries ( " + "entries_id      INTEGER         NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " + "jabref_eid      VARCHAR(" + Util.getMinimumIntegerDigits() + ")   DEFAULT NULL, "+ "entry_types_id  INTEGER         DEFAULT NULL, "+ "cite_key        VARCHAR(100)     DEFAULT NULL, "+ dml2+ ")");
-  processDML(out,"ALTER TABLE entries ADD CONSTRAINT entries_fk " + "FOREIGN KEY (\"entry_types_id\") REFERENCES \"entry_type\" (\"entry_types_id\")");
+  processDML(out,"ALTER TABLE entries ADD CONSTRAINT entries_fk " + "FOREIGN KEY (\"entry_types_id\") REFERENCES \"entry_types\" (\"entry_types_id\")");
   processDML(out,"CREATE TABLE group_types ( " + "group_types_id INT  NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " + "label LONG VARCHAR"+ ")");
   processDML(out,"CREATE TABLE groups ( " + "groups_id       INTEGER         NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " + "group_types_id  INTEGER         DEFAULT NULL, "+ "label           VARCHAR(100)    DEFAULT NULL, "+ "parent_id       INTEGER         DEFAULT NULL  "+ "search_field       VARCHAR(100)          DEFAULT NULL, "+ "search_expression  VARCHAR(200)          DEFAULT NULL, "+ "case_sensitive  BOOL          DEFAULT NULL, "+ "reg_exp BOOL DEFAULT NULL"+ "hierarchical_context INTEGER DEFAULT NULL, "+ ")");
   processDML(out,"CREATE TABLE entry_group ( " + "entries_id       INTEGER        NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY, " + "groups_id        INTEGER        DEFAULT NULL "+ ")");
