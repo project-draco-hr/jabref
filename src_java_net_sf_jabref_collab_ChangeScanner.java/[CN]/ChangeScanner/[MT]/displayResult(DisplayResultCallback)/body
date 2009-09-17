@@ -2,10 +2,13 @@
   if (changes.getChildCount() > 0) {
     SwingUtilities.invokeLater(new Runnable(){
       public void run(){
-        ChangeDisplayDialog dial=new ChangeDisplayDialog(frame,panel,changes);
+        ChangeDisplayDialog dial=new ChangeDisplayDialog(frame,panel,inTemp,changes);
         Util.placeDialog(dial,frame);
         dial.setVisible(true);
         fup.scanResultsResolved(dial.isOkPressed());
+        if (dial.isOkPressed()) {
+          storeTempDatabase();
+        }
       }
     }
 );

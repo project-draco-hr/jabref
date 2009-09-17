@@ -2,8 +2,8 @@
   try {
     File tempFile=Globals.fileUpdateMonitor.getTempFile(panel.fileMonitorHandle());
     ParserResult pr=OpenDatabaseAction.loadDatabase(tempFile,Globals.prefs.get("defaultEncoding"));
-    BibtexDatabase inTemp=pr.getDatabase();
-    MetaData mdInTemp=new MetaData(pr.getMetaData(),inTemp);
+    inTemp=pr.getDatabase();
+    mdInTemp=new MetaData(pr.getMetaData(),inTemp);
     pr=OpenDatabaseAction.loadDatabase(f,Globals.prefs.get("defaultEncoding"));
     BibtexDatabase onDisk=pr.getDatabase();
     MetaData mdOnDisk=new MetaData(pr.getMetaData(),onDisk);
@@ -19,6 +19,7 @@
     comp=new EntryComparator(false,true,sortBy[1],comp);
     comp=new EntryComparator(false,true,sortBy[0],comp);
     EntrySorter sInMem=inMem.getSorter(comp);
+    scanMetaData(mdInMem,mdInTemp,mdOnDisk);
     scanPreamble(inMem,inTemp,onDisk);
     scanStrings(inMem,inTemp,onDisk);
     scanEntries(sInMem,sInTemp,sOnDisk);

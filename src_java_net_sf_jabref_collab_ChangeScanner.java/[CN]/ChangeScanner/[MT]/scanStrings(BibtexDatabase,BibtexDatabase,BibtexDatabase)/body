@@ -12,8 +12,8 @@
         if (disk.getName().equals(tmp.getName())) {
           if ((tmp.getContent() != null) && !tmp.getContent().equals(disk.getContent())) {
             BibtexString mem=findString(inMem,tmp.getName(),usedInMem);
-            if (mem != null)             changes.add(new StringChange(mem,tmp.getName(),mem.getContent(),tmp.getContent(),disk.getContent()));
- else             changes.add(new StringChange(null,tmp.getName(),null,tmp.getContent(),disk.getContent()));
+            if (mem != null)             changes.add(new StringChange(mem,tmp,tmp.getName(),mem.getContent(),tmp.getContent(),disk.getContent()));
+ else             changes.add(new StringChange(null,tmp,tmp.getName(),null,tmp.getContent(),disk.getContent()));
           }
           used.add(diskId);
           continue mainLoop;
@@ -38,7 +38,7 @@
                 break;
               }
             }
-            changes.add(new StringNameChange(bsMem,bsMem.getName(),tmp.getName(),disk.getName(),tmp.getContent()));
+            changes.add(new StringNameChange(bsMem,tmp,bsMem.getName(),tmp.getName(),disk.getName(),tmp.getContent()));
             i.remove();
             used.add(diskId);
           }
@@ -52,7 +52,7 @@
       BibtexString tmp=onTmp.getString(nmId);
       BibtexString mem=findString(inMem,tmp.getName(),usedInMem);
       if (mem != null) {
-        changes.add(new StringRemoveChange(tmp,mem));
+        changes.add(new StringRemoveChange(tmp,tmp,mem));
       }
     }
   }
