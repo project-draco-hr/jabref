@@ -9,6 +9,7 @@
     String id=entry.getId();
     String newKey=nu.getCiteKey();
     boolean anyChanged=false;
+    boolean changedType=false;
     boolean duplicateWarning=false;
     boolean emptyWarning=newKey == null || newKey.equals("");
     if (panel.database.setCiteKeyForEntry(id,newKey)) {
@@ -32,6 +33,12 @@
         anyChanged=true;
       }
     }
+    if (nu.getType() != entry.getType()) {
+      compound.addEdit(new UndoableChangeType(entry,entry.getType(),nu.getType()));
+      entry.setType(nu.getType());
+      anyChanged=true;
+      changedType=true;
+    }
     compound.end();
     if (!anyChanged)     return true;
     panel.undoManager.addEdit(compound);
@@ -45,9 +52,14 @@
       panel.output(Globals.lang("Stored entry") + ".");
     }
     lastSourceStringAccepted=source.getText();
-    updateAllFields();
-    lastSourceAccepted=true;
-    updateSource=true;
+    if (!changedType) {
+      updateAllFields();
+      lastSourceAccepted=true;
+      updateSource=true;
+    }
+ else {
+      panel.updateEntryEditorIfShowing();
+    }
     panel.markBaseChanged();
     return true;
   }
