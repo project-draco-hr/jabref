@@ -1,0 +1,18 @@
+{
+  Set<String> res=new TreeSet<String>();
+  for (  String s : db.getKeySet()) {
+    BibtexEntry be=db.getEntryById(s);
+    for (    String field : fields) {
+      String val=be.getField(field);
+      if ((val != null) && (val.length() > 0)) {
+        AuthorList al=AuthorList.getAuthorList(val);
+        for (int i=0; i < al.size(); i++) {
+          AuthorList.Author a=al.getAuthor(i);
+          String lastName=a.getLast();
+          if ((lastName != null) && (lastName.length() > 0))           res.add(lastName);
+        }
+      }
+    }
+  }
+  return res;
+}
