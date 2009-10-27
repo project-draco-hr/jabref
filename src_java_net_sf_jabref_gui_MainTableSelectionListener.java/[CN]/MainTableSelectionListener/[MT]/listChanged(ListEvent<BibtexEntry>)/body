@@ -14,8 +14,11 @@
     final int mode=panel.getMode();
     if ((mode == BasePanel.WILL_SHOW_EDITOR) || (mode == BasePanel.SHOWING_EDITOR)) {
       EntryEditor oldEditor=panel.getCurrentEditor();
+      String visName=null;
+      if (oldEditor != null)       visName=oldEditor.getVisiblePanelName();
       EntryEditor newEditor=panel.getEntryEditor(toShow);
       if ((newEditor != oldEditor) || (mode != BasePanel.SHOWING_EDITOR)) {
+        if (visName != null)         newEditor.setVisiblePanel(visName);
         panel.showEntryEditor(newEditor);
         SwingUtilities.invokeLater(new Runnable(){
           public void run(){
