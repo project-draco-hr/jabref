@@ -1,5 +1,12 @@
 {
   if ((types.getSelectedIndex() == -1) && (link.getText().trim().length() > 0)) {
+    if (remoteLinkPattern.matcher(link.getText()).matches()) {
+      ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("html");
+      if (type != null) {
+        types.setSelectedItem(type);
+        return;
+      }
+    }
     String theLink=link.getText().trim();
     int index=theLink.lastIndexOf('.');
     if ((index >= 0) && (index < theLink.length() - 1)) {
