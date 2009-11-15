@@ -1,4 +1,7 @@
 {
+  if (!enabled) {
+    return;
+  }
   EventList<BibtexEntry> selected=e.getSourceList();
   Object newSelected=null;
   while (e.next()) {
@@ -17,9 +20,9 @@
       String visName=null;
       if (oldEditor != null) {
         visName=oldEditor.getVisiblePanelName();
-        oldEditor.setMovingToDifferentEntry();
       }
       EntryEditor newEditor=panel.getEntryEditor(toShow);
+      if ((oldEditor != null))       oldEditor.setMovingToDifferentEntry();
       if ((newEditor != oldEditor) || (mode != BasePanel.SHOWING_EDITOR)) {
         if (visName != null)         newEditor.setVisiblePanel(visName);
         panel.showEntryEditor(newEditor);
