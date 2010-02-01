@@ -1,9 +1,10 @@
 {
-  if (printerService == null)   printerService=new DocumentPrinter();
   new Thread(){
     public void run(){
       try {
-        printerService.print(entry.getCiteKey(),previewPane);
+        PrintRequestAttributeSet pras=new HashPrintRequestAttributeSet();
+        pras.add(new JobName(entry.getCiteKey(),null));
+        previewPane.print(null,null,true,null,pras,false);
       }
  catch (      PrinterException e) {
         JOptionPane.showMessageDialog(PreviewPanel.this,Globals.lang("Could not print preview") + ".\n" + e.getMessage(),Globals.lang("Printing Entry Preview"),JOptionPane.ERROR_MESSAGE);
