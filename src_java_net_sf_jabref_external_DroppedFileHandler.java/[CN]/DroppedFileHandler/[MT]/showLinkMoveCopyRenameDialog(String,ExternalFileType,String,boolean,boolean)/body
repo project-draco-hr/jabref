@@ -1,19 +1,28 @@
 {
+  String dialogTitle=Globals.lang("Link to file %0",linkFileName);
   String dir=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
   if ((dir == null) || !(new File(dir)).exists()) {
-    destDirLabel.setText(Globals.lang("File directory is not set or does not exist!"));
+    destDirLabel.setText(Globals.lang("File directory is not set or does not exist."));
     copyRadioButton.setEnabled(false);
     moveRadioButton.setEnabled(false);
+    renameToTextBox.setEnabled(false);
+    renameCheckBox.setEnabled(false);
     linkInPlace.setSelected(true);
   }
  else {
     destDirLabel.setText(Globals.lang("File directory is '%0':",dir));
     copyRadioButton.setEnabled(true);
     moveRadioButton.setEnabled(true);
+    renameToTextBox.setEnabled(true);
+    renameCheckBox.setEnabled(true);
   }
   ChangeListener cl=new ChangeListener(){
     public void stateChanged(    ChangeEvent arg0){
-      renameCheckBox.setEnabled(!linkInPlace.isSelected() && allowRename && (!multipleEntries));
+      renameCheckBox.setEnabled(!linkInPlace.isSelected() && (!multipleEntries));
+      renameToTextBox.setEnabled(!linkInPlace.isSelected() && (!multipleEntries));
+      if (multipleEntries) {
+        renameToTextBox.setText("Multiple entries");
+      }
     }
   }
 ;
@@ -25,13 +34,15 @@
  else {
     linkInPlace.setText(Globals.lang("Leave file in its current directory."));
     copyRadioButton.setText(Globals.lang("Copy file to file directory."));
-    moveRadioButton.setText(Globals.lang("Move file to file directory"));
+    moveRadioButton.setText(Globals.lang("Move file to file directory."));
   }
-  renameCheckBox.setText(Globals.lang("Rename to match citekey") + ": " + citekeyOrReason);
+  renameCheckBox.setText(Globals.lang("Rename file to") + ": ");
+  renameToTextBox.setText(citeKey == null ? "default" : citeKey + "." + fileType.extension);
   linkInPlace.addChangeListener(cl);
   cl.stateChanged(new ChangeEvent(linkInPlace));
   try {
-    return JOptionPane.showConfirmDialog(frame,optionsPanel,dialogTitle,JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+    Object[] messages={"How would you like to link to " + linkFileName + "?",optionsPanel};
+    return JOptionPane.showConfirmDialog(frame,messages,dialogTitle,JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
   }
   finally {
     linkInPlace.removeChangeListener(cl);
