@@ -8,6 +8,14 @@
   helpBut.addActionListener(help);
   helpBut.setMargin(new Insets(0,0,0,0));
   tf.setPreferredSize(new Dimension(1,tf.getPreferredSize().height));
+  tf.setName("tf");
+  reset.addActionListener(new AbstractAction(){
+    public void actionPerformed(    ActionEvent event){
+      tf.setText("");
+      new FocusRequester(tf);
+    }
+  }
+);
   JPanel main=new JPanel();
   main.setLayout(gbl);
   con.fill=GridBagConstraints.BOTH;
@@ -21,14 +29,18 @@
   gbl.setConstraints(tf,con);
   main.add(tf);
   con.weighty=0;
+  con.gridwidth=1;
+  gbl.setConstraints(go,con);
+  main.add(go);
   if (fetcher.getHelpPage() != null) {
     con.gridwidth=1;
   }
  else {
     con.gridwidth=GridBagConstraints.REMAINDER;
   }
-  gbl.setConstraints(go,con);
-  main.add(go);
+  reset.setName("reset");
+  gbl.setConstraints(reset,con);
+  main.add(reset);
   if (fetcher.getHelpPage() != null) {
     con.gridwidth=GridBagConstraints.REMAINDER;
     gbl.setConstraints(helpBut,con);
