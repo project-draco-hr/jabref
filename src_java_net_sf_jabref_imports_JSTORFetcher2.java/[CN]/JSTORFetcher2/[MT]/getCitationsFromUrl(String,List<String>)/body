@@ -1,0 +1,20 @@
+{
+  URL url=new URL(urlQuery);
+  URLDownload ud=new URLDownload(url);
+  ud.download();
+  String cont=ud.getStringContent();
+  String entirePage=cont;
+  Matcher m=idPattern.matcher(cont);
+  while (m.find()) {
+    ids.add(m.group(1));
+    cont=cont.substring(m.end());
+    m=idPattern.matcher(cont);
+  }
+  m=nextPagePattern.matcher(entirePage);
+  System.out.println(m.find());
+  if (m.find()) {
+    String newQuery=JSTOR_URL + m.group(1);
+    return newQuery;
+  }
+ else   return null;
+}

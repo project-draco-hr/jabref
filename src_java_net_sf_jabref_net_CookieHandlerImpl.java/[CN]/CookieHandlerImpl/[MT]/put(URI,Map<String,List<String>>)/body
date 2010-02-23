@@ -3,9 +3,10 @@
   if (setCookieList != null) {
     for (    String item : setCookieList) {
       Cookie cookie=new Cookie(uri,item);
-      for (      Cookie existingCookie : cache) {
+      for (Iterator<Cookie> i=cache.iterator(); i.hasNext(); ) {
+        Cookie existingCookie=i.next();
         if ((cookie.getURI().equals(existingCookie.getURI())) && (cookie.getName().equals(existingCookie.getName()))) {
-          cache.remove(existingCookie);
+          i.remove();
           break;
         }
       }
