@@ -2,8 +2,12 @@
   stopFetching=false;
   try {
     List<String> citations=getCitations(query);
+    if (citations == null)     return false;
     if (citations.size() == 0) {
-      status.showMessage(Globals.lang("No entries found for the search string '%0'",query),Globals.lang("Search JSTOR"),JOptionPane.INFORMATION_MESSAGE);
+      if (!noAccessFound)       status.showMessage(Globals.lang("No entries found for the search string '%0'",query),Globals.lang("Search JSTOR"),JOptionPane.INFORMATION_MESSAGE);
+ else {
+        status.showMessage(Globals.lang("No entries found. It looks like you do not have access to search JStor.",query),Globals.lang("Search JSTOR"),JOptionPane.INFORMATION_MESSAGE);
+      }
       return false;
     }
     int i=0;
