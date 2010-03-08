@@ -1,0 +1,16 @@
+{
+  try {
+    updating=true;
+    Iterator<FieldEditor> i=editors.values().iterator();
+    while (i.hasNext()) {
+      FieldEditor editor=i.next();
+      Object content=entry.getField(editor.getFieldName());
+      String toSet=(content == null) ? "" : content.toString();
+      if (!toSet.equals(editor.getText()))       editor.setText(toSet);
+    }
+    this.entry=entry;
+  }
+  finally {
+    updating=false;
+  }
+}
