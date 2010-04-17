@@ -22,7 +22,7 @@
           Globals.logger("Error: no link to " + fieldName + ".");
           return;
         }
-        try {
+{
           if (fieldName.equals(GUIGlobals.FILE_FIELD)) {
             FileListTableModel fileList=new FileListTableModel();
             fileList.setContent((String)link);
@@ -36,11 +36,13 @@
             }
           }
  else {
-            Util.openExternalViewer(panel.metaData(),(String)link,fieldName);
+            try {
+              Util.openExternalViewer(panel.metaData(),(String)link,fieldName);
+            }
+ catch (            IOException ex) {
+              panel.output(Globals.lang("Unable to open link."));
+            }
           }
-        }
- catch (        IOException ex) {
-          panel.output(Globals.lang("Error") + ": " + ex.getMessage());
         }
       }
     }

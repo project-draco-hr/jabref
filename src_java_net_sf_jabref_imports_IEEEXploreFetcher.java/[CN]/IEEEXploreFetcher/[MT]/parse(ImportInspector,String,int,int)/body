@@ -1,13 +1,37 @@
 {
   piv=startIndex;
   int entryNumber=firstEntryNumber;
-  BibtexEntry entry;
-  while (((entry=parseNextEntry(text,piv,entryNumber)) != null) && (shouldContinue)) {
-    if (entry.getField("title") != null) {
-      dialog.addEntry(entry);
-      dialog.setProgress(parsed + unparseable,hits);
-      parsed++;
+  if (importBibtex) {
+    ArrayList<String> idSelected=new ArrayList<String>();
+    String id;
+    while ((id=parseNextEntryId(text,piv)) != null && shouldContinue) {
+      idSelected.add(id);
+      entryNumber++;
     }
-    entryNumber++;
+    try {
+      BibtexDatabase dbase=parseBibtexDatabase(idSelected,includeAbstract);
+      Collection<BibtexEntry> items=dbase.getEntries();
+      Iterator<BibtexEntry> iter=items.iterator();
+      while (iter.hasNext()) {
+        BibtexEntry entry=iter.next();
+        dialog.addEntry(cleanup(entry));
+        dialog.setProgress(parsed + unparseable,hits);
+        parsed++;
+      }
+    }
+ catch (    IOException e) {
+      e.printStackTrace();
+    }
+  }
+ else {
+    BibtexEntry entry;
+    while (((entry=parseNextEntry(text,piv)) != null) && shouldContinue) {
+      if (entry.getField("title") != null) {
+        dialog.addEntry(entry);
+        dialog.setProgress(parsed + unparseable,hits);
+        parsed++;
+      }
+      entryNumber++;
+    }
   }
 }

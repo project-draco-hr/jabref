@@ -1,11 +1,12 @@
 {
   if (entry == null)   return null;
-  if (entry.getType().getName() == "Standard")   return entry;
   String author=(String)entry.getField("author");
   if (author != null) {
     author=author.replaceAll("\\.",". ");
     author=author.replaceAll("  "," ");
     author=author.replaceAll("\\. -",".-");
+    author=author.replaceAll("; "," and ");
+    author=author.replaceAll("[,;]$","");
     entry.setField("author",author);
   }
   String month=(String)entry.getField("month");
@@ -39,106 +40,114 @@
     }
     entry.setField("month",date);
   }
-  String pages=entry.getField("pages");
-  String[] pageNumbers=pages.split("--");
-  if (pageNumbers.length == 2) {
-    if (pageNumbers[0].equals(pageNumbers[1])) {
-      entry.setField("pages",pageNumbers[0]);
+  String field="pages";
+  String pages=entry.getField(field);
+  if (pages != null) {
+    String[] pageNumbers=pages.split("-");
+    if (pageNumbers.length == 2) {
+      if (pageNumbers[0].equals(pageNumbers[1])) {
+        entry.setField(field,pageNumbers[0]);
+      }
+ else {
+        entry.setField(field,pages.replaceAll("-","--"));
+      }
     }
   }
   BibtexEntryType type=entry.getType();
-  String sourceField;
+  String sourceField="";
   if (type.getName() == "Article") {
     sourceField="journal";
     entry.clearField("booktitle");
   }
- else {
+ else   if (type.getName() == "Inproceedings") {
     sourceField="booktitle";
   }
   String fullName=entry.getField(sourceField);
-  if (fullName == null) {
-    System.err.println("Null publication");
-    return null;
-  }
-  if (type.getName() == "Article") {
-    int ind=fullName.indexOf(": Accepted for future publication");
-    if (ind > 0) {
-      fullName=fullName.substring(0,ind);
-      entry.setField("year","to be published");
-      entry.clearField("month");
-      entry.clearField("pages");
-    }
-    String[] parts=fullName.split("[\\[\\]]");
-    fullName=parts[0];
-    if (parts.length == 3) {
-      fullName+=parts[2];
-    }
-  }
- else {
-    fullName=fullName.replace("Conference Proceedings","Proceedings").replace("Proceedings of","Proceedings").replace("  ",". ").replace("Proceedings.","Proceedings");
-  }
-  Matcher m1=publicationPattern.matcher(fullName);
-  if (m1.find()) {
-    String prefix=m1.group(2).trim();
-    String postfix=m1.group(1).trim();
-    String abbrv="";
-    String[] parts=prefix.split("\\. ",2);
-    if (parts.length == 2) {
-      if (parts[0].matches(abbrvPattern)) {
-        prefix=parts[1];
-        abbrv=parts[0];
+  if (fullName != null) {
+    if (type.getName() == "Article") {
+      int ind=fullName.indexOf(": Accepted for future publication");
+      if (ind > 0) {
+        fullName=fullName.substring(0,ind);
+        entry.setField("year","to be published");
+        entry.clearField("month");
+        entry.clearField("pages");
       }
- else {
-        prefix=parts[0];
-        abbrv=parts[1];
+      String[] parts=fullName.split("[\\[\\]]");
+      fullName=parts[0];
+      if (parts.length == 3) {
+        fullName+=parts[2];
       }
     }
-    if (prefix.matches(abbrvPattern) == false) {
-      fullName=prefix + " " + postfix+ " "+ abbrv;
-      fullName=fullName.trim();
-    }
  else {
-      fullName=postfix + " " + prefix;
+      fullName=fullName.replace("Conference Proceedings","Proceedings").replace("Proceedings of","Proceedings").replace("Proceedings.","Proceedings");
+      fullName=fullName.replaceAll("International","Int.");
+      fullName=fullName.replaceAll("Symposium","Symp.");
+      fullName=fullName.replaceAll("Conference","Conf.");
+      fullName=fullName.replaceAll(" on"," ").replace("  "," ");
     }
-  }
-  if (type.getName() == "Article") {
-    fullName=fullName.replace("- ","-");
-    fullName=fullName.trim();
-    if (Globals.prefs.getBoolean("useIEEEAbrv")) {
-      String id=Globals.journalAbbrev.getAbbreviatedName(fullName,false);
-      if (id != null)       fullName=id;
-    }
-  }
- else {
-    Matcher m2=proceedingPattern.matcher(fullName);
-    if (m2.find()) {
-      String prefix=m2.group(2);
-      String postfix=m2.group(1).replaceAll("\\.$","");
-      if (prefix.matches(abbrvPattern) == false) {
-        String abbrv="";
-        String[] parts=postfix.split("\\. ",2);
-        if (parts.length == 2) {
-          if (parts[0].matches(abbrvPattern)) {
-            postfix=parts[1];
-            abbrv=parts[0];
-          }
- else {
-            postfix=parts[0];
-            abbrv=parts[1];
-          }
+    Matcher m1=publicationPattern.matcher(fullName);
+    if (m1.find()) {
+      String prefix=m1.group(2).trim();
+      String postfix=m1.group(1).trim();
+      String abrv="";
+      String[] parts=prefix.split("\\. ",2);
+      if (parts.length == 2) {
+        if (parts[0].matches(abrvPattern)) {
+          prefix=parts[1];
+          abrv=parts[0];
         }
-        fullName=prefix.trim() + " " + postfix.trim()+ " "+ abbrv;
+ else {
+          prefix=parts[0];
+          abrv=parts[1];
+        }
+      }
+      if (prefix.matches(abrvPattern) == false) {
+        fullName=prefix + " " + postfix+ " "+ abrv;
+        fullName=fullName.trim();
       }
  else {
-        fullName=postfix.trim() + " " + prefix.trim();
+        fullName=postfix + " " + prefix;
       }
     }
-    fullName=fullName.trim();
-    fullName=fullName.replaceAll("^[tT]he ","").replaceAll("^\\d{4} ","").replaceAll("[,.]$","");
-    String year=entry.getField("year");
-    fullName=fullName.replaceAll(", " + year + "\\.?","");
-    if (fullName.contains("Abstract") == false && fullName.contains("Summaries") == false && fullName.contains("Conference Record") == false)     fullName="Proc. " + fullName;
+    if (type.getName() == "Article") {
+      fullName=fullName.replace("- ","-");
+      fullName=fullName.trim();
+      if (Globals.prefs.getBoolean("useIEEEAbrv")) {
+        String id=Globals.journalAbbrev.getAbbreviatedName(fullName,false);
+        if (id != null)         fullName=id;
+      }
+    }
+    if (type.getName() == "Inproceedings") {
+      Matcher m2=proceedingPattern.matcher(fullName);
+      if (m2.find()) {
+        String prefix=m2.group(2);
+        String postfix=m2.group(1).replaceAll("\\.$","");
+        if (prefix.matches(abrvPattern) == false) {
+          String abrv="";
+          String[] parts=postfix.split("\\. ",2);
+          if (parts.length == 2) {
+            if (parts[0].matches(abrvPattern)) {
+              postfix=parts[1];
+              abrv=parts[0];
+            }
+ else {
+              postfix=parts[0];
+              abrv=parts[1];
+            }
+          }
+          fullName=prefix.trim() + " " + postfix.trim()+ " "+ abrv;
+        }
+ else {
+          fullName=postfix.trim() + " " + prefix.trim();
+        }
+      }
+      fullName=fullName.trim();
+      fullName=fullName.replaceAll("^[tT]he ","").replaceAll("^\\d{4} ","").replaceAll("[,.]$","");
+      String year=entry.getField("year");
+      fullName=fullName.replaceAll(", " + year + "\\.?","");
+      if (fullName.contains("Abstract") == false && fullName.contains("Summaries") == false && fullName.contains("Conference Record") == false)       fullName="Proc. " + fullName;
+    }
+    entry.setField(sourceField,fullName);
   }
-  entry.setField(sourceField,fullName);
   return entry;
 }

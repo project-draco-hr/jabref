@@ -1,19 +1,50 @@
 {
   if (text == null)   return null;
-  text=text.replaceAll("&ldquo;","``");
-  text=text.replaceAll("&rdquo;","''");
-  text=text.replaceAll("&lsquo;","`");
-  text=text.replaceAll("&rsquo;","'");
   StringBuffer sb=new StringBuffer();
   for (int i=0; i < text.length(); i++) {
     int c=text.charAt(i);
-    if (c == '&') {
-      i=readHtmlChar(text,sb,i);
-    }
- else     if (c == '<') {
+    if (c == '<') {
       i=readTag(text,sb,i);
     }
  else     sb.append((char)c);
   }
-  return sb.toString();
+  text=sb.toString();
+  Set<String> patterns=escapedSymbols.keySet();
+  for (  String pattern : patterns) {
+    text=text.replaceAll(pattern,escapedSymbols.get(pattern));
+  }
+  Pattern escapedPattern=Pattern.compile("&#([x]*\\d+);");
+  Matcher m=escapedPattern.matcher(text);
+  while (m.find()) {
+    int num=Integer.decode(m.group(1).replace("x","#"));
+switch (num) {
+case 37:
+      text=text.replaceAll("&#" + m.group(1) + ";","%");
+    break;
+case 38:
+  text=text.replaceAll("&#" + m.group(1) + ";","&");
+break;
+case 916:
+text=text.replaceAll("&#" + m.group(1) + ";","$\\delta$");
+break;
+case 956:
+text=text.replaceAll("&#" + m.group(1) + ";","$\\mu$");
+break;
+case 8208:
+text=text.replaceAll("&#" + m.group(1) + ";","-");
+break;
+case 8211:
+text=text.replaceAll("&#" + m.group(1) + ";","--");
+break;
+case 8212:
+text=text.replaceAll("&#" + m.group(1) + ";","---");
+break;
+case 8217:
+text=text.replaceAll("&#" + m.group(1) + ";","'");
+break;
+default :
+System.err.println("HTML escaped char not converted " + m.group(1) + ": "+ Integer.toString(num));
+}
+}
+return text.trim();
 }

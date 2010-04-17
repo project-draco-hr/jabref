@@ -1,14 +1,15 @@
 {
   this.dialog=dialog;
   this.status=status;
-  this.terms=query;
+  terms=query;
   piv=0;
   shouldContinue=true;
   parsed=0;
   unparseable=0;
-  String address=makeUrl(0);
+  int pageNumber=1;
+  searchUrl=makeUrl(pageNumber);
   try {
-    URL url=new URL(address);
+    URL url=new URL(searchUrl);
     String page=getResults(url);
     if (page.indexOf("You have entered an invalid search") >= 0) {
       status.showMessage(Globals.lang("You have entered an invalid search '%0'.",terms),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
@@ -18,29 +19,25 @@
       status.showMessage(Globals.lang("Bad Request '%0'.",terms),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    if (page.indexOf("No results") >= 0) {
+    if (page.indexOf("No results were found.") >= 0) {
       status.showMessage(Globals.lang("No entries found for the search string '%0'",terms),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    hits=getNumberOfHits(page,"Your search matched",hitsPattern);
-    int maxHits=getNumberOfHits(page,"A maximum of",maxHitsPattern);
-    fetchingAbstracts=fetchAbstracts.isSelected();
-    fetchingRIS=risButton.isSelected();
-    if (hits > maxHits && !fetchingRIS) {
-      status.showMessage(Globals.lang("Your search matched %0 entries. But " + "only %1 results are displayed.",new String[]{String.valueOf(hits),String.valueOf(maxHits)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
-      hits=maxHits;
-    }
-    if (fetchingRIS && hits > MAX_RIS_FETCH) {
-      status.showMessage(Globals.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded. Choose the HTML parser for more results.",new String[]{String.valueOf(hits),String.valueOf(MAX_RIS_FETCH)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
-      hits=MAX_RIS_FETCH;
+    hits=getNumberOfHits(page,"display-status",hitsPattern);
+    includeAbstract=absCheckBox.isSelected();
+    importBibtex=bibButton.isSelected();
+    if (hits > MAX_FETCH) {
+      status.showMessage(Globals.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(MAX_FETCH)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      hits=MAX_FETCH;
     }
     parse(dialog,page,0,1);
     int firstEntry=perPage;
-    while (shouldContinue && (firstEntry < hits)) {
-      address=makeUrl(firstEntry);
-      page=getResults(new URL(address));
+    while (shouldContinue && firstEntry < hits) {
+      pageNumber++;
+      searchUrl=makeUrl(pageNumber);
+      page=getResults(new URL(searchUrl));
       if (!shouldContinue)       break;
-      parse(dialog,page,0,1 + firstEntry);
+      parse(dialog,page,0,firstEntry + 1);
       firstEntry+=perPage;
     }
     return true;

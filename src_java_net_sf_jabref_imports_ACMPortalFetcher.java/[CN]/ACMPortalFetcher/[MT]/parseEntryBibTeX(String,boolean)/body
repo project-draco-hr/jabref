@@ -3,7 +3,8 @@
   try {
     url=new URL(startUrl + fullCitation);
     String page=getResults(url);
-    Matcher bibtexAddr=risPattern.matcher(page);
+    Thread.sleep(10000);
+    Matcher bibtexAddr=bibPattern.matcher(page);
     if (bibtexAddr.find()) {
       URL bibtexUrl=new URL(startUrl + bibtexAddr.group(1));
       BufferedReader in=new BufferedReader(new InputStreamReader(bibtexUrl.openStream()));
@@ -21,6 +22,7 @@
           System.out.println("No abstract matched.");
         }
       }
+      Thread.sleep(10000);
       return entry;
     }
  else     return null;
@@ -34,6 +36,10 @@ catch (  ConnectException e) {
     return null;
   }
 catch (  IOException e) {
+    e.printStackTrace();
+    return null;
+  }
+catch (  InterruptedException e) {
     e.printStackTrace();
     return null;
   }
