@@ -31,6 +31,13 @@
     }
   }
   if (close) {
+    for (int i=0; i < tabbedPane.getTabCount(); i++) {
+      if (baseAt(i).isSaving()) {
+        WaitForSaveOperation w=new WaitForSaveOperation(this);
+        w.show();
+        if (w.cancelled())         return;
+      }
+    }
     dispose();
     prefs.putInt("posX",JabRefFrame.this.getLocation().x);
     prefs.putInt("posY",JabRefFrame.this.getLocation().y);
