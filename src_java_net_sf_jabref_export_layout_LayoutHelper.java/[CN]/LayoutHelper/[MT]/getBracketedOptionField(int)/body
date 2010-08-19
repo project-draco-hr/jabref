@@ -2,6 +2,7 @@
   StringBuffer buffer=null;
   int c;
   boolean start=false;
+  boolean doneWithOptions=false;
   String option=null;
   String tmp;
   while (!_eof) {
@@ -19,12 +20,13 @@
       }
       return null;
     }
-    if ((c == '{') || (c == '}') || (c == ']')|| (c == '[')) {
-      if ((c == '}') || (c == ']')) {
+    if ((c == ']') || (c == '[') || (doneWithOptions && ((c == '{') || (c == '}')))) {
+      if ((c == ']') || (doneWithOptions && (c == '}'))) {
         if (c == ']' && buffer != null) {
           option=buffer.toString();
           buffer=null;
           start=false;
+          doneWithOptions=true;
         }
  else         if (c == '}') {
           String parameter=buffer == null ? " " : buffer.toString();
@@ -47,11 +49,7 @@
         buffer=new StringBuffer(100);
       }
       if (start) {
-        if ((c == '}') || (c == ']')) {
-        }
- else {
-          buffer.append((char)c);
-        }
+        buffer.append((char)c);
       }
     }
   }
