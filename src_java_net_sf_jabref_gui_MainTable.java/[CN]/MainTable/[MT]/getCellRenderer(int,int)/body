@@ -25,9 +25,11 @@
     }
  else {
       compRenderer.setNumber(row);
-      if (isMarked(row)) {
-        renderer=markedNumberRenderer;
-        markedNumberRenderer.setNumber(row);
+      int marking=isMarked(row);
+      if (marking > 0) {
+        marking=Math.min(marking,Util.MARK_COLOR_LEVELS);
+        renderer=markedNumberRenderers[marking - 1];
+        markedNumberRenderers[marking - 1].setNumber(row);
       }
  else       renderer=compRenderer;
     }
@@ -37,8 +39,10 @@
  else     if (status == OPTIONAL)     renderer=optRenderer;
  else     if (status == BOOLEAN)     renderer=getDefaultRenderer(Boolean.class);
   }
-  if ((column != 0) && isMarked(row)) {
-    renderer=markedRenderer;
+  int marking=isMarked(row);
+  if ((column != 0) && (marking > 0)) {
+    marking=Math.min(marking,Util.MARK_COLOR_LEVELS);
+    renderer=markedRenderers[marking - 1];
   }
   return renderer;
 }

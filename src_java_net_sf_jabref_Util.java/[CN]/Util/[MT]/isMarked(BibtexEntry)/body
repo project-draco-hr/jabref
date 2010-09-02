@@ -1,6 +1,19 @@
 {
   Object fieldVal=be.getField(BibtexFields.MARKED);
-  if (fieldVal == null)   return false;
+  if (fieldVal == null)   return 0;
   String s=(String)fieldVal;
-  return (s.equals("0") || (s.indexOf(Globals.prefs.WRAPPED_USERNAME) >= 0));
+  if (s.equals("0"))   return 1;
+  int index=s.indexOf(Globals.prefs.WRAPPED_USERNAME);
+  if (index >= 0)   return 1;
+  Matcher m=markNumberPattern.matcher(s);
+  if (m.find()) {
+    try {
+      int value=Integer.parseInt(m.group(1));
+      return value;
+    }
+ catch (    NumberFormatException ex) {
+      return 1;
+    }
+  }
+ else   return 0;
 }

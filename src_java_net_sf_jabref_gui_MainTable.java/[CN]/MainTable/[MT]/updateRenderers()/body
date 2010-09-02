@@ -5,10 +5,15 @@
   optRenderer=new GeneralRenderer(Globals.prefs.getColor("tableOptFieldBackground"),Globals.prefs.getColor("tableText"));
   incRenderer=new IncompleteRenderer();
   compRenderer=new CompleteRenderer(Globals.prefs.getColor("tableBackground"));
-  markedNumberRenderer=new CompleteRenderer(Globals.prefs.getColor("markedEntryBackground"));
   grayedOutNumberRenderer=new CompleteRenderer(Globals.prefs.getColor("grayedOutBackground"));
   veryGrayedOutNumberRenderer=new CompleteRenderer(Globals.prefs.getColor("veryGrayedOutBackground"));
   grayedOutRenderer=new GeneralRenderer(Globals.prefs.getColor("grayedOutBackground"),Globals.prefs.getColor("grayedOutText"),mixColors(Globals.prefs.getColor("grayedOutBackground"),sel));
   veryGrayedOutRenderer=new GeneralRenderer(Globals.prefs.getColor("veryGrayedOutBackground"),Globals.prefs.getColor("veryGrayedOutText"),mixColors(Globals.prefs.getColor("veryGrayedOutBackground"),sel));
-  markedRenderer=new GeneralRenderer(Globals.prefs.getColor("markedEntryBackground"),Globals.prefs.getColor("tableText"),mixColors(Globals.prefs.getColor("markedEntryBackground"),sel));
+  markedRenderers=new GeneralRenderer[Util.MARK_COLOR_LEVELS];
+  markedNumberRenderers=new CompleteRenderer[Util.MARK_COLOR_LEVELS];
+  for (int i=0; i < Util.MARK_COLOR_LEVELS; i++) {
+    Color c=Globals.prefs.getColor("markedEntryBackground" + i);
+    markedRenderers[i]=new GeneralRenderer(c,Globals.prefs.getColor("tableText"),mixColors(Globals.prefs.getColor("markedEntryBackground" + i),sel));
+    markedNumberRenderers[i]=new CompleteRenderer(c);
+  }
 }
