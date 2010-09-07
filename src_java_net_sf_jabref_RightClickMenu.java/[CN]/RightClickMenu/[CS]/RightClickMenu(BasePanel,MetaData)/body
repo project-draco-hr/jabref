@@ -57,6 +57,9 @@
   }
 );
   addSeparator();
+  JMenu markSpecific=JabRefFrame.subMenu("Mark specific color");
+  JabRefFrame frame=panel.frame;
+  for (int i=0; i < Util.MAX_MARKING_LEVEL; i++)   markSpecific.add(new MarkEntriesAction(frame,i).getMenuItem());
   if (multiple) {
     add(new AbstractAction(Globals.lang("Mark entries"),GUIGlobals.getImage("markEntries")){
       public void actionPerformed(      ActionEvent e){
@@ -68,6 +71,7 @@
       }
     }
 );
+    add(markSpecific);
     add(new AbstractAction(Globals.lang("Unmark entries"),GUIGlobals.getImage("unmarkEntries")){
       public void actionPerformed(      ActionEvent e){
         try {
@@ -81,26 +85,32 @@
     addSeparator();
   }
  else   if (be != null) {
-    if (be.getField(BibtexFields.MARKED) == null)     add(new AbstractAction(Globals.lang("Mark entry"),GUIGlobals.getImage("markEntries")){
-      public void actionPerformed(      ActionEvent e){
-        try {
-          panel.runCommand("markEntries");
-        }
- catch (        Throwable ex) {
-        }
-      }
-    }
-);
- else     add(new AbstractAction(Globals.lang("Unmark entry"),GUIGlobals.getImage("unmarkEntries")){
-      public void actionPerformed(      ActionEvent e){
-        try {
-          panel.runCommand("unmarkEntries");
-        }
- catch (        Throwable ex) {
+    if (be.getField(BibtexFields.MARKED) == null) {
+      add(new AbstractAction(Globals.lang("Mark entry"),GUIGlobals.getImage("markEntries")){
+        public void actionPerformed(        ActionEvent e){
+          try {
+            panel.runCommand("markEntries");
+          }
+ catch (          Throwable ex) {
+          }
         }
       }
-    }
 );
+      add(markSpecific);
+    }
+ else {
+      add(markSpecific);
+      add(new AbstractAction(Globals.lang("Unmark entry"),GUIGlobals.getImage("unmarkEntries")){
+        public void actionPerformed(        ActionEvent e){
+          try {
+            panel.runCommand("unmarkEntries");
+          }
+ catch (          Throwable ex) {
+          }
+        }
+      }
+);
+    }
     addSeparator();
   }
   add(new AbstractAction(Globals.lang("Open file"),GUIGlobals.getImage("openExternalFile")){
