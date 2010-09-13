@@ -1,0 +1,14 @@
+{
+  String text=entry.getField(fieldName);
+  if (text == null)   return false;
+  String origText=text;
+  if (database != null)   text=database.resolveForStrings(text);
+  if (isKnownName(text) && isAbbreviatedName(text)) {
+    String newText=getFullName(text);
+    if (newText == null)     return false;
+    entry.setField(fieldName,newText);
+    ce.addEdit(new UndoableFieldChange(entry,fieldName,origText,newText));
+    return true;
+  }
+ else   return false;
+}

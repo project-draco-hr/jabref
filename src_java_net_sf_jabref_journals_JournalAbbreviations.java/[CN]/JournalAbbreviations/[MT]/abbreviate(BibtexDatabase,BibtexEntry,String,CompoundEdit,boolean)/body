@@ -1,12 +1,13 @@
 {
-  Object o=entry.getField(fieldName);
-  if (o == null)   return false;
-  String text=(String)o;
+  String text=entry.getField(fieldName);
+  if (text == null)   return false;
+  String origText=text;
+  if (database != null)   text=database.resolveForStrings(text);
   if (isKnownName(text) && !isAbbreviatedName(text)) {
     String newText=getAbbreviatedName(text,withDots);
     if (newText == null)     return false;
     entry.setField(fieldName,newText);
-    ce.addEdit(new UndoableFieldChange(entry,fieldName,text,newText));
+    ce.addEdit(new UndoableFieldChange(entry,fieldName,origText,newText));
     return true;
   }
  else {
@@ -15,7 +16,7 @@
       String newText=getAbbreviatedName(unabbr,withDots);
       if (newText == null)       return false;
       entry.setField(fieldName,newText);
-      ce.addEdit(new UndoableFieldChange(entry,fieldName,text,newText));
+      ce.addEdit(new UndoableFieldChange(entry,fieldName,origText,newText));
       return true;
     }
  else     return false;

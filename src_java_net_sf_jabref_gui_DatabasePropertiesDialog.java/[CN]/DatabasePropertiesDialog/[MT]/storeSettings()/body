@@ -6,9 +6,14 @@
   String text=fileDir.getText().trim();
   if (text.length() > 0) {
     dir.add(text);
-    metaData.putData(GUIGlobals.FILE_FIELD + "Directory",dir);
+    metaData.putData(Globals.prefs.get("userFileDir"),dir);
   }
- else   metaData.remove(GUIGlobals.FILE_FIELD + "Directory");
+ else   metaData.remove(Globals.prefs.get("userFileDir"));
+  if (metaData.getData(GUIGlobals.FILE_FIELD + "Directory") != null) {
+    if (clearLegacyFileDir.isSelected()) {
+      metaData.remove(GUIGlobals.FILE_FIELD + "Directory");
+    }
+  }
   dir=new Vector<String>(1);
   text=pdfDir.getText().trim();
   if (text.length() > 0) {
@@ -29,6 +34,6 @@
     metaData.putData(Globals.PROTECTED_FLAG_META,dir);
   }
  else   metaData.remove(Globals.PROTECTED_FLAG_META);
-  boolean changed=!newEncoding.equals(oldEncoding) || !oldPdfVal.equals(pdfDir.getText()) || !oldPsVal.equals(psDir.getText())|| (oldProtectVal != protect.isSelected());
+  boolean changed=!newEncoding.equals(oldEncoding) || !oldPdfVal.equals(pdfDir.getText()) || !oldPsVal.equals(psDir.getText())|| (oldProtectVal != protect.isSelected())|| (oldClearLgcFileVal != clearLegacyFileDir.isSelected());
   if (changed)   panel.markNonUndoableBaseChanged();
 }

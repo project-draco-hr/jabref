@@ -1,6 +1,6 @@
 {
   encoding.setSelectedItem(panel.getEncoding());
-  Vector<String> fileD=metaData.getData(GUIGlobals.FILE_FIELD + "Directory");
+  Vector<String> fileD=metaData.getData(Globals.prefs.get("userFileDir"));
   if (fileD == null)   fileDir.setText("");
  else {
     if (fileD.size() >= 1)     fileDir.setText((fileD.get(0)).trim());
@@ -20,8 +20,10 @@
  else {
     if (prot.size() >= 1)     protect.setSelected(Boolean.parseBoolean(prot.get(0)));
   }
+  clearLegacyFileDir.setVisible(metaData.getData(GUIGlobals.FILE_FIELD + "Directory") != null);
   oldFileVal=fileDir.getText();
   oldPdfVal=pdfDir.getText();
   oldPsVal=psDir.getText();
   oldProtectVal=protect.isSelected();
+  oldClearLgcFileVal=clearLegacyFileDir.isSelected();
 }
