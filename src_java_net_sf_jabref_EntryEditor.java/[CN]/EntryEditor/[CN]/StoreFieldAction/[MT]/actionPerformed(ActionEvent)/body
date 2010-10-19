@@ -10,11 +10,11 @@
     String cleaned=Util.checkLegalKey(newValue);
     if ((cleaned != null) && !cleaned.equals(newValue)) {
       JOptionPane.showMessageDialog(frame,Globals.lang("Invalid BibTeX key"),Globals.lang("Error setting field"),JOptionPane.ERROR_MESSAGE);
-      fe.setBackground(GUIGlobals.invalidFieldBackground);
+      fe.setInvalidBackgroundColor();
       return;
     }
  else {
-      fe.setBackground(GUIGlobals.validFieldBackground);
+      fe.setValidBackgroundColor();
     }
     boolean isDuplicate=panel.database.setCiteKeyForEntry(entry.getId(),newValue);
     if (newValue != null) {
@@ -25,9 +25,9 @@
       warnEmptyBibtexkey();
     }
     panel.undoManager.addEdit(new UndoableKeyChange(panel.database,entry.getId(),oldValue,newValue));
-    if ((newValue != null) && (newValue.length() > 0))     fe.setBackground(GUIGlobals.validFieldBackground);
- else     fe.setBackground(GUIGlobals.validFieldBackground);
-    if (fe.getTextComponent().hasFocus())     fe.setBackground(GUIGlobals.activeEditor);
+    if ((newValue != null) && (newValue.length() > 0))     fe.setValidBackgroundColor();
+ else     fe.setValidBackgroundColor();
+    if (fe.getTextComponent().hasFocus())     fe.setActiveBackgroundColor();
     updateSource();
     panel.markBaseChanged();
   }
@@ -54,8 +54,8 @@
         String oldValue=entry.getField(fe.getFieldName());
         if (toSet != null)         entry.setField(fe.getFieldName(),toSet);
  else         entry.clearField(fe.getFieldName());
-        if ((toSet != null) && (toSet.length() > 0))         fe.setBackground(GUIGlobals.validFieldBackground);
- else         fe.setBackground(GUIGlobals.validFieldBackground);
+        if ((toSet != null) && (toSet.length() > 0))         fe.setValidBackgroundColor();
+ else         fe.setValidBackgroundColor();
         AbstractAutoCompleter aComp=panel.getAutoCompleter(fe.getFieldName());
         if (aComp != null)         aComp.addBibtexEntry(entry);
         panel.undoManager.addEdit(new UndoableFieldChange(entry,fe.getFieldName(),oldValue,toSet));
@@ -64,11 +64,11 @@
       }
  catch (      IllegalArgumentException ex) {
         JOptionPane.showMessageDialog(frame,Globals.lang("Error") + ": " + ex.getMessage(),Globals.lang("Error setting field"),JOptionPane.ERROR_MESSAGE);
-        fe.setBackground(GUIGlobals.invalidFieldBackground);
+        fe.setInvalidBackgroundColor();
       }
     }
  else {
-      fe.setBackground(GUIGlobals.validFieldBackground);
+      fe.setValidBackgroundColor();
     }
     if (fe.getTextComponent().hasFocus())     fe.setBackground(GUIGlobals.activeEditor);
   }
