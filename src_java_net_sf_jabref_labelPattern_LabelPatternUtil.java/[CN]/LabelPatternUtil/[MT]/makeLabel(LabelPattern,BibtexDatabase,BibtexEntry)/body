@@ -46,11 +46,13 @@
   String oldKey=_entry.getCiteKey();
   int occurences=_db.getNumberOfKeyOccurences(_label);
   if ((oldKey != null) && oldKey.equals(_label))   occurences--;
-  if (occurences == 0) {
+  boolean alwaysAddLetter=Globals.prefs.getBoolean("keyGenAlwaysAddLetter"), firstLetterA=Globals.prefs.getBoolean("keyGenFirstLetterA");
+  if (!alwaysAddLetter && (occurences == 0)) {
     if (!_label.equals(oldKey))     _db.setCiteKeyForEntry(_entry.getId(),_label);
   }
  else {
     int number=0;
+    if (!alwaysAddLetter && !firstLetterA)     number=1;
     String moddedKey=_label + getAddition(number);
     occurences=_db.getNumberOfKeyOccurences(moddedKey);
     if ((oldKey != null) && oldKey.equals(moddedKey))     occurences--;
