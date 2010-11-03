@@ -3,59 +3,62 @@ switch (type) {
 case LayoutHelper.IS_LAYOUT_TEXT:
     return text;
 case LayoutHelper.IS_SIMPLE_FIELD:
-  return BibtexDatabase.getResolvedField(text,bibtex,database);
+  String value=BibtexDatabase.getResolvedField(text,bibtex,database);
+if (value == null) value="";
+if (postFormatter != null) value=postFormatter.format(value);
+return value;
 case LayoutHelper.IS_FIELD_START:
 case LayoutHelper.IS_GROUP_START:
 {
-  String field;
-  if (type == LayoutHelper.IS_GROUP_START)   field=BibtexDatabase.getResolvedField(text,bibtex,database);
+String field;
+if (type == LayoutHelper.IS_GROUP_START) field=BibtexDatabase.getResolvedField(text,bibtex,database);
  else {
-    String[] parts=text.split(";");
-    field=null;
-    for (int i=0; i < parts.length; i++) {
-      field=BibtexDatabase.getResolvedField(parts[i],bibtex,database);
-      if (field == null)       break;
+String[] parts=text.split(";");
+field=null;
+for (int i=0; i < parts.length; i++) {
+field=BibtexDatabase.getResolvedField(parts[i],bibtex,database);
+if (field == null) break;
+}
+}
+if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && (field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())))) {
+return null;
+}
+ else {
+if (type == LayoutHelper.IS_GROUP_START) {
+LayoutHelper.setCurrentGroup(field);
+}
+StringBuffer sb=new StringBuffer(100);
+String fieldText;
+boolean previousSkipped=false;
+for (int i=0; i < layoutEntries.length; i++) {
+fieldText=layoutEntries[i].doLayout(bibtex,database);
+if (fieldText == null) {
+  if ((i + 1) < layoutEntries.length) {
+    if (layoutEntries[i + 1].doLayout(bibtex,database).trim().length() == 0) {
+      i++;
+      previousSkipped=true;
+      continue;
     }
   }
-  if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && (field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())))) {
-    return null;
+}
+ else {
+  if (previousSkipped) {
+    int eol=0;
+    while ((eol < fieldText.length()) && ((fieldText.charAt(eol) == '\n') || (fieldText.charAt(eol) == '\r'))) {
+      eol++;
+    }
+    if (eol < fieldText.length()) {
+      sb.append(fieldText.substring(eol));
+    }
   }
  else {
-    if (type == LayoutHelper.IS_GROUP_START) {
-      LayoutHelper.setCurrentGroup(field);
-    }
-    StringBuffer sb=new StringBuffer(100);
-    String fieldText;
-    boolean previousSkipped=false;
-    for (int i=0; i < layoutEntries.length; i++) {
-      fieldText=layoutEntries[i].doLayout(bibtex,database);
-      if (fieldText == null) {
-        if ((i + 1) < layoutEntries.length) {
-          if (layoutEntries[i + 1].doLayout(bibtex,database).trim().length() == 0) {
-            i++;
-            previousSkipped=true;
-            continue;
-          }
-        }
-      }
- else {
-        if (previousSkipped) {
-          int eol=0;
-          while ((eol < fieldText.length()) && ((fieldText.charAt(eol) == '\n') || (fieldText.charAt(eol) == '\r'))) {
-            eol++;
-          }
-          if (eol < fieldText.length()) {
-            sb.append(fieldText.substring(eol));
-          }
-        }
- else {
-          sb.append(fieldText);
-        }
-      }
-      previousSkipped=false;
-    }
-    return sb.toString();
+    sb.append(fieldText);
   }
+}
+previousSkipped=false;
+}
+return sb.toString();
+}
 }
 case LayoutHelper.IS_FIELD_END:
 case LayoutHelper.IS_GROUP_END:
@@ -69,15 +72,15 @@ fieldEntry=bibtex.getType().getName();
  else {
 String field=text.startsWith("\\") ? BibtexDatabase.getResolvedField(text.substring(1),bibtex,database) : BibtexDatabase.getText(text,database);
 if (field == null) {
-  fieldEntry="";
+fieldEntry="";
 }
  else {
-  fieldEntry=field;
+fieldEntry=field;
 }
 }
 if (option != null) {
 for (int i=0; i < option.length; i++) {
-  fieldEntry=option[i].format(fieldEntry);
+fieldEntry=option[i].format(fieldEntry);
 }
 }
 if (postFormatter != null) fieldEntry=postFormatter.format(fieldEntry);
