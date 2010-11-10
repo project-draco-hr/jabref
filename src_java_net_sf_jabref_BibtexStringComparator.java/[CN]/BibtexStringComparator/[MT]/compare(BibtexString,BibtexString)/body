@@ -1,8 +1,4 @@
 {
-  if (considerRefs) {
-    int ref1=s1.getContent().replaceAll("#[A-Za-z]+#",PADDED_MARKER).split(MARKER).length, ref2=s2.getContent().replaceAll("#[A-Za-z]+#",PADDED_MARKER).split(MARKER).length;
-    if (ref1 != ref2)     return ref1 - ref2;
-  }
   int res=0;
   String name1=s1.getName().toLowerCase(), name2=s2.getName().toLowerCase();
   res=name1.compareTo(name2);
@@ -18,7 +14,9 @@
       post=s1;
     }
     String namePost=post.getName().toLowerCase(), textPre=pre.getContent().toLowerCase();
-    if (textPre.indexOf("#" + namePost + "#") >= 0)     res=-res;
+    if (textPre.indexOf("#" + namePost + "#") >= 0) {
+      res=-res;
+    }
   }
   return res;
 }
