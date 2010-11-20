@@ -16,41 +16,37 @@
   initSidePane();
   initLayout();
   initActions();
-  int sizeX=prefs.getInt("sizeX");
-  int sizeY=prefs.getInt("sizeY");
-  int posX=prefs.getInt("posX");
-  int posY=prefs.getInt("posY");
-  if (Globals.prefs.getBoolean("windowMaximised") && !Globals.ON_MAC && !Globals.ON_WIN) {
-    Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
-    sizeY=(int)dim.getHeight();
-    sizeX=(int)dim.getWidth();
-    posX=0;
-    posY=0;
-  }
-  if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length == 1) {
-    Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
-    int height=(int)dim.getHeight();
-    int width=(int)dim.getWidth();
-    if (posX + sizeX > width) {
-      if (sizeX <= width) {
-        posX=width - sizeX;
-      }
+  setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+  if (!prefs.getBoolean("windowMaximised")) {
+    int sizeX=prefs.getInt("sizeX");
+    int sizeY=prefs.getInt("sizeY");
+    int posX=prefs.getInt("posX");
+    int posY=prefs.getInt("posY");
+    if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length == 1) {
+      Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
+      int height=(int)dim.getHeight();
+      int width=(int)dim.getWidth();
+      if (posX + sizeX > width) {
+        if (sizeX <= width) {
+          posX=width - sizeX;
+        }
  else {
-        posX=prefs.getIntDefault("posX");
-        sizeX=prefs.getIntDefault("sizeX");
+          posX=prefs.getIntDefault("posX");
+          sizeX=prefs.getIntDefault("sizeX");
+        }
+      }
+      if (posY + sizeY > height) {
+        if (sizeY <= height) {
+          posY=height - sizeY;
+        }
+ else {
+          posY=prefs.getIntDefault("posY");
+          sizeY=prefs.getIntDefault("sizeY");
+        }
       }
     }
-    if (posY + sizeY > height) {
-      if (sizeY <= height) {
-        posY=height - sizeY;
-      }
- else {
-        posY=prefs.getIntDefault("posY");
-        sizeY=prefs.getIntDefault("sizeY");
-      }
-    }
+    setBounds(posX,posY,sizeX,sizeY);
   }
-  setBounds(posX,posY,sizeX,sizeY);
   tabbedPane.setBorder(null);
   tabbedPane.setForeground(GUIGlobals.inActiveTabbed);
   tabbedPane.addChangeListener(new ChangeListener(){
