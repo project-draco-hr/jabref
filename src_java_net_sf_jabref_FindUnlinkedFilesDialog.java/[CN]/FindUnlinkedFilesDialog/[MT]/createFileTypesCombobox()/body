@@ -1,0 +1,22 @@
+{
+  List<FileFilter> fileFilterList=creatorManager.getFileFilterList();
+  Vector<FileFilter> vector=new Vector<FileFilter>();
+  for (  FileFilter fileFilter : fileFilterList) {
+    vector.add(fileFilter);
+  }
+  comboBoxFileTypeSelection=new JComboBox(vector);
+  comboBoxFileTypeSelection.setRenderer(new DefaultListCellRenderer(){
+    private static final long serialVersionUID=8503499454763947465L;
+    @Override public Component getListCellRendererComponent(    JList list,    Object value,    int index,    boolean isSelected,    boolean cellHasFocus){
+      JLabel label=(JLabel)super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
+      if (value instanceof EntryFromFileCreator) {
+        EntryFromFileCreator creator=(EntryFromFileCreator)value;
+        if (creator.getExternalFileType() != null) {
+          label.setIcon(creator.getExternalFileType().getIcon());
+        }
+      }
+      return label;
+    }
+  }
+);
+}

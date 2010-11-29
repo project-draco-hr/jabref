@@ -1,0 +1,14 @@
+{
+  List<File> filesList=new ArrayList<File>();
+  Enumeration<CheckableTreeNode> childs=node.depthFirstEnumeration();
+  while (childs.hasMoreElements()) {
+    CheckableTreeNode child=childs.nextElement();
+    if (child.isLeaf() && child.getSelected()) {
+      File nodeFile=((FileNodeWrapper)child.getUserObject()).file;
+      if (nodeFile != null && nodeFile.isFile()) {
+        filesList.add(nodeFile);
+      }
+    }
+  }
+  return filesList;
+}

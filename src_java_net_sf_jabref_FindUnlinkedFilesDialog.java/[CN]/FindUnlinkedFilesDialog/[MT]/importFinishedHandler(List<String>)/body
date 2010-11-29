@@ -1,0 +1,27 @@
+{
+  if (errors != null && errors.size() > 0) {
+    StringBuffer warningInfo=new StringBuffer();
+    warningInfo.append("The import finished with warnings:\n");
+    warningInfo.append("There ");
+    warningInfo.append(errors.size() > 1 ? "were " : "was ");
+    warningInfo.append(errors.size());
+    warningInfo.append(errors.size() > 1 ? " files" : " file");
+    warningInfo.append(errors.size() > 1 ? " which" : " that");
+    warningInfo.append(" could not be imported.");
+    JOptionPane.showMessageDialog(this,warningInfo.toString(),Globals.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+  }
+  buttonOk.removeActionListener(actionListenerImportEntrys);
+  buttonOk.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+  progressBarImporting.setVisible(false);
+  labelImportingInfo.setVisible(false);
+  buttonOk.setVisible(true);
+  buttonCancel.setVisible(true);
+  disOrEnableDialog(true);
+  setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+  startSearch();
+}

@@ -1,0 +1,15 @@
+{
+  if (aFile == null || anEntry == null)   return false;
+  FileListTableModel model=new FileListTableModel();
+  String fileField=anEntry.getField(KEY_FILE_FIELD);
+  model.setContent(fileField);
+  for (int i=0; i < model.getRowCount(); i++) {
+    FileListEntry flEntry=model.getEntry(i);
+    String link=flEntry.getLink();
+    if (link == null)     break;
+    if (new File(link).getAbsolutePath().equals(aFile.getAbsolutePath())) {
+      return true;
+    }
+  }
+  return false;
+}

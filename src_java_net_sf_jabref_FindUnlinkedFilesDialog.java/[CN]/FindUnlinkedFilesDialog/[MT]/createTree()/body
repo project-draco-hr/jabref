@@ -1,0 +1,24 @@
+{
+  treeMouseListener=new MouseAdapter(){
+    public void mousePressed(    MouseEvent e){
+      int x=e.getX();
+      int y=e.getY();
+      int row=tree.getRowForLocation(x,y);
+      TreePath path=tree.getPathForRow(row);
+      if (path != null) {
+        CheckableTreeNode node=(CheckableTreeNode)path.getLastPathComponent();
+        node.check();
+        tree.invalidate();
+        tree.repaint();
+      }
+    }
+  }
+;
+  CheckableTreeNode startNode=new CheckableTreeNode("ROOT");
+  DefaultTreeModel model=new DefaultTreeModel(startNode);
+  tree.setModel(model);
+  tree.setRootVisible(false);
+  DefaultTreeCellRenderer renderer=new CheckboxTreeCellRenderer();
+  tree.setCellRenderer(renderer);
+  tree.addMouseListener(treeMouseListener);
+}
