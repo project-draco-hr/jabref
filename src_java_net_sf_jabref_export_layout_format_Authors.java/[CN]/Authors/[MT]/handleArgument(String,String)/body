@@ -1,0 +1,82 @@
+{
+  if (authorOrder.contains(key)) {
+    if (key.equals("FirstFirst"))     flMode=FIRST_FIRST;
+ else     if (key.equals("LastFirst"))     flMode=LAST_FIRST;
+ else     if (key.equals("LastFirstFirst"))     flMode=LF_FF;
+  }
+ else   if (authorAbbr.contains(key)) {
+    if (key.equals("Names")) {
+      abbreviate=false;
+    }
+ else     if (key.equals("Initials")) {
+      abbreviate=true;
+      firstInitialOnly=false;
+    }
+ else     if (key.equals("FirstInitial")) {
+      abbreviate=true;
+      firstInitialOnly=true;
+    }
+  }
+ else   if (authorPunc.contains(key)) {
+    if (key.equals("FullPunc")) {
+      abbrDots=true;
+      lastFirstSeparator=", ";
+    }
+ else     if (key.equals("NoPunc")) {
+      abbrDots=false;
+      lastFirstSeparator=" ";
+    }
+ else     if (key.equals("NoComma")) {
+      abbrDots=true;
+      lastFirstSeparator=" ";
+    }
+ else     if (key.equals("NoPeriod")) {
+      abbrDots=false;
+      lastFirstSeparator=", ";
+    }
+  }
+ else   if (separators.contains(key) || lastSeparators.contains(key)) {
+    if (key.equals("Comma")) {
+      if (!setSep) {
+        separator=COMMA;
+        setSep=true;
+      }
+ else       lastSeparator=COMMA;
+    }
+ else     if (key.equals("And")) {
+      if (!setSep) {
+        separator=AND;
+        setSep=true;
+      }
+ else       lastSeparator=AND;
+    }
+ else     if (key.equals("Colon")) {
+      if (!setSep) {
+        separator=COLON;
+        setSep=true;
+      }
+ else       lastSeparator=COLON;
+    }
+ else     if (key.equals("Semicolon")) {
+      if (!setSep) {
+        separator=SEMICOLON;
+        setSep=true;
+      }
+ else       lastSeparator=SEMICOLON;
+    }
+ else     if (key.equals("Sep") && (value.length() > 0)) {
+      separator=value;
+      setSep=true;
+    }
+ else     if (key.equals("LastSep") && (value.length() > 0)) {
+      lastSeparator=value;
+    }
+  }
+ else   if (key.equals("EtAl") && (value.length() > 0)) {
+    etAlString=value;
+  }
+ else   if (numberPattern.matcher(key).matches()) {
+    int num=Integer.parseInt(key);
+    maxAuthors=num;
+  }
+}
