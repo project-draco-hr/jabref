@@ -6,11 +6,14 @@
     flags=Pattern.CASE_INSENSITIVE;
   }
   ArrayList<String> words=parseQuery(searchString);
-  if (regExp) {
+  if (regExp)   try {
     pattern=new Pattern[words.size()];
     for (int i=0; i < pattern.length; i++) {
       pattern[i]=Pattern.compile(words.get(i),flags);
     }
+  }
+ catch (  PatternSyntaxException ex) {
+    return 0;
   }
   boolean[] matchFound=new boolean[words.size()];
   Object fieldContentAsObject;
