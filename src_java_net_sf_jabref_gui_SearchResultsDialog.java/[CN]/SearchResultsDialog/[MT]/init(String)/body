@@ -12,7 +12,7 @@
   TableComparatorChooser<BibtexEntry> tableSorter=new TableComparatorChooser<BibtexEntry>(entryTable,sortedEntries,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
   setupComparatorChooser(tableSorter);
   JScrollPane sp=new JScrollPane(entryTable);
-  EventSelectionModel<BibtexEntry> selectionModel=new EventSelectionModel<BibtexEntry>(sortedEntries);
+  final EventSelectionModel<BibtexEntry> selectionModel=new EventSelectionModel<BibtexEntry>(sortedEntries);
   entryTable.setSelectionModel(selectionModel);
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
   entryTable.addMouseListener(new TableClickListener());
@@ -28,6 +28,16 @@
   InputMap im=contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",closeAction);
+  entryTable.getActionMap().put("copy",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      if (selectionModel.getSelected().size() > 0) {
+        BibtexEntry[] selectedEntries=selectionModel.getSelected().toArray(new BibtexEntry[selectionModel.getSelected().size()]);
+        TransferableBibtexEntry trbe=new TransferableBibtexEntry(selectedEntries);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,frame.basePanel());
+      }
+    }
+  }
+);
   diag.addWindowListener(new WindowAdapter(){
     public void windowOpened(    WindowEvent e){
       contentPane.setDividerLocation(0.5f);
