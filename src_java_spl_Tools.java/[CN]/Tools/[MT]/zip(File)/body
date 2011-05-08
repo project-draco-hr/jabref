@@ -1,0 +1,20 @@
+{
+  try {
+    FileInputStream fileInputStream=new FileInputStream(file);
+    ByteArrayOutputStream bos=new ByteArrayOutputStream();
+    GZIPOutputStream out=new GZIPOutputStream(bos);
+    byte[] buf=new byte[1024];
+    int len;
+    while ((len=fileInputStream.read(buf)) > 0) {
+      out.write(buf,0,len);
+    }
+    fileInputStream.close();
+    out.finish();
+    out.close();
+    bos.close();
+    return bos.toByteArray();
+  }
+ catch (  IOException e) {
+    return null;
+  }
+}

@@ -1,0 +1,48 @@
+{
+  try {
+    if (isWebServiceAvailable() == false) {
+      if (isInternetAvailable()) {
+        return WebServiceStatus.WEBSERVICE_DOWN;
+      }
+ else {
+        return WebServiceStatus.NO_INTERNET;
+      }
+    }
+    if (isWebServiceOutDated()) {
+      return WebServiceStatus.OUTDATED;
+    }
+    if (isMetaDataServiceAvailable() == false) {
+      return WebServiceStatus.UNAVAILABLE;
+    }
+    byte[] data=Tools.zip(file);
+    FormDataMultiPart formDataMultiPart=new FormDataMultiPart();
+    formDataMultiPart.field("gzippedpdf",data,MediaType.APPLICATION_OCTET_STREAM_TYPE);
+    ClientResponse response=WEBRESOURCE.path("service/metadata").type(MediaType.MULTIPART_FORM_DATA_TYPE).post(ClientResponse.class,formDataMultiPart);
+    if (response.getClientResponseStatus() == ClientResponse.Status.OK && response.hasEntity()) {
+      String entity=response.getEntity(String.class);
+      byte[] bytes=new byte[0];
+      try {
+        bytes=entity.getBytes("UTF-8");
+      }
+ catch (      UnsupportedEncodingException e) {
+        return null;
+      }
+      InputStream is=new ByteArrayInputStream(bytes);
+      if (is != null) {
+        XmlDocuments documents=JAXB.unmarshal(is,XmlDocuments.class);
+        SplWebClient.metadata=documents;
+        return WebServiceStatus.OK;
+      }
+ else {
+        return WebServiceStatus.NO_METADATA;
+      }
+    }
+    if (response.getClientResponseStatus() == ClientResponse.Status.SERVICE_UNAVAILABLE) {
+      return WebServiceStatus.UNAVAILABLE;
+    }
+  }
+ catch (  Exception e) {
+    System.out.println(Tools.getStackTraceAsString(e));
+  }
+  return WebServiceStatus.NO_METADATA;
+}

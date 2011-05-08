@@ -1,0 +1,96 @@
+{
+  if (panel == null)   return false;
+  for (  String fileName : fileNames) {
+    List<BibtexEntry> xmpEntriesInFile=readXmpEntries(fileName);
+    ImportDialog importDialog=new ImportDialog(dropRow,fileName);
+    if (!hasXmpEntries(xmpEntriesInFile)) {
+      importDialog.getRadioButtonXmp().setEnabled(false);
+    }
+    Tools.centerRelativeToWindow(importDialog,frame);
+    importDialog.showDialog();
+    if (importDialog.getResult() == JOptionPane.OK_OPTION) {
+      if (importDialog.getRadioButtonXmp().isSelected()) {
+        ImportMenuItem importer=new ImportMenuItem(frame,(entryTable == null));
+        importer.automatedImport(new String[]{fileName});
+      }
+ else       if (importDialog.getRadioButtonMrDlib().isSelected()) {
+        MetaDataListDialog metaDataListDialog=new MetaDataListDialog(fileName,true);
+        Tools.centerRelativeToWindow(metaDataListDialog,frame);
+        metaDataListDialog.showDialog();
+        XmlDocuments documents=metaDataListDialog.getXmlDocuments();
+        if (documents != null && documents.getDocuments() != null && documents.getDocuments().size() > 0 && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
+          int selected=metaDataListDialog.getTableMetadata().getSelectedRow();
+          if (selected > -1 && selected < documents.getDocuments().size()) {
+            XmlDocument document=documents.getDocuments().get(selected);
+            String id=Util.createNeutralId();
+            BibtexEntry entry=new BibtexEntry(id);
+            if (fieldExists(document.getType())) {
+              BibtexEntryType type=BibtexEntryType.getStandardType(document.getType());
+              if (type == null) {
+                type=BibtexEntryType.ARTICLE;
+              }
+              entry.setType(type);
+            }
+ else {
+              entry.setType(BibtexEntryType.ARTICLE);
+            }
+            ArrayList<BibtexEntry> list=new ArrayList<BibtexEntry>();
+            list.add(entry);
+            Util.setAutomaticFields(list,true,true,false);
+            insertFields(entry.getRequiredFields(),entry,document);
+            insertFields(entry.getGeneralFields(),entry,document);
+            insertFields(entry.getOptionalFields(),entry,document);
+            panel.database().insertEntry(entry);
+            DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
+            dfh.linkPdfToEntry(fileName,entryTable,entry);
+            LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),panel.database(),entry);
+          }
+ else {
+            createNewBlankEntry(fileName);
+          }
+        }
+ else         if (metaDataListDialog.getResult() == JOptionPane.CANCEL_OPTION) {
+          continue;
+        }
+ else         if (metaDataListDialog.getResult() == JOptionPane.NO_OPTION) {
+          createNewBlankEntry(fileName);
+        }
+ else         if (documents == null || documents.getDocuments() == null || documents.getDocuments().size() <= 0 && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
+          createNewBlankEntry(fileName);
+        }
+      }
+ else       if (importDialog.getRadioButtonNoMeta().isSelected()) {
+        createNewBlankEntry(fileName);
+      }
+ else       if (importDialog.getRadioButtonUpdateEmptyFields().isSelected()) {
+        MetaDataListDialog metaDataListDialog=new MetaDataListDialog(fileName,false);
+        Tools.centerRelativeToWindow(metaDataListDialog,frame);
+        metaDataListDialog.showDialog();
+        XmlDocuments documents=metaDataListDialog.getXmlDocuments();
+        if (documents != null && documents.getDocuments() != null && documents.getDocuments().size() > 0 && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
+          int selected=metaDataListDialog.getTableMetadata().getSelectedRow();
+          if (selected > -1 && selected < documents.getDocuments().size()) {
+            XmlDocument document=documents.getDocuments().get(selected);
+            BibtexEntry entry=entryTable.getEntryAt(dropRow);
+            if (fieldExists(document.getType())) {
+              BibtexEntryType type=BibtexEntryType.getStandardType(document.getType());
+              if (type != null) {
+                entry.setType(type);
+              }
+            }
+            insertFields(entry.getRequiredFields(),entry,document);
+            insertFields(entry.getGeneralFields(),entry,document);
+            insertFields(entry.getOptionalFields(),entry,document);
+            DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
+            dfh.linkPdfToEntry(fileName,entryTable,dropRow);
+          }
+        }
+      }
+ else       if (importDialog.getRadioButtononlyAttachPDF().isSelected()) {
+        DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
+        dfh.linkPdfToEntry(fileName,entryTable,dropRow);
+      }
+    }
+  }
+  return true;
+}
