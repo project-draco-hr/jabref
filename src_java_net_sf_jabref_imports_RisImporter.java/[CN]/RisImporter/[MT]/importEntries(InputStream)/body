@@ -39,7 +39,14 @@
  else           if (val.equals("CHAP"))           type="incollection";
  else           type="other";
         }
- else         if (lab.equals("T1") || lab.equals("TI"))         hm.put("title",val);
+ else         if (lab.equals("T1") || lab.equals("TI")) {
+          String oldVal=hm.get("title");
+          if (oldVal == null)           hm.put("title",val);
+ else {
+            if (oldVal.endsWith(":") || oldVal.endsWith(".") || oldVal.endsWith("?"))             hm.put("title",oldVal + " " + val);
+ else             hm.put("title",oldVal + ": " + val);
+          }
+        }
  else         if (lab.equals("T2") || lab.equals("T3") || lab.equals("BT")) {
           hm.put("booktitle",val);
         }
@@ -117,19 +124,19 @@
         hm.put("comment",comment);
       }
       hm.put("pages",startPage + "--" + endPage);
-      BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(type));
-      ArrayList<Object> toRemove=new ArrayList<Object>();
-      for (Iterator<String> it=hm.keySet().iterator(); it.hasNext(); ) {
-        Object key=it.next();
-        String content=hm.get(key);
-        if ((content == null) || (content.trim().length() == 0))         toRemove.add(key);
-      }
-      for (Iterator<Object> iterator=toRemove.iterator(); iterator.hasNext(); ) {
-        hm.remove(iterator.next());
-      }
-      b.setField(hm);
-      bibitems.add(b);
     }
+    BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(type));
+    ArrayList<Object> toRemove=new ArrayList<Object>();
+    for (Iterator<String> it=hm.keySet().iterator(); it.hasNext(); ) {
+      Object key=it.next();
+      String content=hm.get(key);
+      if ((content == null) || (content.trim().length() == 0))       toRemove.add(key);
+    }
+    for (Iterator<Object> iterator=toRemove.iterator(); iterator.hasNext(); ) {
+      hm.remove(iterator.next());
+    }
+    b.setField(hm);
+    bibitems.add(b);
   }
   return bibitems;
 }

@@ -8,6 +8,13 @@
   editSource=new JCheckBox(Globals.lang("Enable source editing"));
   disableOnMultiple=new JCheckBox(Globals.lang("Disable entry editor when multiple entries are selected"));
   autoComplete=new JCheckBox(Globals.lang("Enable word/name autocompletion"));
+  autoCompFF=new JRadioButton(Globals.lang("Autocomplete names in 'Firstname Lastname' format only"));
+  autoCompLF=new JRadioButton(Globals.lang("Autocomplete names in 'Lastname, Firstname' format only"));
+  autoCompBoth=new JRadioButton(Globals.lang("Autocomplete names in both formats"));
+  ButtonGroup bg=new ButtonGroup();
+  bg.add(autoCompLF);
+  bg.add(autoCompFF);
+  bg.add(autoCompBoth);
   autoCompFields=new JTextField(40);
   Insets marg=new Insets(0,12,3,0);
   editSource.setMargin(marg);
@@ -25,7 +32,7 @@
     }
   }
 );
-  FormLayout layout=new FormLayout("8dlu, left:pref, 8dlu, fill:150dlu, 4dlu, fill:pref","pref, 6dlu, pref, 6dlu, pref, 6dlu, pref, 6dlu, pref, 6dlu, " + "pref, 6dlu, pref, 6dlu, pref, 6dlu, pref");
+  FormLayout layout=new FormLayout("8dlu, left:pref, 8dlu, fill:150dlu, 4dlu, fill:pref","pref, 6dlu, pref, 6dlu, pref, 6dlu, pref, 6dlu, pref, 6dlu, " + "pref, 6dlu, pref, 6dlu, pref, 6dlu, pref, 6dlu, pref, 6dlu, pref, 6dlu, pref");
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
   CellConstraints cc=new CellConstraints();
   builder.addSeparator(Globals.lang("Editor options"),cc.xyw(1,1,5));
@@ -39,6 +46,9 @@
   builder3.append(label);
   builder3.append(autoCompFields);
   builder.add(builder3.getPanel(),cc.xyw(2,13,3));
+  builder.add(autoCompFF,cc.xy(2,15));
+  builder.add(autoCompLF,cc.xy(2,17));
+  builder.add(autoCompBoth,cc.xy(2,19));
   JPanel pan=builder.getPanel();
   pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   add(pan,BorderLayout.CENTER);

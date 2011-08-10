@@ -1,9 +1,10 @@
-def lookForDuplicates(file):
+def lookForDuplicates(file, displayKeys):
     duplicount = 0
     f1 = open(file)
     lines = f1.readlines()
     f1.close()
     mappings = {}
+    emptyVals = 0
     for line in lines:
         comment = line.find('#')
         index = line.find('=')
@@ -13,11 +14,25 @@ def lookForDuplicates(file):
             if (key in mappings):
                 mappings[key].append(value)
                 duplicount += 1
-                print (((('Duplicate: ' + file) + ': ') + key) + ' ='),
-                print mappings[key]
+                if displayKeys:
+                    print (((('Duplicate: ' + file) + ': ') + key) + ' ='),
+                    print mappings[key]
             else:
                 mappings[key] = [value]
                 if (value == ''):
-                    print ((('Empty value: ' + file) + ': ') + key)
-    if (duplicount == 0):
-        print (file + ': No duplicates found.')
+                    emptyVals = (emptyVals + 1)
+                    if displayKeys:
+                        print ((('Empty value: ' + file) + ': ') + key)
+    if (duplicount > 0):
+        dupstring = (str(duplicount) + ' duplicates. ')
+    else:
+        dupstring = ''
+    if (emptyVals > 0):
+        emptStr = (str(emptyVals) + ' empty values. ')
+    else:
+        emptStr = ''
+    if ((duplicount + emptyVals) > 0):
+        okString = ''
+    else:
+        okString = 'ok'
+    print ((((file + ': ') + dupstring) + emptStr) + okString)

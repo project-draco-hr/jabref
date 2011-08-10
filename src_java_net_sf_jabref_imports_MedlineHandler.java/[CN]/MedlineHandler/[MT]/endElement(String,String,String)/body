@@ -48,6 +48,7 @@
     year="";
     forename="";
     lastName="";
+    suffix="";
     abstractText="";
     affiliation="";
     pubmedid="";
@@ -58,6 +59,7 @@
     language="";
     pst="";
     lastname="";
+    suffix="";
     initials="";
     number="";
     page="";
@@ -104,12 +106,16 @@
     if (forename.length() == 3 && forename.charAt(1) == ' ') {
       forename=initials;
     }
-    author=forename + " " + lastname;
+    if (lastname.indexOf(" ") > 0)     author="{" + lastname + "}";
+ else     author=lastname;
+    if (suffix.length() > 0)     author=author + ", " + suffix;
+    if (forename.length() > 0)     author=author + ", " + forename;
     authors.add(author);
     inAuthor=false;
     forename="";
     initials="";
     lastname="";
+    suffix="";
   }
  else   if (localName.equals("DescriptorName"))   inDescriptorName=false;
  else   if (localName.equals("QualifierName"))   inQualifierName=false;
@@ -120,6 +126,9 @@
   }
  else   if (localName.equals("LastName")) {
     inLastName=false;
+  }
+ else   if (localName.equals("Suffix")) {
+    inSuffix=false;
   }
  else   if (localName.equals("ForeName") || localName.equals("FirstName")) {
     inForename=false;

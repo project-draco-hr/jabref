@@ -9,7 +9,19 @@
   _prefs.putBoolean("autoComplete",autoComplete.isSelected());
   _prefs.put("autoCompleteFields",autoCompFields.getText());
   _prefs.putBoolean("showSource",showSource.isSelected());
-  if ((oldShowSource != showSource.isSelected()) || (oldAutoComplete != autoComplete.isSelected()) || (!oldAutoCompFields.equals(autoCompFields.getText()))) {
+  if (autoCompBoth.isSelected()) {
+    _prefs.putBoolean("autoCompFF",false);
+    _prefs.putBoolean("autoCompLF",false);
+  }
+ else   if (autoCompFF.isSelected()) {
+    _prefs.putBoolean("autoCompFF",true);
+    _prefs.putBoolean("autoCompLF",false);
+  }
+ else {
+    _prefs.putBoolean("autoCompFF",false);
+    _prefs.putBoolean("autoCompLF",true);
+  }
+  if ((oldShowSource != showSource.isSelected()) || (oldAutoComplete != autoComplete.isSelected()) || (!oldAutoCompFields.equals(autoCompFields.getText()))|| (oldAutoCompFF != autoCompFF.isSelected())|| (oldAutoCompLF != autoCompLF.isSelected())) {
     for (int j=0; j < _frame.getTabbedPane().getTabCount(); j++) {
       BasePanel bp=(BasePanel)_frame.getTabbedPane().getComponentAt(j);
       bp.entryEditors.clear();
