@@ -22,6 +22,7 @@
     String textResult=writer.toString();
     String author=null;
     String editor=null;
+    String institution=null;
     String abstractT=null;
     String keywords=null;
     String title=null;
@@ -29,50 +30,34 @@
     String DOI=null;
     String series=null;
     String volume=null;
+    String number=null;
     String pages=null;
-    String year=null;
     String publisher=null;
+    BibtexEntryType type=BibtexEntryType.INPROCEEDINGS;
     final String lineBreak=System.getProperty("line.separator");
-    String[] split=textResult.split(lineBreak);
-    String curString=split[0].concat(" ");
-    int i=1;
+    split=textResult.split(lineBreak);
+    proceedToNextNonEmptyLine();
+    curString=split[i];
+    i=i + 1;
     if (curString.length() > 4) {
-      boolean match=false;
-      if (isYear(curString.substring(0,4))) {
-        year=curString.substring(0,4);
-        match=true;
-      }
-      match=match || curString.contains("Conference");
-      if (match) {
-        while ((i < split.length) && (!split[i].equals(""))) {
-          curString=curString.concat(split[i]).concat(" ");
-          i++;
-        }
+      extractYear();
+      if (curString.contains("Conference")) {
+        fillCurStringWithNonEmptyLines();
         conference=curString;
         curString="";
-        i++;
       }
  else {
         String lower=curString.toLowerCase();
         if (lower.contains("copyright")) {
-          while ((i < split.length) && (!split[i].equals(""))) {
-            curString=curString.concat(split[i]).concat(" ");
-            i++;
-          }
+          fillCurStringWithNonEmptyLines();
           publisher=curString;
           curString="";
-          i++;
         }
       }
     }
-    while ((i < split.length) && (!split[i].equals(""))) {
-      curString=curString.concat(split[i]).concat(" ");
-      i++;
-    }
+    fillCurStringWithNonEmptyLines();
     title=streamlineTitle(curString);
     curString="";
-    i++;
-    while ((i < split.length) && (split[i].trim().equals("")))     i++;
     author=null;
     while ((i < split.length) && (!split[i].equals(""))) {
       curString=streamlineNames(split[i]);
@@ -105,6 +90,7 @@
           i++;
         }
         abstractT=curString;
+        i++;
       }
  else       if ((curString.length() >= "Keywords".length()) && (curString.substring(0,"Keywords".length()).equalsIgnoreCase("Keywords"))) {
         if (curString.length() == "Keywords".length()) {
@@ -114,28 +100,29 @@
           curString=curString.substring("Keywords".length() + 1).trim();
         }
         i++;
-        while ((i < split.length) && (!split[i].equals(""))) {
-          curString=curString.concat(split[i]).concat(" ");
-          i++;
-        }
+        fillCurStringWithNonEmptyLines();
         keywords=removeNonLettersAtEnd(curString);
       }
-      i++;
+ else {
+        String lower=curString.toLowerCase();
+        int pos=lower.indexOf("technical");
+        if (pos >= 0) {
+          type=BibtexEntryType.TECHREPORT;
+          pos=curString.trim().lastIndexOf(' ');
+          if (pos >= 0) {
+            number=curString.substring(pos + 1);
+          }
+        }
+        i++;
+        proceedToNextNonEmptyLine();
+      }
     }
     i=split.length - 1;
-    while ((i > 0) && (!split[i].equals(""))) {
-      i--;
-    }
-    curString="";
-    if (i > 0) {
-      for (int j=i + 1; j < split.length; j++) {
-        curString=curString.concat(split[j]);
-        if (j != split.length - 1) {
-          curString=curString.concat(" ");
-        }
-      }
+    while (i >= 0) {
+      readLastBlock();
+      extractYear();
       int pos=curString.indexOf("(Eds.)");
-      if (pos >= 0) {
+      if ((pos >= 0) && (publisher == null)) {
         publisher="Springer";
         editor=streamlineNames(curString.substring(0,pos - 1));
         curString=curString.substring(pos + "(Eds.)".length() + 2);
@@ -153,38 +140,40 @@
         }
       }
  else {
-        pos=curString.indexOf("DOI");
-        if (pos < 0)         pos=curString.indexOf("doi");
-        if (pos >= 0) {
-          pos+=3;
-          char delimiter=curString.charAt(pos);
-          if ((delimiter == ':') || (delimiter == ' ')) {
-            pos++;
+        if (DOI == null) {
+          pos=curString.indexOf("DOI");
+          if (pos < 0)           pos=curString.indexOf("doi");
+          if (pos >= 0) {
+            pos+=3;
+            char delimiter=curString.charAt(pos);
+            if ((delimiter == ':') || (delimiter == ' ')) {
+              pos++;
+            }
+            int nextSpace=curString.indexOf(' ',pos);
+            if (nextSpace > 0)             DOI=curString.substring(pos,nextSpace);
+ else             DOI=curString.substring(pos);
           }
-          int nextSpace=curString.indexOf(' ',pos);
-          if (nextSpace > 0)           DOI=curString.substring(pos,nextSpace);
- else           DOI=curString.substring(pos);
         }
-        if (curString.indexOf("IEEE") >= 0) {
+        if ((publisher == null) && (curString.indexOf("IEEE") >= 0)) {
           publisher="IEEE";
-          String yearStr=curString.substring(curString.length() - 4);
-          if (isYear(yearStr)) {
-            year=yearStr;
-          }
-          pos=curString.indexOf('$');
-          if (pos > 0) {
-            pos-=2;
-            while ((pos >= 0) && (curString.charAt(pos) != ' '))             pos--;
+          if (conference == null) {
+            pos=curString.indexOf('$');
             if (pos > 0) {
-              conference=curString.substring(0,pos);
+              pos-=2;
+              while ((pos >= 0) && (curString.charAt(pos) != ' '))               pos--;
+              if (pos > 0) {
+                conference=curString.substring(0,pos);
+              }
             }
           }
         }
       }
     }
     BibtexEntry entry=new BibtexEntry();
+    entry.setType(type);
     if (author != null)     entry.setField("author",author);
     if (editor != null)     entry.setField("editor",editor);
+    if (institution != null)     entry.setField("institution",institution);
     if (abstractT != null)     entry.setField("abstract",abstractT);
     if (keywords != null)     entry.setField("keywords",keywords);
     if (title != null)     entry.setField("title",title);
@@ -192,6 +181,7 @@
     if (DOI != null)     entry.setField("doi",DOI);
     if (series != null)     entry.setField("series",series);
     if (volume != null)     entry.setField("volume",volume);
+    if (number != null)     entry.setField("number",number);
     if (pages != null)     entry.setField("pages",pages);
     if (year != null)     entry.setField("year",year);
     if (publisher != null)     entry.setField("publisher",publisher);

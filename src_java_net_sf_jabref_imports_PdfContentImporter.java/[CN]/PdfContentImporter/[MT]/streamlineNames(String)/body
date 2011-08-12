@@ -1,11 +1,11 @@
 {
   String res;
   if (names.contains(",")) {
-    String[] split=names.split(",");
+    String[] splitNames=names.split(",");
     res="";
     boolean isFirst=true;
-    for (int i=0; i < split.length; i++) {
-      String curName=removeNonLettersAtEnd(split[i]);
+    for (int i=0; i < splitNames.length; i++) {
+      String curName=removeNonLettersAtEnd(splitNames[i]);
       if (curName.indexOf("and") == 0) {
         curName=curName.substring(3).trim();
       }
@@ -30,8 +30,8 @@
     }
   }
  else {
-    String[] split=names.split(" ");
-    if (split.length == 0) {
+    String[] splitNames=names.split(" ");
+    if (splitNames.length == 0) {
       return "";
     }
     boolean workedOnFirstOrMiddle=false;
@@ -40,7 +40,7 @@
     res="";
     do {
       if (!workedOnFirstOrMiddle) {
-        if (split[i].equalsIgnoreCase("and")) {
+        if (splitNames[i].equalsIgnoreCase("and")) {
         }
  else {
           if (isFirst) {
@@ -49,23 +49,23 @@
  else {
             res=res.concat(" and ");
           }
-          if ((split[i].equalsIgnoreCase("et")) && (split.length > i + 1) && (split[i + 1].equalsIgnoreCase("al."))) {
+          if ((splitNames[i].equalsIgnoreCase("et")) && (splitNames.length > i + 1) && (splitNames[i + 1].equalsIgnoreCase("al."))) {
             res=res.concat("others");
             break;
           }
  else {
-            res=res.concat(split[i]).concat(" ");
+            res=res.concat(splitNames[i]).concat(" ");
             workedOnFirstOrMiddle=true;
           }
         }
       }
  else {
-        if (split[i].contains(".")) {
-          res=res.concat(split[i]).concat(" ");
+        if (splitNames[i].contains(".")) {
+          res=res.concat(splitNames[i]).concat(" ");
         }
  else {
-          res=res.concat(removeNonLettersAtEnd(split[i]));
-          if (Character.isLowerCase(split[i].charAt(0))) {
+          res=res.concat(removeNonLettersAtEnd(splitNames[i]));
+          if (Character.isLowerCase(splitNames[i].charAt(0))) {
             res=res.concat(" ");
           }
  else {
@@ -75,7 +75,7 @@
       }
       i++;
     }
- while (i < split.length);
+ while (i < splitNames.length);
   }
   return res;
 }
