@@ -18,6 +18,50 @@
         ImportMenuItem importer=new ImportMenuItem(frame,(entryTable == null));
         importer.automatedImport(new String[]{fileName});
       }
+ else       if (importDialog.getRadioButtonPDFcontent().isSelected()) {
+        BibtexEntryType type=BibtexEntryType.INPROCEEDINGS;
+        PdfContentImporter importer=new PdfContentImporter();
+        File file=new File(fileName);
+        InputStream in=null;
+        List<BibtexEntry> res=null;
+        try {
+          in=new FileInputStream(file);
+        }
+ catch (        Exception e) {
+          createNewBlankEntry(fileName);
+          return true;
+        }
+        try {
+          res=importer.importEntries(in);
+        }
+ catch (        Exception e) {
+          createNewBlankEntry(fileName);
+          return true;
+        }
+ finally {
+          try {
+            in.close();
+          }
+ catch (          Exception f) {
+          }
+        }
+        if ((res == null) || (res.size() == 0)) {
+          createNewBlankEntry(fileName);
+          return true;
+        }
+        BibtexEntry entry=res.get(0);
+        entry.setType(type);
+        panel.database().insertEntry(entry);
+        LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),panel.database(),entry);
+        DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
+        dfh.linkPdfToEntry(fileName,entryTable,entry);
+        panel.highlightEntry(entry);
+        if (Globals.prefs.getBoolean("autoOpenForm")) {
+          EntryEditor editor=panel.getEntryEditor(entry);
+          panel.showEntryEditor(editor);
+          panel.adjustSplitter();
+        }
+      }
  else       if (importDialog.getRadioButtonMrDlib().isSelected()) {
         MetaDataListDialog metaDataListDialog=new MetaDataListDialog(fileName,true);
         Tools.centerRelativeToWindow(metaDataListDialog,frame);
