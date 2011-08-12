@@ -8,6 +8,7 @@
       if (curName.indexOf("and ") == 0) {
         curName=curName.substring(4);
       }
+      if (curName.equalsIgnoreCase("et al."))       curName="others";
       res=res.concat(curName);
       if (i != split.length - 1) {
         res=res.concat(" and ");
@@ -17,20 +18,35 @@
  else {
     String[] split=names.split(" ");
     res=null;
-    for (int i=0; i < split.length; i+=2) {
-      if (i == 0) {
-        res=split[0];
-        if (split.length > 1) {
-          res=res.concat(" ").concat(split[1]);
+    boolean workedOnFirstOrMiddle=false;
+    int i=0;
+    res="";
+    do {
+      if (!workedOnFirstOrMiddle) {
+        if ((split[i].equalsIgnoreCase("et")) && (split.length > i + 1) && (split[i + 1].equalsIgnoreCase("al."))) {
+          res=res.concat("others");
+          break;
+        }
+ else         if (split[i].equalsIgnoreCase("AND")) {
+        }
+ else {
+          res=res.concat(split[i]).concat(" ");
+          workedOnFirstOrMiddle=true;
         }
       }
  else {
-        res=res.concat(" and ").concat(split[i]);
-        if (split.length > i + 1) {
-          res=res.concat(" ").concat(split[i + 1]);
+        if (split[i].contains(".")) {
+          res=res.concat(split[i]).concat(" ");
+        }
+ else {
+          workedOnFirstOrMiddle=false;
+          res=res.concat(split[i]);
+          if (i + 1 < split.length)           res=res.concat(" and ");
         }
       }
+      i++;
     }
+ while (i < split.length);
   }
   return res;
 }
