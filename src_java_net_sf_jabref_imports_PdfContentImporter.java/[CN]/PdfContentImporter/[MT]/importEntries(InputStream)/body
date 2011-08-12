@@ -52,6 +52,18 @@
         curString="";
         i++;
       }
+ else {
+        String lower=curString.toLowerCase();
+        if (lower.contains("copyright")) {
+          while ((i < split.length) && (!split[i].equals(""))) {
+            curString=curString.concat(split[i]).concat(" ");
+            i++;
+          }
+          publisher=curString;
+          curString="";
+          i++;
+        }
+      }
     }
     while ((i < split.length) && (!split[i].equals(""))) {
       curString=curString.concat(split[i]).concat(" ");
@@ -61,17 +73,32 @@
     curString="";
     i++;
     while ((i < split.length) && (split[i].trim().equals("")))     i++;
+    author=null;
     while ((i < split.length) && (!split[i].equals(""))) {
-      curString=curString.concat(split[i]).concat(" ");
+      curString=streamlineNames(split[i]);
+      if (author == null) {
+        author=curString;
+      }
+ else {
+        if (curString.equals("")) {
+        }
+ else {
+          author=author.concat(" and ").concat(curString);
+        }
+      }
       i++;
     }
-    author=streamlineNames(curString);
     curString="";
     i++;
     while (i < split.length) {
       curString=split[i];
       if ((curString.length() >= "Abstract".length()) && (curString.substring(0,"Abstract".length()).equalsIgnoreCase("Abstract"))) {
-        curString=curString.substring("Abstract".length() + 1).trim().concat(lineBreak);
+        if (curString.length() == "Abstract".length()) {
+          curString="";
+        }
+ else {
+          curString=curString.substring("Abstract".length() + 1).trim().concat(lineBreak);
+        }
         i++;
         while ((i < split.length) && (!split[i].equals(""))) {
           curString=curString.concat(split[i]).concat(lineBreak);
@@ -80,7 +107,12 @@
         abstractT=curString;
       }
  else       if ((curString.length() >= "Keywords".length()) && (curString.substring(0,"Keywords".length()).equalsIgnoreCase("Keywords"))) {
-        curString=curString.substring("Keywords".length() + 1).trim();
+        if (curString.length() == "Keywords".length()) {
+          curString="";
+        }
+ else {
+          curString=curString.substring("Keywords".length() + 1).trim();
+        }
         i++;
         while ((i < split.length) && (!split[i].equals(""))) {
           curString=curString.concat(split[i]).concat(" ");
