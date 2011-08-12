@@ -400,6 +400,38 @@ catch (          Throwable ex) {
     }
   }
 );
+  actions.put("copyKeyAndTitle",new BaseAction(){
+    public void action(){
+      BibtexEntry[] bes=mainTable.getSelectedEntries();
+      if ((bes != null) && (bes.length > 0)) {
+        storeCurrentEdit();
+        StringReader sr=new StringReader("\\bibtexkey - \\begin{title}\\format[RemoveBrackets]{\\title}\\end{title}\n");
+        Layout layout;
+        try {
+          layout=new LayoutHelper(sr).getLayoutFromText(Globals.FORMATTER_PACKAGE);
+        }
+ catch (        Exception e) {
+          e.printStackTrace();
+          return;
+        }
+        StringBuffer sb=new StringBuffer();
+        int copied=0;
+        for (int i=0; i < bes.length; i++)         if (bes[i].getField(BibtexFields.KEY_FIELD) != null) {
+          copied++;
+          sb.append(layout.doLayout(bes[i],database));
+        }
+        if (copied == 0) {
+          output("None of the selected entries have BibTeX keys.");
+          return;
+        }
+        StringSelection ss=new StringSelection(sb.toString());
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
+        if (copied == bes.length)         output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + ".");
+ else         output(Globals.lang("Warning") + ": " + (copied)+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
+      }
+    }
+  }
+);
   actions.put("mergeDatabase",new AppendDatabaseAction(frame,this));
   actions.put("openFile",new BaseAction(){
     public void action(){
