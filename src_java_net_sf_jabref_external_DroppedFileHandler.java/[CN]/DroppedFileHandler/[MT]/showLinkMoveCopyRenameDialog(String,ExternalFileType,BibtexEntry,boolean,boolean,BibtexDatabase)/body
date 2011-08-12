@@ -1,4 +1,5 @@
 {
+  String citeKey=entry.getCiteKey();
   String dialogTitle=Globals.lang("Link to file %0",linkFileName);
   String dir=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
   if ((dir == null) || !(new File(dir)).exists()) {
@@ -36,8 +37,20 @@
     copyRadioButton.setText(Globals.lang("Copy file to file directory."));
     moveRadioButton.setText(Globals.lang("Move file to file directory."));
   }
-  renameCheckBox.setText(Globals.lang("Rename file to") + ": ");
-  renameToTextBox.setText(citeKey == null ? "default" : citeKey + "." + fileType.extension);
+  renameCheckBox.setText(Globals.lang("Rename file to").concat(": "));
+  String targetName=citeKey == null ? "default" : citeKey;
+  StringReader sr=new StringReader(Globals.prefs.get(ImportSettingsTab.PREF_IMPORT_FILENAMEPATTERN));
+  Layout layout=null;
+  try {
+    layout=new LayoutHelper(sr).getLayoutFromText(Globals.FORMATTER_PACKAGE);
+  }
+ catch (  Exception e) {
+    Globals.logger(Globals.lang("Wrong Format").concat(" ").concat(e.toString()));
+  }
+  if (layout != null) {
+    targetName=layout.doLayout(entry,database);
+  }
+  renameToTextBox.setText(targetName.concat(".").concat(fileType.extension));
   linkInPlace.addChangeListener(cl);
   cl.stateChanged(new ChangeEvent(linkInPlace));
   try {
