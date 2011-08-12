@@ -3,35 +3,60 @@
   if (names.contains(",")) {
     String[] split=names.split(",");
     res="";
+    boolean isFirst=true;
     for (int i=0; i < split.length; i++) {
       String curName=removeNonLettersAtEnd(split[i]);
-      if (curName.indexOf("and ") == 0) {
-        curName=curName.substring(4);
+      if (curName.indexOf("and") == 0) {
+        curName=curName.substring(3).trim();
       }
-      if (curName.equalsIgnoreCase("et al."))       curName="others";
-      res=res.concat(curName);
-      if (i != split.length - 1) {
-        res=res.concat(" and ");
+ else {
+        int posAnd=curName.indexOf(" and ");
+        if (posAnd >= 0) {
+          String nameBefore=curName.substring(0,posAnd);
+          res=res.concat(" and ").concat(removeNonLettersAtEnd(nameBefore));
+          curName=curName.substring(posAnd + 5);
+        }
+      }
+      if (!curName.equals("")) {
+        if (curName.equalsIgnoreCase("et al."))         curName="others";
+        if (isFirst) {
+          isFirst=false;
+        }
+ else {
+          res=res.concat(" and ");
+        }
+        res=res.concat(curName);
       }
     }
   }
  else {
     String[] split=names.split(" ");
-    res=null;
+    if (split.length == 0) {
+      return "";
+    }
     boolean workedOnFirstOrMiddle=false;
+    boolean isFirst=true;
     int i=0;
     res="";
     do {
       if (!workedOnFirstOrMiddle) {
-        if ((split[i].equalsIgnoreCase("et")) && (split.length > i + 1) && (split[i + 1].equalsIgnoreCase("al."))) {
-          res=res.concat("others");
-          break;
-        }
- else         if (split[i].equalsIgnoreCase("and")) {
+        if (split[i].equalsIgnoreCase("and")) {
         }
  else {
-          res=res.concat(split[i]).concat(" ");
-          workedOnFirstOrMiddle=true;
+          if (isFirst) {
+            isFirst=false;
+          }
+ else {
+            res=res.concat(" and ");
+          }
+          if ((split[i].equalsIgnoreCase("et")) && (split.length > i + 1) && (split[i + 1].equalsIgnoreCase("al."))) {
+            res=res.concat("others");
+            break;
+          }
+ else {
+            res=res.concat(split[i]).concat(" ");
+            workedOnFirstOrMiddle=true;
+          }
         }
       }
  else {
@@ -39,9 +64,13 @@
           res=res.concat(split[i]).concat(" ");
         }
  else {
-          workedOnFirstOrMiddle=false;
           res=res.concat(removeNonLettersAtEnd(split[i]));
-          if (i + 1 < split.length)           res=res.concat(" and ");
+          if (Character.isLowerCase(split[i].charAt(0))) {
+            res=res.concat(" ");
+          }
+ else {
+            workedOnFirstOrMiddle=false;
+          }
         }
       }
       i++;
