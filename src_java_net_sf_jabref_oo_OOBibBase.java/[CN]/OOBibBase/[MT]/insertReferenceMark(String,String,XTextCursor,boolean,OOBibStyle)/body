@@ -1,0 +1,29 @@
+{
+  String pageInfo=getCustomProperty(name);
+  if (pageInfo != null) {
+    citText=style.insertPageInfo(citText,pageInfo);
+  }
+  Object bookmark=mxDocFactory.createInstance("com.sun.star.text.ReferenceMark");
+  XNamed xNamed=(XNamed)UnoRuntime.queryInterface(XNamed.class,bookmark);
+  xNamed.setName(name);
+  if (true) {
+    XTextContent xTextContent=(XTextContent)UnoRuntime.queryInterface(XTextContent.class,bookmark);
+    if (withText) {
+      position.setString(citText);
+      XPropertySet xCursorProps=(XPropertySet)UnoRuntime.queryInterface(XPropertySet.class,position);
+      xCursorProps.setPropertyValue("CharLocale",new Locale("zxx","",""));
+      if (style.isFormatCitations()) {
+        String charStyle=style.getCitationCharacterFormat();
+        try {
+          xCursorProps.setPropertyValue("CharStyleName",charStyle);
+        }
+ catch (        Throwable ex) {
+          throw new UndefinedCharacterFormatException(charStyle);
+        }
+      }
+    }
+ else     position.setString("");
+    position.getText().insertTextContent(position,xTextContent,true);
+  }
+  position.collapseToEnd();
+}

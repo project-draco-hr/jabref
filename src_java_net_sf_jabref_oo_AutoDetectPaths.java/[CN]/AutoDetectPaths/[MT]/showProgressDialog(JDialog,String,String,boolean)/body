@@ -1,0 +1,23 @@
+{
+  fileSearchCancelled=false;
+  final JDialog prog;
+  JProgressBar bar=new JProgressBar(JProgressBar.HORIZONTAL);
+  JButton cancel=new JButton(Globals.lang("Cancel"));
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      fileSearchCancelled=true;
+      ((JButton)event.getSource()).setEnabled(false);
+    }
+  }
+);
+  prog=new JDialog(parent,title,false);
+  bar.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+  bar.setIndeterminate(true);
+  if (includeCancelButton)   prog.add(cancel,BorderLayout.SOUTH);
+  prog.add(new JLabel(message),BorderLayout.NORTH);
+  prog.add(bar,BorderLayout.CENTER);
+  prog.pack();
+  prog.setLocationRelativeTo(null);
+  prog.setVisible(true);
+  return prog;
+}

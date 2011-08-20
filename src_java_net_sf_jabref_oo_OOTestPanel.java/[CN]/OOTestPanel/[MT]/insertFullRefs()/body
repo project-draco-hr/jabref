@@ -1,0 +1,21 @@
+{
+  try {
+    BasePanel panel=frame.basePanel();
+    final BibtexDatabase database=panel.database();
+    Map<BibtexEntry,BibtexDatabase> entries=new LinkedHashMap<BibtexEntry,BibtexDatabase>();
+    if (panel != null) {
+      BibtexEntry[] e=panel.getSelectedEntries();
+      ArrayList<BibtexEntry> el=new ArrayList<BibtexEntry>();
+      for (int i=0; i < e.length; i++) {
+        entries.put(e[i],database);
+      }
+      ooBase.insertFullReferenceAtViewCursor(entries,style,"Default");
+    }
+  }
+ catch (  UndefinedParagraphFormatException ex) {
+    reportUndefinedParagraphFormat(ex);
+  }
+catch (  Exception ex) {
+    ex.printStackTrace();
+  }
+}

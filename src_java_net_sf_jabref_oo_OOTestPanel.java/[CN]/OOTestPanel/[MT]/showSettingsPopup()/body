@@ -1,0 +1,34 @@
+{
+  JPopupMenu menu=new JPopupMenu();
+  final JCheckBoxMenuItem autoSync=new JCheckBoxMenuItem(Globals.lang("Automatically sync bibliography when inserting citations"),Globals.prefs.getBoolean("syncOOWhenCiting"));
+  final JRadioButtonMenuItem useActiveBase=new JRadioButtonMenuItem(Globals.lang("Look up BibTeX entries in the active tab only"));
+  final JRadioButtonMenuItem useAllBases=new JRadioButtonMenuItem(Globals.lang("Look up BibTeX entries in all open databases"));
+  ButtonGroup bg=new ButtonGroup();
+  bg.add(useActiveBase);
+  bg.add(useAllBases);
+  if (Globals.prefs.getBoolean("useAllOpenBases"))   useAllBases.setSelected(true);
+ else   useActiveBase.setSelected(true);
+  autoSync.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      Globals.prefs.putBoolean("syncOOWhenCiting",autoSync.isSelected());
+    }
+  }
+);
+  useAllBases.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      Globals.prefs.putBoolean("useAllOpenBases",useAllBases.isSelected());
+    }
+  }
+);
+  useActiveBase.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      Globals.prefs.putBoolean("useAllOpenBases",!useActiveBase.isSelected());
+    }
+  }
+);
+  menu.add(autoSync);
+  menu.addSeparator();
+  menu.add(useActiveBase);
+  menu.add(useAllBases);
+  menu.show(settingsB,0,settingsB.getHeight());
+}

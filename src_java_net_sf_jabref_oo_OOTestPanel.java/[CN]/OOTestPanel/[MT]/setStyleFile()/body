@@ -1,0 +1,15 @@
+{
+  JFileChooser jfc=new JFileChooser(System.getProperty("user.home"));
+  int answer=jfc.showOpenDialog(null);
+  if (answer == JFileChooser.APPROVE_OPTION) {
+    styleFile=jfc.getSelectedFile().getPath();
+    Globals.prefs.put("ooBibliographyStyleFile",styleFile);
+    try {
+      style=new OOBibStyle(new FileReader(styleFile));
+    }
+ catch (    Exception e) {
+      e.printStackTrace();
+      JOptionPane.showMessageDialog(diag,e.getMessage());
+    }
+  }
+}

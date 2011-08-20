@@ -1,0 +1,214 @@
+{
+  List<String> cited=findCitedKeys();
+  HashMap<String,BibtexDatabase> linkSourceBase=new HashMap<String,BibtexDatabase>();
+  Map<BibtexEntry,BibtexDatabase> entries=findCitedEntries(databases,cited,linkSourceBase);
+  XNameAccess nameAccess=getReferenceMarks();
+  String[] names;
+  if (style.isSortByPosition()) {
+    names=sortedReferenceMarks;
+  }
+ else   if (style.isNumberEntries()) {
+    SortedMap<BibtexEntry,BibtexDatabase> newMap=new TreeMap<BibtexEntry,BibtexDatabase>(entryComparator);
+    for (    BibtexEntry entry : entries.keySet())     newMap.put(entry,entries.get(entry));
+    entries=newMap;
+    cited.clear();
+    for (Iterator<BibtexEntry> iterator=entries.keySet().iterator(); iterator.hasNext(); ) {
+      BibtexEntry entry=iterator.next();
+      cited.add(entry.getCiteKey());
+    }
+    names=nameAccess.getElementNames();
+  }
+ else {
+    names=sortedReferenceMarks;
+  }
+  ArrayList<String> tmp=new ArrayList<String>();
+  for (int i=0; i < names.length; i++) {
+    if (citePattern.matcher(names[i]).find())     tmp.add(names[i]);
+  }
+  names=tmp.toArray(new String[tmp.size()]);
+  HashMap<String,Integer> numbers=new HashMap<String,Integer>();
+  int lastNum=0;
+  String[] citMarkers=new String[names.length];
+  String[][] normCitMarkers=new String[names.length][];
+  String[][] bibtexKeys=new String[names.length][];
+  int minGroupingCount=style.getIntCitProperty("MinimumGroupingCount");
+  int[] types=new int[names.length];
+  for (int i=0; i < names.length; i++) {
+    Matcher m=citePattern.matcher(names[i]);
+    if (m.find()) {
+      String typeStr=m.group(1);
+      int type=Integer.parseInt(typeStr);
+      types[i]=type;
+      String[] keys=m.group(2).split(",");
+      bibtexKeys[i]=keys;
+      BibtexEntry[] cEntries=new BibtexEntry[keys.length];
+      for (int j=0; j < cEntries.length; j++) {
+        BibtexDatabase database=linkSourceBase.get(keys[j]);
+        cEntries[j]=null;
+        if (database != null)         cEntries[j]=OOUtil.createAdaptedEntry(database.getEntryByKey(keys[j]));
+        if (cEntries[j] == null) {
+          System.out.println("Bibtex key not found : '" + keys[j] + "'");
+          System.out.println("Problem with reference mark: '" + names[i] + "'");
+          cEntries[j]=new UndefinedBibtexEntry(keys[j]);
+        }
+      }
+      String[] normCitMarker=new String[keys.length];
+      String citationMarker;
+      if (style.isBibtexKeyCiteMarkers()) {
+        StringBuilder sb=new StringBuilder();
+        normCitMarkers[i]=new String[keys.length];
+        for (int j=0; j < keys.length; j++) {
+          normCitMarkers[i][j]=cEntries[j].getCiteKey();
+          sb.append(cEntries[j].getCiteKey());
+          if (j < keys.length - 1)           sb.append(",");
+        }
+        citationMarker=sb.toString();
+      }
+ else       if (style.isNumberEntries()) {
+        if (style.isSortByPosition()) {
+          int[] num=new int[keys.length];
+          for (int j=0; j < keys.length; j++) {
+            if (cEntries[j] instanceof UndefinedBibtexEntry) {
+              num[j]=-1;
+            }
+ else {
+              num[j]=lastNum + 1;
+              if (numbers.containsKey(keys[j]))               num[j]=numbers.get(keys[j]);
+ else {
+                numbers.put(keys[j],num[j]);
+                lastNum=num[j];
+              }
+            }
+          }
+          citationMarker=style.getNumCitationMarker(num,minGroupingCount,false);
+          for (int j=0; j < keys.length; j++)           normCitMarker[j]=style.getNumCitationMarker(new int[]{num[j]},minGroupingCount,false);
+        }
+ else {
+          int[] num=findCitedEntryIndex(names[i],cited);
+          if (num != null)           citationMarker=style.getNumCitationMarker(num,minGroupingCount,false);
+ else           throw new BibtexEntryNotFoundException(names[i],Globals.lang("Could not resolve BibTeX entry for citation marker '%0'.",names[i]));
+          for (int j=0; j < keys.length; j++)           normCitMarker[j]=style.getNumCitationMarker(new int[]{num[j]},minGroupingCount,false);
+        }
+      }
+ else {
+        if (cEntries.length > 1) {
+          if (style.getBooleanCitProperty("MultiCiteChronological"))           Arrays.sort(cEntries,yearComparator);
+ else           Arrays.sort(cEntries,entryComparator);
+          for (int j=0; j < cEntries.length; j++) {
+            bibtexKeys[i][j]=cEntries[j].getCiteKey();
+          }
+        }
+        citationMarker=style.getCitationMarker(cEntries,entries.get(cEntries),type == AUTHORYEAR_PAR,null,null);
+        for (int j=0; j < cEntries.length; j++)         normCitMarker[j]=style.getCitationMarker(cEntries[j],entries.get(cEntries),true,null,-1);
+      }
+      citMarkers[i]=citationMarker;
+      normCitMarkers[i]=normCitMarker;
+    }
+  }
+  uniquefiers.clear();
+  if (!style.isBibtexKeyCiteMarkers() && !style.isNumberEntries()) {
+    HashMap<String,List<String>> refKeys=new HashMap<String,List<String>>();
+    HashMap<String,List<Integer>> refNums=new HashMap<String,List<Integer>>();
+    for (int i=0; i < citMarkers.length; i++) {
+      String[] markers=normCitMarkers[i];
+      for (int j=0; j < markers.length; j++) {
+        String marker=markers[j];
+        if (!refKeys.containsKey(marker)) {
+          List<String> l=new ArrayList<String>(1);
+          l.add(bibtexKeys[i][j]);
+          refKeys.put(marker,l);
+          List<Integer> l2=new ArrayList<Integer>(1);
+          l2.add(i);
+          refNums.put(marker,l2);
+        }
+ else {
+          if (!refKeys.get(marker).contains(bibtexKeys[i][j])) {
+            refKeys.get(marker).add(bibtexKeys[i][j]);
+            refNums.get(marker).add(i);
+          }
+        }
+      }
+    }
+    for (    String marker : refKeys.keySet()) {
+      List<String> keys=refKeys.get(marker);
+      if (keys.size() > 1) {
+        int uniq='a';
+        for (        String key : keys) {
+          uniquefiers.put(key,String.valueOf((char)uniq));
+          uniq++;
+        }
+      }
+    }
+    int maxAuthorsFirst=style.getIntCitProperty("MaxAuthorsFirst");
+    HashSet<String> seenBefore=new HashSet<String>();
+    for (int j=0; j < bibtexKeys.length; j++) {
+      boolean needsChange=false;
+      int[] firstLimAuthors=new int[bibtexKeys[j].length];
+      String[] uniquif=new String[bibtexKeys[j].length];
+      BibtexEntry[] cEntries=new BibtexEntry[bibtexKeys[j].length];
+      for (int k=0; k < bibtexKeys[j].length; k++) {
+        firstLimAuthors[k]=-1;
+        if (maxAuthorsFirst > 0) {
+          if (!seenBefore.contains(bibtexKeys[j][k])) {
+            firstLimAuthors[k]=maxAuthorsFirst;
+          }
+          seenBefore.add(bibtexKeys[j][k]);
+        }
+        String uniq=uniquefiers.get(bibtexKeys[j][k]);
+        if ((uniq != null) && (uniq.length() >= 0)) {
+          needsChange=true;
+          BibtexDatabase database=linkSourceBase.get(bibtexKeys[j][k]);
+          if (database != null)           cEntries[k]=OOUtil.createAdaptedEntry(database.getEntryByKey(bibtexKeys[j][k]));
+          uniquif[k]=uniq;
+        }
+ else         if (firstLimAuthors[k] > 0) {
+          needsChange=true;
+          BibtexDatabase database=linkSourceBase.get(bibtexKeys[j][k]);
+          if (database != null)           cEntries[k]=OOUtil.createAdaptedEntry(database.getEntryByKey(bibtexKeys[j][k]));
+          uniquif[k]="";
+        }
+ else {
+          BibtexDatabase database=linkSourceBase.get(bibtexKeys[j][k]);
+          if (database != null)           cEntries[k]=OOUtil.createAdaptedEntry(database.getEntryByKey(bibtexKeys[j][k]));
+          uniquif[k]="";
+        }
+      }
+      if (needsChange) {
+        citMarkers[j]=style.getCitationMarker(cEntries,entries.get(cEntries),types[j] == AUTHORYEAR_PAR,uniquif,firstLimAuthors);
+      }
+    }
+  }
+  boolean hadBibSection=getBookmarkRange(BIB_SECTION_NAME) != null;
+  boolean mustTestCharFormat=style.isFormatCitations();
+  for (int i=0; i < names.length; i++) {
+    Object o=nameAccess.getByName(names[i]);
+    XTextContent bm=(XTextContent)UnoRuntime.queryInterface(XTextContent.class,o);
+    XTextCursor cursor=bm.getAnchor().getText().createTextCursorByRange(bm.getAnchor());
+    if (mustTestCharFormat) {
+      mustTestCharFormat=false;
+      XPropertySet xCursorProps=(XPropertySet)UnoRuntime.queryInterface(XPropertySet.class,cursor);
+      String charStyle=style.getCitationCharacterFormat();
+      try {
+        xCursorProps.setPropertyValue("CharStyleName",charStyle);
+      }
+ catch (      Throwable ex) {
+        throw new UndefinedCharacterFormatException(charStyle);
+      }
+    }
+    text.removeTextContent(bm);
+    insertReferenceMark(names[i],citMarkers[i],cursor,types[i] != INVISIBLE_CIT,style);
+    if (hadBibSection && (getBookmarkRange(BIB_SECTION_NAME) == null)) {
+      cursor.collapseToEnd();
+      OOUtil.insertParagraphBreak(text,cursor);
+      insertBookMark(BIB_SECTION_NAME,cursor);
+    }
+  }
+  ArrayList<String> unresolvedKeys=new ArrayList<String>();
+  for (  BibtexEntry entry : entries.keySet()) {
+    if (entry instanceof UndefinedBibtexEntry) {
+      String key=((UndefinedBibtexEntry)entry).getKey();
+      if (!unresolvedKeys.contains(key))       unresolvedKeys.add(key);
+    }
+  }
+  return unresolvedKeys;
+}

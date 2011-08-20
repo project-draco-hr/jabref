@@ -1,0 +1,34 @@
+{
+  ImageIcon connectImage=new ImageIcon(OOTestPanel.class.getResource("/images/connect_no.png"));
+  connect=new JButton(connectImage);
+  manualConnect=new JButton(connectImage);
+  connect.setToolTipText(Globals.lang("Connect"));
+  manualConnect.setToolTipText(Globals.lang("Manual connect"));
+  selectDocument=new JButton(GUIGlobals.getImage("open"));
+  selectDocument.setToolTipText(Globals.lang("Select Writer document"));
+  update=new JButton(GUIGlobals.getImage("refresh"));
+  update.setToolTipText(Globals.lang("Sync OO bibliography"));
+  String defExecutable, defJarsDir;
+  if (Globals.ON_WIN) {
+    Globals.prefs.putDefaultValue("ooPath","C:\\Program Files\\OpenOffice.org 3");
+    Globals.prefs.putDefaultValue("ooExecutablePath","C:\\Program Files\\OpenOffice.org 2.3\\program\\soffice.exe");
+    Globals.prefs.putDefaultValue("ooJarsPath","C:\\Program Files\\OpenOffice.org 2.3\\program\\classes");
+  }
+ else   if (Globals.ON_MAC) {
+    Globals.prefs.putDefaultValue("ooExecutablePath","/Applications/OpenOffice.org.app/Contents/MacOS/soffice.bin");
+    Globals.prefs.putDefaultValue("ooPath","/Applications/OpenOffice.org.app");
+    Globals.prefs.putDefaultValue("ooJarsPath","/Applications/OpenOffice.org.app/Contents/basis-link");
+  }
+ else {
+    Globals.prefs.putDefaultValue("ooPath","/opt/openoffice.org3");
+    Globals.prefs.putDefaultValue("ooExecutablePath","/usr/lib/openoffice/program/soffice");
+    Globals.prefs.putDefaultValue("ooJarsPath","/opt/openoffice.org/basis3.0");
+  }
+  Globals.prefs.putDefaultValue("connectToOO3",Boolean.TRUE);
+  Globals.prefs.putDefaultValue("ooStyleFileLastDir",System.getProperty("user.home"));
+  Globals.prefs.putDefaultValue("ooInParCitation",true);
+  Globals.prefs.putDefaultValue("syncOOWhenCiting",false);
+  Globals.prefs.putDefaultValue("showOOPanel",true);
+  Globals.prefs.putDefaultValue("useAllOpenBases",true);
+  styleFile=Globals.prefs.get("ooBibliographyStyleFile");
+}

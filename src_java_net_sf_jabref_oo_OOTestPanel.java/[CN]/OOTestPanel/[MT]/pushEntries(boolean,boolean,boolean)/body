@@ -1,0 +1,36 @@
+{
+  if (!ooBase.isConnectedToDocument()) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("Not connected to any Writer document. Please" + " make sure a document is open, and use the 'Select Writer document' button to connect to it."),Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
+    return;
+  }
+  String pageInfo=null;
+  if (addPageInfo) {
+    AdvancedCiteDialog acd=new AdvancedCiteDialog(frame);
+    acd.showDialog();
+    if (acd.cancelled())     return;
+    if (acd.getPageInfo().length() > 0)     pageInfo=acd.getPageInfo();
+    inParenthesis=acd.isInParenthesisCite();
+  }
+  BasePanel panel=frame.basePanel();
+  final BibtexDatabase database=panel.database();
+  if (panel != null) {
+    BibtexEntry[] entries=panel.getSelectedEntries();
+    if (entries.length > 0) {
+      try {
+        ooBase.insertEntry(entries,database,getBaseList(),style,inParenthesis,withText,pageInfo,Globals.prefs.getBoolean("syncOOWhenCiting"));
+      }
+ catch (      ConnectionLostException ex) {
+        showConnectionLostErrorMessage();
+      }
+catch (      UndefinedCharacterFormatException ex) {
+        reportUndefinedCharacterFormat(ex);
+      }
+catch (      UndefinedParagraphFormatException ex) {
+        reportUndefinedParagraphFormat(ex);
+      }
+catch (      Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+}

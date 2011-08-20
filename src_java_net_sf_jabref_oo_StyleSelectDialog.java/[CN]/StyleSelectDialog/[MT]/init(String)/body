@@ -1,0 +1,97 @@
+{
+  this.initSelection=initSelection;
+  popup.add(edit);
+  edit.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      int i=table.getSelectedRow();
+      if (i == -1)       return;
+      ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("jstyle");
+      String link=((OOBibStyle)tableModel.getElementAt(i)).getFile().getPath();
+      try {
+        if (type != null)         Util.openExternalFileAnyFormat(new MetaData(),link,type);
+ else         Util.openExternalFileUnknown(frame,null,new MetaData(),link,new UnknownExternalFileType("jstyle"));
+      }
+ catch (      IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+);
+  diag=new JDialog(frame,Globals.lang("Styles"),true);
+  dirsPanel=new StyleDirectoriesPanel(diag,Globals.prefs.getStringArray("ooStyleFileDirectories"));
+  dirsPanel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      readStyles();
+    }
+  }
+);
+  styles=new BasicEventList<OOBibStyle>();
+  sortedStyles=new SortedList<OOBibStyle>(styles);
+  preview=new PreviewPanel(null,new MetaData(),"");
+  preview.setEntry(prevEntry);
+  tableModel=new EventTableModel<OOBibStyle>(sortedStyles,new StyleTableFormat());
+  table=new JTable(tableModel);
+  TableColumnModel cm=table.getColumnModel();
+  cm.getColumn(0).setPreferredWidth(100);
+  cm.getColumn(1).setPreferredWidth(200);
+  cm.getColumn(2).setPreferredWidth(80);
+  selectionModel=new EventSelectionModel<OOBibStyle>(sortedStyles);
+  table.setSelectionModel(selectionModel);
+  table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  table.addMouseListener(new MouseAdapter(){
+    @Override public void mousePressed(    MouseEvent mouseEvent){
+      if (mouseEvent.isPopupTrigger())       tablePopup(mouseEvent);
+    }
+    @Override public void mouseReleased(    MouseEvent mouseEvent){
+      if (mouseEvent.isPopupTrigger())       tablePopup(mouseEvent);
+    }
+  }
+);
+  selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
+  contentPane.setTopComponent(new JScrollPane(table));
+  contentPane.setBottomComponent(preview);
+  readStyles();
+  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("fill:1dlu:grow","fill:pref, fill:pref, fill:270dlu:grow"));
+  b.appendSeparator(Globals.lang("Select style"));
+  b.nextLine();
+  b.append(new JLabel("<html>" + Globals.lang("This is the list of available styles. Select the one you want to use.") + "</html>"));
+  b.nextLine();
+  b.append(contentPane);
+  b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.add(b.getPanel(),BorderLayout.CENTER);
+  diag.add(dirsPanel.getPanel(),BorderLayout.NORTH);
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      okPressed=true;
+      storeSettings();
+      diag.dispose();
+    }
+  }
+);
+  Action cancelListener=new AbstractAction(){
+    public void actionPerformed(    ActionEvent event){
+      diag.dispose();
+    }
+  }
+;
+  cancel.addActionListener(cancelListener);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addGridded(ok);
+  bb.addGridded(cancel);
+  bb.addGlue();
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.add(bb.getPanel(),BorderLayout.SOUTH);
+  ActionMap am=bb.getPanel().getActionMap();
+  InputMap im=bb.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",cancelListener);
+  diag.pack();
+  diag.setLocationRelativeTo(frame);
+  SwingUtilities.invokeLater(new Runnable(){
+    public void run(){
+      contentPane.setDividerLocation(contentPane.getSize().height - 150);
+    }
+  }
+);
+}

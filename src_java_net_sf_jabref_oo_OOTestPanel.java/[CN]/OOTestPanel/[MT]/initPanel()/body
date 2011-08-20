@@ -1,0 +1,186 @@
+{
+  Action al=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      connect(true);
+    }
+  }
+;
+  connect.addActionListener(al);
+  manualConnect.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      connect(false);
+    }
+  }
+);
+  selectDocument.setToolTipText(Globals.lang("Select which open Writer document to work on"));
+  selectDocument.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      try {
+        ooBase.selectDocument();
+        frame.output(Globals.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle());
+      }
+ catch (      Exception ex) {
+        JOptionPane.showMessageDialog(frame,ex.getMessage(),Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
+      }
+    }
+  }
+);
+  setStyleFile.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      if (styleDialog == null) {
+        styleDialog=new StyleSelectDialog(frame,styleFile);
+      }
+      styleDialog.setVisible(true);
+      if (styleDialog.isOkPressed()) {
+        style=styleDialog.getSelectedStyle();
+        if (style != null) {
+          styleFile=style.getFile().getPath();
+          Globals.prefs.put("ooBibliographyStyleFile",styleFile);
+        }
+      }
+    }
+  }
+);
+  pushEntries.setToolTipText(Globals.lang("Cite selected entries"));
+  pushEntries.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      pushEntries(true,true,false);
+    }
+  }
+);
+  pushEntries.setToolTipText(Globals.lang("Cite selected entries with in-text citation"));
+  pushEntriesInt.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      pushEntries(false,true,false);
+    }
+  }
+);
+  pushEntriesEmpty.setToolTipText(Globals.lang("Insert a citation without text (the entry will appear in the reference list)"));
+  pushEntriesEmpty.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      pushEntries(false,false,false);
+    }
+  }
+);
+  pushEntriesAdvanced.setToolTipText(Globals.lang("Cite selected entries with extra information"));
+  pushEntriesAdvanced.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      pushEntries(false,true,true);
+    }
+  }
+);
+  focus.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      ooBase.setFocus();
+    }
+  }
+);
+  update.setToolTipText(Globals.lang("Ensure that the bibliography is up-to-date"));
+  Action updateAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      try {
+        style.ensureUpToDate();
+        ooBase.updateSortedReferenceMarks();
+        java.util.List<BibtexDatabase> databases=getBaseList();
+        java.util.List<String> unresolvedKeys=ooBase.refreshCiteMarkers(databases,style);
+        ooBase.rebuildBibTextSection(databases,style);
+        if (unresolvedKeys.size() > 0) {
+          JOptionPane.showMessageDialog(frame,Globals.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",unresolvedKeys.get(0)),Globals.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
+        }
+      }
+ catch (      UndefinedCharacterFormatException ex) {
+        reportUndefinedCharacterFormat(ex);
+      }
+catch (      UndefinedParagraphFormatException ex) {
+        reportUndefinedParagraphFormat(ex);
+      }
+catch (      ConnectionLostException ex) {
+        showConnectionLostErrorMessage();
+      }
+catch (      BibtexEntryNotFoundException ex) {
+        JOptionPane.showMessageDialog(frame,Globals.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",ex.getBibtexKey()),Globals.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
+      }
+catch (      Exception e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
+;
+  update.addActionListener(updateAction);
+  insertFullRef.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      try {
+        insertFullRefs();
+      }
+ catch (      Exception e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
+);
+  merge.setToolTipText(Globals.lang("Combine pairs of citations that are separated by spaces only"));
+  merge.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      try {
+        ooBase.combineCiteMarkers(getBaseList(),style);
+      }
+ catch (      UndefinedCharacterFormatException e) {
+        reportUndefinedCharacterFormat(e);
+      }
+catch (      Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+);
+  settingsB.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      showSettingsPopup();
+    }
+  }
+);
+  test.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      try {
+        CitationManager cm=new CitationManager(frame,ooBase);
+        cm.showDialog();
+      }
+ catch (      Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+);
+  selectDocument.setEnabled(false);
+  pushEntries.setEnabled(false);
+  pushEntriesInt.setEnabled(false);
+  pushEntriesEmpty.setEnabled(false);
+  pushEntriesAdvanced.setEnabled(false);
+  focus.setEnabled(false);
+  update.setEnabled(false);
+  insertFullRef.setEnabled(false);
+  merge.setEnabled(false);
+  test.setEnabled(false);
+  diag=new JDialog((JFrame)null,"OpenOffice panel",false);
+  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("fill:pref:grow","p,p,p,p,p,p,p,p,p,p"));
+  DefaultFormBuilder bb=new DefaultFormBuilder(new FormLayout("fill:pref:grow, 1dlu, fill:pref:grow, 1dlu, fill:pref:grow, " + "1dlu, fill:pref:grow",""));
+  bb.append(connect);
+  bb.append(manualConnect);
+  bb.append(selectDocument);
+  bb.append(update);
+  b.append(bb.getPanel());
+  b.append(setStyleFile);
+  b.append(pushEntries);
+  b.append(pushEntriesInt);
+  b.append(pushEntriesAdvanced);
+  b.append(pushEntriesEmpty);
+  b.append(merge);
+  b.append(settingsB);
+  JPanel content=new JPanel();
+  comp.setContent(content);
+  content.setLayout(new BorderLayout());
+  content.add(b.getPanel(),BorderLayout.CENTER);
+  System.out.println("Adding shortcuts");
+  frame.getTabbedPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(Globals.prefs.getKey("Refresh OO"),"Refresh OO");
+  frame.getTabbedPane().getActionMap().put("Refresh OO",updateAction);
+}

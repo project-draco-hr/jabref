@@ -1,0 +1,13 @@
+{
+  boolean exists=false;
+  XTextSectionsSupplier supp=UnoRuntime.queryInterface(XTextSectionsSupplier.class,mxDoc);
+  try {
+    XTextSection section=(XTextSection)((Any)supp.getTextSections().getByName(BIB_SECTION_NAME)).getObject();
+    XTextCursor cursor=text.createTextCursorByRange(section.getAnchor());
+    cursor.gotoRange(section.getAnchor(),false);
+    cursor.setString("");
+  }
+ catch (  NoSuchElementException ex) {
+    createBibTextSection2(atEnd);
+  }
+}

@@ -1,0 +1,17 @@
+{
+  int index=line.indexOf("=");
+  if ((index > 0) && (index < line.length() - 1)) {
+    String formatString=line.substring(index + 1);
+    boolean setDefault=line.substring(0,index).equals(DEFAULT_MARK);
+    String type=line.substring(0,index);
+    Short typeS;
+    try {
+      Layout layout=new LayoutHelper(new StringReader(formatString)).getLayoutFromText(Globals.FORMATTER_PACKAGE);
+      if (setDefault)       defaultBibLayout=layout;
+ else       bibLayout.put(type.toLowerCase(),layout);
+    }
+ catch (    Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+}
