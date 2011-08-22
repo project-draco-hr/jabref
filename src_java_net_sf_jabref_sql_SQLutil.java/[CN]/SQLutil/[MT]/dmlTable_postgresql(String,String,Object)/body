@@ -1,0 +1,12 @@
+{
+  processDML(out,"CREATE TABLE entry_types ( \n" + "entry_types_id    SERIAL, \n" + "label			 TEXT, \n" + dml1 + ", \n"+ "PRIMARY KEY (entry_types_id) \n"+ ");");
+  processDML(out,"CREATE TABLE entries ( \n" + "entries_id      SERIAL, \n" + "jabref_eid      VARCHAR(" + Util.getMinimumIntegerDigits() + ")   DEFAULT NULL, \n"+ "entry_types_id  INTEGER DEFAULT NULL, \n"+ "cite_key        VARCHAR(100)     DEFAULT NULL, \n"+ dml2+ ",\n"+ "PRIMARY KEY (entries_id), \n"+ "FOREIGN KEY (entry_types_id) REFERENCES entry_types (entry_types_id) \n"+ ");");
+  processDML(out,"CREATE TABLE strings ( \n" + "strings_id      SERIAL, \n" + "label      VARCHAR(100)  DEFAULT NULL, \n"+ "content    VARCHAR(200)  DEFAULT NULL, \n"+ "PRIMARY KEY (strings_id) \n"+ ");");
+  processDML(out,"CREATE TABLE group_types ( \n" + "group_types_id  SERIAL, \n" + "label   VARCHAR(100)    DEFAULT NULL, \n"+ "PRIMARY KEY (group_types_id) \n"+ ");");
+  processDML(out,"CREATE TABLE groups ( \n" + "groups_id       SERIAL, \n" + "group_types_id  INTEGER         DEFAULT NULL, \n"+ "label           VARCHAR(100)    DEFAULT NULL, \n"+ "parent_id       INTEGER         DEFAULT NULL, \n"+ "search_field       VARCHAR(100)          DEFAULT NULL, \n"+ "search_expression  VARCHAR(200)          DEFAULT NULL, \n"+ "case_sensitive  BOOLEAN       DEFAULT NULL, \n"+ "reg_exp BOOLEAN DEFAULT NULL, \n"+ "hierarchical_context INTEGER DEFAULT NULL, \n"+ "PRIMARY KEY (groups_id) \n"+ ");");
+  processDML(out,"CREATE TABLE entry_group ( \n" + "entries_id       SERIAL, \n" + "groups_id        INTEGER        DEFAULT NULL, \n"+ "FOREIGN KEY (entries_id) REFERENCES entries (entries_id), \n"+ "FOREIGN KEY (groups_id)  REFERENCES groups (groups_id) \n"+ ");");
+  processDML(out,"CREATE INDEX entry_types_id_index ON entries (entry_types_id);");
+  processDML(out,"CREATE INDEX entries_id_index ON entry_group (entries_id);");
+  processDML(out,"CREATE INDEX groups_id_index ON entry_group (groups_id);");
+  return;
+}
