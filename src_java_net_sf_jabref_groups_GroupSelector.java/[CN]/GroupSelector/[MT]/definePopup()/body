@@ -24,18 +24,29 @@
   groupsContextMenu.add(removeFromGroup);
   groupsTree.addMouseListener(new MouseAdapter(){
     public void mousePressed(    MouseEvent e){
-      if (e.isPopupTrigger())       showPopup(e);
+      if (e.isPopupTrigger()) {
+        showPopup(e);
+      }
     }
     public void mouseReleased(    MouseEvent e){
-      if (e.isPopupTrigger())       showPopup(e);
+      if (e.isPopupTrigger()) {
+        showPopup(e);
+      }
     }
     public void mouseClicked(    MouseEvent e){
       TreePath path=groupsTree.getPathForLocation(e.getPoint().x,e.getPoint().y);
-      if (path == null)       return;
+      if (path == null) {
+        return;
+      }
       GroupTreeNode node=(GroupTreeNode)path.getLastPathComponent();
-      if (node.isRoot())       return;
+      if (node.isRoot()) {
+        return;
+      }
       if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
         editGroupAction.actionPerformed(null);
+      }
+ else       if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON1) {
+        annotationEvent(node);
       }
     }
   }

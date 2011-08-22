@@ -2,11 +2,17 @@
   final GroupTreeNode node=getNodeToUse();
   final GroupDialog gd=new GroupDialog(frame,panel,null);
   gd.setVisible(true);
-  if (!gd.okPressed())   return;
+  if (!gd.okPressed()) {
+    return;
+  }
   final AbstractGroup newGroup=gd.getResultingGroup();
   final GroupTreeNode newNode=new GroupTreeNode(newGroup);
-  if (node == null)   groupsRoot.add(newNode);
- else   ((GroupTreeNode)node.getParent()).insert(newNode,node.getParent().getIndex(node) + 1);
+  if (node == null) {
+    groupsRoot.add(newNode);
+  }
+ else {
+    ((GroupTreeNode)node.getParent()).insert(newNode,node.getParent().getIndex(node) + 1);
+  }
   UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(GroupSelector.this,groupsRoot,newNode,UndoableAddOrRemoveGroup.ADD_NODE);
   revalidateGroups();
   groupsTree.expandPath(new TreePath((node != null ? node : groupsRoot).getPath()));

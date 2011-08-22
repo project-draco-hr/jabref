@@ -1,0 +1,29 @@
+{
+  BibtexEntry[] entries=panel.getSelectedEntries();
+  AbstractGroup group=node.getGroup();
+  AbstractUndoableEdit undoRemove=null;
+  AbstractUndoableEdit undoAdd=null;
+  ArrayList<BibtexEntry> toRemove=new ArrayList<BibtexEntry>(entries.length);
+  ArrayList<BibtexEntry> toAdd=new ArrayList<BibtexEntry>(entries.length);
+  for (  BibtexEntry entry : entries) {
+    if (group.contains(entry)) {
+      Globals.logger("remove " + entry.toString());
+      toRemove.add(entry);
+    }
+ else {
+      Globals.logger("add " + entry.toString());
+      toAdd.add(entry);
+    }
+  }
+  if (!toRemove.isEmpty())   undoRemove=node.removeFromGroup(toRemove.toArray(new BibtexEntry[0]));
+  if (!toAdd.isEmpty())   undoAdd=node.addToGroup(toAdd.toArray(new BibtexEntry[0]));
+  if (undoRemove != null) {
+    if (undoAdd != null) {
+      undoRemove.addEdit(undoAdd);
+    }
+    panel.undoManager.addEdit(undoRemove);
+  }
+ else   if (undoAdd != null) {
+    panel.undoManager.addEdit(undoAdd);
+  }
+}

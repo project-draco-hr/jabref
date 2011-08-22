@@ -28,7 +28,9 @@
   showOverlappingGroups.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("groupShowOverlapping",showOverlappingGroups.isSelected());
-      if (!showOverlappingGroups.isSelected())       groupsTree.setHighlight2Cells(null);
+      if (!showOverlappingGroups.isSelected()) {
+        groupsTree.setHighlight2Cells(null);
+      }
     }
   }
 );
@@ -95,21 +97,29 @@
       GroupSelector.this.revalidate();
       GroupSelector.this.repaint();
       Globals.prefs.putInt("groupsVisibleRows",i);
-      System.out.println(GroupSelector.this.getHeight());
-      System.out.println(GroupSelector.this.getPreferredSize().getHeight());
+      Globals.logger(Double.toString(GroupSelector.this.getHeight()));
+      Globals.logger(Double.toString(GroupSelector.this.getPreferredSize().getHeight()));
     }
   }
 );
   reduce.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       int i=Globals.prefs.getInt("groupsVisibleRows") - 1;
-      if (i < 1)       i=1;
+      if (i < 1) {
+        i=1;
+      }
       groupsTree.setVisibleRowCount(i);
       groupsTree.revalidate();
       groupsTree.repaint();
       GroupSelector.this.revalidate();
       GroupSelector.this.repaint();
       Globals.prefs.putInt("groupsVisibleRows",i);
+    }
+  }
+);
+  editModeButton.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      editModeIndicator=!editModeIndicator;
     }
   }
 );
@@ -158,6 +168,7 @@
   select.setToolTipText(Globals.lang("Select entries in group selection"));
   expand.setToolTipText(Globals.lang("Show one more row"));
   reduce.setToolTipText(Globals.lang("Show one less rows"));
+  editModeButton.setToolTipText("Toggle annotation mode");
   bgr.add(andCb);
   bgr.add(orCb);
   visMode.add(floatCb);
@@ -167,12 +178,17 @@
   con.fill=GridBagConstraints.BOTH;
   con.weightx=1;
   con.gridwidth=1;
+  con.gridx=0;
+  con.gridy=0;
   gbl.setConstraints(newButton,con);
   main.add(newButton);
+  con.gridx=1;
   gbl.setConstraints(refresh,con);
   main.add(refresh);
+  con.gridx=2;
   gbl.setConstraints(autoGroup,con);
   main.add(autoGroup);
+  con.gridx=3;
   con.gridwidth=GridBagConstraints.REMAINDER;
   HelpAction helpAction=new HelpAction(frame.helpDiag,GUIGlobals.groupsHelp,"Help on groups");
   helpButton.addActionListener(helpAction);
@@ -186,6 +202,9 @@
   revalidateGroups();
   con.gridwidth=GridBagConstraints.REMAINDER;
   con.weighty=1;
+  con.gridx=0;
+  con.gridwidth=4;
+  con.gridy=1;
   gbl.setConstraints(sp,con);
   main.add(sp);
   JPanel pan=new JPanel();
@@ -193,16 +212,32 @@
   con.weighty=0;
   gbl.setConstraints(pan,con);
   pan.setLayout(gb);
+  con.insets=new Insets(0,0,0,0);
+  con.gridx=0;
+  con.gridy=0;
   con.weightx=1;
-  con.gridwidth=1;
+  con.gridwidth=4;
+  con.fill=GridBagConstraints.HORIZONTAL;
   gb.setConstraints(openset,con);
   pan.add(openset);
-  con.weightx=0;
+  con.gridwidth=1;
+  con.gridx=4;
+  con.gridy=0;
   gb.setConstraints(expand,con);
   pan.add(expand);
-  con.gridwidth=GridBagConstraints.REMAINDER;
+  con.gridx=5;
   gb.setConstraints(reduce,con);
   pan.add(reduce);
+  con.gridwidth=6;
+  con.gridy=1;
+  con.gridx=0;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  gb.setConstraints(editModeButton,con);
+  pan.add(editModeButton);
+  con.gridy=2;
+  con.gridx=0;
+  con.gridwidth=4;
+  gbl.setConstraints(pan,con);
   main.add(pan);
   main.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
   add(main,BorderLayout.CENTER);

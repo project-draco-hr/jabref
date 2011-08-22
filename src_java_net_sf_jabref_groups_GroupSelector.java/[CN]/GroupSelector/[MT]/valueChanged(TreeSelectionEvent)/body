@@ -1,20 +1,18 @@
 {
-  if (panel == null)   return;
+  if (panel == null) {
+    return;
+  }
   final TreePath[] selection=groupsTree.getSelectionPaths();
   if (selection == null || selection.length == 0 || (selection.length == 1 && ((GroupTreeNode)selection[0].getLastPathComponent()).getGroup() instanceof AllEntriesGroup)) {
     panel.stopShowingGroup();
     panel.mainTable.stopShowingFloatGrouping();
-    if (showOverlappingGroups.isSelected())     groupsTree.setHighlight2Cells(null);
+    if (showOverlappingGroups.isSelected()) {
+      groupsTree.setHighlight2Cells(null);
+    }
     frame.output(Globals.lang("Displaying no groups") + ".");
     return;
   }
-  final AndOrSearchRuleSet searchRules=new AndOrSearchRuleSet(andCb.isSelected(),invCb.isSelected());
-  for (int i=0; i < selection.length; ++i) {
-    searchRules.addRule(((GroupTreeNode)selection[i].getLastPathComponent()).getSearchRule());
+  if (!editModeIndicator) {
+    updateSelections();
   }
-  Hashtable<String,String> searchOptions=new Hashtable<String,String>();
-  searchOptions.put("option","dummy");
-  GroupingWorker worker=new GroupingWorker(searchRules,searchOptions);
-  worker.getWorker().run();
-  worker.getCallBack().update();
 }
