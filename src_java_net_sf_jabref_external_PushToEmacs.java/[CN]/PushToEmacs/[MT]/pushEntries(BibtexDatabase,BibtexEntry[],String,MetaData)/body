@@ -1,8 +1,15 @@
 {
   couldNotConnect=false;
   couldNotRunClient=false;
+  String command=Globals.prefs.get(JabRefPreferences.EMACS_PATH);
+  String addParams[]=Globals.prefs.get(JabRefPreferences.EMACS_ADDITIONAL_PARAMETERS).split(" ");
   try {
-    String[] com=Globals.ON_WIN ? new String[]{"gnuclient","-qe","(insert \\\"\\\\" + Globals.prefs.get("citeCommandEmacs").replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\\\")"} : new String[]{"gnuclient","-batch","-eval","(insert \"" + Globals.prefs.get("citeCommandEmacs").replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\")"};
+    String[] com=new String[addParams.length + 2];
+    com[0]=command;
+    for (int i=0; i < addParams.length; i++) {
+      com[i + 1]=addParams[i];
+    }
+    com[com.length - 1]=Globals.ON_WIN ? "(insert \\\"\\\\" + Globals.prefs.get("citeCommandEmacs").replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\\\")" : "(insert \"" + Globals.prefs.get("citeCommandEmacs").replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\")";
     final Process p=Runtime.getRuntime().exec(com);
     Runnable errorListener=new Runnable(){
       public void run(){
