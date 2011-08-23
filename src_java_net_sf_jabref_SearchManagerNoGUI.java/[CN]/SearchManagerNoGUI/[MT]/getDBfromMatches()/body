@@ -1,0 +1,36 @@
+{
+  int hits=0;
+  System.out.println("search term: " + searchTerm);
+  if (specifiedYears()) {
+    searchTerm=fieldYear();
+  }
+  searchOptions.put("option",searchTerm);
+  SearchRuleSet searchRules=new SearchRuleSet();
+  SearchRule rule1;
+  rule1=new BasicSearch(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("regExpSearch"));
+  try {
+    rule1=new SearchExpression(Globals.prefs,searchOptions);
+  }
+ catch (  Exception e) {
+  }
+  searchRules.addRule(rule1);
+  if (!searchRules.validateSearchStrings(searchOptions)) {
+    System.out.println(Globals.lang("Search failed: illegal search expression"));
+    return base;
+  }
+  Collection entries=database.getEntries();
+  Vector matchEntries=new Vector();
+  for (Iterator i=entries.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=(BibtexEntry)i.next();
+    boolean hit=searchRules.applyRule(searchOptions,entry) > 0;
+    entry.setSearchHit(hit);
+    if (hit) {
+      hits++;
+      matchEntries.add(entry);
+    }
+  }
+  if (matchEntries != null) {
+    base=ImportFormatReader.createDatabase(matchEntries);
+  }
+  return base;
+}
