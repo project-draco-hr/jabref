@@ -5,19 +5,13 @@
     return;
   }
   String content=getText().toUpperCase();
-  if (content.equals(""))   return;
-  for (  String word : words) {
-    String text=word.toUpperCase();
-    int index=0;
-    if (!word.equals(""))     while (true) {
-      int startposition=content.indexOf(text,index);
-      if (startposition == -1)       break;
-      try {
-        h.addHighlight(startposition,startposition + text.length(),DefaultHighlighter.DefaultPainter);
-      }
- catch (      BadLocationException ble) {
-      }
-      index=startposition + 1;
+  if (content.isEmpty())   return;
+  Matcher matcher=Globals.getPatternForWords(words).matcher(content);
+  while (matcher.find()) {
+    try {
+      h.addHighlight(matcher.start(),matcher.end(),DefaultHighlighter.DefaultPainter);
+    }
+ catch (    BadLocationException ble) {
     }
   }
 }

@@ -1,0 +1,16 @@
+{
+  if ((words == null) || (words.isEmpty()) || (words.get(0).isEmpty()))   return Pattern.compile("");
+  boolean regExSearch=Globals.prefs.getBoolean("regExpSearch");
+  String searchPattern="(".concat(regExSearch ? words.get(0) : Pattern.quote(words.get(0))).concat(")");
+  for (int i=1; i < words.size(); i++) {
+    searchPattern=searchPattern.concat(" | (").concat(regExSearch ? words.get(i) : Pattern.quote(words.get(i))).concat(")");
+  }
+  Pattern pattern;
+  if (!Globals.prefs.getBoolean("caseSensitiveSearch")) {
+    pattern=Pattern.compile(searchPattern,Pattern.CASE_INSENSITIVE);
+  }
+ else {
+    pattern=Pattern.compile(searchPattern);
+  }
+  return pattern;
+}

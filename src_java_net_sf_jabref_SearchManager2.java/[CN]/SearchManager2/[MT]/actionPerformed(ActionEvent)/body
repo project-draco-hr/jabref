@@ -2,20 +2,12 @@
   fireSearchlistenerEvent(searchField.getText());
   if (e.getSource() == escape) {
     incSearch=false;
-    if (panel != null) {
-      Thread t=new Thread(){
-        public void run(){
-          clearSearch();
-        }
-      }
-;
-      SwingUtilities.invokeLater(t);
-    }
+    clearSearchLater();
   }
  else   if (((e.getSource() == searchField) || (e.getSource() == search)) && !increment.isSelected() && (panel != null)) {
     updatePrefs();
     if (searchField.getText().equals("")) {
-      panel.stopShowingSearchResults();
+      clearSearchLater();
       return;
     }
     Hashtable<String,String> searchOptions=new Hashtable<String,String>();
