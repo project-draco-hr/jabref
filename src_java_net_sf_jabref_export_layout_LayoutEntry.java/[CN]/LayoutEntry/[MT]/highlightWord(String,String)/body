@@ -1,0 +1,29 @@
+{
+  if ((word != null) && (!word.isEmpty())) {
+    String hlColor=Globals.highlightColor;
+    StringBuffer sb;
+    String found;
+    boolean foundSomething;
+    foundSomething=false;
+    sb=new StringBuffer();
+    Pattern pattern;
+    if (!Globals.prefs.getBoolean("caseSensitiveSearch")) {
+      pattern=Pattern.compile(word,Pattern.CASE_INSENSITIVE);
+    }
+ else {
+      pattern=Pattern.compile(word);
+    }
+    Matcher matcher=pattern.matcher(content);
+    while (matcher.find()) {
+      matcher.end();
+      found=matcher.group();
+      matcher.appendReplacement(sb,"<span style=\"background-color:" + hlColor + ";\">"+ found+ "</span>");
+      foundSomething=true;
+    }
+    if (foundSomething) {
+      matcher.appendTail(sb);
+      content=sb.toString();
+    }
+  }
+  return content;
+}
