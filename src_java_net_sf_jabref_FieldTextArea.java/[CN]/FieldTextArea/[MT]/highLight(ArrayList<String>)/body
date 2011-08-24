@@ -1,0 +1,23 @@
+{
+  Highlighter h=getHighlighter();
+  h.removeAllHighlights();
+  if (words == null || words.size() == 0) {
+    return;
+  }
+  String content=getText().toUpperCase();
+  if (content.equals(""))   return;
+  for (  String word : words) {
+    String text=word.toUpperCase();
+    int index=0;
+    while (true) {
+      int startposition=content.indexOf(text,index);
+      if (startposition == -1)       break;
+      try {
+        h.addHighlight(startposition,startposition + text.length(),DefaultHighlighter.DefaultPainter);
+      }
+ catch (      BadLocationException ble) {
+      }
+      index=startposition + 1;
+    }
+  }
+}
