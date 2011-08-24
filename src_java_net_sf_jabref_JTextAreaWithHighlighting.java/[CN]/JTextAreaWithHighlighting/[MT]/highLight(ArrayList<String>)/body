@@ -1,10 +1,10 @@
 {
   Highlighter h=getHighlighter();
   h.removeAllHighlights();
-  if (words == null || words.size() == 0) {
+  if (words == null || words.isEmpty() || words.get(0).isEmpty()) {
     return;
   }
-  String content=getText().toUpperCase();
+  String content=getText();
   if (content.isEmpty())   return;
   Matcher matcher=Globals.getPatternForWords(words).matcher(content);
   while (matcher.find()) {
@@ -12,6 +12,7 @@
       h.addHighlight(matcher.start(),matcher.end(),DefaultHighlighter.DefaultPainter);
     }
  catch (    BadLocationException ble) {
+      System.out.println(ble);
     }
   }
 }
