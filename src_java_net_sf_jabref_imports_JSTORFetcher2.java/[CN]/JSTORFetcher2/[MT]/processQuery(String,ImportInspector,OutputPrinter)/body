@@ -1,10 +1,14 @@
 {
   stopFetching=false;
   try {
-    List<String> citations=getCitations(query);
-    if (citations == null)     return false;
+    List<String> citations=getCitations(query,dialog,status);
+    if (citations == null) {
+      return false;
+    }
     if (citations.size() == 0) {
-      if (!noAccessFound)       status.showMessage(Globals.lang("No entries found for the search string '%0'",query),Globals.lang("Search JSTOR"),JOptionPane.INFORMATION_MESSAGE);
+      if (!noAccessFound) {
+        status.showMessage(Globals.lang("No entries found for the search string '%0'",query),Globals.lang("Search JSTOR"),JOptionPane.INFORMATION_MESSAGE);
+      }
  else {
         status.showMessage(Globals.lang("No entries found. It looks like you do not have access to search JStor.",query),Globals.lang("Search JSTOR"),JOptionPane.INFORMATION_MESSAGE);
       }
@@ -12,9 +16,13 @@
     }
     int i=0;
     for (    String cit : citations) {
-      if (stopFetching)       break;
+      if (stopFetching) {
+        break;
+      }
       BibtexEntry entry=getSingleCitation(cit);
-      if (entry != null)       dialog.addEntry(entry);
+      if (entry != null) {
+        dialog.addEntry(entry);
+      }
       dialog.setProgress(++i,citations.size());
     }
     return true;

@@ -1,0 +1,61 @@
+{
+  URL url=new URL(urlQuery);
+  URLDownload ud=new URLDownload(url);
+  ud.download();
+  String cont=ud.getStringContent();
+  String entirePage=cont;
+  String pageEntire=ud.getStringContent();
+  int countOfRefs=0;
+  int refsRequested=0;
+  if (count == 1) {
+    Matcher mn=numberofhits.matcher(pageEntire);
+    if (mn.find()) {
+      numberOfRefs[0]=mn.group(1);
+      countOfRefs=Integer.valueOf(numberOfRefs[0]);
+    }
+ else {
+      numberOfRefs[0]="0";
+    }
+    while (true) {
+      String strCount=JOptionPane.showInputDialog(Globals.lang("References found") + ": " + countOfRefs+ "  "+ Globals.lang("Number of references to fetch?"),Integer.toString(countOfRefs));
+      if (strCount == null) {
+        status.setStatus(Globals.lang("JSTOR import cancelled"));
+        return null;
+      }
+      try {
+        numberOfRefs[1]=strCount.trim();
+        refsRequested=Integer.parseInt(numberOfRefs[1]);
+        break;
+      }
+ catch (      RuntimeException ex) {
+        status.showMessage(Globals.lang("Please enter a valid number"));
+      }
+    }
+  }
+  countOfRefs=Integer.valueOf(numberOfRefs[0]);
+  refsRequested=Integer.valueOf(numberOfRefs[1]);
+  Matcher m=idPattern.matcher(cont);
+  if (m.find() && (ids.size() + 1 <= Integer.valueOf(refsRequested))) {
+    do {
+      ids.add(m.group(1));
+      cont=cont.substring(m.end());
+      m=idPattern.matcher(cont);
+    }
+ while (m.find() && (ids.size() + 1 <= Integer.valueOf(refsRequested)));
+  }
+ else   if (entirePage.indexOf(noAccessIndicator) >= 0) {
+    noAccessFound=true;
+    return null;
+  }
+ else {
+    return null;
+  }
+  m=nextPagePattern.matcher(entirePage);
+  if (m.find()) {
+    String newQuery=JSTOR_URL + m.group(1);
+    return newQuery;
+  }
+ else {
+    return null;
+  }
+}
