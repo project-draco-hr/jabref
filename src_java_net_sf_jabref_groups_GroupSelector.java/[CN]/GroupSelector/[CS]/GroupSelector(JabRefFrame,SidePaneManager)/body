@@ -65,6 +65,8 @@
   invCb.setSelected(Globals.prefs.getBoolean("groupInvertSelections"));
   showOverlappingGroups.setSelected(Globals.prefs.getBoolean("groupShowOverlapping"));
   select.setSelected(Globals.prefs.getBoolean("groupSelectMatches"));
+  editModeIndicator=Globals.prefs.getBoolean(JabRefPreferences.EDIT_GROUP_MEMBERSHIP_MODE);
+  editModeCb.setSelected(editModeIndicator);
   openset.setMargin(new Insets(0,0,0,0));
   settings.add(andCb);
   settings.add(orCb);
@@ -72,6 +74,8 @@
   settings.add(invCb);
   settings.addSeparator();
   settings.add(select);
+  settings.addSeparator();
+  settings.add(editModeCb);
   settings.addSeparator();
   settings.add(grayOut);
   settings.add(hideNonHits);
@@ -117,9 +121,11 @@
     }
   }
 );
-  editModeButton.addActionListener(new ActionListener(){
+  editModeCb.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      editModeIndicator=!editModeIndicator;
+      editModeIndicator=editModeCb.getState();
+      updateBorder(editModeIndicator);
+      Globals.prefs.putBoolean(JabRefPreferences.EDIT_GROUP_MEMBERSHIP_MODE,editModeIndicator);
     }
   }
 );
@@ -168,7 +174,7 @@
   select.setToolTipText(Globals.lang("Select entries in group selection"));
   expand.setToolTipText(Globals.lang("Show one more row"));
   reduce.setToolTipText(Globals.lang("Show one less rows"));
-  editModeButton.setToolTipText("Toggle annotation mode");
+  editModeCb.setToolTipText(Globals.lang("Click group to toggle membership of selected entries"));
   bgr.add(andCb);
   bgr.add(orCb);
   visMode.add(floatCb);
@@ -232,8 +238,6 @@
   con.gridy=1;
   con.gridx=0;
   con.fill=GridBagConstraints.HORIZONTAL;
-  gb.setConstraints(editModeButton,con);
-  pan.add(editModeButton);
   con.gridy=2;
   con.gridx=0;
   con.gridwidth=4;
@@ -241,6 +245,7 @@
   main.add(pan);
   main.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
   add(main,BorderLayout.CENTER);
+  updateBorder(editModeIndicator);
   definePopup();
   moveNodeUpAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,KeyEvent.CTRL_MASK));
   moveNodeDownAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,KeyEvent.CTRL_MASK));
