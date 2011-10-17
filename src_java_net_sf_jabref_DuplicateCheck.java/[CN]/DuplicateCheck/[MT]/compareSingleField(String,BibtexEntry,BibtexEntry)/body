@@ -8,8 +8,9 @@
   s1=s1.toLowerCase();
   s2=s2.toLowerCase();
   if (field.equals("author") || field.equals("editor")) {
-    String[] aus1=AuthorList.fixAuthor_lastNameFirst(s1).split(" and "), aus2=AuthorList.fixAuthor_lastNameFirst(s2).split(" and "), au1=aus1[0].split(","), au2=aus2[0].split(",");
-    if ((aus1.length > 0) && (aus1.length == aus2.length) && au1[0].trim().equals(au2[0].trim()))     return Util.EQUAL;
+    String auth1=AuthorList.fixAuthor_lastNameOnlyCommas(s1,false).replaceAll(" and "," "), auth2=AuthorList.fixAuthor_lastNameOnlyCommas(s2,false).replaceAll(" and "," ");
+    double similarity=correlateByWords(auth1,auth2);
+    if (similarity > 0.8)     return Util.EQUAL;
  else     return Util.NOT_EQUAL;
   }
  else {
