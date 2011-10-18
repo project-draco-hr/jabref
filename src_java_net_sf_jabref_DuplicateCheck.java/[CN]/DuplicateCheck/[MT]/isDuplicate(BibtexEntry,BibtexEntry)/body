@@ -1,18 +1,18 @@
 {
   if (one.getType() != two.getType())   return false;
   String[] fields=one.getType().getRequiredFields();
-  double req, reqWeight=4;
+  double[] req;
   if (fields == null) {
-    req=0;
-    reqWeight=0;
+    req=new double[]{0.,0.};
   }
  else   req=compareFieldSet(fields,one,two);
   fields=one.getType().getOptionalFields();
   if (fields != null) {
-    double opt=compareFieldSet(fields,one,two);
-    return (reqWeight * req + opt) / (1 + reqWeight) >= Globals.duplicateThreshold;
+    double[] opt=compareFieldSet(fields,one,two);
+    double totValue=(reqWeight * req[0] * req[1] + opt[0] * opt[1]) / (req[1] * reqWeight + opt[1]);
+    return totValue >= Globals.duplicateThreshold;
   }
  else {
-    return (req >= Globals.duplicateThreshold);
+    return (req[0] >= Globals.duplicateThreshold);
   }
 }
