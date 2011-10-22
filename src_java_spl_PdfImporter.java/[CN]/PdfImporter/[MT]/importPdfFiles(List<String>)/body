@@ -21,7 +21,6 @@
       BibtexEntry entry;
       BibtexEntryType type;
       MetaDataListDialog metaDataListDialog;
-      XmlDocuments documents;
 switch (choice) {
 case ImportDialog.XMP:
         ImportMenuItem importer=new ImportMenuItem(frame,(entryTable == null));
@@ -78,11 +77,10 @@ case ImportDialog.MRDLIB:
 metaDataListDialog=new MetaDataListDialog(fileName,true);
 Tools.centerRelativeToWindow(metaDataListDialog,frame);
 metaDataListDialog.showDialog();
-documents=metaDataListDialog.getXmlDocuments();
-if (documents != null && documents.getDocuments() != null && documents.getDocuments().size() > 0 && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
+Document document=metaDataListDialog.getXmlDocuments();
+if (document != null && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
 int selected=metaDataListDialog.getTableMetadata().getSelectedRow();
-if (selected > -1 && selected < documents.getDocuments().size()) {
-XmlDocument document=documents.getDocuments().get(selected);
+if (selected > -1) {
 String id=Util.createNeutralId();
 entry=new BibtexEntry(id);
 if (fieldExists(document.getType())) {
@@ -116,7 +114,7 @@ continue;
  else if (metaDataListDialog.getResult() == JOptionPane.NO_OPTION) {
 createNewBlankEntry(fileName);
 }
- else if (documents == null || documents.getDocuments() == null || documents.getDocuments().size() <= 0 && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
+ else if (document == null && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
 createNewBlankEntry(fileName);
 }
 break;
@@ -127,11 +125,10 @@ case ImportDialog.UPDATEEMPTYFIELDS:
 metaDataListDialog=new MetaDataListDialog(fileName,false);
 Tools.centerRelativeToWindow(metaDataListDialog,frame);
 metaDataListDialog.showDialog();
-documents=metaDataListDialog.getXmlDocuments();
-if (documents != null && documents.getDocuments() != null && documents.getDocuments().size() > 0 && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
+document=metaDataListDialog.getXmlDocuments();
+if (document != null && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
 int selected=metaDataListDialog.getTableMetadata().getSelectedRow();
-if (selected > -1 && selected < documents.getDocuments().size()) {
-XmlDocument document=documents.getDocuments().get(selected);
+if (selected > -1) {
 entry=entryTable.getEntryAt(dropRow);
 if (fieldExists(document.getType())) {
 type=BibtexEntryType.getStandardType(document.getType());

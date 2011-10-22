@@ -14,10 +14,14 @@
     if (isMetaDataServiceAvailable() == false) {
       return WebServiceStatus.UNAVAILABLE;
     }
-    byte[] data=Tools.zip(file);
+    FileInputStream fin=new FileInputStream(file);
+    byte[] data=new byte[(int)file.length()];
+    fin.read(data);
     FormDataMultiPart formDataMultiPart=new FormDataMultiPart();
-    formDataMultiPart.field("gzippedpdf",data,MediaType.APPLICATION_OCTET_STREAM_TYPE);
-    ClientResponse response=WEBRESOURCE.path("service/metadata").type(MediaType.MULTIPART_FORM_DATA_TYPE).post(ClientResponse.class,formDataMultiPart);
+    formDataMultiPart.field("file",data,MediaType.APPLICATION_OCTET_STREAM_TYPE);
+    formDataMultiPart.field("source","jabref",MediaType.TEXT_PLAIN_TYPE);
+    formDataMultiPart.field("filename",file.getName(),MediaType.TEXT_PLAIN_TYPE);
+    ClientResponse response=WEBRESOURCE.path("documents").type(MediaType.MULTIPART_FORM_DATA_TYPE).post(ClientResponse.class,formDataMultiPart);
     if (response.getClientResponseStatus() == ClientResponse.Status.OK && response.hasEntity()) {
       String entity=response.getEntity(String.class);
       byte[] bytes=new byte[0];
@@ -29,8 +33,26 @@
       }
       InputStream is=new ByteArrayInputStream(bytes);
       if (is != null) {
-        XmlDocuments documents=JAXB.unmarshal(is,XmlDocuments.class);
-        SplWebClient.metadata=documents;
+        ObjectCreatorMapper resourceMapper=new ObjectCreatorMapper();
+        ObjectCreator stringCreator=new DefaultStringCreator();
+        resourceMapper.addCreator("documents",new DocumentsBeanCreator());
+        resourceMapper.addCreator("authors",new AuthorsBeanCreator());
+        resourceMapper.addCreator("document",new DocumentBeanCreator());
+        resourceMapper.addCreator("title",new TitleBeanCreator());
+        resourceMapper.addCreator("year",new YearBeanCreator());
+        resourceMapper.addCreator("author",new AuthorBeanCreator());
+        resourceMapper.addCreator("name_first",stringCreator);
+        resourceMapper.addCreator("name_middle",stringCreator);
+        resourceMapper.addCreator("name_last",stringCreator);
+        resourceMapper.addCreator("name_last_prefix",stringCreator);
+        resourceMapper.addCreator("name_last_suffix",stringCreator);
+        XmlResourceReader<?> reader=new XmlResourceReader(resourceMapper);
+        Document docs=(Document)reader.parse(is);
+        for (        Bean author : docs.getAuthors().getCollection()) {
+          Author temp=(Author)author;
+          System.out.println(((SimpleTypeElementBean)temp.getName_Last()).getValue() + " " + temp.getRank());
+        }
+        SplWebClient.metadata=docs;
         return WebServiceStatus.OK;
       }
  else {

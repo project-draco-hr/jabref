@@ -12,19 +12,17 @@
           importer.setClassName(pathToClass(importer.getBasePath(),new File(chosenFileStr)));
           importer.setName(importer.getInstance().getFormatName());
           importer.setCliId(importer.getInstance().getCLIId());
+          addOrReplaceImporter(importer);
+          customImporterTable.revalidate();
+          customImporterTable.repaint();
+          frame.setUpImportMenus();
         }
  catch (        Exception exc) {
-          exc.printStackTrace();
-          JOptionPane.showMessageDialog(frame,Globals.lang("Could not instantiate %0 %1",chosenFileStr + ":\n",exc.getMessage()));
+          JOptionPane.showMessageDialog(frame,Globals.lang("Could not instantiate %0",chosenFileStr));
         }
 catch (        NoClassDefFoundError exc) {
-          exc.printStackTrace();
-          JOptionPane.showMessageDialog(frame,Globals.lang("Could not instantiate %0 %1. Have you chosen the correct package path?",chosenFileStr + ":\n",exc.getMessage()));
+          JOptionPane.showMessageDialog(frame,Globals.lang("Could not instantiate %0. Have you chosen the correct package path?",chosenFileStr));
         }
-        addOrReplaceImporter(importer);
-        customImporterTable.revalidate();
-        customImporterTable.repaint();
-        frame.setUpImportMenus();
       }
     }
   }
@@ -40,21 +38,21 @@ catch (        NoClassDefFoundError exc) {
         }
  catch (        IOException exc) {
           exc.printStackTrace();
-          JOptionPane.showMessageDialog(frame,Globals.lang("Could not open %0 %1",basePath + ":\n",exc.getMessage()) + "\n" + Globals.lang("Have you chosen the correct package path?"));
+          JOptionPane.showMessageDialog(frame,Globals.lang("Could not open %0",basePath) + "\n" + Globals.lang("Have you chosen the correct package path?"));
           return;
         }
 catch (        NoClassDefFoundError exc) {
           exc.printStackTrace();
-          JOptionPane.showMessageDialog(frame,Globals.lang("Could not instantiate %0 %1",basePath + ":\n",exc.getMessage()) + "\n" + Globals.lang("Have you chosen the correct package path?"));
+          JOptionPane.showMessageDialog(frame,Globals.lang("Could not instantiate %0",basePath) + "\n" + Globals.lang("Have you chosen the correct package path?"));
         }
       }
       if (zipFile != null) {
         ZipFileChooser zipFileChooser=new ZipFileChooser(importCustomizationDialog,zipFile);
         zipFileChooser.setVisible(true);
+        customImporterTable.revalidate();
+        customImporterTable.repaint(10);
+        frame.setUpImportMenus();
       }
-      customImporterTable.revalidate();
-      customImporterTable.repaint(10);
-      frame.setUpImportMenus();
     }
   }
 );

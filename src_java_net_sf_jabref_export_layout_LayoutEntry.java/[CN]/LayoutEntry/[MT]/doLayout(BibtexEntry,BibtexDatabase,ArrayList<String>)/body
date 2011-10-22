@@ -11,13 +11,23 @@ case LayoutHelper.IS_FIELD_START:
 case LayoutHelper.IS_GROUP_START:
 {
 String field;
-if (type == LayoutHelper.IS_GROUP_START) field=BibtexDatabase.getResolvedField(text,bibtex,database);
- else {
-String[] parts=text.split(";");
+if (type == LayoutHelper.IS_GROUP_START) {
+field=BibtexDatabase.getResolvedField(text,bibtex,database);
+}
+ else if (text.matches(".*(;|(\\&+)).*")) {
+String[] parts=text.split("\\s*(;|(\\&+))\\s*");
 field=null;
 for (int i=0; i < parts.length; i++) {
 field=BibtexDatabase.getResolvedField(parts[i],bibtex,database);
 if (field == null) break;
+}
+}
+ else {
+String[] parts=text.split("\\s*(\\|+)\\s*");
+field=null;
+for (int i=0; i < parts.length; i++) {
+field=BibtexDatabase.getResolvedField(parts[i],bibtex,database);
+if (field != null) break;
 }
 }
 if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && (field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())))) {
