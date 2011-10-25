@@ -5,16 +5,29 @@
  else     return Util.EMPTY_IN_ONE;
   }
  else   if (s2 == null)   return Util.EMPTY_IN_TWO;
-  s1=s1.toLowerCase();
-  s2=s2.toLowerCase();
   if (field.equals("author") || field.equals("editor")) {
-    String auth1=AuthorList.fixAuthor_lastNameOnlyCommas(s1,false).replaceAll(" and "," "), auth2=AuthorList.fixAuthor_lastNameOnlyCommas(s2,false).replaceAll(" and "," ");
-    double similarity=correlateByWords(auth1,auth2);
+    String auth1=AuthorList.fixAuthor_lastNameOnlyCommas(s1,false).replaceAll(" and "," ").toLowerCase(), auth2=AuthorList.fixAuthor_lastNameOnlyCommas(s2,false).replaceAll(" and "," ").toLowerCase();
+    double similarity=correlateByWords(auth1,auth2,false);
+    if (similarity > 0.8)     return Util.EQUAL;
+ else     return Util.NOT_EQUAL;
+  }
+ else   if (field.equals("pages")) {
+    s1=s1.replaceAll("[- ]+","-");
+    s2=s2.replaceAll("[- ]+","-");
+    if (s1.equals(s2))     return Util.EQUAL;
+ else     return Util.NOT_EQUAL;
+  }
+ else   if (field.equals("journal")) {
+    s1=s1.replaceAll("\\.","").toLowerCase();
+    s2=s2.replaceAll("\\.","").toLowerCase();
+    double similarity=correlateByWords(s1,s2,true);
     if (similarity > 0.8)     return Util.EQUAL;
  else     return Util.NOT_EQUAL;
   }
  else {
-    double similarity=correlateByWords(s1,s2);
+    s1=s1.toLowerCase();
+    s2=s2.toLowerCase();
+    double similarity=correlateByWords(s1,s2,false);
     if (similarity > 0.8)     return Util.EQUAL;
  else     return Util.NOT_EQUAL;
   }
