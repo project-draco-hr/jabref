@@ -7,7 +7,6 @@
   if (panel == null)   return;
   if (panel.getSelectedEntries().length == 0) {
     message=Globals.lang("No entries selected") + ".";
-    getCallBack().update();
     return;
   }
   StringWriter sw=new StringWriter();
@@ -44,6 +43,7 @@
  catch (    Exception e) {
       e.printStackTrace();
       message=Globals.lang("Error creating email");
+      return;
     }
   }
   String mailTo="?Body=".concat(sw.getBuffer().toString());
@@ -79,6 +79,7 @@
  catch (      IOException e) {
         e.printStackTrace();
         message=String.format("%s: %s",Globals.lang("Could not open directory"),d.getAbsolutePath());
+        return;
       }
     }
   }
