@@ -1,6 +1,21 @@
 {
   this.initSelection=initSelection;
+  ButtonGroup bg=new ButtonGroup();
+  bg.add(useDefault);
+  bg.add(chooseDirectly);
+  bg.add(setDirectory);
+  if (Globals.prefs.getBoolean("ooUseDefaultStyle"))   useDefault.setSelected(true);
+ else {
+    if (Globals.prefs.getBoolean("ooChooseStyleDirectly"))     chooseDirectly.setSelected(true);
+ else     setDirectory.setSelected(true);
+  }
+  directFile.setText(Globals.prefs.get("ooDirectFile"));
+  styleDir.setText(Globals.prefs.get("ooStyleDirectory"));
+  directFile.setEditable(false);
+  styleDir.setEditable(false);
   popup.add(edit);
+  browseDirectFile.addActionListener(new BrowseAction(null,directFile,false));
+  browseStyleDir.addActionListener(new BrowseAction(null,styleDir,true));
   edit.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent actionEvent){
       int i=table.getSelectedRow();
@@ -18,13 +33,6 @@
   }
 );
   diag=new JDialog(frame,Globals.lang("Styles"),true);
-  dirsPanel=new StyleDirectoriesPanel(diag,Globals.prefs.getStringArray("ooStyleFileDirectories"));
-  dirsPanel.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent event){
-      readStyles();
-    }
-  }
-);
   styles=new BasicEventList<OOBibStyle>();
   sortedStyles=new SortedList<OOBibStyle>(styles);
   preview=new PreviewPanel(null,new MetaData(),"");
@@ -48,26 +56,80 @@
   }
 );
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
+  styleDir.getDocument().addDocumentListener(new DocumentListener(){
+    public void insertUpdate(    DocumentEvent documentEvent){
+      readStyles();
+      setDirectory.setSelected(true);
+    }
+    public void removeUpdate(    DocumentEvent documentEvent){
+      readStyles();
+      setDirectory.setSelected(true);
+    }
+    public void changedUpdate(    DocumentEvent documentEvent){
+      readStyles();
+      setDirectory.setSelected(true);
+    }
+  }
+);
+  directFile.getDocument().addDocumentListener(new DocumentListener(){
+    public void insertUpdate(    DocumentEvent documentEvent){
+      chooseDirectly.setSelected(true);
+    }
+    public void removeUpdate(    DocumentEvent documentEvent){
+      chooseDirectly.setSelected(true);
+    }
+    public void changedUpdate(    DocumentEvent documentEvent){
+      chooseDirectly.setSelected(true);
+    }
+  }
+);
   contentPane.setTopComponent(new JScrollPane(table));
   contentPane.setBottomComponent(preview);
   readStyles();
-  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("fill:1dlu:grow","fill:pref, fill:pref, fill:270dlu:grow"));
-  b.appendSeparator(Globals.lang("Select style"));
+  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("fill:pref,4dlu,fill:150dlu,4dlu,fill:pref",""));
+  b.append(useDefault);
   b.nextLine();
-  b.append(new JLabel("<html>" + Globals.lang("This is the list of available styles. Select the one you want to use.") + "</html>"));
+  b.append(chooseDirectly);
+  b.append(directFile);
+  b.append(browseDirectFile);
   b.nextLine();
-  b.append(contentPane);
+  b.append(setDirectory);
+  b.append(styleDir);
+  b.append(browseStyleDir);
+  b.nextLine();
+  DefaultFormBuilder b2=new DefaultFormBuilder(new FormLayout("fill:1dlu:grow","fill:pref, fill:pref, fill:270dlu:grow"));
+  b2.nextLine();
+  b2.append(new JLabel("<html>" + Globals.lang("This is the list of available styles. Select the one you want to use.") + "</html>"));
+  b2.nextLine();
+  b2.append(contentPane);
   b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-  diag.add(b.getPanel(),BorderLayout.CENTER);
-  diag.add(dirsPanel.getPanel(),BorderLayout.NORTH);
-  ok.addActionListener(new ActionListener(){
+  b2.getPanel().setBorder(BorderFactory.createEmptyBorder(15,5,5,5));
+  diag.add(b.getPanel(),BorderLayout.NORTH);
+  diag.add(b2.getPanel(),BorderLayout.CENTER);
+  AbstractAction okListener=new AbstractAction(){
     public void actionPerformed(    ActionEvent event){
+      if (!useDefault.isSelected()) {
+        if (chooseDirectly.isSelected()) {
+          File f=new File(directFile.getText());
+          if (!f.exists()) {
+            JOptionPane.showMessageDialog(diag,Globals.lang("You must select either a valid style file, or use the default style."),Globals.lang("Style selection"),JOptionPane.ERROR_MESSAGE);
+            return;
+          }
+        }
+ else {
+          if (table.getRowCount() == 0 || table.getSelectedRowCount() == 0) {
+            JOptionPane.showMessageDialog(diag,Globals.lang("You must select either a valid style file, or use the default style."),Globals.lang("Style selection"),JOptionPane.ERROR_MESSAGE);
+            return;
+          }
+        }
+      }
       okPressed=true;
       storeSettings();
       diag.dispose();
     }
   }
-);
+;
+  ok.addActionListener(okListener);
   Action cancelListener=new AbstractAction(){
     public void actionPerformed(    ActionEvent event){
       diag.dispose();
@@ -86,6 +148,8 @@
   InputMap im=bb.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",cancelListener);
+  im.put(KeyStroke.getKeyStroke("ENTER"),"enterOk");
+  am.put("enterOk",okListener);
   diag.pack();
   diag.setLocationRelativeTo(frame);
   SwingUtilities.invokeLater(new Runnable(){
