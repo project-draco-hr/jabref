@@ -14,8 +14,18 @@
   directFile.setEditable(false);
   styleDir.setEditable(false);
   popup.add(edit);
-  browseDirectFile.addActionListener(new BrowseAction(null,directFile,false));
-  browseStyleDir.addActionListener(new BrowseAction(null,styleDir,true));
+  BrowseAction dfBrowse=new BrowseAction(null,directFile,false);
+  dfBrowse.setFocusTarget(directFile);
+  browseDirectFile.addActionListener(dfBrowse);
+  BrowseAction sdBrowse=new BrowseAction(null,styleDir,true);
+  sdBrowse.setFocusTarget(setDirectory);
+  browseStyleDir.addActionListener(sdBrowse);
+  showDefaultStyle.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      displayDefaultStyle();
+    }
+  }
+);
   edit.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent actionEvent){
       int i=table.getSelectedRow();
@@ -88,6 +98,7 @@
   readStyles();
   DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("fill:pref,4dlu,fill:150dlu,4dlu,fill:pref",""));
   b.append(useDefault);
+  b.append(showDefaultStyle);
   b.nextLine();
   b.append(chooseDirectly);
   b.append(directFile);

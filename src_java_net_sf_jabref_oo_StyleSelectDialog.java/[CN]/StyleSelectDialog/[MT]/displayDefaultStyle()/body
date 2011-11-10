@@ -1,0 +1,40 @@
+{
+  try {
+    URL defPath=JabRef.class.getResource(OpenOfficePanel.defaultJStylePath);
+    BufferedReader r=new BufferedReader(new InputStreamReader(defPath.openStream()));
+    String line=null;
+    StringBuilder sb=new StringBuilder();
+    while ((line=r.readLine()) != null) {
+      sb.append(line);
+      sb.append("\n");
+    }
+    final JDialog dd=new JDialog(diag,Globals.lang("Default style"),true);
+    JLabel header=new JLabel("<html>" + Globals.lang("The panel below shows the definition of the default style.") + Globals.lang("If you want to use it as a template for a new style, you can copy the contents into a new .jstyle file")+ "</html>");
+    header.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    dd.getContentPane().add(header,BorderLayout.NORTH);
+    JTextArea ta=new JTextArea(sb.toString());
+    ta.setEditable(false);
+    JScrollPane sp=new JScrollPane(ta);
+    sp.setPreferredSize(new Dimension(700,500));
+    dd.getContentPane().add(sp,BorderLayout.CENTER);
+    JButton ok=new JButton(Globals.lang("Ok"));
+    ButtonBarBuilder bb=new ButtonBarBuilder();
+    bb.addGlue();
+    bb.addGridded(ok);
+    bb.addGlue();
+    bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+    dd.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+    ok.addActionListener(new ActionListener(){
+      public void actionPerformed(      ActionEvent actionEvent){
+        dd.dispose();
+      }
+    }
+);
+    dd.pack();
+    dd.setLocationRelativeTo(diag);
+    dd.setVisible(true);
+  }
+ catch (  IOException ex) {
+    ex.printStackTrace();
+  }
+}
