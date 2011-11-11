@@ -1,9 +1,11 @@
 {
   if (Globals.ON_WIN) {
-    File progFiles=findProgramFilesDir(), sOffice=null;
+    List<File> progFiles=findProgramFilesDir();
+    File sOffice=null;
     if (fileSearchCancelled)     return false;
-    if (progFiles != null) {
-      sOffice=findFileDir(progFiles,"soffice.exe");
+    for (    File dir : progFiles) {
+      sOffice=findFileDir(dir,"soffice.exe");
+      if (sOffice != null)       break;
     }
     if (sOffice == null) {
       JOptionPane.showMessageDialog(parent,Globals.lang("Unable to autodetect OpenOffice installation. Please choose the installation directory manually."),Globals.lang("Could not find OpenOffice installation"),JOptionPane.INFORMATION_MESSAGE);
