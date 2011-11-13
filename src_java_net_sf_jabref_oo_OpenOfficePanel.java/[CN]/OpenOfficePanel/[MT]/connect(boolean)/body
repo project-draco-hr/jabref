@@ -50,7 +50,10 @@
     getWorker().run();
     progDiag.dispose();
     diag.dispose();
-    if (ooBase == null)     throw connectException;
+    if (ooBase == null) {
+      JOptionPane.showMessageDialog(frame,Globals.lang("Unable to connect. One possible reason is that JabRef " + "and OpenOffice/LibreOffice are not both running in either 32 bit mode or 64 bit mode."));
+      throw connectException;
+    }
     if (ooBase.isConnectedToDocument())     frame.output(Globals.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle());
     selectDocument.setEnabled(true);
     pushEntries.setEnabled(true);
