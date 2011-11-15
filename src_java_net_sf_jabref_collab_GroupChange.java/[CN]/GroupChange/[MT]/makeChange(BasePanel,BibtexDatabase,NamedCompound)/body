@@ -1,6 +1,6 @@
 {
-  final GroupTreeNode root=panel.getGroupSelector().getGroupTreeRoot();
-  final UndoableModifySubtree undo=new UndoableModifySubtree(panel.getGroupSelector(),root,Globals.lang("Modified groups"));
+  final GroupTreeNode root=panel.metaData().getGroups();
+  final UndoableModifySubtree undo=new UndoableModifySubtree(panel.getGroupSelector(),panel.metaData().getGroups(),root,Globals.lang("Modified groups"));
   root.removeAllChildren();
   if (m_changedGroups == null) {
     root.setGroup(new AllEntriesGroup());
@@ -10,7 +10,7 @@
     for (int i=0; i < m_changedGroups.getChildCount(); ++i)     root.add(((GroupTreeNode)m_changedGroups.getChildAt(i)).deepCopy());
     root.refreshGroupsForNewDatabase(panel.database());
   }
-  panel.getGroupSelector().revalidateGroups();
+  if (panel.getGroupSelector().getGroupTreeRoot() == root)   panel.getGroupSelector().revalidateGroups();
   undoEdit.addEdit(undo);
   GroupTreeNode copied=m_changedGroups.deepCopy();
   tmpGroupRoot.removeAllChildren();
