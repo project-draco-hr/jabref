@@ -15,10 +15,13 @@
     String name=file.getName();
     int pos=name.lastIndexOf('.');
     String extension=((pos >= 0) && (pos < name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
-    String dir=metaData.getFileDirectory(extension);
-    String fileDir=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
-    String databaseDir=metaData.getFile().getParent();
-    File tmp=Util.expandFilename(entry.getLink(),new String[]{dir,fileDir,databaseDir});
+    String[] dir=metaData.getFileDirectory(extension);
+    String[] fileDir=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
+    ArrayList<String> al=new ArrayList<String>();
+    for (int i2=0; i2 < dir.length; i2++)     if (!al.contains(dir[i2]))     al.add(dir[i2]);
+    for (int i2=0; i2 < fileDir.length; i2++)     if (!al.contains(fileDir[i2]))     al.add(fileDir[i2]);
+    String[] dirs=al.toArray(new String[al.size()]);
+    File tmp=Util.expandFilename(entry.getLink(),dirs);
     if (tmp != null)     file=tmp;
     if (file.exists()) {
       if (fileNames.contains(name)) {

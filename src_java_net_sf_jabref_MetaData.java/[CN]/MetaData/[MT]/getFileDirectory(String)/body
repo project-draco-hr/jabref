@@ -1,20 +1,27 @@
 {
   String key=Globals.prefs.get("userFileDirIndividual");
-  String dir;
+  List<String> dirs=new ArrayList<String>();
+  if (Globals.prefs.getBoolean("bibLocationAsFileDir") && getFile() != null) {
+    dirs.add(getFile().getParent());
+    System.out.println(dirs.get(0));
+  }
   Vector<String> vec=getData(key);
   if (vec == null) {
     key=Globals.prefs.get("userFileDir");
     vec=getData(key);
   }
   if ((vec != null) && (vec.size() > 0)) {
+    String dir;
     dir=vec.get(0);
     if (!(new File(dir)).isAbsolute() && (file != null)) {
       String relDir=new StringBuffer(file.getParent()).append(System.getProperty("file.separator")).append(dir).toString();
       if ((new File(relDir)).exists())       dir=relDir;
     }
+    dirs.add(dir);
   }
  else {
-    dir=Globals.prefs.get(fieldName + "Directory");
+    String dir=Globals.prefs.get(fieldName + "Directory");
+    if (dir != null)     dirs.add(dir);
   }
-  return dir;
+  return dirs.toArray(new String[dirs.size()]);
 }
