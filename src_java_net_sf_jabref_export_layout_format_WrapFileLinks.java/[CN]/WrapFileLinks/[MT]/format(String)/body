@@ -17,10 +17,10 @@ case ITERATION_COUNT:
     break;
 case FILE_PATH:
   if (flEntry.getLink() == null)   break;
-String dir;
-if (Globals.prefs.fileDirForDatabase != null) dir=Globals.prefs.fileDirForDatabase;
- else dir=Globals.prefs.get(GUIGlobals.FILE_FIELD + "Directory");
-File f=Util.expandFilename(flEntry.getLink(),new String[]{dir});
+String[] dirs;
+if (Globals.prefs.fileDirForDatabase != null) dirs=Globals.prefs.fileDirForDatabase;
+ else dirs=new String[]{Globals.prefs.get(GUIGlobals.FILE_FIELD + "Directory")};
+File f=Util.expandFilename(flEntry.getLink(),dirs);
 if (f != null) {
 try {
 sb.append(replaceStrings(f.getCanonicalPath()));

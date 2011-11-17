@@ -1,8 +1,13 @@
 {
   String citeKey=entry.getCiteKey();
   String dialogTitle=Globals.lang("Link to file %0",linkFileName);
-  String dir=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
-  if ((dir == null) || !(new File(dir)).exists()) {
+  String[] dirs=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  int found=-1;
+  for (int i=0; i < dirs.length; i++)   if (new File(dirs[i]).exists()) {
+    found=i;
+    break;
+  }
+  if (found < 0) {
     destDirLabel.setText(Globals.lang("File directory is not set or does not exist."));
     copyRadioButton.setEnabled(false);
     moveRadioButton.setEnabled(false);
@@ -11,7 +16,7 @@
     linkInPlace.setSelected(true);
   }
  else {
-    destDirLabel.setText(Globals.lang("File directory is '%0':",dir));
+    destDirLabel.setText(Globals.lang("File directory is '%0':",dirs[found]));
     copyRadioButton.setEnabled(true);
     moveRadioButton.setEnabled(true);
     renameToTextBox.setEnabled(true);

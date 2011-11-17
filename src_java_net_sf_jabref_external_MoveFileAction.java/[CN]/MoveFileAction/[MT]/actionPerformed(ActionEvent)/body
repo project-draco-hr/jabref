@@ -6,14 +6,19 @@
   boolean httpLink=ln.toLowerCase().startsWith("http");
   if (httpLink) {
   }
-  String dir=frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
-  if ((dir == null) || (dir.trim().length() == 0) || !(new File(dir)).exists()) {
+  String[] dirs=frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  int found=-1;
+  for (int i=0; i < dirs.length; i++)   if (new File(dirs[i]).exists()) {
+    found=i;
+    break;
+  }
+  if (found < 0) {
     JOptionPane.showMessageDialog(frame,Globals.lang("File_directory_is_not_set_or_does_not_exist!"),Globals.lang("Move/Rename file"),JOptionPane.ERROR_MESSAGE);
     return;
   }
   File file=new File(ln);
   if (!file.isAbsolute()) {
-    file=Util.expandFilename(ln,new String[]{dir});
+    file=Util.expandFilename(ln,dirs);
   }
   if ((file != null) && file.exists()) {
     String extension=null;
@@ -31,8 +36,8 @@
  else         answer=JOptionPane.showConfirmDialog(frame,Globals.lang("Move file to file directory?"),Globals.lang("Move/Rename file"),JOptionPane.YES_NO_OPTION);
         if (answer != JOptionPane.YES_OPTION)         return;
         Globals.prefs.putBoolean("renameOnMoveFileToFileDir",cbm.isSelected());
-        StringBuilder sb=new StringBuilder(dir);
-        if (!dir.endsWith(File.separator))         sb.append(File.separator);
+        StringBuilder sb=new StringBuilder(dirs[found]);
+        if (!dirs[found].endsWith(File.separator))         sb.append(File.separator);
         if (cbm.isSelected()) {
           sb.append(suggName);
         }
@@ -61,7 +66,7 @@
         }
         if (success) {
           file.delete();
-          String canPath=(new File(dir)).getCanonicalPath();
+          String canPath=(new File(dirs[found])).getCanonicalPath();
           if (newFile.getCanonicalPath().startsWith(canPath)) {
             if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar))             flEntry.setLink(newFile.getCanonicalPath().substring(1 + canPath.length()));
  else             flEntry.setLink(newFile.getCanonicalPath().substring(canPath.length()));

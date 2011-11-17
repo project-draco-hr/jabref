@@ -30,10 +30,17 @@
         fieldEditor.setText(Globals.lang("Downloading..."));
         output(Globals.lang("Downloading..."));
         String plannedName=getPlannedFileName(res);
-        String directory=metaData.getFileDirectory(fieldName);
-        if (!new File(directory).exists()) {
-          JOptionPane.showMessageDialog(parent,Globals.lang("Could not find directory for %0-files: %1",fieldName,directory),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
-          Globals.logger(Globals.lang("Could not find directory for %0-files: %1",fieldName,directory));
+        String[] dirs=metaData.getFileDirectory(fieldName);
+        String directory=null;
+        for (int i=0; i < dirs.length; i++) {
+          if (new File(dirs[i]).exists()) {
+            directory=dirs[i];
+            break;
+          }
+        }
+        if (directory == null) {
+          if (dirs.length > 0)           JOptionPane.showMessageDialog(parent,Globals.lang("Could not find directory for %0-files: %1",fieldName,dirs[0]),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+ else           JOptionPane.showMessageDialog(parent,Globals.lang("No directory defined for %0-files",fieldName),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
           return;
         }
         File file=new File(new File(directory),plannedName);

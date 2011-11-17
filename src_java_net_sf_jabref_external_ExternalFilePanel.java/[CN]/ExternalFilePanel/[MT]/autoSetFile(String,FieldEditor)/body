@@ -8,8 +8,10 @@
   Thread t=(new Thread(){
     public void run(){
       LinkedList<String> list=new LinkedList<String>();
-      list.add(metaData.getFileDirectory(fieldName));
-      list.add(".");
+      String[] dirs=metaData.getFileDirectory(fieldName);
+      for (int i=0; i < dirs.length; i++) {
+        list.add(dirs[i]);
+      }
       String found=Util.findPdf(getEntry(),fieldName,list.toArray(new String[list.size()]));
       if (found != null) {
         editor.setText(found);

@@ -1,11 +1,16 @@
 {
-  String dir=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
-  if ((dir == null) || !(new File(dir)).exists()) {
-    System.out.println("dir: " + dir + "\t ext: "+ fileType.getExtension());
+  String[] dirs=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  int found=-1;
+  for (int i=0; i < dirs.length; i++)   if (new File(dirs[i]).exists()) {
+    found=i;
+    break;
+  }
+  if (found < 0) {
+    System.out.println("dir: " + dirs[found] + "\t ext: "+ fileType.getExtension());
     return false;
   }
   toFile=new File(toFile).getName();
-  File destFile=new File(new StringBuffer(dir).append(System.getProperty("file.separator")).append(toFile).toString());
+  File destFile=new File(new StringBuffer(dirs[found]).append(System.getProperty("file.separator")).append(toFile).toString());
   if (destFile.equals(new File(fileName))) {
     return true;
   }
