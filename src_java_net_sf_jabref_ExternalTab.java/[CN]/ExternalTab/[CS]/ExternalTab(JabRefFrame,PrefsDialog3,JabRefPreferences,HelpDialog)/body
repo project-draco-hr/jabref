@@ -5,7 +5,15 @@
   psDir=new JTextField(25);
   pdfDir=new JTextField(25);
   fileDir=new JTextField(25);
-  bibLocationAsFileDir=new JCheckBox("Allow file links relative to each bib file's location");
+  bibLocationAsFileDir=new JCheckBox(Globals.lang("Allow file links relative to each bib file's location"));
+  bibLocAsPrimaryDir=new JCheckBox(Globals.lang("Use the bib file location as primary file directory"));
+  bibLocAsPrimaryDir.setToolTipText(Globals.lang("When downloading files, or moving linked files to the " + "file directory, prefer the bib file location rather than the file directory set above"));
+  bibLocationAsFileDir.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent changeEvent){
+      bibLocAsPrimaryDir.setEnabled(bibLocationAsFileDir.isSelected());
+    }
+  }
+);
   editFileTypes=new JButton(Globals.lang("Manage external file types"));
   runAutoFileSearch=new JCheckBox(Globals.lang("When opening file link, search for matching file if no link is defined"));
   allowFileAutoOpenBrowse=new JCheckBox(Globals.lang("Automatically open browse dialog when creating new file link"));
@@ -37,6 +45,9 @@
   builder.nextLine();
   builder.append(new JPanel());
   builder.append(bibLocationAsFileDir,3);
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(bibLocAsPrimaryDir,3);
   builder.nextLine();
   builder.append(new JPanel());
   builder.append(matchStartsWithKey,3);
