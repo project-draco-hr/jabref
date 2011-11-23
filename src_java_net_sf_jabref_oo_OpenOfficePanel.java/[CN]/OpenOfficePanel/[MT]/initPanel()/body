@@ -83,7 +83,14 @@
   Action updateAction=new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
       try {
-        style.ensureUpToDate();
+        try {
+          if (style == null)           readStyleFile();
+ else           style.ensureUpToDate();
+        }
+ catch (        Throwable ex) {
+          JOptionPane.showMessageDialog(frame,Globals.lang("You must select either a valid style file, or use the default style."),Globals.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
+          return;
+        }
         ooBase.updateSortedReferenceMarks();
         java.util.List<BibtexDatabase> databases=getBaseList();
         java.util.List<String> unresolvedKeys=ooBase.refreshCiteMarkers(databases,style);
