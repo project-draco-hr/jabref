@@ -1,33 +1,39 @@
 {
-  URL url;
+  String bibAddr="";
+  String ID="";
   try {
-    url=new URL(startUrl + fullCitation);
-    String page=getResults(url);
-    Thread.sleep(10000);
-    Matcher bibtexAddr=bibPattern.matcher(page);
-    if (bibtexAddr.find()) {
-      URL bibtexUrl=new URL(startUrl + bibtexAddr.group(1));
-      BufferedReader in=new BufferedReader(new InputStreamReader(bibtexUrl.openStream()));
-      ParserResult result=BibtexParser.parse(in);
-      in.close();
-      Collection<BibtexEntry> item=result.getDatabase().getEntries();
-      BibtexEntry entry=item.iterator().next();
-      if (abs == true) {
-        Matcher absMatch=absPattern.matcher(page);
-        if (absMatch.find()) {
-          String absBlock=absMatch.group(1);
-          entry.setField("abstract",convertHTMLChars(absBlock).trim());
-        }
- else {
-          System.out.println("No abstract matched.");
-        }
-      }
-      Thread.sleep(10000);
-      return entry;
+    Matcher idMatcher=idPattern.matcher(fullCitation);
+    if (idMatcher.find()) {
+      ID=idMatcher.group(1);
     }
- else     return null;
+ else {
+      System.out.println("Did not find ID in: " + fullCitation);
+      return null;
+    }
+    bibAddr=bibtexUrl + ID + bibtexUrlEnd;
+    URL bibtexUrl=new URL(startUrl + bibAddr);
+    BufferedReader in=new BufferedReader(new InputStreamReader(bibtexUrl.openStream()));
+    ParserResult result=BibtexParser.parse(in);
+    in.close();
+    Collection<BibtexEntry> item=result.getDatabase().getEntries();
+    if (item.size() == 0)     return null;
+    BibtexEntry entry=item.iterator().next();
+    Thread.sleep(WAIT_TIME);
+    if (abs) {
+      URL url=new URL(startUrl + abstractUrl + ID);
+      String page=getResults(url);
+      entry.setField("abstract",convertHTMLChars(page).trim());
+      Thread.sleep(WAIT_TIME);
+    }
+    return entry;
   }
- catch (  MalformedURLException e) {
+ catch (  NoSuchElementException e) {
+    System.out.println("Bad Bibtex record read at: " + startUrl + bibAddr);
+    System.out.println("link read was: " + fullCitation);
+    e.printStackTrace();
+    return null;
+  }
+catch (  MalformedURLException e) {
     e.printStackTrace();
     return null;
   }
