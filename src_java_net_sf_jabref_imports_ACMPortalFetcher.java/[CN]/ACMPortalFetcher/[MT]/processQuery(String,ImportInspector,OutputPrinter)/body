@@ -7,7 +7,9 @@
   parsed=0;
   unparseable=0;
   acmOrGuide=acmButton.isSelected();
-  String address=makeUrl(0);
+  fetchAbstract=absCheckBox.isSelected();
+  int firstEntry=1;
+  String address=makeUrl(firstEntry);
   try {
     URL url=new URL(address);
     String page=getResults(url);
@@ -28,14 +30,12 @@
       status.showMessage(Globals.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded. It will be very slow, in order to make ACM happy.",new String[]{String.valueOf(hits),String.valueOf(MAX_FETCH)}),Globals.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
       hits=MAX_FETCH;
     }
-    fetchAbstract=absCheckBox.isSelected();
-    parse(dialog,page,0,1);
-    int firstEntry=perPage;
-    while (shouldContinue && (firstEntry < hits)) {
+    parse(dialog,page,0,firstEntry);
+    firstEntry+=perPage;
+    while (shouldContinue && (firstEntry <= hits)) {
       address=makeUrl(firstEntry);
       page=getResults(new URL(address));
-      if (!shouldContinue)       break;
-      parse(dialog,page,0,1 + firstEntry);
+      parse(dialog,page,0,firstEntry);
       firstEntry+=perPage;
     }
     return true;

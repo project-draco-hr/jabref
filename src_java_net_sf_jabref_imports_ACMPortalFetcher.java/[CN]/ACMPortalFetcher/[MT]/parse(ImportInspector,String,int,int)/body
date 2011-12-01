@@ -2,18 +2,12 @@
   piv=startIndex;
   int entryNumber=firstEntryNumber;
   BibtexEntry entry;
-  while (((entry=parseNextEntry(text,piv,entryNumber)) != null) && (shouldContinue)) {
+  while (((entry=parseNextEntry(text,piv,entryNumber)) != null) && shouldContinue) {
     if (entry.getField("title") != null) {
       dialog.addEntry(entry);
       dialog.setProgress(parsed + unparseable,hits);
       parsed++;
     }
     entryNumber++;
-    try {
-      Thread.sleep(10000);
-    }
- catch (    InterruptedException e) {
-      System.err.println(e.getStackTrace());
-    }
   }
 }
