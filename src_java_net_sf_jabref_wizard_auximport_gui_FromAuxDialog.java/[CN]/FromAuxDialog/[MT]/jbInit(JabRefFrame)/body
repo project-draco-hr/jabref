@@ -8,34 +8,28 @@
   cancelButton.addActionListener(new FromAuxDialog_Cancel_actionAdapter(this));
   generateButton.setText(Globals.lang("Generate"));
   generateButton.addActionListener(new FromAuxDialog_generate_actionAdapter(this));
-  initOptionsPanel(parent);
-  initStatusPanel();
+  initPanels(parent);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   JPanel buttonPanel=bb.getPanel();
-  buttonPanel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+  buttonPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   bb.addGlue();
   bb.addGridded(generateButton);
+  bb.addRelatedGap();
   bb.addGridded(okButton);
   bb.addGridded(cancelButton);
   bb.addGlue();
   this.setModal(true);
-  this.setResizable(false);
+  this.setResizable(true);
   this.setTitle(Globals.lang("AUX file import"));
-  getContentPane().add(panel1);
-  JPanel desc=getDescriptionPanel();
-  if (desc != null) {
-    panel1.add(desc,BorderLayout.NORTH);
-    panel1.add(buttonPanel,BorderLayout.SOUTH);
-    JPanel centerPane=new JPanel(new BorderLayout());
-    centerPane.add(buttons,BorderLayout.NORTH);
-    centerPane.add(statusPanel,BorderLayout.CENTER);
-    panel1.add(centerPane,BorderLayout.CENTER);
-  }
- else {
-    panel1.add(buttons,BorderLayout.NORTH);
-    panel1.add(buttonPanel,BorderLayout.SOUTH);
-    panel1.add(statusPanel,BorderLayout.CENTER);
-  }
+  JLabel desc=new JLabel("<html><h3>" + Globals.lang("AUX file import") + "</h3><p>"+ Globals.lang("This feature generates a new database based on which entries " + "are needed in an existing LaTeX document.")+ "</p>"+ "<p>"+ Globals.lang("You need to select one of your open databases from which to choose " + "entries, as well as the AUX file produced by LaTeX when compiling your document.")+ "</p></html>");
+  desc.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  panel1.add(desc,BorderLayout.NORTH);
+  JPanel centerPane=new JPanel(new BorderLayout());
+  centerPane.add(buttons,BorderLayout.NORTH);
+  centerPane.add(statusPanel,BorderLayout.CENTER);
+  getContentPane().add(panel1,BorderLayout.NORTH);
+  getContentPane().add(centerPane,BorderLayout.CENTER);
+  getContentPane().add(buttonPanel,BorderLayout.SOUTH);
   ActionMap am=statusPanel.getActionMap();
   InputMap im=statusPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(parent.prefs().getKey("Close dialog"),"close");

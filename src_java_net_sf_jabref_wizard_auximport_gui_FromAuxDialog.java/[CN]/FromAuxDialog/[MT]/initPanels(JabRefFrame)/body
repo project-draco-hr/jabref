@@ -1,0 +1,34 @@
+{
+  int len=parentTabbedPane.getTabCount();
+  int toSelect=-1;
+  for (int i=0; i < len; i++) {
+    dbChooser.addItem(parentTabbedPane.getTitleAt(i));
+    if (parent.baseAt(i) == parent.basePanel())     toSelect=i;
+  }
+  if (toSelect >= 0)   dbChooser.setSelectedIndex(toSelect);
+  auxFileField=new JTextField("",25);
+  browseAuxFileButton=new JButton(Globals.lang("Browse"));
+  browseAuxFileButton.addActionListener(new BrowseAction(auxFileField,parent));
+  notFoundList=new JList();
+  JScrollPane listScrollPane=new JScrollPane(notFoundList);
+  statusInfos=new JTextArea("",5,20);
+  JScrollPane statusScrollPane=new JScrollPane(statusInfos);
+  statusInfos.setEditable(false);
+  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:pref:grow, 4dlu, left:pref",""),buttons);
+  b.appendSeparator(Globals.lang("Options"));
+  b.append(Globals.lang("Reference database") + ":");
+  b.append(dbChooser,3);
+  b.nextLine();
+  b.append(Globals.lang("LaTeX AUX file") + ":");
+  b.append(auxFileField);
+  b.append(browseAuxFileButton);
+  b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  b=new DefaultFormBuilder(new FormLayout("fill:pref:grow, 4dlu, fill:pref:grow","pref, pref, fill:pref:grow"),statusPanel);
+  b.appendSeparator(Globals.lang("Unknown bibtex entries") + ":");
+  b.append(Globals.lang("Unknown bibtex entries") + ":");
+  b.append(Globals.lang("Messages") + ":");
+  b.nextLine();
+  b.append(listScrollPane);
+  b.append(statusScrollPane);
+  b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+}
