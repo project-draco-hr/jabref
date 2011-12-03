@@ -1,0 +1,19 @@
+{
+  stopFetching=false;
+  try {
+    List<String> citations=getCitations(query);
+    inspector.setProgress(2,citations.size() + 2);
+    int i=0;
+    for (    String citation : citations) {
+      if (stopFetching)       break;
+      BibtexEntry entry=BibsonomyScraper.getEntry(citation);
+      inspector.setProgress((++i) + 2,citations.size() + 2);
+      if (entry != null)       inspector.addEntry(entry);
+    }
+    return true;
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    return false;
+  }
+}
