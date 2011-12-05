@@ -1,6 +1,6 @@
 {
   mb.setBorder(null);
-  JMenu file=subMenu("File"), sessions=subMenu("Sessions"), edit=subMenu("Edit"), bibtex=subMenu("BibTeX"), view=subMenu("View"), tools=subMenu("Tools"), web=subMenu("Web search"), options=subMenu("Options"), newSpec=subMenu("New entry..."), helpMenu=subMenu("Help");
+  JMenu file=subMenu("File"), sessions=subMenu("Sessions"), edit=subMenu("Edit"), search=subMenu("Search"), bibtex=subMenu("BibTeX"), view=subMenu("View"), tools=subMenu("Tools"), options=subMenu("Options"), newSpec=subMenu("New entry..."), helpMenu=subMenu("Help");
   setUpImportMenus();
   newDatabaseMenu.add(newDatabaseAction);
   newDatabaseMenu.add(newSubDatabaseAction);
@@ -50,6 +50,22 @@
   edit.addSeparator();
   edit.add(selectAll);
   mb.add(edit);
+  search.add(normalSearch);
+  search.add(incrementalSearch);
+  search.add(replaceAll);
+  search.add(massSetField);
+  search.addSeparator();
+  search.add(dupliCheck);
+  search.add(resolveDuplicateKeys);
+  search.add(autoSetFile);
+  search.addSeparator();
+  GeneralFetcher generalFetcher=new GeneralFetcher(sidePaneManager,this,fetchers);
+  search.add(generalFetcher.getAction());
+  if (prefs.getBoolean("webSearchVisible")) {
+    sidePaneManager.register(generalFetcher.getTitle(),generalFetcher);
+    sidePaneManager.show(generalFetcher.getTitle());
+  }
+  mb.add(search);
   view.add(back);
   view.add(forward);
   view.add(focusTable);
@@ -78,45 +94,30 @@
   bibtex.add(editPreamble);
   bibtex.add(editStrings);
   mb.add(bibtex);
-  tools.add(normalSearch);
-  tools.add(incrementalSearch);
-  tools.add(replaceAll);
-  tools.add(massSetField);
   tools.add(makeKeyAction);
-  tools.add(checkAndFix);
+  tools.add(newSubDatabaseAction);
+  tools.add(writeXmpAction);
   OpenOfficePanel otp=OpenOfficePanel.getInstance();
   otp.init(this,sidePaneManager);
   tools.add(otp.getMenuItem());
-  checkAndFix.add(dupliCheck);
-  checkAndFix.add(resolveDuplicateKeys);
-  checkAndFix.add(autoSetFile);
-  checkAndFix.add(autoSetPdf);
-  checkAndFix.add(autoSetPs);
-  checkAndFix.add(integrityCheckAction);
-  checkAndFix.addSeparator();
-  checkAndFix.add(upgradeExternalLinks);
+  tools.add(pushExternalButton.getMenuAction());
   tools.addSeparator();
   tools.add(manageSelectors);
-  tools.add(pushExternalButton.getMenuAction());
-  tools.add(writeXmpAction);
   tools.addSeparator();
   tools.add(openFile);
   tools.add(openPdf);
   tools.add(openUrl);
   tools.addSeparator();
-  tools.add(newSubDatabaseAction);
-  tools.addSeparator();
   tools.add(abbreviateIso);
   tools.add(abbreviateMedline);
   tools.add(unabbreviate);
+  tools.addSeparator();
+  checkAndFix.add(autoSetPdf);
+  checkAndFix.add(autoSetPs);
+  checkAndFix.add(integrityCheckAction);
+  checkAndFix.add(upgradeExternalLinks);
+  tools.add(checkAndFix);
   mb.add(tools);
-  GeneralFetcher generalFetcher=new GeneralFetcher(sidePaneManager,this,fetchers);
-  web.add(generalFetcher.getAction());
-  if (prefs.getBoolean("webSearchVisible")) {
-    sidePaneManager.register(generalFetcher.getTitle(),generalFetcher);
-    sidePaneManager.show(generalFetcher.getTitle());
-  }
-  mb.add(web);
   options.add(showPrefs);
   AbstractAction customizeAction=new CustomizeEntryTypeAction();
   AbstractAction genFieldsCustomization=new GenFieldsCustomizationAction();
