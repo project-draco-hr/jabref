@@ -1,0 +1,16 @@
+{
+  stopFetching=false;
+  try {
+    List<String> citations=getCitations(query);
+    for (    String citation : citations) {
+      if (stopFetching)       break;
+      BibtexEntry entry=getSingleCitation(citation);
+      if (entry != null)       inspector.addEntry(entry);
+    }
+    return true;
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    return false;
+  }
+}

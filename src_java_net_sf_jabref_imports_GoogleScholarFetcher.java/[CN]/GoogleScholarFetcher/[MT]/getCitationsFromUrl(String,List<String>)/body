@@ -1,0 +1,16 @@
+{
+  URL url=new URL(urlQuery);
+  URLDownload ud=new URLDownload(url);
+  ud.download();
+  String cont=ud.getStringContent();
+  Matcher m=CITE_LINK_PATTERN.matcher(cont);
+  while (m.find()) {
+    ids.add(m.group(1));
+  }
+  m=NEXT_PAGE_PATTERN.matcher(cont);
+  if (m.find()) {
+    System.out.println(URL_START + m.group(1).replaceAll("&amp;","&"));
+    return URL_START + m.group(1).replaceAll("&amp;","&");
+  }
+ else   return null;
+}
