@@ -1,23 +1,16 @@
 {
-  int len=0;
-  String dummy[][]=new String[3][];
-  if (entry != null) {
-    dummy[0]=entry.getRequiredFields();
-    dummy[1]=entry.getGeneralFields();
-    dummy[2]=entry.getOptionalFields();
+  ArrayList<String> f=new ArrayList<String>();
+  String[] req=entry.getRequiredFields();
+  String[] opt=entry.getOptionalFields();
+  String[] allFields=BibtexFields.getAllFieldNames();
+  for (int i=0; i < req.length; i++) {
+    f.add(req[i]);
   }
-  for (int t=0; t < 3; t++) {
-    if (dummy[t] != null) {
-      len=len + dummy[t].length;
-    }
+  for (int i=0; i < opt.length; i++) {
+    f.add(opt[i]);
   }
-  String back[]=new String[len];
-  int count=0;
-  for (int t=0; t < 3; t++) {
-    if (dummy[t] != null) {
-      System.arraycopy(dummy[t],0,back,count,dummy[t].length);
-      count+=dummy[t].length;
-    }
+  for (int i=0; i < allFields.length; i++) {
+    if (!f.contains(allFields[i]))     f.add(allFields[i]);
   }
-  return back;
+  return f.toArray(new String[f.size()]);
 }

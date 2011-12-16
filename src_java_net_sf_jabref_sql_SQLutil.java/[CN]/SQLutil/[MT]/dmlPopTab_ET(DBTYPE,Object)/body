@@ -4,13 +4,25 @@
   ArrayList<String> fieldID=new ArrayList<String>();
   for (int i=0; i < fields.size(); i++)   fieldID.add(null);
   for (  BibtexEntryType val : BibtexEntryType.ALL_TYPES.values()) {
+    ArrayList<String> coveredFields=new ArrayList<String>();
     for (int i=0; i < fieldID.size(); i++) {
       fieldID.set(i,"");
     }
-    fieldID=setFieldID(fields,fieldID,val.getRequiredFields(),"req");
-    fieldID=setFieldID(fields,fieldID,val.getOptionalFields(),"opt");
-    fieldID=setFieldID(fields,fieldID,val.getGeneralFields(),"gen");
-    fieldID=setFieldID(fields,fieldID,val.getUtilityFields(),"uti");
+    String[] flds=val.getRequiredFields();
+    fieldID=setFieldID(fields,fieldID,flds,"req");
+    for (int i=0; i < flds.length; i++)     coveredFields.add(flds[i]);
+    flds=val.getOptionalFields();
+    fieldID=setFieldID(fields,fieldID,flds,"opt");
+    for (int i=0; i < flds.length; i++)     coveredFields.add(flds[i]);
+    flds=val.getUtilityFields();
+    fieldID=setFieldID(fields,fieldID,flds,"uti");
+    for (int i=0; i < flds.length; i++)     coveredFields.add(flds[i]);
+    String[] allFields=BibtexFields.getAllFieldNames();
+    ArrayList<String> generalFields=new ArrayList<String>();
+    for (int i=0; i < allFields.length; i++) {
+      if (!coveredFields.contains(allFields[i]))       generalFields.add(allFields[i]);
+    }
+    fieldID=setFieldID(fields,fieldID,generalFields.toArray(new String[generalFields.size()]),"gen");
 switch (dbtype) {
 case MYSQL:
       dml=insert + "\"" + val.getName().toLowerCase()+ "\"";
