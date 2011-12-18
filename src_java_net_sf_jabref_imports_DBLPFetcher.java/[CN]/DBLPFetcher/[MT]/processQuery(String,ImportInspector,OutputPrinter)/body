@@ -1,0 +1,50 @@
+{
+  boolean res=false;
+  this.query=query;
+  shouldContinue=true;
+  try {
+    String address=makeSearchURL();
+    URL url=new URL(address);
+    String page=readFromURL(url);
+    String[] lines=page.split("\n");
+    List<String> bibtexUrlList=new ArrayList<String>();
+    for (    String line : lines) {
+      if (line.startsWith("\"url\"")) {
+        String addr=line.replace("\"url\":\"","");
+        addr=addr.substring(0,addr.length() - 2);
+        bibtexUrlList.add(addr);
+      }
+    }
+    int count=1;
+    for (    String urlStr : bibtexUrlList) {
+      if (!shouldContinue) {
+        break;
+      }
+      final URL bibUrl=new URL(urlStr);
+      String bibtexPage=readFromURL(bibUrl);
+      List<BibtexEntry> bibtexList=helper.getBibTexFromPage(bibtexPage);
+      for (      BibtexEntry bibtexEntry : bibtexList) {
+        inspector.addEntry(bibtexEntry);
+        if (!shouldContinue) {
+          break;
+        }
+      }
+      inspector.setProgress(count,bibtexUrlList.size());
+      count++;
+    }
+    res=true;
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+    status.showMessage(e.getMessage());
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+    status.showMessage(e.getMessage());
+  }
+catch (  DBLPParseException e) {
+    e.printStackTrace();
+    status.showMessage(e.getMessage());
+  }
+  return res;
+}
