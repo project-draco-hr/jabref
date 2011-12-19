@@ -1,0 +1,24 @@
+{
+  ArrayList<BibtexEntry> bibItems=new ArrayList<BibtexEntry>();
+  SAXParserFactory parserFactory=SAXParserFactory.newInstance();
+  parserFactory.setNamespaceAware(true);
+  try {
+    SAXParser parser=parserFactory.newSAXParser();
+    BibTeXMLHandler handler=new BibTeXMLHandler();
+    parser.parse(stream,handler);
+    bibItems=handler.getItems();
+  }
+ catch (  javax.xml.parsers.ParserConfigurationException e1) {
+    logger.log(Level.SEVERE,e1.getLocalizedMessage(),e1);
+    status.showMessage(e1.getLocalizedMessage());
+  }
+catch (  org.xml.sax.SAXException e2) {
+    logger.log(Level.SEVERE,e2.getLocalizedMessage(),e2);
+    status.showMessage(e2.getLocalizedMessage());
+  }
+catch (  java.io.IOException e3) {
+    logger.log(Level.SEVERE,e3.getLocalizedMessage(),e3);
+    status.showMessage(e3.getLocalizedMessage());
+  }
+  return bibItems;
+}
