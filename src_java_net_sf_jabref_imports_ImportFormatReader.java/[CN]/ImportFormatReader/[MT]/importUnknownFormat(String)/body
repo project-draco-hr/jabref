@@ -1,9 +1,10 @@
 {
   Pair<String,ParserResult> result=null;
+  OutputPrinterToNull nullOutput=new OutputPrinterToNull();
   int bestResult=0;
   for (  ImportFormat imFo : getImportFormats()) {
     try {
-      List<BibtexEntry> entries=importFromFile(imFo,filename);
+      List<BibtexEntry> entries=importFromFile(imFo,filename,nullOutput);
       if (entries != null)       purgeEmptyEntries(entries);
       int entryCount=((entries != null) ? entries.size() : 0);
       if (entryCount > bestResult) {
