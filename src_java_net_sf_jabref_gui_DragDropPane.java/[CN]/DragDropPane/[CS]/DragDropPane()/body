@@ -1,0 +1,54 @@
+{
+  super();
+  indexDraggedTab=-1;
+  markerPane=new MarkerPane();
+  markerPane.setVisible(false);
+  addMouseMotionListener(new MouseMotionAdapter(){
+    public void mouseDragged(    MouseEvent e){
+      int indexActTab=getUI().tabForCoordinate(DragDropPane.this,e.getX(),e.getY());
+      if (!draggingState) {
+        if (indexActTab >= 0) {
+          draggingState=true;
+          indexDraggedTab=indexActTab;
+          repaint();
+        }
+      }
+ else {
+        if (indexDraggedTab >= 0 && indexActTab >= 0 && indexDraggedTab != indexActTab) {
+          DragDropPane.this.getRootPane().setGlassPane(markerPane);
+          Rectangle actTabRect=SwingUtilities.convertRectangle(DragDropPane.this,getBoundsAt(indexActTab),DragDropPane.this.markerPane);
+          if (indexDraggedTab < indexActTab)           markerPane.setPicLocation(new Point(actTabRect.x + actTabRect.width,actTabRect.y + actTabRect.height));
+ else           if (indexDraggedTab > indexActTab)           markerPane.setPicLocation(new Point(actTabRect.x,actTabRect.y + actTabRect.height));
+          markerPane.setVisible(true);
+          markerPane.repaint();
+          repaint();
+        }
+ else {
+          markerPane.setVisible(false);
+          markerPane.repaint();
+        }
+      }
+      super.mouseDragged(e);
+    }
+  }
+);
+  addMouseListener(new MouseAdapter(){
+    public void mouseReleased(    MouseEvent e){
+      DragDropPane.this.markerPane.setVisible(false);
+      int indexActTab=getUI().tabForCoordinate(DragDropPane.this,e.getX(),e.getY());
+      if (indexDraggedTab >= 0 && indexActTab >= 0 && indexDraggedTab != indexActTab) {
+        if (draggingState) {
+          DragDropPane.this.markerPane.setVisible(false);
+          Component actTab=getComponentAt(indexDraggedTab);
+          String actTabTitle=getTitleAt(indexDraggedTab);
+          removeTabAt(indexDraggedTab);
+          insertTab(actTabTitle,null,actTab,null,indexActTab);
+          DragDropPane.this.setSelectedIndex(indexActTab);
+          indexDraggedTab=indexActTab;
+        }
+      }
+      draggingState=false;
+    }
+  }
+);
+}
