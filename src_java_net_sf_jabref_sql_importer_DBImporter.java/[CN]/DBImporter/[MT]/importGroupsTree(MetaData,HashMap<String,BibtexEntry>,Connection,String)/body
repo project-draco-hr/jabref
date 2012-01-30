@@ -1,0 +1,51 @@
+{
+  HashMap<String,GroupTreeNode> groups=new HashMap<String,GroupTreeNode>();
+  LinkedHashMap<GroupTreeNode,String> parentIds=new LinkedHashMap<GroupTreeNode,String>();
+  GroupTreeNode rootNode=new GroupTreeNode(new AllEntriesGroup());
+  ResultSet rsGroups=SQLUtil.queryAllFromTable(conn,"groups WHERE database_id='" + database_id + "' ORDER BY groups_id");
+  while (rsGroups.next()) {
+    AbstractGroup group=null;
+    String typeId=findGroupTypeName(rsGroups.getString("group_types_id"),conn);
+    if (typeId.equals(AllEntriesGroup.ID)) {
+      groups.put(rsGroups.getString("groups_id"),rootNode);
+    }
+ else     if (typeId.equals(ExplicitGroup.ID)) {
+      group=new ExplicitGroup(rsGroups.getString("label"),rsGroups.getInt("hierarchical_context"));
+    }
+ else     if (typeId.equals(KeywordGroup.ID)) {
+      System.out.println("Keyw: " + rsGroups.getBoolean("case_sensitive"));
+      group=new KeywordGroup(rsGroups.getString("label"),Util.unquote(rsGroups.getString("search_field"),'\\'),Util.unquote(rsGroups.getString("search_expression"),'\\'),rsGroups.getBoolean("case_sensitive"),rsGroups.getBoolean("reg_exp"),rsGroups.getInt("hierarchical_context"));
+    }
+ else     if (typeId.equals(SearchGroup.ID)) {
+      System.out.println("Search: " + rsGroups.getBoolean("case_sensitive"));
+      group=new SearchGroup(rsGroups.getString("label"),Util.unquote(rsGroups.getString("search_expression"),'\\'),rsGroups.getBoolean("case_sensitive"),rsGroups.getBoolean("reg_exp"),rsGroups.getInt("hierarchical_context"));
+    }
+    if (group != null) {
+      GroupTreeNode node=new GroupTreeNode(group);
+      parentIds.put(node,rsGroups.getString("parent_id"));
+      groups.put(rsGroups.getString("groups_id"),node);
+    }
+    for (Iterator<GroupTreeNode> i=parentIds.keySet().iterator(); i.hasNext(); ) {
+      GroupTreeNode node=i.next();
+      String parentId=parentIds.get(node);
+      GroupTreeNode parent=groups.get(parentId);
+      if (parent == null) {
+      }
+ else {
+        parent.add(node);
+      }
+    }
+    ResultSet rsEntryGroup=SQLUtil.queryAllFromTable(conn,"entry_group");
+    while (rsEntryGroup.next()) {
+      String entryId=rsEntryGroup.getString("entries_id"), groupId=rsEntryGroup.getString("groups_id");
+      GroupTreeNode node=groups.get(groupId);
+      if ((node != null) && (node.getGroup() instanceof ExplicitGroup)) {
+        ExplicitGroup expGroup=(ExplicitGroup)node.getGroup();
+        expGroup.addEntry(entries.get(entryId));
+      }
+    }
+    rsEntryGroup.getStatement().close();
+    metaData.setGroups(rootNode);
+  }
+  rsGroups.getStatement().close();
+}

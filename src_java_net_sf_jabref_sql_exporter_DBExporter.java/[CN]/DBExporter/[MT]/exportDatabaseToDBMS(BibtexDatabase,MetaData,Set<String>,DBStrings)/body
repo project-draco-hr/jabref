@@ -1,0 +1,20 @@
+{
+  Connection conn=null;
+  try {
+    conn=this.connectToDB(dbStrings);
+    performExport(database,metaData,keySet,conn);
+    if (!conn.getAutoCommit()) {
+      conn.commit();
+      conn.setAutoCommit(true);
+    }
+    conn.close();
+  }
+ catch (  SQLException ex) {
+    if (conn != null) {
+      if (!conn.getAutoCommit()) {
+        conn.rollback();
+      }
+    }
+    throw ex;
+  }
+}

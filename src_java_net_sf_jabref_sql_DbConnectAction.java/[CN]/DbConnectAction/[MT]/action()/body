@@ -10,13 +10,14 @@
     dbs=dbd.getDBStrings();
     try {
       panel.frame().output(Globals.lang("Establishing SQL connection..."));
-      Connection conn=SQLutil.connectToDB(dbs);
+      DBExporter exporter=(new DBExporterAndImporterFactory()).getExporter(dbs.getServerType());
+      Connection conn=exporter.connectToDB(dbs);
       conn.close();
       dbs.isConfigValid(true);
       panel.frame().output(Globals.lang("SQL connection established."));
     }
  catch (    Exception ex) {
-      String errorMessage=SQLutil.getExceptionMessage(ex,SQLutil.DBTYPE.MYSQL);
+      String errorMessage=SQLUtil.getExceptionMessage(ex);
       dbs.isConfigValid(false);
       String preamble="Could not connect to SQL database for the following reason:";
       panel.frame().output(Globals.lang(preamble) + "  " + errorMessage);

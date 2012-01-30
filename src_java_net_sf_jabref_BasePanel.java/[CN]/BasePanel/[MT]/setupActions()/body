@@ -143,6 +143,7 @@ catch (          Throwable ex) {
               Util.setAutomaticFields(be,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"));
               be.setId(Util.createNeutralId());
               database.insertEntry(be);
+              addToSelectedGroup(be);
               ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
             }
  catch (            KeyCollisionException ex) {
@@ -232,21 +233,24 @@ catch (          Throwable ex) {
         DBStrings dbs=metaData.getDBStrings();
         try {
           frame.output(Globals.lang("Attempting SQL export..."));
-          SQLutil.exportDatabase(database,metaData,null,dbs);
+          DBExporterAndImporterFactory factory=new DBExporterAndImporterFactory();
+          DBExporter exporter=factory.getExporter(dbs.getServerType());
+          exporter.exportDatabaseToDBMS(database,metaData,null,dbs);
           dbs.isConfigValid(true);
         }
  catch (        Exception ex) {
-          errorMessage=SQLutil.getExceptionMessage(ex,SQLutil.DBTYPE.MYSQL);
+          String preamble="Could not export to SQL database for the following reason:";
+          errorMessage=SQLUtil.getExceptionMessage(ex);
           dbs.isConfigValid(false);
+          JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         }
         metaData.setDBStrings(dbs);
       }
     }
     public void update(){
-      String url=SQLutil.createJDBCurl(metaData.getDBStrings());
       if (errorMessage == null) {
         if (connectToDB) {
-          frame.output(Globals.lang("%0 export successful",url));
+          frame.output(Globals.lang("%0 export successful"));
         }
       }
  else {

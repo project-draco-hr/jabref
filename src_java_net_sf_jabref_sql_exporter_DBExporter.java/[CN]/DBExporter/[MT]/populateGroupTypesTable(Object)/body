@@ -1,0 +1,17 @@
+{
+  int quantidade=0;
+  if (out instanceof Connection) {
+    ResultSet res=((Statement)SQLUtil.processQueryWithResults(out,"SELECT COUNT(*) AS amount FROM group_types")).getResultSet();
+    res.next();
+    quantidade=res.getInt("amount");
+    res.getStatement().close();
+  }
+  if (quantidade == 0) {
+    String[] typeNames=new String[]{AllEntriesGroup.ID,ExplicitGroup.ID,KeywordGroup.ID,SearchGroup.ID};
+    for (int i=0; i < typeNames.length; i++) {
+      String typeName=typeNames[i];
+      String insert="INSERT INTO group_types (label) VALUES ('" + typeName + "');";
+      SQLUtil.processQuery(out,insert);
+    }
+  }
+}
