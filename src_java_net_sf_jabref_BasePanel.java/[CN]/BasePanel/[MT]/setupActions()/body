@@ -341,7 +341,7 @@ catch (          Throwable ex) {
         return;
       }
       frame.block();
-      output(Globals.lang("Do a Cleanup for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
+      output(Globals.lang("Do a cleanup for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
     }
     public void run(){
       database.setFollowCrossrefs(false);
@@ -349,30 +349,41 @@ catch (          Throwable ex) {
       NamedCompound ce=new NamedCompound(Globals.lang("Cleanup Entry"));
       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
         bes=i.next();
+        String[] fields={"note","url","ee"};
         if (bes.getField("doi") != null) {
-          bes.setField("doi",Util.parseDOI(bes.getField("doi")));
-        }
- else {
-          if (bes.getField("note") != null) {
-            if (Util.checkForDOI(bes.getField("note"))) {
-              bes.setField("doi",Util.parseDOI(bes.getField("note")));
-              if (Globals.prefs.getBoolean(JabRefPreferences.CLEAR_NOTE_URL_IF_DOI_EXISTS)) {
-                bes.clearField("note");
+          String doiFieldValue=bes.getField("doi");
+          if (Util.checkForDOIwithHTTPprefix(bes.getField(doiFieldValue))) {
+            String newValue=Util.getDOI(doiFieldValue);
+            ce.addEdit(new UndoableFieldChange(bes,"doi",doiFieldValue,newValue));
+            bes.setField("doi",newValue);
+          }
+          ;
+          if (Util.checkForPlainDOI(doiFieldValue)) {
+            for (            String field : fields) {
+              if (Util.checkForPlainDOI(bes.getField(field))) {
+                Util.removeDOIfromBibtexEntryField(bes,field,ce);
               }
             }
           }
-          if (bes.getField("url") != null) {
-            if (Util.checkForDOI(bes.getField("url"))) {
-              bes.setField("doi",Util.parseDOI(bes.getField("url")));
-              if (Globals.prefs.getBoolean(JabRefPreferences.CLEAR_NOTE_URL_IF_DOI_EXISTS)) {
-                bes.clearField("url");
-              }
+        }
+ else {
+          for (          String field : fields) {
+            if (Util.checkForPlainDOI(bes.getField(field))) {
+              String oldValue=bes.getField("doi");
+              String newValue=Util.getDOI(bes.getField(field));
+              ce.addEdit(new UndoableFieldChange(bes,"doi",oldValue,newValue));
+              bes.setField("doi",newValue);
+              Util.removeDOIfromBibtexEntryField(bes,field,ce);
             }
           }
         }
       }
       ce.end();
-      undoManager.addEdit(ce);
+      if (ce.hasEdits()) {
+        updateEntryEditorIfShowing();
+        undoManager.addEdit(ce);
+        System.out.println(undoManager.toString());
+      }
     }
     public void update(){
       database.setFollowCrossrefs(true);
@@ -382,7 +393,7 @@ catch (          Throwable ex) {
       }
       markBaseChanged();
       numSelected=entries.size();
-      output(Globals.lang("Did a Cleanup for") + " " + numSelected+ " "+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
+      output(Globals.lang("Did a cleanup for") + " " + numSelected+ " "+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
       frame.unblock();
     }
   }
