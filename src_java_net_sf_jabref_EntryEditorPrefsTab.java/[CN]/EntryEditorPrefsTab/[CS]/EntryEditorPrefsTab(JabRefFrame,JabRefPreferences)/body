@@ -8,6 +8,7 @@
   editSource=new JCheckBox(Globals.lang("Enable source editing"));
   disableOnMultiple=new JCheckBox(Globals.lang("Disable entry editor when multiple entries are selected"));
   autoComplete=new JCheckBox(Globals.lang("Enable word/name autocompletion"));
+  shortestToComplete=new JSpinner(new SpinnerNumberModel(prefs.getInt(JabRefPreferences.SHORTEST_TO_COMPLETE),1,5,1));
   autoCompFF=new JRadioButton(Globals.lang("Autocomplete names in 'Firstname Lastname' format only"));
   autoCompLF=new JRadioButton(Globals.lang("Autocomplete names in 'Lastname, Firstname' format only"));
   autoCompBoth=new JRadioButton(Globals.lang("Autocomplete names in both formats"));
@@ -35,14 +36,7 @@
 );
   autoComplete.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
-      boolean enabled=autoComplete.isSelected();
-      autoCompFields.setEnabled(enabled);
-      autoCompLF.setEnabled(enabled);
-      autoCompFF.setEnabled(enabled);
-      autoCompBoth.setEnabled(enabled);
-      autoCompFirstNameMode_Abbr.setEnabled(enabled);
-      autoCompFirstNameMode_Full.setEnabled(enabled);
-      autoCompFirstNameMode_Both.setEnabled(enabled);
+      setAutoCompleteElementsEnabled(autoComplete.isSelected());
     }
   }
 );
@@ -56,10 +50,13 @@
   builder.add(defSource,cc.xy(2,9));
   builder.addSeparator(Globals.lang("Autocompletion options"),cc.xyw(1,11,5));
   builder.add(autoComplete,cc.xy(2,13));
-  JLabel label=new JLabel(Globals.lang("Use autocompletion for the following fields") + ":");
   DefaultFormBuilder builder3=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:150dlu",""));
+  JLabel label=new JLabel(Globals.lang("Use autocompletion for the following fields") + ":");
   builder3.append(label);
   builder3.append(autoCompFields);
+  JLabel label2=new JLabel(Globals.lang("Autocomplete after following number of characters") + ":");
+  builder3.append(label2);
+  builder3.append(shortestToComplete);
   builder.add(builder3.getPanel(),cc.xyw(2,15,3));
   builder.addSeparator(Globals.lang("Name format used for autocompletion"),cc.xyw(2,17,4));
   builder.add(autoCompFF,cc.xy(2,18));
