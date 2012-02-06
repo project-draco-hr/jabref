@@ -1,71 +1,78 @@
 {
   char ch=e.getKeyChar();
-  if (Character.isLetter(ch)) {
-    JTextComponent comp=(JTextComponent)e.getSource();
-    if ((toSetIn != null) && (toSetIn.length() > 1) && (ch == toSetIn.charAt(1))) {
-      toSetIn=toSetIn.substring(1);
-      if (toSetIn.length() > 0) {
-        int cp=comp.getCaretPosition();
-        comp.select(cp + 1 - toSetIn.length(),cp);
-        lastBeginning=lastBeginning + ch;
-        e.consume();
-        lastCaretPosition=comp.getCaretPosition();
-        lastCompletions=findCompletions(lastBeginning,comp);
-        lastShownCompletion=0;
-        for (int i=0; i < lastCompletions.length; i++) {
-          Object lastCompletion=lastCompletions[i];
-          if (((String)lastCompletion).endsWith(toSetIn)) {
-            lastShownCompletion=i;
-            break;
-          }
+  if ((e.getModifiers() | KeyEvent.SHIFT_MASK) == KeyEvent.SHIFT_MASK) {
+    if (ch != KeyEvent.CHAR_UNDEFINED) {
+      JTextComponent comp=(JTextComponent)e.getSource();
+      if (logger.isLoggable(Level.FINEST)) {
+        if (toSetIn == null)         logger.finest("toSetIn: NULL");
+ else         logger.finest("toSetIn: >" + toSetIn + "<");
+      }
+      if ((toSetIn != null) && (toSetIn.length() > 1) && (ch == toSetIn.charAt(1))) {
+        if (logger.isLoggable(Level.FINEST)) {
+          logger.finest("cont");
         }
-        if (toSetIn.length() < 2)         toSetIn=null;
-        return;
+        toSetIn=toSetIn.substring(1);
+        if (toSetIn.length() > 0) {
+          int cp=comp.getCaretPosition();
+          comp.select(cp + 1 - toSetIn.length(),cp);
+          lastBeginning=lastBeginning + ch;
+          e.consume();
+          lastCaretPosition=comp.getCaretPosition();
+          lastCompletions=findCompletions(lastBeginning,comp);
+          lastShownCompletion=0;
+          for (int i=0; i < lastCompletions.length; i++) {
+            Object lastCompletion=lastCompletions[i];
+            if (((String)lastCompletion).endsWith(toSetIn)) {
+              lastShownCompletion=i;
+              break;
+            }
+          }
+          if (toSetIn.length() < 2)           toSetIn=null;
+          return;
+        }
       }
-    }
-    if ((toSetIn != null) && ((toSetIn.length() <= 1) || (ch != toSetIn.charAt(1)))) {
-      lastBeginning=lastBeginning + ch;
-      Object[] completed=findCompletions(lastBeginning,comp);
-      if ((completed != null) && (completed.length > 0)) {
-        lastShownCompletion=0;
-        lastCompletions=completed;
-        String sno=(String)(completed[0]);
-        int lastLen=toSetIn.length() - 1;
-        toSetIn=sno.substring(lastBeginning.length() - 1);
-        String text=comp.getText();
-        comp.setText(text.substring(0,lastCaretPosition - lastLen) + toSetIn + text.substring(lastCaretPosition));
-        comp.select(lastCaretPosition + 1 - lastLen,lastCaretPosition + toSetIn.length() - lastLen);
-        lastCaretPosition=comp.getCaretPosition();
-        e.consume();
-        return;
-      }
+      if ((toSetIn != null) && ((toSetIn.length() <= 1) || (ch != toSetIn.charAt(1)))) {
+        lastBeginning=lastBeginning + ch;
+        if (logger.isLoggable(Level.FINEST)) {
+          logger.finest("discont");
+          logger.finest("toSetIn: >" + toSetIn + "<");
+          logger.finest("lastBeginning: >" + lastBeginning + "<");
+        }
+        Object[] completed=findCompletions(lastBeginning,comp);
+        if ((completed != null) && (completed.length > 0)) {
+          lastShownCompletion=0;
+          lastCompletions=completed;
+          String sno=(String)(completed[0]);
+          int lastLen=toSetIn.length() - 1;
+          toSetIn=sno.substring(lastBeginning.length() - 1);
+          String text=comp.getText();
+          comp.setText(text.substring(0,lastCaretPosition - lastLen - lastBeginning.length() + 1) + sno + text.substring(lastCaretPosition));
+          int startSelect=lastCaretPosition + 1 - lastLen;
+          int endSelect=lastCaretPosition + toSetIn.length() - lastLen;
+          comp.select(startSelect,endSelect);
+          lastCaretPosition=comp.getCaretPosition();
+          e.consume();
+          return;
+        }
  else {
-        toSetIn=null;
-        return;
+          setUnmodifiedTypedLetters(comp,true);
+          e.consume();
+          toSetIn=null;
+          return;
+        }
       }
-    }
-    StringBuffer currentword=getCurrentWord(comp);
-    if (currentword == null)     return;
-    currentword.append(ch);
-    Object[] completed=findCompletions(currentword.toString(),comp);
-    String prefix=completer.getPrefix();
-    String cWord=(prefix != null) && (prefix.length() > 0) ? currentword.toString().substring(prefix.length()) : currentword.toString();
-    int no=0;
-    if ((completed != null) && (completed.length > 0)) {
-      lastShownCompletion=0;
-      lastCompletions=completed;
-      String sno=(String)(completed[no]);
-      toSetIn=sno.substring(cWord.length() - 1);
-      StringBuffer alltext=new StringBuffer(comp.getText());
-      int cp=comp.getCaretPosition();
-      alltext.insert(cp,toSetIn);
-      comp.setText(alltext.toString());
-      comp.setCaretPosition(cp);
-      comp.select(cp + 1,cp + 1 + sno.length() - cWord.length());
-      e.consume();
-      lastCaretPosition=comp.getCaretPosition();
-      lastBeginning=cWord;
+      if (logger.isLoggable(Level.FINEST)) {
+        logger.finest("case else");
+      }
+      comp.replaceSelection("");
+      StringBuffer currentword=getCurrentWord(comp);
+      if (currentword == null)       currentword=new StringBuffer();
+      currentword.append(ch);
+      startCompletion(currentword,e);
       return;
+    }
+ else {
+      setUnmodifiedTypedLetters((JTextComponent)e.getSource(),false);
     }
   }
   toSetIn=null;

@@ -1,0 +1,15 @@
+{
+  if (comp.getSelectedText() == null || lastBeginning == null) {
+    return;
+  }
+  logger.finest("selected: " + comp.getSelectedText());
+  comp.replaceSelection("");
+  lastCaretPosition=comp.getCaretPosition();
+  int endIndex=lastCaretPosition - lastBeginning.length();
+  if (lastBeginningContainsTypedCharacter) {
+    endIndex++;
+  }
+  String text=comp.getText();
+  comp.setText(text.substring(0,endIndex).concat(lastBeginning).concat(text.substring(lastCaretPosition)));
+  lastBeginning=null;
+}

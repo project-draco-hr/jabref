@@ -4,16 +4,18 @@
   try {
     upToCaret=comp.getText(0,comp.getCaretPosition());
     if (!completer.isSingleUnitField()) {
-      if ((comp.getCaretPosition() < comp.getText().length()) && !Character.isWhitespace(comp.getText().charAt(comp.getCaretPosition())))       return null;
-      boolean found=false;
+      if ((comp.getCaretPosition() < comp.getText().length()) && Character.isWhitespace(comp.getText().charAt(comp.getCaretPosition()))) {
+        return null;
+      }
       int piv=upToCaret.length() - 1;
-      while (!found && (piv >= 0)) {
-        if (Character.isWhitespace(upToCaret.charAt(piv)))         found=true;
- else         piv--;
+      while ((piv >= 0) && !Character.isWhitespace(upToCaret.charAt(piv))) {
+        piv--;
       }
       res.append(upToCaret.substring(piv + 1));
     }
- else     res.append(upToCaret);
+ else {
+      res.append(upToCaret);
+    }
   }
  catch (  BadLocationException ex) {
   }
