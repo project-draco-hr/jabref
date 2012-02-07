@@ -1,11 +1,17 @@
 {
   char ch=e.getKeyChar();
+  if (ch == '\n')   return;
   if ((e.getModifiers() | KeyEvent.SHIFT_MASK) == KeyEvent.SHIFT_MASK) {
     if (ch != KeyEvent.CHAR_UNDEFINED) {
       JTextComponent comp=(JTextComponent)e.getSource();
       if (logger.isLoggable(Level.FINEST)) {
         if (toSetIn == null)         logger.finest("toSetIn: NULL");
  else         logger.finest("toSetIn: >" + toSetIn + "<");
+      }
+      if (Character.isWhitespace(ch) && !completer.isSingleUnitField()) {
+        setUnmodifiedTypedLetters((JTextComponent)e.getSource(),false);
+        toSetIn=null;
+        return;
       }
       if ((toSetIn != null) && (toSetIn.length() > 1) && (ch == toSetIn.charAt(1))) {
         if (logger.isLoggable(Level.FINEST)) {
@@ -76,5 +82,4 @@
     }
   }
   toSetIn=null;
-  lastCompletions=null;
 }
