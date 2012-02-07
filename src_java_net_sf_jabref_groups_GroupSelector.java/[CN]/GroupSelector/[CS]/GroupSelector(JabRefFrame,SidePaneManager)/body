@@ -62,11 +62,18 @@
     orCb.setSelected(true);
     andCb.setSelected(false);
   }
+  autoAssignGroup.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean("autoAssignGroup",autoAssignGroup.isSelected());
+    }
+  }
+);
   invCb.setSelected(Globals.prefs.getBoolean("groupInvertSelections"));
   showOverlappingGroups.setSelected(Globals.prefs.getBoolean("groupShowOverlapping"));
   select.setSelected(Globals.prefs.getBoolean("groupSelectMatches"));
   editModeIndicator=Globals.prefs.getBoolean(JabRefPreferences.EDIT_GROUP_MEMBERSHIP_MODE);
   editModeCb.setSelected(editModeIndicator);
+  autoAssignGroup.setSelected(Globals.prefs.getBoolean("autoAssignGroup"));
   openset.setMargin(new Insets(0,0,0,0));
   settings.add(andCb);
   settings.add(orCb);
@@ -81,12 +88,15 @@
   settings.add(hideNonHits);
   settings.addSeparator();
   settings.add(showOverlappingGroups);
+  settings.addSeparator();
+  settings.add(autoAssignGroup);
   openset.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       if (settings.isVisible()) {
       }
  else {
         JButton src=(JButton)e.getSource();
+        autoAssignGroup.setSelected(Globals.prefs.getBoolean("autoAssignGroup"));
         settings.show(src,0,openset.getHeight());
       }
     }

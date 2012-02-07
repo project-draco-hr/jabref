@@ -13,6 +13,11 @@
   StringBuffer buffer=new StringBuffer(fieldText.length() * 2);
   for (int i=0; i < fieldText.length(); i++) {
     int code=(fieldText.charAt(i));
+    if ((code == 38) && (fieldText.charAt(i + 1) == 35)) {
+      i+=2;
+      buffer.append("&#");
+      code=(fieldText.charAt(i));
+    }
     if (code > 125 || forceReplace[code]) {
       buffer.append("&#" + code + ";");
     }
