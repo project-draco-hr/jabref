@@ -14,11 +14,12 @@
         }
       }
  else {
-        if (indexDraggedTab >= 0 && indexActTab >= 0 && indexDraggedTab != indexActTab) {
+        if (indexDraggedTab >= 0 && indexActTab >= 0) {
+          boolean toTheLeft=e.getX() <= getUI().getTabBounds(DragDropPane.this,indexActTab).getCenterX();
           DragDropPane.this.getRootPane().setGlassPane(markerPane);
           Rectangle actTabRect=SwingUtilities.convertRectangle(DragDropPane.this,getBoundsAt(indexActTab),DragDropPane.this.markerPane);
-          if (indexDraggedTab < indexActTab)           markerPane.setPicLocation(new Point(actTabRect.x + actTabRect.width,actTabRect.y + actTabRect.height));
- else           if (indexDraggedTab > indexActTab)           markerPane.setPicLocation(new Point(actTabRect.x,actTabRect.y + actTabRect.height));
+          if (toTheLeft)           markerPane.setPicLocation(new Point(actTabRect.x,actTabRect.y + actTabRect.height));
+ else           markerPane.setPicLocation(new Point(actTabRect.x + actTabRect.width,actTabRect.y + actTabRect.height));
           markerPane.setVisible(true);
           markerPane.repaint();
           repaint();
@@ -38,13 +39,22 @@
       int indexActTab=getUI().tabForCoordinate(DragDropPane.this,e.getX(),e.getY());
       if (indexDraggedTab >= 0 && indexActTab >= 0 && indexDraggedTab != indexActTab) {
         if (draggingState) {
+          boolean toTheLeft=e.getX() <= getUI().getTabBounds(DragDropPane.this,indexActTab).getCenterX();
           DragDropPane.this.markerPane.setVisible(false);
           Component actTab=getComponentAt(indexDraggedTab);
           String actTabTitle=getTitleAt(indexDraggedTab);
           removeTabAt(indexDraggedTab);
-          insertTab(actTabTitle,null,actTab,null,indexActTab);
-          DragDropPane.this.setSelectedIndex(indexActTab);
-          indexDraggedTab=indexActTab;
+          int newTabPos;
+          if (indexActTab < indexDraggedTab) {
+            if (toTheLeft && indexActTab < (DragDropPane.this.getTabCount()))             newTabPos=indexActTab;
+ else             newTabPos=indexActTab + 1;
+          }
+ else {
+            if (toTheLeft && indexActTab > 0)             newTabPos=indexActTab - 1;
+ else             newTabPos=indexActTab;
+          }
+          insertTab(actTabTitle,null,actTab,null,newTabPos);
+          DragDropPane.this.setSelectedIndex(newTabPos);
         }
       }
       draggingState=false;
