@@ -402,11 +402,72 @@ catch (          Throwable ex) {
     }
   }
 );
-  actions.put("search",new BaseAction(){
-    public void action(){
-      sidePaneManager.show("search");
-      frame.searchToggle.setSelected(true);
-      if (true)       frame.getSearchManager().startSearch();
+  actions.put("makePDFname",new AbstractWorker(){
+    List<BibtexEntry> entries;
+    int numSelected;
+    boolean cancelled=false;
+    public void init(){
+      entries=new ArrayList<BibtexEntry>(Arrays.asList(getSelectedEntries()));
+      numSelected=entries.size();
+      if (entries.size() == 0) {
+        JOptionPane.showMessageDialog(frame,Globals.lang("First select the entries you want Auto-PDF-Names to be generated for."),Globals.lang("Autogenerate PDF Names"),JOptionPane.INFORMATION_MESSAGE);
+        return;
+      }
+      frame.block();
+      output(Globals.lang("Generating Auto-PDF-Names for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
+    }
+    public void run(){
+      database.setFollowCrossrefs(false);
+      BibtexEntry bes=null;
+      if (Globals.prefs.getBoolean(JabRefPreferences.AKS_AUTO_NAMING_PDFS_AGAIN) && !entries.isEmpty()) {
+        CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("Auto-generating PDF-Names does not support undo. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
+        int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Autogenerate PDF Names"),JOptionPane.YES_NO_OPTION);
+        if (cbm.isSelected())         Globals.prefs.putBoolean(JabRefPreferences.AKS_AUTO_NAMING_PDFS_AGAIN,false);
+        if (answer == JOptionPane.NO_OPTION) {
+          cancelled=true;
+          return;
+        }
+      }
+      int notSuccesfullRenames=0;
+      for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
+        bes=i.next();
+        String oldFilename=bes.getField(GUIGlobals.FILE_FIELD);
+        String newFilename=Util.getLinkedFileName(database,bes);
+        FileListTableModel flModel=new FileListTableModel();
+        flModel.setContent(bes.getField(GUIGlobals.FILE_FIELD));
+        if (flModel.getRowCount() == 0) {
+          continue;
+        }
+        String realOldFilename=flModel.getEntry(0).getLink();
+        newFilename=newFilename + "." + flModel.getEntry(0).getType().getExtension();
+        String newPath=Util.renamePath(realOldFilename,newFilename);
+        boolean renameSuccesfull=Util.renameFile(realOldFilename,newPath);
+        if (renameSuccesfull) {
+          String description=flModel.getEntry(0).getDescription();
+          ExternalFileType type=flModel.getEntry(0).getType();
+          flModel.removeEntry(0);
+          flModel.addEntry(0,new FileListEntry(description,newPath,type));
+          String newValue=flModel.getStringRepresentation();
+          bes.setField(GUIGlobals.FILE_FIELD,newValue);
+        }
+ else {
+          notSuccesfullRenames++;
+        }
+      }
+      if (notSuccesfullRenames > 0) {
+        JOptionPane.showMessageDialog(frame,Globals.lang("File rename failed for") + " " + notSuccesfullRenames+ " "+ Globals.lang("entries")+ ".",Globals.lang("Autogenerate PDF Names"),JOptionPane.INFORMATION_MESSAGE);
+      }
+    }
+    public void update(){
+      database.setFollowCrossrefs(true);
+      if (cancelled) {
+        frame.unblock();
+        return;
+      }
+      markBaseChanged();
+      numSelected=entries.size();
+      output(Globals.lang("Generated Auto-PDF-Names for") + " " + numSelected+ " "+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
+      frame.unblock();
     }
   }
 );
