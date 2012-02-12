@@ -1,0 +1,19 @@
+{
+  String oldValue=entry.getField("month");
+  if (oldValue == null)   return;
+  String newValue=oldValue;
+  try {
+    int month=Integer.parseInt(newValue);
+    newValue=new StringBuffer("#").append(Globals.MONTHS[month - 1]).append('#').toString();
+  }
+ catch (  NumberFormatException e) {
+    String casedString=newValue.substring(0,1).toUpperCase().concat(newValue.substring(1).toLowerCase());
+    if (Globals.MONTH_STRINGS.containsKey(newValue.toLowerCase()) || Globals.MONTH_STRINGS.containsValue(casedString)) {
+      newValue=new StringBuffer("#").append(newValue.substring(0,3).toLowerCase()).append('#').toString();
+    }
+  }
+  if (!oldValue.equals(newValue)) {
+    entry.setField("month",newValue);
+    ce.addEdit(new UndoableFieldChange(entry,"month",oldValue,newValue));
+  }
+}

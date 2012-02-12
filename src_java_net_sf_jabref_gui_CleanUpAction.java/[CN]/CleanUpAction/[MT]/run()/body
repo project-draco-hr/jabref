@@ -1,0 +1,32 @@
+{
+  if (cancelled)   return;
+  int choice=showCleanUpDialog();
+  if (choice != JOptionPane.OK_OPTION) {
+    cancelled=true;
+    return;
+  }
+  storeSettings();
+  boolean choiceCleanUpDOI=cleanUpDOI.isSelected(), choiceCleanUpMonth=cleanUpMonth.isSelected(), choiceCleanUpPageNumbers=cleanUpPageNumbers.isSelected(), choiceMakePathsRelative=cleanUpMakePathsRelative.isSelected(), choiceRenamePDF=cleanUpRenamePDF.isSelected();
+  if (choiceRenamePDF && Globals.prefs.getBoolean(AKS_AUTO_NAMING_PDFS_AGAIN)) {
+    CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("Auto-generating PDF-Names does not support undo. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
+    int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Autogenerate PDF Names"),JOptionPane.YES_NO_OPTION);
+    if (cbm.isSelected())     Globals.prefs.putBoolean(AKS_AUTO_NAMING_PDFS_AGAIN,false);
+    if (answer == JOptionPane.NO_OPTION) {
+      cancelled=true;
+      return;
+    }
+  }
+  for (  BibtexEntry entry : panel.getSelectedEntries()) {
+    NamedCompound ce=new NamedCompound(Globals.lang("Cleanup entry"));
+    if (choiceCleanUpDOI)     doCleanUpDOI(entry,ce);
+    if (choiceCleanUpMonth)     doCleanUpMonth(entry,ce);
+    if (choiceCleanUpPageNumbers)     doCleanUpPageNumbers(entry,ce);
+    if (choiceMakePathsRelative)     doMakePathsRelative(entry,ce);
+    if (choiceRenamePDF)     doRenamePDFs(entry,ce);
+    ce.end();
+    if (ce.hasEdits()) {
+      modifiedEntriesCount++;
+      panel.undoManager.addEdit(ce);
+    }
+  }
+}
