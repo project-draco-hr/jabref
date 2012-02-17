@@ -123,127 +123,23 @@
     }
     addSeparator();
   }
-  populateRankingMenu();
-  add(this.rankingMenu);
-  populatePriorityMenu();
-  add(this.priorityMenu);
-  if (multiple) {
-    add(new AbstractAction(Globals.lang("Set to relevant"),GUIGlobals.getImage("relevant")){
-      public void actionPerformed(      ActionEvent e){
-        try {
-          panel.runCommand("setRelevant");
-        }
- catch (        Throwable ex) {
-        }
-      }
+  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+      populateSpecialFieldMenu(this.rankingMenu,Rank.getInstance(),panel.frame);
+      add(this.rankingMenu);
     }
-);
-    add(new AbstractAction(Globals.lang("Set to irelevant"),GUIGlobals.getImage("irelevant")){
-      public void actionPerformed(      ActionEvent e){
-        try {
-          panel.runCommand("setIrelevant");
-        }
- catch (        Throwable ex) {
-        }
-      }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+      add(Relevance.getInstance().getValues().get(0).getMenuAction(panel.frame));
     }
-);
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+      add(Quality.getInstance().getValues().get(0).getMenuAction(panel.frame));
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+      populateSpecialFieldMenu(this.priorityMenu,Priority.getInstance(),panel.frame);
+      add(this.priorityMenu);
+    }
+    addSeparator();
   }
- else   if (be != null) {
-    if (be.getField("relevant") == null) {
-      add(new AbstractAction(Globals.lang("Set to relevant"),GUIGlobals.getImage("relevant")){
-        public void actionPerformed(        ActionEvent e){
-          try {
-            panel.runCommand("setRelevant");
-          }
- catch (          Throwable ex) {
-          }
-        }
-      }
-);
-    }
- else {
-      add(new AbstractAction(Globals.lang("Set to irelevant"),GUIGlobals.getImage("irelevant")){
-        public void actionPerformed(        ActionEvent e){
-          try {
-            panel.runCommand("setIrelevant");
-          }
- catch (          Throwable ex) {
-          }
-        }
-      }
-);
-    }
-  }
-  if (multiple) {
-    add(new AbstractAction(Globals.lang("Set quality to good"),GUIGlobals.getImage("quality")){
-      public void actionPerformed(      ActionEvent e){
-        try {
-          panel.runCommand("setGoodQuality");
-        }
- catch (        Throwable ex) {
-        }
-      }
-    }
-);
-    add(new AbstractAction(Globals.lang("Set quality to bad"),GUIGlobals.getImage("badQuality")){
-      public void actionPerformed(      ActionEvent e){
-        try {
-          panel.runCommand("setBadQuality");
-        }
- catch (        Throwable ex) {
-        }
-      }
-    }
-);
-  }
- else {
-    if (be.getField("quality") == null) {
-      add(new AbstractAction(Globals.lang("Set quality to good"),GUIGlobals.getImage("quality")){
-        public void actionPerformed(        ActionEvent e){
-          try {
-            panel.runCommand("setGoodQuality");
-          }
- catch (          Throwable ex) {
-          }
-        }
-      }
-);
-    }
- else {
-      add(new AbstractAction(Globals.lang("Set quality to bad"),GUIGlobals.getImage("badQuality")){
-        public void actionPerformed(        ActionEvent e){
-          try {
-            panel.runCommand("setBadQuality");
-          }
- catch (          Throwable ex) {
-          }
-        }
-      }
-);
-    }
-  }
-  add(new AbstractAction(Globals.lang("Export Keywords to Keyword Field"),GUIGlobals.getImage("exportToKeywords")){
-    public void actionPerformed(    ActionEvent e){
-      try {
-        panel.runCommand("exportToKeywords");
-      }
- catch (      Throwable ex) {
-      }
-    }
-  }
-);
-  add(new AbstractAction(Globals.lang("Import Keywords from Keyword Field"),GUIGlobals.getImage("importFromKeywords")){
-    public void actionPerformed(    ActionEvent e){
-      try {
-        panel.runCommand("importFromKeywords");
-      }
- catch (      Throwable ex) {
-      }
-    }
-  }
-);
-  addSeparator();
   add(new AbstractAction(Globals.lang("Open file"),GUIGlobals.getImage("openExternalFile")){
     public void actionPerformed(    ActionEvent e){
       try {

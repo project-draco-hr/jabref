@@ -12,24 +12,20 @@
       o=FileListTableModel.getFirstLabel(be.getField(GUIGlobals.FILE_FIELD));
     }
  else     if (iconType[hasField].equals(PRIORITY[0])) {
-      int priorityValue=1;
-      try {
-        priorityValue=Integer.parseInt(be.getField("priority"));
+      SpecialFieldValue prio=Priority.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_PRIORITY));
+      if (prio != null) {
+        o=prio.createLabel();
       }
- catch (      Exception e) {
-      }
-      o=GUIGlobals.getTablePriorityIcon(priorityValue);
     }
  else     if (iconType[hasField].equals(RANKING[0])) {
-      int entryRankingValue=1;
-      try {
-        entryRankingValue=Integer.parseInt(be.getField("ranking"));
+      SpecialFieldValue rank=Rank.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_RANKING));
+      if (rank != null) {
+        o=rank.createLabel();
       }
- catch (      Exception e) {
-      }
-      o=GUIGlobals.getTableRankingIcon(entryRankingValue);
     }
- else     o=GUIGlobals.getTableIcon(iconType[hasField]);
+ else {
+      o=GUIGlobals.getTableIcon(iconType[hasField]);
+    }
   }
  else {
     String[] fld=columns[col - padleft];

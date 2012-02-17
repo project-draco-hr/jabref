@@ -1,0 +1,39 @@
+{
+  if (noUpdate)   return;
+  final BibtexEntry entry=(BibtexEntry)e.getSource();
+  final String fieldName=e.getPropertyName();
+  SwingUtilities.invokeLater(new Runnable(){
+    public void run(){
+      if (fieldName.equals("keywords")) {
+        NamedCompound nc=new NamedCompound(Globals.lang("Synchronized special fields based on keywords"));
+        noUpdate=true;
+        SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,nc);
+        JabRef.jrf.basePanel().undoManager.addEdit(nc);
+        SwingUtilities.invokeLater(new Runnable(){
+          public void run(){
+            JabRef.jrf.basePanel().updateEntryEditorIfShowing();
+            noUpdate=false;
+          }
+        }
+);
+      }
+ else {
+        SpecialField field=SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(fieldName);
+        if (field != null) {
+          NamedCompound nc=new NamedCompound(Globals.lang("Synchronized keywords from special fields"));
+          noUpdate=true;
+          SpecialFieldsUtils.syncKeywordsFromSpecialFields(entry,nc);
+          JabRef.jrf.basePanel().undoManager.addEdit(nc);
+          SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+              JabRef.jrf.basePanel().updateEntryEditorIfShowing();
+              noUpdate=false;
+            }
+          }
+);
+        }
+      }
+    }
+  }
+);
+}

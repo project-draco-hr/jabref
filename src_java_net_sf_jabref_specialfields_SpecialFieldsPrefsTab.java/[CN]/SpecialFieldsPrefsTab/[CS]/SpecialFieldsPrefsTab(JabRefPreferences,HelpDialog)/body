@@ -1,0 +1,41 @@
+{
+  this.prefs=prefs;
+  HelpAction help=new HelpAction(helpDiag,GUIGlobals.specialFieldsHelp,"Help on key patterns");
+  hlb=new JButton(GUIGlobals.getImage("helpSmall"));
+  hlb.setToolTipText(Globals.lang("Help on special fields"));
+  hlb.addActionListener(help);
+  specialFieldsEnabled=new JCheckBox(Globals.lang("Enable special fields"));
+  specialFieldsEnabled.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      boolean isEnabled=specialFieldsEnabled.isSelected();
+      rankingColumn.setEnabled(isEnabled);
+      qualityColumn.setEnabled(isEnabled);
+      priorityColumn.setEnabled(isEnabled);
+      relevanceColumn.setEnabled(isEnabled);
+      syncKeywords.setEnabled(isEnabled);
+      writeSpecialFields.setEnabled(isEnabled);
+    }
+  }
+);
+  rankingColumn=new JCheckBox(Globals.lang("Show ranking"));
+  qualityColumn=new JCheckBox(Globals.lang("Show quality"));
+  priorityColumn=new JCheckBox(Globals.lang("Show priority"));
+  relevanceColumn=new JCheckBox(Globals.lang("Show relevance"));
+  syncKeywords=new JCheckBox(Globals.lang("Synchronize with keywords"));
+  writeSpecialFields=new JCheckBox(Globals.lang("Write values of special fields as separate fields to BibTeX"));
+  FormLayout layout=new FormLayout("12dlu pref","pref pref pref pref pref pref pref pref");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  CellConstraints cc=new CellConstraints();
+  builder.add(specialFieldsEnabled,cc.xyw(1,1,2));
+  builder.add(rankingColumn,cc.xy(2,2));
+  builder.add(relevanceColumn,cc.xy(2,3));
+  builder.add(qualityColumn,cc.xy(2,4));
+  builder.add(priorityColumn,cc.xy(2,5));
+  builder.add(syncKeywords,cc.xy(2,6));
+  builder.add(writeSpecialFields,cc.xy(2,7));
+  builder.add(hlb,cc.xy(1,8));
+  setLayout(new BorderLayout());
+  JPanel panel=builder.getPanel();
+  panel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  add(panel,BorderLayout.CENTER);
+}

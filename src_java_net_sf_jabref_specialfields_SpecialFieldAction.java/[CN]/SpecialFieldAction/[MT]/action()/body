@@ -1,0 +1,21 @@
+{
+  try {
+    NamedCompound ce=new NamedCompound(undoText);
+    BibtexEntry[] bes=frame.basePanel().getSelectedEntries();
+    if (bes == null)     return;
+    for (    BibtexEntry be : bes) {
+      SpecialFieldsUtils.updateField(c,value,be,ce,nullFieldIfValueIsTheSame);
+    }
+    ce.end();
+    frame.basePanel().undoManager.addEdit(ce);
+    frame.basePanel().markBaseChanged();
+    frame.basePanel().updateEntryEditorIfShowing();
+    String outText;
+    if (nullFieldIfValueIsTheSame)     outText=Globals.lang(doneTextPattern,Integer.toString(bes.length));
+ else     outText=Globals.lang(doneTextPattern,value,Integer.toString(bes.length));
+    frame.output(outText);
+  }
+ catch (  Throwable ex) {
+    ex.printStackTrace();
+  }
+}

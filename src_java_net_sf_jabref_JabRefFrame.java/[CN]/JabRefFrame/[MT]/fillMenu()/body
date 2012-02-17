@@ -49,20 +49,25 @@
   edit.add(unmark);
   edit.add(unmarkAll);
   edit.addSeparator();
-  JMenu chooseRanking=subMenu(Globals.lang("Ranking"));
-  chooseRanking.setIcon((new ImageIcon(GUIGlobals.getIconUrl("rank1"))));
-  for (int i=0; i <= 5; i++)   chooseRanking.add(new RankEntriesAction(this,i).getMenuItem());
-  edit.add(chooseRanking);
-  JMenu choosePriority=subMenu(Globals.lang("Priority"));
-  choosePriority.setIcon((new ImageIcon(GUIGlobals.getIconUrl("priority"))));
-  for (int i=0; i <= 3; i++)   choosePriority.add(new PriorityEntriesAction(this,i).getMenuItem());
-  edit.add(choosePriority);
-  edit.add(relevant);
-  edit.add(irelevant);
-  edit.add(goodQuality);
-  edit.add(badQuality);
-  edit.add(exportToKeywords);
-  edit.add(importFromKeywords);
+  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
+    JMenu m;
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+      m=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(m,Rank.getInstance(),this);
+      edit.add(m);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+      edit.add(toggleRelevance);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+      edit.add(toggleQualityAssured);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+      m=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(m,Priority.getInstance(),this);
+      edit.add(m);
+    }
+  }
   edit.addSeparator();
   edit.add(selectAll);
   mb.add(edit);
