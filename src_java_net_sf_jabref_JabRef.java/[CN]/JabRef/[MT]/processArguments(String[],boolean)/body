@@ -24,6 +24,16 @@
       System.err.println(Globals.lang("Unable to create graphical interface") + ".");
     }
   }
+  if (importPrefs.isInvoked()) {
+    try {
+      Globals.prefs.importPreferences(importPrefs.getStringValue());
+      BibtexEntryType.loadCustomEntryTypes(Globals.prefs);
+      ExportFormats.initAllExports();
+    }
+ catch (    IOException ex) {
+      Util.pr(ex.getMessage());
+    }
+  }
   Vector<ParserResult> loaded=new Vector<ParserResult>();
   Vector<String> toImport=new Vector<String>();
   if (!blank.isInvoked() && (leftOver.length > 0)) {
@@ -153,16 +163,6 @@ if (data.length == 1) {
 if (exportPrefs.isInvoked()) {
 try {
 Globals.prefs.exportPreferences(exportPrefs.getStringValue());
-}
- catch (IOException ex) {
-Util.pr(ex.getMessage());
-}
-}
-if (importPrefs.isInvoked()) {
-try {
-Globals.prefs.importPreferences(importPrefs.getStringValue());
-BibtexEntryType.loadCustomEntryTypes(Globals.prefs);
-ExportFormats.initAllExports();
 }
  catch (IOException ex) {
 Util.pr(ex.getMessage());
