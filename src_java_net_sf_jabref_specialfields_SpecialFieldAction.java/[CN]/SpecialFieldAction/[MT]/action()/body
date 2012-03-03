@@ -7,13 +7,17 @@
       SpecialFieldsUtils.updateField(c,value,be,ce,nullFieldIfValueIsTheSame);
     }
     ce.end();
-    frame.basePanel().undoManager.addEdit(ce);
-    frame.basePanel().markBaseChanged();
-    frame.basePanel().updateEntryEditorIfShowing();
-    String outText;
-    if (nullFieldIfValueIsTheSame)     outText=Globals.lang(doneTextPattern,Integer.toString(bes.length));
- else     outText=Globals.lang(doneTextPattern,value,Integer.toString(bes.length));
-    frame.output(outText);
+    if (ce.hasEdits()) {
+      frame.basePanel().undoManager.addEdit(ce);
+      frame.basePanel().markBaseChanged();
+      frame.basePanel().updateEntryEditorIfShowing();
+      String outText;
+      if (nullFieldIfValueIsTheSame)       outText=Globals.lang(doneTextPattern,Integer.toString(bes.length));
+ else       outText=Globals.lang(doneTextPattern,value,Integer.toString(bes.length));
+      frame.output(outText);
+    }
+ else {
+    }
   }
  catch (  Throwable ex) {
     ex.printStackTrace();
