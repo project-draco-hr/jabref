@@ -6,7 +6,12 @@
     comparators=comparatorChooser.getComparatorsForColumn(i);
     comparators.clear();
     String[] iconField=tableFormat.getIconTypeForColumn(i);
-    comparators.add(new IconComparator(iconField));
+    if (iconField[0].equals(SpecialFieldsUtils.FIELDNAME_RANKING)) {
+      comparators.add(new RankingFieldComparator());
+    }
+ else {
+      comparators.add(new IconComparator(iconField));
+    }
   }
   for (int i=tableFormat.padleft; i < tableFormat.getColumnCount(); i++) {
     comparators=comparatorChooser.getComparatorsForColumn(i);
