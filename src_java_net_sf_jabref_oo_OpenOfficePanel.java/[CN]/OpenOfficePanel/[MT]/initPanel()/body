@@ -153,11 +153,21 @@ catch (      Exception e) {
   }
 );
   help.addActionListener(new HelpAction(Globals.helpDiag,"OpenOfficeIntegration.html"));
-  test.addActionListener(new ActionListener(){
+  manageCitations.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent event){
       try {
         CitationManager cm=new CitationManager(frame,ooBase);
         cm.showDialog();
+      }
+ catch (      Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+);
+  test.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      try {
       }
  catch (      Exception e) {
         e.printStackTrace();
@@ -174,6 +184,7 @@ catch (      Exception e) {
   update.setEnabled(false);
   insertFullRef.setEnabled(false);
   merge.setEnabled(false);
+  manageCitations.setEnabled(false);
   test.setEnabled(false);
   diag=new JDialog((JFrame)null,"OpenOffice panel",false);
   DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("fill:pref:grow","p,p,p,p,p,p,p,p,p,p"));
@@ -190,6 +201,7 @@ catch (      Exception e) {
   b.append(pushEntriesAdvanced);
   b.append(pushEntriesEmpty);
   b.append(merge);
+  b.append(manageCitations);
   b.append(settingsB);
   JPanel content=new JPanel();
   comp.setContent(content);
