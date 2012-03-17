@@ -71,19 +71,47 @@
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
   JLabel lab;
   JPanel pan=new JPanel();
+  HelpAction help=new HelpAction(frame.helpDiag,GUIGlobals.specialFieldsHelp,"Help on key patterns");
+  hlb=new JButton(GUIGlobals.getImage("helpSmall"));
+  hlb.setToolTipText(Globals.lang("Help on special fields"));
+  hlb.addActionListener(help);
+  specialFieldsEnabled=new JCheckBox(Globals.lang("Enable special fields"));
+  specialFieldsEnabled.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      boolean isEnabled=specialFieldsEnabled.isSelected();
+      rankingColumn.setEnabled(isEnabled);
+      qualityColumn.setEnabled(isEnabled);
+      priorityColumn.setEnabled(isEnabled);
+      relevanceColumn.setEnabled(isEnabled);
+      syncKeywords.setEnabled(isEnabled);
+      writeSpecialFields.setEnabled(isEnabled);
+    }
+  }
+);
+  rankingColumn=new JCheckBox(Globals.lang("Show ranking"));
+  qualityColumn=new JCheckBox(Globals.lang("Show quality"));
+  priorityColumn=new JCheckBox(Globals.lang("Show priority"));
+  relevanceColumn=new JCheckBox(Globals.lang("Show relevance"));
+  syncKeywords=new JCheckBox(Globals.lang("Synchronize with keywords"));
+  writeSpecialFields=new JCheckBox(Globals.lang("Write values of special fields as separate fields to BibTeX"));
   builder.appendSeparator(Globals.lang("Special table columns"));
   builder.nextLine();
   builder.append(pan);
-  builder.append(fileColumn);
-  builder.nextLine();
-  builder.append(pan);
-  builder.append(pdfColumn);
-  builder.nextLine();
-  builder.append(pan);
-  builder.append(urlColumn);
-  builder.nextLine();
-  builder.append(pan);
-  builder.append(arxivColumn);
+  DefaultFormBuilder specialTableColumnsBuilder=new DefaultFormBuilder(new FormLayout("8dlu, left:pref, 8dlu, left:pref","pref pref pref pref pref pref pref pref"));
+  CellConstraints cc=new CellConstraints();
+  specialTableColumnsBuilder.add(specialFieldsEnabled,cc.xyw(1,1,2));
+  specialTableColumnsBuilder.add(rankingColumn,cc.xy(2,2));
+  specialTableColumnsBuilder.add(relevanceColumn,cc.xy(2,3));
+  specialTableColumnsBuilder.add(qualityColumn,cc.xy(2,4));
+  specialTableColumnsBuilder.add(priorityColumn,cc.xy(2,5));
+  specialTableColumnsBuilder.add(syncKeywords,cc.xy(2,6));
+  specialTableColumnsBuilder.add(writeSpecialFields,cc.xy(2,7));
+  specialTableColumnsBuilder.add(hlb,cc.xy(1,8));
+  specialTableColumnsBuilder.add(fileColumn,cc.xy(4,1));
+  specialTableColumnsBuilder.add(pdfColumn,cc.xy(4,2));
+  specialTableColumnsBuilder.add(urlColumn,cc.xy(4,3));
+  specialTableColumnsBuilder.add(arxivColumn,cc.xy(4,4));
+  builder.append(specialTableColumnsBuilder.getPanel());
   builder.nextLine();
   builder.appendSeparator(Globals.lang("Format of author and editor names"));
   DefaultFormBuilder nameBuilder=new DefaultFormBuilder(new FormLayout("left:pref, 8dlu, left:pref",""));

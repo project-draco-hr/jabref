@@ -23,4 +23,15 @@
     _prefs.put("numericFields",newVal);
     BibtexFields.setNumericFieldsFromPrefs();
   }
+  boolean newSpecialFieldsEnabled=specialFieldsEnabled.isSelected(), newRankingColumn=rankingColumn.isSelected(), newQualityColumn=qualityColumn.isSelected(), newPriorityColumn=priorityColumn.isSelected(), newRelevanceColumn=relevanceColumn.isSelected(), newSyncKeyWords=syncKeywords.isSelected(), newWriteSpecialFields=writeSpecialFields.isSelected();
+  if ((oldSpecialFieldsEnabled != newSpecialFieldsEnabled) || (oldRankingColumn != newRankingColumn) || (oldQualityColumn != newQualityColumn)|| (oldPriorityColumn != newPriorityColumn)|| (oldRelevanceColumn != newRelevanceColumn)|| (oldSyncKeyWords != newSyncKeyWords)|| (oldWriteSpecialFields != newWriteSpecialFields)) {
+    JOptionPane.showMessageDialog(null,Globals.lang("You have changed settings for special fields.").concat(" ").concat(Globals.lang("You must restart JabRef for this to come into effect.")),Globals.lang("Changed special field settings"),JOptionPane.WARNING_MESSAGE);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED,newSpecialFieldsEnabled);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING,newRankingColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY,newQualityColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY,newPriorityColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE,newRelevanceColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_AUTOSYNCSPECIALFIELDSTOKEYWORDS,newSyncKeyWords);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SERIALIZESPECIALFIELDS,newWriteSpecialFields);
+  }
 }

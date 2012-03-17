@@ -1,23 +1,2 @@
 {
-  final int col=table.columnAtPoint(e.getPoint()), row=table.rowAtPoint(e.getPoint());
-  final String[] iconType=table.getIconTypeForColumn(col);
-  if (e.isPopupTrigger()) {
-    if (iconType == null)     processPopupTrigger(e,row);
- else     showIconRightClickMenu(e,row,iconType);
-  }
- else   if (iconType != null) {
-    SpecialField field=SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(iconType[0]);
-    if (field != null) {
-      if (field.isSingleValueField()) {
-        field.getValues().get(0).getAction(panel.frame()).action();
-      }
- else {
-        JPopupMenu menu=new JPopupMenu();
-        for (        SpecialFieldValue val : field.getValues()) {
-          menu.add(val.getMenuAction(panel.frame()));
-        }
-        menu.show(table,e.getX(),e.getY());
-      }
-    }
-  }
 }
