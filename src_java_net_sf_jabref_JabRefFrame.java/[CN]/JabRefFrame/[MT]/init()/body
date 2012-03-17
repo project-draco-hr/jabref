@@ -24,7 +24,10 @@
     int posX=prefs.getInt("posX");
     int posY=prefs.getInt("posY");
     if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length == 1) {
+      Rectangle bounds=GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration().getBounds();
       Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
+      if (posX < bounds.x)       posX=bounds.x;
+      if (posY < bounds.y)       posY=bounds.y;
       int height=(int)dim.getHeight();
       int width=(int)dim.getWidth();
       if (posX + sizeX > width) {
