@@ -2,13 +2,20 @@
   stopFetching=false;
   try {
     List<String> citations=getCitations(query);
+    int entriesAdded=0;
     inspector.setProgress(2,citations.size() + 2);
     int i=0;
     for (    String citation : citations) {
       if (stopFetching)       break;
       BibtexEntry entry=BibsonomyScraper.getEntry(citation);
       inspector.setProgress((++i) + 2,citations.size() + 2);
-      if (entry != null)       inspector.addEntry(entry);
+      if (entry != null) {
+        inspector.addEntry(entry);
+        entriesAdded++;
+      }
+    }
+    if (entriesAdded < citations.size()) {
+      JOptionPane.showMessageDialog(null,Globals.lang("%0 entries were found, but only %1 of these could be resolved.",String.valueOf(citations.size()),String.valueOf(entriesAdded)),Globals.lang("Incomplete search results"),JOptionPane.WARNING_MESSAGE);
     }
     return true;
   }
