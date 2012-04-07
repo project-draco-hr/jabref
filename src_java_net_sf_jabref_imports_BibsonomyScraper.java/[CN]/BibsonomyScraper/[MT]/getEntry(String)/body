@@ -6,7 +6,6 @@
     ud.setEncoding("UTF8");
     ud.download();
     String bibtex=ud.getStringContent();
-    System.out.println(bibtex);
     BibtexParser bp=new BibtexParser(new StringReader(bibtex));
     ParserResult pr=bp.parse();
     if ((pr != null) && (pr.getDatabase().getEntryCount() > 0)) {
@@ -15,6 +14,10 @@
  else     return null;
   }
  catch (  IOException ex) {
+    ex.printStackTrace();
+    return null;
+  }
+catch (  RuntimeException ex) {
     ex.printStackTrace();
     return null;
   }

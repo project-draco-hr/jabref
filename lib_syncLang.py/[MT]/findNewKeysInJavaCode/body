@@ -7,10 +7,10 @@ def findNewKeysInJavaCode(mainFile, dir, update):
     keys = indexFile(lines)
     keyList = traverseFileTree(dir)
     for key in keys:
-        keystempo.append(key.replace('\\:', ':'))
+        keystempo.append(key.replace('\\:', ':').replace('\\=', '='))
     keys = keystempo
     for key in keyList:
-        keyListtempo.append(key.replace('\\:', ':'))
+        keyListtempo.append(key.replace('\\:', ':').replace('\\=', '='))
     keyList = keyListtempo
     if update:
         f1 = open(mainFile, 'a')
@@ -18,8 +18,10 @@ def findNewKeysInJavaCode(mainFile, dir, update):
     for key in keyList:
         if (key not in keys):
             print ('Missing key: ' + key)
+            value = key
+            key = key.replace(':', '\\:').replace('=', '\\=')
             if update:
-                f1.write((((key + '=') + key) + '\n'))
+                f1.write((((key + '=') + value) + '\n'))
     for key in keys:
         if (key not in keyList):
             print ('Possible redundant key: ' + key)
