@@ -3,12 +3,36 @@
   FileListTableModel model=new FileListTableModel();
   String fileField=anEntry.getField(KEY_FILE_FIELD);
   model.setContent(fileField);
+  File asFile=null;
   for (int i=0; i < model.getRowCount(); i++) {
     FileListEntry flEntry=model.getEntry(i);
     String link=flEntry.getLink();
-    if (link == null)     break;
-    if (new File(link).getAbsolutePath().equals(aFile.getAbsolutePath())) {
-      return true;
+    if (link == null) {
+      break;
+    }
+    String[] possibleFilePaths=JabRef.jrf.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+    try {
+      asFile=new File(link);
+      boolean exists=false;
+      if (asFile.exists()) {
+        exists=true;
+      }
+ else {
+        exists=false;
+        for (        String s : possibleFilePaths) {
+          asFile=new File(s + File.separatorChar + link);
+          if (asFile.exists()) {
+            exists=true;
+            break;
+          }
+        }
+      }
+      if (exists && FileUtils.contentEquals(aFile,asFile)) {
+        return true;
+      }
+    }
+ catch (    IOException e) {
+      logger.info("IOException");
     }
   }
   return false;

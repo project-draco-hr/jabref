@@ -3,10 +3,18 @@
     return null;
   }
   BibtexEntry entry=new BibtexEntry();
-  addEntryDataFromPDDocumentInformation(pdfFile,entry);
-  addEntyDataFromXMP(pdfFile,entry);
-  if (entry.getField("title") == null) {
-    entry.setField("title",pdfFile.getName());
+  PdfContentImporter pci=new PdfContentImporter();
+  try {
+    ArrayList<BibtexEntry> list=(ArrayList<BibtexEntry>)pci.importEntries(new FileInputStream(pdfFile),new OutputPrinterToNull());
+    if (list != null && !list.isEmpty()) {
+      return list.iterator().next();
+    }
   }
-  return entry;
+ catch (  FileNotFoundException e) {
+    logger.info("FileNotFound");
+  }
+catch (  IOException e) {
+    logger.info("IOException");
+  }
+  return null;
 }
