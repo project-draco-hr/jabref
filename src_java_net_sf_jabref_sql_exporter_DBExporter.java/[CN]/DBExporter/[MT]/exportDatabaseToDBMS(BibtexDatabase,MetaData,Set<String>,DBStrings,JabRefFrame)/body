@@ -1,0 +1,34 @@
+{
+  String dbName="";
+  Connection conn=null;
+  boolean redisplay=false;
+  try {
+    conn=this.connectToDB(dbStrings);
+    createTables(conn);
+    Vector<Vector<String>> matrix=createExistentDBNamesMatrix(dbStrings);
+    DBImportExportDialog dialogo=new DBImportExportDialog(frame,matrix,DBImportExportDialog.DialogType.EXPORTER);
+    if (dialogo.removeAction) {
+      dbName=getDBName(matrix,dbStrings,frame,dialogo);
+      removeDB(dialogo,dbName,conn,metaData);
+      redisplay=true;
+    }
+ else     if (dialogo.hasDBSelected) {
+      dbName=getDBName(matrix,dbStrings,frame,dialogo);
+      performExport(database,metaData,keySet,conn,dbName);
+    }
+    if (!conn.getAutoCommit()) {
+      conn.commit();
+      conn.setAutoCommit(true);
+    }
+    conn.close();
+    if (redisplay)     exportDatabaseToDBMS(database,metaData,keySet,dbStrings,frame);
+  }
+ catch (  SQLException ex) {
+    if (conn != null) {
+      if (!conn.getAutoCommit()) {
+        conn.rollback();
+      }
+    }
+    throw ex;
+  }
+}

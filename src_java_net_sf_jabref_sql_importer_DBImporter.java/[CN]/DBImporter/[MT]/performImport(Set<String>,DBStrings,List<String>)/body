@@ -1,7 +1,13 @@
 {
   ArrayList<Object[]> result=new ArrayList<Object[]>();
   Connection conn=this.connectToDB(dbs);
-  ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database");
+  Iterator<String> itLista=listOfDBs.iterator();
+  String jabrefDBs="(";
+  while (itLista.hasNext()) {
+    jabrefDBs+="'" + itLista.next() + "',";
+  }
+  jabrefDBs=jabrefDBs.substring(0,jabrefDBs.length() - 1) + ")";
+  ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs);
   while (rsDatabase.next()) {
     BibtexDatabase database=new BibtexDatabase();
     HashMap<String,BibtexEntryType> types=new HashMap<String,BibtexEntryType>();
