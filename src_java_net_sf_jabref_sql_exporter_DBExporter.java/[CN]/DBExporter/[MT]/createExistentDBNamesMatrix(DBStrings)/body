@@ -1,0 +1,16 @@
+{
+  ResultSet rs=SQLUtil.queryAllFromTable(this.connectToDB(dbStrings),"jabref_database");
+  Vector<String> v;
+  Vector<Vector<String>> matrix=new Vector<Vector<String>>();
+  dbNames.clear();
+  v=new Vector<String>();
+  v.add(Globals.lang("< CREATE NEW DATABASE >"));
+  matrix.add(v);
+  while (rs.next()) {
+    v=new Vector<String>();
+    v.add(rs.getString("database_name"));
+    matrix.add(v);
+    dbNames.add(rs.getString("database_name"));
+  }
+  return matrix;
+}

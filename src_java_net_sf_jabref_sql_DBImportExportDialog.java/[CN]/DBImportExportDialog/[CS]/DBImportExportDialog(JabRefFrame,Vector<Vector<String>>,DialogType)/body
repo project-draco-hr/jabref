@@ -1,0 +1,104 @@
+{
+  this.dialogType=dialogType;
+  Vector<String> columns=new Vector<String>();
+  columns.add("Databases");
+  table=new JTable();
+  DefaultTableModel model=new DefaultTableModel(rows,columns){
+    private static final long serialVersionUID=1L;
+    public boolean isCellEditable(    int row,    int column){
+      return false;
+    }
+  }
+;
+  table.setModel(model);
+  if (dialogType.equals(DialogType.EXPORTER)) {
+    dialogTitle=Globals.lang("SQL Database Exporter");
+    dialogTopMessage=Globals.lang("Select target SQL database:");
+    tableSelectionModel=ListSelectionModel.SINGLE_SELECTION;
+    table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put((KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0)),"exportAction");
+    table.getActionMap().put("exportAction",new AbstractAction(){
+      public void actionPerformed(      ActionEvent e){
+        exportAction();
+      }
+    }
+);
+  }
+ else {
+    this.dialogType=dialogType;
+    dialogTitle=Globals.lang("SQL Database Importer");
+    dialogTopMessage=Globals.lang("Please select which JabRef databases do you want to import:");
+    tableSelectionModel=ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+    table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put((KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0)),"importAction");
+    table.getActionMap().put("importAction",new AbstractAction(){
+      public void actionPerformed(      ActionEvent e){
+        importAction();
+      }
+    }
+);
+  }
+  diag=new JDialog(frame,dialogTitle,false);
+  JPanel pan=new JPanel();
+  pan.setLayout(new BorderLayout());
+  JLabel lab=new JLabel(dialogTopMessage);
+  lab.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  pan.add(lab,BorderLayout.NORTH);
+  table.setSelectionMode(tableSelectionModel);
+  table.setPreferredScrollableViewportSize(new Dimension(100,100));
+  table.setTableHeader(null);
+  table.setRowSelectionInterval(0,0);
+  pan.add(new JScrollPane(table),BorderLayout.CENTER);
+  diag.getContentPane().add(pan,BorderLayout.NORTH);
+  pan=new JPanel();
+  pan.setLayout(new BorderLayout());
+  diag.getContentPane().add(pan,BorderLayout.CENTER);
+  ButtonBarBuilder b=new ButtonBarBuilder();
+  b.addGlue();
+  if (dialogType.equals(DialogType.IMPORTER))   b.addGridded(importButton);
+ else   b.addGridded(exportButton);
+  b.addRelatedGap();
+  b.addGridded(cancelButton);
+  b.addRelatedGap();
+  b.addGridded(removeButton);
+  b.addGlue();
+  b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(b.getPanel(),BorderLayout.SOUTH);
+  diag.pack();
+  diag.setLocationRelativeTo(frame);
+  table.addMouseListener(this);
+  importButton.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent arg0){
+      importAction();
+    }
+  }
+);
+  exportButton.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent arg0){
+      exportAction();
+    }
+  }
+);
+  cancelButton.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent arg0){
+      moreThanOne=false;
+      hasDBSelected=false;
+      diag.dispose();
+    }
+  }
+);
+  removeButton.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent arg0){
+      moreThanOne=false;
+      hasDBSelected=true;
+      selectedInt=table.getSelectedRow();
+      selectedDB=(String)table.getValueAt(selectedInt,0);
+      int areYouSure=JOptionPane.showConfirmDialog(diag,"Are you sure you want to remove the already\nexistent SQL DBs?");
+      if (areYouSure == JOptionPane.YES_OPTION) {
+        removeAction=true;
+        diag.dispose();
+      }
+    }
+  }
+);
+  diag.setModal(true);
+  diag.setVisible(true);
+}

@@ -71,11 +71,18 @@
         entry.setField("year","to be published");
         entry.clearField("month");
         entry.clearField("pages");
+        entry.clearField("number");
       }
       String[] parts=fullName.split("[\\[\\]]");
       fullName=parts[0];
       if (parts.length == 3) {
         fullName+=parts[2];
+      }
+      if (entry.getField("note") == "Early Access") {
+        entry.setField("year","to be published");
+        entry.clearField("month");
+        entry.clearField("pages");
+        entry.clearField("number");
       }
     }
  else {
@@ -110,7 +117,7 @@
       }
     }
     if (type.getName() == "Article") {
-      fullName=fullName.replace("- ","-");
+      fullName=fullName.replace(" - ","-");
       fullName=fullName.trim();
       if (Globals.prefs.getBoolean("useIEEEAbrv")) {
         String id=Globals.journalAbbrev.getAbbreviatedName(fullName,false);
