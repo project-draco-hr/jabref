@@ -31,6 +31,12 @@
   }
   if (groupsTreePresent)   putGroups(treeGroupsData,db,groupsVersionOnDisk);
   if (!groupsTreePresent && flatGroupsData != null) {
-    groupsRoot=VersionHandling.importFlatGroups(flatGroupsData);
+    try {
+      groupsRoot=VersionHandling.importFlatGroups(flatGroupsData);
+      groupTreeValid=true;
+    }
+ catch (    IllegalArgumentException ex) {
+      groupTreeValid=true;
+    }
   }
 }
