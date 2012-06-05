@@ -23,10 +23,12 @@
   }
   btnConnect.setText(Globals.lang("Connect"));
   btnCancel.setText(Globals.lang("Cancel"));
+  String srvSel=dbStrings.getServerType();
   String[] srv=dbStrings.getServerTypes();
   for (int i=0; i < srv.length; i++) {
     cmbServerType.addItem(srv[i]);
   }
+  cmbServerType.setSelectedItem(srvSel);
   txtServerHostname.setText(dbStrings.getServerHostname());
   txtDatabase.setText(dbStrings.getDatabase());
   txtUsername.setText(dbStrings.getUsername());
@@ -75,12 +77,17 @@
   txtServerHostname.addActionListener(connectAction);
   txtUsername.addActionListener(connectAction);
   pwdPassword.addActionListener(connectAction);
-  btnCancel.addActionListener(new ActionListener(){
+  AbstractAction cancelAction=new AbstractAction(){
     public void actionPerformed(    ActionEvent e){
       setVisible(false);
       dispose();
       setConnectToDB(false);
     }
   }
-);
+;
+  btnCancel.addActionListener(cancelAction);
+  ActionMap am=builder.getPanel().getActionMap();
+  InputMap im=builder.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",cancelAction);
 }
