@@ -24,6 +24,15 @@
       System.err.println(Globals.lang("Unable to create graphical interface") + ".");
     }
   }
+  if (defPrefs.isInvoked()) {
+    try {
+      Globals.prefs.clear();
+    }
+ catch (    BackingStoreException e) {
+      System.err.println(Globals.lang("Unable to clear preferences."));
+      e.printStackTrace();
+    }
+  }
   if (importPrefs.isInvoked()) {
     try {
       Globals.prefs.importPreferences(importPrefs.getStringValue());
