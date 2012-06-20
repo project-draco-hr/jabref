@@ -1,0 +1,15 @@
+{
+  FreeCiteImporter fimp=new FreeCiteImporter();
+  String text=textPane.getText();
+  text=text.replace(Globals.NEWLINE.concat(Globals.NEWLINE),"##NEWLINE##");
+  text=text.replace("/".concat(Globals.NEWLINE),"/");
+  text=text.replace(Globals.NEWLINE," ");
+  text=text.replace("##NEWLINE##",Globals.NEWLINE);
+  List<BibtexEntry> importedEntries=fimp.importEntries(text,JabRef.jrf);
+  if (importedEntries != null) {
+    Util.setAutomaticFields(importedEntries,false,false,true);
+    for (    BibtexEntry e : importedEntries) {
+      JabRef.jrf.basePanel().insertEntry(e);
+    }
+  }
+}
