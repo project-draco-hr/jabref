@@ -1,9 +1,16 @@
 {
-  Collection<BibtexEntry> entries=database.getEntries();
-  for (  BibtexEntry entry : entries) {
-    if (lookupEntry(aFile,entry)) {
-      return true;
-    }
+  if (fileToFound.containsKey(aFile)) {
+    return fileToFound.get(aFile);
   }
-  return false;
+ else {
+    Boolean res=false;
+    for (    BibtexEntry entry : entries) {
+      if (lookupEntry(aFile,entry)) {
+        res=true;
+        break;
+      }
+    }
+    fileToFound.put(aFile,res);
+    return res;
+  }
 }

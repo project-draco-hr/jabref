@@ -1,14 +1,30 @@
 {
   List<File> filesList=new ArrayList<File>();
   Enumeration<CheckableTreeNode> childs=node.depthFirstEnumeration();
+  ArrayList<CheckableTreeNode> nodesToRemove=new ArrayList<FindUnlinkedFilesDialog.CheckableTreeNode>();
   while (childs.hasMoreElements()) {
     CheckableTreeNode child=childs.nextElement();
     if (child.isLeaf() && child.getSelected()) {
       File nodeFile=((FileNodeWrapper)child.getUserObject()).file;
       if (nodeFile != null && nodeFile.isFile()) {
         filesList.add(nodeFile);
+        nodesToRemove.add(child);
       }
     }
   }
+  DefaultTreeModel model=(DefaultTreeModel)tree.getModel();
+  for (  CheckableTreeNode nodeToRemove : nodesToRemove) {
+    DefaultMutableTreeNode parent=(DefaultMutableTreeNode)nodeToRemove.getParent();
+    model.removeNodeFromParent(nodeToRemove);
+    while (parent != null && parent.isLeaf()) {
+      DefaultMutableTreeNode pp=(DefaultMutableTreeNode)parent.getParent();
+      if (pp != null) {
+        model.removeNodeFromParent(parent);
+      }
+      parent=pp;
+    }
+  }
+  tree.invalidate();
+  tree.repaint();
   return filesList;
 }

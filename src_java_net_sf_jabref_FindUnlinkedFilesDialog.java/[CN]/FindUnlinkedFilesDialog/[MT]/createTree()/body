@@ -7,9 +7,23 @@
       TreePath path=tree.getPathForRow(row);
       if (path != null) {
         CheckableTreeNode node=(CheckableTreeNode)path.getLastPathComponent();
-        node.check();
-        tree.invalidate();
-        tree.repaint();
+        if (e.getClickCount() == 2) {
+          Object userObject=node.getUserObject();
+          if (userObject instanceof FileNodeWrapper && node.isLeaf()) {
+            FileNodeWrapper fnw=(FileNodeWrapper)userObject;
+            try {
+              Util.openExternalViewer(JabRef.jrf.basePanel().metaData(),fnw.file.getAbsolutePath(),"pdf");
+            }
+ catch (            IOException e1) {
+              logger.log(Level.SEVERE,"Error opening file",e1);
+            }
+          }
+        }
+ else {
+          node.check();
+          tree.invalidate();
+          tree.repaint();
+        }
       }
     }
   }

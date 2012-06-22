@@ -16,18 +16,14 @@
   threadState=new int[]{1};
   new Thread(new Runnable(){
     public void run(){
-      CheckableTreeNode rootNode=crawler.searchDirectory(directory,selectedFileFilter,threadState,new ChangeListener(){
+      UnlinkedPDFFileFilter ff=new UnlinkedPDFFileFilter(selectedFileFilter,database);
+      CheckableTreeNode rootNode=crawler.searchDirectory(directory,ff,threadState,new ChangeListener(){
         int counter=0;
         public void stateChanged(        ChangeEvent e){
           progressBarSearching.setString(++counter + " files found");
         }
       }
 );
-      try {
-        Thread.sleep(500l);
-      }
- catch (      InterruptedException e1) {
-      }
       searchFinishedHandler(rootNode);
     }
   }

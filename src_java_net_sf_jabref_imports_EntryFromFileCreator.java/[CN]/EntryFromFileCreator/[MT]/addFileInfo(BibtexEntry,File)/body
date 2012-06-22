@@ -1,7 +1,9 @@
 {
   JabRefPreferences jabRefPreferences=JabRefPreferences.getInstance();
   ExternalFileType fileType=jabRefPreferences.getExternalFileTypeByExt(externalFileType.getFieldName());
-  FileListEntry fileListEntry=new FileListEntry("",file.getAbsolutePath(),fileType);
+  String[] possibleFilePaths=JabRef.jrf.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  File shortenedFileName=Util.shortenFileName(file,possibleFilePaths);
+  FileListEntry fileListEntry=new FileListEntry("",shortenedFileName.getPath(),fileType);
   FileListTableModel model=new FileListTableModel();
   model.addEntry(0,fileListEntry);
   entry.setField("file",model.getStringRepresentation());
