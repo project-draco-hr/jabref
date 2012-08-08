@@ -4,6 +4,11 @@
   boolean doNotShowAgain=false;
   boolean neverShow=Globals.prefs.getBoolean(ImportSettingsTab.PREF_IMPORT_ALWAYSUSE);
   int globalChoice=Globals.prefs.getInt(ImportSettingsTab.PREF_IMPORT_DEFAULT_PDF_IMPORT_STYLE);
+  ArrayList<File> dirs=new ArrayList<File>();
+  String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  for (int i=0; i < dirsS.length; i++) {
+    dirs.add(new File(dirsS[i]));
+  }
   for (  String fileName : fileNames) {
     List<BibtexEntry> xmpEntriesInFile=readXmpEntries(fileName);
     if (!neverShow && !doNotShowAgain) {
@@ -20,17 +25,41 @@
       DroppedFileHandler dfh;
       BibtexEntry entry;
       BibtexEntryType type;
+      InputStream in=null;
+      List<BibtexEntry> res=null;
       MetaDataListDialog metaDataListDialog;
 switch (choice) {
 case ImportDialog.XMP:
-        ImportMenuItem importer=new ImportMenuItem(frame,(entryTable == null));
-      importer.automatedImport(new String[]{fileName});
-    break;
+        PdfXmpImporter importer=new PdfXmpImporter();
+      try {
+        in=new FileInputStream(fileName);
+        res=importer.importEntries(in,frame);
+      }
+ catch (      IOException ex) {
+        ex.printStackTrace();
+      }
+ finally {
+        try {
+          in.close();
+        }
+ catch (        Exception f) {
+        }
+      }
+    if ((res == null) || (res.size() == 0)) {
+      createNewBlankEntry(fileName);
+      return true;
+    }
+  entry=res.get(0);
+panel.database().insertEntry(entry);
+panel.markBaseChanged();
+FileListTableModel tm=new FileListTableModel();
+File toLink=new File(fileName);
+tm.addEntry(0,new FileListEntry(toLink.getName(),FileListEditor.relativizePath(toLink,dirs).getPath(),Globals.prefs.getExternalFileTypeByName("pdf")));
+entry.setField(GUIGlobals.FILE_FIELD,tm.getStringRepresentation());
+break;
 case ImportDialog.CONTENT:
-  PdfContentImporter contentImporter=new PdfContentImporter();
+PdfContentImporter contentImporter=new PdfContentImporter();
 File file=new File(fileName);
-InputStream in=null;
-List<BibtexEntry> res=null;
 try {
 in=new FileInputStream(file);
 }
