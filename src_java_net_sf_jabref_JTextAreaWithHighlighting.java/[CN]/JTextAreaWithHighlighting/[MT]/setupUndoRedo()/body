@@ -1,0 +1,36 @@
+{
+  undo=new UndoManager();
+  Document doc=getDocument();
+  doc.addUndoableEditListener(new UndoableEditListener(){
+    public void undoableEditHappened(    UndoableEditEvent evt){
+      undo.addEdit(evt.getEdit());
+    }
+  }
+);
+  getActionMap().put("Undo",new AbstractAction("Undo"){
+    public void actionPerformed(    ActionEvent evt){
+      try {
+        if (undo.canUndo()) {
+          undo.undo();
+        }
+      }
+ catch (      CannotUndoException e) {
+      }
+    }
+  }
+);
+  getInputMap().put(Globals.prefs.getKey("Undo"),"Undo");
+  getActionMap().put("Redo",new AbstractAction("Redo"){
+    public void actionPerformed(    ActionEvent evt){
+      try {
+        if (undo.canRedo()) {
+          undo.redo();
+        }
+      }
+ catch (      CannotRedoException e) {
+      }
+    }
+  }
+);
+  getInputMap().put(Globals.prefs.getKey("Redo"),"Redo");
+}
