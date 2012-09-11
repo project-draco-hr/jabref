@@ -1,0 +1,43 @@
+{
+  InputStream input;
+  try {
+    input=new FileInputStream(file);
+  }
+ catch (  FileNotFoundException e) {
+    e.printStackTrace();
+    return;
+  }
+  try {
+    document=PDDocument.load(input);
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    return;
+  }
+  @SuppressWarnings("unchecked") List<PDPage> pages=document.getDocumentCatalog().getAllPages();
+  PDPage page=pages.get(0);
+  BufferedImage image=null;
+  try {
+    image=page.convertToImage();
+  }
+ catch (  Exception e1) {
+    image=null;
+  }
+  if (image != null) {
+    int width=this.getParent().getWidth();
+    int height=this.getParent().getHeight();
+    BufferedImage resImage=resizeImage(image,width,height,BufferedImage.TYPE_INT_RGB);
+    ImageIcon icon=new ImageIcon(resImage);
+    picLabel.setText(null);
+    picLabel.setIcon(icon);
+  }
+ else {
+    clearPreview();
+  }
+  try {
+    document.close();
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+  }
+}
