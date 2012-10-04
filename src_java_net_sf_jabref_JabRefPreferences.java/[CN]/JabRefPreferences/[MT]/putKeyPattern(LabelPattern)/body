@@ -1,7 +1,6 @@
 {
   keyPattern=pattern;
   LabelPattern parent=pattern.getParent();
-  if (parent == null)   return;
   Preferences pre=Preferences.userNodeForPackage(net.sf.jabref.labelPattern.LabelPattern.class);
   try {
     pre.clear();
@@ -10,6 +9,9 @@
     Globals.logger("BackingStoreException in JabRefPreferences.putKeyPattern");
   }
   for (  String s : pattern.keySet()) {
-    if (!(pattern.get(s)).equals(parent.get(s)))     pre.put(s,pattern.getValue(s).get(0).toString());
+    ArrayList<String> value=pattern.get(s);
+    if (value != null) {
+      pre.put(s,value.get(0));
+    }
   }
 }

@@ -2,9 +2,16 @@
   if (selectionModel.getSelected().size() != 1)   return;
   BibtexEntry entry=selectionModel.getSelected().get(0);
   entries.getReadWriteLock().writeLock().lock();
-  BibtexDatabase database=null;
-  if (panel != null)   database=panel.database();
- else   database=new BibtexDatabase();
+  BibtexDatabase database;
+  MetaData metaData;
+  if (panel != null) {
+    database=panel.database();
+    metaData=panel.metaData();
+  }
+ else {
+    database=new BibtexDatabase();
+    metaData=new MetaData();
+  }
   try {
     entry.setId(Util.createNeutralId());
     database.insertEntry(entry);
@@ -12,7 +19,7 @@
  catch (  KeyCollisionException ex) {
     ex.printStackTrace();
   }
-  LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,entry);
+  LabelPatternUtil.makeLabel(metaData,database,entry);
   database.removeEntry(entry.getId());
   entries.getReadWriteLock().writeLock().lock();
   glTable.repaint();

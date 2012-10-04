@@ -1,0 +1,39 @@
+{
+  getContentPane().setLayout(new BorderLayout());
+  getContentPane().add(labelPatternPanel,BorderLayout.CENTER);
+  JButton ok=new JButton(Globals.lang("Ok"));
+  JButton cancel=new JButton();
+  JPanel lower=new JPanel();
+  lower.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+  ButtonBarBuilder2 bb=new ButtonBarBuilder2(lower);
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  getContentPane().add(lower,BorderLayout.SOUTH);
+  this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+  getContentPane().setPreferredSize(new Dimension(500,600));
+  pack();
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      metaData.setLabelPattern(labelPatternPanel.getLabelPattern());
+      panel.markBaseChanged();
+      dispose();
+    }
+  }
+);
+  final JDialog dialog=this;
+  Action cancelAction=new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      dialog.dispatchEvent(new WindowEvent(dialog,WindowEvent.WINDOW_CLOSING));
+    }
+  }
+;
+  cancel.setAction(cancelAction);
+  cancel.setText(Globals.lang("Cancel"));
+  JRootPane root=this.getRootPane();
+  InputMap im=root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  ActionMap am=root.getActionMap();
+  im.put(this.panel.prefs().getKey("Close dialog"),"close");
+  am.put("close",cancelAction);
+}

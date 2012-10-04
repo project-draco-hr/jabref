@@ -1,0 +1,21 @@
+{
+  if (labelPattern != null) {
+    return labelPattern;
+  }
+  labelPattern=new LabelPattern();
+  labelPattern.setParent(Globals.prefs.getKeyPattern());
+  Iterator<String> iterator=iterator();
+  while (iterator.hasNext()) {
+    String key=iterator.next();
+    if (key.startsWith(PREFIX_KEYPATTERN)) {
+      Vector<String> value=getData(key);
+      String type=key.substring(PREFIX_KEYPATTERN.length());
+      labelPattern.addLabelPattern(type,value.get(0));
+    }
+  }
+  Vector<String> defaultPattern=getData(KEYPATTERNDEFAULT);
+  if (defaultPattern != null) {
+    labelPattern.setDefaultValue(defaultPattern.get(0));
+  }
+  return labelPattern;
+}
