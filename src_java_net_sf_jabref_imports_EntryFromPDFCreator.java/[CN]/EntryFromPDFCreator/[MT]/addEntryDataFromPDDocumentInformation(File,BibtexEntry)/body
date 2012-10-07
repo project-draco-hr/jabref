@@ -1,0 +1,32 @@
+{
+  PDDocument document=null;
+  try {
+    document=PDDocument.load(pdfFile.getAbsoluteFile());
+    PDDocumentInformation pdfDocInfo=document.getDocumentInformation();
+    if (pdfDocInfo != null) {
+      BibtexEntry entryDI=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
+      if (entryDI != null) {
+        addEntryDataToEntry(entry,entryDI);
+        Calendar creationDate=pdfDocInfo.getCreationDate();
+        if (creationDate != null) {
+          String date=new SimpleDateFormat("yyyy.MM.dd").format(creationDate.getTime());
+          appendToField(entry,"timestamp",date.toString());
+        }
+        if (pdfDocInfo.getCustomMetadataValue("bibtex/bibtexkey") != null) {
+          entry.setId(pdfDocInfo.getCustomMetadataValue("bibtex/bibtexkey"));
+        }
+      }
+    }
+  }
+ catch (  IOException e) {
+  }
+ finally {
+    if (document != null) {
+      try {
+        document.close();
+      }
+ catch (      IOException e) {
+      }
+    }
+  }
+}

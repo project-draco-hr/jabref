@@ -24,6 +24,37 @@
       System.err.println(Globals.lang("Unable to create graphical interface") + ".");
     }
   }
+  if (defPrefs.isInvoked()) {
+    String value=defPrefs.getStringValue();
+    if (value.trim().equals("all")) {
+      try {
+        System.out.println(Globals.lang("Setting all preferences to default values."));
+        Globals.prefs.clear();
+      }
+ catch (      BackingStoreException e) {
+        System.err.println(Globals.lang("Unable to clear preferences."));
+        e.printStackTrace();
+      }
+    }
+ else {
+      String[] keys=value.split(",");
+      for (int i=0; i < keys.length; i++) {
+        try {
+          if (Globals.prefs.hasKey(keys[i].trim())) {
+            System.out.println(Globals.lang("Resetting preference key '%0'",keys[i].trim()));
+            Globals.prefs.clear(keys[i].trim());
+          }
+ else {
+            System.out.println(Globals.lang("Unknown preference key '%0'",keys[i].trim()));
+          }
+        }
+ catch (        BackingStoreException e) {
+          System.err.println(Globals.lang("Unable to clear preferences."));
+          e.printStackTrace();
+        }
+      }
+    }
+  }
   if (importPrefs.isInvoked()) {
     try {
       Globals.prefs.importPreferences(importPrefs.getStringValue());
@@ -101,7 +132,7 @@ default :
   if (format != null) {
     try {
       System.out.println(Globals.lang("Exporting") + ": " + data[1]);
-      format.performExport(newBase,new MetaData(pr.getMetaData(),pr.getDatabase()),data[1],pr.getEncoding(),null);
+      format.performExport(newBase,pr.getMetaData(),data[1],pr.getEncoding(),null);
     }
  catch (    Exception ex) {
       System.err.println(Globals.lang("Could not export file") + " '" + data[1]+ "': "+ ex.getMessage());
@@ -126,7 +157,7 @@ if (data.length == 1) {
     if (!pr.isInvalid()) {
       try {
         System.out.println(Globals.lang("Saving") + ": " + data[0]);
-        SaveSession session=FileActions.saveDatabase(pr.getDatabase(),new MetaData(pr.getMetaData(),pr.getDatabase()),new File(data[0]),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"),false);
+        SaveSession session=FileActions.saveDatabase(pr.getDatabase(),pr.getMetaData(),new File(data[0]),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"),false);
         if (!session.getWriter().couldEncodeAll())         System.err.println(Globals.lang("Warning") + ": " + Globals.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding())+ session.getWriter().getProblemCharacters());
         session.commit();
       }
@@ -141,7 +172,7 @@ if (data.length == 1) {
   ParserResult pr=loaded.elementAt(loaded.size() - 1);
   File theFile=pr.getFile();
   if (!theFile.isAbsolute())   theFile=theFile.getAbsoluteFile();
-  MetaData metaData=new MetaData(pr.getMetaData(),pr.getDatabase());
+  MetaData metaData=pr.getMetaData();
   metaData.setFile(theFile);
   Globals.prefs.fileDirForDatabase=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
   Globals.prefs.databaseFile=metaData.getFile();
@@ -149,7 +180,7 @@ if (data.length == 1) {
   IExportFormat format=ExportFormats.getExportFormat(data[1]);
   if (format != null) {
     try {
-      format.performExport(pr.getDatabase(),new MetaData(pr.getMetaData(),pr.getDatabase()),data[0],pr.getEncoding(),null);
+      format.performExport(pr.getDatabase(),pr.getMetaData(),data[0],pr.getEncoding(),null);
     }
  catch (    Exception ex) {
       System.err.println(Globals.lang("Could not export file") + " '" + data[0]+ "': "+ ex.getMessage());

@@ -1,0 +1,22 @@
+{
+  int h=originalImage.getHeight();
+  int w=originalImage.getWidth();
+  if ((height == 0) || (width == 0)) {
+    height=h;
+    width=w;
+  }
+ else {
+    float factorH=(float)height / (float)h;
+    float factorW=(float)width / (float)w;
+    if (factorH < factorW) {
+      width=Math.round(w * factorH);
+    }
+ else {
+      width=Math.round(h * factorW);
+    }
+  }
+  BufferedImage resizedImage=new BufferedImage(width,height,type);
+  Graphics2D g=resizedImage.createGraphics();
+  g.drawImage(originalImage,0,0,width,height,null);
+  return resizedImage;
+}

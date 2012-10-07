@@ -25,7 +25,8 @@
     if (braces_level > 0)     if (c == '}')     braces_level--;
     if (first_letter_is_found && token_abbr < 0 && braces_level == 0)     token_abbr=token_end;
     if (!first_letter_is_found && current_backslash < 0 && Character.isLetter(c)) {
-      token_case=Character.isUpperCase(c);
+      if (braces_level == 0)       token_case=Character.isUpperCase(c);
+ else       token_case=true;
       first_letter_is_found=true;
     }
     if (current_backslash >= 0 && !Character.isLetter(c)) {

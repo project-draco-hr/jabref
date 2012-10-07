@@ -1,0 +1,11 @@
+{
+  int pos=name.lastIndexOf('.');
+  String extension=((pos >= 0) && (pos < name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
+  String[] dir=metaData.getFileDirectory(extension);
+  String[] fileDir=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
+  ArrayList<String> al=new ArrayList<String>();
+  for (int i=0; i < dir.length; i++)   if (!al.contains(dir[i]))   al.add(dir[i]);
+  for (int i=0; i < fileDir.length; i++)   if (!al.contains(fileDir[i]))   al.add(fileDir[i]);
+  String[] dirs=al.toArray(new String[al.size()]);
+  return expandFilename(name,dirs);
+}

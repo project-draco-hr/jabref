@@ -1,0 +1,20 @@
+{
+  final List<BibtexEntry> bibtexList=new ArrayList<BibtexEntry>();
+  final String startPattern="<pre>";
+  final String endPattern="</pre>";
+  String tmpStr=page;
+  int startIdx=tmpStr.indexOf(startPattern);
+  int endIdx=tmpStr.indexOf(endPattern);
+  String entry1=tmpStr.substring(startIdx + startPattern.length(),endIdx);
+  entry1=cleanEntry(entry1);
+  bibtexList.add(BibtexParser.singleFromString(entry1));
+  tmpStr=tmpStr.substring(endIdx + endPattern.length(),tmpStr.length());
+  startIdx=tmpStr.indexOf(startPattern);
+  if (startIdx != -1) {
+    endIdx=tmpStr.indexOf(endPattern);
+    String entry2=tmpStr.substring(startIdx + startPattern.length(),endIdx);
+    entry2=cleanEntry(entry2);
+    bibtexList.add(BibtexParser.singleFromString(entry2));
+  }
+  return bibtexList;
+}

@@ -1,0 +1,27 @@
+{
+  List<String> importGUIMessages=new LinkedList<String>();
+  for (  File f : files) {
+    EntryFromFileCreator creator=getEntryCreator(f);
+    if (creator != null) {
+      BibtexEntry entry=creator.createEntry(f,generateKeywordsFromPathToFile);
+      if (entry == null) {
+        importGUIMessages.add("Problem importing " + f.getPath() + ": Entry could not be created.");
+        continue;
+      }
+      if (entryType != null) {
+        entry.setType(entryType);
+      }
+      if (entry.getId() == null) {
+        entry.setId(Util.createNeutralId());
+      }
+      if (database.insertEntry(entry)) {
+        importGUIMessages.add("Problem importing " + f.getPath() + ": Insert into BibtexDatabase failed.");
+      }
+    }
+ else {
+      importGUIMessages.add("Problem importing " + f.getPath() + ": Unknown filetype.");
+    }
+    if (changeListener != null)     changeListener.stateChanged(new ChangeEvent(this));
+  }
+  return importGUIMessages;
+}

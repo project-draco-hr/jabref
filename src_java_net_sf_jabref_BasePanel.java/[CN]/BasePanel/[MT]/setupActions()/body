@@ -233,28 +233,11 @@ catch (          Throwable ex) {
       if (connectToDB) {
         DBStrings dbs=metaData.getDBStrings();
         try {
-          boolean okToExport=null != metaData.getFile();
-          if (!okToExport) {
-            okToExport=false;
-            int response=JOptionPane.showConfirmDialog(null,"You need to save your database in the disk \n" + "before saving. Save it now?","Database is not saved",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
-            if (response == JOptionPane.YES_OPTION) {
-              try {
-                saveAction.saveAs();
-                okToExport=(null != metaData.getFile());
-              }
- catch (              Throwable e) {
-                e.printStackTrace();
-              }
-            }
-          }
-          if (okToExport) {
-            frame.output(Globals.lang("Attempting SQL export..."));
-            DBExporterAndImporterFactory factory=new DBExporterAndImporterFactory();
-            DBExporter exporter=factory.getExporter(dbs.getServerType());
-            exporter.exportDatabaseToDBMS(database,metaData,null,dbs);
-            dbs.isConfigValid(true);
-          }
- else           errorMessage="Database was not exported. Your database must be saved \nbefore exporting to a SQL database";
+          frame.output(Globals.lang("Attempting SQL export..."));
+          DBExporterAndImporterFactory factory=new DBExporterAndImporterFactory();
+          DBExporter exporter=factory.getExporter(dbs.getServerType());
+          exporter.exportDatabaseToDBMS(database,metaData,null,dbs,frame);
+          dbs.isConfigValid(true);
         }
  catch (        Exception ex) {
           String preamble="Could not export to SQL database for the following reason:";
@@ -278,6 +261,14 @@ catch (          Throwable ex) {
         JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         errorMessage=null;
       }
+    }
+  }
+);
+  actions.put(FindUnlinkedFilesDialog.ACTION_COMMAND,new BaseAction(){
+    @Override public void action() throws Throwable {
+      FindUnlinkedFilesDialog dialog=new FindUnlinkedFilesDialog(frame,frame,BasePanel.this);
+      Util.placeDialog(dialog,frame);
+      dialog.setVisible(true);
     }
   }
 );
@@ -322,7 +313,7 @@ catch (          Throwable ex) {
       }
       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
         bes=i.next();
-        bes=LabelPatternUtil.makeLabel(Globals.prefs.getKeyPattern(),database,bes);
+        bes=LabelPatternUtil.makeLabel(metaData,database,bes);
         ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),bes.getField(BibtexFields.KEY_FIELD)));
       }
       ce.end();
@@ -559,6 +550,7 @@ catch (          Throwable ex) {
     }
   }
 );
+  actions.put("addFileLink",new AttachFileAction(this));
   actions.put("openExternalFile",new BaseAction(){
     public void action(){
       (new Thread(){

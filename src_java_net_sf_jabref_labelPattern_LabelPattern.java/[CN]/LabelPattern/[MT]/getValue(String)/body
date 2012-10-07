@@ -1,11 +1,14 @@
 {
   ArrayList<String> result=get(key);
   if (result == null) {
-    if (parent != null) {
-      result=parent.getValue(key);
-    }
+    result=getDefaultValue();
     if (result == null) {
-      return LabelPatternUtil.DEFAULT_LABELPATTERN;
+      if (parent != null) {
+        result=parent.getValue(key);
+      }
+ else {
+        return LabelPatternUtil.DEFAULT_LABELPATTERN;
+      }
     }
   }
   return result;

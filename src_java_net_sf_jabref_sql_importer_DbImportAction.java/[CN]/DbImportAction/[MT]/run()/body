@@ -1,24 +1,3 @@
 {
-  if (connectToDB) {
-    try {
-      frame.output(Globals.lang("Attempting SQL import..."));
-      DBExporterAndImporterFactory factory=new DBExporterAndImporterFactory();
-      DBImporter importer=factory.getImporter(dbs.getServerType());
-      databases=importer.performImport(null,dbs);
-      for (      Object[] res : databases) {
-        database=(BibtexDatabase)res[0];
-        metaData=(MetaData)res[1];
-        dbs.isConfigValid(true);
-      }
-      frame.output(Globals.lang("%0 databases will be imported",Integer.toString(databases.size())));
-    }
- catch (    Exception ex) {
-      String preamble="Could not import from SQL database for the following reason:";
-      errorMessage=SQLUtil.getExceptionMessage(ex);
-      dbs.isConfigValid(false);
-      JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
-      frame.output(Globals.lang("Error importing from database"));
-      ex.printStackTrace();
-    }
-  }
+  performImport();
 }

@@ -1,0 +1,10 @@
+{
+  entryCreators=new ArrayList<EntryFromFileCreator>(10);
+  entryCreators.add(new EntryFromPDFCreator());
+  ExternalFileType[] fileTypes=JabRefPreferences.getInstance().getExternalFileTypeSelection();
+  for (  ExternalFileType exFileType : fileTypes) {
+    if (!hasSpecialisedCreatorForExternalFileType(exFileType)) {
+      entryCreators.add(new EntryFromExternalFileCreator(exFileType));
+    }
+  }
+}

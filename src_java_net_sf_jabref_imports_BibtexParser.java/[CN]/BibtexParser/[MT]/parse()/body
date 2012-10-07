@@ -3,7 +3,7 @@
   _db=new BibtexDatabase();
   _meta=new HashMap<String,String>();
   entryTypes=new HashMap<String,BibtexEntryType>();
-  _pr=new ParserResult(_db,_meta,entryTypes);
+  _pr=new ParserResult(_db,null,entryTypes);
   String versionNum=readJabRefVersionNumber();
   if (versionNum != null) {
     _pr.setJabrefVersion(versionNum);
@@ -70,6 +70,7 @@
       skipWhitespace();
     }
     checkEntryTypes(_pr);
+    _pr.setMetaData(new MetaData(_meta,_db));
     return _pr;
   }
  catch (  KeyCollisionException kce) {
