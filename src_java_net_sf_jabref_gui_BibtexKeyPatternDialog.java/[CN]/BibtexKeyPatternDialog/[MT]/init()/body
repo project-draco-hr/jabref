@@ -17,7 +17,7 @@
   ok.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       metaData.setLabelPattern(labelPatternPanel.getLabelPattern());
-      panel.markBaseChanged();
+      panel.markNonUndoableBaseChanged();
       dispose();
     }
   }
@@ -31,9 +31,5 @@
 ;
   cancel.setAction(cancelAction);
   cancel.setText(Globals.lang("Cancel"));
-  JRootPane root=this.getRootPane();
-  InputMap im=root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  ActionMap am=root.getActionMap();
-  im.put(this.panel.prefs().getKey("Close dialog"),"close");
-  am.put("close",cancelAction);
+  Util.bindCloseDialogKeyToCancelAction(this.getRootPane(),cancelAction);
 }
