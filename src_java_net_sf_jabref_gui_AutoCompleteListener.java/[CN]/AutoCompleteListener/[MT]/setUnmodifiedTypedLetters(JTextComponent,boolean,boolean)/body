@@ -1,9 +1,21 @@
 {
-  if (comp.getSelectedText() == null || lastBeginning == null) {
+  if (lastBeginning == null) {
+    logger.finest("no last beginning");
     return;
   }
-  logger.finest("selected: " + comp.getSelectedText());
-  comp.replaceSelection("");
+  logger.finest("lastBeginning: >" + lastBeginning + "<");
+  if (comp.getSelectedText() == null) {
+    if (wordSeperatorTyped) {
+      logger.finest("replacing complete word");
+    }
+ else {
+      return;
+    }
+  }
+ else {
+    logger.finest("selected text " + comp.getSelectedText() + " will be removed");
+    comp.replaceSelection("");
+  }
   lastCaretPosition=comp.getCaretPosition();
   int endIndex=lastCaretPosition - lastBeginning.length();
   if (lastBeginningContainsTypedCharacter) {

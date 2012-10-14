@@ -6,11 +6,11 @@
     searchPattern=searchPattern.concat("|(").concat(regExSearch ? words.get(i) : Pattern.quote(words.get(i))).concat(")");
   }
   Pattern pattern;
-  if (!Globals.prefs.getBoolean("caseSensitiveSearch")) {
-    pattern=Pattern.compile(searchPattern,Pattern.CASE_INSENSITIVE);
+  if (Globals.prefs.getBoolean("caseSensitiveSearch")) {
+    pattern=Pattern.compile(searchPattern);
   }
  else {
-    pattern=Pattern.compile(searchPattern);
+    pattern=Pattern.compile(searchPattern,Pattern.CASE_INSENSITIVE);
   }
   return pattern;
 }
