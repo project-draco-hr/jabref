@@ -751,6 +751,14 @@ catch (          Throwable ex) {
     }
   }
 );
+  actions.put(Relevance.getInstance().getValues().get(0).getActionName(),new SpecialFieldAction(frame,Relevance.getInstance(),Relevance.getInstance().getValues().get(0).getFieldValue(),true,Globals.lang("Marked entries as relevant"),"Marked %0 entries as relevant"));
+  actions.put(Quality.getInstance().getValues().get(0).getActionName(),new SpecialFieldAction(frame,Quality.getInstance(),Quality.getInstance().getValues().get(0).getFieldValue(),true,Globals.lang("Marked entries' quality as good"),"Set quality of %0 entries to good"));
+  for (  SpecialFieldValue prio : Priority.getInstance().getValues()) {
+    actions.put(prio.getActionName(),prio.getAction(this.frame));
+  }
+  for (  SpecialFieldValue prio : Rank.getInstance().getValues()) {
+    actions.put(prio.getActionName(),prio.getAction(this.frame));
+  }
   actions.put("togglePreview",new BaseAction(){
     public void action(){
       boolean enabled=!Globals.prefs.getBoolean("previewEnabled");

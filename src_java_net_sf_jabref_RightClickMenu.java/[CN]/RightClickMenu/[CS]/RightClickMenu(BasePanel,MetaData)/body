@@ -123,6 +123,23 @@
     }
     addSeparator();
   }
+  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+      populateSpecialFieldMenu(this.rankingMenu,Rank.getInstance(),panel.frame);
+      add(this.rankingMenu);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+      add(Relevance.getInstance().getValues().get(0).getMenuAction(panel.frame));
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+      add(Quality.getInstance().getValues().get(0).getMenuAction(panel.frame));
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+      populateSpecialFieldMenu(this.priorityMenu,Priority.getInstance(),panel.frame);
+      add(this.priorityMenu);
+    }
+    addSeparator();
+  }
   add(new AbstractAction(Globals.lang("Open file"),GUIGlobals.getImage("openExternalFile")){
     public void actionPerformed(    ActionEvent e){
       try {

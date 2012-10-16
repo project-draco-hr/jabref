@@ -49,6 +49,26 @@
   edit.add(unmark);
   edit.add(unmarkAll);
   edit.addSeparator();
+  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
+    JMenu m;
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+      m=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(m,Rank.getInstance(),this);
+      edit.add(m);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+      edit.add(toggleRelevance);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+      edit.add(toggleQualityAssured);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+      m=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(m,Priority.getInstance(),this);
+      edit.add(m);
+    }
+  }
+  edit.addSeparator();
   edit.add(selectAll);
   mb.add(edit);
   search.add(normalSearch);

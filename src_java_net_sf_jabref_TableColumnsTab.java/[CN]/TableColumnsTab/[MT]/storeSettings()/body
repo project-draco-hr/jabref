@@ -1,4 +1,25 @@
 {
+  _prefs.putBoolean("fileColumn",fileColumn.isSelected());
+  _prefs.putBoolean("pdfColumn",pdfColumn.isSelected());
+  _prefs.putBoolean("urlColumn",urlColumn.isSelected());
+  _prefs.putBoolean("arxivColumn",arxivColumn.isSelected());
+  _prefs.putBoolean(JabRefPreferences.SHOWONELETTERHEADINGFORICONCOLUMNS,showOneLetterHeadingForIconColumns.isSelected());
+  boolean newSpecialFieldsEnabled=specialFieldsEnabled.isSelected(), newRankingColumn=rankingColumn.isSelected(), newCompactRankingColumn=compactRankingColumn.isSelected(), newQualityColumn=qualityColumn.isSelected(), newPriorityColumn=priorityColumn.isSelected(), newRelevanceColumn=relevanceColumn.isSelected(), newSyncKeyWords=syncKeywords.isSelected(), newWriteSpecialFields=writeSpecialFields.isSelected();
+  boolean restartRequired=false;
+  restartRequired=(oldSpecialFieldsEnabled != newSpecialFieldsEnabled) || (oldRankingColumn != newRankingColumn) || (oldCompcatRankingColumn != newCompactRankingColumn)|| (oldQualityColumn != newQualityColumn)|| (oldPriorityColumn != newPriorityColumn)|| (oldRelevanceColumn != newRelevanceColumn)|| (oldSyncKeyWords != newSyncKeyWords)|| (oldWriteSpecialFields != newWriteSpecialFields);
+  if (restartRequired) {
+    JOptionPane.showMessageDialog(null,Globals.lang("You have changed settings for special fields.").concat(" ").concat(Globals.lang("You must restart JabRef for this to come into effect.")),Globals.lang("Changed special field settings"),JOptionPane.WARNING_MESSAGE);
+  }
+  if (restartRequired) {
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED,newSpecialFieldsEnabled);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING,newRankingColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_RANKING_COMPACT,newCompactRankingColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY,newPriorityColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY,newQualityColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE,newRelevanceColumn);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_AUTOSYNCSPECIALFIELDSTOKEYWORDS,newSyncKeyWords);
+    _prefs.putBoolean(SpecialFieldsUtils.PREF_SERIALIZESPECIALFIELDS,newWriteSpecialFields);
+  }
   if (colSetup.isEditing()) {
     int col=colSetup.getEditingColumn(), row=colSetup.getEditingRow();
     colSetup.getCellEditor(row,col).stopCellEditing();

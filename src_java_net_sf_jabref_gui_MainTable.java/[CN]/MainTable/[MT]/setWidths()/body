@@ -4,9 +4,16 @@
   TableColumnModel cm=getColumnModel();
   cm.getColumn(0).setPreferredWidth(ncWidth);
   for (int i=1; i < tableFormat.padleft; i++) {
-    cm.getColumn(i).setPreferredWidth(GUIGlobals.WIDTH_ICON_COL);
-    cm.getColumn(i).setMinWidth(GUIGlobals.WIDTH_ICON_COL);
-    cm.getColumn(i).setMaxWidth(GUIGlobals.WIDTH_ICON_COL);
+    if (tableFormat.isRankingColumn(i) && !Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_RANKING_COMPACT)) {
+      cm.getColumn(i).setPreferredWidth(GUIGlobals.WIDTH_ICON_COL_RANKING);
+      cm.getColumn(i).setMinWidth(GUIGlobals.WIDTH_ICON_COL_RANKING);
+      cm.getColumn(i).setMaxWidth(GUIGlobals.WIDTH_ICON_COL_RANKING);
+    }
+ else {
+      cm.getColumn(i).setPreferredWidth(GUIGlobals.WIDTH_ICON_COL);
+      cm.getColumn(i).setMinWidth(GUIGlobals.WIDTH_ICON_COL);
+      cm.getColumn(i).setMaxWidth(GUIGlobals.WIDTH_ICON_COL);
+    }
   }
   for (int i=tableFormat.padleft; i < getModel().getColumnCount(); i++) {
     try {

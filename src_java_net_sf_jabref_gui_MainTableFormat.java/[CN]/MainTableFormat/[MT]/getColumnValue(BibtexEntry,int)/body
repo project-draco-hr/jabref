@@ -11,7 +11,21 @@
     if (iconType[hasField].equals(GUIGlobals.FILE_FIELD)) {
       o=FileListTableModel.getFirstLabel(be.getField(GUIGlobals.FILE_FIELD));
     }
- else     o=GUIGlobals.getTableIcon(iconType[hasField]);
+ else     if (iconType[hasField].equals(PRIORITY[0])) {
+      SpecialFieldValue prio=Priority.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_PRIORITY));
+      if (prio != null) {
+        o=prio.createLabel();
+      }
+    }
+ else     if (iconType[hasField].equals(RANKING[0])) {
+      SpecialFieldValue rank=Rank.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_RANKING));
+      if (rank != null) {
+        o=rank.createLabel();
+      }
+    }
+ else {
+      o=GUIGlobals.getTableIcon(iconType[hasField]);
+    }
   }
  else {
     String[] fld=columns[col - padleft];

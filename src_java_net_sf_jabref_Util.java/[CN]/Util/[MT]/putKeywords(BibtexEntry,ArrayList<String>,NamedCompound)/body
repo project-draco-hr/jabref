@@ -13,8 +13,9 @@
  else {
     newValue=null;
   }
-  if (!oldValue.equals(newValue)) {
+  if ((oldValue == null) && (newValue == null))   return;
+  if ((oldValue == null) || (!oldValue.equals(newValue))) {
     entry.setField("keywords",newValue);
-    ce.addEdit(new UndoableFieldChange(entry,"keywords",oldValue,newValue));
+    if (ce != null)     ce.addEdit(new UndoableFieldChange(entry,"keywords",oldValue,newValue));
   }
 }

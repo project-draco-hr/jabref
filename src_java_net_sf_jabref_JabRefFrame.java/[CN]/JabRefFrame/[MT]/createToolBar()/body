@@ -27,6 +27,21 @@
   tlb.addAction(mark);
   tlb.addAction(unmark);
   tlb.addSeparator();
+  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+      tlb.add(net.sf.jabref.specialfields.SpecialFieldDropDown.generateSpecialFieldButtonWithDropDown(Rank.getInstance(),this));
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+      tlb.addAction(toggleRelevance);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+      tlb.addAction(toggleQualityAssured);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+      tlb.add(net.sf.jabref.specialfields.SpecialFieldDropDown.generateSpecialFieldButtonWithDropDown(Priority.getInstance(),this));
+    }
+  }
+  tlb.addSeparator();
   searchToggle=new JToggleButton(toggleSearch);
   searchToggle.setText(null);
   if (!Globals.ON_MAC)   searchToggle.setMargin(marg);
