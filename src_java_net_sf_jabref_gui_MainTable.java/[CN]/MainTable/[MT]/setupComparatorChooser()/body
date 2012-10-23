@@ -22,7 +22,16 @@
   boolean[] sortDirections=new boolean[]{Globals.prefs.getBoolean("priDescending"),Globals.prefs.getBoolean("secDescending"),Globals.prefs.getBoolean("terDescending")};
   sortedForTable.getReadWriteLock().writeLock().lock();
   for (int i=0; i < sortFields.length; i++) {
-    int index=tableFormat.getColumnIndex(sortFields[i]);
+    int index=-1;
+    if (!sortFields[i].startsWith(MainTableFormat.ICON_COLUMN_PREFIX))     index=tableFormat.getColumnIndex(sortFields[i]);
+ else {
+      for (int j=0; j < tableFormat.getColumnCount(); j++) {
+        if (sortFields[i].equals(tableFormat.getColumnType(j))) {
+          index=j;
+          break;
+        }
+      }
+    }
     if (index >= 0) {
       comparatorChooser.appendComparator(index,0,sortDirections[i]);
     }
