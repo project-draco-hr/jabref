@@ -1,7 +1,8 @@
 {
   keyword=new JTextField();
-  keywordListModel=new DefaultListModel<String>();
-  keywordList=new JList<String>(keywordListModel);
+  keywordListModel=new DefaultListModel();
+  keywordList=new JList(keywordListModel);
+  keywordList.setVisibleRowCount(8);
   kPane=new JScrollPane(keywordList);
   diag=new JDialog(frame,Globals.lang("Manage keywords"),true);
   ok=new JButton(Globals.lang("Ok"));
@@ -9,7 +10,7 @@
   add=new JButton(Globals.lang("Add"));
   remove=new JButton(Globals.lang("Remove"));
   keywordList.setVisibleRowCount(10);
-  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:100dlu, 8dlu, left:pref, 8dlu, left:pref",""));
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:100dlu, 4dlu, left:pref, 4dlu, left:pref",""));
   builder.appendSeparator(Globals.lang("Common keywords of selected entries"));
   builder.append(kPane,3);
   builder.add(remove);
@@ -20,14 +21,10 @@
   ButtonBarBuilder2 bb=new ButtonBarBuilder2();
   bb.addGlue();
   bb.addButton(ok);
-  bb.addGlue();
   bb.addButton(cancel);
   bb.addGlue();
   builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-  diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
-  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
-  diag.pack();
   ok.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       cancelled=false;
@@ -44,7 +41,7 @@
 ;
   cancel.addActionListener(cancelAction);
   final ActionListener addActionListener=new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent arg0){
+    public void actionPerformed(    ActionEvent arg0){
       String text=keyword.getText().trim();
       if (text.equals("")) {
         return;
@@ -54,13 +51,14 @@
       }
  else {
         int idx=0;
-        while ((idx < keywordListModel.size()) && (keywordListModel.getElementAt(idx).compareTo(text) < 0)) {
+        String element=(String)keywordListModel.getElementAt(idx);
+        while ((idx < keywordListModel.size()) && (element.compareTo(text) < 0)) {
           idx++;
         }
         if (idx == keywordListModel.size()) {
           keywordListModel.addElement(text);
         }
- else         if (keywordListModel.getElementAt(idx).compareTo(text) == 0) {
+ else         if (element.compareTo(text) == 0) {
         }
  else {
           keywordListModel.add(idx,text);
@@ -73,8 +71,10 @@
 ;
   add.addActionListener(addActionListener);
   final ActionListener removeActionListenter=new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent arg0){
-      List<String> selectedValuesList=keywordList.getSelectedValuesList();
+    public void actionPerformed(    ActionEvent arg0){
+      Object[] values=keywordList.getSelectedValues();
+      List<String> selectedValuesList=new ArrayList<String>();
+      for (int i=0; i < values.length; i++)       selectedValuesList.add((String)values[i]);
       for (      String val : selectedValuesList) {
         keywordListModel.removeElement(val);
       }
@@ -83,11 +83,11 @@
 ;
   remove.addActionListener(removeActionListenter);
   keywordList.addKeyListener(new KeyListener(){
-    @Override public void keyTyped(    KeyEvent arg0){
+    public void keyTyped(    KeyEvent arg0){
     }
-    @Override public void keyReleased(    KeyEvent arg0){
+    public void keyReleased(    KeyEvent arg0){
     }
-    @Override public void keyPressed(    KeyEvent arg0){
+    public void keyPressed(    KeyEvent arg0){
       if (arg0.getKeyCode() == KeyEvent.VK_DELETE) {
         removeActionListenter.actionPerformed(null);
       }
@@ -99,11 +99,11 @@
   keyword.addKeyListener(acl);
   keyword.addFocusListener(acl);
   keyword.addKeyListener(new KeyListener(){
-    @Override public void keyTyped(    KeyEvent e){
+    public void keyTyped(    KeyEvent e){
     }
-    @Override public void keyReleased(    KeyEvent e){
+    public void keyReleased(    KeyEvent e){
     }
-    @Override public void keyPressed(    KeyEvent e){
+    public void keyPressed(    KeyEvent e){
       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
         addActionListener.actionPerformed(null);
       }
@@ -114,4 +114,6 @@
   InputMap im=builder.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",cancelAction);
+  diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
 }
