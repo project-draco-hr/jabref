@@ -10,8 +10,26 @@
   add=new JButton(Globals.lang("Add"));
   remove=new JButton(Globals.lang("Remove"));
   keywordList.setVisibleRowCount(10);
-  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:100dlu, 4dlu, left:pref, 4dlu, left:pref",""));
-  builder.appendSeparator(Globals.lang("Common keywords of selected entries"));
+  intersectKeywords=new JRadioButton("Display keywords appearing in ALL entries");
+  mergeKeywords=new JRadioButton("Display keywords appearing in at least one entry");
+  ButtonGroup group=new ButtonGroup();
+  group.add(intersectKeywords);
+  group.add(mergeKeywords);
+  ActionListener stateChanged=new ActionListener(){
+    public void actionPerformed(    ActionEvent arg0){
+      fillKeyWordList();
+    }
+  }
+;
+  intersectKeywords.addActionListener(stateChanged);
+  mergeKeywords.addActionListener(stateChanged);
+  intersectKeywords.setSelected(true);
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:200dlu, 4dlu, left:pref, 4dlu, left:pref",""));
+  builder.appendSeparator(Globals.lang("Keywords of selected entries"));
+  builder.append(intersectKeywords,5);
+  builder.nextLine();
+  builder.append(mergeKeywords,5);
+  builder.nextLine();
   builder.append(kPane,3);
   builder.add(remove);
   builder.nextLine();
