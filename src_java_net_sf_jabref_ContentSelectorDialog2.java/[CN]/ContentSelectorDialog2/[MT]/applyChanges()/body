@@ -8,7 +8,7 @@
   loop:   for (Iterator<String> i=wordListModels.keySet().iterator(); i.hasNext(); ) {
     String fieldName=i.next();
     if ((fieldName == null) || FIELD_FIRST_LINE.equals(fieldName))     continue loop;
-    DefaultListModel<String> lm=wordListModels.get(fieldName);
+    DefaultListModel lm=wordListModels.get(fieldName);
     int start=0;
     if (lm.size() > 0)     while ((start < lm.size()) && (lm.get(start)).equals(WORD_FIRSTLINE_TEXT))     start++;
     Vector<String> data=metaData.getData(Globals.SELECTOR_META_PREFIX + fieldName);
@@ -20,7 +20,7 @@
     }
  else     data.clear();
     for (int wrd=start; wrd < lm.size(); wrd++) {
-      String word=lm.get(wrd);
+      String word=(String)lm.get(wrd);
       data.add(word);
     }
     if (newField)     metaData.putData(Globals.SELECTOR_META_PREFIX + fieldName,data);
