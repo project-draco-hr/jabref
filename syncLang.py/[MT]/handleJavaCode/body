@@ -11,6 +11,7 @@ def handleJavaCode(filename, lines, keyList, notTermList):
             theSpan = lines[span[0]:span[1]]
             spanInner = pattInner.search(theSpan).span()
             found = theSpan[(spanInner[0] + 1):(spanInner[1] - 1)].replace(' ', '_')
+            found = found.replace('=', '\\=').replace(':', '\\:')
             if ((not (found == '')) and (found not in keyList)):
                 keyList.append(found)
             if (span[1] < len(lines)):

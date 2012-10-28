@@ -2,8 +2,11 @@ def indexFile(lines):
     allKeys = []
     for line in lines:
         comment = line.find('#')
-        index = line.find('=')
-        if ((comment != 0) and (index > 0)):
-            allKeys.append(line[0:index])
+        if (comment != 0):
+            index = line.find('=')
+            while ((index > 0) and (line[(index - 1)] == '\\')):
+                index = line.find('=', (index + 1))
+            if (index > 0):
+                allKeys.append(line[0:index])
     allKeys.sort()
     return allKeys
