@@ -1,11 +1,7 @@
 {
   try {
-    ruleNestingLevel++;
     int _type=INTEGER;
-    int _start=getCharIndex();
-    int _line=getLine();
-    int _charPosition=getCharPositionInLine();
-    int _channel=Token.DEFAULT_CHANNEL;
+    int _channel=DEFAULT_TOKEN_CHANNEL;
 {
       match('#');
       int alt3=2;
@@ -37,7 +33,14 @@ case 1:
 switch (alt4) {
 case 1:
 {
-        mNUMERAL();
+        if ((input.LA(1) >= '0' && input.LA(1) <= '9')) {
+          input.consume();
+        }
+ else {
+          MismatchedSetException mse=new MismatchedSetException(null,input);
+          recover(mse);
+          throw mse;
+        }
       }
     break;
 default :
@@ -49,11 +52,9 @@ cnt4++;
 }
  while (true);
 }
-if (token == null && ruleNestingLevel == 1) {
-emit(_type,_line,_charPosition,_channel,_start,getCharIndex() - 1);
-}
+state.type=_type;
+state.channel=_channel;
 }
   finally {
-ruleNestingLevel--;
 }
 }

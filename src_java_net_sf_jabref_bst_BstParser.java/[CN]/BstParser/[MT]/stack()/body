@@ -1,34 +1,33 @@
 {
-  stack_return retval=new stack_return();
+  BstParser.stack_return retval=new BstParser.stack_return();
   retval.start=input.LT(1);
   Object root_0=null;
   Token char_literal50=null;
   Token char_literal52=null;
-  stackitem_return stackitem51=null;
-  List list_stackitem=new ArrayList();
-  List list_26=new ArrayList();
-  List list_25=new ArrayList();
+  BstParser.stackitem_return stackitem51=null;
   Object char_literal50_tree=null;
   Object char_literal52_tree=null;
+  RewriteRuleTokenStream stream_32=new RewriteRuleTokenStream(adaptor,"token 32");
+  RewriteRuleTokenStream stream_33=new RewriteRuleTokenStream(adaptor,"token 33");
+  RewriteRuleSubtreeStream stream_stackitem=new RewriteRuleSubtreeStream(adaptor,"rule stackitem");
   try {
 {
-      char_literal50=input.LT(1);
-      match(input,25,FOLLOW_25_in_stack293);
-      list_25.add(char_literal50);
+      char_literal50=(Token)match(input,32,FOLLOW_32_in_stack310);
+      stream_32.add(char_literal50);
       int cnt6=0;
       loop6:       do {
         int alt6=2;
         int LA6_0=input.LA(1);
-        if ((LA6_0 == STRING || (LA6_0 >= IDENTIFIER && LA6_0 <= QUOTED) || LA6_0 == 25 || (LA6_0 >= 27 && LA6_0 <= 33))) {
+        if ((LA6_0 == IDENTIFIER || LA6_0 == INTEGER || LA6_0 == QUOTED || LA6_0 == STRING || (LA6_0 >= 25 && LA6_0 <= 32))) {
           alt6=1;
         }
 switch (alt6) {
 case 1:
 {
-            pushFollow(FOLLOW_stackitem_in_stack295);
+            pushFollow(FOLLOW_stackitem_in_stack312);
             stackitem51=stackitem();
-            _fsp--;
-            list_stackitem.add(stackitem51.tree);
+            state._fsp--;
+            stream_stackitem.add(stackitem51.getTree());
           }
         break;
 default :
@@ -39,36 +38,37 @@ default :
 cnt6++;
 }
  while (true);
-char_literal52=input.LT(1);
-match(input,26,FOLLOW_26_in_stack298);
-list_26.add(char_literal52);
-int i_0=0;
+char_literal52=(Token)match(input,33,FOLLOW_33_in_stack315);
+stream_33.add(char_literal52);
 retval.tree=root_0;
-root_0=adaptor.nil();
+RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval != null ? retval.tree : null);
+root_0=(Object)adaptor.nil();
 {
 {
-Object root_1=adaptor.nil();
-root_1=adaptor.becomeRoot(adaptor.create(STACK,"STACK"),root_1);
-{
-  int n_1=list_stackitem == null ? 0 : list_stackitem.size();
-  if (n_1 == 0)   throw new RuntimeException("Must have more than one element for (...)+ loops");
-  for (int i_1=0; i_1 < n_1; i_1++) {
-    adaptor.addChild(root_1,list_stackitem.get(i_1));
-  }
+Object root_1=(Object)adaptor.nil();
+root_1=(Object)adaptor.becomeRoot((Object)adaptor.create(STACK,"STACK"),root_1);
+if (!(stream_stackitem.hasNext())) {
+  throw new RewriteEarlyExitException();
 }
+while (stream_stackitem.hasNext()) {
+  adaptor.addChild(root_1,stream_stackitem.nextTree());
+}
+stream_stackitem.reset();
 adaptor.addChild(root_0,root_1);
 }
 }
+retval.tree=root_0;
 }
+retval.stop=input.LT(-1);
+retval.tree=(Object)adaptor.rulePostProcessing(root_0);
+adaptor.setTokenBoundaries(retval.tree,retval.start,retval.stop);
 }
  catch (RecognitionException re) {
 reportError(re);
 recover(input,re);
+retval.tree=(Object)adaptor.errorNode(input,retval.start,input.LT(-1),re);
 }
  finally {
-retval.stop=input.LT(-1);
-retval.tree=adaptor.rulePostProcessing(root_0);
-adaptor.setTokenBoundaries(retval.tree,retval.start,retval.stop);
 }
 return retval;
 }
