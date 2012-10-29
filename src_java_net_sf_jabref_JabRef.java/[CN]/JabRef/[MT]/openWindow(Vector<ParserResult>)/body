@@ -4,78 +4,11 @@
     GUIGlobals.setUpIconTheme();
     Globals.prefs.updateExternalFileTypes();
     System.setProperty("apple.laf.useScreenMenuBar","true");
-    if (!Globals.ON_MAC) {
-      int fontSizes=Globals.prefs.getInt("menuFontSize");
-      boolean overrideDefaultFonts=Globals.prefs.getBoolean("overrideDefaultFonts");
-      String defaultLookAndFeel;
-      if (Globals.ON_WIN)       defaultLookAndFeel=GUIGlobals.windowsDefaultLookAndFeel;
- else       defaultLookAndFeel=GUIGlobals.linuxDefaultLookAndFeel;
-      String lookAndFeel=null;
-      if (!Globals.prefs.getBoolean("useDefaultLookAndFeel"))       lookAndFeel=Globals.prefs.get("lookAndFeel");
- else       lookAndFeel=defaultLookAndFeel;
-      LookAndFeel lnf=null;
-      Object objLnf=null;
-      try {
-        if (lookAndFeel != null)         objLnf=Class.forName(lookAndFeel).newInstance();
- else         objLnf=Class.forName(defaultLookAndFeel).newInstance();
-      }
- catch (      Exception ex) {
-        ex.printStackTrace();
-        if (splashScreen != null) {
-          splashScreen.dispose();
-          splashScreen=null;
-        }
-        JOptionPane.showMessageDialog(null,Globals.lang("Error setting look and feel") + ": " + lookAndFeel);
-        try {
-          objLnf=Class.forName(defaultLookAndFeel).newInstance();
-        }
- catch (        Exception ex2) {
-        }
-      }
-      if (objLnf != null)       lnf=(LookAndFeel)objLnf;
-      if ((lnf != null) && (lnf instanceof Plastic3DLookAndFeel)) {
-        MetalLookAndFeel.setCurrentTheme(new com.jgoodies.looks.plastic.theme.SkyBluer());
-        int defaultIconSize=GUIGlobals.getImage("open").getIconWidth();
-        com.jgoodies.looks.Options.setDefaultIconSize(new Dimension(defaultIconSize,defaultIconSize));
-        if (overrideDefaultFonts) {
-          FontSet fontSet=FontSets.createDefaultFontSet(new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.BOLD,fontSizes));
-          FontPolicy fixedPolicy=FontPolicies.createFixedPolicy(fontSet);
-          Plastic3DLookAndFeel.setFontPolicy(fixedPolicy);
-        }
-      }
- else       if ((lnf != null) && (lnf instanceof WindowsLookAndFeel)) {
-        int defaultIconSize=GUIGlobals.getImage("open").getIconWidth();
-        com.jgoodies.looks.Options.setDefaultIconSize(new Dimension(defaultIconSize,defaultIconSize));
-        if (overrideDefaultFonts) {
-          FontSet fontSet=FontSets.createDefaultFontSet(new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.PLAIN,fontSizes),new Font("Tahoma",Font.BOLD,fontSizes));
-          FontPolicy fixedPolicy=FontPolicies.createFixedPolicy(fontSet);
-          WindowsLookAndFeel.setFontPolicy(fixedPolicy);
-        }
-      }
-      if (lnf != null) {
-        try {
-          UIManager.setLookAndFeel(lnf);
-          if (!Globals.ON_WIN) {
-            UIManager.put("SimpleInternalFrame.activeTitleBackground",GUIGlobals.gradientBlue);
-          }
-          if (!Globals.ON_WIN && !Globals.ON_MAC) {
-            UIDefaults def=UIManager.getDefaults();
-            InputMap im=(InputMap)def.get("Button.focusInputMap");
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0,false),"pressed");
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0,true),"released");
-          }
-        }
- catch (        Throwable ex) {
-          ex.printStackTrace();
-          System.err.println("Trying to set system default Look&Feel...");
-          try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          }
- catch (          Throwable e) {
-            e.printStackTrace();
-          }
-        }
-      }
+    try {
+      UIManager.setLookAndFeel(getLookAndFeel());
+    }
+ catch (    Throwable e) {
+      e.printStackTrace();
     }
     if (!blank.isInvoked() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
       String[] names=Globals.prefs.getStringArray("lastEdited");
