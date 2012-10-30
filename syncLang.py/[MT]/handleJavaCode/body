@@ -1,32 +1,18 @@
 def handleJavaCode(filename, lines, keyList, notTermList):
-    startLen = 14
-    while (len(lines) > 0):
-        patt = re.compile('Globals\\s*.lang\\s*\\(\\s*"[^"]*"[^"]*\\)')
-        pattInner = re.compile('"[^"]*"')
-        patt2 = re.compile('Globals\\s*.lang\\s*\\(\\s*"[^"]*"')
-        result = patt.search(lines)
-        result2 = patt2.search(lines)
+    patt = re.compile('Globals\\s*\\.\\s*lang\\s*\\(\\s*"((\\\\"|[^"])*)"[^"]*')
+    patt2 = re.compile('Globals\\s*\\.\\s*lang\\s*\\(([^)])*$')
+    for (linenum, curline) in enumerate(lines.split('\n')):
+        if (curline.find('http://') < 0):
+            curline = re.sub('//.*', '', curline)
+        result = patt.search(curline)
+        result2 = patt2.search(curline)
         if result:
-            span = result.span()
-            theSpan = lines[span[0]:span[1]]
-            spanInner = pattInner.search(theSpan).span()
-            found = theSpan[(spanInner[0] + 1):(spanInner[1] - 1)].replace(' ', '_')
+            found = result.group(1)
+            found = found.replace(' ', '_')
             found = found.replace('=', '\\=').replace(':', '\\:')
+            found = found.replace('\\"', '"')
             if ((not (found == '')) and (found not in keyList)):
                 keyList.append(found)
-            if (span[1] < len(lines)):
-                lines = lines[(span[1] + 1):]
-            else:
-                lines = ''
-        elif result2:
-            span = result2.span()
-            theSpan = lines[span[0]:span[1]]
-            spanInner = pattInner.search(theSpan).span()
-            found = theSpan[(spanInner[0] + 1):(spanInner[1] - 1)].replace(' ', '_')
-            print ('Not terminated: ' + found)
-            if (span[1] < len(lines)):
-                lines = lines[(span[1] + 1):]
-            else:
-                lines = ''
-        else:
-            lines = ''
+                keyFiles[found] = (filename, linenum)
+        if (result2 and (curline.find('",') < 0)):
+            print ('%s:%d: Not terminated: %s' % (filename, (linenum + 1), curline))
