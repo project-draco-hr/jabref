@@ -24,12 +24,30 @@ case 37:
 case 38:
   text=text.replaceAll("&#" + m.group(1) + ";","&");
 break;
+case 176:
+text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\deg\\$");
+break;
+case 181:
+case 956:
+text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\mu\\$");
+break;
+case 215:
+text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\times\\$");
+break;
+case 769:
+text=text.replaceAll("&#" + m.group(1) + ";","'");
+break;
 case 916:
+text=text.replaceAll("&#" + m.group(1) + ";","\\{\\$\\\\Delta\\$\\}");
+break;
+case 931:
+text=text.replaceAll("&#" + m.group(1) + ";","\\{\\$\\\\Sigma\\$\\}");
+break;
+case 948:
 text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\delta\\$");
 break;
-case 956:
-case 181:
-text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\mu\\$");
+case 963:
+text=text.replaceAll("&#" + m.group(1) + ";","\\{\\$\\\\sigma\\$\\}");
 break;
 case 8208:
 text=text.replaceAll("&#" + m.group(1) + ";","-");
@@ -53,10 +71,7 @@ System.err.println("HTML escaped char not converted " + m.group(1) + ": "+ Integ
 escapedPattern=Pattern.compile("&(\\w+);");
 m=escapedPattern.matcher(text);
 while (m.find()) {
-String match=m.group(1).toLowerCase();
-if (match.equals("mu")) text=text.replaceAll("&" + m.group(1) + ";","\\$\\\\mu\\$");
- else if (match.equals("radic")) text=text.replaceAll("&" + m.group(1) + ";","\\$\\\\sqrt{}\\$");
- else System.err.println("HTML escaped char not converted " + m.group(1));
+System.err.println("HTML escaped char not converted " + m.group(1));
 }
 return text.trim();
 }
