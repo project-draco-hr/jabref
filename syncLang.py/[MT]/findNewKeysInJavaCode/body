@@ -9,17 +9,15 @@ def findNewKeysInJavaCode(mainFile, dir, update):
     if update:
         f1 = open(mainFile, 'a')
         f1.write('\n')
-    for keyOrig in keyList:
-        key = keyOrig.replace('\\:', ':').replace('\\=', '=')
+    for key in keyList:
+        value = key.replace('\\:', ':').replace('\\=', '=')
         if (key not in keys):
-            (fileName, lineNum) = keyFiles[keyOrig]
-            print ('%s:%i:Missing key: %s' % (fileName, (lineNum + 1), key))
-            value = key
-            key = key.replace(':', '\\:').replace('=', '\\=')
+            (fileName, lineNum) = keyFiles[key]
+            print ('%s:%i:Missing key: %s' % (fileName, (lineNum + 1), value))
             if update:
                 f1.write((((key + '=') + value) + '\n'))
     for key in keys:
         if (key not in keyList):
-            print ('Possible redundant key: ' + key)
+            print ('Possible obsolete key: ' + key)
     if update:
         f1.close()
