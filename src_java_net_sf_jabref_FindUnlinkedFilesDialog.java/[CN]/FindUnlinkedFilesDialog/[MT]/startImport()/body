@@ -10,8 +10,8 @@
   }
   progressBarImporting.setVisible(true);
   labelImportingInfo.setVisible(true);
-  buttonOk.setVisible(false);
-  buttonCancel.setVisible(false);
+  buttonApply.setVisible(false);
+  buttonClose.setVisible(false);
   disOrEnableDialog(false);
   labelImportingInfo.setEnabled(true);
   progressBarImporting.setMinimum(0);
@@ -22,15 +22,16 @@
   threadState=new int[]{1};
   new Thread(new Runnable(){
     public void run(){
-      List<String> errors=creatorManager.addEntrysFromFiles(fileList,database,entryType,checkBoxWhyIsThereNoGetSelectedStupidSwing,new ChangeListener(){
+      List<String> errors=new LinkedList<String>();
+      int count=creatorManager.addEntrysFromFiles(fileList,database,entryType,checkBoxWhyIsThereNoGetSelectedStupidSwing,new ChangeListener(){
         int counter=0;
         public void stateChanged(        ChangeEvent e){
           progressBarImporting.setValue(++counter);
           progressBarImporting.setString(counter + " of " + progressBarImporting.getMaximum());
         }
       }
-);
-      importFinishedHandler(errors);
+,errors);
+      importFinishedHandler(count,errors);
     }
   }
 ).start();

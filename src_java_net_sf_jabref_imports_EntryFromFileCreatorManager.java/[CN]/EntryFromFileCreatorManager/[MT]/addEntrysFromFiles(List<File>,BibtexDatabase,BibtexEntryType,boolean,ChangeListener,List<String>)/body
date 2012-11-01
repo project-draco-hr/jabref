@@ -1,5 +1,5 @@
 {
-  List<String> importGUIMessages=new LinkedList<String>();
+  int count=0;
   for (  File f : files) {
     EntryFromFileCreator creator=getEntryCreator(f);
     if (creator != null) {
@@ -17,11 +17,12 @@
       if (database.insertEntry(entry)) {
         importGUIMessages.add("Problem importing " + f.getPath() + ": Insert into BibtexDatabase failed.");
       }
+ else       count++;
     }
  else {
       importGUIMessages.add("Problem importing " + f.getPath() + ": Unknown filetype.");
     }
     if (changeListener != null)     changeListener.stateChanged(new ChangeEvent(this));
   }
-  return importGUIMessages;
+  return count;
 }
