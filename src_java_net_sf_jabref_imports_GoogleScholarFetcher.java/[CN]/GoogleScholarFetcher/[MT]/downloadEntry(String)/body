@@ -1,0 +1,34 @@
+{
+  try {
+    URL url=new URL(URL_START + link);
+    URLDownload ud=new URLDownload(url);
+    ud.download();
+    String s=ud.getStringContent();
+    BibtexParser bp=new BibtexParser(new StringReader(s));
+    ParserResult pr=bp.parse();
+    if ((pr != null) && (pr.getDatabase() != null)) {
+      Collection<BibtexEntry> entries=pr.getDatabase().getEntries();
+      if (entries.size() == 1) {
+        BibtexEntry entry=entries.iterator().next();
+        if (clearKeys)         entry.setField(BibtexFields.KEY_FIELD,null);
+        return entry;
+      }
+ else       if (entries.size() == 0) {
+        System.out.println("No entry found! (" + link + ")");
+        return null;
+      }
+ else {
+        System.out.println(entries.size() + " entries found! (" + link+ ")");
+        return null;
+      }
+    }
+ else {
+      System.out.println("Parser failed! (" + link + ")");
+      return null;
+    }
+  }
+ catch (  MalformedURLException ex) {
+    ex.printStackTrace();
+    return null;
+  }
+}
