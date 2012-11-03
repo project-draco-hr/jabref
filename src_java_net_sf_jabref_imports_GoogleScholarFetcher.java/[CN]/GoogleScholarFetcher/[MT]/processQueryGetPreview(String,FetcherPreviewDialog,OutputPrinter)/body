@@ -1,0 +1,19 @@
+{
+  stopFetching=false;
+  try {
+    if (!hasRunConfig) {
+      runConfig();
+      hasRunConfig=true;
+    }
+    Map<String,JLabel> citations=getCitations(query);
+    for (    String link : citations.keySet()) {
+      preview.addEntry(link,citations.get(link));
+    }
+    return true;
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    status.showMessage(Globals.lang("Error fetching from Google Scholar"));
+    return false;
+  }
+}
