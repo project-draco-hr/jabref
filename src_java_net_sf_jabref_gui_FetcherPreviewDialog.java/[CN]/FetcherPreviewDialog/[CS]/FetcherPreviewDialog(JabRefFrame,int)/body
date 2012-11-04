@@ -1,10 +1,13 @@
 {
   super(frame,Globals.lang("Title"),true);
   this.frame=frame;
+  this.warningLimit=warningLimit;
   ok.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
-      okPressed=true;
-      dispose();
+      if (verifySelection()) {
+        okPressed=true;
+        dispose();
+      }
     }
   }
 );
@@ -30,7 +33,7 @@
   EventTableModel<TableEntry> tableModelGl=new EventTableModel<TableEntry>(entries,new EntryTableFormat());
   glTable=new EntryTable(tableModelGl);
   glTable.setRowHeight(100);
-  glTable.getColumnModel().getColumn(0).setMaxWidth(30);
+  glTable.getColumnModel().getColumn(0).setMaxWidth(45);
   glTable.setPreferredScrollableViewportSize(new Dimension(1100,600));
   EventSelectionModel<TableEntry> selectionModel=new EventSelectionModel<TableEntry>(entries);
   glTable.setSelectionModel(selectionModel);
