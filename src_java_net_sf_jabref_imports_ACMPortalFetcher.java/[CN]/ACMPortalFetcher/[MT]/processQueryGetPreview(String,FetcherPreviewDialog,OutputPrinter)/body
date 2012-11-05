@@ -1,0 +1,52 @@
+{
+  this.preview=preview;
+  this.status=status;
+  this.terms=query;
+  piv=0;
+  shouldContinue=true;
+  parsed=0;
+  unparseable=0;
+  acmOrGuide=acmButton.isSelected();
+  fetchAbstract=absCheckBox.isSelected();
+  int firstEntry=1;
+  String address=makeUrl(firstEntry);
+  List<String> addresses=new ArrayList<String>();
+  try {
+    URL url=new URL(address);
+    String page=getResults(url);
+    hits=getNumberOfHits(page,"Found",hitsPattern);
+    System.out.println(hits);
+    System.out.println(address);
+    int index=page.indexOf("Found");
+    if (index >= 0) {
+      page=page.substring(index + 5);
+      index=page.indexOf("Found");
+      if (index >= 0)       page=page.substring(index);
+    }
+    if (hits == 0) {
+      status.showMessage(Globals.lang("No entries found for the search string '%0'",terms),Globals.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    hits=getNumberOfHits(page,"Results",maxHitsPattern);
+    for (int i=0; i < hits; i++) {
+      parse(page,0,firstEntry,addresses);
+      address=makeUrl(firstEntry);
+      firstEntry+=perPage;
+    }
+    for (    String s : addresses) {
+      preview.addEntry(s,new JLabel(s));
+    }
+    return true;
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+  }
+catch (  ConnectException e) {
+    status.showMessage(Globals.lang("Connection to ACM Portal failed"),Globals.lang("Search ACM Portal"),JOptionPane.ERROR_MESSAGE);
+  }
+catch (  IOException e) {
+    status.showMessage(Globals.lang(e.getMessage()),Globals.lang("Search ACM Portal"),JOptionPane.ERROR_MESSAGE);
+    e.printStackTrace();
+  }
+  return false;
+}
