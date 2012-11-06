@@ -10,7 +10,7 @@
   fetchAbstract=absCheckBox.isSelected();
   int firstEntry=1;
   String address=makeUrl(firstEntry);
-  List<String> addresses=new ArrayList<String>();
+  LinkedHashMap<String,JLabel> previews=new LinkedHashMap<String,JLabel>();
   try {
     URL url=new URL(address);
     String page=getResults(url);
@@ -29,12 +29,11 @@
     }
     hits=getNumberOfHits(page,"Results",maxHitsPattern);
     for (int i=0; i < hits; i++) {
-      parse(page,0,firstEntry,addresses);
-      address=makeUrl(firstEntry);
+      parse(page,0,firstEntry,previews);
       firstEntry+=perPage;
     }
-    for (    String s : addresses) {
-      preview.addEntry(s,new JLabel(s));
+    for (    String s : previews.keySet()) {
+      preview.addEntry(s,previews.get(s));
     }
     return true;
   }
