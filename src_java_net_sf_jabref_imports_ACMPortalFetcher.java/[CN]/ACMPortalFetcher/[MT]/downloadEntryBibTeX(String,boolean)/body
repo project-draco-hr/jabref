@@ -11,7 +11,10 @@
     if (abs) {
       url=new URL(startUrl + abstractUrl + ID);
       String page=getResults(url);
-      entry.setField("abstract",convertHTMLChars(page).trim());
+      Matcher absM=absPattern.matcher(page);
+      if (absM.find()) {
+        entry.setField("abstract",absM.group(1).trim());
+      }
       Thread.sleep(WAIT_TIME);
     }
     return entry;
