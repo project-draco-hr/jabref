@@ -11,6 +11,10 @@
       if (entries.size() == 1) {
         BibtexEntry entry=entries.iterator().next();
         if (clearKeys)         entry.setField(BibtexFields.KEY_FIELD,null);
+        if (entry.getField("url") == null) {
+          String storedUrl=entryLinks.get(link);
+          if (storedUrl != null)           entry.setField("url",storedUrl);
+        }
         return entry;
       }
  else       if (entries.size() == 0) {
