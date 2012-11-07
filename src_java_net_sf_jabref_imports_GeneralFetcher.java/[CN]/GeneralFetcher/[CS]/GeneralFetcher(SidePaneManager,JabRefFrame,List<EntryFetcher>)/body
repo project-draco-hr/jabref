@@ -3,9 +3,10 @@
   this.sidePaneManager=p0;
   this.frame=frame;
   fetcherArray=fetchers.toArray(new EntryFetcher[fetchers.size()]);
-  String[] choices=new String[fetchers.size()];
-  for (int i=0; i < fetchers.size(); i++) {
-    choices[i]=fetchers.get(i).getTitle();
+  Arrays.sort(fetcherArray,new EntryFetcherComparator());
+  String[] choices=new String[fetcherArray.length];
+  for (int i=0; i < fetcherArray.length; i++) {
+    choices[i]=fetcherArray[i].getTitle();
   }
   fetcherChoice=new JComboBox(choices);
   int defaultFetcher=Globals.prefs.getInt("selectedFetcherIndex");
