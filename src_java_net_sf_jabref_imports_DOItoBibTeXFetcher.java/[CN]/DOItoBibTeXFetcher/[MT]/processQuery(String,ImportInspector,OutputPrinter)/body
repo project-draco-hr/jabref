@@ -1,0 +1,48 @@
+{
+  String q;
+  try {
+    q=URLEncoder.encode(query,"UTF-8");
+  }
+ catch (  UnsupportedEncodingException e) {
+    status.setStatus(Globals.lang("Error"));
+    e.printStackTrace();
+    return false;
+  }
+  String urlString=String.format(URL_PATTERN,q);
+  URL url;
+  try {
+    url=new URL(urlString);
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+    return false;
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+    return false;
+  }
+  URLConnection conn;
+  try {
+    conn=url.openConnection();
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    return false;
+  }
+  conn.setRequestProperty("Accept","text/bibliography; style=bibtex");
+  String bibtexString;
+  try {
+    bibtexString=getResults(conn);
+  }
+ catch (  FileNotFoundException e) {
+    status.showMessage(Globals.lang("Unknown DOI: '%0'.",query),Globals.lang("Get BibTeX entry from DOI"),JOptionPane.INFORMATION_MESSAGE);
+    return false;
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+    return false;
+  }
+  BibtexEntry entry=BibtexParser.singleFromString(bibtexString);
+  inspector.addEntry(entry);
+  return true;
+}
