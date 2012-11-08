@@ -17,61 +17,17 @@
   Matcher m=escapedPattern.matcher(text);
   while (m.find()) {
     int num=Integer.decode(m.group(1).replace("x","#"));
-switch (num) {
-case 37:
-      text=text.replaceAll("&#" + m.group(1) + ";","%");
-    break;
-case 38:
-  text=text.replaceAll("&#" + m.group(1) + ";","&");
-break;
-case 176:
-text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\deg\\$");
-break;
-case 181:
-case 956:
-text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\mu\\$");
-break;
-case 215:
-text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\times\\$");
-break;
-case 769:
-text=text.replaceAll("&#" + m.group(1) + ";","'");
-break;
-case 916:
-text=text.replaceAll("&#" + m.group(1) + ";","\\{\\$\\\\Delta\\$\\}");
-break;
-case 931:
-text=text.replaceAll("&#" + m.group(1) + ";","\\{\\$\\\\Sigma\\$\\}");
-break;
-case 948:
-text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\delta\\$");
-break;
-case 963:
-text=text.replaceAll("&#" + m.group(1) + ";","\\{\\$\\\\sigma\\$\\}");
-break;
-case 8208:
-text=text.replaceAll("&#" + m.group(1) + ";","-");
-break;
-case 8211:
-text=text.replaceAll("&#" + m.group(1) + ";","--");
-break;
-case 8212:
-text=text.replaceAll("&#" + m.group(1) + ";","---");
-break;
-case 8217:
-text=text.replaceAll("&#" + m.group(1) + ";","'");
-break;
-case 8730:
-text=text.replaceAll("&#" + m.group(1) + ";","\\$\\\\sqrt{}\\$");
-break;
-default :
-System.err.println("HTML escaped char not converted " + m.group(1) + ": "+ Integer.toString(num));
-}
-}
-escapedPattern=Pattern.compile("&(\\w+);");
-m=escapedPattern.matcher(text);
-while (m.find()) {
-System.err.println("HTML escaped char not converted " + m.group(1));
-}
-return text.trim();
+    if (numSymbols.containsKey(num)) {
+      text=text.replaceAll("&#" + m.group(1) + ";",numSymbols.get(num));
+    }
+ else {
+      System.err.println("HTML escaped char not converted " + m.group(1) + ": "+ Integer.toString(num));
+    }
+  }
+  escapedPattern=Pattern.compile("&(\\w+);");
+  m=escapedPattern.matcher(text);
+  while (m.find()) {
+    System.err.println("HTML escaped char not converted " + m.group(1));
+  }
+  return text.trim();
 }

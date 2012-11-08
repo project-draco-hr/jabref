@@ -1,17 +1,13 @@
 {
   super();
-  escapedSymbols.put("&ldquo;","``");
-  escapedSymbols.put("&rdquo;","''");
-  escapedSymbols.put("&lsquo;","``");
-  escapedSymbols.put("&rsquo;","''");
-  escapedSymbols.put("&nbsp;"," ");
-  escapedSymbols.put("&quot;","\"");
-  escapedSymbols.put("&amp;","&");
-  escapedSymbols.put("&lt;","<");
-  escapedSymbols.put("&gt;",">");
-  escapedSymbols.put("&mu;","\\$\\\\mu\\$");
-  escapedSymbols.put("&times;","\\$\\\\times\\$");
-  escapedSymbols.put("&Sigma;","\\{\\$\\\\Sigma\\$\\}");
-  escapedSymbols.put("&Delta;","\\{\\$\\\\Delta\\$\\}");
-  escapedSymbols.put("&radic;","\\$\\\\sqrt{}\\$");
+  for (int i=0; i < conversionList.length; i++) {
+    if (conversionList[i][2].length() >= 0) {
+      if (conversionList[i][1].length() >= 0) {
+        escapedSymbols.put("&" + conversionList[i][1] + ";",conversionList[i][2]);
+      }
+      if (conversionList[i][0].length() >= 0) {
+        numSymbols.put(Integer.decode(conversionList[i][0]),conversionList[i][2]);
+      }
+    }
+  }
 }
