@@ -12,12 +12,17 @@
   entry.setField("title",title);
   String author=(String)entry.getField("author");
   if (author != null) {
-    author=author.replaceAll("\\.",". ");
-    author=author.replaceAll("  "," ");
-    author=author.replaceAll("\\. -",".-");
-    author=author.replaceAll("; "," and ");
-    author=author.replaceAll("[,;]$","");
-    entry.setField("author",author);
+    if (author.indexOf("a href=") >= 0) {
+      entry.setField("author","");
+    }
+ else {
+      author=author.replaceAll("\\.",". ");
+      author=author.replaceAll("  "," ");
+      author=author.replaceAll("\\. -",".-");
+      author=author.replaceAll("; "," and ");
+      author=author.replaceAll("[,;]$","");
+      entry.setField("author",author);
+    }
   }
   String month=(String)entry.getField("month");
   if ((month != null) && (month.length() > 0)) {
