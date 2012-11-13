@@ -67,21 +67,22 @@
         }
       }
     }
-    if (entry.getField("author") == null) {
+    if (entry.getField("author") == null || entry.getField("author").startsWith("a href")) {
       entry.setField("author","");
     }
     if (entry.getType() == BibtexEntryType.getStandardType("inproceedings") && entry.getField("author").equals("")) {
       entry.setType(BibtexEntryType.getStandardType("proceedings"));
     }
     if (includeAbstract) {
-      index=allText.indexOf("id=\"abstract-1\"",piv);
+      index=text.indexOf("id=\"abstract");
       if (index >= 0) {
-        endIndex=allText.indexOf("</div>",index) + 6;
-        piv=endIndex;
-        text=allText.substring(index,endIndex);
+        endIndex=text.indexOf("</div>",index) + 6;
+        text=text.substring(index,endIndex);
         Matcher absMatcher=absPattern.matcher(text);
         if (absMatcher.find()) {
-          entry.setField("abstract",absMatcher.group(1));
+          String abstr=absMatcher.group(1);
+          abstr=abstr.replaceAll("<span class='snippet'>([\\w]+)</span>","$1");
+          entry.setField("abstract",htmlConverter.format(abstr));
         }
       }
     }

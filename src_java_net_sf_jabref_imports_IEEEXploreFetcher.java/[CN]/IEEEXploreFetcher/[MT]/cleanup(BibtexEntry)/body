@@ -1,23 +1,28 @@
 {
   if (entry == null)   return null;
   String title=(String)entry.getField("title");
-  title=title.replaceAll("[ ]?img src=.+alt=\"(.+)\">[ ]?","\\$$1\\$");
+  title=title.replaceAll("[ ]?img src=.+alt=\"([^\"]+)\">[ ]?","\\$$1\\$");
   title=title.replaceAll("/sub /spl infin//","\\$_\\\\infty\\$");
   title=title.replaceAll("/sup /spl infin//","\\$\\^\\\\infty\\$");
   title=title.replaceAll("/[sS]pl ([a-zA-Z]+)/","\\$\\\\$1\\$");
-  title=title.replaceAll("/sup (.+)/","\\$\\^$1\\$");
-  title=title.replaceAll("/sub (.+)/","\\$_$1\\$");
-  title=title.replaceAll("\\(sup\\)(.+)\\(/sup\\)","\\$\\^$1\\$");
+  title=title.replaceAll("/sup ([^/]+)/","\\$\\^$1\\$");
+  title=title.replaceAll("/sub ([^/]+)/","\\$_$1\\$");
+  title=title.replaceAll("\\(sup\\)([^/]+)\\(/sup\\)","\\$\\^$1\\$");
   title=title.replaceAll("\\\\infin","\\\\infty");
   entry.setField("title",title);
   String author=(String)entry.getField("author");
   if (author != null) {
-    author=author.replaceAll("\\.",". ");
-    author=author.replaceAll("  "," ");
-    author=author.replaceAll("\\. -",".-");
-    author=author.replaceAll("; "," and ");
-    author=author.replaceAll("[,;]$","");
-    entry.setField("author",author);
+    if (author.indexOf("a href=") >= 0) {
+      entry.setField("author","");
+    }
+ else {
+      author=author.replaceAll("\\.",". ");
+      author=author.replaceAll("  "," ");
+      author=author.replaceAll("\\. -",".-");
+      author=author.replaceAll("; "," and ");
+      author=author.replaceAll("[,;]$","");
+      entry.setField("author",author);
+    }
   }
   String month=(String)entry.getField("month");
   if ((month != null) && (month.length() > 0)) {
