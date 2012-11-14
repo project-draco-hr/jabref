@@ -1,15 +1,23 @@
 {
   if (entry == null)   return null;
   String title=(String)entry.getField("title");
-  title=title.replaceAll("[ ]?img src=.+alt=\"([^\"]+)\">[ ]?","\\$$1\\$");
+  title=title.replaceAll("[ ]?img src=[^ ]+ alt=\"([^\"]+)\">[ ]?","\\$$1\\$");
   title=title.replaceAll("/sub /spl infin//","\\$_\\\\infty\\$");
   title=title.replaceAll("/sup /spl infin//","\\$\\^\\\\infty\\$");
-  title=title.replaceAll("/[sS]pl ([a-zA-Z]+)/","\\$\\\\$1\\$");
-  title=title.replaceAll("/sup ([^/]+)/","\\$\\^$1\\$");
-  title=title.replaceAll("/sub ([^/]+)/","\\$_$1\\$");
+  title=title.replaceAll("/[sS]pl ([^/]+)/","\\$\\\\$1\\$");
+  if (Globals.prefs.getBoolean("useConvertToEquation")) {
+    title=title.replaceAll("/sup ([^/]+)/","\\$\\^\\{$1\\}\\$");
+    title=title.replaceAll("/sub ([^/]+)/","\\$_\\{$1\\}\\$");
+  }
+ else {
+    title=title.replaceAll("/sup ([^/]+)/","\\\\textsuperscript\\{$1\\}");
+    title=title.replaceAll("/sub ([^/]+)/","\\\\textsubscript\\{$1\\}");
+  }
   title=title.replaceAll("\\(sup\\)([^/]+)\\(/sup\\)","\\$\\^$1\\$");
   title=title.replaceAll("\\\\infin","\\\\infty");
-  title=caseKeeper.format(title,caseKeeperList.wordListIEEEXplore);
+  if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+    title=caseKeeper.format(title,caseKeeperList.wordListIEEEXplore);
+  }
   entry.setField("title",title);
   String author=(String)entry.getField("author");
   if (author != null) {
