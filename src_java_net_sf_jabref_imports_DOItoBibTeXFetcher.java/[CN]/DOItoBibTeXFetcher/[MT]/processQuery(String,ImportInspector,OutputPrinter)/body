@@ -17,10 +17,6 @@
     e.printStackTrace();
     return false;
   }
-catch (  IOException e) {
-    e.printStackTrace();
-    return false;
-  }
   URLConnection conn;
   try {
     conn=url.openConnection();
@@ -32,7 +28,7 @@ catch (  IOException e) {
   conn.setRequestProperty("Accept","text/bibliography; style=bibtex");
   String bibtexString;
   try {
-    bibtexString=getResults(conn);
+    bibtexString=Util.getResults(conn);
   }
  catch (  FileNotFoundException e) {
     status.showMessage(Globals.lang("Unknown DOI: '%0'.",query),Globals.lang("Get BibTeX entry from DOI"),JOptionPane.INFORMATION_MESSAGE);
@@ -43,6 +39,13 @@ catch (  IOException e) {
     return false;
   }
   BibtexEntry entry=BibtexParser.singleFromString(bibtexString);
+  String title=(String)entry.getField("title");
+  if (title != null) {
+    if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+      title=caseKeeper.format(title);
+    }
+    entry.setField("title",title);
+  }
   inspector.addEntry(entry);
   return true;
 }

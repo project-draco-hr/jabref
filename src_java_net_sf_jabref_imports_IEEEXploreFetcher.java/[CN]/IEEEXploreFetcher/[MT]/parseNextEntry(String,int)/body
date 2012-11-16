@@ -12,15 +12,15 @@
     Matcher typeMatcher=typePattern.matcher(text);
     if (typeMatcher.find()) {
       typeName=typeMatcher.group(1);
-      if (typeName.equalsIgnoreCase("IEEE Journals &amp; Magazines") || typeName.equalsIgnoreCase("IEEE Early Access Articles") || typeName.equalsIgnoreCase("IET Journals &amp; Magazines")|| typeName.equalsIgnoreCase("AIP Journals &amp; Magazines")|| typeName.equalsIgnoreCase("AVS Journals &amp; Magazines")|| typeName.equalsIgnoreCase("IBM Journals &amp; Magazines")) {
+      if (typeName.equalsIgnoreCase("IEEE Journals &amp; Magazines") || typeName.equalsIgnoreCase("IEEE Early Access Articles") || typeName.equalsIgnoreCase("IET Journals &amp; Magazines")|| typeName.equalsIgnoreCase("AIP Journals &amp; Magazines")|| typeName.equalsIgnoreCase("AVS Journals &amp; Magazines")|| typeName.equalsIgnoreCase("IBM Journals &amp; Magazines")|| typeName.equalsIgnoreCase("TUP Journals &amp; Magazines")|| typeName.equalsIgnoreCase("BIAI Journals &amp; Magazines")) {
         type=BibtexEntryType.getType("article");
         sourceField="journal";
       }
- else       if (typeName.equalsIgnoreCase("IEEE Conference Publications") || typeName.equalsIgnoreCase("IET Conference Publications")) {
+ else       if (typeName.equalsIgnoreCase("IEEE Conference Publications") || typeName.equalsIgnoreCase("IET Conference Publications") || typeName.equalsIgnoreCase("VDE Conference Publications")) {
         type=BibtexEntryType.getType("inproceedings");
         sourceField="booktitle";
       }
- else       if (typeName.equalsIgnoreCase("IEEE Standards")) {
+ else       if (typeName.equalsIgnoreCase("IEEE Standards") || typeName.equalsIgnoreCase("Standards")) {
         type=BibtexEntryType.getType("standard");
         sourceField="number";
       }
@@ -28,7 +28,7 @@
         type=BibtexEntryType.getType("Electronic");
         sourceField="note";
       }
- else       if (typeName.equalsIgnoreCase("Wiley-IEEE Press eBook Chapters")) {
+ else       if (typeName.equalsIgnoreCase("Wiley-IEEE Press eBook Chapters") || typeName.equalsIgnoreCase("MIT Press eBook Chapters")) {
         type=BibtexEntryType.getType("inCollection");
         sourceField="booktitle";
       }
@@ -46,6 +46,9 @@
     }
     if (typeName.equalsIgnoreCase("Wiley-IEEE Press eBook Chapters")) {
       entry.setField("publisher","Wiley-IEEE Press");
+    }
+ else     if (typeName.equalsIgnoreCase("MIT Press eBook Chapters")) {
+      entry.setField("publisher","MIT Press");
     }
     if (typeName.equalsIgnoreCase("IEEE Early Access Articles")) {
       entry.setField("note","Early Access");
@@ -67,21 +70,22 @@
         }
       }
     }
-    if (entry.getField("author") == null) {
+    if (entry.getField("author") == null || entry.getField("author").startsWith("a href")) {
       entry.setField("author","");
     }
     if (entry.getType() == BibtexEntryType.getStandardType("inproceedings") && entry.getField("author").equals("")) {
       entry.setType(BibtexEntryType.getStandardType("proceedings"));
     }
     if (includeAbstract) {
-      index=allText.indexOf("id=\"abstract-1\"",piv);
+      index=text.indexOf("id=\"abstract");
       if (index >= 0) {
-        endIndex=allText.indexOf("</div>",index) + 6;
-        piv=endIndex;
-        text=allText.substring(index,endIndex);
+        endIndex=text.indexOf("</div>",index) + 6;
+        text=text.substring(index,endIndex);
         Matcher absMatcher=absPattern.matcher(text);
         if (absMatcher.find()) {
-          entry.setField("abstract",absMatcher.group(1));
+          String abstr=absMatcher.group(1);
+          abstr=abstr.replaceAll("<span class='snippet'>([\\w]+)</span>","$1");
+          entry.setField("abstract",htmlConverter.format(abstr));
         }
       }
     }

@@ -1,0 +1,31 @@
+{
+  NamedCompound ce=new NamedCompound(Globals.lang("Move external links to 'file' field"));
+  for (  BibtexEntry entry : entries) {
+    FileListTableModel tableModel=new FileListTableModel();
+    String oldFileContent=entry.getField(GUIGlobals.FILE_FIELD);
+    if (oldFileContent != null) {
+      tableModel.setContent(oldFileContent);
+    }
+    int oldRowCount=tableModel.getRowCount();
+    for (int j=0; j < fields.length; j++) {
+      String o=entry.getField(fields[j]);
+      if (o != null) {
+        String s=o;
+        if (s.trim().length() > 0) {
+          File f=new File(s);
+          FileListEntry flEntry=new FileListEntry(f.getName(),s,Globals.prefs.getExternalFileTypeByExt(fields[j]));
+          tableModel.addEntry(tableModel.getRowCount(),flEntry);
+          entry.clearField(fields[j]);
+          ce.addEdit(new UndoableFieldChange(entry,fields[j],o,null));
+        }
+      }
+    }
+    if (tableModel.getRowCount() != oldRowCount) {
+      String newValue=tableModel.getStringRepresentation();
+      entry.setField(GUIGlobals.FILE_FIELD,newValue);
+      ce.addEdit(new UndoableFieldChange(entry,GUIGlobals.FILE_FIELD,oldFileContent,newValue));
+    }
+  }
+  ce.end();
+  return ce;
+}

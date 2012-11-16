@@ -1,22 +1,42 @@
 {
   if (entry == null)   return null;
   String title=(String)entry.getField("title");
-  title=title.replaceAll("[ ]?img src=.+alt=\"(.+)\">[ ]?","\\$$1\\$");
-  title=title.replaceAll("/sub /spl infin//","\\$_\\\\infty\\$");
-  title=title.replaceAll("/sup /spl infin//","\\$\\^\\\\infty\\$");
-  title=title.replaceAll("/[sS]pl ([a-zA-Z]+)/","\\$\\\\$1\\$");
-  title=title.replaceAll("/sup ([0-9\\+\\.\\(\\)]+)/","\\$\\^$1\\$");
-  title=title.replaceAll("/sub ([0-9\\+\\.\\(\\)]+)/","\\$_$1\\$");
-  title=title.replaceAll("\\\\infin","\\\\infty");
-  entry.setField("title",title);
+  if (title != null) {
+    title=title.replaceAll("[ ]?img src=[^ ]+ alt=\"([^\"]+)\">[ ]?","\\$$1\\$");
+    title=title.replaceAll("/sub /spl infin//","\\$_\\\\infty\\$");
+    title=title.replaceAll("/sup /spl infin//","\\$\\^\\\\infty\\$");
+    title=title.replaceAll("/[sS]pl ([^/]+)/","\\$\\\\$1\\$");
+    if (Globals.prefs.getBoolean("useConvertToEquation")) {
+      title=title.replaceAll("/sup ([^/]+)/","\\$\\^\\{$1\\}\\$");
+      title=title.replaceAll("/sub ([^/]+)/","\\$_\\{$1\\}\\$");
+      title=title.replaceAll("\\(sup\\)([^(]+)\\(/sup\\)","\\$\\^\\{$1\\}\\$");
+      title=title.replaceAll("\\(sub\\)([^(]+)\\(/sub\\)","\\_\\{$1\\}\\$");
+    }
+ else {
+      title=title.replaceAll("/sup ([^/]+)/","\\\\textsuperscript\\{$1\\}");
+      title=title.replaceAll("/sub ([^/]+)/","\\\\textsubscript\\{$1\\}");
+      title=title.replaceAll("\\(sup\\)([^(]+)\\(/sup\\)","\\\\textsuperscript\\{$1\\}");
+      title=title.replaceAll("\\(sub\\)([^(]+)\\(/sub\\)","\\\\textsubscript\\{$1\\}");
+    }
+    title=title.replaceAll("\\\\infin","\\\\infty");
+    if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+      title=caseKeeper.format(title,caseKeeperList.wordListIEEEXplore);
+    }
+    entry.setField("title",title);
+  }
   String author=(String)entry.getField("author");
   if (author != null) {
-    author=author.replaceAll("\\.",". ");
-    author=author.replaceAll("  "," ");
-    author=author.replaceAll("\\. -",".-");
-    author=author.replaceAll("; "," and ");
-    author=author.replaceAll("[,;]$","");
-    entry.setField("author",author);
+    if (author.indexOf("a href=") >= 0) {
+      entry.setField("author","");
+    }
+ else {
+      author=author.replaceAll("\\.",". ");
+      author=author.replaceAll("  "," ");
+      author=author.replaceAll("\\. -",".-");
+      author=author.replaceAll("; "," and ");
+      author=author.replaceAll("[,;]$","");
+      entry.setField("author",author);
+    }
   }
   String month=(String)entry.getField("month");
   if ((month != null) && (month.length() > 0)) {
@@ -164,6 +184,26 @@
       if (fullName.contains("Abstract") == false && fullName.contains("Summaries") == false && fullName.contains("Conference Record") == false)       fullName="Proc. " + fullName;
     }
     entry.setField(sourceField,fullName);
+  }
+  String abstr=(String)entry.getField("abstract");
+  if (abstr != null) {
+    abstr=abstr.replaceAll("/sub /spl infin//","\\$_\\\\infty\\$");
+    abstr=abstr.replaceAll("/sup /spl infin//","\\$\\^\\\\infty\\$");
+    abstr=abstr.replaceAll("/[sS]pl ([^/]+)/","\\$\\\\$1\\$");
+    if (Globals.prefs.getBoolean("useConvertToEquation")) {
+      abstr=abstr.replaceAll("/sup ([^/]+)/","\\$\\^\\{$1\\}\\$");
+      abstr=abstr.replaceAll("/sub ([^/]+)/","\\$_\\{$1\\}\\$");
+      abstr=abstr.replaceAll("\\(sup\\)([^(]+)\\(/sup\\)","\\$\\^\\{$1\\}\\$");
+      abstr=abstr.replaceAll("\\(sub\\)([^(]+)\\(/sub\\)","\\_\\{$1\\}\\$");
+    }
+ else {
+      abstr=abstr.replaceAll("/sup ([^/]+)/","\\\\textsuperscript\\{$1\\}");
+      abstr=abstr.replaceAll("/sub ([^/]+)/","\\\\textsubscript\\{$1\\}");
+      abstr=abstr.replaceAll("\\(sup\\)([^(]+)\\(/sup\\)","\\\\textsuperscript\\{$1\\}");
+      abstr=abstr.replaceAll("\\(sub\\)([^(]+)\\(/sub\\)","\\\\textsubscript\\{$1\\}");
+    }
+    abstr=abstr.replaceAll("\\\\infin","\\\\infty");
+    entry.setField("abstract",abstr);
   }
   return entry;
 }

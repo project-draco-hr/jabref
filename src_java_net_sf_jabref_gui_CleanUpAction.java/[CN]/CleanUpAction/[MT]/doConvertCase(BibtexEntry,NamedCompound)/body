@@ -1,0 +1,11 @@
+{
+  final String field="title";
+  String oldValue=entry.getField(field);
+  if (oldValue == null)   return;
+  final CaseKeeper caseKeeper=new CaseKeeper();
+  String newValue=caseKeeper.format(oldValue);
+  if (!oldValue.equals(newValue)) {
+    entry.setField(field,newValue);
+    ce.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
+  }
+}
