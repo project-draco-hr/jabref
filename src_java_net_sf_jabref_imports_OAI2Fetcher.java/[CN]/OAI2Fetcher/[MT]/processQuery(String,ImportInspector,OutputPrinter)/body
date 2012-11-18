@@ -15,16 +15,22 @@
         }
       }
       status.setStatus(Globals.lang("Processing ") + key);
-      if (!shouldContinue)       break;
+      if (!shouldContinue) {
+        break;
+      }
       BibtexEntry be=importOai2Entry(key);
-      if (shouldWait())       lastCall=new Date();
-      if (be != null)       dialog.addEntry(be);
+      if (shouldWait()) {
+        lastCall=new Date();
+      }
+      if (be != null) {
+        dialog.addEntry(be);
+      }
       dialog.setProgress(i + 1,keys.length);
     }
     return true;
   }
  catch (  Exception e) {
-    status.setStatus(Globals.lang("Error while fetching from OIA2") + ": " + e.getMessage());
+    status.setStatus(Globals.lang("Error while fetching from OAI2") + ": " + e.getMessage());
     e.printStackTrace();
   }
   return false;
