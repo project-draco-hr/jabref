@@ -38,13 +38,16 @@ catch (  IOException e) {
     return false;
   }
   BibtexEntry entry=BibtexParser.singleFromString(bibtexString);
-  String title=(String)entry.getField("title");
-  if (title != null) {
-    if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
-      title=caseKeeper.format(title);
+  if (entry != null) {
+    String title=(String)entry.getField("title");
+    if (title != null) {
+      if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+        title=caseKeeper.format(title);
+      }
+      entry.setField("title",title);
     }
-    entry.setField("title",title);
+    inspector.addEntry(entry);
+    return true;
   }
-  inspector.addEntry(entry);
-  return true;
+ else   return false;
 }
