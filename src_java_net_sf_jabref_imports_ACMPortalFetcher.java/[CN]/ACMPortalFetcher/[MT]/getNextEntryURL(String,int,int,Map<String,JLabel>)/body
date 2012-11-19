@@ -24,16 +24,22 @@
         if (authStart >= 0) {
           int authEnd=text.indexOf("</div>",authStart + authMarker.length());
           if (authEnd >= 0) {
-            sb.append("<p>" + text.substring(authStart,authEnd) + "</p>");
+            sb.append("<p>").append(text.substring(authStart,authEnd)).append("</p>");
           }
         }
         Matcher titM=titlePattern.matcher(part);
-        if (titM.find())         sb.append("<p>" + titM.group(1) + "</p>");
+        if (titM.find()) {
+          sb.append("<p>").append(titM.group(1)).append("</p>");
+        }
         Matcher mY=monthYearPattern.matcher(part);
-        if (mY.find())         sb.append("<p>" + mY.group(1) + "</p>");
+        if (mY.find()) {
+          sb.append("<p>").append(mY.group(1)).append("</p>");
+        }
         part=sb.toString();
       }
- else       part=link;
+ else {
+        part=link;
+      }
       JLabel preview=new JLabel("<html>" + part + "</html>");
       preview.setPreferredSize(new Dimension(750,100));
       entries.put(link,preview);
