@@ -4,8 +4,8 @@
   if (oldValue == null) {
     return;
   }
-  final CaseKeeper caseKeeper=new CaseKeeper();
-  String newValue=caseKeeper.format(oldValue);
+  String newValue=oldValue;
+  newValue=newValue.replace("$$","").replaceAll("\\}([- /])?\\{","$1");
   if (!oldValue.equals(newValue)) {
     entry.setField(field,newValue);
     ce.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
