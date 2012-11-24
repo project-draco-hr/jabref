@@ -1,11 +1,29 @@
 {
   for (  String id : selection.keySet()) {
-    if (!shouldContinue)     break;
+    if (!shouldContinue) {
+      break;
+    }
     boolean sel=selection.get(id);
     if (sel) {
       try {
         BibtexEntry entry=downloadEntryBibTeX(id,fetchAbstract);
-        inspector.addEntry(entry);
+        if (entry != null) {
+          String title=(String)entry.getField("title");
+          if (title != null) {
+            title=title.replaceAll("\\\\&","&").replaceAll("\\\\#","#");
+            title=convertHTMLChars(title);
+            if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+              title=caseKeeper.format(title);
+            }
+            entry.setField("title",title);
+          }
+          String abstr=(String)entry.getField("abstract");
+          if (abstr != null) {
+            abstr=convertHTMLChars(abstr);
+            entry.setField("abstract",abstr);
+          }
+          inspector.addEntry(entry);
+        }
       }
  catch (      IOException e) {
         e.printStackTrace();
