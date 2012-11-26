@@ -1,2 +1,102 @@
 {
+  BibtexEntry entry=null;
+  int index=allText.indexOf("<div class=\"detail",piv);
+  int endIndex=allText.indexOf("</div>",index);
+  if (index >= 0 && endIndex > 0) {
+    endIndex+=6;
+    piv=endIndex;
+    String text=allText.substring(index,endIndex);
+    BibtexEntryType type=null;
+    String sourceField=null;
+    String typeName="";
+    Matcher typeMatcher=typePattern.matcher(text);
+    if (typeMatcher.find()) {
+      typeName=typeMatcher.group(1);
+      if (typeName.equalsIgnoreCase("IEEE Journals &amp; Magazines") || typeName.equalsIgnoreCase("IEEE Early Access Articles") || typeName.equalsIgnoreCase("IET Journals &amp; Magazines")|| typeName.equalsIgnoreCase("AIP Journals &amp; Magazines")|| typeName.equalsIgnoreCase("AVS Journals &amp; Magazines")|| typeName.equalsIgnoreCase("IBM Journals &amp; Magazines")|| typeName.equalsIgnoreCase("TUP Journals &amp; Magazines")|| typeName.equalsIgnoreCase("BIAI Journals &amp; Magazines")) {
+        type=BibtexEntryType.getType("article");
+        sourceField="journal";
+      }
+ else       if (typeName.equalsIgnoreCase("IEEE Conference Publications") || typeName.equalsIgnoreCase("IET Conference Publications") || typeName.equalsIgnoreCase("VDE Conference Publications")) {
+        type=BibtexEntryType.getType("inproceedings");
+        sourceField="booktitle";
+      }
+ else       if (typeName.equalsIgnoreCase("IEEE Standards") || typeName.equalsIgnoreCase("Standards")) {
+        type=BibtexEntryType.getType("standard");
+        sourceField="number";
+      }
+ else       if (typeName.equalsIgnoreCase("IEEE eLearning Library Courses")) {
+        type=BibtexEntryType.getType("Electronic");
+        sourceField="note";
+      }
+ else       if (typeName.equalsIgnoreCase("Wiley-IEEE Press eBook Chapters") || typeName.equalsIgnoreCase("MIT Press eBook Chapters") || typeName.equalsIgnoreCase("IEEE USA Books &amp; eBooks")) {
+        type=BibtexEntryType.getType("inCollection");
+        sourceField="booktitle";
+      }
+    }
+    if (type == null) {
+      type=BibtexEntryType.getType("misc");
+      sourceField="note";
+      System.err.println("Type detection failed. Use MISC instead.");
+      unparseable++;
+      System.err.println(text);
+    }
+    entry=new BibtexEntry(Util.createNeutralId(),type);
+    if (typeName.equalsIgnoreCase("IEEE Standards")) {
+      entry.setField("organization","IEEE");
+    }
+    if (typeName.equalsIgnoreCase("Wiley-IEEE Press eBook Chapters")) {
+      entry.setField("publisher","Wiley-IEEE Press");
+    }
+ else     if (typeName.equalsIgnoreCase("MIT Press eBook Chapters")) {
+      entry.setField("publisher","MIT Press");
+    }
+ else     if (typeName.equalsIgnoreCase("IEEE USA Books &amp; eBooks")) {
+      entry.setField("publisher","IEEE USA");
+    }
+    if (typeName.equalsIgnoreCase("IEEE Early Access Articles")) {
+      entry.setField("note","Early Access");
+    }
+    Set<String> fields=fieldPatterns.keySet();
+    for (    String field : fields) {
+      Matcher fieldMatcher=Pattern.compile(fieldPatterns.get(field)).matcher(text);
+      if (fieldMatcher.find()) {
+        entry.setField(field,htmlConverter.format(fieldMatcher.group(1)));
+        if (field.equals("title") && fieldMatcher.find()) {
+          String sec_title=htmlConverter.format(fieldMatcher.group(1));
+          if (entry.getType() == BibtexEntryType.getStandardType("standard")) {
+            sec_title=sec_title.replaceAll("IEEE Std ","");
+          }
+          entry.setField(sourceField,sec_title);
+        }
+        if (field.equals("pages") && fieldMatcher.groupCount() == 2) {
+          entry.setField(field,fieldMatcher.group(1) + "-" + fieldMatcher.group(2));
+        }
+      }
+    }
+    if (entry.getField("author") == null || entry.getField("author").startsWith("a href") || entry.getField("author").startsWith("Topic(s)")) {
+      entry.setField("author","");
+    }
+    if (entry.getType() == BibtexEntryType.getStandardType("inproceedings") && entry.getField("author").equals("")) {
+      entry.setType(BibtexEntryType.getStandardType("proceedings"));
+    }
+    if (includeAbstract) {
+      index=text.indexOf("id=\"abstract");
+      if (index >= 0) {
+        endIndex=text.indexOf("</div>",index) + 6;
+        text=text.substring(index,endIndex);
+        Matcher absMatcher=absPattern.matcher(text);
+        if (absMatcher.find()) {
+          String abstr=absMatcher.group(1);
+          abstr=abstr.replaceAll("<span class='snippet'>([\\w]+)</span>","$1");
+          entry.setField("abstract",htmlConverter.format(abstr));
+        }
+      }
+    }
+  }
+  if (entry == null) {
+    return null;
+  }
+ else {
+    return cleanup(entry);
+  }
 }
