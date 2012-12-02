@@ -1,0 +1,36 @@
+{
+  if (!doneBuilding) {
+    return;
+  }
+  if (!identical[0]) {
+    if (rb[0][0].isSelected()) {
+      mergedEntry.setType(one.getType());
+    }
+ else {
+      mergedEntry.setType(two.getType());
+    }
+  }
+  for (int i=0; i < joint.size(); i++) {
+    if (!identical[i + 1]) {
+      if (rb[0][i + 1].isSelected()) {
+        mergedEntry.setField(jointStrings[i],one.getField(jointStrings[i]));
+      }
+ else       if (rb[2][i + 1].isSelected()) {
+        mergedEntry.setField(jointStrings[i],two.getField(jointStrings[i]));
+      }
+ else {
+        mergedEntry.setField(jointStrings[i],null);
+      }
+    }
+  }
+  pp.setEntry(mergedEntry);
+  StringWriter sw=new StringWriter();
+  try {
+    mergedEntry.write(sw,new LatexFieldFormatter(),false);
+  }
+ catch (  IOException ex) {
+    System.err.println(Globals.lang("Error in entry: " + ex.getMessage()));
+  }
+  jta.setText(sw.getBuffer().toString());
+  jta.setCaretPosition(0);
+}
