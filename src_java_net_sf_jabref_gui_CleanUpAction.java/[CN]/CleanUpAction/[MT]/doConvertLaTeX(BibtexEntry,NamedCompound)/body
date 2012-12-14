@@ -6,6 +6,14 @@
   }
   String newValue=oldValue;
   newValue=newValue.replace("$$","").replaceAll("\\}([- /])?\\{","$1");
+  newValue=newValue.replaceAll("(([^$]|\\\\\\$)*)\\$","$1@@");
+  newValue=newValue.replaceAll("([^@]*)@@([^@]*)@@","$1\\$$2@@");
+  newValue=newValue.replaceAll("([0-9\\(\\.]+[ ]?[-+/]?[ ]?)\\$","\\$$1");
+  newValue=newValue.replaceAll("@@([ ]?[-+/]?[ ]?[0-9\\)\\.]+)"," $1@@");
+  newValue=newValue.replace("@@","$");
+  newValue=newValue.replace("  "," ");
+  newValue=newValue.replace("$$","$");
+  newValue=newValue.replace(" )$",")$");
   if (!oldValue.equals(newValue)) {
     entry.setField(field,newValue);
     ce.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
