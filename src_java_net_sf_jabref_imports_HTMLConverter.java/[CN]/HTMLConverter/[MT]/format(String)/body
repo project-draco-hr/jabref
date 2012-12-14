@@ -34,7 +34,15 @@
   while (m.find()) {
     int num=Integer.decode(m.group(2).replace("x","#") + m.group(4));
     if (escapedAccents.containsKey(num)) {
-      text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + escapedAccents.get(num) + "\\{"+ m.group(1)+ "\\}\\}");
+      if (m.group(1).equals("i")) {
+        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + escapedAccents.get(num) + "\\{\\\\i\\}\\}");
+      }
+ else       if (m.group(1).equals("j")) {
+        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + escapedAccents.get(num) + "\\{\\\\j\\}\\}");
+      }
+ else {
+        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + escapedAccents.get(num) + "\\{"+ m.group(1)+ "\\}\\}");
+      }
     }
   }
   escapedPattern=Pattern.compile("&#([x]*)([0]*)(\\p{XDigit}+);");
