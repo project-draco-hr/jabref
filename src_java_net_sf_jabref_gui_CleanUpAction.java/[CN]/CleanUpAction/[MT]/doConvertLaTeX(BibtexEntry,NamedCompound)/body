@@ -5,14 +5,14 @@
     return;
   }
   String newValue=oldValue;
-  newValue=newValue.replace("$$","").replaceAll("\\}([- /])?\\{","$1");
+  newValue=newValue.replace("$$","").replaceAll("(?<!\\\\[\\p{Alpha}]{0,100}\\{[^\\}]{0,100})\\}([-/ ]?)\\{","$1");
   newValue=newValue.replaceAll("(([^$]|\\\\\\$)*)\\$","$1@@");
   newValue=newValue.replaceAll("([^@]*)@@([^@]*)@@","$1\\$$2@@");
   newValue=newValue.replaceAll("([0-9\\(\\.]+[ ]?[-+/]?[ ]?)\\$","\\$$1");
   newValue=newValue.replaceAll("@@([ ]?[-+/]?[ ]?[0-9\\)\\.]+)"," $1@@");
   newValue=newValue.replace("@@","$");
   newValue=newValue.replace("  "," ");
-  newValue=newValue.replace("$$","$");
+  newValue=newValue.replace("$$","");
   newValue=newValue.replace(" )$",")$");
   if (!oldValue.equals(newValue)) {
     entry.setField(field,newValue);
