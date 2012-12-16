@@ -1,19 +1,11 @@
 {
   logger.debug("Loading emacs keybindings");
-  JTextComponent[] jtcs=new JTextComponent[]{new JTextArea(),new JTextPane(),new JTextField(),new JEditorPane()};
-  for (int i=0; i < jtcs.length; i++) {
-    Keymap k=jtcs[i].getKeymap();
-    JTextComponent.loadKeymap(k,EMACS_KEY_BINDINGS,jtcs[i].getActions());
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_D,InputEvent.ALT_MASK),new KillWordAction(killWordAction));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,InputEvent.ALT_MASK),new BackwardKillWordAction(backwardKillWordAction));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE,InputEvent.CTRL_MASK),new SetMarkCommandAction(setMarkCommandAction));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_W,InputEvent.ALT_MASK),new KillRingSaveAction(killRingSaveAction));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_W,InputEvent.CTRL_MASK),new KillRegionAction(killRegionAction));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_K,InputEvent.CTRL_MASK),new KillLineAction(killLineAction));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Y,InputEvent.CTRL_MASK),new YankAction("emacs-yank"));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_Y,InputEvent.ALT_MASK),new YankPopAction("emacs-yank-pop"));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_C,InputEvent.ALT_MASK),new CapitalizeWordAction(capitalizeWordAction));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_L,InputEvent.ALT_MASK),new DowncaseWordAction(downcaseWordAction));
-    k.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_U,InputEvent.ALT_MASK),new UpcaseWordAction(upcaseWordAction));
+  for (int i=0; i < JTCS.length; i++) {
+    Action[] origActions=JTCS[i].getActions();
+    Action[] actions=new Action[origActions.length + EMACS_ACTIONS.length];
+    System.arraycopy(origActions,0,actions,0,origActions.length);
+    System.arraycopy(EMACS_ACTIONS,0,actions,origActions.length,EMACS_ACTIONS.length);
+    Keymap k=JTCS[i].getKeymap();
+    JTCS[i].loadKeymap(k,EMACS_KEY_BINDINGS,actions);
   }
 }

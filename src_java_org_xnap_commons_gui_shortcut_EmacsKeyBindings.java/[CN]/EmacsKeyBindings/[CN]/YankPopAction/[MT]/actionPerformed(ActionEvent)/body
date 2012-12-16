@@ -1,6 +1,10 @@
 {
   JTextComponent jtc=getTextComponent(event);
-  if (jtc != null && KillRing.getInstance().getCurrentTextComponent() == jtc && jtc.getCaretPosition() == YankAction.end && !KillRing.getInstance().isEmpty()) {
+  boolean jtcNotNull=(jtc != null);
+  boolean jtcIsCurrentTextComponent=(KillRing.getInstance().getCurrentTextComponent() == jtc);
+  boolean caretPositionIsEndOfLastYank=(jtc.getCaretPosition() == YankAction.end);
+  boolean killRingNotEmpty=(!KillRing.getInstance().isEmpty());
+  if (jtcNotNull && jtcIsCurrentTextComponent && caretPositionIsEndOfLastYank&& killRingNotEmpty) {
     jtc.setSelectionStart(YankAction.start);
     jtc.setSelectionEnd(YankAction.end);
     String toYank=KillRing.getInstance().next();

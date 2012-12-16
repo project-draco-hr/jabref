@@ -1,16 +1,4 @@
 {
-  JTextComponent[] jtcs=new JTextComponent[]{new JTextArea(),new JTextPane(),new JTextField(),new JEditorPane()};
-  for (int i=0; i < jtcs.length; i++) {
-    Keymap orig=jtcs[i].getKeymap();
-    Keymap backup=JTextComponent.addKeymap(jtcs[i].getClass().getName(),null);
-    Action[] bound=orig.getBoundActions();
-    for (int j=0; j < bound.length; j++) {
-      KeyStroke[] strokes=orig.getKeyStrokesForAction(bound[j]);
-      for (int k=0; k < strokes.length; k++) {
-        backup.addActionForKeyStroke(strokes[k],bound[j]);
-      }
-    }
-    backup.setDefaultAction(orig.getDefaultAction());
-  }
+  createBackup();
   loadEmacsKeyBindings();
 }
