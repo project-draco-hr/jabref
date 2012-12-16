@@ -28,7 +28,7 @@
         type=BibtexEntryType.getType("Electronic");
         sourceField="note";
       }
- else       if (typeName.equalsIgnoreCase("Wiley-IEEE Press eBook Chapters") || typeName.equalsIgnoreCase("MIT Press eBook Chapters")) {
+ else       if (typeName.equalsIgnoreCase("Wiley-IEEE Press eBook Chapters") || typeName.equalsIgnoreCase("MIT Press eBook Chapters") || typeName.equalsIgnoreCase("IEEE USA Books &amp; eBooks")) {
         type=BibtexEntryType.getType("inCollection");
         sourceField="booktitle";
       }
@@ -50,6 +50,9 @@
  else     if (typeName.equalsIgnoreCase("MIT Press eBook Chapters")) {
       entry.setField("publisher","MIT Press");
     }
+ else     if (typeName.equalsIgnoreCase("IEEE USA Books &amp; eBooks")) {
+      entry.setField("publisher","IEEE USA");
+    }
     if (typeName.equalsIgnoreCase("IEEE Early Access Articles")) {
       entry.setField("note","Early Access");
     }
@@ -70,7 +73,7 @@
         }
       }
     }
-    if (entry.getField("author") == null || entry.getField("author").startsWith("a href")) {
+    if (entry.getField("author") == null || entry.getField("author").startsWith("a href") || entry.getField("author").startsWith("Topic(s)")) {
       entry.setField("author","");
     }
     if (entry.getType() == BibtexEntryType.getStandardType("inproceedings") && entry.getField("author").equals("")) {
