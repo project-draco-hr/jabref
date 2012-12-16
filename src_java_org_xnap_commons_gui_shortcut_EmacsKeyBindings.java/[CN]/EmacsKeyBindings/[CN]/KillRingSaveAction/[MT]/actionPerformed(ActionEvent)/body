@@ -1,28 +1,4 @@
 {
   JTextComponent jtc=getTextComponent(e);
-  if (jtc != null) {
-    int caretPosition=jtc.getCaretPosition();
-    String text=jtc.getSelectedText();
-    if (text != null) {
-    }
- else     if (SetMarkCommandAction.isMarked(jtc)) {
-      int beginPos=caretPosition;
-      int endPos=SetMarkCommandAction.getCaretPosition();
-      if (beginPos > endPos) {
-        int tmp=endPos;
-        endPos=beginPos;
-        beginPos=tmp;
-      }
-      jtc.setSelectionStart(beginPos);
-      jtc.setSelectionEnd(endPos);
-      SetMarkCommandAction.reset();
-    }
-    text=jtc.getSelectedText();
-    if (text != null) {
-      jtc.copy();
-      KillRing.getInstance().add(text);
-      jtc.setSelectionStart(caretPosition);
-      jtc.setSelectionEnd(caretPosition);
-    }
-  }
+  EmacsKeyBindings.doCopyOrCut(jtc,true);
 }
