@@ -11,9 +11,17 @@
   setupActions();
   setupMainPanel();
   metaData.setFile(file);
-  if (file != null)   try {
-    fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(this,file);
+  if (file == null) {
+    if (!database.getEntries().isEmpty()) {
+      this.baseChanged=true;
+    }
   }
- catch (  IOException ex) {
+ else {
+    try {
+      fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(this,file);
+    }
+ catch (    IOException ex) {
+      System.err.println(ex);
+    }
   }
 }
