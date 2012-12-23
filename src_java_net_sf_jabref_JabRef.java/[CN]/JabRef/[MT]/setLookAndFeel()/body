@@ -1,7 +1,12 @@
 {
   try {
-    String systemLnF=UIManager.getSystemLookAndFeelClassName();
-    if (!Globals.prefs.getBoolean("useDefaultLookAndFeel"))     systemLnF=Globals.prefs.get("lookAndFeel");
+    String systemLnF;
+    if (Globals.prefs.getBoolean("useDefaultLookAndFeel")) {
+      systemLnF=UIManager.getSystemLookAndFeelClassName();
+    }
+ else {
+      systemLnF=Globals.prefs.get("lookAndFeel");
+    }
     if (systemLnF.equals("javax.swing.plaf.metal.MetalLookAndFeel")) {
       Plastic3DLookAndFeel lnf=new Plastic3DLookAndFeel();
       Plastic3DLookAndFeel.setCurrentTheme(new SkyBluer());
@@ -14,5 +19,19 @@
   }
  catch (  Exception e) {
     e.printStackTrace();
+  }
+  boolean overrideDefaultFonts=Globals.prefs.getBoolean("overrideDefaultFonts");
+  if (overrideDefaultFonts) {
+    int fontSize=Globals.prefs.getInt("menuFontSize");
+    UIDefaults defaults=UIManager.getDefaults();
+    Enumeration<Object> keys=defaults.keys();
+    while (keys.hasMoreElements()) {
+      Object key=keys.nextElement();
+      if ((key instanceof String) && (((String)key).endsWith(".font"))) {
+        FontUIResource font=(FontUIResource)UIManager.get(key);
+        font=new FontUIResource(font.getName(),font.getStyle(),fontSize);
+        defaults.put(key,font);
+      }
+    }
   }
 }
