@@ -1,0 +1,56 @@
+{
+  String q;
+  try {
+    q=URLEncoder.encode(doi,"UTF-8");
+  }
+ catch (  UnsupportedEncodingException e) {
+    e.printStackTrace();
+    return null;
+  }
+  String urlString=String.format(URL_PATTERN,q);
+  URL url;
+  try {
+    url=new URL(urlString);
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+    return null;
+  }
+  URLConnection conn;
+  try {
+    conn=url.openConnection();
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    return null;
+  }
+  conn.setRequestProperty("Accept","text/bibliography; style=bibtex");
+  String bibtexString;
+  try {
+    bibtexString=Util.getResults(conn);
+  }
+ catch (  FileNotFoundException e) {
+    if (status != null) {
+      status.showMessage(Globals.lang("Unknown DOI: '%0'.",doi),Globals.lang("Get BibTeX entry from DOI"),JOptionPane.INFORMATION_MESSAGE);
+    }
+    return null;
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+    return null;
+  }
+  BibtexEntry entry=BibtexParser.singleFromString(bibtexString);
+  if (entry != null) {
+    String title=(String)entry.getField("title");
+    if (title != null) {
+      if (Globals.prefs.getBoolean("useUnitFormatterOnSearch")) {
+        title=unitFormatter.format(title);
+      }
+      if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+        title=caseKeeper.format(title);
+      }
+      entry.setField("title",title);
+    }
+  }
+  return entry;
+}
