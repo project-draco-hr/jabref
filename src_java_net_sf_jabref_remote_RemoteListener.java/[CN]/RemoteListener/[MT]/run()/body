@@ -25,25 +25,13 @@
         Vector<ParserResult> loaded=jabref.processArguments(args,false);
         SwingUtilities.invokeLater(new Runnable(){
           public void run(){
-            jabref.jrf.showIfMinimizedToSysTray();
+            JabRef.jrf.showIfMinimizedToSysTray();
           }
         }
 );
         for (int i=0; i < loaded.size(); i++) {
           ParserResult pr=loaded.elementAt(i);
-          if (!pr.toOpenTab()) {
-            jabref.jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),pr.getEncoding(),(i == 0));
-          }
- else {
-            BasePanel panel=jabref.jrf.basePanel();
-            if (panel == null) {
-              jabref.jrf.addTab(pr.getDatabase(),pr.getFile(),pr.getMetaData(),pr.getEncoding(),(i == 0));
-            }
- else {
-              List<BibtexEntry> entries=new ArrayList<BibtexEntry>(pr.getDatabase().getEntries());
-              jabref.jrf.addImportedEntries(panel,entries,"",false);
-            }
-          }
+          JabRef.jrf.addParserResult(pr,(i == 0));
         }
         in.close();
         out.close();
