@@ -11,6 +11,7 @@
   setupActions();
   setupMainPanel();
   metaData.setFile(file);
+  db.addDatabaseChangeListener(new GroupTreeUpdater());
   if (file == null) {
     if (!database.getEntries().isEmpty()) {
       this.baseChanged=true;
@@ -21,7 +22,7 @@
       fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(this,file);
     }
  catch (    IOException ex) {
-      System.err.println(ex);
+      logger.warning(ex.toString());
     }
   }
 }
