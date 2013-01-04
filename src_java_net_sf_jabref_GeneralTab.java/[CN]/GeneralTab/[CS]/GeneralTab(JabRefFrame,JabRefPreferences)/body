@@ -8,6 +8,13 @@
   ctrlClick=new JCheckBox(Globals.lang("Open right-click menu with Ctrl+left button"));
   useOwner=new JCheckBox(Globals.lang("Mark new entries with owner name") + ":");
   useTimeStamp=new JCheckBox(Globals.lang("Mark new entries with addition date") + ". " + Globals.lang("Date format")+ ":");
+  useTimeStamp.addChangeListener(new ChangeListener(){
+    @Override public void stateChanged(    ChangeEvent arg0){
+      updateTimeStamp.setEnabled(useTimeStamp.isSelected());
+    }
+  }
+);
+  updateTimeStamp=new JCheckBox(Globals.lang("Update timestamp on modification"));
   overwriteOwner=new JCheckBox(Globals.lang("Overwrite"));
   overwriteTimeStamp=new JCheckBox(Globals.lang("Overwrite"));
   overwriteOwner.setToolTipText(Globals.lang("If a pasted or imported entry already has " + "the field set, overwrite."));
@@ -77,6 +84,9 @@
   hlp.setText(null);
   hlp.setPreferredSize(new Dimension(24,24));
   builder.append(hlp);
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(updateTimeStamp,2);
   builder.nextLine();
   builder.append(markImportedEntries,13);
   builder.nextLine();

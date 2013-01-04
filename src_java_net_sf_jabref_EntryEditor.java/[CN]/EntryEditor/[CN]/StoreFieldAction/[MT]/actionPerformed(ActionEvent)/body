@@ -24,7 +24,14 @@
  else {
       warnEmptyBibtexkey();
     }
-    panel.undoManager.addEdit(new UndoableKeyChange(panel.database,entry.getId(),oldValue,newValue));
+    UndoableKeyChange undoableKeyChange=new UndoableKeyChange(panel.database,entry.getId(),oldValue,newValue);
+    if (Util.updateTimeStampIsSet()) {
+      NamedCompound ce=Util.doUpdateTimeStamp(entry,undoableKeyChange);
+      panel.undoManager.addEdit(ce);
+    }
+ else {
+      panel.undoManager.addEdit(undoableKeyChange);
+    }
     if ((newValue != null) && (newValue.length() > 0))     fe.setValidBackgroundColor();
  else     fe.setValidBackgroundColor();
     if (fe.getTextComponent().hasFocus())     fe.setActiveBackgroundColor();
@@ -58,7 +65,14 @@
  else         fe.setValidBackgroundColor();
         AbstractAutoCompleter aComp=panel.getAutoCompleter(fe.getFieldName());
         if (aComp != null)         aComp.addBibtexEntry(entry);
-        panel.undoManager.addEdit(new UndoableFieldChange(entry,fe.getFieldName(),oldValue,toSet));
+        UndoableFieldChange undoableFieldChange=new UndoableFieldChange(entry,fe.getFieldName(),oldValue,toSet);
+        if (Util.updateTimeStampIsSet()) {
+          NamedCompound ce=Util.doUpdateTimeStamp(entry,undoableFieldChange);
+          panel.undoManager.addEdit(ce);
+        }
+ else {
+          panel.undoManager.addEdit(undoableFieldChange);
+        }
         updateSource();
         panel.markBaseChanged();
       }
