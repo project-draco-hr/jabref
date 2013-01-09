@@ -7,9 +7,15 @@
     int restIndex=content.indexOf(foundLabel) + foundLabel.length();
     content=content.substring(restIndex);
     Object referred=remaining.get(foundLabel.substring(1,foundLabel.length() - 1));
-    if (referred != null)     writeString(fw,(BibtexString)referred,remaining);
+    if (referred != null)     writeString(fw,(BibtexString)referred,remaining,maxKeyLength);
   }
-  fw.write("@STRING{" + bs.getName() + " = ");
+  if (previousStringType != bs.getType()) {
+    fw.write(Globals.NEWLINE);
+    previousStringType=bs.getType();
+  }
+  String suffix="";
+  for (int i=maxKeyLength - bs.getName().length(); i > 0; i--)   suffix+=" ";
+  fw.write("@String { " + bs.getName() + suffix+ " = ");
   if (!bs.getContent().equals("")) {
     try {
       String formatted=(new LatexFieldFormatter()).format(bs.getContent(),Globals.BIBTEX_STRING);
@@ -20,5 +26,5 @@
     }
   }
  else   fw.write("{}");
-  fw.write("}" + Globals.NEWLINE + Globals.NEWLINE);
+  fw.write(" }" + Globals.NEWLINE);
 }
