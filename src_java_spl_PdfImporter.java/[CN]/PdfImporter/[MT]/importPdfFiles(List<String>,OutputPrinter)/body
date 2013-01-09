@@ -4,11 +4,7 @@
   boolean doNotShowAgain=false;
   boolean neverShow=Globals.prefs.getBoolean(ImportSettingsTab.PREF_IMPORT_ALWAYSUSE);
   int globalChoice=Globals.prefs.getInt(ImportSettingsTab.PREF_IMPORT_DEFAULT_PDF_IMPORT_STYLE);
-  ArrayList<File> dirs=new ArrayList<File>();
   String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
-  for (int i=0; i < dirsS.length; i++) {
-    dirs.add(new File(dirsS[i]));
-  }
   for (  String fileName : fileNames) {
     List<BibtexEntry> xmpEntriesInFile=readXmpEntries(fileName);
     if (!neverShow && !doNotShowAgain) {
@@ -54,7 +50,7 @@ panel.database().insertEntry(entry);
 panel.markBaseChanged();
 FileListTableModel tm=new FileListTableModel();
 File toLink=new File(fileName);
-tm.addEntry(0,new FileListEntry(toLink.getName(),FileListEditor.relativizePath(toLink,dirs).getPath(),Globals.prefs.getExternalFileTypeByName("pdf")));
+tm.addEntry(0,new FileListEntry(toLink.getName(),Util.shortenFileName(toLink,dirsS).getPath(),Globals.prefs.getExternalFileTypeByName("pdf")));
 entry.setField(GUIGlobals.FILE_FIELD,tm.getStringRepresentation());
 break;
 case ImportDialog.CONTENT:

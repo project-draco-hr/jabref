@@ -11,16 +11,13 @@
   int progress=0;
   brokenLinks=0;
   final NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
-  String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
   Set<BibtexEntry> changedEntries=new HashSet<BibtexEntry>();
   if (autoSet) {
     Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
     for (int i=0; i < sel.length; i++) {
       entries.add(sel[i]);
     }
-    ArrayList<File> dirs=new ArrayList<File>();
-    for (int i=0; i < dirsS.length; i++)     dirs.add(new File(dirsS[i]));
-    Thread t=FileListEditor.autoSetLinks(entries,ce,changedEntries,dirs);
+    Thread t=Util.autoSetLinks(entries,ce,changedEntries,null,panel.metaData(),null,null);
     try {
       t.join();
     }
@@ -38,6 +35,9 @@
       if ((old != null) && !old.equals("")) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old);
+        String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+        ArrayList<File> dirs=new ArrayList<File>();
+        for (int k=0; k < dirsS.length; k++)         dirs.add(new File(dirsS[k]));
         for (int j=0; j < tableModel.getRowCount(); j++) {
           FileListEntry flEntry=tableModel.getEntry(j);
           boolean httpLink=flEntry.getLink().toLowerCase().startsWith("http");
@@ -111,9 +111,9 @@ changedEntries.add(sel[i]);
 }
 }
 }
-entriesChangedCount=changedEntries.size();
-if (entriesChangedCount > 0) {
+if (!changedEntries.isEmpty()) {
 ce.end();
 panel.undoManager.addEdit(ce);
+panel.markBaseChanged();
 }
 }

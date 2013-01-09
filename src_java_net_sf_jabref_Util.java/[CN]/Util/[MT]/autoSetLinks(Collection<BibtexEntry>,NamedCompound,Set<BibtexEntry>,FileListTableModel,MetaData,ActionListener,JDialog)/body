@@ -1,12 +1,10 @@
 {
-  final Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
-  entries.add(entry);
   final ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
-  final JProgressBar prog=new JProgressBar(JProgressBar.HORIZONTAL,0,types.length - 1);
-  prog.setIndeterminate(true);
-  prog.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-  final JLabel label=new JLabel(Globals.lang("Searching for files"));
   if (diag != null) {
+    final JProgressBar prog=new JProgressBar(JProgressBar.HORIZONTAL,0,types.length - 1);
+    final JLabel label=new JLabel(Globals.lang("Searching for files"));
+    prog.setIndeterminate(true);
+    prog.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     diag.setTitle(Globals.lang("Autosetting links"));
     diag.getContentPane().add(prog,BorderLayout.CENTER);
     diag.getContentPane().add(label,BorderLayout.SOUTH);
@@ -15,8 +13,6 @@
   }
   Runnable r=new Runnable(){
     public void run(){
-      boolean foundAny=false;
-      ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
       ArrayList<File> dirs=new ArrayList<File>();
       String[] dirsS=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
       for (int i=0; i < dirsS.length; i++) {
@@ -32,12 +28,25 @@
         String regExp=Globals.prefs.get(JabRefPreferences.REG_EXP_SEARCH_EXPRESSION_KEY);
         result=RegExpFileSearch.findFilesForSet(entries,extensions,dirs,regExp);
       }
- else       result=Util.findAssociatedFiles(entries,extensions,dirs);
+ else {
+        result=Util.findAssociatedFiles(entries,extensions,dirs);
+      }
+      boolean foundAny=false;
       for (Iterator<BibtexEntry> i=result.keySet().iterator(); i.hasNext(); ) {
         BibtexEntry anEntry=i.next();
+        FileListTableModel tableModel;
+        String oldVal=anEntry.getField(GUIGlobals.FILE_FIELD);
+        if (singleTableModel == null) {
+          tableModel=new FileListTableModel();
+          if (oldVal != null)           tableModel.setContent(oldVal);
+        }
+ else {
+          assert(entries.size() == 1);
+          tableModel=singleTableModel;
+        }
         List<File> files=result.get(anEntry);
         for (        File f : files) {
-          f=relativizePath(f,dirs);
+          f=Util.shortenFileName(f,dirsS);
           boolean alreadyHas=false;
           for (int j=0; j < tableModel.getRowCount(); j++) {
             FileListEntry existingEntry=tableModel.getEntry(j);
@@ -47,18 +56,27 @@
             }
           }
           if (!alreadyHas) {
+            foundAny=true;
+            ExternalFileType type;
             int index=f.getPath().lastIndexOf('.');
             if ((index >= 0) && (index < f.getPath().length() - 1)) {
-              ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(f.getPath().substring(index + 1));
-              FileListEntry flEntry=new FileListEntry(f.getName(),f.getPath(),type);
-              tableModel.addEntry(tableModel.getRowCount(),flEntry);
-              foundAny=true;
+              type=Globals.prefs.getExternalFileTypeByExt(f.getPath().substring(index + 1).toLowerCase());
             }
  else {
-              FileListEntry flEntry=new FileListEntry(f.getName(),f.getPath(),new UnknownExternalFileType(""));
-              tableModel.addEntry(tableModel.getRowCount(),flEntry);
-              foundAny=true;
+              type=new UnknownExternalFileType("");
             }
+            FileListEntry flEntry=new FileListEntry(f.getName(),f.getPath(),type);
+            tableModel.addEntry(tableModel.getRowCount(),flEntry);
+            String newVal=tableModel.getStringRepresentation();
+            if (newVal.length() == 0)             newVal=null;
+            if (ce != null) {
+              UndoableFieldChange change=new UndoableFieldChange(anEntry,GUIGlobals.FILE_FIELD,oldVal,newVal);
+              ce.addEdit(change);
+            }
+            if (singleTableModel == null) {
+              anEntry.setField(GUIGlobals.FILE_FIELD,newVal);
+            }
+            if (changedEntries != null)             changedEntries.add(anEntry);
           }
         }
       }
