@@ -15,6 +15,28 @@
 );
   defB.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
+      int[] selected=table.getSelectedRows();
+      if (selected.length == 0) {
+        int answer=JOptionPane.showOptionDialog(KeyBindingsDialog.this,Globals.lang("All key bindings will be reset to their defaults.") + " " + Globals.lang("Continue?"),Globals.lang("Resetting all key bindings"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,new String[]{Globals.lang("Ok"),Globals.lang("Cancel")},Globals.lang("Ok"));
+        if (answer == JOptionPane.YES_OPTION) {
+          bindHM.clear();
+          Set<Entry<String,String>> entrySet=defBinds.entrySet();
+          for (          Entry<String,String> entry : entrySet) {
+            bindHM.put(entry.getKey(),entry.getValue());
+          }
+          setList();
+        }
+      }
+ else {
+        for (int i=0; i < selected.length; i++) {
+          int row=selected[i];
+          String name=(String)table.getValueAt(row,0);
+          String newKey=setToDefault(name);
+          keyTF.setText(newKey);
+          table.setValueAt(newKey,row,1);
+          table.repaint();
+        }
+      }
     }
   }
 );
