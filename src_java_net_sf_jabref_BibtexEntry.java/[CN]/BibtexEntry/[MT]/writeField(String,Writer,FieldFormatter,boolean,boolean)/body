@@ -1,13 +1,16 @@
 {
   String o=getField(name);
-  if (isNotFirst)   out.write("," + Globals.NEWLINE);
-  if (isNextGroup)   out.write(Globals.NEWLINE);
-  out.write("  " + getTagDisplayName(name) + " = ");
-  try {
-    out.write(ff.format(o,name));
+  if (o != null || Globals.prefs.getBoolean("includeEmptyFields")) {
+    if (isNotFirst)     out.write("," + Globals.NEWLINE);
+    if (isNextGroup)     out.write(Globals.NEWLINE);
+    out.write("  " + getTagDisplayName(name) + " = ");
+    try {
+      out.write(ff.format(o,name));
+    }
+ catch (    Throwable ex) {
+      throw new IOException(Globals.lang("Error in field") + " '" + name+ "': "+ ex.getMessage());
+    }
+    return true;
   }
- catch (  Throwable ex) {
-    throw new IOException(Globals.lang("Error in field") + " '" + name+ "': "+ ex.getMessage());
-  }
-  return true;
+ else   return false;
 }
