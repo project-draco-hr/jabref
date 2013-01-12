@@ -1,49 +1,15 @@
 {
-  FieldComparatorStack<BibtexEntry> comparatorStack=null;
   boolean inOriginalOrder=isSaveOperation ? Globals.prefs.getBoolean("saveInOriginalOrder") : Globals.prefs.getBoolean("exportInOriginalOrder");
+  List<Comparator<BibtexEntry>> comparators;
   if (inOriginalOrder) {
-    List<Comparator<BibtexEntry>> comparators=new ArrayList<Comparator<BibtexEntry>>();
+    comparators=new ArrayList<Comparator<BibtexEntry>>();
     comparators.add(new CrossRefEntryComparator());
     comparators.add(new IdComparator());
-    comparatorStack=new FieldComparatorStack<BibtexEntry>(comparators);
   }
  else {
-    String pri, sec, ter;
-    boolean priD, secD, terD=false;
-    boolean inStandardOrder=isSaveOperation ? Globals.prefs.getBoolean("saveInStandardOrder") : Globals.prefs.getBoolean("exportInStandardOrder");
-    boolean inTitleOrder=isSaveOperation ? Globals.prefs.getBoolean("saveInTitleOrder") : Globals.prefs.getBoolean("exportInTitleOrder");
-    if (!inStandardOrder && !inTitleOrder) {
-      pri=Globals.prefs.get("priSort");
-      sec=Globals.prefs.get("secSort");
-      ter=Globals.prefs.get("terSort");
-      priD=Globals.prefs.getBoolean("priDescending");
-      secD=Globals.prefs.getBoolean("secDescending");
-      terD=Globals.prefs.getBoolean("terDescending");
-    }
- else     if (!inStandardOrder && inTitleOrder) {
-      pri="title";
-      sec="author";
-      ter="editor";
-      priD=false;
-      secD=false;
-      terD=false;
-    }
- else {
-      pri="author";
-      sec="editor";
-      ter="year";
-      priD=false;
-      secD=false;
-      terD=true;
-    }
-    List<Comparator<BibtexEntry>> comparators=new ArrayList<Comparator<BibtexEntry>>();
-    if (isSaveOperation)     comparators.add(new CrossRefEntryComparator());
-    comparators.add(new FieldComparator(pri,priD));
-    comparators.add(new FieldComparator(sec,secD));
-    comparators.add(new FieldComparator(ter,terD));
-    comparators.add(new FieldComparator(BibtexFields.KEY_FIELD));
-    comparatorStack=new FieldComparatorStack<BibtexEntry>(comparators);
+    comparators=getSaveComparators(isSaveOperation);
   }
+  FieldComparatorStack<BibtexEntry> comparatorStack=new FieldComparatorStack<BibtexEntry>(comparators);
   BasicEventList entryList=new BasicEventList();
   SortedList sorter=new SortedList(entryList,comparatorStack);
   if (keySet == null)   keySet=database.getKeySet();
