@@ -15,6 +15,8 @@
   autoSave=new JCheckBox(Globals.lang("Autosave"));
   promptBeforeUsingAutoSave=new JCheckBox(Globals.lang("Prompt before recovering a database from an autosave file"));
   autoSaveInterval=new JSpinner(new SpinnerNumberModel(1,1,60,1));
+  valueDelimiter=new JComboBox<String>(new String[]{Globals.lang("Quotes") + ": \", \"",Globals.lang("Curly Brackets") + ": {, }"});
+  includeEmptyFields=new JCheckBox(Globals.lang("Include empty fields"));
   ButtonGroup bg=new ButtonGroup();
   bg.add(saveAuthorOrder);
   bg.add(saveOriginalOrder);
@@ -91,6 +93,18 @@
   builder.nextLine();
   builder.append(saveTitleOrder,1);
   builder.append(exportTitleOrder,1);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Export options"));
+  FormLayout layout2=new FormLayout("left:pref, 8dlu, fill:pref","");
+  DefaultFormBuilder builder2=new DefaultFormBuilder(layout2);
+  builder2.append(new JLabel(Globals.lang("Value delimiter") + ":"));
+  builder2.append(valueDelimiter);
+  builder.nextLine();
+  builder.append(builder2.getPanel());
+  builder.append(new JPanel());
+  builder.nextLine();
+  builder.append(includeEmptyFields);
+  builder.append(new JPanel());
   builder.nextLine();
   JPanel pan=builder.getPanel();
   pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
