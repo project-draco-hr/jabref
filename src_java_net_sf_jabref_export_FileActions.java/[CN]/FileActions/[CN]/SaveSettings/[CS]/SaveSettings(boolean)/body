@@ -1,28 +1,40 @@
 {
-  boolean inStandardOrder=isSaveOperation ? Globals.prefs.getBoolean("saveInStandardOrder") : Globals.prefs.getBoolean("exportInStandardOrder");
-  boolean inTitleOrder=isSaveOperation ? Globals.prefs.getBoolean("saveInTitleOrder") : Globals.prefs.getBoolean("exportInTitleOrder");
-  if (!inStandardOrder && !inTitleOrder) {
-    pri=Globals.prefs.get("priSort");
-    sec=Globals.prefs.get("secSort");
-    ter=Globals.prefs.get("terSort");
-    priD=Globals.prefs.getBoolean("priDescending");
-    secD=Globals.prefs.getBoolean("secDescending");
-    terD=Globals.prefs.getBoolean("terDescending");
+  SaveOrder saveOrder;
+  String prefix=isSaveOperation ? "save" : "export";
+  if (Globals.prefs.getBoolean(prefix + "InStandardOrder")) {
+    saveOrder=SaveOrder.Standard;
   }
- else   if (!inStandardOrder && inTitleOrder) {
-    pri="title";
-    sec="author";
-    ter="editor";
-    priD=false;
-    secD=false;
-    terD=false;
+ else   if (Globals.prefs.getBoolean(prefix + "InTitleOrder")) {
+    saveOrder=SaveOrder.Title;
   }
  else {
-    pri="author";
-    sec="editor";
-    ter="year";
-    priD=false;
-    secD=false;
-    terD=true;
+    saveOrder=SaveOrder.TableSort;
   }
+switch (saveOrder) {
+case TableSort:
+    pri=Globals.prefs.get("priSort");
+  sec=Globals.prefs.get("secSort");
+ter=Globals.prefs.get("terSort");
+priD=Globals.prefs.getBoolean("priDescending");
+secD=Globals.prefs.getBoolean("secDescending");
+terD=Globals.prefs.getBoolean("terDescending");
+break;
+case Title:
+pri="title";
+sec="author";
+ter="editor";
+priD=false;
+secD=false;
+terD=false;
+break;
+case Standard:
+default :
+pri="author";
+sec="editor";
+ter="year";
+priD=false;
+secD=false;
+terD=true;
+break;
+}
 }
