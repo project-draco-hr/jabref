@@ -2,12 +2,14 @@
   try {
     if (val.startsWith("auth") || val.startsWith("pureauth")) {
       String authString=_entry.getField("author");
+      if (authString != null)       authString=normalize(_db.resolveForStrings(authString));
       if (val.startsWith("pure")) {
         val=val.substring(4);
       }
  else {
         if (authString == null || authString.equals("")) {
           authString=_entry.getField("editor");
+          if (authString != null)           authString=normalize(_db.resolveForStrings(authString));
         }
       }
       if (val.equals("auth")) {
@@ -36,7 +38,11 @@
         return s == null ? "" : s;
       }
  else       if (val.equals("auth.etal")) {
-        String s=authEtal(authString);
+        String s=authEtal(authString,".",".etal");
+        return s == null ? "" : s;
+      }
+ else       if (val.equals("authEtAl")) {
+        String s=authEtal(authString,"","EtAl");
         return s == null ? "" : s;
       }
  else       if (val.equals("authshort")) {

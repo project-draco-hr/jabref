@@ -1,16 +1,22 @@
 {
+  previousStringType=BibtexString.Type.AUTHOR;
   List<BibtexString> strings=new ArrayList<BibtexString>();
   for (  String s : database.getStringKeySet()) {
     strings.add(database.getString(s));
   }
   Collections.sort(strings,new BibtexStringComparator(true));
   HashMap<String,BibtexString> remaining=new HashMap<String,BibtexString>();
+  int maxKeyLength=0;
   for (Iterator<BibtexString> i=strings.iterator(); i.hasNext(); ) {
     BibtexString string=i.next();
     remaining.put(string.getName(),string);
+    maxKeyLength=Math.max(maxKeyLength,string.getName().length());
   }
-  for (Iterator<BibtexString> i=strings.iterator(); i.hasNext(); ) {
-    BibtexString bs=i.next();
-    if (remaining.containsKey(bs.getName()))     writeString(fw,bs,remaining);
+  for (  BibtexString.Type t : BibtexString.Type.values()) {
+    for (Iterator<BibtexString> i=strings.iterator(); i.hasNext(); ) {
+      BibtexString bs=i.next();
+      if (remaining.containsKey(bs.getName()) && bs.getType() == t)       writeString(fw,bs,remaining,maxKeyLength);
+    }
   }
+  fw.write(Globals.NEWLINE);
 }
