@@ -1,0 +1,38 @@
+{
+  _prefs=prefs;
+  _frame=frame;
+  setLayout(new BorderLayout());
+  useProxy=new JCheckBox(Globals.lang("Whether to use a proxy"));
+  defProxyHostname=new JTextField();
+  defProxyHostname.setEnabled(false);
+  defProxyPort=new JTextField();
+  defProxyPort.setEnabled(false);
+  Insets marg=new Insets(0,12,3,0);
+  useProxy.setMargin(marg);
+  defProxyPort.setMargin(marg);
+  useProxy.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent event){
+      defProxyHostname.setEnabled(useProxy.isSelected());
+      defProxyPort.setEnabled(useProxy.isSelected());
+    }
+  }
+);
+  FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:150dlu, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  builder.appendSeparator(Globals.lang("Network"));
+  builder.nextLine();
+  builder.append(useProxy,5);
+  builder.nextLine();
+  builder.append(new JPanel());
+  JLabel lap=new JLabel(Globals.lang("Host") + ":");
+  builder.append(lap);
+  builder.append(defProxyHostname);
+  builder.nextLine();
+  builder.append(new JPanel());
+  JLabel lap2=new JLabel(Globals.lang("Port") + ":");
+  builder.append(lap2);
+  builder.append(defProxyPort);
+  JPanel pan=builder.getPanel();
+  pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  add(pan,BorderLayout.CENTER);
+}
