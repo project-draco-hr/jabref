@@ -1,9 +1,27 @@
 {
-  try {
+  boolean validSetting;
+  if (useProxy.isSelected()) {
+    String host=defProxyHostname.getText();
+    String port=defProxyPort.getText();
+    if ((host == null) || (host.trim().equals("")) || (port == null)|| (port.trim().equals(""))) {
+      validSetting=false;
+    }
+ else {
+      Integer p;
+      try {
+        p=Integer.parseInt(port);
+        validSetting=(p > 0);
+      }
+ catch (      NumberFormatException e) {
+        validSetting=false;
+      }
+    }
   }
- catch (  IllegalArgumentException ex2) {
-    JOptionPane.showMessageDialog(null,Globals.lang("The chosen date format for new entries is not valid"),Globals.lang("Invalid date format"),JOptionPane.ERROR_MESSAGE);
-    return false;
+ else {
+    validSetting=true;
   }
-  return true;
+  if (!validSetting) {
+    JOptionPane.showMessageDialog(null,Globals.lang("Please specify both hostname and port"),Globals.lang("Invalid setting"),JOptionPane.ERROR_MESSAGE);
+  }
+  return validSetting;
 }
