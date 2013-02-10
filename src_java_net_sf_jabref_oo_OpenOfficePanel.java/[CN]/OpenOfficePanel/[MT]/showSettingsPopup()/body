@@ -3,6 +3,7 @@
   final JCheckBoxMenuItem autoSync=new JCheckBoxMenuItem(Globals.lang("Automatically sync bibliography when inserting citations"),Globals.prefs.getBoolean("syncOOWhenCiting"));
   final JRadioButtonMenuItem useActiveBase=new JRadioButtonMenuItem(Globals.lang("Look up BibTeX entries in the active tab only"));
   final JRadioButtonMenuItem useAllBases=new JRadioButtonMenuItem(Globals.lang("Look up BibTeX entries in all open databases"));
+  final JMenuItem clearConnectionSettings=new JMenuItem(Globals.lang("Clear connection settings"));
   ButtonGroup bg=new ButtonGroup();
   bg.add(useActiveBase);
   bg.add(useAllBases);
@@ -26,9 +27,28 @@
     }
   }
 );
+  clearConnectionSettings.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      try {
+        Globals.prefs.clear("ooPAth");
+        Globals.prefs.clear("ooExecutablePath");
+        Globals.prefs.clear("ooJarsPath");
+        Globals.prefs.clear("connectToOO3");
+        Globals.prefs.clear("ooUnoilPath");
+        Globals.prefs.clear("ooJurtPath");
+        frame.output(Globals.lang("Cleared connection settings."));
+      }
+ catch (      BackingStoreException ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+);
   menu.add(autoSync);
   menu.addSeparator();
   menu.add(useActiveBase);
   menu.add(useAllBases);
+  menu.addSeparator();
+  menu.add(clearConnectionSettings);
   menu.show(settingsB,0,settingsB.getHeight());
 }
