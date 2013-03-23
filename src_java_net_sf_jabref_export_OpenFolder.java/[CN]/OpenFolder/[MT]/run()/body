@@ -1,0 +1,28 @@
+{
+  BasePanel panel=frame.basePanel();
+  if (panel == null) {
+    return;
+  }
+  if (panel.getSelectedEntries().length == 0) {
+    message=Globals.lang("No entries selected") + ".";
+    getCallBack().update();
+    return;
+  }
+  for (  BibtexEntry entry : panel.getSelectedEntries()) {
+    try {
+      FileListTableModel tm=new FileListTableModel();
+      tm.setContent(entry.getField("file"));
+      for (int i=0; i < tm.getRowCount(); i++) {
+        FileListEntry flEntry=tm.getEntry(i);
+        FileListEntry ent=flEntry;
+        System.out.println(ent.getLink());
+        Util.openFolder(ent.getLink());
+        break;
+      }
+    }
+ catch (    Exception ex) {
+      ex.printStackTrace();
+      message=ex.getMessage();
+    }
+  }
+}
