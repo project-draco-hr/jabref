@@ -1,0 +1,78 @@
+{
+  if (!goOn) {
+    panel.output(Globals.lang("No entries selected."));
+    return;
+  }
+  panel.frame().setProgressBarValue(0);
+  panel.frame().setProgressBarVisible(true);
+  int weightAutoSet=10;
+  int progressBarMax=(autoSet ? weightAutoSet * sel.length : 0) + (checkExisting ? sel.length : 0);
+  panel.frame().setProgressBarMaximum(progressBarMax);
+  int progress=0;
+  entriesChanged=0;
+  brokenLinks=0;
+  NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
+  final OpenFileFilter off=Util.getFileFilterForField(fieldName);
+  ExternalFilePanel extPan=new ExternalFilePanel(fieldName,panel.metaData(),null,null,off);
+  FieldTextField editor=new FieldTextField(fieldName,"",false);
+  String[] dirs=panel.metaData().getFileDirectory(fieldName);
+  if (autoSet) {
+    for (int i=0; i < sel.length; i++) {
+      progress+=weightAutoSet;
+      panel.frame().setProgressBarValue(progress);
+      final String old=sel[i].getField(fieldName);
+      if ((old != null) && !old.equals("") && !overWriteAllowed)       continue;
+      extPan.setEntry(sel[i],panel.getDatabase());
+      editor.setText((old != null) ? (String)old : "");
+      Thread t=extPan.autoSetFile(fieldName,editor);
+      if (t != null)       try {
+        t.join();
+      }
+ catch (      InterruptedException e) {
+        e.printStackTrace();
+      }
+      if (!editor.getText().equals("") && !editor.getText().equals(old)) {
+        ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,editor.getText()));
+        sel[i].setField(fieldName,editor.getText());
+        entriesChanged++;
+      }
+    }
+  }
+  if (checkExisting) {
+    mainLoop:     for (int i=0; i < sel.length; i++) {
+      panel.frame().setProgressBarValue(progress++);
+      final String old=sel[i].getField(fieldName);
+      if ((old != null) && !old.equals("")) {
+        File file=Util.expandFilename(old,dirs);
+        if ((file == null) || !file.exists()) {
+          int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{old,sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+switch (answer) {
+case 1:
+            AttachFileDialog afd=new AttachFileDialog(panel.frame(),panel.metaData(),sel[i],fieldName);
+          Util.placeDialog(afd,panel.frame());
+        afd.setVisible(true);
+      if (!afd.cancelled()) {
+        ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,afd.getValue()));
+        sel[i].setField(fieldName,afd.getValue());
+        entriesChanged++;
+      }
+    break;
+case 2:
+  ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,null));
+sel[i].setField(fieldName,null);
+entriesChanged++;
+break;
+case 3:
+break mainLoop;
+}
+brokenLinks++;
+}
+continue;
+}
+}
+}
+if (entriesChanged > 0) {
+ce.end();
+panel.undoManager.addEdit(ce);
+}
+}

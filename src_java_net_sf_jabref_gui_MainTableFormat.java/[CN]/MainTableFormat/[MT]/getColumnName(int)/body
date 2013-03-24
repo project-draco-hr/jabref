@@ -1,0 +1,24 @@
+{
+  if (col == 0) {
+    return GUIGlobals.NUMBER_COL;
+  }
+ else   if (getIconTypeForColumn(col) != null) {
+    if (JabRef.jrf.prefs().getBoolean(JabRefPreferences.SHOWONELETTERHEADINGFORICONCOLUMNS)) {
+      return getIconTypeForColumn(col)[0].substring(0,1).toUpperCase();
+    }
+ else {
+      return null;
+    }
+  }
+ else {
+    String[] fld=columns[col - padleft];
+    StringBuilder sb=new StringBuilder();
+    for (int i=0; i < fld.length; i++) {
+      if (i > 0)       sb.append('/');
+      String disName=BibtexFields.getFieldDisplayName(fld[i]);
+      if (disName != null)       sb.append(disName);
+ else       sb.append(Util.nCase(fld[i]));
+    }
+    return sb.toString();
+  }
+}

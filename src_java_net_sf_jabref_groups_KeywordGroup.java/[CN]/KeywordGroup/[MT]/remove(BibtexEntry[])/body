@@ -1,0 +1,18 @@
+{
+  if (!supportsRemove())   return null;
+  if ((entries != null) && (entries.length > 0)) {
+    NamedCompound ce=new NamedCompound(Globals.lang("remove from group"));
+    boolean modified=false;
+    for (int i=0; i < entries.length; ++i) {
+      if (applyRule(null,entries[i]) > 0) {
+        String oldContent=entries[i].getField(m_searchField);
+        removeMatches(entries[i]);
+        ce.addEdit(new UndoableFieldChange(entries[i],m_searchField,oldContent,entries[i].getField(m_searchField)));
+        modified=true;
+      }
+    }
+    if (modified)     ce.end();
+    return modified ? ce : null;
+  }
+  return null;
+}

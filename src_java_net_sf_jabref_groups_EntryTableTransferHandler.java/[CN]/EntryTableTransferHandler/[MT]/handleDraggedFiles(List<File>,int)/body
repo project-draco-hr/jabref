@@ -1,0 +1,19 @@
+{
+  final String[] fileNames=new String[files.size()];
+  int i=0;
+  for (Iterator<File> iterator=files.iterator(); iterator.hasNext(); ) {
+    File file=iterator.next();
+    fileNames[i]=file.getAbsolutePath();
+    i++;
+  }
+  new Thread(new Runnable(){
+    public void run(){
+      final String[] newfileNames=new PdfImporter(frame,panel,entryTable,dropRow).importPdfFiles(fileNames,frame);
+      if (newfileNames.length > 0) {
+        loadOrImportFiles(newfileNames,dropRow);
+      }
+    }
+  }
+).start();
+  return true;
+}

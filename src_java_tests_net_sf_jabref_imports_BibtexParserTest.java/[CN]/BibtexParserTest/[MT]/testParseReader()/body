@@ -1,0 +1,11 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{test,author={Ed von Test}}"));
+  Collection<BibtexEntry> c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibtexEntry e=c.iterator().next();
+  assertEquals("test",e.getCiteKey());
+  assertEquals(2,e.getAllFields().size());
+  Set<String> o=e.getAllFields();
+  assertTrue(o.contains("author"));
+  assertEquals("Ed von Test",e.getField("author"));
+}

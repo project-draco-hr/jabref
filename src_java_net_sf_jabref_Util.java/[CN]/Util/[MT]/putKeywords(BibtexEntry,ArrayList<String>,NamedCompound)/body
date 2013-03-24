@@ -1,0 +1,21 @@
+{
+  String oldValue=entry.getField("keywords");
+  String newValue;
+  if (keywords.size() > 0) {
+    StringBuilder sb=new StringBuilder();
+    for (    String keyword : keywords) {
+      sb.append(keyword);
+      sb.append(", ");
+    }
+    sb.delete(sb.length() - 2,sb.length());
+    newValue=sb.toString();
+  }
+ else {
+    newValue=null;
+  }
+  if ((oldValue == null) && (newValue == null))   return;
+  if ((oldValue == null) || (!oldValue.equals(newValue))) {
+    entry.setField("keywords",newValue);
+    if (ce != null)     ce.addEdit(new UndoableFieldChange(entry,"keywords",oldValue,newValue));
+  }
+}

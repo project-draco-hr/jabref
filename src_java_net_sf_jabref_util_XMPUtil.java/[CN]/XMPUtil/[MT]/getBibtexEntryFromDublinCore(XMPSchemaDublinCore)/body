@@ -1,0 +1,112 @@
+{
+  BibtexEntry entry=new BibtexEntry();
+  List contributors=dcSchema.getContributors();
+  if (contributors != null) {
+    Iterator it=contributors.iterator();
+    StringBuffer sb=null;
+    while (it.hasNext()) {
+      if (sb != null) {
+        sb.append(" and ");
+      }
+ else {
+        sb=new StringBuffer();
+      }
+      sb.append(it.next());
+    }
+    if (sb != null)     entry.setField("editor",sb.toString());
+  }
+  List creators=dcSchema.getCreators();
+  if (creators != null) {
+    Iterator it=creators.iterator();
+    StringBuffer sb=null;
+    while (it.hasNext()) {
+      if (sb != null) {
+        sb.append(" and ");
+      }
+ else {
+        sb=new StringBuffer();
+      }
+      sb.append(it.next());
+    }
+    if (sb != null)     entry.setField("author",sb.toString());
+  }
+  List dates=dcSchema.getSequenceList("dc:date");
+  if (dates != null && dates.size() > 0) {
+    String date=((String)dates.get(0)).trim();
+    Calendar c=null;
+    try {
+      c=DateConverter.toCalendar(date);
+    }
+ catch (    Exception e) {
+    }
+    if (c != null) {
+      entry.setField("year",String.valueOf(c.get(Calendar.YEAR)));
+      if (date.length() > 4) {
+        entry.setField("month","#" + Globals.MONTHS[c.get(Calendar.MONTH)] + "#");
+      }
+    }
+  }
+  String s=dcSchema.getDescription();
+  if (s != null)   entry.setField("abstract",s);
+  s=dcSchema.getIdentifier();
+  if (s != null)   entry.setField("doi",s);
+  List publishers=dcSchema.getPublishers();
+  if (publishers != null) {
+    Iterator it=dcSchema.getPublishers().iterator();
+    StringBuffer sb=null;
+    while (it.hasNext()) {
+      if (sb != null) {
+        sb.append(" and ");
+      }
+ else {
+        sb=new StringBuffer();
+      }
+      sb.append(it.next());
+    }
+    if (sb != null)     entry.setField("publishers",sb.toString());
+  }
+  List relationships=dcSchema.getRelationships();
+  if (relationships != null) {
+    Iterator it=relationships.iterator();
+    while (it.hasNext()) {
+      s=(String)it.next();
+      if (s.startsWith("bibtex/")) {
+        s=s.substring("bibtex/".length());
+        int i=s.indexOf('/');
+        if (i != -1) {
+          entry.setField(s.substring(0,i),s.substring(i + 1));
+        }
+      }
+    }
+  }
+  s=dcSchema.getRights();
+  if (s != null)   entry.setField("rights",s);
+  s=dcSchema.getSource();
+  if (s != null)   entry.setField("source",s);
+  List subjects=dcSchema.getSubjects();
+  if (subjects != null) {
+    Iterator it=subjects.iterator();
+    StringBuffer sb=null;
+    while (it.hasNext()) {
+      if (sb != null) {
+        sb.append(",");
+      }
+ else {
+        sb=new StringBuffer();
+      }
+      sb.append(it.next());
+    }
+    if (sb != null)     entry.setField("keywords",sb.toString());
+  }
+  s=dcSchema.getTitle();
+  if (s != null)   entry.setField("title",s);
+  List l=dcSchema.getTypes();
+  if (l != null && l.size() > 0) {
+    s=(String)l.get(0);
+    if (s != null) {
+      BibtexEntryType type=BibtexEntryType.getStandardType(s);
+      if (type != null)       entry.setType(type);
+    }
+  }
+  return (entry.getAllFields().size() > 0 ? entry : null);
+}

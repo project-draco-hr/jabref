@@ -1,0 +1,29 @@
+{
+  super();
+  String key=tmpEntry.getCiteKey();
+  if (key == null)   name="Modified entry";
+ else   name="Modified entry: '" + key + "'";
+  this.memEntry=memEntry;
+  this.tmpEntry=tmpEntry;
+  this.diskEntry=diskEntry;
+  isModifiedLocally=!(DuplicateCheck.compareEntriesStrictly(memEntry,tmpEntry) > 1);
+  modificationsAgree=(DuplicateCheck.compareEntriesStrictly(memEntry,diskEntry) > 1);
+  TreeSet<String> allFields=new TreeSet<String>();
+  allFields.addAll(memEntry.getAllFields());
+  allFields.addAll(tmpEntry.getAllFields());
+  allFields.addAll(diskEntry.getAllFields());
+  for (  String field : allFields) {
+    String mem=memEntry.getField(field), tmp=tmpEntry.getField(field), disk=diskEntry.getField(field);
+    if ((tmp != null) && (disk != null)) {
+      if (!tmp.equals(disk)) {
+        add(new FieldChange(field,memEntry,tmpEntry,mem,tmp,disk));
+      }
+    }
+ else     if ((tmp == null) && (disk != null) && !disk.equals("")) {
+      add(new FieldChange(field,memEntry,tmpEntry,mem,tmp,disk));
+    }
+ else     if ((disk == null) && (tmp != null) && !tmp.equals("")&& (mem != null)&& !mem.equals("")) {
+      add(new FieldChange(field,memEntry,tmpEntry,mem,tmp,disk));
+    }
+  }
+}

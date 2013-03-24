@@ -1,0 +1,38 @@
+{
+  ParserResult result=BibtexParser.parse(new FileReader("src/tests/net/sf/jabref/util/twente.bib"));
+  assertEquals("Arvind",result.getDatabase().resolveForStrings("#Arvind#"));
+  AuthorList originalAuthors=AuthorList.getAuthorList("Patterson, David and Arvind and Asanov\\'\\i{}c, Krste and Chiou, Derek and Hoe, James and Kozyrakis, Christos and Lu, S{hih-Lien} and Oskin, Mark and Rabaey, Jan and Wawrzynek, John");
+  try {
+    XMPUtil.writeXMP(pdfFile,result.getDatabase().getEntryByKey("Patterson06"),result.getDatabase());
+    BibtexEntry b=XMPUtil.readXMP(pdfFile).get(0);
+    assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author").toString()));
+    PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile());
+    try {
+      assertEquals(originalAuthors,AuthorList.getAuthorList(document.getDocumentInformation().getAuthor()));
+      b=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
+      assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author").toString()));
+      PDDocumentCatalog catalog=document.getDocumentCatalog();
+      PDMetadata metaRaw=catalog.getMetadata();
+      if (metaRaw == null) {
+        fail();
+      }
+      XMPMetadata meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+      meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
+      List<XMPSchema> schemas=meta.getSchemasByNamespaceURI("http://purl.org/dc/elements/1.1/");
+      assertEquals(1,schemas.size());
+      XMPSchemaDublinCore dcSchema=(XMPSchemaDublinCore)schemas.iterator().next();
+      assertNotNull(dcSchema);
+      assertEquals("David Patterson",dcSchema.getCreators().get(0));
+      assertEquals("Arvind",dcSchema.getCreators().get(1));
+      assertEquals("Krste Asanov\\'\\i{}c",dcSchema.getCreators().get(2));
+      b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema);
+      assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author").toString()));
+    }
+  finally {
+      document.close();
+    }
+  }
+  finally {
+    pdfFile.delete();
+  }
+}

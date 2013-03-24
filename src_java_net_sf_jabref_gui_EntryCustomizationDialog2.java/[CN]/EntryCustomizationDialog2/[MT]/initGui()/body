@@ -1,0 +1,66 @@
+{
+  Container pane=getContentPane();
+  pane.setLayout(new BorderLayout());
+  biblatexMode=Globals.prefs.getBoolean("biblatexMode");
+  JPanel main=new JPanel(), buttons=new JPanel(), right=new JPanel();
+  main.setLayout(new BorderLayout());
+  right.setLayout(new GridLayout(biblatexMode ? 2 : 1,2));
+  java.util.List<String> entryTypes=new ArrayList<String>();
+  for (Iterator<String> i=BibtexEntryType.ALL_TYPES.keySet().iterator(); i.hasNext(); ) {
+    entryTypes.add(i.next());
+  }
+  typeComp=new EntryTypeList(entryTypes);
+  typeComp.addListSelectionListener(this);
+  typeComp.addAdditionActionListener(this);
+  typeComp.addDefaultActionListener(new DefaultListener());
+  typeComp.setListSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  reqComp=new FieldSetComponent(Globals.lang("Required fields"),new ArrayList<String>(),preset,true,true);
+  reqComp.setEnabled(false);
+  reqComp.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+  ListDataListener dataListener=new DataListener();
+  reqComp.addListDataListener(dataListener);
+  optComp=new FieldSetComponent(Globals.lang("Optional fields"),new ArrayList<String>(),preset,true,true);
+  optComp.setEnabled(false);
+  optComp.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+  optComp.addListDataListener(dataListener);
+  right.add(reqComp);
+  right.add(optComp);
+  if (biblatexMode) {
+    optComp2=new FieldSetComponent(Globals.lang("Optional fields") + " 2",new ArrayList<String>(),preset,true,true);
+    optComp2.setEnabled(false);
+    optComp2.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+    optComp2.addListDataListener(dataListener);
+    right.add(new JPanel());
+    right.add(optComp2);
+  }
+  right.setBorder(BorderFactory.createEtchedBorder());
+  ok=new JButton("OK");
+  cancel=new JButton(Globals.lang("Cancel"));
+  apply=new JButton(Globals.lang("Apply"));
+  ok.addActionListener(this);
+  apply.addActionListener(this);
+  cancel.addActionListener(this);
+  ButtonBarBuilder bb=new ButtonBarBuilder(buttons);
+  buttons.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(apply);
+  bb.addButton(cancel);
+  bb.addGlue();
+  AbstractAction closeAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+;
+  ActionMap am=main.getActionMap();
+  InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",closeAction);
+  main.add(typeComp,BorderLayout.WEST);
+  main.add(right,BorderLayout.CENTER);
+  main.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  pane.add(main,BorderLayout.CENTER);
+  pane.add(buttons,BorderLayout.SOUTH);
+  pack();
+}

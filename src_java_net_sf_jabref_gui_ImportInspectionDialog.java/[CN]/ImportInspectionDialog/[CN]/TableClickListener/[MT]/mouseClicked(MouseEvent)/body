@@ -1,0 +1,27 @@
+{
+  final int col=glTable.columnAtPoint(e.getPoint()), row=glTable.rowAtPoint(e.getPoint());
+  if (isIconColumn(col)) {
+    BibtexEntry entry=sortedList.get(row);
+switch (col) {
+case FILE_COL:
+      Object o=entry.getField(GUIGlobals.FILE_FIELD);
+    if (o != null) {
+      FileListTableModel tableModel=new FileListTableModel();
+      tableModel.setContent((String)o);
+      if (tableModel.getRowCount() == 0)       return;
+      FileListEntry fl=tableModel.getEntry(0);
+      (new ExternalFileMenuItem(frame,entry,"",fl.getLink(),null,panel.metaData(),fl.getType())).actionPerformed(null);
+    }
+  break;
+case URL_COL:
+openExternalLink("url",e);
+break;
+case PDF_COL:
+openExternalLink("pdf",e);
+break;
+case PS_COL:
+openExternalLink("ps",e);
+break;
+}
+}
+}

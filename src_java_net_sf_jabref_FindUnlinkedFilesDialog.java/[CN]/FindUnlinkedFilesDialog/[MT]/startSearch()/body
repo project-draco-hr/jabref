@@ -1,0 +1,31 @@
+{
+  final File directory=new File(textfieldDirectoryPath.getText());
+  if (!directory.exists() || !directory.isDirectory()) {
+    textfieldDirectoryPath.setText("");
+    return;
+  }
+  storeLastSelectedDirectory(directory);
+  progressBarSearching.setMinimumSize(new Dimension(buttonScan.getSize().width,progressBarSearching.getMinimumSize().height));
+  progressBarSearching.setVisible(true);
+  progressBarSearching.setString("");
+  labelSearchingDirectoryInfo.setVisible(true);
+  buttonScan.setVisible(false);
+  disOrEnableDialog(false);
+  labelSearchingDirectoryInfo.setEnabled(true);
+  final FileFilter selectedFileFilter=(FileFilter)comboBoxFileTypeSelection.getSelectedItem();
+  threadState=new int[]{1};
+  new Thread(new Runnable(){
+    public void run(){
+      UnlinkedPDFFileFilter ff=new UnlinkedPDFFileFilter(selectedFileFilter,database);
+      CheckableTreeNode rootNode=crawler.searchDirectory(directory,ff,threadState,new ChangeListener(){
+        int counter=0;
+        public void stateChanged(        ChangeEvent e){
+          progressBarSearching.setString(++counter + " files found");
+        }
+      }
+);
+      searchFinishedHandler(rootNode);
+    }
+  }
+).start();
+}

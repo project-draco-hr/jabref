@@ -1,0 +1,18 @@
+{
+  Frame f=new Frame();
+  SplashScreen w=new SplashScreen(f);
+  w.setVisible(true);
+  w.toFront();
+  if (!EventQueue.isDispatchThread()) {
+synchronized (w) {
+      if (!w.paintCalled) {
+        try {
+          w.wait(5000);
+        }
+ catch (        InterruptedException e) {
+        }
+      }
+    }
+  }
+  return f;
+}

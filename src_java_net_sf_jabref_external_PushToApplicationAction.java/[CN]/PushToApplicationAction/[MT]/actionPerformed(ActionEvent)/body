@@ -1,0 +1,17 @@
+{
+  panel=frame.basePanel();
+  if (panel == null)   return;
+  entries=panel.getSelectedEntries();
+  if (entries.length == 0) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("This operation requires one or more entries to be selected."),(String)getValue(NAME),JOptionPane.ERROR_MESSAGE);
+    return;
+  }
+  if (operation.requiresBibtexKeys())   for (int i=0; i < entries.length; i++) {
+    if ((entries[i].getCiteKey() == null) || (entries[i].getCiteKey().trim().length() == 0)) {
+      JOptionPane.showMessageDialog(frame,Globals.lang("This operation requires all selected entries to have BibTex keys defined."),(String)getValue(NAME),JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+  }
+  Thread t=new Thread(this);
+  t.start();
+}

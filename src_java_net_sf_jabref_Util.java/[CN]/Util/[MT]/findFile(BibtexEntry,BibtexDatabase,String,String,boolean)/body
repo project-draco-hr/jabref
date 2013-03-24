@@ -1,0 +1,25 @@
+{
+  File root;
+  if (directory == null) {
+    root=new File(".");
+  }
+ else {
+    root=new File(directory);
+  }
+  if (!root.exists())   return null;
+  String found=findFile(entry,database,root,file);
+  if (directory == null || !relative) {
+    return found;
+  }
+  if (found != null) {
+    try {
+      String tmp=found.substring(root.getCanonicalPath().length());
+      if ((tmp.length() > 1) && (tmp.charAt(0) == File.separatorChar))       tmp=tmp.substring(1);
+      return tmp;
+    }
+ catch (    IOException e) {
+      return null;
+    }
+  }
+  return null;
+}

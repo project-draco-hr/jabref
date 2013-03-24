@@ -1,0 +1,42 @@
+{
+  OutputPrinterToNull nullOutput=new OutputPrinterToNull();
+  List<BibtexEntry> bestResult=null;
+  int bestResultCount=0;
+  String bestFormatName=null;
+  for (  ImportFormat imFo : getImportFormats()) {
+    try {
+      List<BibtexEntry> entries=importFromFile(imFo,filename,nullOutput);
+      int entryCount;
+      if (entries == null) {
+        entryCount=0;
+      }
+ else {
+        purgeEmptyEntries(entries);
+        entryCount=entries.size();
+      }
+      if (entryCount > bestResultCount) {
+        bestResult=entries;
+        bestResultCount=bestResult.size();
+        bestFormatName=imFo.getFormatName();
+      }
+    }
+ catch (    IOException ex) {
+    }
+  }
+  if (bestResult != null) {
+    ParserResult parserResult=new ParserResult(bestResult);
+    Pair<String,ParserResult> result=new Pair<String,ParserResult>(bestFormatName,parserResult);
+    return result;
+  }
+  try {
+    ParserResult pr=OpenDatabaseAction.loadDatabase(new File(filename),Globals.prefs.get("defaultEncoding"));
+    if ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0)) {
+      pr.setFile(new File(filename));
+      return new Pair<String,ParserResult>(BIBTEX_FORMAT,pr);
+    }
+  }
+ catch (  Throwable ex) {
+    return null;
+  }
+  return null;
+}

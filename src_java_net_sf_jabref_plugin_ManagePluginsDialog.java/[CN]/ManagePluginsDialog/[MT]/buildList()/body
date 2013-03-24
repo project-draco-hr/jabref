@@ -1,0 +1,24 @@
+{
+  plugins=new SortedList<NameAndVersion>(PluginInstaller.findInstalledPlugins());
+  EventList<NameAndVersion> outsideUserDir=new BasicEventList<NameAndVersion>();
+  for (Iterator<NameAndVersion> i=plugins.iterator(); i.hasNext(); ) {
+    NameAndVersion nav=i.next();
+    if (!nav.inUserDirectory) {
+      outsideUserDir.add(nav);
+      i.remove();
+    }
+  }
+  pluginsOther=new SortedList<NameAndVersion>(outsideUserDir);
+  tableFormatOther=new PluginTableFormat();
+  EventTableModel tableModel=new EventTableModel(pluginsOther,tableFormatOther);
+  tableOther.setModel(tableModel);
+  tableOther.getColumnModel().getColumn(0).setPreferredWidth(200);
+  tableOther.getColumnModel().getColumn(1).setPreferredWidth(50);
+  tableOther.getColumnModel().getColumn(2).setPreferredWidth(50);
+  tableFormat=new PluginTableFormat();
+  EventTableModel tableModelOther=new EventTableModel(plugins,tableFormat);
+  table.setModel(tableModelOther);
+  table.getColumnModel().getColumn(0).setPreferredWidth(200);
+  table.getColumnModel().getColumn(1).setPreferredWidth(50);
+  table.getColumnModel().getColumn(2).setPreferredWidth(50);
+}

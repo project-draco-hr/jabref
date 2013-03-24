@@ -1,0 +1,27 @@
+{
+  super.setActiveBasePanel(panel);
+  if (panel == null) {
+    frame.sidePaneManager.hide("groups");
+    return;
+  }
+  MetaData metaData=panel.metaData();
+  if (metaData.getGroups() != null) {
+    setGroups(metaData.getGroups());
+  }
+ else {
+    GroupTreeNode newGroupsRoot=new GroupTreeNode(new AllEntriesGroup());
+    metaData.setGroups(newGroupsRoot);
+    setGroups(newGroupsRoot);
+  }
+  if (Globals.prefs.getBoolean("groupAutoShow") && !groupsRoot.isLeaf()) {
+    frame.sidePaneManager.show("groups");
+    frame.groupToggle.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean("groupAutoHide") && groupsRoot.isLeaf()) {
+    frame.sidePaneManager.hide("groups");
+    frame.groupToggle.setSelected(false);
+  }
+synchronized (getTreeLock()) {
+    validateTree();
+  }
+}

@@ -1,0 +1,25 @@
+{
+  entries=panel.getSelectedEntries();
+  if (entries.length == 0) {
+    database=panel.getDatabase();
+    entries=database.getEntries().toArray(new BibtexEntry[]{});
+    if (entries.length == 0) {
+      JOptionPane.showMessageDialog(panel,Globals.lang("This operation requires at least one entry."),Globals.lang("Write XMP-metadata"),JOptionPane.ERROR_MESSAGE);
+      goOn=false;
+      return;
+    }
+ else {
+      int response=JOptionPane.showConfirmDialog(panel,Globals.lang("Write XMP-metadata for all PDFs in current database?"),Globals.lang("Write XMP-metadata"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+      if (response != JOptionPane.YES_OPTION) {
+        goOn=false;
+        return;
+      }
+    }
+  }
+  errors=entriesChanged=skipped=0;
+  if (optDiag == null) {
+    optDiag=new OptionsDialog(panel.frame());
+  }
+  optDiag.open();
+  panel.output(Globals.lang("Writing XMP metadata..."));
+}

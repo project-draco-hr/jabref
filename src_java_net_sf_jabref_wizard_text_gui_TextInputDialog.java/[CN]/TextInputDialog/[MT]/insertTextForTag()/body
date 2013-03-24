@@ -1,0 +1,31 @@
+{
+  String type=(String)fieldList.getSelectedValue();
+  if (type != null) {
+    String txt=textPane.getSelectedText();
+    if (txt != null) {
+      int selStart=textPane.getSelectionStart();
+      int selEnd=textPane.getSelectionEnd();
+      textPane.setSelectionEnd(selStart);
+      doc.setCharacterAttributes(selStart,selEnd - selStart,doc.getStyle("marked"),true);
+      if (overRadio.isSelected()) {
+        entry.setField(type,txt);
+        marked.setStyleForTag(type,"regular",doc);
+        marked.insertPosition(type,selStart,selEnd);
+      }
+ else {
+        marked.appendPosition(type,selStart,selEnd);
+        String old=entry.getField(type);
+        if (old != null) {
+          if (type.hashCode() == "author".hashCode()) {
+            entry.setField(type,old + " and " + txt);
+          }
+ else           entry.setField(type,old + txt);
+        }
+ else {
+          entry.setField(type,txt);
+        }
+      }
+      updateSourceView();
+    }
+  }
+}

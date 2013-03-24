@@ -1,0 +1,12 @@
+{
+  XBookmarksSupplier bSupp=(XBookmarksSupplier)UnoRuntime.queryInterface(XBookmarksSupplier.class,mxDoc);
+  if (bSupp.getBookmarks().hasByName(BIB_SECTION_NAME)) {
+    System.out.println("Found existing JabRef bookmark");
+    return true;
+  }
+  XTextCursor mxDocCursor=text.createTextCursor();
+  if (end)   mxDocCursor.gotoEnd(false);
+  OOUtil.insertParagraphBreak(text,mxDocCursor);
+  insertBookMark(BIB_SECTION_NAME,mxDocCursor);
+  return false;
+}

@@ -1,0 +1,13 @@
+{
+  int row=getSelectedRow();
+  if (row >= 0) {
+    FileListEntry entry=tableModel.getEntry(row);
+    try {
+      ExternalFileType type=Globals.prefs.getExternalFileTypeByName(entry.getType().getName());
+      Util.openExternalFileAnyFormat(metaData,entry.getLink(),type != null ? type : entry.getType());
+    }
+ catch (    IOException e) {
+      e.printStackTrace();
+    }
+  }
+}

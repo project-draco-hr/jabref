@@ -1,0 +1,18 @@
+{
+  Set<String> fields=entry.getAllFields();
+  JabRefPreferences prefs=JabRefPreferences.getInstance();
+  if (prefs.getBoolean("useXmpPrivacyFilter")) {
+    TreeSet<String> filters=new TreeSet<String>(Arrays.asList(prefs.getStringArray("xmpPrivacyFilters")));
+    fields.removeAll(filters);
+  }
+  for (  String field : fields) {
+    String value=BibtexDatabase.getResolvedField(field,entry,database);
+    if (field.equals("author") || field.equals("editor")) {
+      setPersonList(field,value);
+    }
+ else {
+      setTextProperty(field,value);
+    }
+  }
+  setTextProperty("entrytype",entry.getType().getName());
+}

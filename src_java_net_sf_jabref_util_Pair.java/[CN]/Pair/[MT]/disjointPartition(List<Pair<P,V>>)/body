@@ -1,0 +1,27 @@
+{
+  List<Pair<P,Set<V>>> result=new LinkedList<Pair<P,Set<V>>>();
+  Comparator<Pair<P,V>> c=Pair.pCompare();
+  Collections.sort(list,Collections.reverseOrder(c));
+  Iterator<Pair<P,V>> i=list.iterator();
+  Set<V> vs;
+  if (i.hasNext()) {
+    Pair<P,V> first=i.next();
+    P last=first.p;
+    vs=new HashSet<V>();
+    vs.add(first.v);
+    while (i.hasNext()) {
+      Pair<P,V> next=i.next();
+      if (last.compareTo(next.p) == 0) {
+        vs.add(next.v);
+      }
+ else {
+        result.add(new Pair<P,Set<V>>(last,vs));
+        vs=new HashSet<V>();
+        last=next.p;
+        vs.add(next.v);
+      }
+    }
+    result.add(new Pair<P,Set<V>>(last,vs));
+  }
+  return result;
+}

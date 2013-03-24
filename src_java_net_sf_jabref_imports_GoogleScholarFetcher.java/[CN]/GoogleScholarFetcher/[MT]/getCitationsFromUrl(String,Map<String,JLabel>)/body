@@ -1,0 +1,31 @@
+{
+  URL url=new URL(urlQuery);
+  URLDownload ud=new URLDownload(url);
+  ud.download();
+  String cont=ud.getStringContent();
+  Matcher m=BIBTEX_LINK_PATTERN.matcher(cont);
+  int lastRegionStart=0;
+  while (m.find()) {
+    String link=m.group(1).replaceAll("&amp;","&");
+    String pText=null;
+    String part=cont.substring(lastRegionStart,m.start());
+    Matcher titleS=TITLE_START_PATTERN.matcher(part);
+    Matcher titleE=TITLE_END_PATTERN.matcher(part);
+    boolean fS=titleS.find();
+    boolean fE=titleE.find();
+    if (fS && fE) {
+      if (titleS.end() < titleE.start()) {
+        pText=part.substring(titleS.end(),titleE.start());
+      }
+ else       pText=part;
+    }
+ else     pText=link;
+    pText=pText.replaceAll("\\[PDF\\]","");
+    JLabel preview=new JLabel("<html>" + pText + "</html>");
+    ids.put(link,preview);
+    Matcher linkMatcher=LINK_PATTERN.matcher(pText);
+    if (linkMatcher.find())     entryLinks.put(link,linkMatcher.group(1));
+    lastRegionStart=m.end();
+  }
+  return null;
+}

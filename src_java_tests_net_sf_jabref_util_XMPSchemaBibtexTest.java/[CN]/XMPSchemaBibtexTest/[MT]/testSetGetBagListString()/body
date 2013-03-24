@@ -1,0 +1,36 @@
+{
+  XMPMetadata xmp=new XMPMetadata();
+  XMPSchemaBibtex bibtex=new XMPSchemaBibtex(xmp);
+  bibtex.addBagValue("author","Tom DeMarco");
+  bibtex.addBagValue("author","Kent Beck");
+{
+    List<String> l=bibtex.getBagList("author");
+    assertEquals(2,l.size());
+    assertTrue(l.get(0).equals("Tom DeMarco") || l.get(1).equals("Tom DeMarco"));
+    assertTrue(l.get(0).equals("Kent Beck") || l.get(1).equals("Kent Beck"));
+  }
+{
+    bibtex.removeBagValue("author","Kent Beck");
+    List<String> l=bibtex.getBagList("author");
+    assertEquals(1,l.size());
+    assertTrue(l.get(0).equals("Tom DeMarco"));
+  }
+{
+    bibtex.removeBagValue("author","Kent Beck");
+    List<String> l=bibtex.getBagList("author");
+    assertEquals(1,l.size());
+    assertTrue(l.get(0).equals("Tom DeMarco"));
+  }
+{
+    bibtex.addBagValue("author","Tom DeMarco");
+    List<String> l=bibtex.getBagList("author");
+    assertEquals(2,l.size());
+    assertTrue(l.get(0).equals("Tom DeMarco"));
+    assertTrue(l.get(1).equals("Tom DeMarco"));
+  }
+{
+    bibtex.removeBagValue("author","Tom DeMarco");
+    List<String> l=bibtex.getBagList("author");
+    assertEquals(0,l.size());
+  }
+}

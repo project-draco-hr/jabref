@@ -1,0 +1,70 @@
+{
+  setLayout(new BorderLayout());
+  TableModel tm=new AbstractTableModel(){
+    public int getRowCount(){
+      return rowCount;
+    }
+    public int getColumnCount(){
+      return 2;
+    }
+    public Object getValueAt(    int row,    int column){
+      if (row >= tableRows.size())       return "";
+      TableRow tr=tableRows.elementAt(row);
+      if (tr == null)       return "";
+switch (column) {
+case 0:
+        return tr.name;
+case 1:
+      return tr.format;
+  }
+  return null;
+}
+public String getColumnName(int col){
+  return (col == 0 ? Globals.lang("Formatter Name") : Globals.lang("Format String"));
+}
+public Class<String> getColumnClass(int column){
+  if (column == 0)   return String.class;
+ else   return String.class;
+}
+public boolean isCellEditable(int row,int col){
+  return true;
+}
+public void setValueAt(Object value,int row,int col){
+  tableChanged=true;
+  while (row >= tableRows.size())   tableRows.add(new TableRow());
+  TableRow rowContent=tableRows.elementAt(row);
+  if (col == 0)   rowContent.name=value.toString();
+ else   rowContent.format=value.toString();
+}
+}
+;
+table=new JTable(tm);
+TableColumnModel cm=table.getColumnModel();
+cm.getColumn(0).setPreferredWidth(140);
+cm.getColumn(1).setPreferredWidth(400);
+FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref","");
+DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+JPanel pan=new JPanel();
+JPanel tabPanel=new JPanel();
+tabPanel.setLayout(new BorderLayout());
+JScrollPane sp=new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+table.setPreferredScrollableViewportSize(new Dimension(250,200));
+sp.setMinimumSize(new Dimension(250,300));
+sp.setPreferredSize(new Dimension(600,300));
+tabPanel.add(sp,BorderLayout.CENTER);
+JToolBar tlb=new JToolBar(SwingConstants.VERTICAL);
+tlb.setFloatable(false);
+tlb.setBorder(null);
+tlb.add(new AddRowAction());
+tlb.add(new DeleteRowAction());
+tlb.add(new HelpAction(helpDialog,GUIGlobals.nameFormatterHelp,"Help on Name Formatting",GUIGlobals.getIconUrl("helpSmall")));
+tabPanel.add(tlb,BorderLayout.EAST);
+builder.appendSeparator(Globals.lang("Special Name Formatters"));
+builder.nextLine();
+builder.append(pan);
+builder.append(tabPanel);
+builder.nextLine();
+pan=builder.getPanel();
+pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+add(pan,BorderLayout.CENTER);
+}

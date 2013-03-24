@@ -1,0 +1,41 @@
+{
+  for (Iterator<String> i=metaData.keySet().iterator(); i.hasNext(); ) {
+    String key=i.next();
+    StringBuffer sb=new StringBuffer();
+    Vector<String> orderedData=metaData.get(key);
+    if (orderedData.size() >= 0) {
+      sb.append("@comment{").append(GUIGlobals.META_FLAG).append(key).append(":");
+      for (int j=0; j < orderedData.size(); j++) {
+        sb.append(Util.quote(orderedData.elementAt(j),";",'\\')).append(";");
+      }
+      sb.append("}");
+    }
+    wrapStringBuffer(sb,Globals.METADATA_LINE_LENGTH);
+    sb.append(Globals.NEWLINE);
+    sb.append(Globals.NEWLINE);
+    out.write(sb.toString());
+  }
+  if (groupsRoot != null && groupsRoot.getChildCount() > 0) {
+    StringBuffer sb=new StringBuffer();
+    sb.append("@comment{").append(GUIGlobals.META_FLAG).append("groupsversion:");
+    sb.append("" + VersionHandling.CURRENT_VERSION + ";");
+    sb.append("}");
+    sb.append(Globals.NEWLINE);
+    sb.append(Globals.NEWLINE);
+    out.write(sb.toString());
+    sb=new StringBuffer();
+    sb.append("@comment{").append(GUIGlobals.META_FLAG).append("groupstree:");
+    sb.append(Globals.NEWLINE);
+    StringTokenizer tok=new StringTokenizer(groupsRoot.getTreeAsString(),Globals.NEWLINE);
+    while (tok.hasMoreTokens()) {
+      StringBuffer s=new StringBuffer(Util.quote(tok.nextToken(),";",'\\') + ";");
+      wrapStringBuffer(s,Globals.METADATA_LINE_LENGTH);
+      sb.append(s);
+      sb.append(Globals.NEWLINE);
+    }
+    sb.append("}");
+    sb.append(Globals.NEWLINE);
+    sb.append(Globals.NEWLINE);
+    out.write(sb.toString());
+  }
+}

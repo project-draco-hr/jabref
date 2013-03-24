@@ -1,0 +1,11 @@
+{
+  JabRef jabref=TestUtils.getInitializedJabRef();
+  BibtexEntry bibtexEntry=new BibtexEntry();
+  bibtexEntry.setField("journal","Testtext");
+  FieldEditor authorTextField=new FieldTextArea("journal","New Testtext");
+  EntryEditor editor=new EntryEditor(jabref.jrf,jabref.jrf.basePanel(),bibtexEntry);
+  editor.storeFieldAction.actionPerformed(new ActionEvent(authorTextField,0,""));
+  AbstractAutoCompleter autoCompleter=jabref.jrf.basePanel().getAutoCompleter("journal");
+  assertTrue(autoCompleter.indexContainsWord("New Testtext"));
+  TestUtils.closeJabRef();
+}

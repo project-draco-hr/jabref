@@ -1,0 +1,11 @@
+{
+  ImportInspectionDialog.this.toFront();
+  FileListTableModel model=new FileListTableModel();
+  String oldVal=entry.getField(GUIGlobals.FILE_FIELD);
+  if (oldVal != null)   model.setContent(oldVal);
+  model.addEntry(model.getRowCount(),file);
+  entries.getReadWriteLock().writeLock().lock();
+  entry.setField(GUIGlobals.FILE_FIELD,model.getStringRepresentation());
+  entries.getReadWriteLock().writeLock().unlock();
+  glTable.repaint();
+}

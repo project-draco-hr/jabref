@@ -1,0 +1,14 @@
+{
+  StringBuffer sb=new StringBuffer();
+  sb.append(ID).append(Util.quote(m_name,SEPARATOR,QUOTE_CHAR)).append(SEPARATOR).append(m_context).append(SEPARATOR);
+  String s;
+  Set<String> sortedKeys=new TreeSet<String>();
+  for (Iterator<BibtexEntry> it=m_entries.iterator(); it.hasNext(); ) {
+    s=it.next().getCiteKey();
+    if (s != null && !s.equals(""))     sortedKeys.add(s);
+  }
+  for (Iterator<String> it=sortedKeys.iterator(); it.hasNext(); ) {
+    sb.append(Util.quote(it.next(),SEPARATOR,QUOTE_CHAR)).append(SEPARATOR);
+  }
+  return sb.toString();
+}

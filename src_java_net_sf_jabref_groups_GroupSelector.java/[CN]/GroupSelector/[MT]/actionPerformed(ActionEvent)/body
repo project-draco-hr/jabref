@@ -1,0 +1,32 @@
+{
+  if (e.getSource() == refresh) {
+    valueChanged(null);
+  }
+ else   if (e.getSource() == newButton) {
+    GroupDialog gd=new GroupDialog(frame,panel,null);
+    gd.setVisible(true);
+    if (gd.okPressed()) {
+      AbstractGroup newGroup=gd.getResultingGroup();
+      GroupTreeNode newNode=new GroupTreeNode(newGroup);
+      groupsRoot.add(newNode);
+      revalidateGroups();
+      UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(GroupSelector.this,groupsRoot,newNode,UndoableAddOrRemoveGroup.ADD_NODE);
+      panel.undoManager.addEdit(undo);
+      panel.markBaseChanged();
+      frame.output(Globals.lang("Created_group_\"%0\".",newGroup.getName()));
+    }
+  }
+ else   if (e.getSource() == autoGroup) {
+    AutoGroupDialog gd=new AutoGroupDialog(frame,panel,GroupSelector.this,groupsRoot,Globals.prefs.get("groupsDefaultField")," .,",",");
+    gd.setVisible(true);
+  }
+ else   if (e.getSource() instanceof JCheckBox) {
+    valueChanged(null);
+  }
+ else   if (e.getSource() instanceof JCheckBoxMenuItem) {
+    valueChanged(null);
+  }
+ else   if (e.getSource() instanceof JRadioButtonMenuItem) {
+    valueChanged(null);
+  }
+}

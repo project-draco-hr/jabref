@@ -1,0 +1,41 @@
+{
+  try {
+    URL url=new URL(urlText);
+    url=resolveRedirects(url,0);
+    boolean domainKnown=false;
+    for (    FullTextFinder finder : finders) {
+      if (finder.supportsSite(url)) {
+        domainKnown=true;
+        URL result=finder.findFullTextURL(url);
+        if (result != null) {
+          try {
+            URLDownload udl=new URLDownload(null,result,null);
+            udl.openConnectionOnly();
+            String mimeType=udl.getMimeType();
+            if ((mimeType != null) && (mimeType.toLowerCase().equals("application/pdf"))) {
+              return new FindResult(result,url);
+            }
+ else {
+              udl=new URLDownload(null,result,new File("page.html"));
+              udl.download();
+              return new FindResult(WRONG_MIME_TYPE,url);
+            }
+          }
+ catch (          IOException ex) {
+            ex.printStackTrace();
+            return new FindResult(IO_EXCEPTION,url);
+          }
+        }
+      }
+    }
+    if (!domainKnown)     return new FindResult(UNKNOWN_DOMAIN,url);
+ else     return new FindResult(LINK_NOT_FOUND,url);
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+  }
+  return null;
+}

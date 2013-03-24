@@ -1,0 +1,54 @@
+{
+  Globals.prefs=JabRefPreferences.getInstance();
+  oldUseRegExp=Globals.prefs.getBoolean(JabRefPreferences.USE_REG_EXP_SEARCH_KEY);
+  oldPdfDirectory=Globals.prefs.get("pdfDirectory");
+  Globals.prefs.putBoolean(JabRefPreferences.USE_REG_EXP_SEARCH_KEY,false);
+  getBibtexEntry();
+  assertNotNull(database);
+  assertNotNull(entry);
+  try {
+    root=createTempDir("UtilFindFileTest");
+    Globals.prefs.put("pdfDirectory",root.getPath());
+    File subDir1=new File(root,"Organization Science");
+    subDir1.mkdir();
+    File pdf1=new File(subDir1,"HipKro03 - Hello.pdf");
+    pdf1.createNewFile();
+    File pdf1a=new File(root,"HipKro03 - Hello.pdf");
+    pdf1a.createNewFile();
+    File subDir2=new File(root,"pdfs");
+    subDir2.mkdir();
+    File subsubDir1=new File(subDir2,"sub");
+    subsubDir1.mkdir();
+    File pdf2=new File(subsubDir1,"HipKro03-sub.pdf");
+    pdf2.createNewFile();
+    File dir2002=new File(root,"2002");
+    dir2002.mkdir();
+    File dir2003=new File(root,"2003");
+    dir2003.mkdir();
+    File pdf3=new File(dir2003,"Paper by HipKro03.pdf");
+    pdf3.createNewFile();
+    File dirTest=new File(root,"test");
+    dirTest.mkdir();
+    File pdf4=new File(dirTest,"HipKro03.pdf");
+    pdf4.createNewFile();
+    File pdf5=new File(dirTest,".TEST");
+    pdf5.createNewFile();
+    File pdf6=new File(dirTest,"TEST[");
+    pdf6.createNewFile();
+    File pdf7=new File(dirTest,"TE.ST");
+    pdf7.createNewFile();
+    File foo=new File(dirTest,"foo.dat");
+    foo.createNewFile();
+    File graphicsDir=new File(root,"graphicsDir");
+    graphicsDir.mkdir();
+    File graphicsSubDir=new File(graphicsDir,"subDir");
+    graphicsSubDir.mkdir();
+    File jpg=new File(graphicsSubDir,"testHipKro03test.jpg");
+    jpg.createNewFile();
+    File png=new File(graphicsSubDir,"testHipKro03test.png");
+    png.createNewFile();
+  }
+ catch (  Exception e) {
+    throw new RuntimeException();
+  }
+}

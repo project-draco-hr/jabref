@@ -1,0 +1,12 @@
+{
+  XFootnote xFootnote=(XFootnote)UnoRuntime.queryInterface(XFootnote.class,mxDocFactory.createInstance("com.sun.star.text.Footnote"));
+  xFootnote.setLabel("");
+  XPropertySet props=(XPropertySet)UnoRuntime.queryInterface(XPropertySet.class,xFootnote);
+  props.setPropertyValue("ReferenceId",name);
+  System.out.println(props.getPropertyValue("ReferenceId"));
+  XTextContent xContent=(XTextContent)UnoRuntime.queryInterface(XTextContent.class,xFootnote);
+  text.insertTextContent(position,xContent,false);
+  XSimpleText xSimple=(XSimpleText)UnoRuntime.queryInterface(XSimpleText.class,xFootnote);
+  XTextRange xRange=(XTextRange)UnoRuntime.queryInterface(XTextRange.class,xSimple.createTextCursor());
+  xSimple.insertString(xRange,citText,false);
+}

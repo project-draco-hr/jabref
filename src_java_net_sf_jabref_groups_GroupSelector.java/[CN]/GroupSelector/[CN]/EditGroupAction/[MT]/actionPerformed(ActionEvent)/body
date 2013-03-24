@@ -1,0 +1,25 @@
+{
+  final GroupTreeNode node=getNodeToUse();
+  final AbstractGroup oldGroup=node.getGroup();
+  final GroupDialog gd=new GroupDialog(frame,panel,oldGroup);
+  gd.setVisible(true);
+  if (gd.okPressed()) {
+    AbstractGroup newGroup=gd.getResultingGroup();
+    AbstractUndoableEdit undoAddPreviousEntries=gd.getUndoForAddPreviousEntries();
+    UndoableModifyGroup undo=new UndoableModifyGroup(GroupSelector.this,groupsRoot,node,newGroup);
+    node.setGroup(newGroup);
+    revalidateGroups(node);
+    if (undoAddPreviousEntries == null) {
+      panel.undoManager.addEdit(undo);
+    }
+ else {
+      NamedCompound nc=new NamedCompound("Modify Group");
+      nc.addEdit(undo);
+      nc.addEdit(undoAddPreviousEntries);
+      nc.end();
+      panel.undoManager.addEdit(nc);
+    }
+    panel.markBaseChanged();
+    frame.output(Globals.lang("Modified group \"%0\".",newGroup.getName()));
+  }
+}

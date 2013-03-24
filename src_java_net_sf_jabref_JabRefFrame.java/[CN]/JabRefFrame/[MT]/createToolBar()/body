@@ -1,0 +1,71 @@
+{
+  tlb.putClientProperty(Options.HEADER_STYLE_KEY,HeaderStyle.BOTH);
+  tlb.setBorder(null);
+  tlb.setRollover(true);
+  tlb.setFloatable(false);
+  tlb.addAction(newDatabaseAction);
+  tlb.addAction(open);
+  tlb.addAction(save);
+  tlb.addAction(saveAll);
+  tlb.addSeparator();
+  tlb.addAction(cut);
+  tlb.addAction(copy);
+  tlb.addAction(paste);
+  tlb.addAction(undo);
+  tlb.addAction(redo);
+  tlb.addSeparator();
+  tlb.addAction(back);
+  tlb.addAction(forward);
+  tlb.addSeparator();
+  tlb.addAction(newEntryAction);
+  tlb.addAction(editEntry);
+  tlb.addAction(editPreamble);
+  tlb.addAction(editStrings);
+  tlb.addAction(makeKeyAction);
+  tlb.addAction(Cleanup);
+  tlb.addSeparator();
+  tlb.addAction(mark);
+  tlb.addAction(unmark);
+  tlb.addSeparator();
+  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+      tlb.add(net.sf.jabref.specialfields.SpecialFieldDropDown.generateSpecialFieldButtonWithDropDown(Rank.getInstance(),this));
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+      tlb.addAction(toggleRelevance);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+      tlb.addAction(toggleQualityAssured);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+      tlb.add(net.sf.jabref.specialfields.SpecialFieldDropDown.generateSpecialFieldButtonWithDropDown(Priority.getInstance(),this));
+    }
+  }
+  tlb.addSeparator();
+  searchToggle=new JToggleButton(toggleSearch);
+  searchToggle.setText(null);
+  if (!Globals.ON_MAC)   searchToggle.setMargin(marg);
+  tlb.add(searchToggle);
+  previewToggle=new JToggleButton(togglePreview);
+  previewToggle.setText(null);
+  if (!Globals.ON_MAC)   previewToggle.setMargin(marg);
+  tlb.add(previewToggle);
+  tlb.addSeparator();
+  groupToggle=new JToggleButton(toggleGroups);
+  groupToggle.setText(null);
+  if (!Globals.ON_MAC)   groupToggle.setMargin(marg);
+  tlb.add(groupToggle);
+  highlightAny=new JToggleButton(toggleHighlightAny);
+  highlightAny.setText(null);
+  if (!Globals.ON_MAC)   highlightAny.setMargin(marg);
+  tlb.add(highlightAny);
+  highlightAll=new JToggleButton(toggleHighlightAll);
+  highlightAll.setText(null);
+  if (!Globals.ON_MAC)   highlightAll.setMargin(marg);
+  tlb.add(highlightAll);
+  tlb.addSeparator();
+  tlb.add(pushExternalButton.getComponent());
+  tlb.addAction(openFile);
+  tlb.add(Box.createHorizontalGlue());
+  tlb.addAction(closeDatabaseAction);
+}

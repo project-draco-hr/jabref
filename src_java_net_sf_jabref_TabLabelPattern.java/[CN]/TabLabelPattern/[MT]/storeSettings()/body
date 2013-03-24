@@ -1,0 +1,23 @@
+{
+  Globals.prefs.put("defaultLabelPattern",defaultPat.getText());
+  Globals.prefs.putBoolean("warnBeforeOverwritingKey",warnBeforeOverwriting.isSelected());
+  Globals.prefs.putBoolean("avoidOverwritingKey",dontOverwrite.isSelected());
+  Globals.prefs.put("KeyPatternRegex",KeyPatternRegex.getText());
+  Globals.prefs.put("KeyPatternReplacement",KeyPatternReplacement.getText());
+  Globals.prefs.putBoolean("generateKeysAfterInspection",autoGenerateOnImport.isSelected());
+  Globals.prefs.putBoolean("generateKeysBeforeSaving",generateOnSave.isSelected());
+  if (alwaysAddLetter.isSelected())   Globals.prefs.putBoolean("keyGenAlwaysAddLetter",true);
+ else   if (letterStartA.isSelected()) {
+    Globals.prefs.putBoolean("keyGenFirstLetterA",true);
+    Globals.prefs.putBoolean("keyGenAlwaysAddLetter",false);
+  }
+ else {
+    Globals.prefs.putBoolean("keyGenFirstLetterA",false);
+    Globals.prefs.putBoolean("keyGenAlwaysAddLetter",false);
+  }
+  LabelPatternUtil.updateDefaultPattern();
+  LabelPattern defKeyPattern=_prefs.getKeyPattern().getParent();
+  LabelPattern keypatterns=getLabelPattern();
+  keypatterns.setParent(defKeyPattern);
+  _prefs.putKeyPattern(keypatterns);
+}

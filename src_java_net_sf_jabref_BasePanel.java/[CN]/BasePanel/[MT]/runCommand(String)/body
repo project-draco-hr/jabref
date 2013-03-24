@@ -1,0 +1,21 @@
+{
+  final String command=_command;
+  if (actions.get(command) == null)   Util.pr("No action defined for'" + command + "'");
+ else {
+    Object o=actions.get(command);
+    try {
+      if (o instanceof BaseAction)       ((BaseAction)o).action();
+ else {
+        Worker wrk=((AbstractWorker)o).getWorker();
+        CallBack clb=((AbstractWorker)o).getCallBack();
+        ((AbstractWorker)o).init();
+        wrk.run();
+        clb.update();
+      }
+    }
+ catch (    Throwable ex) {
+      frame.unblock();
+      ex.printStackTrace();
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  if (entry != null) {
+    for (int i=0; i < fieldNames.length; i++) {
+      String fieldValue=entry.getField(fieldNames[i]);
+      if (fieldValue != null) {
+        AuthorList authorList=AuthorList.getAuthorList(fieldValue);
+        for (int j=0; j < authorList.size(); j++) {
+          AuthorList.Author author=authorList.getAuthor(j);
+          if (lastNameOnlyAndSeparationBySpace) {
+            addWordToIndex(author.getLastOnly());
+          }
+ else {
+            if (autoCompLF) {
+              if (autoCompShortFirstOnly) {
+                addWordToIndex(author.getLastFirst(true));
+              }
+ else               if (autoCompFullFirstOnly) {
+                addWordToIndex(author.getLastFirst(false));
+              }
+ else {
+                addWordToIndex(author.getLastFirst(true));
+                addWordToIndex(author.getLastFirst(false));
+              }
+            }
+            if (autoCompFF) {
+              if (autoCompShortFirstOnly) {
+                addWordToIndex(author.getFirstLast(true));
+              }
+ else               if (autoCompFullFirstOnly) {
+                addWordToIndex(author.getFirstLast(false));
+              }
+ else {
+                addWordToIndex(author.getFirstLast(true));
+                addWordToIndex(author.getFirstLast(false));
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

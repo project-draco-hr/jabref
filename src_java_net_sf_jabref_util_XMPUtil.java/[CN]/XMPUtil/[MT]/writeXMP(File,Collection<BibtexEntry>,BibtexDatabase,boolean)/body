@@ -1,0 +1,53 @@
+{
+  if (databasee != null)   bibtexEntries=databasee.resolveForStrings(bibtexEntries,false);
+  PDDocument document=null;
+  try {
+    document=PDDocument.load(file.getAbsoluteFile());
+    if (document.isEncrypted()) {
+      throw new EncryptionNotSupportedException("Error: Cannot add metadata to encrypted document.");
+    }
+    if (writePDFInfo && bibtexEntries.size() == 1) {
+      writeDocumentInformation(document,bibtexEntries.iterator().next(),null);
+      writeDublinCore(document,bibtexEntries,null);
+    }
+    PDDocumentCatalog catalog=document.getDocumentCatalog();
+    PDMetadata metaRaw=catalog.getMetadata();
+    XMPMetadata meta;
+    if (metaRaw != null) {
+      meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+    }
+ else {
+      meta=new XMPMetadata();
+    }
+    meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
+    List schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
+    Iterator it=schemas.iterator();
+    while (it.hasNext()) {
+      XMPSchemaBibtex bib=(XMPSchemaBibtex)it.next();
+      bib.getElement().getParentNode().removeChild(bib.getElement());
+    }
+    it=bibtexEntries.iterator();
+    while (it.hasNext()) {
+      BibtexEntry e=(BibtexEntry)it.next();
+      XMPSchemaBibtex bibtex=new XMPSchemaBibtex(meta);
+      meta.addSchema(bibtex);
+      bibtex.setBibtexEntry(e,null);
+    }
+    ByteArrayOutputStream os=new ByteArrayOutputStream();
+    meta.save(os);
+    ByteArrayInputStream is=new ByteArrayInputStream(os.toByteArray());
+    PDMetadata metadataStream=new PDMetadata(document,is,false);
+    catalog.setMetadata(metadataStream);
+    try {
+      document.save(file.getAbsolutePath());
+    }
+ catch (    COSVisitorException e) {
+      throw new TransformerException("Could not write XMP-metadata: " + e.getLocalizedMessage());
+    }
+  }
+  finally {
+    if (document != null) {
+      document.close();
+    }
+  }
+}

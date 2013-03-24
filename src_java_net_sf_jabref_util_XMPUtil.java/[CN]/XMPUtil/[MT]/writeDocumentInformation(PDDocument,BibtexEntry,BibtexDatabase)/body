@@ -1,0 +1,23 @@
+{
+  PDDocumentInformation di=document.getDocumentInformation();
+  if (database != null)   entry=database.resolveForStrings(entry,false);
+  Set<String> fields=entry.getAllFields();
+  for (  String field : fields) {
+    if (field.equals("author")) {
+      di.setAuthor(entry.getField("author").toString());
+    }
+ else     if (field.equals("title")) {
+      di.setTitle(entry.getField("title").toString());
+    }
+ else     if (field.equals("keywords")) {
+      di.setKeywords(entry.getField("keywords").toString());
+    }
+ else     if (field.equals("abstract")) {
+      di.setSubject(entry.getField("abstract").toString());
+    }
+ else {
+      di.setCustomMetadataValue("bibtex/" + field.toString(),entry.getField(field.toString()).toString());
+    }
+  }
+  di.setCustomMetadataValue("bibtex/entrytype",entry.getType().getName());
+}

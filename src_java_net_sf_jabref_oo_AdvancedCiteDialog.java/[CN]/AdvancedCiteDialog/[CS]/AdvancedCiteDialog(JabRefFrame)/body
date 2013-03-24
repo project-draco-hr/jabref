@@ -1,0 +1,52 @@
+{
+  diag=new JDialog(parent,Globals.lang("Cite special"),true);
+  ButtonGroup bg=new ButtonGroup();
+  bg.add(inPar);
+  bg.add(inText);
+  if (defaultInPar)   inPar.setSelected(true);
+ else   inText.setSelected(true);
+  inPar.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent changeEvent){
+      defaultInPar=inPar.isSelected();
+    }
+  }
+);
+  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:pref",""));
+  b.append(inPar,3);
+  b.nextLine();
+  b.append(inText,3);
+  b.nextLine();
+  b.append(Globals.lang("Extra information (e.g. page number)") + ":");
+  b.append(pageInfo);
+  b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(b.getPanel(),BorderLayout.CENTER);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  diag.pack();
+  Action okAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      okPressed=true;
+      diag.dispose();
+    }
+  }
+;
+  ok.addActionListener(okAction);
+  pageInfo.addActionListener(okAction);
+  inPar.addActionListener(okAction);
+  inText.addActionListener(okAction);
+  Action cancelAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      okPressed=false;
+      diag.dispose();
+    }
+  }
+;
+  cancel.addActionListener(cancelAction);
+  b.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(Globals.prefs.getKey("Close dialog"),"close");
+  b.getPanel().getActionMap().put("close",cancelAction);
+}

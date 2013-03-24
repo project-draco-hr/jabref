@@ -1,0 +1,31 @@
+{
+  StringBuffer buf=new StringBuffer(str.length());
+  java.util.List<String> l=new java.util.ArrayList<String>();
+  int scnt=Utility.count(str,'"');
+  boolean q=false;
+  if ((scnt) / 2.0 != (scnt / 2)) {
+    throw new OptionProcessingException("Expecting an end quote.");
+  }
+  for (int n=0; n < str.length(); n++) {
+    if (str.charAt(n) == '"') {
+      q=!q;
+    }
+ else     if (str.charAt(n) == ' ' && !q) {
+      l.add(buf.toString());
+      buf=new StringBuffer(str.length());
+    }
+ else {
+      buf.append(str.charAt(n));
+    }
+  }
+  if (buf.length() != 0) {
+    l.add(buf.toString());
+  }
+  Iterator<String> it=l.iterator();
+  String retval[]=new String[l.size()];
+  int n=0;
+  while (it.hasNext()) {
+    retval[n++]=it.next();
+  }
+  return retval;
+}

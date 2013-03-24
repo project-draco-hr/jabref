@@ -1,0 +1,83 @@
+{
+  if (Globals.prefs == null) {
+    Globals.prefs=JabRefPreferences.getInstance();
+  }
+switch (args.length) {
+case 0:
+    usage();
+  break;
+case 1:
+{
+  if (args[0].endsWith(".pdf")) {
+    List<BibtexEntry> l=XMPUtil.readXMP(new File(args[0]));
+    Iterator<BibtexEntry> it=l.iterator();
+    while (it.hasNext()) {
+      BibtexEntry e=it.next();
+      StringWriter sw=new StringWriter();
+      e.write(sw,new net.sf.jabref.export.LatexFieldFormatter(),false);
+      System.out.println(sw.getBuffer().toString());
+    }
+  }
+ else   if (args[0].endsWith(".bib")) {
+    ParserResult result=BibtexParser.parse(new FileReader(args[0]));
+    Collection<BibtexEntry> entries=result.getDatabase().getEntries();
+    if (entries.size() == 0) {
+      System.err.println("Could not find BibtexEntry in " + args[0]);
+    }
+ else {
+      System.out.println(XMPUtil.toXMP(entries,result.getDatabase()));
+    }
+  }
+ else {
+    usage();
+  }
+  break;
+}
+case 2:
+{
+if (args[0].equals("-x") && args[1].endsWith(".pdf")) {
+  XMPMetadata meta=XMPUtil.readRawXMP(new File(args[1]));
+  if (meta == null) {
+    System.err.println("The given pdf does not contain any XMP-metadata.");
+  }
+ else {
+    XMLUtil.save(meta.getXMPDocument(),System.out,"UTF-8");
+  }
+  break;
+}
+if (args[0].endsWith(".bib") && args[1].endsWith(".pdf")) {
+  ParserResult result=BibtexParser.parse(new FileReader(args[0]));
+  Collection<BibtexEntry> entries=result.getDatabase().getEntries();
+  if (entries.size() == 0) {
+    System.err.println("Could not find BibtexEntry in " + args[0]);
+  }
+ else {
+    XMPUtil.writeXMP(new File(args[1]),entries,result.getDatabase(),false);
+    System.out.println("XMP written.");
+  }
+  break;
+}
+usage();
+break;
+}
+case 3:
+{
+if (!args[1].endsWith(".bib") && !args[2].endsWith(".pdf")) {
+usage();
+break;
+}
+ParserResult result=BibtexParser.parse(new FileReader(args[1]));
+BibtexEntry e=result.getDatabase().getEntryByKey(args[0]);
+if (e == null) {
+System.err.println("Could not find BibtexEntry " + args[0] + " in "+ args[0]);
+}
+ else {
+XMPUtil.writeXMP(new File(args[2]),e,result.getDatabase());
+System.out.println("XMP written.");
+}
+break;
+}
+default :
+usage();
+}
+}

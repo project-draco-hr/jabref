@@ -1,0 +1,37 @@
+{
+  String suppliedEncoding=null;
+  StringBuffer headerText=new StringBuffer();
+  try {
+    boolean keepon=true;
+    int piv=0, offset=0;
+    int c;
+    while (keepon) {
+      c=reader.read();
+      if ((piv == 0) && ((c == '%') || (Character.isWhitespace((char)c))))       offset++;
+ else {
+        headerText.append((char)c);
+        if (c == GUIGlobals.SIGNATURE.charAt(piv))         piv++;
+ else         keepon=false;
+      }
+      found:       if (piv == GUIGlobals.SIGNATURE.length()) {
+        keepon=false;
+        while (reader.read() != '\n') {
+        }
+        while (((c=reader.read()) == '%') || (Character.isWhitespace((char)c))) {
+        }
+        if ((char)c != GUIGlobals.encPrefix.charAt(0))         break found;
+        for (int i=1; i < GUIGlobals.encPrefix.length(); i++) {
+          if (reader.read() != GUIGlobals.encPrefix.charAt(i))           break found;
+        }
+        StringBuffer sb=new StringBuffer();
+        while ((c=reader.read()) != '\n') {
+          sb.append((char)c);
+        }
+        suppliedEncoding=sb.toString();
+      }
+    }
+  }
+ catch (  IOException ex) {
+  }
+  return suppliedEncoding != null ? suppliedEncoding.trim() : null;
+}

@@ -1,0 +1,24 @@
+{
+  String query="";
+  String val="";
+  String insert="INSERT INTO entries (jabref_eid, entry_types_id, cite_key, " + fieldStr + ", database_id) VALUES (";
+  for (  BibtexEntry entry : entries) {
+    query=insert + "'" + entry.getId()+ "'"+ ", (SELECT entry_types_id FROM entry_types WHERE label='"+ entry.getType().getName().toLowerCase()+ "'), '"+ entry.getCiteKey()+ "'";
+    for (int i=0; i < SQLUtil.getAllFields().size(); i++) {
+      query=query + ", ";
+      val=entry.getField(SQLUtil.getAllFields().get(i));
+      if (val != null) {
+        val=val.replace("\\","\\\\");
+        val=val.replace("\"","\\\"");
+        val=val.replace("\'","''");
+        val=val.replace("`","\\`");
+        query=query + "'" + val+ "'";
+      }
+ else {
+        query=query + "NULL";
+      }
+    }
+    query=query + ", '" + database_id+ "');";
+    SQLUtil.processQuery(out,query);
+  }
+}

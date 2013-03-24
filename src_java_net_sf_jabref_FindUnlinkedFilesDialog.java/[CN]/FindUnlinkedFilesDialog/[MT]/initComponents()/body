@@ -1,0 +1,73 @@
+{
+  this.addComponentListener(dialogPositionListener);
+  this.addWindowListener(new WindowAdapter(){
+    @Override public void windowClosing(    WindowEvent e){
+      threadState[0]=0;
+    }
+  }
+);
+  panelDirectory=new JPanel();
+  panelSearchArea=new JPanel();
+  panelFiles=new JPanel();
+  panelOptions=new JPanel();
+  panelEntryTypesSelection=new JPanel();
+  panelButtons=new JPanel();
+  panelImportArea=new JPanel();
+  mainArea=new JPanel();
+  buttonBrowse=new JButton(Globals.lang("Browse..."));
+  buttonBrowse.setMnemonic('B');
+  buttonBrowse.setToolTipText(Globals.lang("Opens the file browser."));
+  buttonScan=new JButton(Globals.lang("Scan directory"));
+  buttonScan.setMnemonic('S');
+  buttonScan.setToolTipText(Globals.lang("Searches the selected directory for unlinked files."));
+  buttonApply=new JButton(Globals.lang("Apply"));
+  buttonApply.setMnemonic('I');
+  buttonApply.setToolTipText(Globals.lang("Starts the import of bibtex entries."));
+  buttonClose=new JButton(Globals.lang("Close"));
+  buttonClose.setToolTipText(Globals.lang("Leave this dialog."));
+  buttonClose.setMnemonic('C');
+  buttonOptionSelectAll=new JButton();
+  buttonOptionSelectAll.setMnemonic('A');
+  buttonOptionSelectAll.setAction(actionSelectAll);
+  buttonOptionUnselectAll=new JButton();
+  buttonOptionUnselectAll.setMnemonic('U');
+  buttonOptionUnselectAll.setAction(actionUnselectAll);
+  buttonOptionExpandAll=new JButton();
+  buttonOptionExpandAll.setMnemonic('E');
+  buttonOptionExpandAll.setAction(actionExpandTree);
+  buttonOptionCollapseAll=new JButton();
+  buttonOptionCollapseAll.setMnemonic('L');
+  buttonOptionCollapseAll.setAction(actionCollapseTree);
+  checkboxCreateKeywords=new JCheckBox(Globals.lang("Create directory based keywords"));
+  checkboxCreateKeywords.setToolTipText(Globals.lang("Creates keywords in created entrys with directory pathnames"));
+  checkboxCreateKeywords.setSelected(checkBoxWhyIsThereNoGetSelectedStupidSwing);
+  checkboxCreateKeywords.addItemListener(new ItemListener(){
+    public void itemStateChanged(    ItemEvent e){
+      checkBoxWhyIsThereNoGetSelectedStupidSwing=!checkBoxWhyIsThereNoGetSelectedStupidSwing;
+    }
+  }
+);
+  textfieldDirectoryPath=new JTextField();
+  textfieldDirectoryPath.setText(lastSelectedDirectory == null ? "" : lastSelectedDirectory.getAbsolutePath());
+  labelDirectoryDescription=new JLabel(Globals.lang("Select a directory where the search shall start."));
+  labelFileTypesDescription=new JLabel(Globals.lang("Select file type:"));
+  labelFilesDescription=new JLabel(Globals.lang("These files are not linked in the active database."));
+  labelEntryTypeDescription=new JLabel(Globals.lang("Entry type to be created:"));
+  labelSearchingDirectoryInfo=new JLabel(Globals.lang("Searching file system..."));
+  labelSearchingDirectoryInfo.setHorizontalAlignment(JTextField.CENTER);
+  labelSearchingDirectoryInfo.setVisible(false);
+  labelImportingInfo=new JLabel(Globals.lang("Importing into Database..."));
+  labelImportingInfo.setHorizontalAlignment(JTextField.CENTER);
+  labelImportingInfo.setVisible(false);
+  tree=new JTree();
+  scrollpaneTree=new JScrollPane(tree);
+  scrollpaneTree.setWheelScrollingEnabled(true);
+  progressBarSearching=new JProgressBar();
+  progressBarSearching.setIndeterminate(true);
+  progressBarSearching.setVisible(false);
+  progressBarSearching.setStringPainted(true);
+  progressBarImporting=new JProgressBar();
+  progressBarImporting.setIndeterminate(false);
+  progressBarImporting.setVisible(false);
+  progressBarImporting.setStringPainted(true);
+}

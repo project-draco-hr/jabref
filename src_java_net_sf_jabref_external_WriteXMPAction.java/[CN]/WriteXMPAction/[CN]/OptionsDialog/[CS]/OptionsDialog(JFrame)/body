@@ -1,0 +1,47 @@
+{
+  super(parent,Globals.lang("Writing XMP metadata for selected entries..."),false);
+  okButton.setEnabled(false);
+  okButton.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+  AbstractAction cancel=new AbstractAction(){
+    private static final long serialVersionUID=-338601477652815366L;
+    public void actionPerformed(    ActionEvent e){
+      canceled=true;
+    }
+  }
+;
+  cancelButton.addActionListener(cancel);
+  InputMap im=cancelButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  ActionMap am=cancelButton.getActionMap();
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",cancel);
+  progressArea=new JTextArea(15,60);
+  JScrollPane scrollPane=new JScrollPane(progressArea,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+  Dimension d=progressArea.getPreferredSize();
+  d.height+=scrollPane.getHorizontalScrollBar().getHeight() + 15;
+  d.width+=scrollPane.getVerticalScrollBar().getWidth() + 15;
+  panel.setSize(d);
+  progressArea.setBackground(Color.WHITE);
+  progressArea.setEditable(false);
+  progressArea.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
+  progressArea.setText("");
+  JPanel panel=new JPanel();
+  panel.setBorder(BorderFactory.createEmptyBorder(3,2,3,2));
+  panel.add(scrollPane);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addButton(okButton);
+  bb.addRelatedGap();
+  bb.addButton(cancelButton);
+  bb.addGlue();
+  JPanel bbPanel=bb.getPanel();
+  bbPanel.setBorder(BorderFactory.createEmptyBorder(0,3,3,3));
+  getContentPane().add(panel,BorderLayout.CENTER);
+  getContentPane().add(bbPanel,BorderLayout.SOUTH);
+  pack();
+  this.setResizable(false);
+}

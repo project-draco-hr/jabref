@@ -1,0 +1,23 @@
+def findNewKeysInJavaCode(mainFile, dir, update):
+    keystempo = []
+    keyListtempo = []
+    f1 = open(mainFile)
+    lines = f1.readlines()
+    f1.close()
+    keys = indexFile(lines)
+    keyList = traverseFileTree(dir)
+    if update:
+        f1 = open(mainFile, 'a')
+        f1.write('\n')
+    for key in keyList:
+        value = key.replace('\\:', ':').replace('\\=', '=')
+        if (key not in keys):
+            (fileName, lineNum) = keyFiles[key]
+            print ('%s:%i:Missing key: %s' % (fileName, (lineNum + 1), value))
+            if update:
+                f1.write((((key + '=') + value) + '\n'))
+    for key in keys:
+        if (key not in keyList):
+            print ('Possible obsolete key: ' + key)
+    if update:
+        f1.close()

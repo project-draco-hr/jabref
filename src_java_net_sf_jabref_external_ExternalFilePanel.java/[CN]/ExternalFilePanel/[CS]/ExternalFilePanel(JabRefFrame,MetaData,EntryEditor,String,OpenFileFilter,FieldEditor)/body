@@ -1,0 +1,42 @@
+{
+  this.frame=frame;
+  this.metaData=metaData;
+  this.off=off;
+  this.entryEditor=entryEditor;
+  setLayout(new GridLayout(2,2));
+  browseBut=new JButton(Globals.lang("Browse"));
+  download=new JButton(Globals.lang("Download"));
+  auto=new JButton(Globals.lang("Auto"));
+  xmp=new JButton(Globals.lang("Write XMP"));
+  xmp.setToolTipText(Globals.lang("Write BibtexEntry as XMP-metadata to PDF."));
+  browseBut.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      browseFile(fieldName,editor);
+      entryEditor.storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
+    }
+  }
+);
+  download.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      downLoadFile(fieldName,editor,frame);
+    }
+  }
+);
+  auto.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      autoSetFile(fieldName,editor);
+    }
+  }
+);
+  xmp.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      pushXMP(fieldName,editor);
+    }
+  }
+);
+  add(browseBut);
+  add(download);
+  add(auto);
+  add(xmp);
+  if (editor != null)   ((JComponent)editor).setDropTarget(new DropTarget((Component)editor,DnDConstants.ACTION_NONE,new UrlDragDrop(entryEditor,frame,editor)));
+}

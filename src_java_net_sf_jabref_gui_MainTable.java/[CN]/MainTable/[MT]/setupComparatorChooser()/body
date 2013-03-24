@@ -1,0 +1,68 @@
+{
+  List<Comparator> comparators=comparatorChooser.getComparatorsForColumn(0);
+  comparators.clear();
+  comparators.add(new FirstColumnComparator(panel.database()));
+  for (int i=1; i < tableFormat.padleft; i++) {
+    comparators=comparatorChooser.getComparatorsForColumn(i);
+    comparators.clear();
+    String[] iconField=tableFormat.getIconTypeForColumn(i);
+    if (iconField[0].equals(SpecialFieldsUtils.FIELDNAME_RANKING)) {
+      comparators.add(new RankingFieldComparator());
+    }
+ else {
+      comparators.add(new IconComparator(iconField));
+    }
+  }
+  for (int i=tableFormat.padleft; i < tableFormat.getColumnCount(); i++) {
+    comparators=comparatorChooser.getComparatorsForColumn(i);
+    comparators.clear();
+    comparators.add(new FieldComparator(tableFormat.getColumnName(i).toLowerCase()));
+  }
+  String[] sortFields=new String[]{Globals.prefs.get("priSort"),Globals.prefs.get("secSort"),Globals.prefs.get("terSort")};
+  boolean[] sortDirections=new boolean[]{Globals.prefs.getBoolean("priDescending"),Globals.prefs.getBoolean("secDescending"),Globals.prefs.getBoolean("terDescending")};
+  sortedForTable.getReadWriteLock().writeLock().lock();
+  for (int i=0; i < sortFields.length; i++) {
+    int index=-1;
+    if (!sortFields[i].startsWith(MainTableFormat.ICON_COLUMN_PREFIX))     index=tableFormat.getColumnIndex(sortFields[i]);
+ else {
+      for (int j=0; j < tableFormat.getColumnCount(); j++) {
+        if (sortFields[i].equals(tableFormat.getColumnType(j))) {
+          index=j;
+          break;
+        }
+      }
+    }
+    if (index >= 0) {
+      comparatorChooser.appendComparator(index,0,sortDirections[i]);
+    }
+  }
+  sortedForTable.getReadWriteLock().writeLock().unlock();
+  comparatorChooser.addSortActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      List<String> fields=getCurrentSortFields();
+      List<Boolean> order=getCurrentSortOrder();
+      int count=Math.min(fields.size(),order.size());
+      if (count >= 1) {
+        Globals.prefs.put("priSort",fields.get(0));
+        Globals.prefs.putBoolean("priDescending",order.get(0));
+      }
+      if (count >= 2) {
+        Globals.prefs.put("secSort",fields.get(1));
+        Globals.prefs.putBoolean("secDescending",order.get(1));
+      }
+ else {
+        Globals.prefs.put("secSort","");
+        Globals.prefs.putBoolean("secDescending",false);
+      }
+      if (count >= 3) {
+        Globals.prefs.put("terSort",fields.get(2));
+        Globals.prefs.putBoolean("terDescending",order.get(2));
+      }
+ else {
+        Globals.prefs.put("terSort","");
+        Globals.prefs.putBoolean("terDescending",false);
+      }
+    }
+  }
+);
+}

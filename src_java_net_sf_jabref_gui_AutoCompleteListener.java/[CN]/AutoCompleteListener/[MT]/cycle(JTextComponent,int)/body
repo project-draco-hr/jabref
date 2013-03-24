@@ -1,0 +1,21 @@
+{
+  assert(lastCompletions != null);
+  assert(lastCompletions.length > 0);
+  lastShownCompletion+=increment;
+  if (lastShownCompletion >= lastCompletions.length)   lastShownCompletion=0;
+ else   if (lastShownCompletion < 0)   lastShownCompletion=lastCompletions.length - 1;
+  String sno=lastCompletions[lastShownCompletion];
+  toSetIn=sno.substring(lastBeginning.length() - 1);
+  StringBuffer alltext=new StringBuffer(comp.getText());
+  int oldSelectionStart=comp.getSelectionStart();
+  int oldSelectionEnd=comp.getSelectionEnd();
+  int startPos=comp.getSelectionStart() - lastBeginning.length();
+  alltext.delete(startPos,oldSelectionStart);
+  alltext.insert(startPos,sno.subSequence(0,lastBeginning.length()));
+  int deletedChars=oldSelectionEnd - oldSelectionStart;
+  alltext.delete(oldSelectionStart,oldSelectionEnd);
+  alltext.insert(oldSelectionStart,toSetIn.substring(1));
+  comp.setText(alltext.toString());
+  comp.select(oldSelectionStart,oldSelectionStart + toSetIn.length() - 1);
+  lastCaretPosition=comp.getCaretPosition();
+}

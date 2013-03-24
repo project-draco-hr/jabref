@@ -1,0 +1,90 @@
+{
+  _prefs=prefs;
+  remoteHelp=new HelpAction(diag,GUIGlobals.remoteHelp,"Help",GUIGlobals.getIconUrl("helpSmall"));
+  useDefault=new JCheckBox(Globals.lang("Use other look and feel"));
+  useRemoteServer=new JCheckBox(Globals.lang("Listen for remote operation on port") + ":");
+  useNativeFileDialogOnMac=new JCheckBox(Globals.lang("Use native file dialog"));
+  filechooserDisableRename=new JCheckBox(Globals.lang("Disable file renaming in non-native file dialog"));
+  useIEEEAbrv=new JCheckBox(Globals.lang("Use IEEE LaTeX abbreviations"));
+  biblatexMode=new JCheckBox(Globals.lang("BibLaTeX mode"));
+  remoteServerPort=new JTextField();
+  className=new JTextField(50);
+  final JTextField clName=className;
+  useDefault.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent e){
+      clName.setEnabled(((JCheckBox)e.getSource()).isSelected());
+    }
+  }
+);
+  useConvertToEquation=new JCheckBox(Globals.lang("Prefer converting subscripts and superscripts to equations rather than text"));
+  useCaseKeeperOnSearch=new JCheckBox(Globals.lang("Add {} to specified title words on search to keep the correct case"));
+  FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:3dlu","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  JPanel pan=new JPanel();
+  if (!Globals.ON_MAC) {
+    builder.appendSeparator(Globals.lang("Look and feel"));
+    JLabel lab=new JLabel(Globals.lang("Default look and feel") + ": " + UIManager.getSystemLookAndFeelClassName());
+    builder.nextLine();
+    builder.append(pan);
+    builder.append(lab);
+    builder.nextLine();
+    builder.append(pan);
+    builder.append(useDefault);
+    builder.nextLine();
+    builder.append(pan);
+    JPanel pan2=new JPanel();
+    lab=new JLabel(Globals.lang("Class name") + ":");
+    pan2.add(lab);
+    pan2.add(className);
+    builder.append(pan2);
+    builder.nextLine();
+    builder.append(pan);
+    lab=new JLabel(Globals.lang("Note that you must specify the fully qualified class name for the look and feel,"));
+    builder.append(lab);
+    builder.nextLine();
+    builder.append(pan);
+    lab=new JLabel(Globals.lang("and the class must be available in your classpath next time you start JabRef."));
+    builder.append(lab);
+    builder.nextLine();
+  }
+  builder.appendSeparator(Globals.lang("Remote operation"));
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(new JLabel("<html>" + Globals.lang("This feature lets new files be opened or imported into an " + "already running instance of JabRef<BR>instead of opening a new instance. For instance, this " + "is useful when you open a file in JabRef<br>from your web browser."+ "<BR>Note that this will prevent you from running more than one instance of JabRef at a time.") + "</html>"));
+  builder.nextLine();
+  builder.append(new JPanel());
+  JPanel p=new JPanel();
+  p.add(useRemoteServer);
+  p.add(remoteServerPort);
+  p.add(remoteHelp.getIconButton());
+  builder.append(p);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("File dialog"));
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(useNativeFileDialogOnMac);
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(filechooserDisableRename);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Search IEEEXplore"));
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(useIEEEAbrv);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("BibLaTeX mode"));
+  builder.append(new JPanel());
+  builder.append(biblatexMode);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Import conversions"));
+  builder.nextLine();
+  builder.append(new JPanel());
+  builder.append(useConvertToEquation);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(useCaseKeeperOnSearch);
+  pan=builder.getPanel();
+  pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  setLayout(new BorderLayout());
+  add(pan,BorderLayout.CENTER);
+}

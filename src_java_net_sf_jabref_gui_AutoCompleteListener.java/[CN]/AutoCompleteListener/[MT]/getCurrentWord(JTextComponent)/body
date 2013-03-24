@@ -1,0 +1,23 @@
+{
+  StringBuffer res=new StringBuffer();
+  String upToCaret;
+  try {
+    upToCaret=comp.getText(0,comp.getCaretPosition());
+    if (!completer.isSingleUnitField()) {
+      if ((comp.getCaretPosition() < comp.getText().length()) && Character.isWhitespace(comp.getText().charAt(comp.getCaretPosition()))) {
+        return null;
+      }
+      int piv=upToCaret.length() - 1;
+      while ((piv >= 0) && !Character.isWhitespace(upToCaret.charAt(piv))) {
+        piv--;
+      }
+      res.append(upToCaret.substring(piv + 1));
+    }
+ else {
+      res.append(upToCaret);
+    }
+  }
+ catch (  BadLocationException ex) {
+  }
+  return res;
+}

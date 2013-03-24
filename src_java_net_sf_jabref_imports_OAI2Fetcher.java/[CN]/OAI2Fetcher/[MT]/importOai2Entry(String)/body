@@ -1,0 +1,35 @@
+{
+  key=fixKey(key);
+  String url=constructUrl(key);
+  try {
+    URL oai2Url=new URL(url);
+    HttpURLConnection oai2Connection=(HttpURLConnection)oai2Url.openConnection();
+    oai2Connection.setRequestProperty("User-Agent","Jabref");
+    InputStream inputStream=oai2Connection.getInputStream();
+    BibtexEntry be=new BibtexEntry(Util.createNeutralId(),BibtexEntryType.ARTICLE);
+    be.setField(OAI2_IDENTIFIER_FIELD,key);
+    DefaultHandler handlerBase=new OAI2Handler(be);
+    saxParser.parse(inputStream,handlerBase);
+    for (    String name : be.getAllFields()) {
+      be.setField(name,OAI2Fetcher.correctLineBreaks(be.getField(name).toString()));
+    }
+    if (key.matches("\\d\\d\\d\\d\\..*")) {
+      be.setField("year","20" + key.substring(0,2));
+      int month=Integer.parseInt(key.substring(2,4));
+      if (month >= 1 && month <= 12) {
+        be.setField("month","#" + Globals.MONTHS[month - 1] + "#");
+      }
+    }
+    return be;
+  }
+ catch (  IOException e) {
+    status.showMessage(Globals.lang("An Exception ocurred while accessing '%0'",url) + "\n\n" + e.toString(),Globals.lang(getKeyName()),JOptionPane.ERROR_MESSAGE);
+  }
+catch (  SAXException e) {
+    status.showMessage(Globals.lang("An SAXException ocurred while parsing '%0':",new String[]{url}) + "\n\n" + e.getMessage(),Globals.lang(getKeyName()),JOptionPane.ERROR_MESSAGE);
+  }
+catch (  RuntimeException e) {
+    status.showMessage(Globals.lang("An Error occurred while fetching from OAI2 source (%0):",new String[]{url}) + "\n\n" + e.getMessage(),Globals.lang(getKeyName()),JOptionPane.ERROR_MESSAGE);
+  }
+  return null;
+}

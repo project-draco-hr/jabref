@@ -1,0 +1,10 @@
+{
+  GroupTreeNode node=(GroupTreeNode)path.getLastPathComponent();
+  for (Enumeration<GroupTreeNode> e=node.children(); e.hasMoreElements(); ) {
+    GroupTreeNode child=e.nextElement();
+    if (child.isLeaf())     continue;
+    TreePath pathToChild=path.pathByAddingChild(child);
+    if (isCollapsed(pathToChild) || hasCollapsedDescendant(pathToChild))     return true;
+  }
+  return false;
+}

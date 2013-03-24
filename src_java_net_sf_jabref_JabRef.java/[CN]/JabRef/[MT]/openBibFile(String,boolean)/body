@@ -1,0 +1,47 @@
+{
+  Globals.logger(Globals.lang("Opening") + ": " + name);
+  File file=new File(name);
+  if (!file.exists()) {
+    ParserResult pr=new ParserResult(null,null,null);
+    pr.setFile(file);
+    pr.setInvalid(true);
+    System.err.println(Globals.lang("Error") + ": " + Globals.lang("File not found"));
+    return pr;
+  }
+  try {
+    if (!ignoreAutosave) {
+      boolean autoSaveFound=AutoSaveManager.newerAutoSaveExists(file);
+      if (autoSaveFound) {
+        ParserResult postp=new ParserResult(null,null,null);
+        postp.setPostponedAutosaveFound(true);
+        postp.setFile(file);
+        return postp;
+      }
+    }
+    if (!Util.waitForFileLock(file,10)) {
+      System.out.println(Globals.lang("Error opening file") + " '" + name+ "'. "+ "File is locked by another JabRef instance.");
+      return ParserResult.FILE_LOCKED;
+    }
+    String encoding=Globals.prefs.get("defaultEncoding");
+    ParserResult pr=OpenDatabaseAction.loadDatabase(file,encoding);
+    if (pr == null) {
+      pr=new ParserResult(null,null,null);
+      pr.setFile(file);
+      pr.setInvalid(true);
+      return pr;
+    }
+    pr.setFile(file);
+    if (pr.hasWarnings()) {
+      String[] warn=pr.warnings();
+      for (int i=0; i < warn.length; i++)       System.out.println(Globals.lang("Warning") + ": " + warn[i]);
+    }
+    return pr;
+  }
+ catch (  Throwable ex) {
+    ParserResult pr=new ParserResult(null,null,null);
+    pr.setFile(file);
+    pr.setInvalid(true);
+    pr.setErrorMessage(ex.getMessage());
+    return pr;
+  }
+}

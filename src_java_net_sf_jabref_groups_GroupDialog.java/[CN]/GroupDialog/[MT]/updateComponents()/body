@@ -1,0 +1,60 @@
+{
+  boolean okEnabled=m_name.getText().trim().length() > 0;
+  if (!okEnabled) {
+    setDescription(Globals.lang("Please enter a name for the group."));
+    m_ok.setEnabled(false);
+    return;
+  }
+  String s1, s2;
+  if (m_keywordsRadioButton.isSelected()) {
+    s1=m_kgSearchField.getText().trim();
+    okEnabled=okEnabled && s1.matches("\\w+");
+    s2=m_kgSearchTerm.getText().trim();
+    okEnabled=okEnabled && s2.length() > 0;
+    if (!okEnabled) {
+      setDescription(Globals.lang("Please enter the field to search (e.g. <b>keywords</b>) and the keyword to search it for (e.g. <b>electrical</b>)."));
+    }
+ else {
+      if (m_kgRegExp.isSelected()) {
+        try {
+          Pattern.compile(s2);
+          setDescription(KeywordGroup.getDescriptionForPreview(s1,s2,m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected()));
+        }
+ catch (        Exception e) {
+          okEnabled=false;
+          setDescription(formatRegExException(s2,e));
+        }
+      }
+ else {
+        setDescription(KeywordGroup.getDescriptionForPreview(s1,s2,m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected()));
+      }
+    }
+    setNameFontItalic(true);
+  }
+ else   if (m_searchRadioButton.isSelected()) {
+    s1=m_sgSearchExpression.getText().trim();
+    okEnabled=okEnabled & s1.length() > 0;
+    if (!okEnabled) {
+      setDescription(Globals.lang("Please enter a search term. For example, to search all fields for <b>Smith</b>, enter%c<p>" + "<tt>smith</tt><p>" + "To search the field <b>Author</b> for <b>Smith</b> and the field <b>Title</b> for <b>electrical</b>, enter%c<p>"+ "<tt>author%esmith and title%eelectrical</tt>"));
+    }
+ else {
+      AST ast=SearchExpressionParser.checkSyntax(s1,m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected());
+      setDescription(SearchGroup.getDescriptionForPreview(s1,ast,m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected()));
+      if (m_sgRegExp.isSelected()) {
+        try {
+          Pattern.compile(s1);
+        }
+ catch (        Exception e) {
+          okEnabled=false;
+          setDescription(formatRegExException(s1,e));
+        }
+      }
+    }
+    setNameFontItalic(true);
+  }
+ else   if (m_explicitRadioButton.isSelected()) {
+    setDescription(ExplicitGroup.getDescriptionForPreview());
+    setNameFontItalic(false);
+  }
+  m_ok.setEnabled(okEnabled);
+}

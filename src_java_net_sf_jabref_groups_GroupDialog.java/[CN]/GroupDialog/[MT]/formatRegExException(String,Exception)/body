@@ -1,0 +1,14 @@
+{
+  String[] sa=e.getMessage().split("\\n");
+  StringBuffer sb=new StringBuffer();
+  for (int i=0; i < sa.length; ++i) {
+    if (i > 0)     sb.append("<br>");
+    sb.append(Util.quoteForHTML(sa[i]));
+  }
+  String s=Globals.lang("The regular expression <b>%0</b> is invalid%c",Util.quoteForHTML(regExp)) + "<p><tt>" + sb.toString()+ "</tt>";
+  if (!(e instanceof PatternSyntaxException))   return s;
+  int lastNewline=s.lastIndexOf("<br>");
+  int hat=s.lastIndexOf("^");
+  if (lastNewline >= 0 && hat >= 0 && hat > lastNewline)   return s.substring(0,lastNewline + 4) + s.substring(lastNewline + 4).replaceAll(" ","&nbsp;");
+  return s;
+}

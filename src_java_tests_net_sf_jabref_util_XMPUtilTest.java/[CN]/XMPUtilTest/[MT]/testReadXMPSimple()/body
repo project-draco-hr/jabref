@@ -1,0 +1,12 @@
+{
+  String bibtex="<bibtex:year>2003</bibtex:year>\n" + "<bibtex:title>Beach sand convolution by surf-wave optimzation</bibtex:title>\n" + "<bibtex:bibtexkey>OezbekC06</bibtex:bibtexkey>\n";
+  writeManually(pdfFile,bibtexXPacket(bibtexDescription(bibtex)));
+  List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+  assertEquals(1,l.size());
+  BibtexEntry e=l.get(0);
+  assertNotNull(e);
+  assertEquals("OezbekC06",e.getCiteKey());
+  assertEquals("2003",e.getField("year"));
+  assertEquals("Beach sand convolution by surf-wave optimzation",e.getField("title"));
+  assertEquals(BibtexEntryType.OTHER,e.getType());
+}

@@ -1,0 +1,21 @@
+{
+  XTextRangeCompare compare=(XTextRangeCompare)UnoRuntime.queryInterface(XTextRangeCompare.class,text);
+  XTextRange range=getBookmarkRange(BIB_SECTION_NAME);
+  if (range == null) {
+    createBibTextSection(atEnd);
+  }
+  XTextRange rangeEnd=getBookmarkRange(BIB_SECTION_END_NAME);
+  if (rangeEnd == null) {
+    return;
+  }
+  XTextCursor mxDocCursor=text.createTextCursorByRange(range.getEnd());
+  mxDocCursor.goRight((short)1,true);
+  boolean couldExpand=true;
+  while (couldExpand && (compare.compareRegionEnds(mxDocCursor,rangeEnd) > 0)) {
+    couldExpand=mxDocCursor.goRight((short)1,true);
+  }
+  mxDocCursor.setString("");
+  mxDocCursor.collapseToStart();
+  removeBookMark(BIB_SECTION_END_NAME);
+  if (getBookmarkRange(BIB_SECTION_NAME) == null)   insertBookMark(BIB_SECTION_NAME,mxDocCursor);
+}

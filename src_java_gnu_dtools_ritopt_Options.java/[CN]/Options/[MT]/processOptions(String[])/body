@@ -1,0 +1,140 @@
+{
+  String retval[]=null;
+  String moduleName="general";
+  String optionFile="";
+  char shortOption='\0';
+  String longOption="";
+  for (int n=0; n < args.length && retval == null; n++) {
+    boolean moduleInvoked=false;
+    boolean shortOptionInvoked=false;
+    boolean longOptionInvoked=false;
+    boolean readOptionFileInvoked=false;
+    boolean writeOptionFileInvoked=false;
+    if (args[n].length() >= 1) {
+      char fc=args[n].charAt(0);
+      moduleInvoked=fc == ':';
+      readOptionFileInvoked=fc == '@';
+      writeOptionFileInvoked=fc == '%';
+    }
+    if (args[n].length() >= 2) {
+      String s=args[n].substring(0,2);
+      shortOptionInvoked=(!s.equals("--") && s.charAt(0) == '-');
+      longOptionInvoked=(s.equals("--"));
+    }
+    if (debugFlag) {
+      System.err.println("Short Option: " + shortOptionInvoked);
+      System.err.println("Long Option: " + longOptionInvoked);
+      System.err.println("Module: " + moduleInvoked);
+      System.err.println("Load Option File: " + readOptionFileInvoked);
+      System.err.println("Write Option File: " + writeOptionFileInvoked);
+    }
+    if (moduleInvoked) {
+      if (args[n].charAt(args[n].length() - 1) != ':') {
+        System.err.println(args[n]);
+        throw new OptionProcessingException("Module arguments must start" + " with : and end with :.");
+      }
+ else {
+        moduleName=args[n].substring(1,args[n].length() - 1).toLowerCase();
+        if (moduleName.length() == 0 || moduleName.equals("general")) {
+          moduleName="general";
+          currentModule=generalModule;
+        }
+ else {
+          currentModule=getModule(moduleName);
+        }
+        if (currentModule == null)         throw new OptionProcessingException("Module '" + moduleName + "' does not exist.");
+        if (debugFlag) {
+          System.err.println("Module: " + moduleName);
+        }
+      }
+      moduleInvoked=false;
+    }
+ else     if (readOptionFileInvoked) {
+      optionFile=Utility.trim(args[n].substring(1));
+      if (optionFile.equals("@") || optionFile.length() == 0)       optionFile=defaultOptionFilename;
+      if (debugFlag) {
+        System.err.println("Option file: '" + optionFile + "'.");
+      }
+      loadOptionFile(optionFile);
+    }
+ else     if (shortOptionInvoked) {
+      shortOption=args[n].charAt(1);
+      if (!Utility.isAlphaNumeric(shortOption)) {
+        throw new OptionProcessingException("A short option must be alphanumeric. -" + shortOption + " is not acceptable.");
+      }
+      if (debugFlag) {
+        System.err.println("Short option text: " + shortOption);
+      }
+      char delim=(args[n].length() >= 3) ? args[n].charAt(2) : '\0';
+      if (delim == '+' || delim == '-') {
+        currentModule.action(shortOption,delim);
+      }
+ else       if (delim == '=') {
+        currentModule.action(shortOption,args[n].substring(3));
+      }
+ else       if (delim == '\0') {
+        String dtext="+";
+        if (n < args.length - 1) {
+          if (!Utility.contains(args[n + 1].charAt(0),"-[@")) {
+            dtext=args[n + 1];
+            n++;
+          }
+        }
+        currentModule.action(shortOption,dtext);
+      }
+ else       if (Utility.isAlphaNumeric(delim)) {
+        for (int j=1; j < args[n].length(); j++) {
+          if (Utility.isAlphaNumeric(args[n].charAt(j))) {
+            currentModule.action(shortOption,"+");
+          }
+ else {
+            throw new OptionProcessingException("A short option must be alphanumeric. -" + shortOption + " is not acceptable.");
+          }
+        }
+      }
+    }
+ else     if (longOptionInvoked) {
+      char lastchar=args[n].charAt(args[n].length() - 1);
+      int eqindex=args[n].indexOf("=");
+      if (eqindex != -1) {
+        longOption=args[n].substring(2,eqindex);
+        String value=args[n].substring(eqindex + 1);
+        currentModule.action(longOption,value);
+      }
+ else       if (Utility.contains(lastchar,"+-")) {
+        longOption=args[n].substring(2,args[n].length() - 1);
+        currentModule.action(longOption,lastchar);
+      }
+ else {
+        longOption=args[n].substring(2);
+        String dtext="+";
+        if (n < args.length - 1 && args[n + 1].length() > 0) {
+          if (!Utility.contains(args[n + 1].charAt(0),"-[@")) {
+            dtext=args[n + 1];
+            n++;
+          }
+        }
+        currentModule.action(longOption,dtext);
+      }
+      if (debugFlag) {
+        System.err.println("long option: " + longOption);
+      }
+    }
+ else     if (writeOptionFileInvoked) {
+      optionFile=Utility.trim(args[n].substring(1));
+      if (optionFile.equals("%") || optionFile.length() == 0)       optionFile=defaultOptionFilename;
+      if (debugFlag) {
+        System.err.println("Option file: '" + optionFile + "'.");
+      }
+      writeOptionFile(optionFile);
+    }
+ else {
+      retval=new String[args.length - n];
+      for (int j=n; j < args.length; j++) {
+        retval[j - n]=args[j];
+      }
+    }
+  }
+  if (retval == null)   retval=new String[0];
+  return retval;
+}

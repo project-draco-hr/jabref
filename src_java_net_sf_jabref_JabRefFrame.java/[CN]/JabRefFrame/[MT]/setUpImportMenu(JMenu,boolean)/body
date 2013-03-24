@@ -1,0 +1,19 @@
+{
+  final boolean intoNew=intoNew_;
+  importMenu.removeAll();
+  importMenu.add(new ImportMenuItem(JabRefFrame.this,intoNew));
+  importMenu.addSeparator();
+  SortedSet<ImportFormat> customImporters=Globals.importFormatReader.getCustomImportFormats();
+  JMenu submenu=new JMenu(Globals.lang("Custom importers"));
+  submenu.setMnemonic(KeyEvent.VK_S);
+  for (  ImportFormat imFo : customImporters) {
+    submenu.add(new ImportMenuItem(JabRefFrame.this,intoNew,imFo));
+  }
+  if (customImporters.size() > 0)   submenu.addSeparator();
+  submenu.add(customImpAction);
+  importMenu.add(submenu);
+  importMenu.addSeparator();
+  for (  ImportFormat imFo : Globals.importFormatReader.getBuiltInInputFormats()) {
+    importMenu.add(new ImportMenuItem(JabRefFrame.this,intoNew,imFo));
+  }
+}

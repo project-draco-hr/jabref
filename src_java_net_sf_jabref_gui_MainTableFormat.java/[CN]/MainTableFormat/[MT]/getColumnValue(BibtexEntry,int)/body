@@ -1,0 +1,48 @@
+{
+  Object o=null;
+  String[] iconType=getIconTypeForColumn(col);
+  if (col == 0) {
+    o="#";
+  }
+ else   if (iconType != null) {
+    int hasField=-1;
+    for (int i=iconType.length - 1; i >= 0; i--)     if (hasField(be,iconType[i]))     hasField=i;
+    if (hasField < 0)     return null;
+    if (iconType[hasField].equals(GUIGlobals.FILE_FIELD)) {
+      o=FileListTableModel.getFirstLabel(be.getField(GUIGlobals.FILE_FIELD));
+    }
+ else     if (iconType[hasField].equals(PRIORITY[0])) {
+      SpecialFieldValue prio=Priority.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_PRIORITY));
+      if (prio != null) {
+        o=prio.createLabel();
+      }
+    }
+ else     if (iconType[hasField].equals(RANKING[0])) {
+      SpecialFieldValue rank=Rank.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_RANKING));
+      if (rank != null) {
+        o=rank.createLabel();
+      }
+    }
+ else {
+      o=GUIGlobals.getTableIcon(iconType[hasField]);
+    }
+  }
+ else {
+    String[] fld=columns[col - padleft];
+    int j=0;
+    for (int i=0; i < fld.length; i++) {
+      if (fld[i].equals(GUIGlobals.TYPE_HEADER))       o=be.getType().getName();
+ else       o=be.getField(fld[i]);
+      if (o != null) {
+        j=i;
+        break;
+      }
+    }
+    for (int i=0; i < nameCols.length; i++) {
+      if ((col - padleft == nameCols[i][0]) && (nameCols[i][1] == j)) {
+        return formatName(o);
+      }
+    }
+  }
+  return o;
+}

@@ -1,0 +1,29 @@
+{
+  String[] dirs=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  int found=-1;
+  for (int i=0; i < dirs.length; i++)   if (new File(dirs[i]).exists()) {
+    found=i;
+    break;
+  }
+  if (found < 0) {
+    System.out.println("dir: " + dirs[found] + "\t ext: "+ fileType.getExtension());
+    return false;
+  }
+  toFile=new File(toFile).getName();
+  File destFile=new File(new StringBuffer(dirs[found]).append(System.getProperty("file.separator")).append(toFile).toString());
+  if (destFile.equals(new File(fileName))) {
+    return true;
+  }
+  if (destFile.exists()) {
+    int answer=JOptionPane.showConfirmDialog(frame,"'" + destFile.getPath() + "' "+ Globals.lang("exists. Overwrite?"),Globals.lang("File exists"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+    if (answer == JOptionPane.NO_OPTION)     return false;
+  }
+  try {
+    Util.copyFile(new File(fileName),destFile,true);
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    return false;
+  }
+  return true;
+}

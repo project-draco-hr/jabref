@@ -1,0 +1,20 @@
+{
+  wordListModel=wordListModels.get(currentField);
+  if (wordListModel != null) {
+    wordList.setModel(wordListModel);
+  }
+ else {
+    wordListModel=new DefaultListModel();
+    wordList.setModel(wordListModel);
+    wordListModels.put(currentField,wordListModel);
+    Vector<String> items=metaData.getData(Globals.SELECTOR_META_PREFIX + currentField);
+    if (items != null) {
+      wordSet=new TreeSet<String>(items);
+      int index=0;
+      for (      String s : wordSet) {
+        wordListModel.add(index,s);
+        index++;
+      }
+    }
+  }
+}

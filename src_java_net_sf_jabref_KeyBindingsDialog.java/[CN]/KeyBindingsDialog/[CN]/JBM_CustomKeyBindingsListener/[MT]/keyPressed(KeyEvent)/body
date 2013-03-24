@@ -1,0 +1,28 @@
+{
+  int selRow=table.getSelectedRow();
+  if (selRow < 0)   return;
+  String code=KeyEvent.getKeyText(evt.getKeyCode());
+  String mod=KeyEvent.getKeyModifiersText(evt.getModifiers());
+  if (mod.equals("")) {
+    int kc=evt.getKeyCode();
+    if ((kc < KeyEvent.VK_F1) && (kc > KeyEvent.VK_F12) && (kc != KeyEvent.VK_ESCAPE)&& (kc != KeyEvent.VK_DELETE)) {
+      return;
+    }
+  }
+  if (code.equals("Tab") || code.equals("Backspace") || code.equals("Enter")|| code.equals("Space")|| code.equals("Ctrl")|| code.equals("Shift")|| code.equals("Alt")) {
+    return;
+  }
+  String newKey;
+  if (!mod.equals("")) {
+    newKey=mod.toLowerCase().replaceAll("\\+"," ") + " " + code;
+  }
+ else {
+    newKey=code;
+  }
+  keyTF.setText(newKey);
+  String selectedFunction=table.getOriginalName(selRow);
+  table.setValueAt(newKey,selRow,1);
+  table.revalidate();
+  table.repaint();
+  bindHM.put(selectedFunction,newKey);
+}

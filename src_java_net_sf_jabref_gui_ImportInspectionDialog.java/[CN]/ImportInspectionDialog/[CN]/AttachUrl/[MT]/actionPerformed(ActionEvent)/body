@@ -1,0 +1,16 @@
+{
+  if (selectionModel.getSelected().size() != 1)   return;
+  BibtexEntry entry=selectionModel.getSelected().get(0);
+  String result=JOptionPane.showInputDialog(ImportInspectionDialog.this,Globals.lang("Enter URL"),entry.getField("url"));
+  entries.getReadWriteLock().writeLock().lock();
+  if (result != null) {
+    if (result.equals("")) {
+      entry.clearField("url");
+    }
+ else {
+      entry.setField("url",result);
+    }
+  }
+  entries.getReadWriteLock().writeLock().unlock();
+  glTable.repaint();
+}

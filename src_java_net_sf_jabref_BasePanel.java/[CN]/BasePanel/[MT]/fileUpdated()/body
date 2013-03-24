@@ -1,0 +1,36 @@
+{
+  if (saving)   return;
+  updatedExternally=true;
+  final ChangeScanner scanner=new ChangeScanner(frame,BasePanel.this);
+  Thread t=new Thread(){
+    public void run(){
+      boolean hasAlready=sidePaneManager.hasComponent(FileUpdatePanel.NAME);
+      if (hasAlready) {
+        sidePaneManager.hideComponent(FileUpdatePanel.NAME);
+        sidePaneManager.unregisterComponent(FileUpdatePanel.NAME);
+      }
+      FileUpdatePanel pan=new FileUpdatePanel(frame,BasePanel.this,sidePaneManager,getFile(),scanner);
+      sidePaneManager.register(FileUpdatePanel.NAME,pan);
+      sidePaneManager.show(FileUpdatePanel.NAME);
+    }
+  }
+;
+  if ((BasePanel.this.getFile() != null) && !Util.waitForFileLock(BasePanel.this.getFile(),10)) {
+    System.err.println("File updated externally, but change scan failed because the file is locked.");
+    Globals.fileUpdateMonitor.perturbTimestamp(getFileMonitorHandle());
+    return;
+  }
+  scanner.changeScan(BasePanel.this.getFile());
+  try {
+    scanner.join();
+  }
+ catch (  InterruptedException e) {
+    e.printStackTrace();
+  }
+  if (scanner.changesFound()) {
+    SwingUtilities.invokeLater(t);
+  }
+ else {
+    setUpdatedExternally(false);
+  }
+}

@@ -1,0 +1,14 @@
+{
+  VM vm=new VM("FUNCTION {test} {" + "  \"hello world\" text.length$ " + "  \"Hello {W}orld\" text.length$ "+ "  \"\" text.length$ "+ "  \"{A}{D}/{Cycle}\" text.length$ "+ "  \"{\\This is one character}\" text.length$ "+ "  \"{\\This {is} {one} {c{h}}aracter as well}\" text.length$ "+ "  \"{\\And this too\" text.length$ "+ "  \"These are {\\11}\" text.length$ "+ "} "+ "EXECUTE {test} ");
+  Vector<BibtexEntry> v=new Vector<BibtexEntry>();
+  vm.run(v);
+  assertEquals(new Integer(11),vm.getStack().pop());
+  assertEquals(new Integer(1),vm.getStack().pop());
+  assertEquals(new Integer(1),vm.getStack().pop());
+  assertEquals(new Integer(1),vm.getStack().pop());
+  assertEquals(new Integer(8),vm.getStack().pop());
+  assertEquals(new Integer(0),vm.getStack().pop());
+  assertEquals(new Integer(11),vm.getStack().pop());
+  assertEquals(new Integer(11),vm.getStack().pop());
+  assertEquals(0,vm.getStack().size());
+}

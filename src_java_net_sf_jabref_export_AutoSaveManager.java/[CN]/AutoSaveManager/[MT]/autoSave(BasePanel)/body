@@ -1,0 +1,16 @@
+{
+  File backupFile=getAutoSaveFile(panel.getFile());
+  try {
+    SaveSession ss=FileActions.saveDatabase(panel.database(),panel.metaData(),backupFile,Globals.prefs,false,false,panel.getEncoding(),true);
+    ss.commit();
+  }
+ catch (  SaveException e) {
+    e.printStackTrace();
+    return false;
+  }
+catch (  Throwable ex) {
+    ex.printStackTrace();
+    return false;
+  }
+  return true;
+}

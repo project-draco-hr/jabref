@@ -1,0 +1,37 @@
+{
+  List<ExternalFileType> defTypes=getDefaultExternalFileTypes();
+  List<ExternalFileType> unchanged=new ArrayList<ExternalFileType>();
+  externalFileTypes.clear();
+  for (Iterator<ExternalFileType> iterator=types.iterator(); iterator.hasNext(); ) {
+    ExternalFileType type=iterator.next();
+    externalFileTypes.add(type);
+    ExternalFileType found=null;
+    for (    ExternalFileType defType : defTypes) {
+      if (defType.getName().equals(type.getName())) {
+        found=defType;
+        break;
+      }
+    }
+    if (found != null) {
+      if (found.equals(type))       unchanged.add(type);
+ else {
+        defTypes.remove(found);
+      }
+    }
+  }
+  for (  ExternalFileType type : unchanged) {
+    defTypes.remove(type);
+    types.remove(type);
+  }
+  String[][] array=new String[types.size() + defTypes.size()][];
+  int i=0;
+  for (  ExternalFileType type : types) {
+    array[i]=type.getStringArrayRepresentation();
+    i++;
+  }
+  for (  ExternalFileType type : defTypes) {
+    array[i]=new String[]{type.getName(),FILE_TYPE_REMOVED_FLAG};
+    i++;
+  }
+  put("externalFileTypes",Util.encodeStringArray(array));
+}

@@ -1,0 +1,44 @@
+{
+  if (file == null)   return;
+  if (file.exists() && backup) {
+    String name=file.getName();
+    String path=file.getParent();
+    File backupFile=new File(path,name + GUIGlobals.backupExt);
+    try {
+      Util.copyFile(file,backupFile,true);
+    }
+ catch (    IOException ex) {
+      ex.printStackTrace();
+      throw SaveException.BACKUP_CREATION;
+    }
+  }
+  try {
+    if (useLockFile) {
+      try {
+        if (createLockFile()) {
+          if (!Util.waitForFileLock(file,10))           throw SaveException.FILE_LOCKED;
+        }
+      }
+ catch (      IOException ex) {
+        System.err.println("Error when creating lock file");
+        ex.printStackTrace();
+      }
+    }
+    Util.copyFile(tmp,file,true);
+  }
+ catch (  IOException ex2) {
+    throw new SaveException(Globals.lang("Save failed while committing changes") + ": " + ex2.getMessage());
+  }
+ finally {
+    if (useLockFile) {
+      try {
+        deleteLockFile();
+      }
+ catch (      IOException ex) {
+        System.err.println("Error when deleting lock file");
+        ex.printStackTrace();
+      }
+    }
+  }
+  tmp.delete();
+}

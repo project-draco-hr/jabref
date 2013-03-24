@@ -1,0 +1,30 @@
+{
+  if ((toSetIn != null) && (e.getKeyCode() == KeyEvent.VK_ENTER)) {
+    JTextComponent comp=(JTextComponent)e.getSource();
+    lastBeginning=lastCompletions[lastShownCompletion];
+    int end=comp.getSelectionEnd();
+    comp.select(end,end);
+    toSetIn=null;
+    if (consumeEnterKey)     e.consume();
+    return;
+  }
+ else   if ((e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) && (toSetIn != null)) {
+    cycle((JTextComponent)e.getSource(),1);
+    e.consume();
+  }
+ else   if ((e.getKeyCode() == KeyEvent.VK_PAGE_UP) && (toSetIn != null)) {
+    cycle((JTextComponent)e.getSource(),-1);
+    e.consume();
+  }
+ else   if (e.getKeyChar() == KeyEvent.CHAR_UNDEFINED) {
+    if (e.getKeyCode() != KeyEvent.VK_SHIFT) {
+      resetAutoCompletion();
+    }
+ else {
+      logger.finest("special case: shift pressed. No action.");
+    }
+  }
+ else {
+    logger.finest("special case: defined character, but not caught above");
+  }
+}

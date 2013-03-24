@@ -1,0 +1,25 @@
+{
+  List<XTextDocument> ls=getTextDocuments();
+  XTextDocument selected=null;
+  if (ls.size() == 0) {
+    throw new Exception("No Writer documents found");
+  }
+ else   if (ls.size() > 1) {
+    selected=OOUtil.selectComponent(null,xDesktop,ls);
+  }
+ else   selected=ls.get(0);
+  if (selected == null) {
+    return;
+  }
+  xCurrentComponent=(XComponent)UnoRuntime.queryInterface(XComponent.class,selected);
+  mxDoc=selected;
+  com.sun.star.text.XDocumentIndexesSupplier indexesSupp=(com.sun.star.text.XDocumentIndexesSupplier)UnoRuntime.queryInterface(com.sun.star.text.XDocumentIndexesSupplier.class,xCurrentComponent);
+  XModel xModel=(XModel)UnoRuntime.queryInterface(XModel.class,xCurrentComponent);
+  XController xController=xModel.getCurrentController();
+  xViewCursorSupplier=(com.sun.star.text.XTextViewCursorSupplier)UnoRuntime.queryInterface(com.sun.star.text.XTextViewCursorSupplier.class,xController);
+  text=mxDoc.getText();
+  mxDocFactory=(XMultiServiceFactory)UnoRuntime.queryInterface(XMultiServiceFactory.class,mxDoc);
+  XDocumentPropertiesSupplier supp=UnoRuntime.queryInterface(XDocumentPropertiesSupplier.class,mxDoc);
+  userProperties=supp.getDocumentProperties().getUserDefinedProperties();
+  propertySet=UnoRuntime.queryInterface(XPropertySet.class,userProperties);
+}

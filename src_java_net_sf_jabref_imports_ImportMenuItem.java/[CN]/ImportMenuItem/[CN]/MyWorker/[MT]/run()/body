@@ -1,0 +1,34 @@
+{
+  if (!fileOk)   return;
+  List<Pair<String,ParserResult>> imports=new ArrayList<Pair<String,ParserResult>>();
+  for (  String filename : filenames) {
+    try {
+      if (importer != null) {
+        ParserResult pr=new ParserResult(Globals.importFormatReader.importFromFile(importer,filename,frame));
+        imports.add(new Pair<String,ParserResult>(importer.getFormatName(),pr));
+      }
+ else {
+        frame.output(Globals.lang("Importing in unknown format") + "...");
+        imports.add(Globals.importFormatReader.importUnknownFormat(filename));
+      }
+    }
+ catch (    IOException e) {
+      importError=e;
+    }
+  }
+  bibtexResult=mergeImportResults(imports);
+  for (  Pair<String,ParserResult> p : imports) {
+    if (p != null) {
+      ParserResult pr=p.v;
+      if (pr.hasWarnings()) {
+        if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
+          String[] wrns=pr.warnings();
+          StringBuffer wrn=new StringBuffer();
+          for (int j=0; j < wrns.length; j++)           wrn.append(j + 1).append(". ").append(wrns[j]).append("\n");
+          if (wrn.length() > 0)           wrn.deleteCharAt(wrn.length() - 1);
+          JOptionPane.showMessageDialog(frame,wrn.toString(),Globals.lang("Warnings"),JOptionPane.WARNING_MESSAGE);
+        }
+      }
+    }
+  }
+}

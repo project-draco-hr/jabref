@@ -1,0 +1,30 @@
+{
+  String[] authors=name.split(" and ");
+  StringBuffer sb=new StringBuffer();
+  for (int i=0; i < authors.length; i++) {
+    if (authors[i].indexOf(", ") >= 0) {
+      String[] names=authors[i].split(", ");
+      if (names.length > 0) {
+        sb.append(names[0]);
+        if (names.length > 1)         sb.append(", ");
+      }
+      for (int j=1; j < names.length; j++) {
+        if (j == 1)         sb.append(expandAll(names[j]));
+ else         sb.append(names[j]);
+        if (j < names.length - 1)         sb.append(", ");
+      }
+    }
+ else {
+      String[] names=authors[i].split(" ");
+      if (names.length > 0) {
+        sb.append(expandAll(names[0]));
+      }
+      for (int j=1; j < names.length; j++) {
+        sb.append(" ");
+        sb.append(names[j]);
+      }
+    }
+    if (i < authors.length - 1)     sb.append(" and ");
+  }
+  return sb.toString().trim();
+}

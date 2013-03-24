@@ -1,0 +1,27 @@
+{
+  String name=JOptionPane.showInputDialog(parent,Globals.lang("Please enter the string's label"));
+  if (name == null)   return;
+  if (isNumber(name)) {
+    JOptionPane.showMessageDialog(parent,Globals.lang("The label of the string can not be a number."),Globals.lang("Label"),JOptionPane.ERROR_MESSAGE);
+    return;
+  }
+  if (name.indexOf("#") >= 0) {
+    JOptionPane.showMessageDialog(parent,Globals.lang("The label of the string can not contain the '#' character."),Globals.lang("Label"),JOptionPane.ERROR_MESSAGE);
+    return;
+  }
+  if (name.indexOf(" ") >= 0) {
+    JOptionPane.showMessageDialog(parent,Globals.lang("The label of the string can not contain spaces."),Globals.lang("Label"),JOptionPane.ERROR_MESSAGE);
+    return;
+  }
+  try {
+    String newId=Util.createNeutralId();
+    BibtexString bs=new BibtexString(newId,name,"");
+    panel.undoManager.addEdit(new UndoableInsertString(panel,panel.database,bs));
+    base.addString(bs);
+    refreshTable();
+    panel.markBaseChanged();
+  }
+ catch (  KeyCollisionException ex) {
+    JOptionPane.showMessageDialog(parent,Globals.lang("A string with that label " + "already exists"),Globals.lang("Label"),JOptionPane.ERROR_MESSAGE);
+  }
+}

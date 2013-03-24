@@ -1,0 +1,29 @@
+{
+  JDialog about=new JDialog(JabRefFrame.this,Globals.lang("About JabRef"),true);
+  JEditorPane jp=new JEditorPane();
+  JScrollPane sp=new JScrollPane(jp,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+  jp.setEditable(false);
+  try {
+    jp.setPage(GUIGlobals.class.getResource("/help/About.html"));
+    jp.addHyperlinkListener(new javax.swing.event.HyperlinkListener(){
+      public void hyperlinkUpdate(      javax.swing.event.HyperlinkEvent e){
+        if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED) {
+          try {
+            ((JEditorPane)e.getSource()).setPage(e.getURL());
+          }
+ catch (          IOException ex) {
+          }
+        }
+      }
+    }
+);
+    about.getContentPane().add(sp);
+    about.setSize(GUIGlobals.aboutSize);
+    Util.placeDialog(about,JabRefFrame.this);
+    about.setVisible(true);
+  }
+ catch (  IOException ex) {
+    ex.printStackTrace();
+    JOptionPane.showMessageDialog(JabRefFrame.this,"Could not load file 'About.html'","Error",JOptionPane.ERROR_MESSAGE);
+  }
+}

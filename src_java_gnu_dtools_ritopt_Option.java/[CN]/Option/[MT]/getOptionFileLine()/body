@@ -1,0 +1,41 @@
+{
+  boolean descriptionPrinted=false;
+  String retval="";
+  String optionText="";
+  String strval=getStringValue();
+  if (longOption != null) {
+    optionText+="--" + longOption;
+  }
+ else   if (shortOption != '\0') {
+    optionText+="-" + shortOption;
+  }
+  if (optionText.length() > 0 && Utility.trim(strval).length() >= 0) {
+    optionText+="=" + strval;
+  }
+  if (optionText.length() <= fileCompleteOptionSize) {
+    retval+=Utility.expandString(optionText,fileCompleteOptionSize);
+  }
+ else {
+    retval+="; " + description + "\n";
+    retval+=optionText;
+    descriptionPrinted=true;
+  }
+  if (!descriptionPrinted) {
+    StringBuffer descsplit=new StringBuffer(description);
+    boolean tmp=false;
+    while (descsplit.length() > 0) {
+      String st="";
+      int size=0;
+      if (tmp) {
+        st+=Utility.getSpaces(fileCompleteOptionSize);
+      }
+      size=(descsplit.length() >= fileCommentSize) ? fileCommentSize : descsplit.length();
+      st+="; " + descsplit.substring(0,size);
+      descsplit.delete(0,size);
+      retval+=st + "\n";
+      tmp=true;
+    }
+    descriptionPrinted=true;
+  }
+  return retval;
+}

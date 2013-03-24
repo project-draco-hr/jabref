@@ -1,0 +1,27 @@
+{
+  ExternalFileType fileType=Globals.prefs.getExternalFileTypeByExt("pdf");
+  NamedCompound edits=new NamedCompound(Globals.lang("Drop %0",fileType.extension));
+  boolean newEntry=false;
+  String citeKey=entry.getCiteKey();
+  if (!showLinkMoveCopyRenameDialog(fileName,fileType,entry,newEntry,false,panel.database()))   return;
+  boolean success=true;
+  String destFilename;
+  if (linkInPlace.isSelected()) {
+    destFilename=Util.shortenFileName(new File(fileName),panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD)).toString();
+  }
+ else {
+    destFilename=(renameCheckBox.isSelected() ? renameToTextBox.getText() : new File(fileName).getName());
+    if (copyRadioButton.isSelected()) {
+      success=doCopy(fileName,fileType,destFilename,edits);
+    }
+ else     if (moveRadioButton.isSelected()) {
+      success=doMove(fileName,fileType,destFilename,edits);
+    }
+  }
+  if (success) {
+    doLink(entry,fileType,destFilename,false,edits);
+    panel.markBaseChanged();
+  }
+  edits.end();
+  panel.undoManager.addEdit(edits);
+}

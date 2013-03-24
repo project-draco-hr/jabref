@@ -1,0 +1,103 @@
+{
+  GlazedEntrySorter eventList=new GlazedEntrySorter(database.getEntryMap());
+  database.addDatabaseChangeListener(eventList);
+  database.addDatabaseChangeListener(SpecialFieldDatabaseChangeListener.getInstance());
+  groupFilterList=new FilterList<BibtexEntry>(eventList.getTheList(),NoSearchMatcher.INSTANCE);
+  searchFilterList=new FilterList<BibtexEntry>(groupFilterList,NoSearchMatcher.INSTANCE);
+  tableFormat=new MainTableFormat(this);
+  tableFormat.updateTableFormat();
+  mainTable=new MainTable(tableFormat,searchFilterList,frame,this);
+  selectionListener=new MainTableSelectionListener(this,mainTable);
+  mainTable.updateFont();
+  mainTable.addSelectionListener(selectionListener);
+  mainTable.addMouseListener(selectionListener);
+  mainTable.addKeyListener(selectionListener);
+  mainTable.addFocusListener(selectionListener);
+  groupsHighlightListener=new ListEventListener<BibtexEntry>(){
+    public void listChanged(    ListEvent<BibtexEntry> listEvent){
+      if (Globals.prefs.getBoolean("highlightGroupsMatchingAny"))       getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),false);
+ else       if (Globals.prefs.getBoolean("highlightGroupsMatchingAll"))       getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),true);
+ else       getGroupSelector().showMatchingGroups(null,true);
+    }
+  }
+;
+  mainTable.addSelectionListener(groupsHighlightListener);
+  mainTable.getActionMap().put("cut",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      try {
+        runCommand("cut");
+      }
+ catch (      Throwable ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+);
+  mainTable.getActionMap().put("copy",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      try {
+        runCommand("copy");
+      }
+ catch (      Throwable ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+);
+  mainTable.getActionMap().put("paste",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      try {
+        runCommand("paste");
+      }
+ catch (      Throwable ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+);
+  mainTable.addKeyListener(new KeyAdapter(){
+    public void keyPressed(    KeyEvent e){
+      final int keyCode=e.getKeyCode();
+      final TreePath path=frame.groupSelector.getSelectionPath();
+      final GroupTreeNode node=path == null ? null : (GroupTreeNode)path.getLastPathComponent();
+      if (e.isControlDown()) {
+switch (keyCode) {
+case KeyEvent.VK_UP:
+          e.consume();
+        if (node != null)         frame.groupSelector.moveNodeUp(node,true);
+      break;
+case KeyEvent.VK_DOWN:
+    e.consume();
+  if (node != null)   frame.groupSelector.moveNodeDown(node,true);
+break;
+case KeyEvent.VK_LEFT:
+e.consume();
+if (node != null) frame.groupSelector.moveNodeLeft(node,true);
+break;
+case KeyEvent.VK_RIGHT:
+e.consume();
+if (node != null) frame.groupSelector.moveNodeRight(node,true);
+break;
+case KeyEvent.VK_PAGE_DOWN:
+frame.nextTab.actionPerformed(null);
+e.consume();
+break;
+case KeyEvent.VK_PAGE_UP:
+frame.prevTab.actionPerformed(null);
+e.consume();
+break;
+}
+}
+ else if (keyCode == KeyEvent.VK_ENTER) {
+e.consume();
+try {
+runCommand("edit");
+}
+ catch (Throwable ex) {
+ex.printStackTrace();
+}
+}
+}
+}
+);
+}

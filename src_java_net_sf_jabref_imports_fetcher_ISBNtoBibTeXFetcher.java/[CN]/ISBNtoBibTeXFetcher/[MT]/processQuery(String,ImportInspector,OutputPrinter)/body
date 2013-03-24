@@ -1,0 +1,55 @@
+{
+  String q;
+  try {
+    q=URLEncoder.encode(query,"UTF-8");
+  }
+ catch (  UnsupportedEncodingException e) {
+    status.setStatus(Globals.lang("Error"));
+    e.printStackTrace();
+    return false;
+  }
+  String urlString=String.format(URL_PATTERN,q);
+  URL url;
+  URLConnection conn;
+  try {
+    url=new URL(urlString);
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+    return false;
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+    return false;
+  }
+  InputStream source;
+  try {
+    source=url.openStream();
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    return false;
+  }
+  String bibtexString=new Scanner(source).useDelimiter("\\A").next();
+  if (bibtexString.startsWith("@comment")) {
+    String errorMsg=bibtexString.substring("@comment{".length());
+    errorMsg=errorMsg.substring(0,errorMsg.length() - 1);
+    status.showMessage(errorMsg);
+    return false;
+  }
+  BibtexEntry entry=BibtexParser.singleFromString(bibtexString);
+  if (entry != null) {
+    String title=(String)entry.getField("title");
+    if (title != null) {
+      if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+        title=caseKeeper.format(title);
+      }
+      entry.setField("title",title);
+    }
+    inspector.addEntry(entry);
+    return true;
+  }
+ else {
+    return false;
+  }
+}

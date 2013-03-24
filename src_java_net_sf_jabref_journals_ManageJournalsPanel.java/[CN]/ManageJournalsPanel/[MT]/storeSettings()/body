@@ -1,0 +1,52 @@
+{
+  File f=null;
+  if (newFile.isSelected()) {
+    if (newNameTf.getText().length() > 0) {
+      f=new File(newNameTf.getText());
+    }
+  }
+ else   f=new File(personalFile.getText());
+  if (f != null) {
+    FileWriter fw=null;
+    try {
+      fw=new FileWriter(f,false);
+      for (Iterator<JournalEntry> i=tableModel.getJournals().iterator(); i.hasNext(); ) {
+        JournalEntry entry=i.next();
+        fw.write(entry.name);
+        fw.write(" = ");
+        fw.write(entry.abbreviation);
+        fw.write(Globals.NEWLINE);
+      }
+    }
+ catch (    IOException e) {
+      e.printStackTrace();
+    }
+ finally {
+      if (fw != null)       try {
+        fw.close();
+      }
+ catch (      IOException e) {
+        e.printStackTrace();
+      }
+    }
+    String filename=f.getPath();
+    if (filename.equals(""))     filename=null;
+    Globals.prefs.put("personalJournalList",filename);
+  }
+  ArrayList<String> extFiles=new ArrayList<String>();
+  for (Iterator<ExternalFileEntry> i=externals.iterator(); i.hasNext(); ) {
+    ExternalFileEntry efe=i.next();
+    if (!efe.getValue().equals("")) {
+      extFiles.add(efe.getValue());
+    }
+  }
+  if (extFiles.size() == 0)   Globals.prefs.put("externalJournalLists","");
+ else {
+    String[] list=extFiles.toArray(new String[extFiles.size()]);
+    Globals.prefs.putStringArray("externalJournalLists",list);
+  }
+  Globals.initializeJournalNames();
+  for (int i=0; i < frame.baseCount(); i++) {
+    frame.baseAt(i).addJournalListToAutoCompleter();
+  }
+}

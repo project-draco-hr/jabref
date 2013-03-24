@@ -1,0 +1,26 @@
+{
+  BufferedInputStream in=null;
+  BufferedOutputStream out=null;
+  try {
+    if (dest.exists()) {
+      if (!deleteIfExists)       return false;
+    }
+    in=new BufferedInputStream(new FileInputStream(source));
+    out=new BufferedOutputStream(new FileOutputStream(dest));
+    int el;
+    while ((el=in.read()) >= 0) {
+      out.write(el);
+    }
+  }
+ catch (  IOException ex) {
+    throw ex;
+  }
+ finally {
+    if (out != null) {
+      out.flush();
+      out.close();
+    }
+    if (in != null)     in.close();
+  }
+  return true;
+}

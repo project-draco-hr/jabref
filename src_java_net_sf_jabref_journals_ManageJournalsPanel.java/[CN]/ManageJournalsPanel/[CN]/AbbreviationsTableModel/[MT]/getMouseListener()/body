@@ -1,0 +1,19 @@
+{
+  return new MouseAdapter(){
+    public void mouseClicked(    MouseEvent e){
+      if (e.getClickCount() == 2) {
+        JTable table=(JTable)e.getSource();
+        int row=table.rowAtPoint(e.getPoint());
+        nameTf.setText((String)getValueAt(row,0));
+        abbrTf.setText((String)getValueAt(row,1));
+        if (JOptionPane.showConfirmDialog(dialog,journalEditPanel,Globals.lang("Edit journal"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+          setValueAt(nameTf.getText(),row,0);
+          setValueAt(abbrTf.getText(),row,1);
+          Collections.sort(journals);
+          fireTableDataChanged();
+        }
+      }
+    }
+  }
+;
+}

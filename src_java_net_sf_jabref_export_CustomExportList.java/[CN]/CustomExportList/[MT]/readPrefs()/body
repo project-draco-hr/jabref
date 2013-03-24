@@ -1,0 +1,18 @@
+{
+  formats.clear();
+  list.clear();
+  int i=0;
+  String[] s;
+  while ((s=Globals.prefs.getStringArray("customExportFormat" + i)) != null) {
+    ExportFormat format=createFormat(s);
+    if (format != null) {
+      formats.put(format.getConsoleName(),format);
+      list.add(s);
+    }
+ else {
+      String customExportFormat=Globals.prefs.get("customExportFormat" + i);
+      System.out.println(Globals.lang("Error initializing custom export format from string '%0'",customExportFormat));
+    }
+    i++;
+  }
+}

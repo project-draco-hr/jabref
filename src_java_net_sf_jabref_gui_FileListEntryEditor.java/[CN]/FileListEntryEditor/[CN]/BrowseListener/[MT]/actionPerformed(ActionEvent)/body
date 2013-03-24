@@ -1,0 +1,19 @@
+{
+  File initial=new File(comp.getText().trim());
+  if (comp.getText().trim().length() == 0) {
+    initial=new File(Globals.prefs.get("fileWorkingDirectory"));
+  }
+  String chosen=FileDialogs.getNewFile(parent,initial,Globals.NONE,JFileChooser.OPEN_DIALOG,false);
+  if (chosen != null) {
+    File newFile=new File(chosen);
+    Globals.prefs.put("fileWorkingDirectory",newFile.getParent());
+    ArrayList<File> dirs=new ArrayList<File>();
+    String[] dirsS=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
+    for (int i=0; i < dirsS.length; i++)     dirs.add(new File(dirsS[i]));
+    if (dirs.size() > 0) {
+      newFile=FileListEditor.relativizePath(newFile,dirs);
+    }
+    comp.setText(newFile.getPath());
+    comp.requestFocus();
+  }
+}

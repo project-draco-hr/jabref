@@ -1,0 +1,16 @@
+{
+  List<String> setCookieList=responseHeaders.get("Set-Cookie");
+  if (setCookieList != null) {
+    for (    String item : setCookieList) {
+      Cookie cookie=new Cookie(uri,item);
+      for (Iterator<Cookie> i=cache.iterator(); i.hasNext(); ) {
+        Cookie existingCookie=i.next();
+        if ((cookie.domain.equals(existingCookie.domain)) && (cookie.getName().equals(existingCookie.getName()))) {
+          i.remove();
+          break;
+        }
+      }
+      cache.add(cookie);
+    }
+  }
+}

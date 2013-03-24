@@ -1,0 +1,17 @@
+{
+  couldNotCall=false;
+  notDefined=false;
+  String winEdt=Globals.prefs.get("winEdtPath");
+  if ((winEdt == null) || (winEdt.trim().length() == 0)) {
+    notDefined=true;
+    return;
+  }
+  try {
+    StringBuffer toSend=new StringBuffer("\"[InsText('").append(Globals.prefs.get("citeCommandWinEdt")).append("{").append(keyString.replaceAll("'","''")).append("}');]\"");
+    Runtime.getRuntime().exec(winEdt + " " + toSend.toString());
+  }
+ catch (  IOException excep) {
+    couldNotCall=true;
+    excep.printStackTrace();
+  }
+}

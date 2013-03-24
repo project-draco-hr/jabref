@@ -1,0 +1,21 @@
+{
+  String[] files=PluginCore.userPluginDir.list(new FilenameFilter(){
+    public boolean accept(    File file,    String s){
+      return s.endsWith(".jar");
+    }
+  }
+);
+  Map<VersionNumber,File> versions=new TreeMap<VersionNumber,File>();
+  for (int i=0; i < files.length; i++) {
+    String file=files[i];
+    File f=new File(PluginCore.userPluginDir,file);
+    String[] nav=getNameAndVersion(f);
+    if (nav != null) {
+      if (nav[0].equals(pluginName)) {
+        VersionNumber vn=new VersionNumber(nav[1]);
+        versions.put(vn,f);
+      }
+    }
+  }
+  return versions;
+}

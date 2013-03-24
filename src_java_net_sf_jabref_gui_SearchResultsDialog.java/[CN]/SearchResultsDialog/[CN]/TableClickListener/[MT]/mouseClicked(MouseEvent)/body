@@ -1,0 +1,32 @@
+{
+  if (e.isPopupTrigger()) {
+    processPopupTrigger(e);
+    return;
+  }
+  final int col=entryTable.columnAtPoint(e.getPoint()), row=entryTable.rowAtPoint(e.getPoint());
+  if (col < PAD) {
+    BibtexEntry entry=sortedEntries.get(row);
+    BasePanel p=entryHome.get(entry);
+switch (col) {
+case FILE_COL:
+      Object o=entry.getField(GUIGlobals.FILE_FIELD);
+    if (o != null) {
+      FileListTableModel tableModel=new FileListTableModel();
+      tableModel.setContent((String)o);
+      if (tableModel.getRowCount() == 0)       return;
+      FileListEntry fl=tableModel.getEntry(0);
+      (new ExternalFileMenuItem(frame,entry,"",fl.getLink(),null,p.metaData(),fl.getType())).actionPerformed(null);
+    }
+  break;
+case URL_COL:
+Object link=entry.getField("url");
+try {
+if (link != null) Util.openExternalViewer(p.metaData(),(String)link,"url");
+}
+ catch (IOException ex) {
+ex.printStackTrace();
+}
+break;
+}
+}
+}

@@ -1,0 +1,32 @@
+{
+  entries.getReadWriteLock().writeLock().lock();
+  BibtexDatabase database;
+  MetaData metaData;
+  if (panel != null) {
+    database=panel.database();
+    metaData=panel.metaData();
+  }
+ else {
+    database=new BibtexDatabase();
+    metaData=new MetaData();
+  }
+  List<String> keys=new ArrayList<String>(entries.size());
+  for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=i.next();
+    try {
+      entry.setId(Util.createNeutralId());
+      database.insertEntry(entry);
+    }
+ catch (    KeyCollisionException ex) {
+      ex.printStackTrace();
+    }
+    LabelPatternUtil.makeLabel(metaData,database,entry);
+    keys.add(entry.getCiteKey());
+  }
+  for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
+    BibtexEntry entry=i.next();
+    database.removeEntry(entry.getId());
+  }
+  entries.getReadWriteLock().writeLock().lock();
+  glTable.repaint();
+}

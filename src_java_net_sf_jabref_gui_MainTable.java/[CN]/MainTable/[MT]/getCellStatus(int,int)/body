@@ -1,0 +1,17 @@
+{
+  try {
+    BibtexEntry be=sortedForGrouping.get(row);
+    BibtexEntryType type=be.getType();
+    String columnName=getColumnName(col).toLowerCase();
+    if (columnName.equals(BibtexFields.KEY_FIELD) || type.isRequired(columnName)) {
+      return REQUIRED;
+    }
+    if (type.isOptional(columnName)) {
+      return OPTIONAL;
+    }
+    return OTHER;
+  }
+ catch (  NullPointerException ex) {
+    return OTHER;
+  }
+}

@@ -1,0 +1,77 @@
+{
+  tabbedPane=new DragDropPopupPane(manageSelectors,databaseProperties,bibtexKeyPattern);
+  macOSXRegistration();
+  UIManager.put("FileChooser.readOnly",Globals.prefs.getBoolean("filechooserDisableRename"));
+  MyGlassPane glassPane=new MyGlassPane();
+  setGlassPane(glassPane);
+  setTitle(GUIGlobals.frameTitle);
+  setIconImage(GUIGlobals.getImage("jabrefIcon48").getImage());
+  setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+  addWindowListener(new WindowAdapter(){
+    public void windowClosing(    WindowEvent e){
+      (new CloseAction()).actionPerformed(null);
+    }
+  }
+);
+  initLabelMaker();
+  initSidePane();
+  initLayout();
+  initActions();
+  setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+  if (!prefs.getBoolean("windowMaximised")) {
+    int sizeX=prefs.getInt("sizeX");
+    int sizeY=prefs.getInt("sizeY");
+    int posX=prefs.getInt("posX");
+    int posY=prefs.getInt("posY");
+    if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length == 1) {
+      Rectangle bounds=GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration().getBounds();
+      Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
+      if (posX < bounds.x)       posX=bounds.x;
+      if (posY < bounds.y)       posY=bounds.y;
+      int height=(int)dim.getHeight();
+      int width=(int)dim.getWidth();
+      if (posX + sizeX > width) {
+        if (sizeX <= width) {
+          posX=width - sizeX;
+        }
+ else {
+          posX=prefs.getIntDefault("posX");
+          sizeX=prefs.getIntDefault("sizeX");
+        }
+      }
+      if (posY + sizeY > height) {
+        if (sizeY <= height) {
+          posY=height - sizeY;
+        }
+ else {
+          posY=prefs.getIntDefault("posY");
+          sizeY=prefs.getIntDefault("sizeY");
+        }
+      }
+    }
+    setBounds(posX,posY,sizeX,sizeY);
+  }
+  tabbedPane.setBorder(null);
+  tabbedPane.setForeground(GUIGlobals.inActiveTabbed);
+  tabbedPane.addChangeListener(new ChangeListener(){
+    public void stateChanged(    ChangeEvent e){
+      markActiveBasePanel();
+      BasePanel bp=basePanel();
+      if (bp != null) {
+        groupToggle.setSelected(sidePaneManager.isComponentVisible("groups"));
+        searchToggle.setSelected(sidePaneManager.isComponentVisible("search"));
+        previewToggle.setSelected(Globals.prefs.getBoolean("previewEnabled"));
+        highlightAny.setSelected(Globals.prefs.getBoolean("highlightGroupsMatchingAny"));
+        highlightAll.setSelected(Globals.prefs.getBoolean("highlightGroupsMatchingAll"));
+        Globals.focusListener.setFocused(bp.mainTable);
+        setWindowTitle();
+        bp.updateSearchManager();
+        bp.setBackAndForwardEnabledState();
+        new FocusRequester(bp.mainTable);
+      }
+    }
+  }
+);
+  String javaVersion=System.getProperty("java.version",null);
+  if (javaVersion.compareTo("1.7") >= 0)   ApplicationMenu.tryInstall(this);
+}

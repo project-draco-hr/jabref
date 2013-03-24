@@ -1,0 +1,42 @@
+{
+  JPanel panel1=new JPanel();
+  panel1.setLayout(new BorderLayout());
+  okButton.setText(Globals.lang("Ok"));
+  okButton.setEnabled(false);
+  okButton.addActionListener(new FromAuxDialog_ok_actionAdapter(this));
+  cancelButton.setText(Globals.lang("Cancel"));
+  cancelButton.addActionListener(new FromAuxDialog_Cancel_actionAdapter(this));
+  generateButton.setText(Globals.lang("Generate"));
+  generateButton.addActionListener(new FromAuxDialog_generate_actionAdapter(this));
+  initPanels(parent);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  JPanel buttonPanel=bb.getPanel();
+  buttonPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  bb.addGlue();
+  bb.addButton(generateButton);
+  bb.addRelatedGap();
+  bb.addButton(okButton);
+  bb.addButton(cancelButton);
+  bb.addGlue();
+  this.setModal(true);
+  this.setResizable(true);
+  this.setTitle(Globals.lang("AUX file import"));
+  JLabel desc=new JLabel("<html><h3>" + Globals.lang("AUX file import") + "</h3><p>"+ Globals.lang("This feature generates a new database based on which entries " + "are needed in an existing LaTeX document.")+ "</p>"+ "<p>"+ Globals.lang("You need to select one of your open databases from which to choose " + "entries, as well as the AUX file produced by LaTeX when compiling your document.")+ "</p></html>");
+  desc.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  panel1.add(desc,BorderLayout.NORTH);
+  JPanel centerPane=new JPanel(new BorderLayout());
+  centerPane.add(buttons,BorderLayout.NORTH);
+  centerPane.add(statusPanel,BorderLayout.CENTER);
+  getContentPane().add(panel1,BorderLayout.NORTH);
+  getContentPane().add(centerPane,BorderLayout.CENTER);
+  getContentPane().add(buttonPanel,BorderLayout.SOUTH);
+  ActionMap am=statusPanel.getActionMap();
+  InputMap im=statusPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(parent.prefs().getKey("Close dialog"),"close");
+  am.put("close",new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+}

@@ -1,0 +1,34 @@
+{
+  final JPanel pan=new JPanel(), details=new JPanel();
+  final CardLayout crd=new CardLayout();
+  pan.setLayout(crd);
+  final JTextArea textArea=new JTextArea();
+  textArea.setFont(new Font("Sans-Serif",Font.PLAIN,10));
+  textArea.setEditable(false);
+  StringWriter writer=new StringWriter();
+  e.printStackTrace(new PrintWriter(writer));
+  textArea.setText(writer.toString());
+  JLabel lab=new JLabel(e.getMessage());
+  JButton flip=new JButton(Globals.lang("Details"));
+  FormLayout layout=new FormLayout("left:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  builder.append(lab);
+  builder.nextLine();
+  builder.append(Box.createVerticalGlue());
+  builder.nextLine();
+  builder.append(flip);
+  final JPanel simple=builder.getPanel();
+  JScrollPane scrollPane=new JScrollPane(textArea);
+  scrollPane.setPreferredSize(new Dimension(350,150));
+  details.setLayout(new BorderLayout());
+  details.add(scrollPane,BorderLayout.CENTER);
+  flip.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent event){
+      crd.show(pan,"details");
+    }
+  }
+);
+  pan.add(simple,"simple");
+  pan.add(details,"details");
+  JOptionPane.showMessageDialog(parent,pan,title,JOptionPane.ERROR_MESSAGE);
+}

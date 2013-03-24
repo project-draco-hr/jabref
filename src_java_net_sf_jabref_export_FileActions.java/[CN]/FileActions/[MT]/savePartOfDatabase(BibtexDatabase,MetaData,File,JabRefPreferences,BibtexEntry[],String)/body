@@ -1,0 +1,79 @@
+{
+  TreeMap<String,BibtexEntryType> types=new TreeMap<String,BibtexEntryType>();
+  BibtexEntry be=null;
+  boolean backup=prefs.getBoolean("backup");
+  SaveSession session;
+  try {
+    session=new SaveSession(file,encoding,backup);
+  }
+ catch (  IOException e) {
+    throw new SaveException(e.getMessage());
+  }
+  try {
+    VerifyingWriter fw=session.getWriter();
+    writeBibFileHeader(fw,encoding);
+    writePreamble(fw,database.getPreamble());
+    writeStrings(fw,database);
+    String pri, sec, ter;
+    boolean priD, secD, terD;
+    if (!prefs.getBoolean("saveInStandardOrder")) {
+      pri=prefs.get("priSort");
+      sec=prefs.get("secSort");
+      ter=prefs.get("terSort");
+      priD=prefs.getBoolean("priDescending");
+      secD=prefs.getBoolean("secDescending");
+      terD=prefs.getBoolean("terDescending");
+    }
+ else {
+      pri="author";
+      sec="editor";
+      ter="year";
+      priD=false;
+      secD=false;
+      terD=true;
+    }
+    List<Comparator<BibtexEntry>> comparators=new ArrayList<Comparator<BibtexEntry>>();
+    comparators.add(new CrossRefEntryComparator());
+    comparators.add(new FieldComparator(pri,priD));
+    comparators.add(new FieldComparator(sec,secD));
+    comparators.add(new FieldComparator(ter,terD));
+    comparators.add(new FieldComparator(BibtexFields.KEY_FIELD));
+    BasicEventList entryList=new BasicEventList();
+    SortedList sorter=new SortedList(entryList,new FieldComparatorStack<BibtexEntry>(comparators));
+    if ((bes != null) && (bes.length > 0))     for (int i=0; i < bes.length; i++) {
+      sorter.add(bes[i]);
+    }
+    FieldFormatter ff=new LatexFieldFormatter();
+    for (Iterator<BibtexEntry> i=sorter.iterator(); i.hasNext(); ) {
+      be=(i.next());
+      BibtexEntryType tp=be.getType();
+      if (BibtexEntryType.getStandardType(tp.getName()) == null) {
+        types.put(tp.getName(),tp);
+      }
+      be.write(fw,ff,true);
+      fw.write(Globals.NEWLINE);
+    }
+    if (metaData != null) {
+      metaData.writeMetaData(fw);
+    }
+    if (types.size() > 0) {
+      for (Iterator<String> i=types.keySet().iterator(); i.hasNext(); ) {
+        CustomEntryType tp=(CustomEntryType)types.get(i.next());
+        tp.save(fw);
+        fw.write(Globals.NEWLINE);
+      }
+    }
+    fw.close();
+  }
+ catch (  Throwable ex) {
+    try {
+      session.cancel();
+    }
+ catch (    IOException e) {
+      e.printStackTrace();
+      throw new SaveException(ex.getMessage() + "\n" + Globals.lang("Warning: could not complete file repair; your file may " + "have been corrupted. Error message")+ ": "+ e.getMessage());
+    }
+    throw new SaveException(ex.getMessage(),be);
+  }
+  return session;
+}

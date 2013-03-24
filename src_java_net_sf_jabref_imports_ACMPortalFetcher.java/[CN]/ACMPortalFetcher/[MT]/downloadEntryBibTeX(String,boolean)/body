@@ -1,0 +1,45 @@
+{
+  try {
+    URL url=new URL(startUrl + bibtexUrl + ID+ bibtexUrlEnd);
+    BufferedReader in=new BufferedReader(new InputStreamReader(url.openStream()));
+    ParserResult result=BibtexParser.parse(in);
+    in.close();
+    Collection<BibtexEntry> item=result.getDatabase().getEntries();
+    if (item.isEmpty()) {
+      return null;
+    }
+    BibtexEntry entry=item.iterator().next();
+    Thread.sleep(WAIT_TIME);
+    if (abs) {
+      url=new URL(startUrl + abstractUrl + ID);
+      String page=getResults(url);
+      Matcher absM=absPattern.matcher(page);
+      if (absM.find()) {
+        entry.setField("abstract",absM.group(1).trim());
+      }
+      Thread.sleep(WAIT_TIME);
+    }
+    return entry;
+  }
+ catch (  NoSuchElementException e) {
+    System.out.println("Bad Bibtex record read at: " + bibtexUrl + ID+ bibtexUrlEnd);
+    e.printStackTrace();
+    return null;
+  }
+catch (  MalformedURLException e) {
+    e.printStackTrace();
+    return null;
+  }
+catch (  ConnectException e) {
+    e.printStackTrace();
+    return null;
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+    return null;
+  }
+catch (  InterruptedException e) {
+    e.printStackTrace();
+    return null;
+  }
+}

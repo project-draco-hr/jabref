@@ -1,0 +1,56 @@
+{
+  TextBlock block=null;
+  AboutTextLine aLine=null;
+  int index=-3;
+  FontMetrics fm=getFontMetrics(font3);
+  try {
+    InputStream stream=getClass().getResourceAsStream(GUIGlobals.getLocaleHelpPath() + "credits.txt");
+    if (stream == null) {
+      stream=getClass().getResourceAsStream(GUIGlobals.helpPre + "credits.txt");
+    }
+    InputStreamReader reader=new InputStreamReader(stream);
+    BufferedReader input=new BufferedReader(reader,1000);
+    while (input.ready()) {
+      String line=input.readLine();
+      if (line != null) {
+        line=line.trim();
+        if (line.length() > 0) {
+          if (line.charAt(0) == '#') {
+            if (block != null) {
+              textBlocks.add(block);
+              index+=2;
+            }
+            aLine=new AboutTextLine(line.substring(1).trim());
+            aLine.setTag(2);
+            aLine.setPos(getMiddleX(aLine.getText(),font2),borders[0] - fm.getHeight() * (index + 3) * 1.5);
+            aLine.setDirection(0.0,1.0);
+            aLine.setFont(font2);
+            block=new TextBlock();
+            block.setHeading(aLine);
+            block.setVisible(true);
+          }
+ else {
+            aLine=new AboutTextLine(line.trim());
+            aLine.setPos(getMiddleX(line,font3),borders[3] + (index * fm.getHeight() * 1.5));
+            aLine.setTag(10);
+            aLine.setDirection(0.0,-1.0);
+            aLine.setFont(font3);
+            block=new TextBlock();
+            block.add(aLine);
+            block.setVisible(true);
+            index++;
+          }
+        }
+      }
+    }
+    input.close();
+  }
+ catch (  Exception e) {
+    block=new TextBlock();
+    block.setHeading(new AboutTextLine("failure"));
+    String line="no infos available";
+    aLine=new AboutTextLine(line);
+    block.add(aLine);
+  }
+  textBlocks.add(block);
+}

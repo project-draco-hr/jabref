@@ -1,0 +1,106 @@
+{
+  super(jabrefFrame,Globals.lang("Automatically create groups"),true);
+  frame=jabrefFrame;
+  gs=groupSelector;
+  panel=basePanel;
+  m_groupsRoot=groupsRoot;
+  field.setText(defaultField);
+  remove.setText(defaultRemove);
+  deliminator.setText(defaultDeliminator);
+  nd.setSelected(true);
+  ActionListener okListener=new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      ok_pressed=true;
+      dispose();
+      GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Globals.lang("Automatically created groups"),AbstractGroup.INCLUDING));
+      Set<String> hs=null;
+      String field=field();
+      if (keywords.isSelected()) {
+        if (nd.isSelected()) {
+          hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field().toLowerCase().trim(),deliminator.getText());
+        }
+ else {
+          hs=Util.findAllWordsInField(panel.getDatabase(),field().toLowerCase().trim(),remove());
+        }
+      }
+ else       if (authors.isSelected()) {
+        List<String> fields=new ArrayList<String>(2);
+        fields.add("author");
+        hs=Util.findAuthorLastNames(panel.getDatabase(),fields);
+        field="author";
+      }
+ else       if (editors.isSelected()) {
+        List<String> fields=new ArrayList<String>(2);
+        fields.add("editor");
+        hs=Util.findAuthorLastNames(panel.getDatabase(),fields);
+        field="editor";
+      }
+      for (      String keyword : hs) {
+        KeywordGroup group=new KeywordGroup(keyword,field,keyword,false,false,AbstractGroup.INDEPENDENT);
+        autoGroupsRoot.add(new GroupTreeNode(group));
+      }
+      m_groupsRoot.add(autoGroupsRoot);
+      NamedCompound ce=new NamedCompound(Globals.lang("Autogenerate groups"));
+      UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(gs,m_groupsRoot,autoGroupsRoot,UndoableAddOrRemoveGroup.ADD_NODE);
+      undo.setRevalidate(true);
+      ce.addEdit(undo);
+      panel.markBaseChanged();
+      gs.revalidateGroups();
+      frame.output(Globals.lang("Created groups."));
+      ce.end();
+      panel.undoManager.addEdit(ce);
+    }
+  }
+;
+  remove.addActionListener(okListener);
+  field.addActionListener(okListener);
+  field.addCaretListener(this);
+  AbstractAction cancelAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+;
+  cancel.addActionListener(cancelAction);
+  ok.addActionListener(okListener);
+  ActionMap am=main.getActionMap();
+  InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(frame.prefs().getKey("Close dialog"),"close");
+  am.put("close",cancelAction);
+  ButtonGroup bg=new ButtonGroup();
+  bg.add(keywords);
+  bg.add(authors);
+  bg.add(editors);
+  keywords.setSelected(true);
+  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("left:20dlu, 4dlu, left:pref, 4dlu, fill:60dlu, 4dlu, fill:0dlu",""),main);
+  b.append(keywords,5);
+  b.nextLine();
+  b.append(new JPanel());
+  b.append(Globals.lang("Field to group by") + ":");
+  b.append(field);
+  b.nextLine();
+  b.append(new JPanel());
+  b.append(Globals.lang("Characters to ignore") + ":");
+  b.append(remove);
+  b.nextLine();
+  b.append(new JPanel());
+  b.append(nd);
+  b.append(deliminator);
+  b.nextLine();
+  b.append(authors,5);
+  b.nextLine();
+  b.append(editors,5);
+  b.nextLine();
+  ButtonBarBuilder bb=new ButtonBarBuilder(opt);
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  main.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  opt.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  getContentPane().add(main,BorderLayout.CENTER);
+  getContentPane().add(opt,BorderLayout.SOUTH);
+  updateComponents();
+  pack();
+  Util.placeDialog(this,frame);
+}

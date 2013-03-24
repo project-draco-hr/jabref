@@ -1,0 +1,20 @@
+{
+  for (  BibtexString string : _strings.values()) {
+    if (string.getName().toLowerCase().equals(label.toLowerCase())) {
+      if (usedIds.contains(string.getId())) {
+        Util.pr("Stopped due to circular reference in strings: " + label);
+        return label;
+      }
+      usedIds.add(string.getId());
+      String res=string.getContent();
+      res=resolveContent(res,usedIds);
+      usedIds.remove(string.getId());
+      return res;
+    }
+  }
+  Object o;
+  if ((o=Globals.MONTH_STRINGS.get(label.toLowerCase())) != null) {
+    return (String)o;
+  }
+  return null;
+}

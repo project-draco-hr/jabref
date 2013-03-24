@@ -1,0 +1,48 @@
+{
+  String id=Util.createNeutralId();
+  BibtexEntry result=new BibtexEntry(id,tp);
+  skipWhitespace();
+  consume('{','(');
+  int c=peek();
+  if ((c != '\n') && (c != '\r'))   skipWhitespace();
+  String key=null;
+  boolean doAgain=true;
+  while (doAgain) {
+    doAgain=false;
+    try {
+      if (key != null)       key=key + parseKey();
+ else       key=parseKey();
+    }
+ catch (    NoLabelException ex) {
+      c=(char)peek();
+      if (Character.isWhitespace(c) || (c == '{') || (c == '\"')) {
+        String fieldName=ex.getMessage().trim().toLowerCase();
+        String cont=parseFieldContent(fieldName);
+        result.setField(fieldName,cont);
+      }
+ else {
+        if (key != null)         key=key + ex.getMessage() + "=";
+ else         key=ex.getMessage() + "=";
+        doAgain=true;
+      }
+    }
+  }
+  if ((key != null) && key.equals(""))   key=null;
+  result.setField(BibtexFields.KEY_FIELD,key);
+  skipWhitespace();
+  while (true) {
+    c=peek();
+    if ((c == '}') || (c == ')')) {
+      break;
+    }
+    if (c == ',')     consume(',');
+    skipWhitespace();
+    c=peek();
+    if ((c == '}') || (c == ')')) {
+      break;
+    }
+    parseField(result);
+  }
+  consume('}',')');
+  return result;
+}

@@ -1,0 +1,43 @@
+{
+  ExternalFileType fileType=Globals.prefs.getExternalFileTypeByExt("pdf");
+  NamedCompound edits=new NamedCompound(Globals.lang("Drop %0",fileType.extension));
+  boolean isSingle=xmpEntriesInFile.size() == 1;
+  BibtexEntry single=(isSingle ? xmpEntriesInFile.get(0) : null);
+  boolean success=true;
+  String destFilename;
+  if (linkInPlace.isSelected()) {
+    destFilename=Util.shortenFileName(new File(fileName),panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD)).toString();
+  }
+ else {
+    if (renameCheckBox.isSelected()) {
+      destFilename=fileName;
+    }
+ else {
+      destFilename=single.getCiteKey() + "." + fileType.extension;
+    }
+    if (copyRadioButton.isSelected()) {
+      success=doCopy(fileName,fileType,destFilename,edits);
+    }
+ else     if (moveRadioButton.isSelected()) {
+      success=doMove(fileName,fileType,destFilename,edits);
+    }
+  }
+  if (success) {
+    Iterator<BibtexEntry> it=xmpEntriesInFile.iterator();
+    while (it.hasNext()) {
+      try {
+        BibtexEntry entry=it.next();
+        entry.setId(Util.createNeutralId());
+        edits.addEdit(new UndoableInsertEntry(panel.getDatabase(),entry,panel));
+        panel.getDatabase().insertEntry(entry);
+        doLink(entry,fileType,destFilename,true,edits);
+      }
+ catch (      KeyCollisionException ex) {
+      }
+    }
+    panel.markBaseChanged();
+    panel.updateEntryEditorIfShowing();
+  }
+  edits.end();
+  panel.undoManager.addEdit(edits);
+}

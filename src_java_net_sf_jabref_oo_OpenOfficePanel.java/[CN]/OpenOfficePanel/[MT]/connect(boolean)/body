@@ -1,0 +1,77 @@
+{
+  String unoilDir, ooBaseDirectory;
+  if (auto) {
+    AutoDetectPaths adp=new AutoDetectPaths(diag);
+    if (adp.runAutodetection()) {
+      autoDetected=true;
+      dialogOkPressed=true;
+      diag.dispose();
+    }
+ else     if (!adp.cancelled()) {
+      JOptionPane.showMessageDialog(diag,Globals.lang("Autodetection failed"),Globals.lang("Autodetection failed"),JOptionPane.ERROR_MESSAGE);
+    }
+    if (!autoDetected)     return;
+    unoilDir=Globals.prefs.get("ooUnoilPath");
+    ooBaseDirectory=Globals.prefs.get("ooJurtPath");
+    sOffice=Globals.prefs.get("ooExecutablePath");
+  }
+ else {
+    showConnectDialog();
+    if (!dialogOkPressed)     return;
+    String ooPath=Globals.prefs.get("ooPath");
+    String ooJars=Globals.prefs.get("ooJarsPath");
+    sOffice=Globals.prefs.get("ooExecutablePath");
+    boolean openOffice3=true;
+    if (Globals.ON_WIN) {
+      unoilDir=ooPath + "\\Basis\\program\\classes";
+      ooBaseDirectory=ooPath + "\\URE\\java";
+      sOffice=ooPath + "\\program\\soffice.exe";
+    }
+ else     if (Globals.ON_MAC) {
+      sOffice=ooPath + "/Contents/MacOS/soffice.bin";
+      ooBaseDirectory=ooPath + "/Contents/basis-link/ure-link/share/java";
+      unoilDir=ooPath + "/Contents/basis-link/program/classes";
+    }
+ else {
+      unoilDir=ooJars + "/program/classes";
+      ooBaseDirectory=ooJars + "/ure-link/share/java";
+    }
+  }
+  try {
+    File[] jarFiles=new File[]{new File(unoilDir,"unoil.jar"),new File(ooBaseDirectory,"jurt.jar"),new File(ooBaseDirectory,"juh.jar"),new File(ooBaseDirectory,"ridl.jar")};
+    URL[] jarList=new URL[jarFiles.length];
+    for (int i=0; i < jarList.length; i++) {
+      if (!jarFiles[i].exists())       throw new Exception(Globals.lang("File not found") + ": " + jarFiles[i].getPath());
+      jarList[i]=jarFiles[i].toURI().toURL();
+    }
+    addURL(jarList);
+    final JDialog progDiag=(new AutoDetectPaths(diag)).showProgressDialog(diag,Globals.lang("Connecting"),Globals.lang("Please wait..."),false);
+    getWorker().run();
+    progDiag.dispose();
+    diag.dispose();
+    if (ooBase == null) {
+      throw connectException;
+    }
+    if (ooBase.isConnectedToDocument())     frame.output(Globals.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle());
+    selectDocument.setEnabled(true);
+    pushEntries.setEnabled(true);
+    pushEntriesInt.setEnabled(true);
+    pushEntriesEmpty.setEnabled(true);
+    pushEntriesAdvanced.setEnabled(true);
+    focus.setEnabled(true);
+    update.setEnabled(true);
+    insertFullRef.setEnabled(true);
+    merge.setEnabled(true);
+    manageCitations.setEnabled(true);
+    test.setEnabled(true);
+  }
+ catch (  Throwable e) {
+    e.printStackTrace();
+    if (e instanceof UnsatisfiedLinkError) {
+      JOptionPane.showMessageDialog(frame,Globals.lang("Unable to connect. One possible reason is that JabRef " + "and OpenOffice/LibreOffice are not both running in either 32 bit mode or 64 bit mode."));
+    }
+ else {
+      JOptionPane.showMessageDialog(frame,Globals.lang("Could not connect to running OpenOffice.\n" + "Make sure you have installed OpenOffice with Java support.\nIf connecting manually, please verify program and library paths.\n" + "\nError message: "+ e.getMessage()));
+    }
+  }
+}

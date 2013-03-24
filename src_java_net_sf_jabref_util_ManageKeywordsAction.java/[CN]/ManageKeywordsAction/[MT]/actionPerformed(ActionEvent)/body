@@ -1,0 +1,77 @@
+{
+  BasePanel bp=frame.basePanel();
+  if (bp == null)   return;
+  if (bp.getSelectedEntries().length == 0) {
+    return;
+  }
+  if (diag == null) {
+    createDialog();
+  }
+  cancelled=true;
+  fillKeyWordList();
+  diag.pack();
+  Util.placeDialog(diag,frame);
+  diag.setVisible(true);
+  if (cancelled)   return;
+  HashSet<String> keywordsToAdd=new HashSet<String>();
+  HashSet<String> userSelectedKeywords=new HashSet<String>();
+  for (Enumeration keywords=keywordListModel.elements(); keywords.hasMoreElements(); ) {
+    String keyword=(String)keywords.nextElement();
+    userSelectedKeywords.add(keyword);
+    if (!sortedKeywordsOfAllEntriesBeforeUpdateByUser.contains(keyword)) {
+      keywordsToAdd.add(keyword);
+    }
+  }
+  HashSet<String> keywordsToRemove=new HashSet<String>();
+  for (  String keyword : sortedKeywordsOfAllEntriesBeforeUpdateByUser) {
+    if (!userSelectedKeywords.contains(keyword)) {
+      keywordsToRemove.add(keyword);
+    }
+  }
+  if (keywordsToAdd.isEmpty() && keywordsToRemove.isEmpty()) {
+    return;
+  }
+  if (SpecialFieldsUtils.keywordSyncEnabled()) {
+    if (!keywordsToAdd.isEmpty()) {
+      HashSet<String> clone;
+      clone=(HashSet<String>)keywordsToAdd.clone();
+      clone.retainAll(Priority.getInstance().getKeyWords());
+      if (!clone.isEmpty()) {
+        keywordsToRemove.addAll(Priority.getInstance().getKeyWords());
+      }
+      clone=(HashSet<String>)keywordsToAdd.clone();
+      clone.retainAll(Quality.getInstance().getKeyWords());
+      if (!clone.isEmpty()) {
+        keywordsToRemove.addAll(Quality.getInstance().getKeyWords());
+      }
+      clone=(HashSet<String>)keywordsToAdd.clone();
+      clone.retainAll(Rank.getInstance().getKeyWords());
+      if (!clone.isEmpty()) {
+        keywordsToRemove.addAll(Rank.getInstance().getKeyWords());
+      }
+      clone=(HashSet<String>)keywordsToAdd.clone();
+      clone.retainAll(Relevance.getInstance().getKeyWords());
+      if (!clone.isEmpty()) {
+        keywordsToRemove.addAll(Relevance.getInstance().getKeyWords());
+      }
+    }
+  }
+  BibtexEntry[] entries=bp.getSelectedEntries();
+  NamedCompound ce=new NamedCompound(Globals.lang("Update keywords"));
+  for (  BibtexEntry entry : entries) {
+    ArrayList<String> separatedKeywords=Util.getSeparatedKeywords(entry);
+    TreeSet<String> keywords=new TreeSet<String>();
+    keywords.addAll(separatedKeywords);
+    keywords.removeAll(keywordsToRemove);
+    keywords.addAll(keywordsToAdd);
+    separatedKeywords.clear();
+    separatedKeywords.addAll(keywords);
+    Util.putKeywords(entry,separatedKeywords,ce);
+    if (SpecialFieldsUtils.keywordSyncEnabled()) {
+      SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,ce);
+    }
+  }
+  ce.end();
+  bp.undoManager.addEdit(ce);
+  bp.markBaseChanged();
+}

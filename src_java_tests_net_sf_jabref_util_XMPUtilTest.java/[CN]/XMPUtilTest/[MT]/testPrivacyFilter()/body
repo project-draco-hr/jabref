@@ -1,0 +1,36 @@
+{
+{
+    prefs.putBoolean("useXmpPrivacyFilter",true);
+    prefs.putStringArray("xmpPrivacyFilter",new String[]{"author;title;note"});
+    BibtexEntry e=t1BibtexEntry();
+    XMPUtil.writeXMP(pdfFile,e,null);
+    List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+    assertEquals(1,l.size());
+    BibtexEntry x=l.get(0);
+    Set<String> ts=x.getAllFields();
+    assertEquals(8,ts.size());
+    ts.contains("bibtextype");
+    ts.contains("bibtexkey");
+    ts.contains("booktitle");
+    ts.contains("year");
+    ts.contains("owner");
+    ts.contains("timestamp");
+    ts.contains("year");
+    ts.contains("url");
+  }
+{
+    prefs.putBoolean("useXmpPrivacyFilter",true);
+    prefs.putStringArray("xmpPrivacyFilter",new String[]{"author;title;note;booktitle;year;owner;timestamp"});
+    BibtexEntry e=t1BibtexEntry();
+    XMPUtil.writeXMP(pdfFile,e,null);
+    List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+    assertEquals(1,l.size());
+    BibtexEntry x=l.get(0);
+    Set<String> ts=x.getAllFields();
+    assertEquals(8,ts.size());
+    ts.contains("bibtextype");
+    ts.contains("bibtexkey");
+    ts.contains("year");
+    ts.contains("url");
+  }
+}

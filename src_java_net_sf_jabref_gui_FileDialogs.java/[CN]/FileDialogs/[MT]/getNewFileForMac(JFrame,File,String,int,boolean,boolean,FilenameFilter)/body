@@ -1,0 +1,20 @@
+{
+  java.awt.FileDialog fc=new java.awt.FileDialog(owner);
+  if (directory != null) {
+    fc.setDirectory(directory.getParent());
+  }
+  if (dialogType == JFileChooser.OPEN_DIALOG) {
+    fc.setMode(java.awt.FileDialog.LOAD);
+  }
+ else {
+    fc.setMode(java.awt.FileDialog.SAVE);
+  }
+  fc.setVisible(true);
+  if (fc.getFile() != null) {
+    Globals.prefs.put("workingDirectory",fc.getDirectory() + fc.getFile());
+    return fc.getDirectory() + fc.getFile();
+  }
+ else {
+    return null;
+  }
+}

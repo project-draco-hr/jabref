@@ -1,0 +1,15 @@
+{
+  String cmd="j";
+  String key=slaccitation.replaceAll("^%%CITATION = ","").replaceAll(";%%$","");
+  if (key.matches("^\\w*-\\w*[ /].*"))   cmd="eprint";
+  try {
+    key=URLEncoder.encode(key,"UTF-8");
+  }
+ catch (  UnsupportedEncodingException e) {
+  }
+  StringBuffer sb=new StringBuffer("http://").append(spiresHost).append("/");
+  sb.append("spires/find/hep/www").append("?");
+  sb.append("rawcmd=find+").append(cmd).append("+");
+  sb.append(key);
+  return sb.toString();
+}

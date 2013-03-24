@@ -1,0 +1,91 @@
+{
+  boolean movingAway=movingToDifferentEntry;
+  movingToDifferentEntry=false;
+  if (e.getSource() instanceof FieldTextField) {
+    FieldTextField fe=(FieldTextField)e.getSource();
+    String oldValue=entry.getCiteKey();
+    String newValue=fe.getText();
+    if (newValue.equals(""))     newValue=null;
+    if (((oldValue == null) && (newValue == null)) || ((oldValue != null) && (newValue != null) && oldValue.equals(newValue)))     return;
+    String cleaned=Util.checkLegalKey(newValue);
+    if ((cleaned != null) && !cleaned.equals(newValue)) {
+      JOptionPane.showMessageDialog(frame,Globals.lang("Invalid BibTeX key"),Globals.lang("Error setting field"),JOptionPane.ERROR_MESSAGE);
+      fe.setInvalidBackgroundColor();
+      return;
+    }
+ else {
+      fe.setValidBackgroundColor();
+    }
+    boolean isDuplicate=panel.database.setCiteKeyForEntry(entry.getId(),newValue);
+    if (newValue != null) {
+      if (isDuplicate)       warnDuplicateBibtexkey();
+ else       panel.output(Globals.lang("BibTeX key is unique."));
+    }
+ else {
+      warnEmptyBibtexkey();
+    }
+    panel.undoManager.addEdit(new UndoableKeyChange(panel.database,entry.getId(),oldValue,newValue));
+    if ((newValue != null) && (newValue.length() > 0))     fe.setValidBackgroundColor();
+ else     fe.setValidBackgroundColor();
+    if (fe.getTextComponent().hasFocus())     fe.setActiveBackgroundColor();
+    updateSource();
+    panel.markBaseChanged();
+  }
+ else   if (e.getSource() instanceof FieldEditor) {
+    String toSet=null;
+    FieldEditor fe=(FieldEditor)e.getSource();
+    boolean set;
+    String currentText=fe.getText();
+    String trim=currentText.trim();
+    if (trim.length() > 0) {
+      toSet=trim;
+    }
+    if (toSet == null) {
+      if (entry.getField(fe.getFieldName()) == null)       set=false;
+ else       set=true;
+    }
+ else {
+      if ((entry.getField(fe.getFieldName()) != null) && toSet.equals(entry.getField(fe.getFieldName()).toString()))       set=false;
+ else       set=true;
+    }
+    if (set) {
+      try {
+        if (toSet != null)         (new LatexFieldFormatter()).format(toSet,fe.getFieldName());
+        String oldValue=entry.getField(fe.getFieldName());
+        if (toSet != null)         entry.setField(fe.getFieldName(),toSet);
+ else         entry.clearField(fe.getFieldName());
+        if ((toSet != null) && (toSet.length() > 0))         fe.setValidBackgroundColor();
+ else         fe.setValidBackgroundColor();
+        AbstractAutoCompleter aComp=panel.getAutoCompleter(fe.getFieldName());
+        if (aComp != null)         aComp.addBibtexEntry(entry);
+        panel.undoManager.addEdit(new UndoableFieldChange(entry,fe.getFieldName(),oldValue,toSet));
+        updateSource();
+        panel.markBaseChanged();
+      }
+ catch (      IllegalArgumentException ex) {
+        JOptionPane.showMessageDialog(frame,Globals.lang("Error") + ": " + ex.getMessage(),Globals.lang("Error setting field"),JOptionPane.ERROR_MESSAGE);
+        fe.setInvalidBackgroundColor();
+      }
+    }
+ else {
+      fe.setValidBackgroundColor();
+    }
+    if (fe.getTextComponent().hasFocus())     fe.setBackground(GUIGlobals.activeEditor);
+  }
+ else   if ((source.isEditable()) && (!source.getText().equals(lastSourceStringAccepted))) {
+    boolean accepted=storeSource(true);
+    if (accepted) {
+    }
+  }
+  if (!movingAway && isShowing()) {
+    SwingUtilities.invokeLater(new Runnable(){
+      public void run(){
+        final int row=panel.mainTable.findEntry(entry);
+        if (row >= 0) {
+          panel.mainTable.ensureVisible(row);
+        }
+      }
+    }
+);
+  }
+}

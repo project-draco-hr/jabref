@@ -1,0 +1,14 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("" + "@string{bourdieu = {Bourdieu, Pierre}}" + "@book{bourdieu-2002-questions-sociologie, "+ "	Address = {Paris},"+ "	Author = bourdieu,"+ "	Isbn = 2707318256,"+ "	Publisher = {Minuit},"+ "	Title = {Questions de sociologie},"+ "	Year = 2002"+ "}"));
+  Collection<BibtexEntry> c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibtexEntry e=c.iterator().next();
+  assertEquals("bourdieu-2002-questions-sociologie",e.getCiteKey());
+  assertEquals(BibtexEntryType.BOOK,e.getType());
+  assertEquals("2707318256",e.getField("isbn"));
+  assertEquals("Paris",e.getField("address"));
+  assertEquals("Minuit",e.getField("publisher"));
+  assertEquals("Questions de sociologie",e.getField("title"));
+  assertEquals("#bourdieu#",e.getField("author"));
+  assertEquals("2002",e.getField("year"));
+}

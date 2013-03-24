@@ -1,0 +1,30 @@
+{
+  String[] fields={"note","url","ee"};
+  if (bes.getField("doi") != null) {
+    String doiFieldValue=bes.getField("doi");
+    if (Util.checkForDOIwithHTTPprefix(doiFieldValue)) {
+      String newValue=Util.getDOI(doiFieldValue);
+      ce.addEdit(new UndoableFieldChange(bes,"doi",doiFieldValue,newValue));
+      bes.setField("doi",newValue);
+    }
+    ;
+    if (Util.checkForPlainDOI(doiFieldValue)) {
+      for (      String field : fields) {
+        if (Util.checkForPlainDOI(bes.getField(field))) {
+          Util.removeDOIfromBibtexEntryField(bes,field,ce);
+        }
+      }
+    }
+  }
+ else {
+    for (    String field : fields) {
+      if (Util.checkForPlainDOI(bes.getField(field))) {
+        String oldValue=bes.getField("doi");
+        String newValue=Util.getDOI(bes.getField(field));
+        ce.addEdit(new UndoableFieldChange(bes,"doi",oldValue,newValue));
+        bes.setField("doi",newValue);
+        Util.removeDOIfromBibtexEntryField(bes,field,ce);
+      }
+    }
+  }
+}

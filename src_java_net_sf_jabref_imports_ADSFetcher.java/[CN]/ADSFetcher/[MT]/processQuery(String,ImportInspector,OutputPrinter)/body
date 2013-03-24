@@ -1,0 +1,20 @@
+{
+  try {
+    query=query.replaceAll("^(doi:|DOI:)","");
+    String key=query;
+    status.setStatus(Globals.lang("Processing ") + key);
+    BibtexDatabase bd=importADSEntries(key,status);
+    status.setStatus("Adding fetched entries");
+    if (bd.getEntryCount() > 0) {
+      for (      BibtexEntry entry : bd.getEntries()) {
+        importADSAbstract(key,entry,status);
+        dialog.addEntry(entry);
+      }
+    }
+  }
+ catch (  Exception e) {
+    status.setStatus(Globals.lang("Error while fetching from ADS") + ": " + e.getMessage());
+    e.printStackTrace();
+  }
+  return true;
+}

@@ -1,0 +1,29 @@
+{
+  String content="Test Word Content";
+  String contentToHighlight1="Word";
+  String contentToHighlight2="Content";
+  FieldTextArea ta=new FieldTextArea("",content);
+  Highlighter highlighter=ta.getHighlighter();
+  Highlight[] highlight=highlighter.getHighlights();
+  assertEquals("Expected no highlighting area ",0,highlight.length);
+  ArrayList<String> wordsToHighlight=new ArrayList<String>();
+  wordsToHighlight.add(contentToHighlight1);
+  ta.searchText(wordsToHighlight);
+  highlighter=ta.getHighlighter();
+  highlight=highlighter.getHighlights();
+  assertEquals("Expected one highlighting area ",1,highlight.length);
+  assertEquals(content.indexOf(contentToHighlight1),highlight[0].getStartOffset());
+  assertEquals(content.indexOf(contentToHighlight1) + contentToHighlight1.length(),highlight[0].getEndOffset());
+  wordsToHighlight.add(contentToHighlight2);
+  ta.searchText(wordsToHighlight);
+  highlighter=ta.getHighlighter();
+  highlight=highlighter.getHighlights();
+  assertEquals("Expected two highlighting areas ",2,highlight.length);
+  assertEquals(content.indexOf(contentToHighlight2),highlight[1].getStartOffset());
+  assertEquals(content.indexOf(contentToHighlight2) + contentToHighlight2.length(),highlight[1].getEndOffset());
+  wordsToHighlight.clear();
+  ta.searchText(wordsToHighlight);
+  highlighter=ta.getHighlighter();
+  highlight=highlighter.getHighlights();
+  assertEquals("Expected no highlighting area ",0,highlight.length);
+}

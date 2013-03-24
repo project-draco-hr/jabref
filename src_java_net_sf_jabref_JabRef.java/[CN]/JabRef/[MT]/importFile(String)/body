@@ -1,0 +1,43 @@
+{
+  String[] data=argument.split(",");
+  try {
+    if ((data.length > 1) && !"*".equals(data[1])) {
+      System.out.println(Globals.lang("Importing") + ": " + data[0]);
+      try {
+        List<BibtexEntry> entries;
+        if (Globals.ON_WIN) {
+          entries=Globals.importFormatReader.importFromFile(data[1],data[0],jrf);
+        }
+ else {
+          entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")),jrf);
+        }
+        return new ParserResult(entries);
+      }
+ catch (      IllegalArgumentException ex) {
+        System.err.println(Globals.lang("Unknown import format") + ": " + data[1]);
+        return null;
+      }
+    }
+ else {
+      System.out.println(Globals.lang("Importing in unknown format") + ": " + data[0]);
+      Pair<String,ParserResult> importResult;
+      if (Globals.ON_WIN) {
+        importResult=Globals.importFormatReader.importUnknownFormat(data[0]);
+      }
+ else {
+        importResult=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
+      }
+      if (importResult != null) {
+        System.out.println(Globals.lang("Format used") + ": " + importResult.p);
+        return importResult.v;
+      }
+ else {
+        System.out.println(Globals.lang("Could not find a suitable import format."));
+      }
+    }
+  }
+ catch (  IOException ex) {
+    System.err.println(Globals.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getLocalizedMessage());
+  }
+  return null;
+}

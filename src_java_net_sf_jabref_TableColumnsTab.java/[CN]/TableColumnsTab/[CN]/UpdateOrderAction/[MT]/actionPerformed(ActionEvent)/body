@@ -1,0 +1,27 @@
+{
+  BasePanel panel=frame.basePanel();
+  if (panel == null) {
+    return;
+  }
+  final HashMap<String,Integer> map=new HashMap<String,Integer>();
+  for (int i=1; i < panel.mainTable.getColumnCount(); i++) {
+    String name=panel.mainTable.getColumnName(i);
+    if (name != null && name.length() != 0) {
+      map.put(name.toLowerCase(),i);
+    }
+  }
+  Collections.sort(tableRows,new Comparator<TableRow>(){
+    public int compare(    TableRow o1,    TableRow o2){
+      Integer n1=map.get(o1.name);
+      Integer n2=map.get(o2.name);
+      if (n1 == null || n2 == null) {
+        return 0;
+      }
+      return n1.compareTo(n2);
+    }
+  }
+);
+  colSetup.revalidate();
+  colSetup.repaint();
+  tableChanged=true;
+}

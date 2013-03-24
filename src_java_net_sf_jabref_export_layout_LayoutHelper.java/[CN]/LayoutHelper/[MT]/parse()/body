@@ -1,0 +1,32 @@
+{
+  skipWhitespace();
+  int c;
+  StringBuffer buffer=null;
+  boolean escaped=false;
+  while (!_eof) {
+    c=read();
+    if (c == -1) {
+      _eof=true;
+      if (buffer != null)       parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
+      return null;
+    }
+    if ((c == '\\') && (peek() != '\\') && !escaped) {
+      if (buffer != null) {
+        parsedEntries.add(new StringInt(buffer.toString(),IS_LAYOUT_TEXT));
+        buffer=null;
+      }
+      parseField();
+      escaped=false;
+    }
+ else {
+      if (buffer == null) {
+        buffer=new StringBuffer(100);
+      }
+      if ((c != '\\') || escaped) {
+        buffer.append((char)c);
+      }
+      escaped=(c == '\\') && !escaped;
+    }
+  }
+  return null;
+}

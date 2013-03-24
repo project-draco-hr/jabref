@@ -1,0 +1,24 @@
+{
+  frame=frame_;
+  panel=panel_;
+  entry=entry_;
+  prefs=Globals.prefs;
+  type=entry.getType();
+  entry.addPropertyChangeListener(this);
+  entry.addPropertyChangeListener(SpecialFieldUpdateListener.getInstance());
+  helpAction=new HelpAction(frame.helpDiag,GUIGlobals.entryEditorHelp,"Help");
+  closeAction=new CloseAction();
+  copyKeyAction=new CopyKeyAction();
+  generateKeyAction=new GenerateKeyAction(frame);
+  storeFieldAction=new StoreFieldAction();
+  writeXmp=new WriteXMPEntryEditorAction(panel_,this);
+  BorderLayout bl=new BorderLayout();
+  setLayout(bl);
+  setupToolBar();
+  setupFieldPanels();
+  setupSourcePanel();
+  add(tabbed,BorderLayout.CENTER);
+  tabbed.addChangeListener(tabListener);
+  if (prefs.getBoolean("showSource") && prefs.getBoolean("defaultShowSource"))   tabbed.setSelectedIndex(sourceIndex);
+  updateAllFields();
+}

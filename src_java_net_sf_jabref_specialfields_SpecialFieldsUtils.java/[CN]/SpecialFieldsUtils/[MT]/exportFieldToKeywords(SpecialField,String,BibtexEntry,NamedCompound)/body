@@ -1,0 +1,22 @@
+{
+  if (!SpecialFieldsUtils.keywordSyncEnabled())   return;
+  ArrayList<String> keywordList=Util.getSeparatedKeywords(be);
+  List<String> values=e.getKeyWords();
+  int foundPos=-1;
+  for (  Object value : values) {
+    int pos=keywordList.indexOf(value);
+    if (pos >= 0) {
+      foundPos=pos;
+      keywordList.remove(pos);
+    }
+  }
+  if (newValue != null) {
+    if (foundPos == -1) {
+      keywordList.add(newValue);
+    }
+ else {
+      keywordList.add(foundPos,newValue);
+    }
+  }
+  Util.putKeywords(be,keywordList,ce);
+}

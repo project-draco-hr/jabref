@@ -1,0 +1,25 @@
+{
+  String oldValue=entry.getField(GUIGlobals.FILE_FIELD);
+  FileListTableModel tm=new FileListTableModel();
+  if (oldValue != null)   tm.setContent(oldValue);
+  if (avoidDuplicate) {
+    String[] dirs=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+    String absFilename=(!(new File(filename).isAbsolute()) && (dirs.length > 0)) ? Util.expandFilename(filename,dirs).getAbsolutePath() : filename;
+    for (int i=0; i < tm.getRowCount(); i++) {
+      FileListEntry flEntry=tm.getEntry(i);
+      String absName=(!(new File(flEntry.getLink()).isAbsolute()) && (dirs.length > 0)) ? Util.expandFilename(flEntry.getLink(),dirs).getAbsolutePath() : flEntry.getLink();
+      System.out.println("absName: " + absName);
+      if (absFilename.equals(absName))       return;
+    }
+  }
+  tm.addEntry(tm.getRowCount(),new FileListEntry("",filename,fileType));
+  String newValue=tm.getStringRepresentation();
+  UndoableFieldChange edit=new UndoableFieldChange(entry,GUIGlobals.FILE_FIELD,oldValue,newValue);
+  entry.setField(GUIGlobals.FILE_FIELD,newValue);
+  if (edits == null) {
+    panel.undoManager.addEdit(edit);
+  }
+ else {
+    edits.addEdit(edit);
+  }
+}

@@ -1,0 +1,30 @@
+{
+  LayoutFormatter chars=new XMLChars();
+  if (bibtex.getField("title") != null) {
+    if (CHARFORMAT)     title=chars.format(bibtex.getField("title").toString());
+ else     title=bibtex.getField("title").toString();
+  }
+  if (bibtex.getField("publisher") != null) {
+    if (CHARFORMAT)     publisher=chars.format(bibtex.getField("publisher").toString());
+ else     publisher=bibtex.getField("publisher").toString();
+  }
+  if (bibtex.getField("bibtexkey") != null)   id=bibtex.getField("bibtexkey").toString();
+  if (bibtex.getField("place") != null) {
+    if (CHARFORMAT)     place=chars.format(bibtex.getField("place").toString());
+ else     place=bibtex.getField("place").toString();
+  }
+  date=getDate(bibtex);
+  genre=getMODSgenre(bibtex);
+  if (bibtex.getField("author") != null)   authors=getAuthors(bibtex.getField("author").toString());
+  if (bibtex.getType() == BibtexEntryType.ARTICLE || bibtex.getType() == BibtexEntryType.INPROCEEDINGS) {
+    host=new MODSEntry();
+    host.entryType="relatedItem";
+    host.title=bibtex.getField("booktitle");
+    host.publisher=bibtex.getField("publisher");
+    host.number=bibtex.getField("number");
+    if (bibtex.getField("pages") != null)     host.volume=bibtex.getField("volume");
+    host.issuance="continuing";
+    if (bibtex.getField("pages") != null)     host.pages=new PageNumbers(bibtex.getField("pages"));
+  }
+  populateExtensionFields(bibtex);
+}

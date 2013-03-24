@@ -1,0 +1,44 @@
+{
+  List<File> filesToOpen=new ArrayList<File>();
+  if (showDialog) {
+    String[] chosen=FileDialogs.getMultipleFiles(frame,new File(Globals.prefs.get("workingDirectory")),".bib",true);
+    if (chosen != null)     for (int i=0; i < chosen.length; i++) {
+      if (chosen[i] != null)       filesToOpen.add(new File(chosen[i]));
+    }
+  }
+ else {
+    Util.pr(NAME);
+    Util.pr(e.getActionCommand());
+    filesToOpen.add(new File(Util.checkName(e.getActionCommand())));
+  }
+  BasePanel toRaise=null;
+  int initialCount=filesToOpen.size(), removed=0;
+  for (Iterator<File> iterator=filesToOpen.iterator(); iterator.hasNext(); ) {
+    File file=iterator.next();
+    for (int i=0; i < frame.getTabbedPane().getTabCount(); i++) {
+      BasePanel bp=frame.baseAt(i);
+      if ((bp.getFile() != null) && bp.getFile().equals(file)) {
+        iterator.remove();
+        removed++;
+        if (removed == initialCount) {
+          toRaise=bp;
+        }
+        break;
+      }
+    }
+  }
+  if (filesToOpen.size() > 0) {
+    final List<File> theFiles=Collections.unmodifiableList(filesToOpen);
+    (new Thread(){
+      public void run(){
+        for (Iterator<File> i=theFiles.iterator(); i.hasNext(); )         openIt(i.next(),true);
+      }
+    }
+).start();
+    for (Iterator<File> i=theFiles.iterator(); i.hasNext(); )     frame.getFileHistory().newFile(i.next().getPath());
+  }
+ else   if (toRaise != null) {
+    frame.output(Globals.lang("File '%0' is already open.",toRaise.getFile().getPath()));
+    frame.getTabbedPane().setSelectedComponent(toRaise);
+  }
+}

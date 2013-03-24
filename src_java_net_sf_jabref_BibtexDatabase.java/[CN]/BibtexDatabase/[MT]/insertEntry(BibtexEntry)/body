@@ -1,0 +1,10 @@
+{
+  String id=entry.getId();
+  if (getEntryById(id) != null) {
+    throw new KeyCollisionException("ID is already in use, please choose another");
+  }
+  entry.addPropertyChangeListener(listener);
+  _entries.put(id,entry);
+  fireDatabaseChanged(new DatabaseChangeEvent(this,DatabaseChangeEvent.ChangeType.ADDED_ENTRY,entry));
+  return checkForDuplicateKeyAndAdd(null,entry.getCiteKey(),false);
+}

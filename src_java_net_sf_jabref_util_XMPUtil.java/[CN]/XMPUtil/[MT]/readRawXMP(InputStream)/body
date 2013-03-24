@@ -1,0 +1,13 @@
+{
+  PDDocument document=null;
+  try {
+    document=PDDocument.load(inputStream);
+    if (document.isEncrypted()) {
+      throw new EncryptionNotSupportedException("Error: Cannot read metadata from encrypted document.");
+    }
+    return getXMPMetadata(document);
+  }
+  finally {
+    if (document != null)     document.close();
+  }
+}

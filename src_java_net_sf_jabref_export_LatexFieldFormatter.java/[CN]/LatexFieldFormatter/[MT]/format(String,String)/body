@@ -1,0 +1,75 @@
+{
+  if (Globals.prefs.putBracesAroundCapitals(fieldName) && !Globals.BIBTEX_STRING.equals(fieldName)) {
+    text=Util.putBracesAroundCapitals(text);
+  }
+  boolean resolveStrings=true;
+  if (Globals.prefs.getBoolean("resolveStringsAllFields")) {
+    String[] exceptions=Globals.prefs.getStringArray("doNotResolveStringsFor");
+    for (int i=0; i < exceptions.length; i++) {
+      if (exceptions[i].equals(fieldName)) {
+        resolveStrings=false;
+        break;
+      }
+    }
+  }
+ else {
+    resolveStrings=BibtexFields.isStandardField(fieldName) || Globals.BIBTEX_STRING.equals(fieldName);
+  }
+  if (!resolveStrings) {
+    int brc=0;
+    boolean ok=true;
+    for (int i=0; i < text.length(); i++) {
+      char c=text.charAt(i);
+      if (c == '{')       brc++;
+      if (c == '}')       brc--;
+      if (brc < 0) {
+        ok=false;
+        break;
+      }
+    }
+    if (brc > 0)     ok=false;
+    if (!ok)     throw new IllegalArgumentException("Curly braces { and } must be balanced.");
+    sb=new StringBuffer("{");
+    if (!Globals.prefs.isNonWrappableField(fieldName))     sb.append(Util.wrap2(text,GUIGlobals.LINE_LENGTH));
+ else     sb.append(text);
+    sb.append('}');
+    return sb.toString();
+  }
+  sb=new StringBuffer();
+  int pivot=0, pos1, pos2;
+  col=STARTCOL;
+  checkBraces(text);
+  while (pivot < text.length()) {
+    int goFrom=pivot;
+    pos1=pivot;
+    while (goFrom == pos1) {
+      pos1=text.indexOf('#',goFrom);
+      if ((pos1 > 0) && (text.charAt(pos1 - 1) == '\\')) {
+        goFrom=pos1 + 1;
+        pos1++;
+      }
+ else       goFrom=pos1 - 1;
+    }
+    if (pos1 == -1) {
+      pos1=text.length();
+      pos2=-1;
+    }
+ else {
+      pos2=text.indexOf('#',pos1 + 1);
+      if (pos2 == -1) {
+        if (!neverFailOnHashes) {
+          throw new IllegalArgumentException(Globals.lang("The # character is not allowed in BibTeX strings unless escaped as in '\\#'.") + "\n" + Globals.lang("In JabRef, use pairs of # characters to indicate a string.")+ "\n"+ Globals.lang("Note that the entry causing the problem has been selected."));
+        }
+ else {
+          pos1=text.length();
+        }
+      }
+    }
+    if (pos1 > pivot)     writeText(text,pivot,pos1);
+    if ((pos1 < text.length()) && (pos2 - 1 > pos1))     writeStringLabel(text,pos1 + 1,pos2,(pos1 == pivot),(pos2 + 1 == text.length()));
+    if (pos2 > -1)     pivot=pos2 + 1;
+ else     pivot=pos1 + 1;
+  }
+  if (!Globals.prefs.isNonWrappableField(fieldName))   return Util.wrap2(sb.toString(),GUIGlobals.LINE_LENGTH);
+ else   return sb.toString();
+}

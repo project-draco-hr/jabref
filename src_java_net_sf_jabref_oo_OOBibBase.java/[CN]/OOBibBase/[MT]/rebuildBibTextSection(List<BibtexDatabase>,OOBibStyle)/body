@@ -1,0 +1,16 @@
+{
+  List<String> cited=findCitedKeys();
+  HashMap<String,BibtexDatabase> linkSourceBase=new HashMap<String,BibtexDatabase>();
+  Map<BibtexEntry,BibtexDatabase> entries=findCitedEntries(databases,cited,linkSourceBase);
+  String[] names=sortedReferenceMarks;
+  if (style.isSortByPosition()) {
+    entries=getSortedEntriesFromSortedRefMarks(names,entries,linkSourceBase);
+  }
+ else {
+    SortedMap<BibtexEntry,BibtexDatabase> newMap=new TreeMap<BibtexEntry,BibtexDatabase>(entryComparator);
+    for (    BibtexEntry entry : entries.keySet())     newMap.put(entry,entries.get(entry));
+    entries=newMap;
+  }
+  clearBibTextSectionContent2();
+  populateBibTextSection(entries,style);
+}

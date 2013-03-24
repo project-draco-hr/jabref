@@ -1,0 +1,31 @@
+{
+  if (lastBeginning == null) {
+    logger.finest("no last beginning");
+    return;
+  }
+  logger.finest("lastBeginning: >" + lastBeginning + "<");
+  if (comp.getSelectedText() == null) {
+    if (wordSeperatorTyped) {
+      logger.finest("replacing complete word");
+    }
+ else {
+      return;
+    }
+  }
+ else {
+    logger.finest("selected text " + comp.getSelectedText() + " will be removed");
+    comp.replaceSelection("");
+  }
+  lastCaretPosition=comp.getCaretPosition();
+  int endIndex=lastCaretPosition - lastBeginning.length();
+  if (lastBeginningContainsTypedCharacter) {
+    endIndex++;
+  }
+  String text=comp.getText();
+  comp.setText(text.substring(0,endIndex).concat(lastBeginning).concat(text.substring(lastCaretPosition)));
+  if (lastBeginningContainsTypedCharacter) {
+    lastCaretPosition++;
+  }
+  comp.setCaretPosition(lastCaretPosition);
+  lastBeginning=null;
+}

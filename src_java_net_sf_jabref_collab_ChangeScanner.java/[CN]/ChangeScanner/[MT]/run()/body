@@ -1,0 +1,31 @@
+{
+  try {
+    File tempFile=Globals.fileUpdateMonitor.getTempFile(panel.fileMonitorHandle());
+    ParserResult pr=OpenDatabaseAction.loadDatabase(tempFile,Globals.prefs.get("defaultEncoding"));
+    inTemp=pr.getDatabase();
+    mdInTemp=pr.getMetaData();
+    pr=OpenDatabaseAction.loadDatabase(f,Globals.prefs.get("defaultEncoding"));
+    BibtexDatabase onDisk=pr.getDatabase();
+    MetaData mdOnDisk=pr.getMetaData();
+    EntryComparator comp=new EntryComparator(false,true,sortBy[2]);
+    comp=new EntryComparator(false,true,sortBy[1],comp);
+    comp=new EntryComparator(false,true,sortBy[0],comp);
+    EntrySorter sInTemp=inTemp.getSorter(comp);
+    comp=new EntryComparator(false,true,sortBy[2]);
+    comp=new EntryComparator(false,true,sortBy[1],comp);
+    comp=new EntryComparator(false,true,sortBy[0],comp);
+    EntrySorter sOnDisk=onDisk.getSorter(comp);
+    comp=new EntryComparator(false,true,sortBy[2]);
+    comp=new EntryComparator(false,true,sortBy[1],comp);
+    comp=new EntryComparator(false,true,sortBy[0],comp);
+    EntrySorter sInMem=inMem.getSorter(comp);
+    scanMetaData(mdInMem,mdInTemp,mdOnDisk);
+    scanPreamble(inMem,inTemp,onDisk);
+    scanStrings(inMem,inTemp,onDisk);
+    scanEntries(sInMem,sInTemp,sOnDisk);
+    scanGroups(mdInMem,mdInTemp,mdOnDisk);
+  }
+ catch (  IOException ex) {
+    ex.printStackTrace();
+  }
+}

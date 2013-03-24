@@ -1,0 +1,34 @@
+{
+  if (e.getSource() == escape) {
+    incSearch=false;
+    clearSearchLater();
+  }
+ else   if (((e.getSource() == searchField) || (e.getSource() == search)) && !increment.isSelected() && (panel != null)) {
+    updatePrefs();
+    if (searchField.getText().equals("")) {
+      clearSearchLater();
+      return;
+    }
+    fireSearchlistenerEvent(searchField.getText());
+    Hashtable<String,String> searchOptions=new Hashtable<String,String>();
+    searchOptions.put("option",searchField.getText());
+    SearchRuleSet searchRules=new SearchRuleSet();
+    SearchRule rule1;
+    rule1=new BasicSearch(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("regExpSearch"));
+    try {
+      rule1=new SearchExpression(Globals.prefs,searchOptions);
+    }
+ catch (    Exception ex) {
+    }
+    searchRules.addRule(rule1);
+    if (!searchRules.validateSearchStrings(searchOptions)) {
+      panel.output(Globals.lang("Search failed: illegal search expression"));
+      panel.stopShowingSearchResults();
+      return;
+    }
+    SearchWorker worker=new SearchWorker(searchRules,searchOptions);
+    worker.getWorker().run();
+    worker.getCallBack().update();
+    escape.setEnabled(true);
+  }
+}

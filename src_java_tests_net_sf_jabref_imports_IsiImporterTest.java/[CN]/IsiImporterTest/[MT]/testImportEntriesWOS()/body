@@ -1,0 +1,15 @@
+{
+  IsiImporter importer=new IsiImporter();
+  List<BibtexEntry> entries=importer.importEntries(IsiImporterTest.class.getResourceAsStream("IsiImporterTestWOS.isi"),new OutputPrinterToNull());
+  assertEquals(2,entries.size());
+  BibtexEntry a=entries.get(0);
+  BibtexEntry b=entries.get(1);
+  if (a.getField("title").equals("Optical waveguides in Sn2P2S6 by low fluence MeV He+ ion implantation")) {
+    BibtexEntry tmp=a;
+    a=b;
+    b=tmp;
+  }
+  assertEquals("Optical and photoelectric spectroscopy of photorefractive Sn2P2S6 crystals",a.getField("title"));
+  assertEquals("Optical waveguides in Sn2P2S6 by low fluence MeV He+ ion implantation",b.getField("title"));
+  assertEquals("Journal Of Physics-Condensed Matter",a.getField("journal"));
+}

@@ -1,0 +1,75 @@
+{
+  if (bibentries == null || bibentries.size() == 0) {
+    JOptionPane.showMessageDialog(JabRefFrame.this,Globals.lang("No entries found. Please make sure you are " + "using the correct import filter."),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
+    return 0;
+  }
+  int addedEntries=0;
+  Util.setAutomaticFields(bibentries,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"),Globals.prefs.getBoolean("markImportedEntries"));
+  if (intoNew || (tabbedPane.getTabCount() == 0)) {
+    BibtexDatabase database=new BibtexDatabase();
+    for (    BibtexEntry entry : bibentries) {
+      try {
+        entry.setId(Util.createNeutralId());
+        database.insertEntry(entry);
+      }
+ catch (      KeyCollisionException ex) {
+        System.err.println("KeyCollisionException [ addBibEntries(...) ]");
+      }
+    }
+    BasePanel bp=new BasePanel(JabRefFrame.this,database,null,new MetaData(),Globals.prefs.get("defaultEncoding"));
+    addedEntries=database.getEntryCount();
+    tabbedPane.add(GUIGlobals.untitledTitle,bp);
+    bp.markBaseChanged();
+    tabbedPane.setSelectedComponent(bp);
+    if (filename != null)     output(Globals.lang("Imported database") + " '" + filename+ "' "+ Globals.lang("with")+ " "+ database.getEntryCount()+ " "+ Globals.lang("entries into new database")+ ".");
+  }
+ else {
+    boolean checkForDuplicates=true;
+    BasePanel basePanel=basePanel();
+    BibtexDatabase database=basePanel.database;
+    int oldCount=database.getEntryCount();
+    NamedCompound ce=new NamedCompound(Globals.lang("Import entries"));
+    mainLoop:     for (    BibtexEntry entry : bibentries) {
+      boolean dupli=false;
+      if (checkForDuplicates) {
+        loop:         for (Iterator<String> i2=database.getKeySet().iterator(); i2.hasNext(); ) {
+          BibtexEntry existingEntry=database.getEntryById(i2.next());
+          if (DuplicateCheck.isDuplicate(entry,existingEntry)) {
+            DuplicateResolverDialog drd=new DuplicateResolverDialog(JabRefFrame.this,existingEntry,entry,DuplicateResolverDialog.IMPORT_CHECK);
+            drd.setVisible(true);
+            int res=drd.getSelected();
+            if (res == DuplicateResolverDialog.KEEP_LOWER) {
+              dupli=true;
+            }
+ else             if (res == DuplicateResolverDialog.KEEP_UPPER) {
+              database.removeEntry(existingEntry.getId());
+              ce.addEdit(new UndoableRemoveEntry(database,existingEntry,basePanel));
+            }
+ else             if (res == DuplicateResolverDialog.BREAK) {
+              break mainLoop;
+            }
+            break loop;
+          }
+        }
+      }
+      if (!dupli) {
+        try {
+          entry.setId(Util.createNeutralId());
+          database.insertEntry(entry);
+          ce.addEdit(new UndoableInsertEntry(database,entry,basePanel));
+          addedEntries++;
+        }
+ catch (        KeyCollisionException ex) {
+          System.err.println("KeyCollisionException [ addBibEntries(...) ]");
+        }
+      }
+    }
+    if (addedEntries > 0) {
+      ce.end();
+      basePanel.undoManager.addEdit(ce);
+      basePanel.markBaseChanged();
+      if (filename != null)       output(Globals.lang("Imported database") + " '" + filename+ "' "+ Globals.lang("with")+ " "+ (database.getEntryCount() - oldCount)+ " "+ Globals.lang("entries into new database")+ ".");
+    }
+  }
+  return addedEntries;
+}

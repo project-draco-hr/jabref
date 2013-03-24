@@ -1,0 +1,52 @@
+{
+  if (e.getValueIsAdjusting()) {
+    return;
+  }
+  if (lastSelected != null) {
+    reqLists.put(lastSelected,reqComp.getFields());
+    optLists.put(lastSelected,optComp.getFields());
+    if (biblatexMode)     opt2Lists.put(lastSelected,optComp2.getFields());
+  }
+  String s=typeComp.getFirstSelected();
+  if (s == null)   return;
+  List<String> rl=reqLists.get(s);
+  if (rl == null) {
+    BibtexEntryType type=BibtexEntryType.getType(s);
+    if (type != null) {
+      String[] rf=type.getRequiredFieldsForCustomization(), of=type.getOptionalFields();
+      List<String> req, opt;
+      if (rf != null)       req=java.util.Arrays.asList(rf);
+ else       req=new ArrayList<String>();
+      if (!biblatexMode) {
+        if (of != null)         opt=java.util.Arrays.asList(of);
+ else         opt=new ArrayList<String>();
+      }
+ else {
+        String[] priOf=type.getPrimaryOptionalFields();
+        if (priOf != null)         opt=java.util.Arrays.asList(priOf);
+ else         opt=new ArrayList<String>();
+        List<String> opt2=new ArrayList<String>();
+        if (of != null)         for (int i=0; i < of.length; i++)         if (!opt.contains(of[i]))         opt2.add(of[i]);
+        optComp2.setFields(opt2);
+        optComp2.setEnabled(true);
+      }
+      reqComp.setFields(req);
+      reqComp.setEnabled(true);
+      optComp.setFields(opt);
+      optComp.setEnabled(true);
+    }
+ else {
+      reqComp.setFields(new ArrayList<String>());
+      reqComp.setEnabled(true);
+      optComp.setFields(new ArrayList<String>());
+      optComp.setEnabled(true);
+      new FocusRequester(reqComp);
+    }
+  }
+ else {
+    reqComp.setFields(rl);
+    optComp.setFields(optLists.get(s));
+  }
+  lastSelected=s;
+  typeComp.enable(s,changed.contains(lastSelected) && !defaulted.contains(lastSelected));
+}

@@ -1,0 +1,117 @@
+{
+  this.frame=frame;
+  this.metaData=metaData;
+  this.fieldName=fieldName;
+  this.entryEditor=entryEditor;
+  label=new FieldNameLabel(" " + Util.nCase(fieldName) + " ");
+  tableModel=new FileListTableModel();
+  setText(content);
+  setModel(tableModel);
+  sPane=new JScrollPane(this);
+  setTableHeader(null);
+  addMouseListener(new TableClickListener());
+  add=new JButton(GUIGlobals.getImage("add"));
+  add.setToolTipText(Globals.lang("New file link (INSERT)"));
+  remove=new JButton(GUIGlobals.getImage("remove"));
+  remove.setToolTipText(Globals.lang("Remove file link (DELETE)"));
+  up=new JButton(GUIGlobals.getImage("up"));
+  down=new JButton(GUIGlobals.getImage("down"));
+  auto=new JButton(Globals.lang("Auto"));
+  download=new JButton(Globals.lang("Download"));
+  add.setMargin(new Insets(0,0,0,0));
+  remove.setMargin(new Insets(0,0,0,0));
+  up.setMargin(new Insets(0,0,0,0));
+  down.setMargin(new Insets(0,0,0,0));
+  add.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      addEntry();
+    }
+  }
+);
+  remove.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      removeEntries();
+    }
+  }
+);
+  up.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      moveEntry(-1);
+    }
+  }
+);
+  down.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      moveEntry(1);
+    }
+  }
+);
+  auto.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      autoSetLinks();
+    }
+  }
+);
+  download.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      downloadFile();
+    }
+  }
+);
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:pref,1dlu,fill:pref,1dlu,fill:pref","fill:pref,fill:pref"));
+  builder.append(up);
+  builder.append(add);
+  builder.append(auto);
+  builder.append(down);
+  builder.append(remove);
+  builder.append(download);
+  panel=new JPanel();
+  panel.setLayout(new BorderLayout());
+  panel.add(sPane,BorderLayout.CENTER);
+  panel.add(builder.getPanel(),BorderLayout.EAST);
+  TransferHandler th=new FileListEditorTransferHandler(frame,entryEditor,null);
+  setTransferHandler(th);
+  panel.setTransferHandler(th);
+  getInputMap().put(KeyStroke.getKeyStroke("DELETE"),"delete");
+  getActionMap().put("delete",new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      int row=getSelectedRow();
+      removeEntries();
+      row=Math.min(row,getRowCount() - 1);
+      if (row >= 0)       setRowSelectionInterval(row,row);
+    }
+  }
+);
+  getInputMap().put(KeyStroke.getKeyStroke("INSERT"),"insert");
+  getActionMap().put("insert",new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      addEntry();
+    }
+  }
+);
+  getInputMap().put(Globals.prefs.getKey("File list editor, move entry up"),"move up");
+  getActionMap().put("move up",new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      moveEntry(-1);
+    }
+  }
+);
+  getInputMap().put(Globals.prefs.getKey("File list editor, move entry down"),"move down");
+  getActionMap().put("move down",new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      moveEntry(1);
+    }
+  }
+);
+  menu.add(openLink);
+  openLink.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      openSelectedFile();
+    }
+  }
+);
+  menu.add(rename);
+  rename.addActionListener(new MoveFileAction(frame,entryEditor,this,false));
+  menu.add(moveToFileDir);
+  moveToFileDir.addActionListener(new MoveFileAction(frame,entryEditor,this,true));
+}

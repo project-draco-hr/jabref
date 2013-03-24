@@ -1,0 +1,67 @@
+{
+  JButton browseFile=new JButton(Globals.lang("Browse"));
+  JButton browseFileIndv=new JButton(Globals.lang("Browse"));
+  JButton browsePdf=new JButton(Globals.lang("Browse"));
+  JButton browsePs=new JButton(Globals.lang("Browse"));
+  browseFile.addActionListener(new BrowseAction(parent,fileDir,true));
+  browseFileIndv.addActionListener(new BrowseAction(parent,fileDirIndv,true));
+  browsePdf.addActionListener(new BrowseAction(parent,pdfDir,true));
+  browsePs.addActionListener(new BrowseAction(parent,psDir,true));
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, left:pref, 4dlu, fill:pref",""));
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  builder.append(Globals.lang("Database encoding"));
+  builder.append(encoding);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Override default file directories"));
+  builder.nextLine();
+  builder.append(Globals.lang("General file directory"));
+  builder.append(fileDir);
+  builder.append(browseFile);
+  builder.nextLine();
+  builder.append(Globals.lang("User-specific file directory"));
+  builder.append(fileDirIndv);
+  builder.append(browseFileIndv);
+  builder.nextLine();
+  builder.append(Globals.lang("PDF directory"));
+  builder.append(pdfDir);
+  builder.append(browsePdf);
+  builder.nextLine();
+  builder.append(Globals.lang("PS directory"));
+  builder.append(psDir);
+  builder.append(browsePs);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Database protection"));
+  builder.nextLine();
+  builder.append(protect,3);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  pack();
+  AbstractAction closeAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+;
+  ActionMap am=builder.getPanel().getActionMap();
+  InputMap im=builder.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",closeAction);
+  ok.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      storeSettings();
+      dispose();
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
+}

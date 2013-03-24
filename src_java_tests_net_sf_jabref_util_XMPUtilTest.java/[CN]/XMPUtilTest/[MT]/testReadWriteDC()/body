@@ -1,0 +1,47 @@
+{
+  List<BibtexEntry> l=new LinkedList<BibtexEntry>();
+  l.add(t3BibtexEntry());
+  XMPUtil.writeXMP(pdfFile,l,null,true);
+  PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile());
+  try {
+    if (document.isEncrypted()) {
+      System.err.println("Error: Cannot add metadata to encrypted document.");
+      System.exit(1);
+    }
+    assertEquals("Kelly Clarkson and Ozzy Osbourne",document.getDocumentInformation().getAuthor());
+    assertEquals("Hypersonic ultra-sound",document.getDocumentInformation().getTitle());
+    assertEquals("Huey Duck and Dewey Duck and Louie Duck",document.getDocumentInformation().getCustomMetadataValue("bibtex/editor"));
+    assertEquals("Clarkson06",document.getDocumentInformation().getCustomMetadataValue("bibtex/bibtexkey"));
+    assertEquals("peanut,butter,jelly",document.getDocumentInformation().getKeywords());
+    assertEquals(t3BibtexEntry(),XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation()));
+    PDDocumentCatalog catalog=document.getDocumentCatalog();
+    PDMetadata metaRaw=catalog.getMetadata();
+    if (metaRaw == null) {
+      fail();
+      return;
+    }
+    XMPMetadata meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+    meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
+    List<XMPSchema> schemas=meta.getSchemasByNamespaceURI("http://purl.org/dc/elements/1.1/");
+    assertEquals(1,schemas.size());
+    XMPSchemaDublinCore dcSchema=(XMPSchemaDublinCore)schemas.iterator().next();
+    assertNotNull(dcSchema);
+    assertEquals("Hypersonic ultra-sound",dcSchema.getTitle());
+    assertEquals("1982-07",dcSchema.getSequenceList("dc:date").get(0));
+    assertEquals("Kelly Clarkson",dcSchema.getCreators().get(0));
+    assertEquals("Ozzy Osbourne",dcSchema.getCreators().get(1));
+    assertEquals("Huey Duck",dcSchema.getContributors().get(0));
+    assertEquals("Dewey Duck",dcSchema.getContributors().get(1));
+    assertEquals("Louie Duck",dcSchema.getContributors().get(2));
+    assertEquals("Inproceedings",dcSchema.getTypes().get(0));
+    assertEquals("bibtex/bibtexkey/Clarkson06",dcSchema.getRelationships().get(0));
+    assertEquals("peanut",dcSchema.getSubjects().get(0));
+    assertEquals("butter",dcSchema.getSubjects().get(1));
+    assertEquals("jelly",dcSchema.getSubjects().get(2));
+    assertEquals(4,dcSchema.getRelationships().size());
+    assertEquals(t3BibtexEntry(),XMPUtil.getBibtexEntryFromDublinCore(dcSchema));
+  }
+  finally {
+    document.close();
+  }
+}

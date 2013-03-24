@@ -1,0 +1,12 @@
+{
+  VM vm=new VM("ENTRY {title}{}{} READ STRINGS { s } FUNCTION {test} " + "{ s empty$ " + "\"\" empty$ "+ "\"   \" empty$ "+ " title empty$ "+ " \" HALLO \" empty$ } ITERATE {test} ");
+  Vector<BibtexEntry> v=new Vector<BibtexEntry>();
+  v.add(bibtexString2BibtexEntry("@article{a, author=\"AAA\"}"));
+  vm.run(v);
+  assertEquals(VM.FALSE,vm.getStack().pop());
+  assertEquals(VM.TRUE,vm.getStack().pop());
+  assertEquals(VM.TRUE,vm.getStack().pop());
+  assertEquals(VM.TRUE,vm.getStack().pop());
+  assertEquals(VM.TRUE,vm.getStack().pop());
+  assertEquals(0,vm.getStack().size());
+}

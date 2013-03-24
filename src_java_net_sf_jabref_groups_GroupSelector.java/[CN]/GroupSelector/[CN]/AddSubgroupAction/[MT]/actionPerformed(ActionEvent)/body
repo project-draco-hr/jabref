@@ -1,0 +1,17 @@
+{
+  final GroupTreeNode node=getNodeToUse();
+  final GroupDialog gd=new GroupDialog(frame,panel,null);
+  gd.setVisible(true);
+  if (!gd.okPressed()) {
+    return;
+  }
+  final AbstractGroup newGroup=gd.getResultingGroup();
+  final GroupTreeNode newNode=new GroupTreeNode(newGroup);
+  node.add(newNode);
+  UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(GroupSelector.this,groupsRoot,newNode,UndoableAddOrRemoveGroup.ADD_NODE);
+  revalidateGroups();
+  groupsTree.expandPath(new TreePath(node.getPath()));
+  panel.undoManager.addEdit(undo);
+  panel.markBaseChanged();
+  frame.output(Globals.lang("Added group \"%0\".",newGroup.getName()));
+}

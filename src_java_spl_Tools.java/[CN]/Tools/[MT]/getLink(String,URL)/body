@@ -1,0 +1,34 @@
+{
+  if (link == null || link.isEmpty()) {
+    return null;
+  }
+  if (!Tools.isAbsolutePath(link)) {
+    try {
+      if (link.startsWith("\\\\")) {
+        link=link.replace("\\\\","file://");
+        link=link.replace('\\','/').replaceAll(" ","%20");
+        URL url=new URL(link);
+        File file=new File(url.toURI());
+        return file.getPath();
+      }
+ else       if (mindmapUrl != null) {
+        URL url=new URL(mindmapUrl,link);
+        File file=new File(url.toURI());
+        return file.getPath();
+      }
+    }
+ catch (    MalformedURLException e) {
+      return link;
+    }
+catch (    URISyntaxException e) {
+      return link;
+    }
+catch (    IllegalArgumentException e) {
+      return link;
+    }
+  }
+ else {
+    return link;
+  }
+  return link;
+}

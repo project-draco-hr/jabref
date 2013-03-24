@@ -1,0 +1,31 @@
+{
+  AbstractWorker worker=new AbstractWorker(){
+    boolean ready=true;
+    public void run(){
+      int count=main.getComponentCount();
+      Component[] comps=main.getComponents();
+      for (int i=0; i < count; i++) {
+        if (!((PrefsTab)comps[i]).readyToClose()) {
+          ready=false;
+          return;
+        }
+      }
+      for (int i=0; i < count; i++) {
+        ((PrefsTab)comps[i]).storeSettings();
+      }
+      Globals.prefs.flush();
+    }
+    public void update(){
+      if (!ready)       return;
+      setVisible(false);
+      MainTable.updateRenderers();
+      GUIGlobals.updateEntryEditorColors();
+      frame.setupAllTables();
+      frame.groupSelector.revalidateGroups();
+      frame.output(Globals.lang("Preferences recorded."));
+    }
+  }
+;
+  worker.getWorker().run();
+  worker.getCallBack().update();
+}

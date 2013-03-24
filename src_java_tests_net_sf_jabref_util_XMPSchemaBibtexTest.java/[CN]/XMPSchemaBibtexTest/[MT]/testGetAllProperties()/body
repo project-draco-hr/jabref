@@ -1,0 +1,18 @@
+{
+  XMPMetadata xmp=new XMPMetadata();
+  XMPSchemaBibtex bibtex=new XMPSchemaBibtex(xmp);
+  bibtex.setTextProperty("title","BlaBla Ta Ta\nHello World");
+  bibtex.setTextProperty("abstract","BlaBla Ta Ta\nHello World");
+  bibtex.setTextProperty("review","BlaBla Ta Ta\nHello World");
+  bibtex.setTextProperty("note","BlaBla Ta Ta\nHello World");
+  bibtex.setPersonList("author","Mouse, Mickey and Bond, James");
+  Map<String,String> s=XMPSchemaBibtex.getAllProperties(bibtex,"bibtex");
+  assertEquals(5,s.size());
+  assertTrue(s.containsKey("title"));
+  assertTrue(s.containsKey("author"));
+  assertEquals("BlaBla Ta Ta Hello World",s.get("title"));
+  assertEquals("BlaBla Ta Ta\nHello World",s.get("abstract"));
+  assertEquals("BlaBla Ta Ta\nHello World",s.get("review"));
+  assertEquals("BlaBla Ta Ta\nHello World",s.get("note"));
+  assertEquals("Mickey Mouse and James Bond",s.get("author"));
+}

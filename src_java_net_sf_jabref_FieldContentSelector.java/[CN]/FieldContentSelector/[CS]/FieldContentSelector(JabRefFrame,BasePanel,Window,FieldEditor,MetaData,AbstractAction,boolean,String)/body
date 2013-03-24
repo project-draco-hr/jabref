@@ -1,0 +1,56 @@
+{
+  this.frame=frame;
+  this.editor=editor;
+  this.metaData=metaData;
+  this.panel=panel;
+  this.owner=owner;
+  this.action=action;
+  this.delimiter=delimiter;
+  comboBox=new JComboBox(){
+    public Dimension getPreferredSize(){
+      Dimension parents=super.getPreferredSize();
+      if (parents.width > GUIGlobals.MAX_CONTENT_SELECTOR_WIDTH)       parents.width=GUIGlobals.MAX_CONTENT_SELECTOR_WIDTH;
+      return parents;
+    }
+  }
+;
+  GridBagLayout gbl=new GridBagLayout();
+  GridBagConstraints con=new GridBagConstraints();
+  setLayout(gbl);
+  comboBox.setMaximumRowCount(35);
+  comboBox.putClientProperty(Options.COMBO_POPUP_PROTOTYPE_DISPLAY_VALUE_KEY,"The longest text in the combo popup menu. And even longer.");
+  rebuildComboBox();
+  con.gridwidth=horizontalLayout ? 3 : GridBagConstraints.REMAINDER;
+  con.fill=GridBagConstraints.HORIZONTAL;
+  con.weightx=1;
+  gbl.setConstraints(comboBox,con);
+  comboBox.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      if (e.getActionCommand().equals("comboBoxChanged") && (e.getModifiers() == 0))       return;
+      selectionMade();
+    }
+  }
+);
+  comboBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),"enter");
+  comboBox.getActionMap().put("enter",new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      selectionMade();
+      comboBox.setPopupVisible(false);
+    }
+  }
+);
+  add(comboBox);
+  if (horizontalLayout)   add(Box.createHorizontalStrut(Sizes.dialogUnitXAsPixel(2,this)));
+  JButton manage=new JButton(Globals.lang("Manage"));
+  gbl.setConstraints(manage,con);
+  add(manage);
+  manage.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      ContentSelectorDialog2 csd=new ContentSelectorDialog2(FieldContentSelector.this.owner,FieldContentSelector.this.frame,panel,true,metaData,editor.getFieldName());
+      Util.placeDialog(csd,FieldContentSelector.this.frame);
+      csd.setVisible(true);
+      rebuildComboBox();
+    }
+  }
+);
+}

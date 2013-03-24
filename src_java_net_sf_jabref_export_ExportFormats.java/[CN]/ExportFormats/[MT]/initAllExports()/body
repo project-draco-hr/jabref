@@ -1,0 +1,62 @@
+{
+  exportFormats.clear();
+  putFormat(new ExportFormat(Globals.lang("HTML"),"html","html",null,".html"));
+  putFormat(new ExportFormat(Globals.lang("Simple HTML"),"simplehtml","simplehtml",null,".html"));
+  putFormat(new ExportFormat(Globals.lang("DocBook").concat(" 4.4"),"docbook","docbook",null,".xml"));
+  putFormat(new ExportFormat(Globals.lang("DIN 1505"),"din1505","din1505winword","din1505",".rtf"));
+  putFormat(new ExportFormat(Globals.lang("BibTeXML"),"bibtexml","bibtexml",null,".xml"));
+  putFormat(new ExportFormat(Globals.lang("BibO RDF"),"bibordf","bibordf",null,".rdf"));
+  putFormat(new ModsExportFormat());
+  putFormat(new ExportFormat(Globals.lang("HTML table"),"tablerefs","tablerefs","tablerefs",".html"));
+  putFormat(new ExportFormat(Globals.lang("HTML list"),"listrefs","listrefs","listrefs",".html"));
+  putFormat(new ExportFormat(Globals.lang("HTML table (with Abstract & BibTeX)"),"tablerefsabsbib","tablerefsabsbib","tablerefsabsbib",".html"));
+  putFormat(new ExportFormat(Globals.lang("Harvard RTF"),"harvard","harvard","harvard",".rtf"));
+  putFormat(new ExportFormat(Globals.lang("Endnote"),"endnote","EndNote","endnote",".txt"));
+  putFormat(new ExportFormat(Globals.lang("OpenOffice CSV"),"oocsv","openoffice-csv","openoffice",".csv"));
+  ExportFormat ef=new ExportFormat(Globals.lang("RIS"),"ris","ris","ris",".ris");
+  ef.encoding="UTF-8";
+  putFormat(ef);
+  putFormat(new OpenOfficeDocumentCreator());
+  putFormat(new OpenDocumentSpreadsheetCreator());
+  putFormat(new MSBibExportFormat());
+  putFormat(new MySQLExport());
+  putFormat(new PostgreSQLExport());
+  JabRefPlugin plugin=JabRefPlugin.getInstance(PluginCore.getManager());
+  if (plugin != null) {
+    for (    ExportFormatTemplateExtension e : plugin.getExportFormatTemplateExtensions()) {
+      ExportFormat format=PluginBasedExportFormat.getFormat(e);
+      if (format != null) {
+        putFormat(format);
+      }
+    }
+    for (    final ExportFormatExtension e : plugin.getExportFormatExtensions()) {
+      putFormat(new IExportFormat(){
+        public String getConsoleName(){
+          return e.getConsoleName();
+        }
+        public String getDisplayName(){
+          return e.getDisplayName();
+        }
+        public FileFilter getFileFilter(){
+          return new ExportFileFilter(this,e.getExtension());
+        }
+        IExportFormat wrapped;
+        public void performExport(        BibtexDatabase database,        MetaData metaData,        String file,        String encoding,        Set<String> entryIds) throws Exception {
+          if (wrapped == null)           wrapped=e.getExportFormat();
+          wrapped.performExport(database,metaData,file,encoding,entryIds);
+        }
+      }
+);
+    }
+    for (    ExportFormatProviderExtension e : plugin.getExportFormatProviderExtensions()) {
+      IExportFormatProvider formatProvider=e.getFormatProvider();
+      for (      IExportFormat exportFormat : formatProvider.getExportFormats()) {
+        putFormat(exportFormat);
+      }
+    }
+  }
+  TreeMap<String,ExportFormat> customFormats=Globals.prefs.customExports.getCustomExportFormats();
+  for (  IExportFormat format : customFormats.values()) {
+    putFormat(format);
+  }
+}

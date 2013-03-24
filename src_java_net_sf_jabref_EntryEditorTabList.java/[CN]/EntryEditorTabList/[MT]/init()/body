@@ -1,0 +1,27 @@
+{
+  list=new ArrayList<List<String>>();
+  names=new ArrayList<String>();
+  int i=0;
+  String name;
+  String[] fields;
+  if (Globals.prefs.hasKey(Globals.prefs.CUSTOM_TAB_NAME + 0)) {
+    while (Globals.prefs.hasKey(Globals.prefs.CUSTOM_TAB_NAME + i)) {
+      name=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_NAME + i);
+      fields=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_FIELDS + i).split(";");
+      List<String> entry=Arrays.asList(fields);
+      names.add(name);
+      list.add(entry);
+      i++;
+    }
+  }
+ else {
+    while (Globals.prefs.get(Globals.prefs.CUSTOM_TAB_NAME + "_def" + i) != null) {
+      name=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_NAME + "_def" + i);
+      fields=Globals.prefs.get(Globals.prefs.CUSTOM_TAB_FIELDS + "_def" + i).split(";");
+      List<String> entry=Arrays.asList(fields);
+      names.add(name);
+      list.add(entry);
+      i++;
+    }
+  }
+}

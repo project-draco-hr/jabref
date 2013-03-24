@@ -1,0 +1,29 @@
+{
+  File temp=null;
+  try {
+    temp=File.createTempFile("jabref-link","." + fileType.getExtension());
+    temp.deleteOnExit();
+    System.out.println("Downloading to '" + temp.getPath() + "'");
+    URLDownload ud=new URLDownload(null,new URL(link),temp);
+    ud.download();
+    System.out.println("Done");
+  }
+ catch (  MalformedURLException ex) {
+    ex.printStackTrace();
+  }
+catch (  IOException ex) {
+    ex.printStackTrace();
+  }
+  final String ln=temp.getPath();
+  SwingUtilities.invokeLater(new Runnable(){
+    public void run(){
+      try {
+        openExternalFileAnyFormat(metaData,ln,fileType);
+      }
+ catch (      IOException ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+);
+}

@@ -1,0 +1,34 @@
+{
+  auxDB=new BibtexDatabase();
+  notFoundList.clear();
+  Iterator<String> it=mySet.iterator();
+  while (it.hasNext()) {
+    String str=it.next();
+    BibtexEntry entry=db.getEntryByKey(str);
+    if (entry == null) {
+      notFoundList.add(str);
+    }
+ else {
+      insertEntry(auxDB,entry);
+      String crossref=entry.getField("crossref");
+      if ((crossref != null) && (!mySet.contains(crossref))) {
+        BibtexEntry refEntry=db.getEntryByKey(crossref);
+        if (refEntry == null) {
+          notFoundList.add(crossref);
+        }
+ else {
+          insertEntry(auxDB,refEntry);
+          crossreferencedEntriesCount++;
+        }
+      }
+    }
+  }
+  if (auxDB.getEntryCount() > 0) {
+    auxDB.setPreamble(db.getPreamble());
+    Set<String> keys=db.getStringKeySet();
+    for (    String key : keys) {
+      BibtexString string=db.getString(key);
+      auxDB.addString(string);
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  returnAST=null;
+  ASTPair currentAST=new ASTPair();
+  AST quotedRegularExpression_AST=null;
+  Token var_s=null;
+  AST var_s_AST=null;
+  var_s=LT(1);
+  var_s_AST=astFactory.create(var_s);
+  astFactory.addASTChild(currentAST,var_s_AST);
+  match(STRING);
+  if (inputState.guessing == 0) {
+    quotedRegularExpression_AST=currentAST.root;
+    quotedRegularExpression_AST=astFactory.make((new ASTArray(2)).add(new RegExNode(RegularExpression,var_s.getText(),caseSensitive,regex)).add(quotedRegularExpression_AST));
+    currentAST.root=quotedRegularExpression_AST;
+    currentAST.child=quotedRegularExpression_AST != null && quotedRegularExpression_AST.getFirstChild() != null ? quotedRegularExpression_AST.getFirstChild() : quotedRegularExpression_AST;
+    currentAST.advanceChildToEnd();
+  }
+  quotedRegularExpression_AST=currentAST.root;
+  returnAST=quotedRegularExpression_AST;
+}

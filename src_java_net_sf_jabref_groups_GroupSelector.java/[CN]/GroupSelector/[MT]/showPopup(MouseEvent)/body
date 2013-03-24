@@ -1,0 +1,89 @@
+{
+  final TreePath path=groupsTree.getPathForLocation(e.getPoint().x,e.getPoint().y);
+  addGroupPopupAction.setEnabled(true);
+  addSubgroupPopupAction.setEnabled(path != null);
+  editGroupPopupAction.setEnabled(path != null);
+  removeGroupAndSubgroupsPopupAction.setEnabled(path != null);
+  removeGroupKeepSubgroupsPopupAction.setEnabled(path != null);
+  moveSubmenu.setEnabled(path != null);
+  expandSubtreePopupAction.setEnabled(path != null);
+  collapseSubtreePopupAction.setEnabled(path != null);
+  removeSubgroupsPopupAction.setEnabled(path != null);
+  sortSubmenu.setEnabled(path != null);
+  addToGroup.setEnabled(false);
+  moveToGroup.setEnabled(false);
+  removeFromGroup.setEnabled(false);
+  if (path != null) {
+    GroupTreeNode node=(GroupTreeNode)path.getLastPathComponent();
+    editGroupPopupAction.setNode(node);
+    addSubgroupPopupAction.setNode(node);
+    removeGroupAndSubgroupsPopupAction.setNode(node);
+    removeSubgroupsPopupAction.setNode(node);
+    removeGroupKeepSubgroupsPopupAction.setNode(node);
+    expandSubtreePopupAction.setNode(node);
+    collapseSubtreePopupAction.setNode(node);
+    sortDirectSubgroupsPopupAction.setNode(node);
+    sortAllSubgroupsPopupAction.setNode(node);
+    groupsTree.setHighlightBorderCell(node);
+    AbstractGroup group=node.getGroup();
+    if (group instanceof AllEntriesGroup) {
+      editGroupPopupAction.setEnabled(false);
+      addGroupPopupAction.setEnabled(false);
+      removeGroupAndSubgroupsPopupAction.setEnabled(false);
+      removeGroupKeepSubgroupsPopupAction.setEnabled(false);
+    }
+ else {
+      editGroupPopupAction.setEnabled(true);
+      addGroupPopupAction.setEnabled(true);
+      addGroupPopupAction.setNode(node);
+      removeGroupAndSubgroupsPopupAction.setEnabled(true);
+      removeGroupKeepSubgroupsPopupAction.setEnabled(true);
+    }
+    expandSubtreePopupAction.setEnabled(groupsTree.isCollapsed(path) || groupsTree.hasCollapsedDescendant(path));
+    collapseSubtreePopupAction.setEnabled(groupsTree.isExpanded(path) || groupsTree.hasExpandedDescendant(path));
+    sortSubmenu.setEnabled(!node.isLeaf());
+    removeSubgroupsPopupAction.setEnabled(!node.isLeaf());
+    moveNodeUpPopupAction.setEnabled(node.canMoveUp());
+    moveNodeDownPopupAction.setEnabled(node.canMoveDown());
+    moveNodeLeftPopupAction.setEnabled(node.canMoveLeft());
+    moveNodeRightPopupAction.setEnabled(node.canMoveRight());
+    moveSubmenu.setEnabled(moveNodeUpPopupAction.isEnabled() || moveNodeDownPopupAction.isEnabled() || moveNodeLeftPopupAction.isEnabled()|| moveNodeRightPopupAction.isEnabled());
+    moveNodeUpPopupAction.setNode(node);
+    moveNodeDownPopupAction.setNode(node);
+    moveNodeLeftPopupAction.setNode(node);
+    moveNodeRightPopupAction.setNode(node);
+    BibtexEntry[] selection=frame.basePanel().getSelectedEntries();
+    if (selection.length > 0) {
+      if (node.getGroup().supportsAdd() && !node.getGroup().containsAll(selection)) {
+        addToGroup.setNode(node);
+        addToGroup.setBasePanel(panel);
+        addToGroup.setEnabled(true);
+        moveToGroup.setNode(node);
+        moveToGroup.setBasePanel(panel);
+        moveToGroup.setEnabled(true);
+      }
+      if (node.getGroup().supportsRemove() && node.getGroup().containsAny(selection)) {
+        removeFromGroup.setNode(node);
+        removeFromGroup.setBasePanel(panel);
+        removeFromGroup.setEnabled(true);
+      }
+    }
+  }
+ else {
+    editGroupPopupAction.setNode(null);
+    addGroupPopupAction.setNode(null);
+    addSubgroupPopupAction.setNode(null);
+    removeGroupAndSubgroupsPopupAction.setNode(null);
+    removeSubgroupsPopupAction.setNode(null);
+    removeGroupKeepSubgroupsPopupAction.setNode(null);
+    moveNodeUpPopupAction.setNode(null);
+    moveNodeDownPopupAction.setNode(null);
+    moveNodeLeftPopupAction.setNode(null);
+    moveNodeRightPopupAction.setNode(null);
+    expandSubtreePopupAction.setNode(null);
+    collapseSubtreePopupAction.setNode(null);
+    sortDirectSubgroupsPopupAction.setNode(null);
+    sortAllSubgroupsPopupAction.setNode(null);
+  }
+  groupsContextMenu.show(groupsTree,e.getPoint().x,e.getPoint().y);
+}

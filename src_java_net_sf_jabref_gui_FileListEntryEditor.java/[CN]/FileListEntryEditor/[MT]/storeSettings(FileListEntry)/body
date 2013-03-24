@@ -1,0 +1,31 @@
+{
+  entry.setDescription(description.getText().trim());
+  try {
+    String[] dirs=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
+    if (dirs.length == 0) {
+      entry.setLink(link.getText().trim());
+    }
+ else {
+      boolean found=false;
+      for (int i=0; i < dirs.length; i++) {
+        String canPath=(new File(dirs[i])).getCanonicalPath();
+        File fl=new File(link.getText().trim());
+        if (fl.isAbsolute()) {
+          String flPath=fl.getCanonicalPath();
+          if ((flPath.length() > canPath.length()) && (flPath.startsWith(canPath))) {
+            String relFileName=fl.getCanonicalPath().substring(canPath.length() + 1);
+            entry.setLink(relFileName);
+            found=true;
+            break;
+          }
+        }
+      }
+      if (!found)       entry.setLink(link.getText().trim());
+    }
+  }
+ catch (  java.io.IOException ex) {
+    ex.printStackTrace();
+    entry.setLink(link.getText().trim());
+  }
+  entry.setType((ExternalFileType)types.getSelectedItem());
+}

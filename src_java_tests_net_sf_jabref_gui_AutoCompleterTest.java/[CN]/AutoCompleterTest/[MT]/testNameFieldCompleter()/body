@@ -1,0 +1,47 @@
+{
+  Globals.prefs=JabRefPreferences.getInstance();
+  AbstractAutoCompleter autoCompleter=AutoCompleterFactory.getFor(AUTHOR_FIELD);
+  for (  BibtexEntry entry : getDatabse().getEntries()) {
+    autoCompleter.addBibtexEntry(entry);
+  }
+  boolean oldAutocomplete=Globals.prefs.getBoolean("autoComplete");
+  Globals.prefs.putBoolean("autoComplete",Boolean.TRUE);
+  boolean oldAutoCompFF=Globals.prefs.getBoolean("autoCompLF");
+  Globals.prefs.putBoolean("autoCompFF",Boolean.FALSE);
+  boolean oldAutoCompLF=Globals.prefs.getBoolean("autoCompLF");
+  Globals.prefs.putBoolean("autoCompLF",Boolean.FALSE);
+  String oldACFM=Globals.prefs.get(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE);
+  Globals.prefs.put(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE,JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_BOTH);
+  assertEquals("Kostakos, V.",autoCompleter.complete("Kostakos")[0]);
+  assertEquals(2,autoCompleter.complete("Kostakos").length);
+  assertEquals("Kostakos, V.",autoCompleter.complete("Kosta")[0]);
+  assertEquals(2,autoCompleter.complete("Kosta").length);
+  assertEquals("Kostakos, Vassilis",autoCompleter.complete("Kostakos, Va")[0]);
+  assertEquals(1,autoCompleter.complete("Kostakos, Va").length);
+  assertEquals("Vassilis Kostakos",autoCompleter.complete("Va")[0]);
+  assertEquals(1,autoCompleter.complete("Va").length);
+  assertEquals(0,autoCompleter.complete("osta").length);
+  assertEquals(0,autoCompleter.complete("osta").length);
+  assertEquals("Eric von Hippel",autoCompleter.complete("Eric")[0]);
+  assertEquals(1,autoCompleter.complete("Eric").length);
+  assertEquals("von Hippel, E.",autoCompleter.complete("von")[0]);
+  assertEquals(2,autoCompleter.complete("von").length);
+  assertEquals("Reagle, Jr., J. M.",autoCompleter.complete("Reagle")[0]);
+  assertEquals(2,autoCompleter.complete("Reagle").length);
+  assertEquals("Reagle, Jr., Joseph M.",autoCompleter.complete("Reagle, Jr., Jo")[0]);
+  assertEquals(1,autoCompleter.complete("Reagle, Jr., Jo").length);
+  assertEquals("Joseph M. Reagle, Jr.",autoCompleter.complete("Joseph")[0]);
+  assertEquals(1,autoCompleter.complete("Joseph").length);
+  assertEquals("van den Huevel, Jr., J. A.",autoCompleter.complete("van den")[0]);
+  assertEquals(2,autoCompleter.complete("van den").length);
+  assertEquals("Johan A van den Huevel, Jr.",autoCompleter.complete("Joh")[0]);
+  assertEquals(1,autoCompleter.complete("Joh").length);
+  assertEquals("Jr. Sherry, John F.",autoCompleter.complete("Jr. S")[0]);
+  assertEquals(1,autoCompleter.complete("Jr.").length);
+  assertEquals("Sherry, John F., J.",autoCompleter.complete("Sherry")[0]);
+  assertEquals(2,autoCompleter.complete("Sherry").length);
+  Globals.prefs.putBoolean("autoComplete",oldAutocomplete);
+  Globals.prefs.putBoolean("autoCompFF",oldAutoCompFF);
+  Globals.prefs.putBoolean("autoCompLF",oldAutoCompLF);
+  Globals.prefs.put(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE,oldACFM);
+}

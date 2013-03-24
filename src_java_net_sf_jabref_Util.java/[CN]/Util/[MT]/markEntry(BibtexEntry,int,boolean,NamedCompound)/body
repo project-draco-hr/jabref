@@ -1,0 +1,27 @@
+{
+  Object o=be.getField(BibtexFields.MARKED);
+  int prevMarkLevel=0;
+  String newValue=null;
+  if (o != null) {
+    String s=o.toString();
+    int index=s.indexOf(Globals.prefs.WRAPPED_USERNAME);
+    if (index >= 0) {
+      prevMarkLevel=1;
+      newValue=s.substring(0,index) + s.substring(index + Globals.prefs.WRAPPED_USERNAME.length()) + Globals.prefs.WRAPPED_USERNAME.substring(0,Globals.prefs.WRAPPED_USERNAME.length() - 1)+ ":"+ (increment ? Math.min(MAX_MARKING_LEVEL,prevMarkLevel + markIncrement) : markIncrement)+ "]";
+    }
+ else {
+      Matcher m=markNumberPattern.matcher(s);
+      if (m.find()) {
+        try {
+          prevMarkLevel=Integer.parseInt(m.group(1));
+          newValue=s.substring(0,m.start(1)) + (increment ? Math.min(MAX_MARKING_LEVEL,prevMarkLevel + markIncrement) : markIncrement) + s.substring(m.end(1));
+        }
+ catch (        NumberFormatException ex) {
+        }
+      }
+    }
+  }
+  if (newValue == null)   newValue=Globals.prefs.WRAPPED_USERNAME.substring(0,Globals.prefs.WRAPPED_USERNAME.length() - 1) + ":" + markIncrement+ "]";
+  ce.addEdit(new UndoableFieldChange(be,BibtexFields.MARKED,be.getField(BibtexFields.MARKED),newValue));
+  be.setField(BibtexFields.MARKED,newValue);
+}

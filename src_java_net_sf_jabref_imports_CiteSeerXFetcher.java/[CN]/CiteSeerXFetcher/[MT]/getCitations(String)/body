@@ -1,0 +1,18 @@
+{
+  String urlQuery;
+  ArrayList<String> ids=new ArrayList<String>();
+  try {
+    urlQuery=SEARCH_URL.replace(QUERY_MARKER,URLEncoder.encode(query,"UTF-8"));
+    int count=1;
+    String nextPage=null;
+    while (((nextPage=getCitationsFromUrl(urlQuery,ids)) != null) && (count < MAX_PAGES_TO_LOAD)) {
+      urlQuery=nextPage;
+      count++;
+      if (stopFetching)       break;
+    }
+    return ids;
+  }
+ catch (  UnsupportedEncodingException e) {
+    throw new RuntimeException(e);
+  }
+}

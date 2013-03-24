@@ -1,0 +1,27 @@
+{
+  if (cancelled) {
+    frame.unblock();
+    return;
+  }
+  if (unsuccesfullRenames > 0) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("File rename failed for") + " " + unsuccesfullRenames+ " "+ Globals.lang("entries")+ ".",Globals.lang("Autogenerate PDF Names"),JOptionPane.INFORMATION_MESSAGE);
+  }
+  if (modifiedEntriesCount > 0) {
+    panel.updateEntryEditorIfShowing();
+    panel.markBaseChanged();
+  }
+  String message;
+switch (modifiedEntriesCount) {
+case 0:
+    message=Globals.lang("No entry needed a clean up");
+  break;
+case 1:
+message=Globals.lang("One entry needed a clean up");
+break;
+default :
+message=Globals.lang("%0 entries needed a clean up",Integer.toString(modifiedEntriesCount));
+break;
+}
+panel.output(message);
+frame.unblock();
+}

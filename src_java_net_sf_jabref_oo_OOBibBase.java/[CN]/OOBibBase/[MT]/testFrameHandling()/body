@@ -1,0 +1,20 @@
+{
+  XController oldController=mxDoc.getCurrentController();
+  PropertyValue[] props=new PropertyValue[2];
+  props[0]=new PropertyValue();
+  props[0].Name="Model";
+  props[0].Value=mxDoc.getCurrentController().getModel();
+  props[1]=new PropertyValue();
+  props[1].Name="Hidden";
+  props[1].Value=true;
+  System.out.println("her");
+  XComponent comp=xComponentLoader.loadComponentFromURL("private:factory/swriter","_blank",0,props);
+  System.out.println("her2");
+  XTextDocument newDoc=(XTextDocument)UnoRuntime.queryInterface(XTextDocument.class,comp);
+  System.out.println("newDoc = " + newDoc);
+  XController xController=newDoc.getCurrentController();
+  XFrame xFrame=xController.getFrame();
+  XWindow xContainerWindow=xFrame.getContainerWindow();
+  XWindow xComponentWindow=xFrame.getComponentWindow();
+  xFrame.dispose();
+}

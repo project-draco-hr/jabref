@@ -1,0 +1,55 @@
+{
+  super(frame);
+  this.frame=frame;
+  this.panel=panel;
+  this.base=base;
+  this.prefs=prefs;
+  sortStrings();
+  helpAction=new HelpAction(frame.helpDiag,GUIGlobals.stringEditorHelp,"Help");
+  addWindowListener(new WindowAdapter(){
+    public void windowClosing(    WindowEvent e){
+      closeAction.actionPerformed(null);
+    }
+  }
+);
+  setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
+    protected boolean accept(    Component c){
+      return (super.accept(c) && (c instanceof StringTable));
+    }
+  }
+);
+  setLocation(prefs.getInt("stringsPosX"),prefs.getInt("stringsPosY"));
+  setSize(prefs.getInt("stringsSizeX"),prefs.getInt("stringsSizeY"));
+  pan.setLayout(gbl);
+  con.fill=GridBagConstraints.BOTH;
+  con.weighty=1;
+  con.weightx=1;
+  StringTableModel stm=new StringTableModel(this,base);
+  table=new StringTable(stm);
+  if (base.getStringCount() > 0)   table.setRowSelectionInterval(0,0);
+  gbl.setConstraints(table.getPane(),con);
+  pan.add(table.getPane());
+  InputMap im=tlb.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  ActionMap am=tlb.getActionMap();
+  im.put(prefs.getKey("String dialog, add string"),"add");
+  am.put("add",newStringAction);
+  im.put(prefs.getKey("String dialog, remove string"),"remove");
+  am.put("remove",removeStringAction);
+  im.put(prefs.getKey("Close dialog"),"close");
+  am.put("close",closeAction);
+  im.put(prefs.getKey("Help"),"help");
+  am.put("help",helpAction);
+  im.put(prefs.getKey("Undo"),"undo");
+  am.put("undo",undoAction);
+  im.put(prefs.getKey("Redo"),"redo");
+  am.put("redo",redoAction);
+  tlb.add(newStringAction);
+  tlb.add(removeStringAction);
+  tlb.addSeparator();
+  tlb.addSeparator();
+  tlb.add(helpAction);
+  conPane.add(tlb,BorderLayout.NORTH);
+  conPane.add(pan,BorderLayout.CENTER);
+  if (panel.getFile() != null)   setTitle(Globals.lang(GUIGlobals.stringsTitle) + ": " + panel.getFile().getName());
+ else   setTitle(Globals.lang(GUIGlobals.stringsTitle) + ": " + Globals.lang(GUIGlobals.untitledTitle));
+}

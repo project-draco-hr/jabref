@@ -1,0 +1,33 @@
+{
+  factory=DocumentBuilderFactory.newInstance();
+  try {
+    builder=factory.newDocumentBuilder();
+    InputStream stream=null;
+    if (resPath != null) {
+      stream=TXMLReader.class.getResourceAsStream(resPath);
+    }
+    if (stream == null) {
+      try {
+        stream=new FileInputStream("src" + resPath);
+      }
+ catch (      Exception e) {
+      }
+    }
+    if (stream != null) {
+      config=builder.parse(stream);
+      ready=true;
+    }
+  }
+ catch (  SAXException sxe) {
+    sxe.printStackTrace();
+  }
+catch (  ParserConfigurationException pce) {
+    pce.printStackTrace();
+  }
+catch (  IOException ioe) {
+    ioe.printStackTrace();
+  }
+catch (  Exception oe) {
+    oe.printStackTrace();
+  }
+}

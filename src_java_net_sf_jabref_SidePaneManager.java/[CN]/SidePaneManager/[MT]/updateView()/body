@@ -1,0 +1,16 @@
+{
+  sidep.setComponents(visible);
+  if (visible.size() > 0) {
+    boolean wasVisible=sidep.isVisible();
+    sidep.setVisible(true);
+    if (!wasVisible) {
+      int width=Globals.prefs.getInt("sidePaneWidth");
+      if (width > 0)       frame.contentPane.setDividerLocation(width);
+ else       frame.contentPane.setDividerLocation(getPanel().getPreferredSize().width);
+    }
+  }
+ else {
+    if (sidep.isVisible())     Globals.prefs.putInt("sidePaneWidth",frame.contentPane.getDividerLocation());
+    sidep.setVisible(false);
+  }
+}

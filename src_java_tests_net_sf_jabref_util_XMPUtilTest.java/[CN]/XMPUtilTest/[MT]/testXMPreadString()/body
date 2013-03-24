@@ -1,0 +1,31 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{canh05," + "  author = {Crowston, K. and Annabi, H.},\n" + "  title = {Title A}}\n"+ "@inProceedings{foo,"+ "  author={Norton Bar}}"));
+  Collection<BibtexEntry> c=result.getDatabase().getEntries();
+  assertEquals(2,c.size());
+  String xmp=XMPUtil.toXMP(c,null);
+  assertTrue(0 < xmp.indexOf("xpacket"));
+  assertTrue(0 < xmp.indexOf("adobe:ns:meta"));
+  assertTrue(0 < xmp.indexOf("<bibtex:bibtexkey>canh05</bibtex:bibtexkey>") || 0 < xmp.indexOf("bibtex:bibtexkey="));
+  assertTrue(0 < xmp.indexOf("<rdf:li>Norton Bar</rdf:li>"));
+  assertTrue(0 < xmp.indexOf("id='W5M0MpCehiHzreSzNTczkc9d'?>") || 0 < xmp.indexOf("id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"));
+  assertTrue(0 < xmp.indexOf("xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'") || 0 < xmp.indexOf("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""));
+  assertTrue(0 < xmp.indexOf("<rdf:Description"));
+  assertTrue(0 < xmp.indexOf("<?xpacket end='w'?>") || 0 < xmp.indexOf("<?xpacket end=\"w\"?>"));
+  writeManually(pdfFile,xmp);
+  List<BibtexEntry> l=XMPUtil.readXMP(pdfFile);
+  assertEquals(2,l.size());
+  BibtexEntry a=l.get(0);
+  BibtexEntry b=l.get(1);
+  if (a.getCiteKey().equals("foo")) {
+    BibtexEntry tmp=a;
+    a=b;
+    b=tmp;
+  }
+  assertEquals("canh05",a.getCiteKey());
+  assertEquals("K. Crowston and H. Annabi",a.getField("author"));
+  assertEquals("Title A",a.getField("title"));
+  assertEquals(BibtexEntryType.ARTICLE,a.getType());
+  assertEquals("foo",b.getCiteKey());
+  assertEquals("Norton Bar",b.getField("author"));
+  assertEquals(BibtexEntryType.INPROCEEDINGS,b.getType());
+}

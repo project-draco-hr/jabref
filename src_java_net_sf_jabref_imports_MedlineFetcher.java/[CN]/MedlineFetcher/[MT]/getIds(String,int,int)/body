@@ -1,0 +1,43 @@
+{
+  String baseUrl="http://eutils.ncbi.nlm.nih.gov/entrez/eutils";
+  String medlineUrl=baseUrl + "/esearch.fcgi?db=pubmed&retmax=" + Integer.toString(pacing)+ "&retstart="+ Integer.toString(start)+ "&term=";
+  Pattern idPattern=Pattern.compile("<Id>(\\d+)</Id>");
+  Pattern countPattern=Pattern.compile("<Count>(\\d+)<\\/Count>");
+  Pattern retMaxPattern=Pattern.compile("<RetMax>(\\d+)<\\/RetMax>");
+  Pattern retStartPattern=Pattern.compile("<RetStart>(\\d+)<\\/RetStart>");
+  boolean doCount=true;
+  SearchResult result=new SearchResult();
+  try {
+    URL ncbi=new URL(medlineUrl + term);
+    BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
+    String inLine;
+    while ((inLine=in.readLine()) != null) {
+      Matcher idMatcher=idPattern.matcher(inLine);
+      if (idMatcher.find()) {
+        result.addID(idMatcher.group(1));
+      }
+      Matcher retMaxMatcher=retMaxPattern.matcher(inLine);
+      if (retMaxMatcher.find()) {
+        result.retmax=Integer.parseInt(retMaxMatcher.group(1));
+      }
+      Matcher retStartMatcher=retStartPattern.matcher(inLine);
+      if (retStartMatcher.find()) {
+        result.retstart=Integer.parseInt(retStartMatcher.group(1));
+      }
+      Matcher countMatcher=countPattern.matcher(inLine);
+      if (doCount && countMatcher.find()) {
+        result.count=Integer.parseInt(countMatcher.group(1));
+        doCount=false;
+      }
+    }
+  }
+ catch (  MalformedURLException e) {
+    System.out.println("bad url");
+    e.printStackTrace();
+  }
+catch (  IOException e) {
+    System.out.println("connection failed");
+    e.printStackTrace();
+  }
+  return result;
+}

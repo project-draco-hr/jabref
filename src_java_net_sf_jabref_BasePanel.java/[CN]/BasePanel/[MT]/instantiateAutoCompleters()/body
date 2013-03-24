@@ -1,0 +1,14 @@
+{
+  autoCompleters.clear();
+  String[] completeFields=Globals.prefs.getStringArray("autoCompleteFields");
+  for (int i=0; i < completeFields.length; i++) {
+    String field=completeFields[i];
+    AbstractAutoCompleter autoCompleter=AutoCompleterFactory.getFor(field);
+    autoCompleters.put(field,autoCompleter);
+  }
+  for (  BibtexEntry entry : database.getEntries()) {
+    Util.updateCompletersForEntry(autoCompleters,entry);
+  }
+  addJournalListToAutoCompleter();
+  addContentSelectorValuesToAutoCompleters();
+}

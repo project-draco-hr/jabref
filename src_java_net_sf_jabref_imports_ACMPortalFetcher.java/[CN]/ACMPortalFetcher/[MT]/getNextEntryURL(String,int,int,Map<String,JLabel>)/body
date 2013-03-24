@@ -1,0 +1,55 @@
+{
+  String toFind=new StringBuffer().append("<strong>").append(entryNumber).append("</strong><br>").toString();
+  int index=allText.indexOf(toFind,startIndex);
+  int endIndex=allText.length();
+  if (index >= 0) {
+    piv=index + 1;
+    String text=allText.substring(index,endIndex);
+    Matcher fullCitation=fullCitationPattern.matcher(text);
+    if (fullCitation.find()) {
+      String link=getEntryBibTeXURL(fullCitation.group(1),fetchAbstract);
+      String part;
+      int endOfRecord=text.indexOf("<div class=\"abstract2\">");
+      if (endOfRecord > 0) {
+        StringBuilder sb=new StringBuilder();
+        part=text.substring(0,endOfRecord);
+        try {
+          save("part" + entryNumber + ".html",part);
+        }
+ catch (        IOException e) {
+          e.printStackTrace();
+        }
+        String authMarker="<div class=\"authors\">";
+        int authStart=text.indexOf(authMarker);
+        if (authStart >= 0) {
+          int authEnd=text.indexOf("</div>",authStart + authMarker.length());
+          if (authEnd >= 0) {
+            sb.append("<p>").append(text.substring(authStart,authEnd)).append("</p>");
+          }
+        }
+        Matcher titM=titlePattern.matcher(part);
+        if (titM.find()) {
+          sb.append("<p>").append(titM.group(1)).append("</p>");
+        }
+        Matcher mY=monthYearPattern.matcher(part);
+        if (mY.find()) {
+          sb.append("<p>").append(mY.group(1)).append("</p>");
+        }
+        part=sb.toString();
+      }
+ else {
+        part=link;
+      }
+      JLabel preview=new JLabel("<html>" + part + "</html>");
+      preview.setPreferredSize(new Dimension(750,100));
+      entries.put(link,preview);
+      return true;
+    }
+ else {
+      System.out.printf("Citation Unmatched %d\n",entryNumber);
+      System.out.printf(text);
+      return false;
+    }
+  }
+  return false;
+}

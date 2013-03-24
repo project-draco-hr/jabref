@@ -1,0 +1,12 @@
+{
+  for (  BibtexEntry entry : entries) {
+    entry.setSearchHit(defaultSelected);
+    if (((panel != null) && (DuplicateCheck.containsDuplicate(panel.database(),entry) != null)) || (internalDuplicate(this.entries,entry) != null)) {
+      entry.setGroupHit(true);
+      deselectAllDuplicates.setEnabled(true);
+    }
+    this.entries.getReadWriteLock().writeLock().lock();
+    this.entries.add(entry);
+    this.entries.getReadWriteLock().writeLock().unlock();
+  }
+}

@@ -1,0 +1,36 @@
+{
+  if (type == null) {
+    EntryTypeDialog etd=new EntryTypeDialog(frame);
+    Util.placeDialog(etd,frame);
+    etd.setVisible(true);
+    type=etd.getChoice();
+  }
+  if (type != null) {
+    String id=Util.createNeutralId();
+    final BibtexEntry be=new BibtexEntry(id,type);
+    try {
+      database.insertEntry(be);
+      ArrayList<BibtexEntry> list=new ArrayList<BibtexEntry>();
+      list.add(be);
+      Util.setAutomaticFields(list,true,true,false);
+      undoManager.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
+      output(Globals.lang("Added new") + " '" + type.getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
+      if (mode != SHOWING_EDITOR) {
+        mode=WILL_SHOW_EDITOR;
+      }
+      int row=mainTable.findEntry(be);
+      if (row >= 0)       highlightEntry(be);
+ else {
+        showEntry(be);
+      }
+      markBaseChanged();
+      new FocusRequester(getEntryEditor(be));
+      addToSelectedGroup(be);
+      return be;
+    }
+ catch (    KeyCollisionException ex) {
+      Util.pr(ex.getMessage());
+    }
+  }
+  return null;
+}

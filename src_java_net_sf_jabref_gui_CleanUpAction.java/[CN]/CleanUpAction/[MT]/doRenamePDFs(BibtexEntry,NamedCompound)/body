@@ -1,0 +1,47 @@
+{
+  String oldValue=entry.getField(GUIGlobals.FILE_FIELD);
+  if (oldValue == null)   return;
+  FileListTableModel flModel=new FileListTableModel();
+  flModel.setContent(oldValue);
+  if (flModel.getRowCount() == 0) {
+    return;
+  }
+  boolean changed=false;
+  for (int i=0; i < flModel.getRowCount(); i++) {
+    String realOldFilename=flModel.getEntry(i).getLink();
+    if (cleanUpRenamePDFonlyRelativePaths.isSelected() && (new File(realOldFilename).isAbsolute()))     continue;
+    String newFilename=Util.getLinkedFileName(panel.database(),entry);
+    newFilename=newFilename + "." + flModel.getEntry(i).getType().getExtension();
+    File expandedOldFile=Util.expandFilename(realOldFilename,panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD));
+    if (expandedOldFile.getParent() == null) {
+      continue;
+    }
+    String newPath=expandedOldFile.getParent().concat(System.getProperty("file.separator")).concat(newFilename);
+    if (new File(newPath).exists())     continue;
+    boolean renameSuccesfull=Util.renameFile(expandedOldFile.toString(),newPath);
+    if (renameSuccesfull) {
+      changed=true;
+      String description=flModel.getEntry(i).getDescription();
+      ExternalFileType type=flModel.getEntry(i).getType();
+      flModel.removeEntry(i);
+      File parent=(new File(realOldFilename)).getParentFile();
+      String newFileEntryFileName;
+      if (parent == null) {
+        newFileEntryFileName=newFilename;
+      }
+ else {
+        newFileEntryFileName=parent.toString().concat(System.getProperty("file.separator")).concat(newFilename);
+      }
+      flModel.addEntry(i,new FileListEntry(description,newFileEntryFileName,type));
+    }
+ else {
+      unsuccesfullRenames++;
+    }
+  }
+  if (changed) {
+    String newValue=flModel.getStringRepresentation();
+    assert(!oldValue.equals(newValue));
+    entry.setField(GUIGlobals.FILE_FIELD,newValue);
+    ce.addEdit(new UndoableFieldChange(entry,GUIGlobals.FILE_FIELD,oldValue,newValue));
+  }
+}

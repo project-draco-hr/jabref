@@ -1,0 +1,28 @@
+{
+  splitPane=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+  splitPane.setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);
+  createMainTable();
+  for (  EntryEditor ee : entryEditors.values()) {
+    ee.validateAllFields();
+  }
+  splitPane.setTopComponent(mainTable.getPane());
+  if (mode == SHOWING_PREVIEW) {
+    mode=SHOWING_NOTHING;
+    int row=mainTable.findEntry(currentPreview.entry);
+    if (row >= 0)     mainTable.setRowSelectionInterval(row,row);
+  }
+ else   if (mode == SHOWING_EDITOR) {
+    mode=SHOWING_NOTHING;
+  }
+ else   splitPane.setBottomComponent(null);
+  setLayout(new BorderLayout());
+  removeAll();
+  add(splitPane,BorderLayout.CENTER);
+  instantiateSearchAutoCompleter();
+  if (Globals.prefs.getBoolean("autoComplete")) {
+    instantiateAutoCompleters();
+  }
+  splitPane.revalidate();
+  revalidate();
+  repaint();
+}

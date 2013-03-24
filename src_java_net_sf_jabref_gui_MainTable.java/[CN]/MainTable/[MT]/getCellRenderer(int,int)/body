@@ -1,0 +1,48 @@
+{
+  int score=-3;
+  TableCellRenderer renderer=defRenderer;
+  int status=getCellStatus(row,column);
+  if (!showingFloatSearch || matches(row,searchMatcher))   score++;
+  if (!showingFloatGrouping || matches(row,groupMatcher))   score+=2;
+  if (score < -1) {
+    if (column == 0) {
+      veryGrayedOutNumberRenderer.setNumber(row);
+      renderer=veryGrayedOutNumberRenderer;
+    }
+ else     renderer=veryGrayedOutRenderer;
+  }
+ else   if (score == -1) {
+    if (column == 0) {
+      grayedOutNumberRenderer.setNumber(row);
+      renderer=grayedOutNumberRenderer;
+    }
+ else     renderer=grayedOutRenderer;
+  }
+ else   if (column == 0) {
+    if (!isComplete(row)) {
+      incRenderer.setNumber(row);
+      renderer=incRenderer;
+    }
+ else {
+      compRenderer.setNumber(row);
+      int marking=isMarked(row);
+      if (marking > 0) {
+        marking=Math.min(marking,Util.MARK_COLOR_LEVELS);
+        renderer=markedNumberRenderers[marking - 1];
+        markedNumberRenderers[marking - 1].setNumber(row);
+      }
+ else       renderer=compRenderer;
+    }
+  }
+ else   if (tableColorCodes) {
+    if (status == REQUIRED)     renderer=reqRenderer;
+ else     if (status == OPTIONAL)     renderer=optRenderer;
+ else     if (status == BOOLEAN)     renderer=getDefaultRenderer(Boolean.class);
+  }
+  int marking=isMarked(row);
+  if ((column != 0) && (marking > 0)) {
+    marking=Math.min(marking,Util.MARK_COLOR_LEVELS);
+    renderer=markedRenderers[marking - 1];
+  }
+  return renderer;
+}

@@ -1,0 +1,17 @@
+{
+  this.dbStrings=dbstrings;
+  String url=SQLUtil.createJDBCurl(dbstrings,true);
+  String drv="org.postgresql.Driver";
+  Class.forName(drv).newInstance();
+  Connection conn=DriverManager.getConnection(url,dbstrings.getUsername(),dbstrings.getPassword());
+  ResultSet rs=((Statement)SQLUtil.processQueryWithResults(conn,"SELECT count(*) AS alreadyThere FROM pg_database WHERE datname='" + dbStrings.getDatabase() + "'")).getResultSet();
+  rs.next();
+  if (rs.getInt("alreadyThere") == 0) {
+    SQLUtil.processQuery(conn,"CREATE DATABASE " + dbStrings.getDatabase());
+  }
+  rs.getStatement().close();
+  conn.close();
+  conn=DriverManager.getConnection(url,dbstrings.getUsername(),dbstrings.getPassword());
+  createPLPGSQLFunction(conn);
+  return conn;
+}

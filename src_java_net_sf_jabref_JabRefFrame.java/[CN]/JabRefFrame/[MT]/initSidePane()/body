@@ -1,0 +1,25 @@
+{
+  sidePaneManager=new SidePaneManager(this);
+  Globals.sidePaneManager=this.sidePaneManager;
+  Globals.helpDiag=this.helpDiag;
+  JabRefPlugin jabrefPlugin=JabRefPlugin.getInstance(PluginCore.getManager());
+  if (jabrefPlugin != null) {
+    for (    EntryFetcherExtension ext : jabrefPlugin.getEntryFetcherExtensions()) {
+      try {
+        EntryFetcher fetcher=ext.getEntryFetcher();
+        if (fetcher != null) {
+          fetchers.add(fetcher);
+        }
+      }
+ catch (      ClassCastException ex) {
+        PluginCore.getManager().disablePlugin(ext.getDeclaringPlugin().getDescriptor());
+        ex.printStackTrace();
+      }
+    }
+  }
+  groupSelector=new GroupSelector(this,sidePaneManager);
+  searchManager=new SearchManager2(this,sidePaneManager);
+  sidePaneManager.register("groups",groupSelector);
+  sidePaneManager.register("search",searchManager);
+  if (Globals.prefs.getBoolean("searchPanelVisible"))   sidePaneManager.show("search");
+}

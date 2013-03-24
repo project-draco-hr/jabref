@@ -1,0 +1,41 @@
+{
+  this._entry=entry;
+  title=new JLabel(entry.context);
+  pageInfo.setText(entry.pageInfo);
+  diag=new JDialog(CitationManager.this.diag,Globals.lang("Citation"),true);
+  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, left:150dlu",""));
+  b.append(title,3);
+  b.nextLine();
+  b.append(Globals.lang("Extra information (e.g. page number)"));
+  b.append(pageInfo);
+  b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(b.getPanel(),BorderLayout.CENTER);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.add(bb.getPanel(),BorderLayout.SOUTH);
+  Action okAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      if (pageInfo.getText().trim().length() > 0) {
+        _entry.pageInfo=pageInfo.getText().trim();
+      }
+ else       _entry.pageInfo=null;
+      tableModel.fireTableDataChanged();
+      diag.dispose();
+    }
+  }
+;
+  ok.addActionListener(okAction);
+  Action cancelAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent actionEvent){
+      diag.dispose();
+    }
+  }
+;
+  cancel.addActionListener(cancelAction);
+  b.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(Globals.prefs.getKey("Close dialog"),"close");
+  b.getPanel().getActionMap().put("close",cancelAction);
+}

@@ -1,0 +1,49 @@
+{
+  if (value == null)   value="";
+  ArrayList<FileListEntry> newList=new ArrayList<FileListEntry>();
+  StringBuilder sb=new StringBuilder();
+  ArrayList<String> thisEntry=new ArrayList<String>();
+  boolean inXmlChar=false;
+  boolean escaped=false;
+  for (int i=0; i < value.length(); i++) {
+    char c=value.charAt(i);
+    if (!escaped && (c == '\\')) {
+      escaped=true;
+      continue;
+    }
+ else     if (!escaped && (c == '&') && !inXmlChar) {
+      sb.append(c);
+      if ((value.length() > i + 1) && (value.charAt(i + 1) == '#'))       inXmlChar=true;
+    }
+ else     if (!escaped && inXmlChar && (c == ';')) {
+      sb.append(c);
+      inXmlChar=false;
+    }
+ else     if (!escaped && (c == ':')) {
+      thisEntry.add(sb.toString());
+      sb=new StringBuilder();
+    }
+ else     if (!escaped && (c == ';') && !inXmlChar) {
+      thisEntry.add(sb.toString());
+      sb=new StringBuilder();
+      if (firstOnly)       return decodeEntry(thisEntry,deduceUnknownTypes);
+ else {
+        newList.add(decodeEntry(thisEntry,deduceUnknownTypes));
+        thisEntry.clear();
+      }
+    }
+ else     sb.append(c);
+    escaped=false;
+  }
+  if (sb.length() > 0)   thisEntry.add(sb.toString());
+  if (thisEntry.size() > 0) {
+    if (firstOnly)     return decodeEntry(thisEntry,deduceUnknownTypes);
+ else     newList.add(decodeEntry(thisEntry,deduceUnknownTypes));
+  }
+synchronized (list) {
+    list.clear();
+    list.addAll(newList);
+  }
+  fireTableChanged(new TableModelEvent(this));
+  return null;
+}
