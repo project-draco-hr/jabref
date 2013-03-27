@@ -110,6 +110,22 @@
     }
   }
 );
+  menu.add(openFolder);
+  openFolder.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      int row=getSelectedRow();
+      if (row >= 0) {
+        FileListEntry entry=tableModel.getEntry(row);
+        try {
+          Util.openFolderAndSelectFile(entry.getLink());
+        }
+ catch (        IOException ex) {
+          logger.fine(ex.getMessage());
+        }
+      }
+    }
+  }
+);
   menu.add(rename);
   rename.addActionListener(new MoveFileAction(frame,entryEditor,this,false));
   menu.add(moveToFileDir);
