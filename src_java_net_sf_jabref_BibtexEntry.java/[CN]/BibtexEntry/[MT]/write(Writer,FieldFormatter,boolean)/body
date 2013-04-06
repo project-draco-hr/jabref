@@ -1,20 +1,34 @@
 {
-  out.write("@" + _type.getName().toUpperCase(Locale.US) + "{");
+  out.write("@" + _type.getName() + "{");
   String str=Util.shaveString(getField(BibtexFields.KEY_FIELD));
   out.write(((str == null) ? "" : str) + "," + Globals.NEWLINE);
   HashMap<String,String> written=new HashMap<String,String>();
   written.put(BibtexFields.KEY_FIELD,null);
   boolean hasWritten=false;
+  hasWritten=hasWritten | writeField("title",out,ff,hasWritten,false);
+  written.put("title",null);
   String[] s=getRequiredFields();
-  if (s != null)   for (int i=0; i < s.length; i++) {
-    hasWritten=hasWritten | writeField(s[i],out,ff,hasWritten);
-    written.put(s[i],null);
+  if (s != null) {
+    Arrays.sort(s);
+    for (int i=0; i < s.length; i++) {
+      if (!written.containsKey(s[i])) {
+        hasWritten=hasWritten | writeField(s[i],out,ff,hasWritten,false);
+        written.put(s[i],null);
+      }
+    }
   }
   s=getOptionalFields();
-  if (s != null)   for (int i=0; i < s.length; i++) {
-    if (!written.containsKey(s[i])) {
-      hasWritten=hasWritten | writeField(s[i],out,ff,hasWritten);
-      written.put(s[i],null);
+  boolean first=true, previous=true;
+  previous=false;
+  if (s != null) {
+    Arrays.sort(s);
+    for (int i=0; i < s.length; i++) {
+      if (!written.containsKey(s[i])) {
+        hasWritten=hasWritten | writeField(s[i],out,ff,hasWritten,hasWritten && first);
+        written.put(s[i],null);
+        first=false;
+        previous=true;
+      }
     }
   }
   TreeSet<String> remainingFields=new TreeSet<String>();
@@ -22,6 +36,10 @@
     boolean writeIt=(write ? BibtexFields.isWriteableField(key) : BibtexFields.isDisplayableField(key));
     if (!written.containsKey(key) && writeIt)     remainingFields.add(key);
   }
-  for (  String field : remainingFields)   hasWritten=hasWritten | writeField(field,out,ff,hasWritten);
+  first=previous;
+  for (  String field : remainingFields) {
+    hasWritten=hasWritten | writeField(field,out,ff,hasWritten,hasWritten && first);
+    first=false;
+  }
   out.write((hasWritten ? Globals.NEWLINE : "") + "}" + Globals.NEWLINE);
 }

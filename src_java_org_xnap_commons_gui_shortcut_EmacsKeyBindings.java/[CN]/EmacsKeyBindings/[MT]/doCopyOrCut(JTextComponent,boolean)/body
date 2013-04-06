@@ -1,0 +1,35 @@
+{
+  if (jtc != null) {
+    int caretPosition=jtc.getCaretPosition();
+    String text=jtc.getSelectedText();
+    if (text != null) {
+    }
+ else     if (SetMarkCommandAction.isMarked(jtc)) {
+      int beginPos=caretPosition;
+      int endPos=SetMarkCommandAction.getCaretPosition();
+      if (beginPos > endPos) {
+        int tmp=endPos;
+        endPos=beginPos;
+        beginPos=tmp;
+      }
+      jtc.select(beginPos,endPos);
+      SetMarkCommandAction.reset();
+    }
+    text=jtc.getSelectedText();
+    if (text != null) {
+      if (copy) {
+        jtc.copy();
+        jtc.select(caretPosition,caretPosition);
+      }
+ else {
+        int newCaretPos=jtc.getSelectionStart();
+        jtc.cut();
+        jtc.setCaretPosition(newCaretPos);
+      }
+      KillRing.getInstance().add(text);
+    }
+ else {
+      jtc.getToolkit().beep();
+    }
+  }
+}

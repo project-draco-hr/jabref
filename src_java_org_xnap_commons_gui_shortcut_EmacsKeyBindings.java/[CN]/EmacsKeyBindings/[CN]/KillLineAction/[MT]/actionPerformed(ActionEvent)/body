@@ -1,0 +1,22 @@
+{
+  JTextComponent jtc=getTextComponent(e);
+  if (jtc != null) {
+    try {
+      int start=jtc.getCaretPosition();
+      int end=Utilities.getRowEnd(jtc,start);
+      if (start == end && jtc.isEditable()) {
+        Document doc=jtc.getDocument();
+        doc.remove(end,1);
+      }
+ else {
+        jtc.setSelectionStart(start);
+        jtc.setSelectionEnd(end);
+        KillRing.getInstance().add(jtc.getSelectedText());
+        jtc.cut();
+      }
+    }
+ catch (    BadLocationException ble) {
+      jtc.getToolkit().beep();
+    }
+  }
+}

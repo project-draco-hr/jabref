@@ -27,7 +27,7 @@
   }
   String bibtexString;
   try {
-    bibtexString=Util.getResults(conn);
+    bibtexString=Util.getResultsWithEncoding(conn,"UTF-8");
   }
  catch (  FileNotFoundException e) {
     status.showMessage(Globals.lang("Unknown DiVA entry: '%0'.",query),Globals.lang("Get BibTeX entry from DiVA"),JOptionPane.INFORMATION_MESSAGE);
@@ -41,10 +41,18 @@ catch (  IOException e) {
   if (entry != null) {
     String title=(String)entry.getField("title");
     if (title != null) {
+      if (Globals.prefs.getBoolean("useUnitFormatterOnSearch")) {
+        title=unitFormatter.format(title);
+      }
       if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
         title=caseKeeper.format(title);
       }
       entry.setField("title",title);
+    }
+    String institution=(String)entry.getField("institution");
+    if (institution != null) {
+      institution=htmlConverter.formatUnicode(institution);
+      entry.setField("institution",institution);
     }
     inspector.addEntry(entry);
     return true;

@@ -14,30 +14,7 @@
     writeBibFileHeader(fw,encoding);
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
-    String pri, sec, ter;
-    boolean priD, secD, terD;
-    if (!prefs.getBoolean("saveInStandardOrder")) {
-      pri=prefs.get("priSort");
-      sec=prefs.get("secSort");
-      ter=prefs.get("terSort");
-      priD=prefs.getBoolean("priDescending");
-      secD=prefs.getBoolean("secDescending");
-      terD=prefs.getBoolean("terDescending");
-    }
- else {
-      pri="author";
-      sec="editor";
-      ter="year";
-      priD=false;
-      secD=false;
-      terD=true;
-    }
-    List<Comparator<BibtexEntry>> comparators=new ArrayList<Comparator<BibtexEntry>>();
-    comparators.add(new CrossRefEntryComparator());
-    comparators.add(new FieldComparator(pri,priD));
-    comparators.add(new FieldComparator(sec,secD));
-    comparators.add(new FieldComparator(ter,terD));
-    comparators.add(new FieldComparator(BibtexFields.KEY_FIELD));
+    List<Comparator<BibtexEntry>> comparators=getSaveComparators(true);
     BasicEventList entryList=new BasicEventList();
     SortedList sorter=new SortedList(entryList,new FieldComparatorStack<BibtexEntry>(comparators));
     if ((bes != null) && (bes.length > 0))     for (int i=0; i < bes.length; i++) {

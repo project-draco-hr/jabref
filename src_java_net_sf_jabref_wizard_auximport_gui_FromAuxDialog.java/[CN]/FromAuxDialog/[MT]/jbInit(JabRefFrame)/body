@@ -1,21 +1,30 @@
 {
   JPanel panel1=new JPanel();
   panel1.setLayout(new BorderLayout());
-  okButton.setText(Globals.lang("Ok"));
-  okButton.setEnabled(false);
-  okButton.addActionListener(new FromAuxDialog_ok_actionAdapter(this));
+  selectInDBButton.setText(Globals.lang("Select"));
+  selectInDBButton.setEnabled(false);
+  selectInDBButton.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent arg0){
+      FromAuxDialog.this.select_actionPerformed();
+    }
+  }
+);
+  generateButton.setText(Globals.lang("Generate"));
+  generateButton.setEnabled(false);
+  generateButton.addActionListener(new FromAuxDialog_generate_actionAdapter(this));
   cancelButton.setText(Globals.lang("Cancel"));
   cancelButton.addActionListener(new FromAuxDialog_Cancel_actionAdapter(this));
-  generateButton.setText(Globals.lang("Generate"));
-  generateButton.addActionListener(new FromAuxDialog_generate_actionAdapter(this));
+  parseButton.setText(Globals.lang("Parse"));
+  parseButton.addActionListener(new FromAuxDialog_parse_actionAdapter(this));
   initPanels(parent);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   JPanel buttonPanel=bb.getPanel();
   buttonPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   bb.addGlue();
-  bb.addButton(generateButton);
+  bb.addButton(parseButton);
   bb.addRelatedGap();
-  bb.addButton(okButton);
+  bb.addButton(selectInDBButton);
+  bb.addButton(generateButton);
   bb.addButton(cancelButton);
   bb.addGlue();
   this.setModal(true);

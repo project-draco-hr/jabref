@@ -1,0 +1,19 @@
+{
+  File file=new File(filePath);
+  for (int i=0; i < this.getTabbedPane().getTabCount(); i++) {
+    BasePanel bp=this.baseAt(i);
+    if ((bp.getFile() != null) && bp.getFile().equals(file)) {
+      this.getTabbedPane().setSelectedComponent(bp);
+      return;
+    }
+  }
+  if (file.exists()) {
+    final File theFile=new File(filePath);
+    (new Thread(){
+      public void run(){
+        open.openIt(theFile,true);
+      }
+    }
+).start();
+  }
+}

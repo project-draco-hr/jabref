@@ -1,0 +1,22 @@
+{
+  GroupTreeNode groups=panel.metaData().getGroups();
+  if (groups == null) {
+    return;
+  }
+  JDialog diag=new JDialog(panel.frame(),Globals.lang(add ? "Add to group" : "Remove from group"),true);
+  JButton ok=new JButton(Globals.lang("Ok")), cancel=new JButton(Globals.lang("Cancel"));
+  JTree tree=new JTree(groups);
+  tree.setCellRenderer(new GroupTreeCellRenderer());
+  tree.setVisibleRowCount(18);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(new JScrollPane(tree),BorderLayout.CENTER);
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  diag.pack();
+  diag.setLocationRelativeTo(panel.frame());
+  diag.setVisible(true);
+}

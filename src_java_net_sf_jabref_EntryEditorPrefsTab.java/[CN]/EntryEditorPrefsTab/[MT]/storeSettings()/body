@@ -1,7 +1,25 @@
 {
   _prefs.putBoolean("autoOpenForm",autoOpenForm.isSelected());
   _prefs.putBoolean("defaultShowSource",defSource.isSelected());
-  _prefs.putBoolean("enableSourceEditing",editSource.isSelected());
+  boolean emacsModeChanged=(_prefs.getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS) != emacsMode.isSelected());
+  boolean emacsRebindCtrlAChanged=(_prefs.getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CA) != emacsRebindCtrlA.isSelected());
+  if (emacsModeChanged || emacsRebindCtrlAChanged) {
+    _prefs.putBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS,emacsMode.isSelected());
+    _prefs.putBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CA,emacsRebindCtrlA.isSelected());
+    if (emacsModeChanged) {
+      if (emacsMode.isSelected()) {
+        EmacsKeyBindings.load();
+      }
+ else {
+        EmacsKeyBindings.unload();
+      }
+    }
+ else {
+      assert(emacsMode.isSelected());
+      EmacsKeyBindings.unload();
+      EmacsKeyBindings.load();
+    }
+  }
   _prefs.putBoolean("disableOnMultipleSelection",disableOnMultiple.isSelected());
   boolean oldAutoComplete=_prefs.getBoolean("autoComplete");
   boolean oldShowSource=_prefs.getBoolean("showSource");

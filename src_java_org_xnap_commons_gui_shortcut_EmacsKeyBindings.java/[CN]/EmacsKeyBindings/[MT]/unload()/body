@@ -1,0 +1,17 @@
+{
+  for (int i=0; i < JTCS.length; i++) {
+    Keymap backup=JTextComponent.getKeymap(JTCS[i].getClass().getName());
+    if (backup != null) {
+      Keymap current=JTCS[i].getKeymap();
+      current.removeBindings();
+      Action[] bound=backup.getBoundActions();
+      for (int j=0; j < bound.length; j++) {
+        KeyStroke[] strokes=backup.getKeyStrokesForAction(bound[i]);
+        for (int k=0; k < strokes.length; k++) {
+          current.addActionForKeyStroke(strokes[k],bound[j]);
+        }
+      }
+      current.setDefaultAction(backup.getDefaultAction());
+    }
+  }
+}

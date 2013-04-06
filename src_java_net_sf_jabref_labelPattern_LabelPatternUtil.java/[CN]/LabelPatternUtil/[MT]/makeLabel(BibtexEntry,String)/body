@@ -2,16 +2,21 @@
   try {
     if (val.startsWith("auth") || val.startsWith("pureauth")) {
       String authString=_entry.getField("author");
+      if (authString != null)       authString=normalize(_db.resolveForStrings(authString));
       if (val.startsWith("pure")) {
         val=val.substring(4);
       }
  else {
         if (authString == null || authString.equals("")) {
           authString=_entry.getField("editor");
+          if (authString != null)           authString=normalize(_db.resolveForStrings(authString));
         }
       }
       if (val.equals("auth")) {
         return firstAuthor(authString);
+      }
+ else       if (val.equals("authForeIni")) {
+        return firstAuthorForenameInitials(authString);
       }
  else       if (val.equals("authors")) {
         return allAuthors(authString);
@@ -21,6 +26,9 @@
       }
  else       if (val.equals("authorLast")) {
         return lastAuthor(authString);
+      }
+ else       if (val.equals("authorLastForeIni")) {
+        return lastAuthorForenameInitials(authString);
       }
  else       if (val.equals("authorIni")) {
         String s=oneAuthorPlusIni(authString);
@@ -36,7 +44,11 @@
         return s == null ? "" : s;
       }
  else       if (val.equals("auth.etal")) {
-        String s=authEtal(authString);
+        String s=authEtal(authString,".",".etal");
+        return s == null ? "" : s;
+      }
+ else       if (val.equals("authEtAl")) {
+        String s=authEtal(authString,"","EtAl");
         return s == null ? "" : s;
       }
  else       if (val.equals("authshort")) {
@@ -67,11 +79,17 @@
       if (val.equals("edtr")) {
         return firstAuthor(_entry.getField("editor").toString());
       }
+ else       if (val.equals("edtrForeIni")) {
+        return firstAuthorForenameInitials(_entry.getField("editor").toString());
+      }
  else       if (val.equals("editors")) {
         return allAuthors(_entry.getField("editor").toString());
       }
  else       if (val.equals("editorLast")) {
         return lastAuthor(_entry.getField("editor").toString());
+      }
+ else       if (val.equals("editorLastForeIni")) {
+        return lastAuthorForenameInitials(_entry.getField("editor").toString());
       }
  else       if (val.equals("editorIni")) {
         String s=oneAuthorPlusIni(_entry.getField("editor").toString());

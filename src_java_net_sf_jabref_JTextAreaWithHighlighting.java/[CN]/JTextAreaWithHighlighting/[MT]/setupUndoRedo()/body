@@ -32,5 +32,20 @@
     }
   }
 );
-  getInputMap().put(Globals.prefs.getKey("Redo"),"Redo");
+  boolean bind=true;
+  KeyStroke redoKey=Globals.prefs.getKey("Redo");
+  if (Globals.prefs.getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS)) {
+    Keymap keymap2=getKeymap();
+    KeyStroke[] keys=keymap2.getBoundKeyStrokes();
+    int i=0;
+    while ((i < keys.length) && (!keys[i].equals(redoKey))) {
+      i++;
+    }
+    if (i < keys.length) {
+      bind=false;
+    }
+  }
+  if (bind) {
+    getInputMap().put(redoKey,"Redo");
+  }
 }

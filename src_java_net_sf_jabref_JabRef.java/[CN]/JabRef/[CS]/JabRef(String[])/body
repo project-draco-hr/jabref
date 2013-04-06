@@ -1,12 +1,22 @@
 {
   singleton=this;
-  System.setProperty("java.net.useSystemProxies","true");
-  System.getProperties().put("proxySet","true");
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   if (prefs.hasKey("deletePlugins") && (prefs.get("deletePlugins").length() > 0)) {
     String[] toDelete=prefs.getStringArray("deletePlugins");
     PluginInstaller.deletePluginsOnStartup(toDelete);
     prefs.put("deletePlugins","");
+  }
+  if (prefs.getBoolean("useProxy")) {
+    System.getProperties().put("http.proxyHost",prefs.get("proxyHostname"));
+    System.getProperties().put("http.proxyPort",prefs.get("proxyPort"));
+    if (prefs.get("proxyUsername") != null) {
+      System.getProperties().put("http.proxyUser",prefs.get("proxyUsername"));
+      System.getProperties().put("http.proxyPassword",prefs.get("proxyPassword"));
+    }
+  }
+ else {
+    System.setProperty("java.net.useSystemProxies","true");
+    System.getProperties().put("proxySet","true");
   }
   Globals.startBackgroundTasks();
   Globals.setupLogging();

@@ -19,8 +19,10 @@
   removeAll();
   add(splitPane,BorderLayout.CENTER);
   instantiateSearchAutoCompleter();
+  this.getDatabase().addDatabaseChangeListener(new SearchAutoCompleterUpdater());
   if (Globals.prefs.getBoolean("autoComplete")) {
     instantiateAutoCompleters();
+    this.getDatabase().addDatabaseChangeListener(new AutoCompletersUpdater());
   }
   splitPane.revalidate();
   revalidate();

@@ -144,7 +144,6 @@ catch (          Throwable ex) {
               Util.setAutomaticFields(be,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"));
               be.setId(Util.createNeutralId());
               database.insertEntry(be);
-              addToSelectedGroup(be);
               ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
             }
  catch (            KeyCollisionException ex) {
@@ -343,6 +342,12 @@ catch (          Throwable ex) {
   }
 );
   actions.put("Cleanup",cleanUpAction);
+  actions.put("mergeEntries",new BaseAction(){
+    public void action(){
+      MergeEntriesDialog med=new MergeEntriesDialog(BasePanel.this);
+    }
+  }
+);
   actions.put("search",new BaseAction(){
     public void action(){
       sidePaneManager.show("search");
@@ -449,6 +454,7 @@ catch (          Throwable ex) {
   }
 );
   actions.put("mergeDatabase",new AppendDatabaseAction(frame,this));
+  actions.put("openFolder",new OpenFolder(frame));
   actions.put("openFile",new BaseAction(){
     public void action(){
       (new Thread(){
@@ -830,4 +836,6 @@ catch (          Throwable ex) {
   }
 );
   actions.put("resolveDuplicateKeys",new SearchFixDuplicateLabels(this));
+  actions.put("addToGroup",new GroupAddRemoveDialog(this,true));
+  actions.put("removeFromGroup",new GroupAddRemoveDialog(this,false));
 }

@@ -1,0 +1,16 @@
+{
+  JTextComponent jtc=getTextComponent(e);
+  if (jtc != null) {
+    try {
+      int offs=jtc.getCaretPosition();
+      jtc.setSelectionEnd(offs);
+      offs=Utilities.getPreviousWord(jtc,offs);
+      jtc.setSelectionStart(offs);
+      KillRing.getInstance().add(jtc.getSelectedText());
+      jtc.cut();
+    }
+ catch (    BadLocationException ble) {
+      jtc.getToolkit().beep();
+    }
+  }
+}

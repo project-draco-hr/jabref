@@ -6,17 +6,14 @@
   BasePanel panel=frame.basePanel();
   if (panel == null)   return;
   if (panel.getSelectedEntries().length == 0) {
-    message=Globals.lang("No entries selected") + ".";
+    message=Globals.lang("No entries selected.");
     return;
   }
   StringWriter sw=new StringWriter();
   BibtexEntry[] bes=panel.getSelectedEntries();
   LatexFieldFormatter ff=new LatexFieldFormatter();
   ArrayList<String> attachments=new ArrayList<String>();
-  HashSet<File> directories=new HashSet<File>();
   boolean openFolders=JabRefPreferences.getInstance().getBoolean("openFoldersOfAttachedFiles");
-  String osName=System.getProperty("os.name");
-  boolean isWindows=osName.startsWith("Windows");
   for (  BibtexEntry entry : bes) {
     try {
       entry.write(sw,ff,true);
@@ -28,12 +25,11 @@
         if (f != null) {
           attachments.add(f.getPath());
           if (openFolders) {
-            if (isWindows) {
-              String command="explorer.exe /select,\"".concat(f.getAbsolutePath().concat("\""));
-              Runtime.getRuntime().exec(command);
+            try {
+              Util.openFolderAndSelectFile(f.getAbsolutePath());
             }
- else {
-              directories.add(f.getParentFile());
+ catch (            IOException e) {
+              logger.fine(e.getMessage());
             }
           }
         }
@@ -69,18 +65,6 @@
     e.printStackTrace();
     message=Globals.lang("Error creating email");
     return;
-  }
-  if (openFolders) {
-    for (    File d : directories) {
-      try {
-        desktop.open(d);
-      }
- catch (      IOException e) {
-        e.printStackTrace();
-        message=String.format("%s: %s",Globals.lang("Could not open directory"),d.getAbsolutePath());
-        return;
-      }
-    }
   }
   message=String.format("%s: %d",Globals.lang("Entries added to an email"),bes.length);
 }

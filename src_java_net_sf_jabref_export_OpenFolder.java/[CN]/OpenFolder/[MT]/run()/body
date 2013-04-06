@@ -1,0 +1,35 @@
+{
+  BasePanel panel=frame.basePanel();
+  if (panel == null) {
+    return;
+  }
+  Integer selectedFilesCount=0;
+  message=null;
+  if (panel.getSelectedEntries().length == 0) {
+    message=Globals.lang("No entries selected.");
+    return;
+  }
+ else {
+    for (    BibtexEntry entry : panel.getSelectedEntries()) {
+      try {
+        FileListTableModel tm=new FileListTableModel();
+        tm.setContent(entry.getField("file"));
+        for (int i=0; i < tm.getRowCount(); i++) {
+          FileListEntry flEntry=tm.getEntry(i);
+          FileListEntry ent=flEntry;
+          logger.finer(ent.getLink());
+          Util.openFolderAndSelectFile(ent.getLink());
+          selectedFilesCount++;
+          break;
+        }
+      }
+ catch (      Exception ex) {
+        logger.warning(ex.getMessage());
+        message=ex.getMessage();
+      }
+    }
+  }
+  if (message == null) {
+    message=Globals.lang("Opened %0 folder(s).",selectedFilesCount.toString());
+  }
+}

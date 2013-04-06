@@ -62,6 +62,17 @@
     orCb.setSelected(true);
     andCb.setSelected(false);
   }
+  showNumberOfElements.addChangeListener(new ChangeListener(){
+    @Override public void stateChanged(    ChangeEvent e){
+      Globals.prefs.putBoolean(JabRefPreferences.GROUP_SHOW_NUMBER_OF_ELEMENTS,showNumberOfElements.isSelected());
+      if (groupsTree != null) {
+        groupsTree.invalidate();
+        groupsTree.validate();
+        groupsTree.repaint();
+      }
+    }
+  }
+);
   autoAssignGroup.addChangeListener(new ChangeListener(){
     public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("autoAssignGroup",autoAssignGroup.isSelected());
@@ -73,6 +84,7 @@
   select.setSelected(Globals.prefs.getBoolean("groupSelectMatches"));
   editModeIndicator=Globals.prefs.getBoolean(JabRefPreferences.EDIT_GROUP_MEMBERSHIP_MODE);
   editModeCb.setSelected(editModeIndicator);
+  showNumberOfElements.setSelected(Globals.prefs.getBoolean(JabRefPreferences.GROUP_SHOW_NUMBER_OF_ELEMENTS));
   autoAssignGroup.setSelected(Globals.prefs.getBoolean("autoAssignGroup"));
   openset.setMargin(new Insets(0,0,0,0));
   settings.add(andCb);
@@ -89,6 +101,7 @@
   settings.addSeparator();
   settings.add(showOverlappingGroups);
   settings.addSeparator();
+  settings.add(showNumberOfElements);
   settings.add(autoAssignGroup);
   openset.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
@@ -96,6 +109,7 @@
       }
  else {
         JButton src=(JButton)e.getSource();
+        showNumberOfElements.setSelected(Globals.prefs.getBoolean(JabRefPreferences.GROUP_SHOW_NUMBER_OF_ELEMENTS));
         autoAssignGroup.setSelected(Globals.prefs.getBoolean("autoAssignGroup"));
         settings.show(src,0,openset.getHeight());
       }
