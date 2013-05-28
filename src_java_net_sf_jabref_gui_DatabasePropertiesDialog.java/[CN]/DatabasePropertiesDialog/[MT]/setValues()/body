@@ -6,9 +6,17 @@
     if (fileD.size() >= 1)     fileDir.setText((fileD.get(0)).trim());
   }
   Vector<String> fileDI=metaData.getData(Globals.prefs.get("userFileDirIndividual"));
-  if (fileDI == null)   fileDirIndv.setText("");
+  Vector<String> fileDIL=metaData.getData(Globals.prefs.get("userFileDirInd_Legacy"));
+  if (fileDI == null) {
+    oldFileIndvVal=fileDirIndv.getText();
+    if (fileDIL == null)     fileDirIndv.setText("");
+ else {
+      if (fileDIL.size() >= 1)       fileDirIndv.setText((fileDIL.get(0)).trim());
+    }
+  }
  else {
     if (fileDI.size() >= 1)     fileDirIndv.setText((fileDI.get(0)).trim());
+    oldFileIndvVal=fileDirIndv.getText();
   }
   Vector<String> pdfD=metaData.getData("pdfDirectory");
   if (pdfD == null)   pdfDir.setText("");
@@ -26,7 +34,6 @@
     if (prot.size() >= 1)     protect.setSelected(Boolean.parseBoolean(prot.get(0)));
   }
   oldFileVal=fileDir.getText();
-  oldFileIndvVal=fileDir.getText();
   oldPdfVal=pdfDir.getText();
   oldPsVal=psDir.getText();
   oldProtectVal=protect.isSelected();
