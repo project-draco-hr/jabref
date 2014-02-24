@@ -73,6 +73,17 @@
         }
       }
     }
+    Matcher authorMatcher=authorPattern.matcher(text);
+    StringBuffer authorNames=new StringBuffer("");
+    int authorCount=0;
+    while (authorMatcher.find()) {
+      if (authorCount >= 1) {
+        authorNames.append(" and ");
+      }
+      authorNames.append(htmlConverter.format(authorMatcher.group(1)));
+      authorCount++;
+    }
+    entry.setField("author",authorNames.toString());
     if (entry.getField("author") == null || entry.getField("author").startsWith("a href") || entry.getField("author").startsWith("Topic(s)")) {
       entry.setField("author","");
     }
