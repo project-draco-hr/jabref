@@ -1,14 +1,15 @@
 {
-  if (panel == null)   return false;
+  if (panel == null)   return Collections.emptyList();
   ImportDialog importDialog=null;
   boolean doNotShowAgain=false;
   boolean neverShow=Globals.prefs.getBoolean(ImportSettingsTab.PREF_IMPORT_ALWAYSUSE);
   int globalChoice=Globals.prefs.getInt(ImportSettingsTab.PREF_IMPORT_DEFAULT_PDF_IMPORT_STYLE);
   String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
-  for (  String fileName : fileNames) {
+  List<BibtexEntry> res=new ArrayList<BibtexEntry>();
+  fileNameLoop:   for (  String fileName : fileNames) {
     List<BibtexEntry> xmpEntriesInFile=readXmpEntries(fileName);
     if (!neverShow && !doNotShowAgain) {
-      importDialog=new ImportDialog(dropRow,fileName);
+      importDialog=new ImportDialog((dropRow >= 0),fileName);
       if (!hasXmpEntries(xmpEntriesInFile)) {
         importDialog.disableXMPChoice();
       }
@@ -22,14 +23,14 @@
       BibtexEntry entry;
       BibtexEntryType type;
       InputStream in=null;
-      List<BibtexEntry> res=null;
+      List<BibtexEntry> localRes=null;
       MetaDataListDialog metaDataListDialog;
 switch (choice) {
 case ImportDialog.XMP:
         PdfXmpImporter importer=new PdfXmpImporter();
       try {
         in=new FileInputStream(fileName);
-        res=importer.importEntries(in,frame);
+        localRes=importer.importEntries(in,frame);
       }
  catch (      IOException ex) {
         ex.printStackTrace();
@@ -41,17 +42,20 @@ case ImportDialog.XMP:
  catch (        Exception f) {
         }
       }
-    if ((res == null) || (res.size() == 0)) {
-      createNewBlankEntry(fileName);
-      return true;
+    if ((localRes == null) || (localRes.size() == 0)) {
+      Globals.logger(Globals.lang("Import failed"));
+      entry=createNewBlankEntry(fileName);
+      res.add(entry);
+      continue fileNameLoop;
     }
-  entry=res.get(0);
+  entry=localRes.get(0);
 panel.database().insertEntry(entry);
 panel.markBaseChanged();
 FileListTableModel tm=new FileListTableModel();
 File toLink=new File(fileName);
 tm.addEntry(0,new FileListEntry(toLink.getName(),Util.shortenFileName(toLink,dirsS).getPath(),Globals.prefs.getExternalFileTypeByName("pdf")));
 entry.setField(GUIGlobals.FILE_FIELD,tm.getStringRepresentation());
+res.add(entry);
 break;
 case ImportDialog.CONTENT:
 PdfContentImporter contentImporter=new PdfContentImporter();
@@ -62,17 +66,19 @@ in=new FileInputStream(file);
  catch (Exception e) {
 Globals.logger(Globals.lang("Import failed"));
 e.printStackTrace();
-createNewBlankEntry(fileName);
-return true;
+entry=createNewBlankEntry(fileName);
+res.add(entry);
+continue fileNameLoop;
 }
 try {
-res=contentImporter.importEntries(in,status);
+localRes=contentImporter.importEntries(in,status);
 }
  catch (Exception e) {
 Globals.logger(Globals.lang("Import failed"));
 e.printStackTrace();
-createNewBlankEntry(fileName);
-return true;
+entry=createNewBlankEntry(fileName);
+res.add(entry);
+continue fileNameLoop;
 }
  finally {
 try {
@@ -81,11 +87,12 @@ in.close();
  catch (Exception f) {
 }
 }
-if ((res == null) || (res.size() == 0)) {
-createNewBlankEntry(fileName);
-return true;
+if ((localRes == null) || (localRes.size() == 0)) {
+entry=createNewBlankEntry(fileName);
+res.add(entry);
+continue fileNameLoop;
 }
-entry=res.get(0);
+entry=localRes.get(0);
 panel.database().insertEntry(entry);
 panel.markBaseChanged();
 LabelPatternUtil.makeLabel(panel.metaData(),panel.database(),entry);
@@ -97,12 +104,14 @@ EntryEditor editor=panel.getEntryEditor(entry);
 panel.showEntryEditor(editor);
 panel.adjustSplitter();
 }
+res.add(entry);
 break;
 case ImportDialog.MRDLIB:
 metaDataListDialog=new MetaDataListDialog(fileName,true);
 Tools.centerRelativeToWindow(metaDataListDialog,frame);
 metaDataListDialog.showDialog();
 Document document=metaDataListDialog.getXmlDocuments();
+entry=null;
 if (document != null && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
 int selected=metaDataListDialog.getTableMetadata().getSelectedRow();
 if (selected > -1) {
@@ -128,21 +137,24 @@ dfh.linkPdfToEntry(fileName,entryTable,entry);
 LabelPatternUtil.makeLabel(panel.metaData(),panel.database(),entry);
 }
  else {
-createNewBlankEntry(fileName);
+entry=createNewBlankEntry(fileName);
 }
 }
  else if (metaDataListDialog.getResult() == JOptionPane.CANCEL_OPTION) {
 continue;
 }
  else if (metaDataListDialog.getResult() == JOptionPane.NO_OPTION) {
-createNewBlankEntry(fileName);
+entry=createNewBlankEntry(fileName);
 }
  else if (document == null && metaDataListDialog.getResult() == JOptionPane.OK_OPTION) {
-createNewBlankEntry(fileName);
+entry=createNewBlankEntry(fileName);
 }
+assert(entry != null);
+res.add(entry);
 break;
 case ImportDialog.NOMETA:
-createNewBlankEntry(fileName);
+entry=createNewBlankEntry(fileName);
+res.add(entry);
 break;
 case ImportDialog.UPDATEEMPTYFIELDS:
 metaDataListDialog=new MetaDataListDialog(fileName,false);
@@ -172,5 +184,5 @@ break;
 }
 }
 }
-return true;
+return res;
 }

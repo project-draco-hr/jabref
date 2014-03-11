@@ -15,12 +15,14 @@
       if (entry.getId() == null) {
         entry.setId(Util.createNeutralId());
       }
-      if (database.insertEntry(entry)) {
-        importGUIMessages.add("Problem importing " + f.getPath() + ": Insert into BibtexDatabase failed.");
-      }
+      if (database.getEntryById(entry.getId()) == null) {
+        if (database.insertEntry(entry)) {
+          importGUIMessages.add("Problem importing " + f.getPath() + ": Insert into BibtexDatabase failed.");
+        }
  else {
-        count++;
-        if (panel != null)         ce.addEdit(new UndoableInsertEntry(database,entry,panel));
+          count++;
+          if (panel != null)           ce.addEdit(new UndoableInsertEntry(database,entry,panel));
+        }
       }
     }
  else {
