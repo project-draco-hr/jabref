@@ -1,0 +1,210 @@
+{
+  this._prefs=prefs;
+  this._frame=frame;
+  FormLayout layout=new FormLayout("4dlu, left:pref, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  builder.setLeadingColumnOffset(1);
+{
+    saveInOriginalOrder=new JRadioButton(Globals.lang("Save entries in their original order"));
+    saveInTableOrder=new JRadioButton(Globals.lang("Save in current table sort order"));
+    saveInSpecifiedOrder=new JRadioButton(Globals.lang("Save entries ordered as specified"));
+    ButtonGroup bg=new ButtonGroup();
+    bg.add(saveInOriginalOrder);
+    bg.add(saveInTableOrder);
+    bg.add(saveInSpecifiedOrder);
+    ActionListener listener=new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        boolean selected=e.getSource() == saveInSpecifiedOrder;
+        savePriSort.setEnabled(selected);
+        savePriField.setEnabled(selected);
+        savePriDesc.setEnabled(selected);
+        saveSecSort.setEnabled(selected);
+        saveSecField.setEnabled(selected);
+        saveSecDesc.setEnabled(selected);
+        saveTerSort.setEnabled(selected);
+        saveTerField.setEnabled(selected);
+        saveTerDesc.setEnabled(selected);
+      }
+    }
+;
+    saveInOriginalOrder.addActionListener(listener);
+    saveInTableOrder.addActionListener(listener);
+    saveInSpecifiedOrder.addActionListener(listener);
+    ArrayList<String> v=new ArrayList<String>(Arrays.asList(BibtexFields.getAllFieldNames()));
+    v.add(BibtexFields.KEY_FIELD);
+    Collections.sort(v);
+    Object[] allPlusKey=v.toArray();
+    savePriSort=new JComboBox(allPlusKey);
+    saveSecSort=new JComboBox(allPlusKey);
+    saveTerSort=new JComboBox(allPlusKey);
+    savePriField=new JTextField(10);
+    saveSecField=new JTextField(10);
+    saveTerField=new JTextField(10);
+    savePriSort.insertItemAt(Globals.lang("<select>"),0);
+    saveSecSort.insertItemAt(Globals.lang("<select>"),0);
+    saveTerSort.insertItemAt(Globals.lang("<select>"),0);
+    savePriSort.addActionListener(new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        if (savePriSort.getSelectedIndex() > 0) {
+          savePriField.setText(savePriSort.getSelectedItem().toString());
+          savePriSort.setSelectedIndex(0);
+        }
+      }
+    }
+);
+    saveSecSort.addActionListener(new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        if (saveSecSort.getSelectedIndex() > 0) {
+          saveSecField.setText(saveSecSort.getSelectedItem().toString());
+          saveSecSort.setSelectedIndex(0);
+        }
+      }
+    }
+);
+    saveTerSort.addActionListener(new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        if (saveTerSort.getSelectedIndex() > 0) {
+          saveTerField.setText(saveTerSort.getSelectedItem().toString());
+          saveTerSort.setSelectedIndex(0);
+        }
+      }
+    }
+);
+    savePriDesc=new JCheckBox(Globals.lang("Descending"));
+    saveSecDesc=new JCheckBox(Globals.lang("Descending"));
+    saveTerDesc=new JCheckBox(Globals.lang("Descending"));
+    JLabel lab;
+    builder.appendSeparator(Globals.lang("Save sort order"));
+    builder.append(saveInOriginalOrder,1);
+    builder.nextLine();
+    builder.append(saveInTableOrder,1);
+    builder.nextLine();
+    builder.append(saveInSpecifiedOrder,1);
+    builder.nextLine();
+    FormLayout layout2=new FormLayout("right:pref, 8dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, left:pref","");
+    DefaultFormBuilder builder2=new DefaultFormBuilder(layout2);
+    lab=new JLabel(Globals.lang("Primary sort criterion"));
+    builder2.append(lab);
+    builder2.append(savePriSort);
+    builder2.append(savePriField);
+    builder2.append(savePriDesc);
+    builder2.nextLine();
+    lab=new JLabel(Globals.lang("Secondary sort criterion"));
+    builder2.append(lab);
+    builder2.append(saveSecSort);
+    builder2.append(saveSecField);
+    builder2.append(saveSecDesc);
+    builder2.nextLine();
+    lab=new JLabel(Globals.lang("Tertiary sort criterion"));
+    builder2.append(lab);
+    builder2.append(saveTerSort);
+    builder2.append(saveTerField);
+    builder2.append(saveTerDesc);
+    saveSpecPanel=builder2.getPanel();
+    builder.append(saveSpecPanel);
+    builder.nextLine();
+  }
+{
+    exportInOriginalOrder=new JRadioButton(Globals.lang("Export entries in their original order"));
+    exportInTableOrder=new JRadioButton(Globals.lang("Export in current table sort order"));
+    exportInSpecifiedOrder=new JRadioButton(Globals.lang("Export entries ordered as specified"));
+    ButtonGroup bg=new ButtonGroup();
+    bg.add(exportInOriginalOrder);
+    bg.add(exportInTableOrder);
+    bg.add(exportInSpecifiedOrder);
+    ActionListener listener=new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        boolean selected=e.getSource() == exportInSpecifiedOrder;
+        exportPriSort.setEnabled(selected);
+        exportPriField.setEnabled(selected);
+        exportPriDesc.setEnabled(selected);
+        exportSecSort.setEnabled(selected);
+        exportSecField.setEnabled(selected);
+        exportSecDesc.setEnabled(selected);
+        exportTerSort.setEnabled(selected);
+        exportTerField.setEnabled(selected);
+        exportTerDesc.setEnabled(selected);
+      }
+    }
+;
+    exportInOriginalOrder.addActionListener(listener);
+    exportInTableOrder.addActionListener(listener);
+    exportInSpecifiedOrder.addActionListener(listener);
+    ArrayList<String> v=new ArrayList<String>(Arrays.asList(BibtexFields.getAllFieldNames()));
+    v.add(BibtexFields.KEY_FIELD);
+    Collections.sort(v);
+    Object[] allPlusKey=v.toArray();
+    exportPriSort=new JComboBox(allPlusKey);
+    exportSecSort=new JComboBox(allPlusKey);
+    exportTerSort=new JComboBox(allPlusKey);
+    exportPriField=new JTextField(10);
+    exportSecField=new JTextField(10);
+    exportTerField=new JTextField(10);
+    exportPriSort.insertItemAt(Globals.lang("<select>"),0);
+    exportSecSort.insertItemAt(Globals.lang("<select>"),0);
+    exportTerSort.insertItemAt(Globals.lang("<select>"),0);
+    exportPriSort.addActionListener(new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        if (exportPriSort.getSelectedIndex() > 0) {
+          exportPriField.setText(exportPriSort.getSelectedItem().toString());
+          exportPriSort.setSelectedIndex(0);
+        }
+      }
+    }
+);
+    exportSecSort.addActionListener(new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        if (exportSecSort.getSelectedIndex() > 0) {
+          exportSecField.setText(exportSecSort.getSelectedItem().toString());
+          exportSecSort.setSelectedIndex(0);
+        }
+      }
+    }
+);
+    exportTerSort.addActionListener(new ActionListener(){
+      public void actionPerformed(      ActionEvent e){
+        if (exportTerSort.getSelectedIndex() > 0) {
+          exportTerField.setText(exportTerSort.getSelectedItem().toString());
+          exportTerSort.setSelectedIndex(0);
+        }
+      }
+    }
+);
+    exportPriDesc=new JCheckBox(Globals.lang("Descending"));
+    exportSecDesc=new JCheckBox(Globals.lang("Descending"));
+    exportTerDesc=new JCheckBox(Globals.lang("Descending"));
+    JLabel lab;
+    builder.appendSeparator(Globals.lang("Export sort order"));
+    builder.append(exportInOriginalOrder,1);
+    builder.nextLine();
+    builder.append(exportInTableOrder,1);
+    builder.nextLine();
+    builder.append(exportInSpecifiedOrder,1);
+    builder.nextLine();
+    FormLayout layout2=new FormLayout("right:pref, 8dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, left:pref","");
+    DefaultFormBuilder builder2=new DefaultFormBuilder(layout2);
+    lab=new JLabel(Globals.lang("Primary sort criterion"));
+    builder2.append(lab);
+    builder2.append(exportPriSort);
+    builder2.append(exportPriField);
+    builder2.append(exportPriDesc);
+    builder2.nextLine();
+    lab=new JLabel(Globals.lang("Secondary sort criterion"));
+    builder2.append(lab);
+    builder2.append(exportSecSort);
+    builder2.append(exportSecField);
+    builder2.append(exportSecDesc);
+    builder2.nextLine();
+    lab=new JLabel(Globals.lang("Tertiary sort criterion"));
+    builder2.append(lab);
+    builder2.append(exportTerSort);
+    builder2.append(exportTerField);
+    builder2.append(exportTerDesc);
+    builder.append(builder2.getPanel());
+    builder.nextLine();
+  }
+  JPanel pan=builder.getPanel();
+  pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  setLayout(new BorderLayout());
+  add(pan,BorderLayout.CENTER);
+}
