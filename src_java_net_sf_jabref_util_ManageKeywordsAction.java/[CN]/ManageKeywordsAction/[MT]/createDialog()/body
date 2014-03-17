@@ -1,14 +1,14 @@
 {
   keyword=new JTextField();
-  keywordListModel=new DefaultListModel();
-  keywordList=new JList(keywordListModel);
+  keywordListModel=new DefaultListModel<String>();
+  keywordList=new JList<String>(keywordListModel);
   keywordList.setVisibleRowCount(8);
-  kPane=new JScrollPane(keywordList);
+  JScrollPane kPane=new JScrollPane(keywordList);
   diag=new JDialog(frame,Globals.lang("Manage keywords"),true);
-  ok=new JButton(Globals.lang("Ok"));
-  cancel=new JButton(Globals.lang("Cancel"));
-  add=new JButton(Globals.lang("Add"));
-  remove=new JButton(Globals.lang("Remove"));
+  JButton ok=new JButton(Globals.lang("Ok"));
+  JButton cancel=new JButton(Globals.lang("Cancel"));
+  JButton add=new JButton(Globals.lang("Add"));
+  JButton remove=new JButton(Globals.lang("Remove"));
   keywordList.setVisibleRowCount(10);
   intersectKeywords=new JRadioButton("Display keywords appearing in ALL entries");
   mergeKeywords=new JRadioButton("Display keywords appearing in ANY entry");
@@ -69,7 +69,7 @@
       }
  else {
         int idx=0;
-        String element=(String)keywordListModel.getElementAt(idx);
+        String element=keywordListModel.getElementAt(idx);
         while ((idx < keywordListModel.size()) && (element.compareTo(text) < 0)) {
           idx++;
         }
@@ -90,10 +90,8 @@
   add.addActionListener(addActionListener);
   final ActionListener removeActionListenter=new ActionListener(){
     public void actionPerformed(    ActionEvent arg0){
-      List<Object> values=keywordList.getSelectedValuesList();
-      List<String> selectedValuesList=new ArrayList<String>();
-      for (      Object value : values)       selectedValuesList.add((String)value);
-      for (      String val : selectedValuesList) {
+      List<String> values=keywordList.getSelectedValuesList();
+      for (      String val : values) {
         keywordListModel.removeElement(val);
       }
     }
