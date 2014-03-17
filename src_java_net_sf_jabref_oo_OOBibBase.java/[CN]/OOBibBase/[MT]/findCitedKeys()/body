@@ -1,11 +1,11 @@
 {
-  XReferenceMarksSupplier supplier=(XReferenceMarksSupplier)UnoRuntime.queryInterface(XReferenceMarksSupplier.class,xCurrentComponent);
+  XReferenceMarksSupplier supplier=UnoRuntime.queryInterface(XReferenceMarksSupplier.class,xCurrentComponent);
   XNameAccess xNamedMarks=supplier.getReferenceMarks();
   String[] names=xNamedMarks.getElementNames();
   ArrayList<String> keys=new ArrayList<String>();
   for (int i=0; i < names.length; i++) {
     Object bookmark=xNamedMarks.getByName(names[i]);
-    XTextContent xTextContent=(XTextContent)UnoRuntime.queryInterface(XTextContent.class,bookmark);
+    XTextContent xTextContent=UnoRuntime.queryInterface(XTextContent.class,bookmark);
     String name=names[i];
     List<String> newKeys=parseRefMarkName(name);
     for (    String key : newKeys)     if (!keys.contains(key))     keys.add(key);
