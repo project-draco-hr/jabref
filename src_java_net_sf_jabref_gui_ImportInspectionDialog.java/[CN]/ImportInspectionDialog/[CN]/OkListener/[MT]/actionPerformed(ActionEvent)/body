@@ -1,7 +1,6 @@
 {
   if (Globals.prefs.getBoolean("warnAboutDuplicatesInInspection")) {
-    for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
-      BibtexEntry entry=i.next();
+    for (    BibtexEntry entry : entries) {
       if (!entry.isSearchHit())       continue;
       if (entry.isGroupHit()) {
         CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("There are possible duplicates (marked with a 'D' icon) that haven't been resolved. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
@@ -14,8 +13,7 @@
   }
   NamedCompound ce=new NamedCompound(undoName);
   if (entriesToDelete.size() > 0) {
-    for (Iterator<BibtexEntry> i=entriesToDelete.iterator(); i.hasNext(); ) {
-      BibtexEntry entry=i.next();
+    for (    BibtexEntry entry : entriesToDelete) {
       ce.addEdit(new UndoableRemoveEntry(panel.database(),entry,panel));
       panel.database().removeEntry(entry.getId());
     }
@@ -35,8 +33,7 @@
     if (Globals.prefs.getBoolean("unmarkAllEntriesBeforeImporting"))     for (    BibtexEntry entry : panel.database().getEntries()) {
       Util.unmarkEntry(entry,true,panel.database(),ce);
     }
-    for (Iterator<BibtexEntry> i=selected.iterator(); i.hasNext(); ) {
-      BibtexEntry entry=i.next();
+    for (    BibtexEntry entry : selected) {
       entry.setSearchHit(false);
       entry.setGroupHit(false);
       Set<GroupTreeNode> groups=groupAdditions.get(entry);
@@ -49,8 +46,7 @@
  else           groupingCanceled=true;
         }
         if (entry.getField(BibtexFields.KEY_FIELD) != null) {
-          for (Iterator<GroupTreeNode> i2=groups.iterator(); i2.hasNext(); ) {
-            GroupTreeNode node=i2.next();
+          for (          GroupTreeNode node : groups) {
             if (node.getGroup().supportsAdd()) {
               AbstractUndoableEdit undo=node.getGroup().add(new BibtexEntry[]{entry});
               if (undo instanceof UndoableChangeAssignment)               ((UndoableChangeAssignment)undo).setEditedNode(node);

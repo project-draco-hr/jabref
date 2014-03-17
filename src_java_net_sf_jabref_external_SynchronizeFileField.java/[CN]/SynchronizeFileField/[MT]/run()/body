@@ -14,8 +14,8 @@
   Set<BibtexEntry> changedEntries=new HashSet<BibtexEntry>();
   if (autoSet) {
     Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
-    for (int i=0; i < sel.length; i++) {
-      entries.add(sel[i]);
+    for (    BibtexEntry aSel : sel) {
+      entries.add(aSel);
     }
     Thread t=Util.autoSetLinks(entries,ce,changedEntries,null,panel.metaData(),null,null);
     try {
@@ -29,9 +29,9 @@
   panel.frame().setProgressBarValue(progress);
   if (checkExisting) {
     boolean removeAllBroken=false;
-    mainLoop:     for (int i=0; i < sel.length; i++) {
+    mainLoop:     for (    BibtexEntry aSel : sel) {
       panel.frame().setProgressBarValue(progress++);
-      final String old=sel[i].getField(fieldName);
+      final String old=aSel.getField(fieldName);
       if ((old != null) && !old.equals("")) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old);
@@ -47,7 +47,7 @@
           if ((file == null) || !file.exists()) {
             int answer;
             if (!removeAllBroken) {
-              answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+              answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),aSel.getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
             }
  else {
               answer=2;
@@ -84,7 +84,7 @@ ExternalFileType newType=new ExternalFileType(flEntry.getType().getName(),"","",
 ExternalFileTypeEntryEditor editor=new ExternalFileTypeEntryEditor(panel.frame(),newType);
 editor.setVisible(true);
 if (editor.okPressed()) {
-java.util.List<ExternalFileType> fileTypes=new ArrayList<ExternalFileType>();
+List<ExternalFileType> fileTypes=new ArrayList<ExternalFileType>();
 ExternalFileType[] oldTypes=Globals.prefs.getExternalFileTypeSelection();
 for (int k=0; k < oldTypes.length; k++) {
 fileTypes.add(oldTypes[k]);
@@ -104,9 +104,9 @@ editor.setVisible(true,false);
 if (!tableModel.getStringRepresentation().equals(old)) {
 String toSet=tableModel.getStringRepresentation();
 if (toSet.length() == 0) toSet=null;
-ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,toSet));
-sel[i].setField(fieldName,toSet);
-changedEntries.add(sel[i]);
+ce.addEdit(new UndoableFieldChange(aSel,fieldName,old,toSet));
+aSel.setField(fieldName,toSet);
+changedEntries.add(aSel);
 }
 }
 }

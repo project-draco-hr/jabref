@@ -15,12 +15,11 @@
     public void run(){
       ArrayList<File> dirs=new ArrayList<File>();
       String[] dirsS=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
-      for (int i=0; i < dirsS.length; i++) {
-        dirs.add(new File(dirsS[i]));
+      for (      String dirs1 : dirsS) {
+        dirs.add(new File(dirs1));
       }
       Collection<String> extensions=new ArrayList<String>();
-      for (int i=0; i < types.length; i++) {
-        final ExternalFileType type=types[i];
+      for (      final ExternalFileType type : types) {
         extensions.add(type.getExtension());
       }
       Map<BibtexEntry,java.util.List<File>> result;
@@ -32,8 +31,7 @@
         result=Util.findAssociatedFiles(entries,extensions,dirs);
       }
       boolean foundAny=false;
-      for (Iterator<BibtexEntry> i=result.keySet().iterator(); i.hasNext(); ) {
-        BibtexEntry anEntry=i.next();
+      for (      BibtexEntry anEntry : result.keySet()) {
         FileListTableModel tableModel;
         String oldVal=anEntry.getField(GUIGlobals.FILE_FIELD);
         if (singleTableModel == null) {

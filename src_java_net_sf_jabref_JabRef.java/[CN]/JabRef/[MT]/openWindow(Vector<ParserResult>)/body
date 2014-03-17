@@ -12,14 +12,14 @@
     }
     if (!blank.isInvoked() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
       String[] names=Globals.prefs.getStringArray("lastEdited");
-      lastEdLoop:       for (int i=0; i < names.length; i++) {
-        File fileToOpen=new File(names[i]);
+      lastEdLoop:       for (      String name : names) {
+        File fileToOpen=new File(name);
         for (int j=0; j < loaded.size(); j++) {
           ParserResult pr=loaded.elementAt(j);
           if ((pr.getFile() != null) && pr.getFile().equals(fileToOpen))           continue lastEdLoop;
         }
         if (fileToOpen.exists()) {
-          ParserResult pr=openBibFile(names[i],false);
+          ParserResult pr=openBibFile(name,false);
           if (pr != null) {
             if (pr == ParserResult.INVALID_FORMAT) {
               System.out.println(Globals.lang("Error opening file") + " '" + fileToOpen.getPath()+ "'");

@@ -1,8 +1,8 @@
 {
   LinkedHashMap<BibtexEntry,BibtexDatabase> newList=new LinkedHashMap<BibtexEntry,BibtexDatabase>();
   HashMap<BibtexEntry,BibtexEntry> adaptedEntries=new HashMap<BibtexEntry,BibtexEntry>();
-  for (int i=0; i < names.length; i++) {
-    Matcher m=citePattern.matcher(names[i]);
+  for (  String name : names) {
+    Matcher m=citePattern.matcher(name);
     if (m.find()) {
       String[] keys=m.group(2).split(",");
       for (int j=0; j < keys.length; j++) {
@@ -11,7 +11,7 @@
         if (database != null)         origEntry=database.getEntryByKey(keys[j]);
         if (origEntry == null) {
           System.out.println("Bibtex key not found : '" + keys[j] + "'");
-          System.out.println("Problem with reference mark: '" + names[i] + "'");
+          System.out.println("Problem with reference mark: '" + name + "'");
           newList.put(new UndefinedBibtexEntry(keys[j]),null);
         }
  else {

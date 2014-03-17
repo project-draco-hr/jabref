@@ -17,16 +17,16 @@ field=BibtexDatabase.getResolvedField(text,bibtex,database);
  else if (text.matches(".*(;|(\\&+)).*")) {
 String[] parts=text.split("\\s*(;|(\\&+))\\s*");
 field=null;
-for (int i=0; i < parts.length; i++) {
-field=BibtexDatabase.getResolvedField(parts[i],bibtex,database);
+for (String part : parts) {
+field=BibtexDatabase.getResolvedField(part,bibtex,database);
 if (field == null) break;
 }
 }
  else {
 String[] parts=text.split("\\s*(\\|+)\\s*");
 field=null;
-for (int i=0; i < parts.length; i++) {
-field=BibtexDatabase.getResolvedField(parts[i],bibtex,database);
+for (String part : parts) {
+field=BibtexDatabase.getResolvedField(part,bibtex,database);
 if (field != null) break;
 }
 }
@@ -94,8 +94,8 @@ fieldEntry=field;
 }
 }
 if (option != null) {
-for (int i=0; i < option.length; i++) {
-fieldEntry=option[i].format(fieldEntry);
+for (LayoutFormatter anOption : option) {
+fieldEntry=anOption.format(fieldEntry);
 }
 }
 if (postFormatter != null) fieldEntry=postFormatter.format(fieldEntry);

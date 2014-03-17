@@ -1,11 +1,11 @@
 {
   logger.debug("Loading emacs keybindings");
-  for (int i=0; i < JTCS.length; i++) {
-    Action[] origActions=JTCS[i].getActions();
+  for (  JTextComponent JTC : JTCS) {
+    Action[] origActions=JTC.getActions();
     Action[] actions=new Action[origActions.length + EMACS_ACTIONS.length];
     System.arraycopy(origActions,0,actions,0,origActions.length);
     System.arraycopy(EMACS_ACTIONS,0,actions,origActions.length,EMACS_ACTIONS.length);
-    Keymap k=JTCS[i].getKeymap();
+    Keymap k=JTC.getKeymap();
     JTextComponent.KeyBinding[] keybindings;
     if (JabRefPreferences.getInstance().getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CA)) {
       int size=EMACS_KEY_BINDINGS_BASE.length + 1;
@@ -16,6 +16,6 @@
  else {
       keybindings=EMACS_KEY_BINDINGS_BASE;
     }
-    JTCS[i].loadKeymap(k,keybindings,actions);
+    JTC.loadKeymap(k,keybindings,actions);
   }
 }

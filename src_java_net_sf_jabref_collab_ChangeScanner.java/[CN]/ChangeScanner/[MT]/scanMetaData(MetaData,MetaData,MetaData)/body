@@ -1,8 +1,7 @@
 {
   MetaDataChange mdc=new MetaDataChange(inMem,inTemp);
   ArrayList<String> handledOnDisk=new ArrayList<String>();
-  for (Iterator i=inTemp.iterator(); i.hasNext(); ) {
-    String key=(String)i.next();
+  for (  String key : inTemp) {
     Vector<String> vod=onDisk.getData(key);
     if (vod == null) {
       mdc.insertMetaDataRemoval(key);
@@ -13,8 +12,7 @@
       handledOnDisk.add(key);
     }
   }
-  for (Iterator i=onDisk.iterator(); i.hasNext(); ) {
-    String key=(String)i.next();
+  for (  String key : onDisk) {
     if (!handledOnDisk.contains(key)) {
       mdc.insertMetaDataAddition(key,onDisk.getData(key));
     }

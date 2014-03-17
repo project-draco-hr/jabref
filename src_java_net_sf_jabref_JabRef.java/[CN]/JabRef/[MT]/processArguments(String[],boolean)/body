@@ -38,14 +38,14 @@
     }
  else {
       String[] keys=value.split(",");
-      for (int i=0; i < keys.length; i++) {
+      for (      String key : keys) {
         try {
-          if (Globals.prefs.hasKey(keys[i].trim())) {
-            System.out.println(Globals.lang("Resetting preference key '%0'",keys[i].trim()));
-            Globals.prefs.clear(keys[i].trim());
+          if (Globals.prefs.hasKey(key.trim())) {
+            System.out.println(Globals.lang("Resetting preference key '%0'",key.trim()));
+            Globals.prefs.clear(key.trim());
           }
  else {
-            System.out.println(Globals.lang("Unknown preference key '%0'",keys[i].trim()));
+            System.out.println(Globals.lang("Unknown preference key '%0'",key.trim()));
           }
         }
  catch (        BackingStoreException e) {
@@ -68,16 +68,16 @@
   Vector<ParserResult> loaded=new Vector<ParserResult>();
   Vector<String> toImport=new Vector<String>();
   if (!blank.isInvoked() && (leftOver.length > 0)) {
-    for (int i=0; i < leftOver.length; i++) {
-      boolean bibExtension=leftOver[i].toLowerCase().endsWith("bib");
+    for (    String aLeftOver : leftOver) {
+      boolean bibExtension=aLeftOver.toLowerCase().endsWith("bib");
       ParserResult pr=null;
-      if (bibExtension)       pr=openBibFile(leftOver[i],false);
+      if (bibExtension)       pr=openBibFile(aLeftOver,false);
       if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
         if (initialStartup) {
-          toImport.add(leftOver[i]);
+          toImport.add(aLeftOver);
         }
  else {
-          ParserResult res=importToOpenBase(leftOver[i]);
+          ParserResult res=importToOpenBase(aLeftOver);
           if (res != null)           loaded.add(res);
  else           loaded.add(ParserResult.INVALID_FORMAT);
         }

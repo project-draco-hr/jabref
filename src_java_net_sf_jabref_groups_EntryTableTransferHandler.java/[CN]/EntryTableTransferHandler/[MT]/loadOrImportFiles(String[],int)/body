@@ -2,38 +2,38 @@
   OpenDatabaseAction openAction=new OpenDatabaseAction(frame,false);
   ArrayList<String> notBibFiles=new ArrayList<String>();
   String encoding=Globals.prefs.get("defaultEncoding");
-  for (int i=0; i < fileNames.length; i++) {
+  for (  String fileName : fileNames) {
     String extension="";
     ExternalFileType fileType=null;
-    int index=fileNames[i].lastIndexOf('.');
-    if ((index >= 0) && (index < fileNames[i].length())) {
-      extension=fileNames[i].substring(index + 1).toLowerCase();
+    int index=fileName.lastIndexOf('.');
+    if ((index >= 0) && (index < fileName.length())) {
+      extension=fileName.substring(index + 1).toLowerCase();
       fileType=Globals.prefs.getExternalFileTypeByExt(extension);
     }
     if (extension.equals("bib")) {
-      File f=new File(fileNames[i]);
+      File f=new File(fileName);
       try {
         ParserResult pr=OpenDatabaseAction.loadDatabase(f,encoding);
         if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
-          notBibFiles.add(fileNames[i]);
+          notBibFiles.add(fileName);
         }
  else {
           openAction.addNewDatabase(pr,f,true);
-          frame.getFileHistory().newFile(fileNames[i]);
+          frame.getFileHistory().newFile(fileName);
         }
       }
  catch (      IOException e) {
-        notBibFiles.add(fileNames[i]);
+        notBibFiles.add(fileName);
       }
       continue;
     }
     if (fileType != null && dropRow >= 0) {
       boolean local=true;
       DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
-      dfh.handleDroppedfile(fileNames[i],fileType,local,entryTable,dropRow);
+      dfh.handleDroppedfile(fileName,fileType,local,entryTable,dropRow);
       continue;
     }
-    notBibFiles.add(fileNames[i]);
+    notBibFiles.add(fileName);
   }
   if (notBibFiles.size() > 0) {
     String[] toImport=new String[notBibFiles.size()];

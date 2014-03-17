@@ -9,8 +9,7 @@
 );
   Set<String> fileNames=new HashSet<String>();
   int i=0;
-  for (Iterator<FileListEntry> iterator=files.iterator(); iterator.hasNext(); ) {
-    FileListEntry entry=iterator.next();
+  for (  FileListEntry entry : files) {
     File file=new File(entry.getLink());
     String name=file.getName();
     int pos=name.lastIndexOf('.');
@@ -18,8 +17,8 @@
     String[] dir=metaData.getFileDirectory(extension);
     String[] fileDir=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
     ArrayList<String> al=new ArrayList<String>();
-    for (int i2=0; i2 < dir.length; i2++)     if (!al.contains(dir[i2]))     al.add(dir[i2]);
-    for (int i2=0; i2 < fileDir.length; i2++)     if (!al.contains(fileDir[i2]))     al.add(fileDir[i2]);
+    for (    String aDir : dir)     if (!al.contains(aDir))     al.add(aDir);
+    for (    String aFileDir : fileDir)     if (!al.contains(aFileDir))     al.add(aFileDir);
     String[] dirs=al.toArray(new String[al.size()]);
     File tmp=Util.expandFilename(entry.getLink(),dirs);
     if (tmp != null)     file=tmp;

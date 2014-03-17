@@ -18,13 +18,13 @@
     BasicEventList entryList=new BasicEventList();
     SortedList sorter=new SortedList(entryList,new FieldComparatorStack<BibtexEntry>(comparators));
     if ((bes != null) && (bes.length > 0)) {
-      for (int i=0; i < bes.length; i++) {
-        sorter.add(bes[i]);
+      for (      BibtexEntry be1 : bes) {
+        sorter.add(be1);
       }
     }
     FieldFormatter ff=new LatexFieldFormatter();
-    for (Iterator<BibtexEntry> i=sorter.iterator(); i.hasNext(); ) {
-      be=(i.next());
+    for (    BibtexEntry aSorter : (Iterable<BibtexEntry>)sorter) {
+      be=(aSorter);
       BibtexEntryType tp=be.getType();
       if (BibtexEntryType.getStandardType(tp.getName()) == null) {
         types.put(tp.getName(),tp);
@@ -36,8 +36,8 @@
       metaData.writeMetaData(fw);
     }
     if (types.size() > 0) {
-      for (Iterator<String> i=types.keySet().iterator(); i.hasNext(); ) {
-        CustomEntryType tp=(CustomEntryType)types.get(i.next());
+      for (      String s : types.keySet()) {
+        CustomEntryType tp=(CustomEntryType)types.get(s);
         tp.save(fw);
         fw.write(Globals.NEWLINE);
       }
