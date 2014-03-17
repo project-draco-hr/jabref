@@ -5,31 +5,26 @@
     }
     boolean sel=selection.get(id);
     if (sel) {
-      try {
-        BibtexEntry entry=downloadEntryBibTeX(id,fetchAbstract);
-        if (entry != null) {
-          String title=entry.getField("title");
-          if (title != null) {
-            title=title.replaceAll("\\\\&","&").replaceAll("\\\\#","#");
-            title=convertHTMLChars(title);
-            if (Globals.prefs.getBoolean("useUnitFormatterOnSearch")) {
-              title=unitFormatter.format(title);
-            }
-            if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
-              title=caseKeeper.format(title);
-            }
-            entry.setField("title",title);
+      BibtexEntry entry=downloadEntryBibTeX(id,fetchAbstract);
+      if (entry != null) {
+        String title=entry.getField("title");
+        if (title != null) {
+          title=title.replaceAll("\\\\&","&").replaceAll("\\\\#","#");
+          title=convertHTMLChars(title);
+          if (Globals.prefs.getBoolean("useUnitFormatterOnSearch")) {
+            title=unitFormatter.format(title);
           }
-          String abstr=entry.getField("abstract");
-          if (abstr != null) {
-            abstr=convertHTMLChars(abstr);
-            entry.setField("abstract",abstr);
+          if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+            title=caseKeeper.format(title);
           }
-          inspector.addEntry(entry);
+          entry.setField("title",title);
         }
-      }
- catch (      IOException e) {
-        e.printStackTrace();
+        String abstr=entry.getField("abstract");
+        if (abstr != null) {
+          abstr=convertHTMLChars(abstr);
+          entry.setField("abstract",abstr);
+        }
+        inspector.addEntry(entry);
       }
     }
   }
