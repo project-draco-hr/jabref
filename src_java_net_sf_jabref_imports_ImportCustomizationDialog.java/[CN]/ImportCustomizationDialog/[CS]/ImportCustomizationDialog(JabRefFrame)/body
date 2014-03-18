@@ -2,6 +2,7 @@
   super(frame_,Globals.lang("Manage custom imports"),false);
   this.importCustomizationDialog=this;
   frame=frame_;
+  JButton addFromFolderButton=new JButton(Globals.lang("Add from folder"));
   addFromFolderButton.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       CustomImportList.Importer importer=prefs.customImports.new Importer();
@@ -28,6 +29,7 @@ catch (        NoClassDefFoundError exc) {
   }
 );
   addFromFolderButton.setToolTipText(Globals.lang("Add a (compiled) custom ImportFormat class from a class path. \nThe path need not be on the classpath of JabRef."));
+  JButton addFromJarButton=new JButton(Globals.lang("Add from jar"));
   addFromJarButton.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       String basePath=FileDialogs.getNewFile(frame,new File(prefs.get("workingDirectory")),".zip,.jar",Globals.lang("Select a Zip-archive"),JFileChooser.CUSTOM_DIALOG,false);
@@ -57,6 +59,7 @@ catch (        NoClassDefFoundError exc) {
   }
 );
   addFromJarButton.setToolTipText(Globals.lang("Add a (compiled) custom ImportFormat class from a Zip-archive.\nThe Zip-archive need not be on the classpath of JabRef."));
+  JButton showDescButton=new JButton(Globals.lang("Show description"));
   showDescButton.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       int row=customImporterTable.getSelectedRow();
@@ -77,6 +80,7 @@ catch (        NoClassDefFoundError exc) {
     }
   }
 );
+  JButton removeButton=new JButton(Globals.lang("Remove"));
   removeButton.addActionListener(new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       int row=customImporterTable.getSelectedRow();
@@ -100,7 +104,9 @@ catch (        NoClassDefFoundError exc) {
     }
   }
 ;
+  JButton closeButton=new JButton(Globals.lang("Close"));
   closeButton.addActionListener(closeAction);
+  JButton helpButton=new JButton(Globals.lang("Help"));
   helpButton.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.importCustomizationHelp,"Help"));
   ImportTableModel tableModel=new ImportTableModel();
   customImporterTable=new JTable(tableModel);
@@ -115,12 +121,14 @@ catch (        NoClassDefFoundError exc) {
   if (customImporterTable.getRowCount() > 0) {
     customImporterTable.setRowSelectionInterval(0,0);
   }
+  JPanel mainPanel=new JPanel();
   ActionMap am=mainPanel.getActionMap();
   InputMap im=mainPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(frame.prefs().getKey("Close dialog"),"close");
   am.put("close",closeAction);
   mainPanel.setLayout(new BorderLayout());
   mainPanel.add(sp,BorderLayout.CENTER);
+  JPanel buttons=new JPanel();
   ButtonBarBuilder bb=new ButtonBarBuilder(buttons);
   buttons.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   bb.addGlue();
