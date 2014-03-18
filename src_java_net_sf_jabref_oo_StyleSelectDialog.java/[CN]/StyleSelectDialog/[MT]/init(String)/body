@@ -39,7 +39,7 @@
       int i=table.getSelectedRow();
       if (i == -1)       return;
       ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("jstyle");
-      String link=((OOBibStyle)tableModel.getElementAt(i)).getFile().getPath();
+      String link=tableModel.getElementAt(i).getFile().getPath();
       try {
         if (type != null)         Util.openExternalFileAnyFormat(new MetaData(),link,type);
  else         Util.openExternalFileUnknown(frame,null,new MetaData(),link,new UnknownExternalFileType("jstyle"));
@@ -52,7 +52,7 @@
 );
   diag=new JDialog(frame,Globals.lang("Styles"),true);
   styles=new BasicEventList<OOBibStyle>();
-  sortedStyles=new SortedList<OOBibStyle>(styles);
+  EventList<OOBibStyle> sortedStyles=new SortedList<OOBibStyle>(styles);
   preview=new PreviewPanel(null,new MetaData(),"");
   preview.setEntry(prevEntry);
   tableModel=new EventTableModel<OOBibStyle>(sortedStyles,new StyleTableFormat());

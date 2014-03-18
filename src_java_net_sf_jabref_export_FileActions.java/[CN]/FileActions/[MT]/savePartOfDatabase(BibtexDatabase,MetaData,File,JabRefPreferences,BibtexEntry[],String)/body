@@ -15,15 +15,13 @@
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
     List<Comparator<BibtexEntry>> comparators=getSaveComparators(true);
-    BasicEventList entryList=new BasicEventList();
-    SortedList sorter=new SortedList(entryList,new FieldComparatorStack<BibtexEntry>(comparators));
+    BasicEventList<BibtexEntry> entryList=new BasicEventList<BibtexEntry>();
+    SortedList<BibtexEntry> sorter=new SortedList<BibtexEntry>(entryList,new FieldComparatorStack<BibtexEntry>(comparators));
     if ((bes != null) && (bes.length > 0)) {
-      for (      BibtexEntry be1 : bes) {
-        sorter.add(be1);
-      }
+      Collections.addAll(sorter,bes);
     }
     FieldFormatter ff=new LatexFieldFormatter();
-    for (    BibtexEntry aSorter : (Iterable<BibtexEntry>)sorter) {
+    for (    BibtexEntry aSorter : sorter) {
       be=(aSorter);
       BibtexEntryType tp=be.getType();
       if (BibtexEntryType.getStandardType(tp.getName()) == null) {

@@ -10,9 +10,9 @@
   UnlinkedFilesCrawler crawler=new UnlinkedFilesCrawler(database);
   CheckableTreeNode treeNode=crawler.searchDirectory(pdfDirectory,new EntryFromPDFCreator());
   assertNotNull(treeNode);
-  Enumeration enumeration=treeNode.breadthFirstEnumeration();
+  Enumeration<CheckableTreeNode> enumeration=treeNode.breadthFirstEnumeration();
   while (enumeration.hasMoreElements()) {
-    CheckableTreeNode nextElement=(CheckableTreeNode)enumeration.nextElement();
+    CheckableTreeNode nextElement=enumeration.nextElement();
     nextElement.setSelected(true);
   }
   List<File> resultList=getFileListFromNode(treeNode);
