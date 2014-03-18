@@ -30,7 +30,7 @@
     String PT="";
     String pages="";
     hm.clear();
-    nextField:     for (    String field : fields) {
+    for (    String field : fields) {
       if (field.length() <= 2)       continue;
       String beg=field.substring(0,2);
       String value=field.substring(3);
@@ -90,7 +90,6 @@
         String month=parseMonth(value);
         if (month != null) {
           hm.put("month",month);
-          continue nextField;
         }
       }
  else       if (beg.equals("DT")) {
@@ -100,7 +99,6 @@
         }
  else         if (Type.startsWith("Article") || Type.startsWith("Journal") || PT.equals("article")) {
           Type="article";
-          continue;
         }
  else {
           Type="misc";
@@ -110,7 +108,7 @@
         hm.put("CitedReferences",value.replaceAll("EOLEOL"," ; ").trim());
       }
  else {
-        if (beg.equals("ER") || beg.equals("EF") || beg.equals("VR")|| beg.equals("FN"))         continue nextField;
+        if (beg.equals("ER") || beg.equals("EF") || beg.equals("VR")|| beg.equals("FN"))         continue;
         hm.put(beg,value);
       }
     }
