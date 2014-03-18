@@ -14,9 +14,7 @@
   Set<BibtexEntry> changedEntries=new HashSet<BibtexEntry>();
   if (autoSet) {
     Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
-    for (    BibtexEntry aSel : sel) {
-      entries.add(aSel);
-    }
+    Collections.addAll(entries,sel);
     Thread t=Util.autoSetLinks(entries,ce,changedEntries,null,panel.metaData(),null,null);
     try {
       t.join();
@@ -86,9 +84,7 @@ editor.setVisible(true);
 if (editor.okPressed()) {
 List<ExternalFileType> fileTypes=new ArrayList<ExternalFileType>();
 ExternalFileType[] oldTypes=Globals.prefs.getExternalFileTypeSelection();
-for (ExternalFileType oldType : oldTypes) {
-fileTypes.add(oldType);
-}
+Collections.addAll(fileTypes,oldTypes);
 fileTypes.add(newType);
 Collections.sort(fileTypes);
 Globals.prefs.setExternalFileTypes(fileTypes);
