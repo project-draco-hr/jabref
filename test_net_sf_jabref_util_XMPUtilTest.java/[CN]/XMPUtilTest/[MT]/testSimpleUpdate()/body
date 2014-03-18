@@ -71,9 +71,9 @@
     BibtexEntry toSet=t1BibtexEntry();
     toSet.setField("author","Pokemon!");
     XMPUtil.writeXMP(pdfFile,toSet,null);
-    List l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+    List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
     assertEquals(1,l.size());
-    BibtexEntry e=(BibtexEntry)l.get(0);
+    BibtexEntry e=l.get(0);
     assertEquals(toSet,e);
     PDDocument document=null;
     try {
@@ -91,7 +91,7 @@
         meta=new XMPMetadata();
       }
       meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
-      List schemas=meta.getSchemas();
+      List<XMPSchema> schemas=meta.getSchemas();
       assertEquals(4,schemas.size());
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
       assertEquals(1,schemas.size());

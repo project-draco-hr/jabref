@@ -1,8 +1,8 @@
 {
   BibtexEntry entry=new BibtexEntry();
-  List contributors=dcSchema.getContributors();
+  List<String> contributors=dcSchema.getContributors();
   if (contributors != null) {
-    Iterator it=contributors.iterator();
+    Iterator<String> it=contributors.iterator();
     StringBuffer sb=null;
     while (it.hasNext()) {
       if (sb != null) {
@@ -15,9 +15,9 @@
     }
     if (sb != null)     entry.setField("editor",sb.toString());
   }
-  List creators=dcSchema.getCreators();
+  List<String> creators=dcSchema.getCreators();
   if (creators != null) {
-    Iterator it=creators.iterator();
+    Iterator<String> it=creators.iterator();
     StringBuffer sb=null;
     while (it.hasNext()) {
       if (sb != null) {
@@ -30,9 +30,9 @@
     }
     if (sb != null)     entry.setField("author",sb.toString());
   }
-  List dates=dcSchema.getSequenceList("dc:date");
+  List<String> dates=dcSchema.getSequenceList("dc:date");
   if (dates != null && dates.size() > 0) {
-    String date=((String)dates.get(0)).trim();
+    String date=dates.get(0).trim();
     Calendar c=null;
     try {
       c=DateConverter.toCalendar(date);
@@ -50,9 +50,9 @@
   if (s != null)   entry.setField("abstract",s);
   s=dcSchema.getIdentifier();
   if (s != null)   entry.setField("doi",s);
-  List publishers=dcSchema.getPublishers();
+  List<String> publishers=dcSchema.getPublishers();
   if (publishers != null) {
-    Iterator it=dcSchema.getPublishers().iterator();
+    Iterator<String> it=dcSchema.getPublishers().iterator();
     StringBuffer sb=null;
     while (it.hasNext()) {
       if (sb != null) {
@@ -65,15 +65,14 @@
     }
     if (sb != null)     entry.setField("publishers",sb.toString());
   }
-  List relationships=dcSchema.getRelationships();
+  List<String> relationships=dcSchema.getRelationships();
   if (relationships != null) {
-    for (    Object relationship : relationships) {
-      s=(String)relationship;
-      if (s.startsWith("bibtex/")) {
-        s=s.substring("bibtex/".length());
-        int i=s.indexOf('/');
+    for (    String r : relationships) {
+      if (r.startsWith("bibtex/")) {
+        r=r.substring("bibtex/".length());
+        int i=r.indexOf('/');
         if (i != -1) {
-          entry.setField(s.substring(0,i),s.substring(i + 1));
+          entry.setField(r.substring(0,i),r.substring(i + 1));
         }
       }
     }
@@ -82,9 +81,9 @@
   if (s != null)   entry.setField("rights",s);
   s=dcSchema.getSource();
   if (s != null)   entry.setField("source",s);
-  List subjects=dcSchema.getSubjects();
+  List<String> subjects=dcSchema.getSubjects();
   if (subjects != null) {
-    Iterator it=subjects.iterator();
+    Iterator<String> it=subjects.iterator();
     StringBuffer sb=null;
     while (it.hasNext()) {
       if (sb != null) {
@@ -99,9 +98,9 @@
   }
   s=dcSchema.getTitle();
   if (s != null)   entry.setField("title",s);
-  List l=dcSchema.getTypes();
+  List<String> l=dcSchema.getTypes();
   if (l != null && l.size() > 0) {
-    s=(String)l.get(0);
+    s=l.get(0);
     if (s != null) {
       BibtexEntryType type=BibtexEntryType.getStandardType(s);
       if (type != null)       entry.setType(type);
