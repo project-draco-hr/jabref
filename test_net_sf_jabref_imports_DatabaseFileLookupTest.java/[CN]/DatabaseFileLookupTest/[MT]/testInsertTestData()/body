@@ -1,0 +1,22 @@
+{
+  entry1=new BibtexEntry();
+  JabRefPreferences jabRefPreferences=JabRefPreferences.getInstance();
+  ExternalFileType fileType=jabRefPreferences.getExternalFileTypeByExt("PDF");
+  FileListEntry fileListEntry=new FileListEntry("",fileInDatabase.getAbsolutePath(),fileType);
+  FileListTableModel model=new FileListTableModel();
+  model.addEntry(0,fileListEntry);
+  entry1.setField("file",model.getStringRepresentation());
+  database.insertEntry(entry1);
+  UnlinkedFilesCrawler crawler=new UnlinkedFilesCrawler(database);
+  CheckableTreeNode treeNode=crawler.searchDirectory(pdfDirectory,new EntryFromPDFCreator());
+  assertNotNull(treeNode);
+  @SuppressWarnings("unchecked") Enumeration<CheckableTreeNode> enumeration=treeNode.breadthFirstEnumeration();
+  while (enumeration.hasMoreElements()) {
+    CheckableTreeNode nextElement=enumeration.nextElement();
+    nextElement.setSelected(true);
+  }
+  List<File> resultList=getFileListFromNode(treeNode);
+  assertFalse(resultList.isEmpty());
+  assertTrue(resultList.contains(fileNotInDatabase));
+  assertFalse(resultList.contains(fileInDatabase));
+}

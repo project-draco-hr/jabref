@@ -6,30 +6,30 @@
   comma_second=-1;
   token_loop:   while (true) {
     int token=getToken();
-    cases: switch (token) {
+switch (token) {
 case TOKEN_EOF:
 case TOKEN_AND:
       break token_loop;
 case TOKEN_COMMA:
     if (comma_first < 0)     comma_first=tokens.size();
  else     if (comma_second < 0)     comma_second=tokens.size();
-  break cases;
+  break;
 case TOKEN_WORD:
 tokens.add(orig.substring(token_start,token_end));
 tokens.add(orig.substring(token_start,token_abbr));
-tokens.add(new Character(token_term));
-tokens.add(Boolean.valueOf(token_case));
-if (comma_first >= 0) break cases;
-if (last_start >= 0) break cases;
+tokens.add(token_term);
+tokens.add(token_case);
+if (comma_first >= 0) break;
+if (last_start >= 0) break;
 if (von_start < 0) {
 if (!token_case) {
 von_start=tokens.size() - TOKEN_GROUP_LENGTH;
-break cases;
+break;
 }
 }
  else if (last_start < 0 && token_case) {
 last_start=tokens.size() - TOKEN_GROUP_LENGTH;
-break cases;
+break;
 }
 }
 }
@@ -44,7 +44,7 @@ last_part_start=tokens.size() - TOKEN_GROUP_LENGTH;
 int index=tokens.size() - 2 * TOKEN_GROUP_LENGTH + OFFSET_TOKEN_TERM;
 if (index > 0) {
 Character ch=(Character)tokens.elementAt(index);
-if (ch.charValue() == '-') last_part_start-=TOKEN_GROUP_LENGTH;
+if (ch == '-') last_part_start-=TOKEN_GROUP_LENGTH;
 }
 first_part_end=last_part_start;
 if (first_part_end > 0) {

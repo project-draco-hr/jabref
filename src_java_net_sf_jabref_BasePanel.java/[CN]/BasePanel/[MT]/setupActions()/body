@@ -65,10 +65,10 @@
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         NamedCompound ce=new NamedCompound(Globals.lang(bes.length > 1 ? "cut entries" : "cut entry"));
-        for (int i=0; i < bes.length; i++) {
-          database.removeEntry(bes[i].getId());
-          ensureNotShowing(bes[i]);
-          ce.addEdit(new UndoableRemoveEntry(database,bes[i],BasePanel.this));
+        for (        BibtexEntry be : bes) {
+          database.removeEntry(be.getId());
+          ensureNotShowing(be);
+          ce.addEdit(new UndoableRemoveEntry(database,be,BasePanel.this));
         }
         frame.output(Globals.lang("Cut_pr") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
         ce.end();
@@ -83,15 +83,12 @@
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         boolean goOn=showDeleteConfirmationDialog(bes.length);
-        if (!goOn) {
-          return;
-        }
- else {
+        if (goOn) {
           NamedCompound ce=new NamedCompound(Globals.lang(bes.length > 1 ? "delete entries" : "delete entry"));
-          for (int i=0; i < bes.length; i++) {
-            database.removeEntry(bes[i].getId());
-            ensureNotShowing(bes[i]);
-            ce.addEdit(new UndoableRemoveEntry(database,bes[i],BasePanel.this));
+          for (          BibtexEntry be : bes) {
+            database.removeEntry(be.getId());
+            ensureNotShowing(be);
+            ce.addEdit(new UndoableRemoveEntry(database,be,BasePanel.this));
           }
           markBaseChanged();
           frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
@@ -137,9 +134,9 @@ catch (          Throwable ex) {
         if ((bes != null) && (bes.length > 0)) {
           NamedCompound ce=new NamedCompound(Globals.lang(bes.length > 1 ? "paste entries" : "paste entry"));
           BibtexEntry firstBE=null;
-          for (int i=0; i < bes.length; i++) {
+          for (          BibtexEntry be1 : bes) {
             try {
-              BibtexEntry be=(BibtexEntry)(bes[i].clone());
+              BibtexEntry be=(BibtexEntry)(be1.clone());
               if (firstBE == null)               firstBE=be;
               Util.setAutomaticFields(be,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"));
               be.setId(Util.createNeutralId());
@@ -288,7 +285,7 @@ catch (          Throwable ex) {
     public void run(){
       BibtexEntry bes=null;
       NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
-      loop:       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
+      for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
         bes=i.next();
         if (bes.getField(BibtexFields.KEY_FIELD) != null) {
           if (Globals.prefs.getBoolean("avoidOverwritingKey"))           i.remove();
@@ -300,18 +297,18 @@ catch (          Throwable ex) {
               cancelled=true;
               return;
             }
-            break loop;
+            break;
           }
         }
       }
       HashMap<BibtexEntry,Object> oldvals=new HashMap<BibtexEntry,Object>();
-      if (!Globals.prefs.getBoolean("avoidOverwritingKey"))       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
-        bes=i.next();
+      if (!Globals.prefs.getBoolean("avoidOverwritingKey"))       for (      BibtexEntry entry : entries) {
+        bes=entry;
         oldvals.put(bes,bes.getField(BibtexFields.KEY_FIELD));
         database.setCiteKeyForEntry(bes.getId(),null);
       }
-      for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
-        bes=i.next();
+      for (      BibtexEntry entry : entries) {
+        bes=entry;
         bes=LabelPatternUtil.makeLabel(metaData,database,bes);
         ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),bes.getField(BibtexFields.KEY_FIELD)));
       }
@@ -326,8 +323,7 @@ catch (          Throwable ex) {
       }
       markBaseChanged();
       numSelected=entries.size();
-      for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
-        final BibtexEntry bibEntry=i.next();
+      for (      final BibtexEntry bibEntry : entries) {
         SwingUtilities.invokeLater(new Runnable(){
           public void run(){
             final int row=mainTable.findEntry(bibEntry);
@@ -344,7 +340,7 @@ catch (          Throwable ex) {
   actions.put("Cleanup",cleanUpAction);
   actions.put("mergeEntries",new BaseAction(){
     public void action(){
-      MergeEntriesDialog med=new MergeEntriesDialog(BasePanel.this);
+      new MergeEntriesDialog(BasePanel.this);
     }
   }
 );
@@ -352,7 +348,7 @@ catch (          Throwable ex) {
     public void action(){
       sidePaneManager.show("search");
       frame.searchToggle.setSelected(true);
-      if (true)       frame.getSearchManager().startSearch();
+      frame.getSearchManager().startSearch();
     }
   }
 );
@@ -379,12 +375,12 @@ catch (          Throwable ex) {
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
         Vector<Object> keys=new Vector<Object>();
-        for (int i=0; i < bes.length; i++)         if (bes[i].getField(BibtexFields.KEY_FIELD) != null)         keys.add(bes[i].getField(BibtexFields.KEY_FIELD));
+        for (        BibtexEntry be : bes)         if (be.getField(BibtexFields.KEY_FIELD) != null)         keys.add(be.getField(BibtexFields.KEY_FIELD));
         if (keys.size() == 0) {
           output("None of the selected entries have BibTeX keys.");
           return;
         }
-        StringBuffer sb=new StringBuffer((String)keys.elementAt(0));
+        StringBuilder sb=new StringBuilder((String)keys.elementAt(0));
         for (int i=1; i < keys.size(); i++) {
           sb.append(',');
           sb.append((String)keys.elementAt(i));
@@ -403,12 +399,12 @@ catch (          Throwable ex) {
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
         Vector<Object> keys=new Vector<Object>();
-        for (int i=0; i < bes.length; i++)         if (bes[i].getField(BibtexFields.KEY_FIELD) != null)         keys.add(bes[i].getField(BibtexFields.KEY_FIELD));
+        for (        BibtexEntry be : bes)         if (be.getField(BibtexFields.KEY_FIELD) != null)         keys.add(be.getField(BibtexFields.KEY_FIELD));
         if (keys.size() == 0) {
           output("None of the selected entries have BibTeX keys.");
           return;
         }
-        StringBuffer sb=new StringBuffer((String)keys.elementAt(0));
+        StringBuilder sb=new StringBuilder((String)keys.elementAt(0));
         for (int i=1; i < keys.size(); i++) {
           sb.append(',');
           sb.append((String)keys.elementAt(i));
@@ -435,11 +431,11 @@ catch (          Throwable ex) {
           e.printStackTrace();
           return;
         }
-        StringBuffer sb=new StringBuffer();
+        StringBuilder sb=new StringBuilder();
         int copied=0;
-        for (int i=0; i < bes.length; i++)         if (bes[i].getField(BibtexFields.KEY_FIELD) != null) {
+        for (        BibtexEntry be : bes)         if (be.getField(BibtexFields.KEY_FIELD) != null) {
           copied++;
-          sb.append(layout.doLayout(bes[i],database));
+          sb.append(layout.doLayout(be,database));
         }
         if (copied == 0) {
           output("None of the selected entries have BibTeX keys.");
@@ -499,13 +495,12 @@ catch (          Throwable ex) {
                 ArrayList<File> dirs=new ArrayList<File>();
                 if (metaData.getFileDirectory(GUIGlobals.FILE_FIELD).length > 0) {
                   String[] mdDirs=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
-                  for (int i=0; i < mdDirs.length; i++) {
-                    dirs.add(new File(mdDirs[i]));
+                  for (                  String mdDir : mdDirs) {
+                    dirs.add(new File(mdDir));
                   }
                 }
                 Collection<String> extensions=new ArrayList<String>();
-                for (int i=0; i < types.length; i++) {
-                  final ExternalFileType type=types[i];
+                for (                final ExternalFileType type : types) {
                   extensions.add(type.getExtension());
                 }
                 Map<BibtexEntry,List<File>> result;
@@ -624,7 +619,6 @@ catch (          Throwable ex) {
               output(Globals.lang("Could not open link"));
               e.printStackTrace();
             }
-            return;
           }
  else           output(Globals.lang("No url defined") + ".");
         }
@@ -638,8 +632,8 @@ catch (          Throwable ex) {
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length == 1)) {
         Object link=null;
-        if (bes[0].getField("eprint") != null)         link=SPIRESFetcher.constructUrlFromEprint(bes[0].getField("eprint").toString());
- else         if (bes[0].getField("slaccitation") != null)         link=SPIRESFetcher.constructUrlFromSlaccitation(bes[0].getField("slaccitation").toString());
+        if (bes[0].getField("eprint") != null)         link=SPIRESFetcher.constructUrlFromEprint(bes[0].getField("eprint"));
+ else         if (bes[0].getField("slaccitation") != null)         link=SPIRESFetcher.constructUrlFromSlaccitation(bes[0].getField("slaccitation"));
         if (link != null) {
           try {
             Util.openExternalViewer(metaData(),link.toString(),"url");
@@ -669,7 +663,7 @@ catch (          Throwable ex) {
       }
  else {
         BibtexEntry[] bes=mainTable.getSelectedEntries();
-        for (int i=0; i < bes.length; i++)         counter+=rsd.replace(bes[i],ce);
+        for (        BibtexEntry be : bes)         counter+=rsd.replace(be,ce);
       }
       output(Globals.lang("Replaced") + " " + counter+ " "+ Globals.lang(counter == 1 ? "occurence" : "occurences")+ ".");
       if (counter > 0) {
@@ -700,7 +694,7 @@ catch (          Throwable ex) {
       Util.placeDialog(tidialog,BasePanel.this);
       tidialog.setVisible(true);
       if (tidialog.okPressed()) {
-        Util.setAutomaticFields(Arrays.asList(new BibtexEntry[]{bibEntry}),false,false,false);
+        Util.setAutomaticFields(Arrays.asList(bibEntry),false,false,false);
         insertEntry(bibEntry);
       }
     }
@@ -712,8 +706,8 @@ catch (          Throwable ex) {
       NamedCompound ce=new NamedCompound(Globals.lang("Mark entries"));
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       besLength=bes.length;
-      for (int i=0; i < bes.length; i++) {
-        Util.markEntry(bes[i],1,true,ce);
+      for (      BibtexEntry be : bes) {
+        Util.markEntry(be,1,true,ce);
       }
       ce.end();
       undoManager.addEdit(ce);
@@ -730,8 +724,8 @@ catch (          Throwable ex) {
         NamedCompound ce=new NamedCompound(Globals.lang("Unmark entries"));
         BibtexEntry[] bes=mainTable.getSelectedEntries();
         if (bes == null)         return;
-        for (int i=0; i < bes.length; i++) {
-          Util.unmarkEntry(bes[i],false,database,ce);
+        for (        BibtexEntry be : bes) {
+          Util.unmarkEntry(be,false,database,ce);
         }
         ce.end();
         undoManager.addEdit(ce);

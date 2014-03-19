@@ -1,0 +1,25 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{canh05," + "  author = {Crowston, K. and Annabi, H. and Howison, J. and Masango, C.},\n" + "  title = {Effective work practices for floss development: A model and propositions},\n"+ "  booktitle = {Hawaii International Conference On System Sciences (HICSS)},\n"+ "  year = {2005},\n"+ "  owner = {oezbek},\n"+ "  timestamp = {2006.05.29},\n"+ "  url = {http://james.howison.name/publications.html}}"));
+  Collection<BibtexEntry> c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibtexEntry e=c.iterator().next();
+  XMPUtil.writeXMP(pdfFile,e,null);
+  XMPMetadata metadata=XMPUtil.readRawXMP(pdfFile);
+  List<XMPSchema> schemas=metadata.getSchemas();
+  assertEquals(2,schemas.size());
+  schemas=metadata.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
+  assertEquals(1,schemas.size());
+  XMPSchemaBibtex bib=(XMPSchemaBibtex)schemas.get(0);
+  List<String> authors=bib.getSequenceList("author");
+  assertEquals(4,authors.size());
+  assertEquals("K. Crowston",authors.get(0));
+  assertEquals("H. Annabi",authors.get(1));
+  assertEquals("J. Howison",authors.get(2));
+  assertEquals("C. Masango",authors.get(3));
+  assertEquals("Article",bib.getTextProperty("entrytype"));
+  assertEquals("Effective work practices for floss development: A model and propositions",bib.getTextProperty("title"));
+  assertEquals("Hawaii International Conference On System Sciences (HICSS)",bib.getTextProperty("booktitle"));
+  assertEquals("2005",bib.getTextProperty("year"));
+  assertEquals("oezbek",bib.getTextProperty("owner"));
+  assertEquals("http://james.howison.name/publications.html",bib.getTextProperty("url"));
+}

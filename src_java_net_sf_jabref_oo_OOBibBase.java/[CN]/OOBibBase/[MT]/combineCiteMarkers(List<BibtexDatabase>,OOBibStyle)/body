@@ -1,13 +1,13 @@
 {
-  XReferenceMarksSupplier supplier=(XReferenceMarksSupplier)UnoRuntime.queryInterface(XReferenceMarksSupplier.class,xCurrentComponent);
+  XReferenceMarksSupplier supplier=UnoRuntime.queryInterface(XReferenceMarksSupplier.class,xCurrentComponent);
   XNameAccess nameAccess=supplier.getReferenceMarks();
   String[] names=getSortedReferenceMarks(nameAccess);
-  final XTextRangeCompare compare=(XTextRangeCompare)UnoRuntime.queryInterface(XTextRangeCompare.class,text);
+  final XTextRangeCompare compare=UnoRuntime.queryInterface(XTextRangeCompare.class,text);
   int piv=0;
   boolean madeModifications=false;
   while (piv < names.length - 1) {
-    XTextRange r1=((XTextContent)UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv]))).getAnchor().getEnd();
-    XTextRange r2=((XTextContent)UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv + 1]))).getAnchor().getStart();
+    XTextRange r1=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv])).getAnchor().getEnd();
+    XTextRange r2=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv + 1])).getAnchor().getStart();
     if (r1.getText() != r2.getText()) {
       piv++;
       continue;
@@ -21,7 +21,7 @@
     String text=mxDocCursor.getString();
     if ((text.indexOf('\n') == -1) && (text.trim().length() == 0)) {
       if (style.isFormatCitations()) {
-        XPropertySet xCursorProps=(XPropertySet)UnoRuntime.queryInterface(XPropertySet.class,mxDocCursor);
+        XPropertySet xCursorProps=UnoRuntime.queryInterface(XPropertySet.class,mxDocCursor);
         String charStyle=style.getCitationCharacterFormat();
         try {
           xCursorProps.setPropertyValue("CharStyleName",charStyle);
@@ -36,11 +36,11 @@
       removeReferenceMark(names[piv + 1]);
       ArrayList<BibtexEntry> entries=new ArrayList<BibtexEntry>();
       for (      String key : keys) {
-        bases:         for (        BibtexDatabase database : databases) {
+        for (        BibtexDatabase database : databases) {
           BibtexEntry entry=database.getEntryByKey(key);
           if (entry != null) {
             entries.add(OOUtil.createAdaptedEntry(entry));
-            break bases;
+            break;
           }
         }
       }

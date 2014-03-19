@@ -2,14 +2,13 @@
   if (database != null)   entry=database.resolveForStrings(entry,false);
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   boolean useXmpPrivacyFilter=prefs.getBoolean("useXmpPrivacyFilter");
-  TreeSet<String> filters=new TreeSet<String>(Arrays.asList(prefs.getStringArray("xmpPrivacyFilters")));
+  TreeSet<String> filters=new TreeSet<String>(Arrays.asList(prefs.getStringArray(JabRefPreferences.XMP_PRIVACY_FILTERS)));
   for (  String field : entry.getAllFields()) {
     if (useXmpPrivacyFilter && filters.contains(field)) {
       continue;
     }
     if (field.equals("editor")) {
-      String o=entry.getField(field.toString()).toString();
-      String authors=o.toString();
+      String authors=entry.getField(field);
       AuthorList list=AuthorList.getAuthorList(authors);
       int n=list.size();
       for (int i=0; i < n; i++) {
@@ -18,8 +17,7 @@
       continue;
     }
     if (field.equals("author")) {
-      String o=entry.getField(field.toString()).toString();
-      String authors=o.toString();
+      String authors=entry.getField(field);
       AuthorList list=AuthorList.getAuthorList(authors);
       int n=list.size();
       for (int i=0; i < n; i++) {
@@ -38,35 +36,35 @@
       continue;
     }
     if (field.equals("abstract")) {
-      String o=entry.getField(field.toString()).toString();
-      dcSchema.setDescription(o.toString());
+      String o=entry.getField(field);
+      dcSchema.setDescription(o);
       continue;
     }
     if (field.equals("doi")) {
-      String o=entry.getField(field.toString()).toString();
-      dcSchema.setIdentifier(o.toString());
+      String o=entry.getField(field);
+      dcSchema.setIdentifier(o);
       continue;
     }
     if (field.equals("publisher")) {
-      String o=entry.getField(field.toString()).toString();
-      dcSchema.addPublisher(o.toString());
+      String o=entry.getField(field);
+      dcSchema.addPublisher(o);
       continue;
     }
     if (field.equals("keywords")) {
-      String o=entry.getField(field.toString()).toString();
-      String[] keywords=o.toString().split(",");
-      for (int i=0; i < keywords.length; i++) {
-        dcSchema.addSubject(keywords[i].trim());
+      String o=entry.getField(field);
+      String[] keywords=o.split(",");
+      for (      String keyword : keywords) {
+        dcSchema.addSubject(keyword.trim());
       }
       continue;
     }
     if (field.equals("title")) {
-      String o=entry.getField(field.toString()).toString();
-      dcSchema.setTitle(o.toString());
+      String o=entry.getField(field);
+      dcSchema.setTitle(o);
       continue;
     }
-    String o=entry.getField(field.toString()).toString();
-    dcSchema.addRelation("bibtex/" + field.toString() + "/"+ o);
+    String o=entry.getField(field);
+    dcSchema.addRelation("bibtex/" + field + "/"+ o);
   }
   dcSchema.setFormat("application/pdf");
   Object o=entry.getType().getName();

@@ -9,11 +9,9 @@
  else {
     meta=new XMPMetadata();
   }
-  List schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
-  Iterator it=schemas.iterator();
-  while (it.hasNext()) {
-    XMPSchema bib=(XMPSchema)it.next();
-    bib.getElement().getParentNode().removeChild(bib.getElement());
+  List<XMPSchema> schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
+  for (  XMPSchema schema : schemas) {
+    schema.getElement().getParentNode().removeChild(schema.getElement());
   }
   for (  BibtexEntry entry : entries) {
     XMPSchemaDublinCore dcSchema=new XMPSchemaDublinCore(meta);

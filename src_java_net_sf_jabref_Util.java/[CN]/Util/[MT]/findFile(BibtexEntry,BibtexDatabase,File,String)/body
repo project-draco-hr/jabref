@@ -31,9 +31,9 @@
         File[] subDirs=directory.listFiles();
         if (subDirs == null)         return null;
         String restOfFileString=join(fileParts,"/",i + 1,fileParts.length);
-        for (int sub=0; sub < subDirs.length; sub++) {
-          if (subDirs[sub].isDirectory()) {
-            String result=findFile(entry,database,subDirs[sub],restOfFileString);
+        for (        File subDir : subDirs) {
+          if (subDir.isDirectory()) {
+            String result=findFile(entry,database,subDir,restOfFileString);
             if (result != null)             return result;
           }
         }
@@ -49,9 +49,9 @@
           File[] subDirs=toDo.remove(0).listFiles();
           if (subDirs == null)           continue;
           toDo.addAll(Arrays.asList(subDirs));
-          for (int sub=0; sub < subDirs.length; sub++) {
-            if (!subDirs[sub].isDirectory())             continue;
-            result=findFile(entry,database,subDirs[sub],restOfFileString);
+          for (          File subDir : subDirs) {
+            if (!subDir.isDirectory())             continue;
+            result=findFile(entry,database,subDir,restOfFileString);
             if (result != null)             return result;
           }
         }

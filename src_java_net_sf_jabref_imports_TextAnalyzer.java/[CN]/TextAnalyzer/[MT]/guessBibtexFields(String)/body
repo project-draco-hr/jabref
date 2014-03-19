@@ -13,9 +13,9 @@
   }
  else   if (cand.length > 1) {
     int good=-1, yearFound=-1;
-    find:     for (int i=0; i < cand.length; i++) {
+    for (int i=0; i < cand.length; i++) {
       int number=Integer.parseInt(cand[i].trim());
-      if (number == yearFound)       continue find;
+      if (number == yearFound)       continue;
       if (number < 2500) {
         if (good == -1) {
           good=i;
@@ -24,7 +24,7 @@
  else {
           if ((yearFound < Globals.FUTURE_YEAR) && (number < Globals.FUTURE_YEAR)) {
             good=-1;
-            break find;
+            break;
           }
  else           if ((yearFound >= Globals.FUTURE_YEAR) && (number < Globals.FUTURE_YEAR)) {
             good=i;
@@ -51,12 +51,12 @@
   }
  else   if (cand.length > 1) {
     int found=-1;
-    checkScope:     for (int i=0; i < cand.length; i++) {
+    for (int i=0; i < cand.length; i++) {
       split=clean(cand[i].replaceAll("\\s","")).split("-");
       int first=Integer.parseInt(split[0]), second=Integer.parseInt(split[1]);
       if (second - first > 3) {
         found=i;
-        break checkScope;
+        break;
       }
     }
     if (found >= 0) {
@@ -92,8 +92,8 @@
   Substring ss;
   Vector<String> free=new Vector<String>();
   int piv=0;
-  for (Iterator<Substring> i=usedParts.iterator(); i.hasNext(); ) {
-    ss=i.next();
+  for (  Substring usedPart : usedParts) {
+    ss=usedPart;
     if (ss.begin() - piv > 10) {
       Util.pr("... " + text.substring(piv,ss.begin()));
       free.add(clean(text.substring(piv,ss.begin())));

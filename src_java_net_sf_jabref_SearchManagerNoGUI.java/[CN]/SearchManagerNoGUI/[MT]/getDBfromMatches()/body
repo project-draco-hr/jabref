@@ -11,17 +11,16 @@
   try {
     rule1=new SearchExpression(Globals.prefs,searchOptions);
   }
- catch (  Exception e) {
+ catch (  Exception ignored) {
   }
   searchRules.addRule(rule1);
   if (!searchRules.validateSearchStrings(searchOptions)) {
     System.out.println(Globals.lang("Search failed: illegal search expression"));
     return base;
   }
-  Collection entries=database.getEntries();
-  Vector matchEntries=new Vector();
-  for (Iterator i=entries.iterator(); i.hasNext(); ) {
-    BibtexEntry entry=(BibtexEntry)i.next();
+  Collection<BibtexEntry> entries=database.getEntries();
+  Vector<BibtexEntry> matchEntries=new Vector<BibtexEntry>();
+  for (  BibtexEntry entry : entries) {
     boolean hit=searchRules.applyRule(searchOptions,entry) > 0;
     entry.setSearchHit(hit);
     if (hit) {
@@ -29,8 +28,6 @@
       matchEntries.add(entry);
     }
   }
-  if (matchEntries != null) {
-    base=ImportFormatReader.createDatabase(matchEntries);
-  }
+  base=ImportFormatReader.createDatabase(matchEntries);
   return base;
 }

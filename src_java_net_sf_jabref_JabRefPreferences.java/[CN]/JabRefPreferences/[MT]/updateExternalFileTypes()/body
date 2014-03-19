@@ -6,11 +6,11 @@
     return;
   }
   String[][] vals=Util.decodeStringDoubleArray(prefs.get("externalFileTypes",""));
-  for (int i=0; i < vals.length; i++) {
-    if ((vals[i].length == 2) && (vals[i][1].equals(FILE_TYPE_REMOVED_FLAG))) {
+  for (  String[] val : vals) {
+    if ((val.length == 2) && (val[1].equals(FILE_TYPE_REMOVED_FLAG))) {
       ExternalFileType toRemove=null;
       for (      ExternalFileType type : types) {
-        if (type.getName().equals(vals[i][0])) {
+        if (type.getName().equals(val[0])) {
           toRemove=type;
           break;
         }
@@ -20,7 +20,7 @@
       }
     }
  else {
-      ExternalFileType type=new ExternalFileType(vals[i]);
+      ExternalFileType type=new ExternalFileType(val);
       ExternalFileType toRemove=null;
       for (      ExternalFileType defType : types) {
         if (type.getName().equals(defType.getName())) {

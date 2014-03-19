@@ -3,11 +3,11 @@
   if ((entries != null) && (entries.length > 0)) {
     NamedCompound ce=new NamedCompound(Globals.lang("remove from group"));
     boolean modified=false;
-    for (int i=0; i < entries.length; ++i) {
-      if (applyRule(null,entries[i]) > 0) {
-        String oldContent=entries[i].getField(m_searchField);
-        removeMatches(entries[i]);
-        ce.addEdit(new UndoableFieldChange(entries[i],m_searchField,oldContent,entries[i].getField(m_searchField)));
+    for (    BibtexEntry entry : entries) {
+      if (applyRule(null,entry) > 0) {
+        String oldContent=entry.getField(m_searchField);
+        removeMatches(entry);
+        ce.addEdit(new UndoableFieldChange(entry,m_searchField,oldContent,entry.getField(m_searchField)));
         modified=true;
       }
     }

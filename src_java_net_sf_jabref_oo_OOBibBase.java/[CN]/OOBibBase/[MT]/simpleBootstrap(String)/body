@@ -2,11 +2,11 @@
   ClassLoader loader=ClassLoader.getSystemClassLoader();
   if (loader instanceof URLClassLoader) {
     URLClassLoader cl=(URLClassLoader)loader;
-    Class sysclass=URLClassLoader.class;
+    Class<URLClassLoader> sysclass=URLClassLoader.class;
     try {
-      Method method=sysclass.getDeclaredMethod("addURL",new Class[]{URL.class});
+      Method method=sysclass.getDeclaredMethod("addURL",URL.class);
       method.setAccessible(true);
-      method.invoke(cl,new Object[]{new File(pathToExecutable).toURI().toURL()});
+      method.invoke(cl,new File(pathToExecutable).toURI().toURL());
     }
  catch (    Throwable t) {
       t.printStackTrace();
@@ -19,7 +19,7 @@
   XComponentContext xContext=Bootstrap.bootstrap();
   XMultiComponentFactory xServiceManager=xContext.getServiceManager();
   Object desktop=xServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop",xContext);
-  XDesktop xD=(XDesktop)UnoRuntime.queryInterface(XDesktop.class,desktop);
-  xComponentLoader=(XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,desktop);
+  XDesktop xD=UnoRuntime.queryInterface(XDesktop.class,desktop);
+  xComponentLoader=UnoRuntime.queryInterface(XComponentLoader.class,desktop);
   return xD;
 }

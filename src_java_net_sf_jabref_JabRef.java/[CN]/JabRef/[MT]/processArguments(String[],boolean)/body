@@ -38,19 +38,13 @@
     }
  else {
       String[] keys=value.split(",");
-      for (int i=0; i < keys.length; i++) {
-        try {
-          if (Globals.prefs.hasKey(keys[i].trim())) {
-            System.out.println(Globals.lang("Resetting preference key '%0'",keys[i].trim()));
-            Globals.prefs.clear(keys[i].trim());
-          }
- else {
-            System.out.println(Globals.lang("Unknown preference key '%0'",keys[i].trim()));
-          }
+      for (      String key : keys) {
+        if (Globals.prefs.hasKey(key.trim())) {
+          System.out.println(Globals.lang("Resetting preference key '%0'",key.trim()));
+          Globals.prefs.clear(key.trim());
         }
- catch (        BackingStoreException e) {
-          System.err.println(Globals.lang("Unable to clear preferences."));
-          e.printStackTrace();
+ else {
+          System.out.println(Globals.lang("Unknown preference key '%0'",key.trim()));
         }
       }
     }
@@ -68,16 +62,16 @@
   Vector<ParserResult> loaded=new Vector<ParserResult>();
   Vector<String> toImport=new Vector<String>();
   if (!blank.isInvoked() && (leftOver.length > 0)) {
-    for (int i=0; i < leftOver.length; i++) {
-      boolean bibExtension=leftOver[i].toLowerCase().endsWith("bib");
+    for (    String aLeftOver : leftOver) {
+      boolean bibExtension=aLeftOver.toLowerCase().endsWith("bib");
       ParserResult pr=null;
-      if (bibExtension)       pr=openBibFile(leftOver[i],false);
+      if (bibExtension)       pr=openBibFile(aLeftOver,false);
       if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
         if (initialStartup) {
-          toImport.add(leftOver[i]);
+          toImport.add(aLeftOver);
         }
  else {
-          ParserResult res=importToOpenBase(leftOver[i]);
+          ParserResult res=importToOpenBase(aLeftOver);
           if (res != null)           loaded.add(res);
  else           loaded.add(ParserResult.INVALID_FORMAT);
         }
@@ -104,7 +98,7 @@
     if (loaded.size() > 0) {
       String[] data=exportMatches.getStringValue().split(",");
       String searchTerm=data[0].replace("\\$"," ");
-      ParserResult pr=(ParserResult)loaded.elementAt(loaded.size() - 1);
+      ParserResult pr=loaded.elementAt(loaded.size() - 1);
       BibtexDatabase dataBase=pr.getDatabase();
       SearchManagerNoGUI smng=new SearchManagerNoGUI(searchTerm,dataBase);
       BibtexDatabase newBase=smng.getDBfromMatches();

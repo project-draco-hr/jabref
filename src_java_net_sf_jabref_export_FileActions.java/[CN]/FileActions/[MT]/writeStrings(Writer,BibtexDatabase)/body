@@ -7,14 +7,12 @@
   Collections.sort(strings,new BibtexStringComparator(true));
   HashMap<String,BibtexString> remaining=new HashMap<String,BibtexString>();
   int maxKeyLength=0;
-  for (Iterator<BibtexString> i=strings.iterator(); i.hasNext(); ) {
-    BibtexString string=i.next();
+  for (  BibtexString string : strings) {
     remaining.put(string.getName(),string);
     maxKeyLength=Math.max(maxKeyLength,string.getName().length());
   }
   for (  BibtexString.Type t : BibtexString.Type.values()) {
-    for (Iterator<BibtexString> i=strings.iterator(); i.hasNext(); ) {
-      BibtexString bs=i.next();
+    for (    BibtexString bs : strings) {
       if (remaining.containsKey(bs.getName()) && bs.getType() == t) {
         writeString(fw,bs,remaining,maxKeyLength);
       }

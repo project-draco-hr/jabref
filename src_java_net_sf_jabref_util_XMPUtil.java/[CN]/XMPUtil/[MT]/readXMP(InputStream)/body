@@ -9,16 +9,14 @@
     XMPMetadata meta=getXMPMetadata(document);
     if (meta != null) {
       List<XMPSchema> schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
-      Iterator<XMPSchema> it=schemas.iterator();
-      while (it.hasNext()) {
-        XMPSchemaBibtex bib=(XMPSchemaBibtex)it.next();
+      for (      XMPSchema schema : schemas) {
+        XMPSchemaBibtex bib=(XMPSchemaBibtex)schema;
         result.add(bib.getBibtexEntry());
       }
       if (result.size() == 0) {
         schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
-        it=schemas.iterator();
-        while (it.hasNext()) {
-          XMPSchemaDublinCore dc=(XMPSchemaDublinCore)it.next();
+        for (        XMPSchema schema : schemas) {
+          XMPSchemaDublinCore dc=(XMPSchemaDublinCore)schema;
           BibtexEntry entry=getBibtexEntryFromDublinCore(dc);
           if (entry != null)           result.add(entry);
         }

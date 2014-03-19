@@ -3,9 +3,9 @@
   String s="";
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   while ((s != null) && !s.startsWith("Item Type"))   s=in.readLine();
-  mainloop:   while ((s=in.readLine()) != null) {
+  while ((s=in.readLine()) != null) {
     if (s.equals(""))     continue;
-    if (s.startsWith("-----------------------------"))     break mainloop;
+    if (s.startsWith("-----------------------------"))     break;
     String[] fields=s.split("\t");
     BibtexEntry be=new BibtexEntry(Util.createNeutralId());
     try {
@@ -28,7 +28,7 @@
       ImportFormatReader.setIfNecessary(be,"keywords",fields[17]);
       ImportFormatReader.setIfNecessary(be,"copyright",fields[21]);
     }
- catch (    ArrayIndexOutOfBoundsException ex) {
+ catch (    ArrayIndexOutOfBoundsException ignored) {
     }
     bibitems.add(be);
   }

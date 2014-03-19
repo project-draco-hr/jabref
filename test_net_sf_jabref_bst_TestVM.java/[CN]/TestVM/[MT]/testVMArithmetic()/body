@@ -1,0 +1,20 @@
+{
+{
+    VM vm=new VM("FUNCTION {test} { " + "#1 #1 + #5 #2 - }" + "EXECUTE {test}");
+    Vector<BibtexEntry> v=new Vector<BibtexEntry>();
+    vm.run(v);
+    assertEquals(3,vm.getStack().pop());
+    assertEquals(2,vm.getStack().pop());
+    assertEquals(0,vm.getStack().size());
+  }
+{
+    VM vm=new VM("FUNCTION {test} { " + "#1 \"HELLO\" + #5 #2 - }" + "EXECUTE {test}");
+    Vector<BibtexEntry> v=new Vector<BibtexEntry>();
+    try {
+      vm.run(v);
+      fail();
+    }
+ catch (    VMException ignored) {
+    }
+  }
+}

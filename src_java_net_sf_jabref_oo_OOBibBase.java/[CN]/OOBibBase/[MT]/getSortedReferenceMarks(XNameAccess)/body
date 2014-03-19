@@ -1,15 +1,15 @@
 {
-  XTextViewCursorSupplier css=(XTextViewCursorSupplier)UnoRuntime.queryInterface(XTextViewCursorSupplier.class,mxDoc.getCurrentController());
+  XTextViewCursorSupplier css=UnoRuntime.queryInterface(XTextViewCursorSupplier.class,mxDoc.getCurrentController());
   XTextViewCursor tvc=css.getViewCursor();
   XTextRange initialPos=tvc.getStart();
   String[] names=nameAccess.getElementNames();
   Point[] positions=new Point[names.length];
   for (int i=0; i < names.length; i++) {
     String name=names[i];
-    XTextContent tc=(XTextContent)UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(name));
+    XTextContent tc=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(name));
     XTextRange r=tc.getAnchor();
     if (UnoRuntime.queryInterface(XFootnote.class,r.getText()) != null) {
-      XFootnote footer=(XFootnote)UnoRuntime.queryInterface(XFootnote.class,r.getText());
+      XFootnote footer=UnoRuntime.queryInterface(XFootnote.class,r.getText());
       r=footer.getAnchor();
     }
     positions[i]=findPosition(tvc,r);
@@ -19,8 +19,7 @@
     set.add(new ComparableMark(names[i],positions[i]));
   }
   int i=0;
-  for (Iterator<ComparableMark> iterator=set.iterator(); iterator.hasNext(); ) {
-    ComparableMark mark=iterator.next();
+  for (  ComparableMark mark : set) {
     names[i++]=mark.getName();
   }
   tvc.gotoRange(initialPos,false);

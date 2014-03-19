@@ -9,14 +9,12 @@
   int progressBarMax=(autoSet ? weightAutoSet * sel.length : 0) + (checkExisting ? sel.length : 0);
   panel.frame().setProgressBarMaximum(progressBarMax);
   int progress=0;
-  brokenLinks=0;
+  int brokenLinks=0;
   final NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
   Set<BibtexEntry> changedEntries=new HashSet<BibtexEntry>();
   if (autoSet) {
     Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
-    for (int i=0; i < sel.length; i++) {
-      entries.add(sel[i]);
-    }
+    Collections.addAll(entries,sel);
     Thread t=Util.autoSetLinks(entries,ce,changedEntries,null,panel.metaData(),null,null);
     try {
       t.join();
@@ -29,15 +27,15 @@
   panel.frame().setProgressBarValue(progress);
   if (checkExisting) {
     boolean removeAllBroken=false;
-    mainLoop:     for (int i=0; i < sel.length; i++) {
+    mainLoop:     for (    BibtexEntry aSel : sel) {
       panel.frame().setProgressBarValue(progress++);
-      final String old=sel[i].getField(fieldName);
+      final String old=aSel.getField(fieldName);
       if ((old != null) && !old.equals("")) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old);
         String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
         ArrayList<File> dirs=new ArrayList<File>();
-        for (int k=0; k < dirsS.length; k++)         dirs.add(new File(dirsS[k]));
+        for (        String dirs1 : dirsS)         dirs.add(new File(dirs1));
         for (int j=0; j < tableModel.getRowCount(); j++) {
           FileListEntry flEntry=tableModel.getEntry(j);
           boolean httpLink=flEntry.getLink().toLowerCase().startsWith("http");
@@ -47,7 +45,7 @@
           if ((file == null) || !file.exists()) {
             int answer;
             if (!removeAllBroken) {
-              answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),sel[i].getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+              answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),aSel.getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
             }
  else {
               answer=2;
@@ -84,11 +82,9 @@ ExternalFileType newType=new ExternalFileType(flEntry.getType().getName(),"","",
 ExternalFileTypeEntryEditor editor=new ExternalFileTypeEntryEditor(panel.frame(),newType);
 editor.setVisible(true);
 if (editor.okPressed()) {
-java.util.List<ExternalFileType> fileTypes=new ArrayList<ExternalFileType>();
+List<ExternalFileType> fileTypes=new ArrayList<ExternalFileType>();
 ExternalFileType[] oldTypes=Globals.prefs.getExternalFileTypeSelection();
-for (int k=0; k < oldTypes.length; k++) {
-fileTypes.add(oldTypes[k]);
-}
+Collections.addAll(fileTypes,oldTypes);
 fileTypes.add(newType);
 Collections.sort(fileTypes);
 Globals.prefs.setExternalFileTypes(fileTypes);
@@ -104,9 +100,9 @@ editor.setVisible(true,false);
 if (!tableModel.getStringRepresentation().equals(old)) {
 String toSet=tableModel.getStringRepresentation();
 if (toSet.length() == 0) toSet=null;
-ce.addEdit(new UndoableFieldChange(sel[i],fieldName,old,toSet));
-sel[i].setField(fieldName,toSet);
-changedEntries.add(sel[i]);
+ce.addEdit(new UndoableFieldChange(aSel,fieldName,old,toSet));
+aSel.setField(fieldName,toSet);
+changedEntries.add(aSel);
 }
 }
 }

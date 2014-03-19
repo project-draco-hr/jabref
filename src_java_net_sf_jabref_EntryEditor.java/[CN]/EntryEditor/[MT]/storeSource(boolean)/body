@@ -16,20 +16,20 @@
       duplicateWarning=true;
     }
     for (    String field : entry.getAllFields()) {
-      if (BibtexFields.isDisplayableField(field.toString())) {
-        if (nu.getField(field.toString()) == null) {
-          compound.addEdit(new UndoableFieldChange(entry,field.toString(),entry.getField(field.toString()),null));
-          entry.clearField(field.toString());
+      if (BibtexFields.isDisplayableField(field)) {
+        if (nu.getField(field) == null) {
+          compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),null));
+          entry.clearField(field);
           anyChanged=true;
         }
       }
     }
     for (    String field : nu.getAllFields()) {
-      if (entry.getField(field.toString()) != nu.getField(field.toString())) {
-        String toSet=nu.getField(field.toString());
-        (new LatexFieldFormatter()).format(toSet,field.toString());
-        compound.addEdit(new UndoableFieldChange(entry,field.toString(),entry.getField(field.toString()),toSet));
-        entry.setField(field.toString(),toSet);
+      if (!entry.getField(field).equals(nu.getField(field))) {
+        String toSet=nu.getField(field);
+        (new LatexFieldFormatter()).format(toSet,field);
+        compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),toSet));
+        entry.setField(field,toSet);
         anyChanged=true;
       }
     }

@@ -7,9 +7,9 @@
   try {
     doc.insertString(0,"",doc.getStyle("regular"));
   }
- catch (  Exception e) {
+ catch (  Exception ignored) {
   }
-  testPanel=new OverlayPanel(textPane,Globals.lang("Text_Input_Area"));
+  OverlayPanel testPanel=new OverlayPanel(textPane,Globals.lang("Text_Input_Area"));
   testPanel.setPreferredSize(new Dimension(450,255));
   testPanel.setMaximumSize(new Dimension(450,Integer.MAX_VALUE));
   PasteAction pasteAction=new PasteAction();
@@ -39,7 +39,7 @@
   TitledBorder titledBorder1=new TitledBorder(BorderFactory.createLineBorder(new Color(153,153,153),2),Globals.lang("Input"));
   inputPanel.setBorder(titledBorder1);
   inputPanel.setMinimumSize(new Dimension(10,10));
-  fieldList=new JList(getAllFields());
+  fieldList=new JList<String>(getAllFields());
   fieldList.setCellRenderer(new SimpleCellRenderer(fieldList.getFont()));
   ListSelectionModel listSelectionModel=fieldList.getSelectionModel();
   listSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -51,7 +51,7 @@
   insertButton.addActionListener(this);
   parseWithFreeCiteButton.setText(Globals.lang("Parse with FreeCite"));
   parseWithFreeCiteButton.addActionListener(this);
-  appRadio=new JRadioButton(Globals.lang("Append"));
+  JRadioButton appRadio=new JRadioButton(Globals.lang("Append"));
   appRadio.setToolTipText(Globals.lang("append_the_selected_text_to_bibtex_key"));
   appRadio.setMnemonic(KeyEvent.VK_A);
   appRadio.setSelected(true);
@@ -85,7 +85,6 @@
   inputPanel.add(insertButton);
   rawPanel.add(leftPanel,BorderLayout.CENTER);
   rawPanel.add(inputPanel,BorderLayout.EAST);
-  boolean loaded=false;
   JLabel desc=new JLabel("<html><h3>" + Globals.lang("Plain text import") + "</h3><p>"+ Globals.lang("This is a simple copy and paste dialog. First load or paste some text into " + "the text input area.<br>After that, you can mark text and assign it to a BibTeX field.")+ "</p></html>");
   desc.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   rawPanel.add(desc,BorderLayout.SOUTH);

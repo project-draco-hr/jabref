@@ -14,11 +14,11 @@
   for (int i=1; i < items.length; i++) {
     HashMap<String,String> h=new HashMap<String,String>();
     String[] fields=items[i].split("__NEWFIELD__");
-    for (int j=0; j < fields.length; j++) {
-      int linebreak=fields[j].indexOf('\n');
-      String fieldName=fields[j].substring(0,linebreak).trim();
-      String content=fields[j].substring(linebreak).trim();
-      boolean isAuthor=fieldName.indexOf("Author") == 0 && fieldName.indexOf("Author Keywords") == -1 && fieldName.indexOf("Author e-mail") == -1;
+    for (    String field : fields) {
+      int linebreak=field.indexOf('\n');
+      String fieldName=field.substring(0,linebreak).trim();
+      String content=field.substring(linebreak).trim();
+      boolean isAuthor=fieldName.indexOf("Author") == 0 && !fieldName.contains("Author Keywords") && !fieldName.contains("Author e-mail");
       if (!isAuthor && content.endsWith("."))       content=content.substring(0,content.length() - 1);
       if (isAuthor) {
         h.put("author",content);
@@ -74,13 +74,13 @@
         h.put("abstract",content);
       }
  else       if (fieldName.equals("Publication Type")) {
-        if (content.indexOf("Book") >= 0)         h.put("entrytype","book");
- else         if (content.indexOf("Journal") >= 0)         h.put("entrytype","article");
- else         if (content.indexOf("Conference Paper") >= 0)         h.put("entrytype","inproceedings");
+        if (content.contains("Book"))         h.put("entrytype","book");
+ else         if (content.contains("Journal"))         h.put("entrytype","article");
+ else         if (content.contains("Conference Paper"))         h.put("entrytype","inproceedings");
       }
     }
     String auth=h.get("author");
-    if ((auth != null) && (auth.indexOf(" [Ed]") >= 0)) {
+    if ((auth != null) && (auth.contains(" [Ed]"))) {
       h.remove("author");
       h.put("editor",auth.replaceAll(" \\[Ed\\]",""));
     }

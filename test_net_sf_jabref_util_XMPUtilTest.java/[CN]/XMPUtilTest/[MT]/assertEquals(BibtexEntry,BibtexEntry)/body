@@ -1,0 +1,15 @@
+{
+  assertEquals(expected.getCiteKey(),actual.getCiteKey());
+  assertEquals(expected.getType(),actual.getType());
+  for (  String field : expected.getAllFields()) {
+    if (field.toLowerCase().equals("author") || field.toLowerCase().equals("editor")) {
+      AuthorList expectedAuthors=AuthorList.getAuthorList(expected.getField(field));
+      AuthorList actualAuthors=AuthorList.getAuthorList(actual.getField(field));
+      assertEquals(expectedAuthors,actualAuthors);
+    }
+ else {
+      assertEquals("" + field,expected.getField(field),actual.getField(field));
+    }
+  }
+  assertEquals(expected.getAllFields().size(),actual.getAllFields().size());
+}

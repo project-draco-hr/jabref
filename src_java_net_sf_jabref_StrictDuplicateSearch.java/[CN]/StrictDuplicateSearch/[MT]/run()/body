@@ -22,8 +22,7 @@
   int answer=JOptionPane.showConfirmDialog(panel.frame(),Globals.lang("Duplicates found") + ": " + toRemove.size()+ ". "+ Globals.lang("Remove all?"),Globals.lang("Remove duplicates"),JOptionPane.OK_CANCEL_OPTION);
   if (answer == JOptionPane.CANCEL_OPTION)   return;
   panel.output(Globals.lang("Duplicates removed") + ": " + toRemove.size());
-  for (Iterator<BibtexEntry> i=toRemove.iterator(); i.hasNext(); ) {
-    BibtexEntry entry=i.next();
+  for (  BibtexEntry entry : toRemove) {
     panel.database.removeEntry(entry.getId());
     ce.addEdit(new UndoableRemoveEntry(panel.database,entry,panel));
   }

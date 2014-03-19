@@ -14,15 +14,15 @@
       urls.put(desc.getId(),desc);
     }
   }
-  for (int i=0; i < files.length; i++) {
-    File file=new File(PluginCore.userPluginDir,files[i]);
+  for (  String file1 : files) {
+    File file=new File(PluginCore.userPluginDir,file1);
     String[] nav=getNameAndVersion(file);
     if (nav != null) {
       VersionNumber vn=nav[1] != null ? new VersionNumber(nav[1]) : null;
       NameAndVersion nameAndVersion=new NameAndVersion(nav[0],vn,true,file);
       for (Iterator<String> it=urls.keySet().iterator(); it.hasNext(); ) {
         String loc=it.next();
-        if (loc.indexOf(nav[0]) >= 0) {
+        if (loc.contains(nav[0])) {
           PluginDescriptor desc=urls.get(loc);
           if (!PluginCore.getManager().isPluginEnabled(urls.get(loc)))           nameAndVersion.setStatus(BAD);
  else           nameAndVersion.setStatus(LOADED);
@@ -35,7 +35,7 @@
   for (  String url : urls.keySet()) {
     PluginDescriptor desc=urls.get(url);
     File location=new File(desc.getLocation().getFile());
-    if (location.getPath().indexOf(PluginCore.userPluginDir.getPath()) >= 0)     continue;
+    if (location.getPath().contains(PluginCore.userPluginDir.getPath()))     continue;
     NameAndVersion nameAndVersion=new NameAndVersion(desc.getId(),new VersionNumber(desc.getVersion().toString()),false,location);
     if (!PluginCore.getManager().isPluginEnabled(urls.get(url)))     nameAndVersion.setStatus(BAD);
  else     nameAndVersion.setStatus(LOADED);

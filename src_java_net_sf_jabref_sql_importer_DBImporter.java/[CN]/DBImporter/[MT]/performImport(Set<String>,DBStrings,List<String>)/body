@@ -16,9 +16,6 @@
       types.put(rsEntryType.getString("entry_types_id"),BibtexEntryType.getType(rsEntryType.getString("label")));
     }
     rsEntryType.getStatement().close();
-    for (Iterator<String> iterator=types.keySet().iterator(); iterator.hasNext(); ) {
-      iterator.next();
-    }
     ResultSet rsColumns=this.readColumnNames(conn);
     ArrayList<String> colNames=new ArrayList<String>();
     while (rsColumns.next()) {
@@ -32,8 +29,7 @@
       String id=rsEntries.getString("entries_id");
       BibtexEntry entry=new BibtexEntry(Util.createNeutralId(),types.get(rsEntries.getString("entry_types_id")));
       entry.setField(BibtexFields.KEY_FIELD,rsEntries.getString("cite_key"));
-      for (Iterator<String> iterator=colNames.iterator(); iterator.hasNext(); ) {
-        String col=iterator.next();
+      for (      String col : colNames) {
         String value=rsEntries.getString(col);
         if (value != null) {
           col=col.charAt(col.length() - 1) == '_' ? col.substring(0,col.length() - 1) : col;

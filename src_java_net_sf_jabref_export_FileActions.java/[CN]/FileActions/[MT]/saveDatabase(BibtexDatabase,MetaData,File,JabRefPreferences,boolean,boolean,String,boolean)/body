@@ -45,8 +45,8 @@
       metaData.writeMetaData(fw);
     }
     if (types.size() > 0) {
-      for (Iterator<String> i=types.keySet().iterator(); i.hasNext(); ) {
-        BibtexEntryType type=types.get(i.next());
+      for (      String s : types.keySet()) {
+        BibtexEntryType type=types.get(s);
         if (type instanceof CustomEntryType) {
           CustomEntryType tp=(CustomEntryType)type;
           tp.save(fw);
@@ -58,13 +58,7 @@
   }
  catch (  Throwable ex) {
     ex.printStackTrace();
-    try {
-      session.cancel();
-    }
- catch (    IOException e) {
-      e.printStackTrace();
-      throw new SaveException(ex.getMessage() + "\n" + Globals.lang("Warning: could not complete file repair; your file may " + "have been corrupted. Error message")+ ": "+ e.getMessage());
-    }
+    session.cancel();
     throw new SaveException(ex.getMessage(),exceptionCause);
   }
   return session;

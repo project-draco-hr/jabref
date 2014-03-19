@@ -11,8 +11,7 @@
     metaData=new MetaData();
   }
   List<String> keys=new ArrayList<String>(entries.size());
-  for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
-    BibtexEntry entry=i.next();
+  for (  BibtexEntry entry : entries) {
     try {
       entry.setId(Util.createNeutralId());
       database.insertEntry(entry);
@@ -23,8 +22,7 @@
     LabelPatternUtil.makeLabel(metaData,database,entry);
     keys.add(entry.getCiteKey());
   }
-  for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
-    BibtexEntry entry=i.next();
+  for (  BibtexEntry entry : entries) {
     database.removeEntry(entry.getId());
   }
   entries.getReadWriteLock().writeLock().lock();

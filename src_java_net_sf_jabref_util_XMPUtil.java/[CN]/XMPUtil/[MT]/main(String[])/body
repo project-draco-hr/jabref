@@ -10,11 +10,9 @@ case 1:
 {
   if (args[0].endsWith(".pdf")) {
     List<BibtexEntry> l=XMPUtil.readXMP(new File(args[0]));
-    Iterator<BibtexEntry> it=l.iterator();
-    while (it.hasNext()) {
-      BibtexEntry e=it.next();
+    for (    BibtexEntry e : l) {
       StringWriter sw=new StringWriter();
-      e.write(sw,new net.sf.jabref.export.LatexFieldFormatter(),false);
+      e.write(sw,new LatexFieldFormatter(),false);
       System.out.println(sw.getBuffer().toString());
     }
   }

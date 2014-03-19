@@ -1,10 +1,10 @@
 {
   URLClassLoader sysloader=(URLClassLoader)ClassLoader.getSystemClassLoader();
-  Class sysclass=URLClassLoader.class;
+  Class<URLClassLoader> sysclass=URLClassLoader.class;
   try {
     Method method=sysclass.getDeclaredMethod("addURL",parameters);
     method.setAccessible(true);
-    for (int i=0; i < u.length; i++)     method.invoke(sysloader,u[i]);
+    for (    URL anU : u)     method.invoke(sysloader,anU);
   }
  catch (  Throwable t) {
     t.printStackTrace();

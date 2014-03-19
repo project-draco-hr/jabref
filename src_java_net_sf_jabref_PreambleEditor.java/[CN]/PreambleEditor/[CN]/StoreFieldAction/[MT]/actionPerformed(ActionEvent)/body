@@ -3,12 +3,10 @@
   boolean set;
   if (ed.getText().length() > 0)   toSet=ed.getText();
   if (toSet == null) {
-    if (base.getPreamble() == null)     set=false;
- else     set=true;
+    set=base.getPreamble() != null;
   }
  else {
-    if ((base.getPreamble() != null) && toSet.equals(base.getPreamble()))     set=false;
- else     set=true;
+    set=!((base.getPreamble() != null) && toSet.equals(base.getPreamble()));
   }
   if (set) {
     panel.undoManager.addEdit(new UndoablePreambleChange(base,panel,base.getPreamble(),toSet));
