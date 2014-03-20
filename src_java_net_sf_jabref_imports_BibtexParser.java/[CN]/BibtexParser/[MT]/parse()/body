@@ -1,15 +1,13 @@
 {
   if (_pr != null)   return _pr;
   _db=new BibtexDatabase();
-  _meta=new HashMap<String,String>();
+  HashMap<String,String> meta=new HashMap<String,String>();
   entryTypes=new HashMap<String,BibtexEntryType>();
   _pr=new ParserResult(_db,null,entryTypes);
   String versionNum=readJabRefVersionNumber();
   if (versionNum != null) {
     _pr.setJabrefVersion(versionNum);
     setMajorMinorVersions();
-  }
- else {
   }
   skipWhitespace();
   try {
@@ -41,7 +39,7 @@
             if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG))             rest=comment.substring(GUIGlobals.META_FLAG.length());
  else             rest=comment.substring(GUIGlobals.META_FLAG_OLD.length());
             int pos=rest.indexOf(':');
-            if (pos > 0)             _meta.put(rest.substring(0,pos),rest.substring(pos + 1));
+            if (pos > 0)             meta.put(rest.substring(0,pos),rest.substring(pos + 1));
           }
  else           if (comment.substring(0,Math.min(comment.length(),GUIGlobals.ENTRYTYPE_FLAG.length())).equals(GUIGlobals.ENTRYTYPE_FLAG)) {
             CustomEntryType typ=CustomEntryType.parseEntryType(comment);
@@ -73,7 +71,7 @@
       skipWhitespace();
     }
     checkEntryTypes(_pr);
-    _pr.setMetaData(new MetaData(_meta,_db));
+    _pr.setMetaData(new MetaData(meta,_db));
     return _pr;
   }
  catch (  KeyCollisionException kce) {
