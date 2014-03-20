@@ -2,13 +2,13 @@
   entry1=new BibtexEntry();
   JabRefPreferences jabRefPreferences=JabRefPreferences.getInstance();
   ExternalFileType fileType=jabRefPreferences.getExternalFileTypeByExt("PDF");
-  FileListEntry fileListEntry=new FileListEntry("",fileInDatabase.getAbsolutePath(),fileType);
+  FileListEntry fileListEntry=new FileListEntry("",ImportDataTest.FILE_IN_DATABASE.getAbsolutePath(),fileType);
   FileListTableModel model=new FileListTableModel();
   model.addEntry(0,fileListEntry);
   entry1.setField("file",model.getStringRepresentation());
   database.insertEntry(entry1);
   UnlinkedFilesCrawler crawler=new UnlinkedFilesCrawler(database);
-  CheckableTreeNode treeNode=crawler.searchDirectory(pdfDirectory,new EntryFromPDFCreator());
+  CheckableTreeNode treeNode=crawler.searchDirectory(ImportDataTest.EXISTING_FOLDER,new EntryFromPDFCreator());
   assertNotNull(treeNode);
   @SuppressWarnings("unchecked") Enumeration<CheckableTreeNode> enumeration=treeNode.breadthFirstEnumeration();
   while (enumeration.hasMoreElements()) {
@@ -17,6 +17,6 @@
   }
   List<File> resultList=getFileListFromNode(treeNode);
   assertFalse(resultList.isEmpty());
-  assertTrue(resultList.contains(fileNotInDatabase));
-  assertFalse(resultList.contains(fileInDatabase));
+  assertTrue(resultList.contains(ImportDataTest.FILE_NOT_IN_DATABASE));
+  assertFalse(resultList.contains(ImportDataTest.FILE_IN_DATABASE));
 }

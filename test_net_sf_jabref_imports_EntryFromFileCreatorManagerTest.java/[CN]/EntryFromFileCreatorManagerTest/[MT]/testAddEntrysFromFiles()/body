@@ -1,9 +1,11 @@
 {
+  ParserResult result=BibtexParser.parse(new FileReader(ImportDataTest.UNLINKED_FILES_TEST_BIB));
+  BibtexDatabase database=result.getDatabase();
   List<File> files=new ArrayList<File>();
-  files.add(pdfNotInDatabase);
-  files.add(notExistingFile);
-  manager2=new EntryFromFileCreatorManager();
-  List<String> errors=manager2.addEntrysFromFiles(files,database,null,true);
+  files.add(ImportDataTest.FILE_NOT_IN_DATABASE);
+  files.add(ImportDataTest.NOT_EXISTING_PDF);
+  EntryFromFileCreatorManager manager=new EntryFromFileCreatorManager();
+  List<String> errors=manager.addEntrysFromFiles(files,database,null,true);
   assertEquals(1,errors.size());
   boolean file1Found=false, file2Found=false;
   for (  BibtexEntry entry : database.getEntries()) {
