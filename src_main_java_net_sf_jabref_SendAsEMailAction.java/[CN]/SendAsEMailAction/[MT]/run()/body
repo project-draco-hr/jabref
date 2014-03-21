@@ -12,33 +12,26 @@
   StringWriter sw=new StringWriter();
   BibtexEntry[] bes=panel.getSelectedEntries();
   LatexFieldFormatter ff=new LatexFieldFormatter();
-  ArrayList<String> attachments=new ArrayList<String>();
-  boolean openFolders=JabRefPreferences.getInstance().getBoolean("openFoldersOfAttachedFiles");
   for (  BibtexEntry entry : bes) {
     try {
       entry.write(sw,ff,true);
-      FileListTableModel tm=new FileListTableModel();
-      tm.setContent(entry.getField("file"));
-      for (int i=0; i < tm.getRowCount(); i++) {
-        FileListEntry flEntry=tm.getEntry(i);
-        File f=Util.expandFilename(flEntry.getLink(),frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD));
-        if (f != null) {
-          attachments.add(f.getPath());
-          if (openFolders) {
-            try {
-              Util.openFolderAndSelectFile(f.getAbsolutePath());
-            }
- catch (            IOException e) {
-              logger.fine(e.getMessage());
-            }
-          }
-        }
-      }
     }
- catch (    Exception e) {
+ catch (    IOException e) {
       e.printStackTrace();
-      message=Globals.lang("Error creating email");
-      return;
+    }
+  }
+  ArrayList<String> attachments=new ArrayList<String>();
+  boolean openFolders=JabRefPreferences.getInstance().getBoolean("openFoldersOfAttachedFiles");
+  List<File> fileList=Util.getListOfLinkedFiles(bes,frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD));
+  for (  File f : fileList) {
+    attachments.add(f.getPath());
+    if (openFolders) {
+      try {
+        Util.openFolderAndSelectFile(f.getAbsolutePath());
+      }
+ catch (      IOException e) {
+        logger.fine(e.getMessage());
+      }
     }
   }
   String mailTo="?Body=".concat(sw.getBuffer().toString());
