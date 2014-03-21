@@ -1,31 +1,45 @@
 {
-  _prefs.putBoolean("backup",backup.isSelected());
-  _prefs.putBoolean("openLastEdited",openLast.isSelected());
-  _prefs.putBoolean("autoDoubleBraces",autoDoubleBraces.isSelected());
-  _prefs.putBoolean("resolveStringsAllFields",resolveStringsAll.isSelected());
-  _prefs.put("doNotResolveStringsFor",doNotResolveStringsFor.getText().trim());
-  _prefs.putBoolean("autoSave",autoSave.isSelected());
-  _prefs.putBoolean("promptBeforeUsingAutosave",promptBeforeUsingAutoSave.isSelected());
-  _prefs.putInt("autoSaveInterval",(Integer)autoSaveInterval.getValue());
-  _prefs.putInt("valueDelimiters",valueDelimiter.getSelectedIndex());
-  _prefs.putBoolean("includeEmptyFields",includeEmptyFields.isSelected());
-  _prefs.putBoolean(JabRefPreferences.WRITEFIELD_CAMELCASENAME,camelCase.isSelected());
-  _prefs.putBoolean(JabRefPreferences.WRITEFIELD_ADDSPACES,sameColumn.isSelected());
-  doNotResolveStringsFor.setText(_prefs.get("doNotResolveStringsFor"));
-  boolean updateSpecialFields=false;
-  if (!bracesAroundCapitalsFields.getText().trim().equals(_prefs.get("putBracesAroundCapitals"))) {
-    _prefs.put("putBracesAroundCapitals",bracesAroundCapitalsFields.getText());
-    updateSpecialFields=true;
-  }
-  if (!nonWrappableFields.getText().trim().equals(_prefs.get("nonWrappableFields"))) {
-    _prefs.put("nonWrappableFields",nonWrappableFields.getText());
-    updateSpecialFields=true;
-  }
-  if (updateSpecialFields)   _prefs.updateSpecialFieldHandling();
-  if (!origAutoSaveSetting && autoSave.isSelected()) {
-    Globals.startAutoSaveManager(_frame);
-  }
- else   if (origAutoSaveSetting && !autoSave.isSelected()) {
-    Globals.stopAutoSaveManager();
-  }
+  String newline;
+switch (newlineSeparator.getSelectedIndex()) {
+case 0:
+    newline="\r";
+  break;
+case 2:
+newline="\n";
+break;
+default :
+newline="\r\n";
+}
+_prefs.put(net.sf.jabref.JabRefPreferences.NEWLINE,newline);
+Globals.NEWLINE=newline;
+Globals.NEWLINE_LENGTH=newline.length();
+_prefs.putBoolean("backup",backup.isSelected());
+_prefs.putBoolean("openLastEdited",openLast.isSelected());
+_prefs.putBoolean("autoDoubleBraces",autoDoubleBraces.isSelected());
+_prefs.putBoolean("resolveStringsAllFields",resolveStringsAll.isSelected());
+_prefs.put("doNotResolveStringsFor",doNotResolveStringsFor.getText().trim());
+_prefs.putBoolean("autoSave",autoSave.isSelected());
+_prefs.putBoolean("promptBeforeUsingAutosave",promptBeforeUsingAutoSave.isSelected());
+_prefs.putInt("autoSaveInterval",(Integer)autoSaveInterval.getValue());
+_prefs.putInt("valueDelimiters",valueDelimiter.getSelectedIndex());
+_prefs.putBoolean("includeEmptyFields",includeEmptyFields.isSelected());
+_prefs.putBoolean(JabRefPreferences.WRITEFIELD_CAMELCASENAME,camelCase.isSelected());
+_prefs.putBoolean(JabRefPreferences.WRITEFIELD_ADDSPACES,sameColumn.isSelected());
+doNotResolveStringsFor.setText(_prefs.get("doNotResolveStringsFor"));
+boolean updateSpecialFields=false;
+if (!bracesAroundCapitalsFields.getText().trim().equals(_prefs.get("putBracesAroundCapitals"))) {
+_prefs.put("putBracesAroundCapitals",bracesAroundCapitalsFields.getText());
+updateSpecialFields=true;
+}
+if (!nonWrappableFields.getText().trim().equals(_prefs.get("nonWrappableFields"))) {
+_prefs.put("nonWrappableFields",nonWrappableFields.getText());
+updateSpecialFields=true;
+}
+if (updateSpecialFields) _prefs.updateSpecialFieldHandling();
+if (!origAutoSaveSetting && autoSave.isSelected()) {
+Globals.startAutoSaveManager(_frame);
+}
+ else if (origAutoSaveSetting && !autoSave.isSelected()) {
+Globals.stopAutoSaveManager();
+}
 }
