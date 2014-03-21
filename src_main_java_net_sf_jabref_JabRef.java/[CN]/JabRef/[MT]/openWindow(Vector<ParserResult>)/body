@@ -1,5 +1,5 @@
 {
-  if (!graphicFailure && !disableGui.isInvoked()) {
+  if (!graphicFailure && !cli.isDisableGui()) {
     Util.performCompatibilityUpdate();
     GUIGlobals.setUpIconTheme();
     Globals.prefs.updateExternalFileTypes();
@@ -10,7 +10,7 @@
  catch (    Throwable e) {
       e.printStackTrace();
     }
-    if (!blank.isInvoked() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
+    if (!cli.isBlank() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
       String[] names=Globals.prefs.getStringArray("lastEdited");
       lastEdLoop:       for (      String name : names) {
         File fileToOpen=new File(name);
@@ -62,7 +62,7 @@
       jrf.addParserResult(pr,first);
       first=false;
     }
-    if (loadSess.isInvoked())     jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
+    if (cli.isLoadSession())     jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
     if (splashScreen != null) {
       splashScreen.dispose();
       splashScreen=null;

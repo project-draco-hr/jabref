@@ -1,21 +1,20 @@
 {
-  setupOptions();
-  String[] leftOver=options.process(args);
-  if (initialStartup && showVersion.isInvoked()) {
-    options.displayVersion();
-    disableGui.setInvoked(true);
+  cli=new JabRefCLI(args);
+  if (initialStartup && cli.isShowVersion()) {
+    cli.options.displayVersion();
+    cli.disableGui.setInvoked(true);
   }
-  if (initialStartup && helpO.isInvoked()) {
+  if (initialStartup && cli.isHelp()) {
     System.out.println("jabref [options] [bibtex-file]\n");
-    System.out.println(options.getHelp());
+    System.out.println(cli.getHelp());
     String importFormats=Globals.importFormatReader.getImportFormatList();
     System.out.println(Globals.lang("Available import formats") + ":\n" + importFormats);
     String outFormats=ExportFormats.getConsoleExportList(70,20,"\t");
     System.out.println(Globals.lang("Available export formats") + ": " + outFormats+ ".");
     System.exit(0);
   }
-  boolean commandmode=disableGui.isInvoked() || fetcherEngine.isInvoked();
-  if (initialStartup && !commandmode && !disableSplash.isInvoked()) {
+  boolean commandmode=cli.isDisableGui() || cli.fetcherEngine.isInvoked();
+  if (initialStartup && !commandmode && !cli.isDisableSplash()) {
     try {
       splashScreen=SplashScreen.splash();
     }
@@ -24,8 +23,8 @@
       System.err.println(Globals.lang("Unable to create graphical interface") + ".");
     }
   }
-  if (defPrefs.isInvoked()) {
-    String value=defPrefs.getStringValue();
+  if (cli.defPrefs.isInvoked()) {
+    String value=cli.defPrefs.getStringValue();
     if (value.trim().equals("all")) {
       try {
         System.out.println(Globals.lang("Setting all preferences to default values."));
@@ -49,9 +48,9 @@
       }
     }
   }
-  if (importPrefs.isInvoked()) {
+  if (cli.importPrefs.isInvoked()) {
     try {
-      Globals.prefs.importPreferences(importPrefs.getStringValue());
+      Globals.prefs.importPreferences(cli.importPrefs.getStringValue());
       BibtexEntryType.loadCustomEntryTypes(Globals.prefs);
       ExportFormats.initAllExports();
     }
@@ -61,8 +60,8 @@
   }
   Vector<ParserResult> loaded=new Vector<ParserResult>();
   Vector<String> toImport=new Vector<String>();
-  if (!blank.isInvoked() && (leftOver.length > 0)) {
-    for (    String aLeftOver : leftOver) {
+  if (!cli.isBlank() && (cli.getLeftOver().length > 0)) {
+    for (    String aLeftOver : cli.getLeftOver()) {
       boolean bibExtension=aLeftOver.toLowerCase().endsWith("bib");
       ParserResult pr=null;
       if (bibExtension)       pr=openBibFile(aLeftOver,false);
@@ -79,24 +78,24 @@
  else       if (pr != ParserResult.FILE_LOCKED)       loaded.add(pr);
     }
   }
-  if (!blank.isInvoked() && importFile.isInvoked()) {
-    toImport.add(importFile.getStringValue());
+  if (!cli.isBlank() && cli.importFile.isInvoked()) {
+    toImport.add(cli.importFile.getStringValue());
   }
   for (  String filenameString : toImport) {
     ParserResult pr=importFile(filenameString);
     if (pr != null)     loaded.add(pr);
   }
-  if (!blank.isInvoked() && importToOpenBase.isInvoked()) {
-    ParserResult res=importToOpenBase(importToOpenBase.getStringValue());
+  if (!cli.isBlank() && cli.importToOpenBase.isInvoked()) {
+    ParserResult res=importToOpenBase(cli.importToOpenBase.getStringValue());
     if (res != null)     loaded.add(res);
   }
-  if (!blank.isInvoked() && fetcherEngine.isInvoked()) {
-    ParserResult res=fetch(fetcherEngine.getStringValue());
+  if (!cli.isBlank() && cli.fetcherEngine.isInvoked()) {
+    ParserResult res=fetch(cli.fetcherEngine.getStringValue());
     if (res != null)     loaded.add(res);
   }
-  if (exportMatches.isInvoked()) {
+  if (cli.exportMatches.isInvoked()) {
     if (loaded.size() > 0) {
-      String[] data=exportMatches.getStringValue().split(",");
+      String[] data=cli.exportMatches.getStringValue().split(",");
       String searchTerm=data[0].replace("\\$"," ");
       ParserResult pr=loaded.elementAt(loaded.size() - 1);
       BibtexDatabase dataBase=pr.getDatabase();
@@ -118,7 +117,7 @@ case (2):
         }
 default :
 {
-        System.err.println(Globals.lang("Output file missing").concat(". \n \t ").concat("Usage").concat(": ") + exportMatchesSyntax);
+        System.err.println(Globals.lang("Output file missing").concat(". \n \t ").concat("Usage").concat(": ") + JabRefCLI.exportMatchesSyntax);
         System.exit(0);
       }
   }
@@ -142,9 +141,9 @@ default :
 System.err.println(Globals.lang("The output option depends on a valid input option."));
 }
 }
-if (exportFile.isInvoked()) {
+if (cli.exportFile.isInvoked()) {
 if (loaded.size() > 0) {
-String[] data=exportFile.getStringValue().split(",");
+String[] data=cli.exportFile.getStringValue().split(",");
 if (data.length == 1) {
   if (loaded.size() > 0) {
     ParserResult pr=loaded.elementAt(loaded.size() - 1);
@@ -185,18 +184,18 @@ if (data.length == 1) {
 }
  else System.err.println(Globals.lang("The output option depends on a valid import option."));
 }
-if (exportPrefs.isInvoked()) {
+if (cli.exportPrefs.isInvoked()) {
 try {
-Globals.prefs.exportPreferences(exportPrefs.getStringValue());
+Globals.prefs.exportPreferences(cli.exportPrefs.getStringValue());
 }
  catch (IOException ex) {
 Util.pr(ex.getMessage());
 }
 }
-if (!blank.isInvoked() && auxImExport.isInvoked()) {
+if (!cli.isBlank() && cli.auxImExport.isInvoked()) {
 boolean usageMsg=false;
 if (loaded.size() > 0) {
-String[] data=auxImExport.getStringValue().split(",");
+String[] data=cli.auxImExport.getStringValue().split(",");
 if (data.length == 2) {
   ParserResult pr=loaded.firstElement();
   AuxCommandLine acl=new AuxCommandLine(data[0],pr.getDatabase());
