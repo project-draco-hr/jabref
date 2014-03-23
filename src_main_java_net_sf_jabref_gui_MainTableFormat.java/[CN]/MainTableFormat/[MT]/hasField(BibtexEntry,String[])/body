@@ -1,0 +1,38 @@
+{
+  if (be == null || field == null || field.length < 1) {
+    return new int[]{-1,-1};
+  }
+  int hasField=-1;
+  if (!field[0].equals(GUIGlobals.FILE_FIELD)) {
+    for (int i=field.length - 1; i >= 0; i--) {
+      if (hasField(be,field[i])) {
+        hasField=i;
+      }
+    }
+    return new int[]{hasField,-1};
+  }
+ else {
+    Object o=be.getField(GUIGlobals.FILE_FIELD);
+    FileListTableModel fileList=new FileListTableModel();
+    fileList.setContent((String)o);
+    if (field.length == 1) {
+      if (fileList.getRowCount() == 0) {
+        return new int[]{-1,-1};
+      }
+ else {
+        return new int[]{0,fileList.getRowCount()};
+      }
+    }
+    int lastLinkPosition=-1, countLinks=0;
+    for (int i=1; i < field.length; i++) {
+      for (int j=0; j < fileList.getRowCount(); j++) {
+        FileListEntry flEntry=fileList.getEntry(j);
+        if (flEntry.getType().toString().equals(field[i])) {
+          lastLinkPosition=i;
+          countLinks++;
+        }
+      }
+    }
+    return new int[]{lastLinkPosition,countLinks};
+  }
+}

@@ -6,10 +6,14 @@
   }
  else   if (iconType != null) {
     int hasField=-1;
-    for (int i=iconType.length - 1; i >= 0; i--)     if (hasField(be,iconType[i]))     hasField=i;
+    int[] fieldCount=hasField(be,iconType);
+    hasField=fieldCount[0];
     if (hasField < 0)     return null;
     if (iconType[hasField].equals(GUIGlobals.FILE_FIELD)) {
       o=FileListTableModel.getFirstLabel(be.getField(GUIGlobals.FILE_FIELD));
+      if (fieldCount[1] > 1) {
+        o=modifyIconForMultipleLinks((JLabel)o);
+      }
     }
  else     if (iconType[hasField].equals(PRIORITY[0])) {
       SpecialFieldValue prio=Priority.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_PRIORITY));
@@ -25,6 +29,9 @@
     }
  else {
       o=GUIGlobals.getTableIcon(iconType[hasField]);
+      if (fieldCount[1] > 1) {
+        o=modifyIconForMultipleLinks((JLabel)o);
+      }
     }
   }
  else {

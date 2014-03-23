@@ -28,6 +28,11 @@
     for (int i=iconType.length - 1; i >= 0; i--)     if (entry.getField(iconType[i]) != null)     hasField=i;
     if (hasField == -1)     return;
     final String fieldName=iconType[hasField];
+    String[] fileTypes={};
+    if (hasField == 0 && iconType[hasField].equals(GUIGlobals.FILE_FIELD) && iconType.length > 1) {
+      fileTypes=iconType;
+    }
+    final List<String> listOfFileTypes=Collections.unmodifiableList(Arrays.asList(fileTypes));
     (new Thread(){
       public void run(){
         panel.output(Globals.lang("External viewer called") + ".");
@@ -40,8 +45,26 @@
           if (fieldName.equals(GUIGlobals.FILE_FIELD)) {
             FileListTableModel fileList=new FileListTableModel();
             fileList.setContent((String)link);
-            if (fileList.getRowCount() > 0) {
-              FileListEntry flEntry=fileList.getEntry(0);
+            FileListEntry flEntry=null;
+            if (listOfFileTypes.size() > 0) {
+              for (int i=0; i < fileList.getRowCount(); i++) {
+                flEntry=fileList.getEntry(i);
+                boolean correctType=false;
+                for (int j=0; j < listOfFileTypes.size(); j++) {
+                  if (flEntry.getType().toString().equals(listOfFileTypes.get(j))) {
+                    correctType=true;
+                  }
+                }
+                if (correctType) {
+                  break;
+                }
+                flEntry=null;
+              }
+            }
+ else             if (fileList.getRowCount() > 0) {
+              flEntry=fileList.getEntry(0);
+            }
+            if (flEntry != null) {
               ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.getLink(),flEntry.getType().getIcon(),panel.metaData(),flEntry.getType());
               boolean success=item.openLink();
               if (!success) {
