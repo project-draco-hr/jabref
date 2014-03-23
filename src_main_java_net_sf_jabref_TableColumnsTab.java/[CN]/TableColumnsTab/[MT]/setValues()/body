@@ -6,6 +6,25 @@
   preferDoi.setSelected(_prefs.getBoolean("preferUrlDoi"));
   fileColumn.setSelected(_prefs.getBoolean("fileColumn"));
   arxivColumn.setSelected(_prefs.getBoolean("arxivColumn"));
+  extraFileColumns.setSelected(_prefs.getBoolean("extraFileColumns"));
+  if (extraFileColumns.isSelected()) {
+    String[] desiredColumns=_prefs.getStringArray("listOfFileColumns");
+    int listSize=listOfFileColumns.getModel().getSize();
+    int[] indicesToSelect=new int[listSize];
+    for (int i=0; i < listSize; i++) {
+      indicesToSelect[i]=listSize + 1;
+      for (int j=0; j < desiredColumns.length; j++) {
+        if (listOfFileColumns.getModel().getElementAt(i).equals(desiredColumns[j])) {
+          indicesToSelect[i]=i;
+          break;
+        }
+      }
+    }
+    listOfFileColumns.setSelectedIndices(indicesToSelect);
+  }
+ else {
+    listOfFileColumns.setSelectedIndices(new int[]{});
+  }
   oldRankingColumn=_prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING);
   rankingColumn.setSelected(oldRankingColumn);
   oldCompcatRankingColumn=_prefs.getBoolean(SpecialFieldsUtils.PREF_RANKING_COMPACT);

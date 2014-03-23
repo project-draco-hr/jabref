@@ -4,6 +4,17 @@
   _prefs.putBoolean("urlColumn",urlColumn.isSelected());
   _prefs.putBoolean("preferUrlDoi",preferDoi.isSelected());
   _prefs.putBoolean("arxivColumn",arxivColumn.isSelected());
+  _prefs.putBoolean("extraFileColumns",extraFileColumns.isSelected());
+  if (extraFileColumns.isSelected() && !listOfFileColumns.isSelectionEmpty()) {
+    String[] selections=new String[listOfFileColumns.getSelectedIndices().length];
+    for (int i=0; i < selections.length; i++) {
+      selections[i]=listOfFileColumns.getModel().getElementAt(listOfFileColumns.getSelectedIndices()[i]).toString();
+    }
+    _prefs.putStringArray("listOfFileColumns",selections);
+  }
+ else {
+    _prefs.putStringArray("listOfFileColumns",new String[]{});
+  }
   _prefs.putBoolean(JabRefPreferences.SHOWONELETTERHEADINGFORICONCOLUMNS,showOneLetterHeadingForIconColumns.isSelected());
   boolean newSpecialFieldsEnabled=specialFieldsEnabled.isSelected(), newRankingColumn=rankingColumn.isSelected(), newCompactRankingColumn=compactRankingColumn.isSelected(), newQualityColumn=qualityColumn.isSelected(), newPriorityColumn=priorityColumn.isSelected(), newRelevanceColumn=relevanceColumn.isSelected(), newSyncKeyWords=syncKeywords.isSelected(), newWriteSpecialFields=writeSpecialFields.isSelected();
   boolean restartRequired=false;
