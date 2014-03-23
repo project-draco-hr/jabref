@@ -1,4 +1,27 @@
 {
+  SaveOrderConfig newSaveOrderConfig;
+  if (saveAsConfiguredGlobally.isSelected()) {
+    metaData.remove(SAVE_ORDER_CONFIG);
+    newSaveOrderConfig=null;
+  }
+ else {
+    SaveOrderConfig saveOrderConfig=new SaveOrderConfig();
+    newSaveOrderConfig=saveOrderConfig;
+    if (saveInOriginalOrder.isSelected()) {
+      saveOrderConfig.setSaveInOriginalOrder();
+    }
+ else {
+      saveOrderConfig.setSaveInSpecifiedOrder();
+    }
+    saveOrderConfig.sortCriteria[0].field=savePriField.getText();
+    saveOrderConfig.sortCriteria[0].descending=savePriDesc.isSelected();
+    saveOrderConfig.sortCriteria[1].field=saveSecField.getText();
+    saveOrderConfig.sortCriteria[1].descending=saveSecDesc.isSelected();
+    saveOrderConfig.sortCriteria[2].field=saveTerField.getText();
+    saveOrderConfig.sortCriteria[2].descending=saveTerDesc.isSelected();
+    Vector<String> serialized=saveOrderConfig.getVector();
+    metaData.putData(SAVE_ORDER_CONFIG,serialized);
+  }
   String oldEncoding=panel.getEncoding();
   String newEncoding=(String)encoding.getSelectedItem();
   panel.setEncoding(newEncoding);
@@ -36,6 +59,16 @@
     metaData.putData(Globals.PROTECTED_FLAG_META,dir);
   }
  else   metaData.remove(Globals.PROTECTED_FLAG_META);
-  boolean changed=!newEncoding.equals(oldEncoding) || !oldFileVal.equals(fileDir.getText()) || !oldFileIndvVal.equals(fileDirIndv.getText())|| !oldPdfVal.equals(pdfDir.getText())|| !oldPsVal.equals(psDir.getText())|| (oldProtectVal != protect.isSelected());
+  boolean saveOrderConfigChanged;
+  if (oldSaveOrderConfig == newSaveOrderConfig) {
+    saveOrderConfigChanged=false;
+  }
+ else   if ((oldSaveOrderConfig == null) || (newSaveOrderConfig == null)) {
+    saveOrderConfigChanged=true;
+  }
+ else {
+    saveOrderConfigChanged=!oldSaveOrderConfig.getVector().equals(newSaveOrderConfig.getVector());
+  }
+  boolean changed=saveOrderConfigChanged || !newEncoding.equals(oldEncoding) || !oldFileVal.equals(fileDir.getText())|| !oldFileIndvVal.equals(fileDirIndv.getText())|| !oldPdfVal.equals(pdfDir.getText())|| !oldPsVal.equals(psDir.getText())|| (oldProtectVal != protect.isSelected());
   if (changed)   panel.markNonUndoableBaseChanged();
 }

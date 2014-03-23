@@ -1,5 +1,41 @@
 {
   encoding.setSelectedItem(panel.getEncoding());
+  Vector<String> storedSaveOrderConfig=metaData.getData(SAVE_ORDER_CONFIG);
+  boolean selected;
+  if (storedSaveOrderConfig == null) {
+    saveAsConfiguredGlobally.setSelected(true);
+    oldSaveOrderConfig=null;
+    selected=false;
+  }
+ else {
+    SaveOrderConfig saveOrderConfig;
+    saveOrderConfig=new SaveOrderConfig(storedSaveOrderConfig);
+    oldSaveOrderConfig=saveOrderConfig;
+    if (saveOrderConfig.saveInOriginalOrder) {
+      saveInOriginalOrder.setSelected(true);
+      selected=false;
+    }
+ else {
+      assert(saveOrderConfig.saveInSpecifiedOrder == true);
+      saveInSpecifiedOrder.setSelected(true);
+      selected=true;
+    }
+    savePriField.setText(saveOrderConfig.sortCriteria[0].field);
+    savePriDesc.setSelected(saveOrderConfig.sortCriteria[0].descending);
+    saveSecField.setText(saveOrderConfig.sortCriteria[1].field);
+    saveSecDesc.setSelected(saveOrderConfig.sortCriteria[1].descending);
+    saveTerField.setText(saveOrderConfig.sortCriteria[2].field);
+    saveTerDesc.setSelected(saveOrderConfig.sortCriteria[2].descending);
+  }
+  savePriSort.setEnabled(selected);
+  savePriField.setEnabled(selected);
+  savePriDesc.setEnabled(selected);
+  saveSecSort.setEnabled(selected);
+  saveSecField.setEnabled(selected);
+  saveSecDesc.setEnabled(selected);
+  saveTerSort.setEnabled(selected);
+  saveTerField.setEnabled(selected);
+  saveTerDesc.setEnabled(selected);
   Vector<String> fileD=metaData.getData(Globals.prefs.get("userFileDir"));
   if (fileD == null)   fileDir.setText("");
  else {

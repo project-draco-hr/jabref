@@ -1,5 +1,18 @@
 {
-  boolean inOriginalOrder=isSaveOperation ? Globals.prefs.getBoolean("saveInOriginalOrder") : Globals.prefs.getBoolean("exportInOriginalOrder");
+  boolean inOriginalOrder;
+  if (isSaveOperation) {
+    Vector<String> storedSaveOrderConfig=metaData.getData(net.sf.jabref.gui.DatabasePropertiesDialog.SAVE_ORDER_CONFIG);
+    if (storedSaveOrderConfig == null) {
+      inOriginalOrder=Globals.prefs.getBoolean("saveInOriginalOrder");
+    }
+ else {
+      SaveOrderConfig saveOrderConfig=new SaveOrderConfig(storedSaveOrderConfig);
+      inOriginalOrder=saveOrderConfig.saveInOriginalOrder;
+    }
+  }
+ else {
+    inOriginalOrder=Globals.prefs.getBoolean("exportInOriginalOrder");
+  }
   List<Comparator<BibtexEntry>> comparators;
   if (inOriginalOrder) {
     comparators=new ArrayList<Comparator<BibtexEntry>>();
@@ -7,7 +20,7 @@
     comparators.add(new IdComparator());
   }
  else {
-    comparators=getSaveComparators(isSaveOperation);
+    comparators=getSaveComparators(isSaveOperation,metaData);
   }
   FieldComparatorStack<BibtexEntry> comparatorStack=new FieldComparatorStack<BibtexEntry>(comparators);
   BasicEventList<BibtexEntry> entryList=new BasicEventList<BibtexEntry>();
