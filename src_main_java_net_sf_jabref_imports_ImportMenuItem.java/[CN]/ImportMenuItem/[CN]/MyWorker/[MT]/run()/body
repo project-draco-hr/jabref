@@ -1,11 +1,11 @@
 {
   if (!fileOk)   return;
-  List<Pair<String,ParserResult>> imports=new ArrayList<Pair<String,ParserResult>>();
+  List<ImportFormatReader.UnknownFormatImport> imports=new ArrayList<ImportFormatReader.UnknownFormatImport>();
   for (  String filename : filenames) {
     try {
       if (importer != null) {
         ParserResult pr=new ParserResult(Globals.importFormatReader.importFromFile(importer,filename,frame));
-        imports.add(new Pair<String,ParserResult>(importer.getFormatName(),pr));
+        imports.add(new ImportFormatReader.UnknownFormatImport(importer.getFormatName(),pr));
       }
  else {
         frame.output(Globals.lang("Importing in unknown format") + "...");
@@ -17,9 +17,9 @@
     }
   }
   bibtexResult=mergeImportResults(imports);
-  for (  Pair<String,ParserResult> p : imports) {
+  for (  ImportFormatReader.UnknownFormatImport p : imports) {
     if (p != null) {
-      ParserResult pr=p.v;
+      ParserResult pr=p.parserResult;
       if (pr.hasWarnings()) {
         if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
           String[] wrns=pr.warnings();

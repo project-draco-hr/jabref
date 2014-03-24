@@ -20,7 +20,7 @@
     }
  else {
       System.out.println(Globals.lang("Importing in unknown format") + ": " + data[0]);
-      Pair<String,ParserResult> importResult;
+      ImportFormatReader.UnknownFormatImport importResult;
       if (Globals.ON_WIN) {
         importResult=Globals.importFormatReader.importUnknownFormat(data[0]);
       }
@@ -28,8 +28,8 @@
         importResult=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
       }
       if (importResult != null) {
-        System.out.println(Globals.lang("Format used") + ": " + importResult.p);
-        return importResult.v;
+        System.out.println(Globals.lang("Format used") + ": " + importResult.format);
+        return importResult.parserResult;
       }
  else {
         System.out.println(Globals.lang("Could not find a suitable import format."));

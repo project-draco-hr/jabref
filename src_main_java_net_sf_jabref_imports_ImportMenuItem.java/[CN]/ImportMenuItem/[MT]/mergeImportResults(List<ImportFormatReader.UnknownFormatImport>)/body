@@ -2,10 +2,10 @@
   BibtexDatabase database=new BibtexDatabase();
   ParserResult directParserResult=null;
   boolean anythingUseful=false;
-  for (  Pair<String,ParserResult> importResult : imports) {
+  for (  ImportFormatReader.UnknownFormatImport importResult : imports) {
     if (importResult == null)     continue;
-    if (importResult.p.equals(ImportFormatReader.BIBTEX_FORMAT)) {
-      ParserResult pr=importResult.v;
+    if (ImportFormatReader.BIBTEX_FORMAT.equals(importResult.format)) {
+      ParserResult pr=importResult.parserResult;
       anythingUseful=anythingUseful || ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0));
       if (directParserResult == null) {
         directParserResult=pr;
@@ -22,7 +22,7 @@
       }
     }
  else {
-      ParserResult pr=importResult.v;
+      ParserResult pr=importResult.parserResult;
       Collection<BibtexEntry> entries=pr.getDatabase().getEntries();
       anythingUseful=anythingUseful | (entries.size() > 0);
       Util.setAutomaticFields(entries,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"),!openInNew && Globals.prefs.getBoolean("markImportedEntries"));
