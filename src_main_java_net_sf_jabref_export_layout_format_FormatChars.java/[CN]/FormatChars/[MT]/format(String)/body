@@ -40,9 +40,9 @@
           c=field.charAt(i);
           String combody;
           if (c == '{') {
-            IntAndString part=getPart(field,i,false);
-            i+=part.i;
-            combody=part.s;
+            String part=Util.getPart(field,i,false);
+            i+=part.length();
+            combody=part;
           }
  else {
             combody=field.substring(i,i + 1);
@@ -74,9 +74,9 @@
  else       if (Character.isWhitespace(c) || (c == '{') || (c == '}')) {
         String command=currentCommand.toString();
         if (c == '{') {
-          IntAndString part=getPart(field,i,true);
-          i+=part.i;
-          argument=part.s;
+          String part=Util.getPart(field,i,true);
+          i+=part.length();
+          argument=part;
           if (argument != null) {
             Object result=CHARS.get(command + argument);
             if (result != null) {
