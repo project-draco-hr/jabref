@@ -10,13 +10,28 @@
   tree=new JTree(groups);
   tree.setCellRenderer(new AddRemoveGroupTreeCellRenderer());
   tree.setVisibleRowCount(22);
-  tree.setPreferredSize(new Dimension(200,tree.getPreferredSize().height));
   tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
   tree.addTreeSelectionListener(new SelectionListener());
+  JButton jbExpandAll=new JButton("Expand All");
+  jbExpandAll.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      expandAll(tree,true);
+    }
+  }
+);
+  JButton jbCollapseAll=new JButton("Collapse All");
+  jbCollapseAll.addActionListener(new ActionListener(){
+    public void actionPerformed(    ActionEvent e){
+      expandAll(tree,false);
+    }
+  }
+);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
   bb.addButton(ok);
   bb.addButton(cancel);
+  bb.addButton(jbExpandAll);
+  bb.addButton(jbCollapseAll);
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   ok.addActionListener(new ActionListener(){

@@ -34,7 +34,8 @@
     if (brc > 0)     ok=false;
     if (!ok)     throw new IllegalArgumentException("Curly braces { and } must be balanced.");
     sb=new StringBuffer(Globals.prefs.getValueDelimiters(0) + "");
-    sb.append(text);
+    if (Globals.prefs.getBoolean(JabRefPreferences.WRITEFIELD_WRAPFIELD) && !Globals.prefs.isNonWrappableField(fieldName))     sb.append(Util.wrap2(text,GUIGlobals.LINE_LENGTH));
+ else     sb.append(text);
     sb.append(Globals.prefs.getValueDelimiters(1));
     return sb.toString();
   }
@@ -73,5 +74,8 @@
     if (pos2 > -1)     pivot=pos2 + 1;
  else     pivot=pos1 + 1;
   }
-  return sb.toString();
+  if (Globals.prefs.getBoolean(JabRefPreferences.WRITEFIELD_WRAPFIELD) && !Globals.prefs.isNonWrappableField(fieldName)) {
+    return Util.wrap2(sb.toString(),GUIGlobals.LINE_LENGTH);
+  }
+ else   return sb.toString();
 }

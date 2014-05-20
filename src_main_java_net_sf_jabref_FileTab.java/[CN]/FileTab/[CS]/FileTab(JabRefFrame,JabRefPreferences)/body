@@ -16,6 +16,7 @@
   ButtonGroup bg=new ButtonGroup();
   bg.add(resolveStringsAll);
   bg.add(resolveStringsStandard);
+  userDefinedFieldOrder=new JTextField(_prefs.get(JabRefPreferences.WRITEFIELD_USERDEFINEDORDER));
   newlineSeparator=new JComboBox<String>(new String[]{"CR","CR/LF","LF"});
   bracesAroundCapitalsFields=new JTextField(25);
   nonWrappableFields=new JTextField(25);
@@ -80,6 +81,17 @@
   builder.append(includeEmptyFields);
   builder.append(new JPanel());
   builder.nextLine();
+  wrapFieldLine=new JCheckBox(Globals.lang("Wrap fields as ver 2.9.2"));
+  builder.append(wrapFieldLine);
+  builder.nextLine();
+  String[] _rbs0={"Sort fields in alphabeta order (as ver 2.10)","Sort fields in old fasion (as ver 2.9.2)","Save fields as user defined order"};
+  ArrayList<String> _rbs=new ArrayList<String>();
+  for (  String _rb : _rbs0) {
+    _rbs.add(Globals.lang(_rb));
+  }
+  bgFieldOrderStyle=createRadioBg(_rbs);
+  userDefinedFieldOrder=new JTextField(_prefs.get(JabRefPreferences.WRITEFIELD_USERDEFINEDORDER));
+  createAdFieldOrderBg(builder,bgFieldOrderStyle,userDefinedFieldOrder);
   JPanel pan=builder.getPanel();
   pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   setLayout(new BorderLayout());

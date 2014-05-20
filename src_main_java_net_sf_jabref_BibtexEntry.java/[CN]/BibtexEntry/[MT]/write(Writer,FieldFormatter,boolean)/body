@@ -1,45 +1,13 @@
 {
-  out.write("@" + _type.getName() + "{");
-  String str=Util.shaveString(getField(BibtexFields.KEY_FIELD));
-  out.write(((str == null) ? "" : str) + "," + Globals.NEWLINE);
-  HashMap<String,String> written=new HashMap<String,String>();
-  written.put(BibtexFields.KEY_FIELD,null);
-  boolean hasWritten=false;
-  hasWritten=hasWritten | writeField("title",out,ff,hasWritten,false);
-  written.put("title",null);
-  String[] s=getRequiredFields();
-  if (s != null) {
-    Arrays.sort(s);
-    for (    String value : s) {
-      if (!written.containsKey(value)) {
-        hasWritten=hasWritten | writeField(value,out,ff,hasWritten,false);
-        written.put(value,null);
-      }
-    }
-  }
-  s=getOptionalFields();
-  boolean first=true, previous=true;
-  previous=false;
-  if (s != null) {
-    Arrays.sort(s);
-    for (    String value : s) {
-      if (!written.containsKey(value)) {
-        hasWritten=hasWritten | writeField(value,out,ff,hasWritten,hasWritten && first);
-        written.put(value,null);
-        first=false;
-        previous=true;
-      }
-    }
-  }
-  TreeSet<String> remainingFields=new TreeSet<String>();
-  for (  String key : _fields.keySet()) {
-    boolean writeIt=(write ? BibtexFields.isWriteableField(key) : BibtexFields.isDisplayableField(key));
-    if (!written.containsKey(key) && writeIt)     remainingFields.add(key);
-  }
-  first=previous;
-  for (  String field : remainingFields) {
-    hasWritten=hasWritten | writeField(field,out,ff,hasWritten,hasWritten && first);
-    first=false;
-  }
-  out.write((hasWritten ? Globals.NEWLINE : "") + "}" + Globals.NEWLINE);
+switch (Globals.prefs.getInt(JabRefPreferences.WRITEFIELD_SORTSTYLE)) {
+case 0:
+    writeSorted(out,ff,write);
+  break;
+case 1:
+writeUnsorted(out,ff,write);
+break;
+case 2:
+writeUserOrder(out,ff,write);
+break;
+}
 }
