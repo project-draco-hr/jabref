@@ -1,6 +1,7 @@
 {
   int c;
   StringBuffer buffer=null;
+  char firstLetter=' ';
   String name;
   while (!_eof) {
     c=read();
@@ -10,8 +11,18 @@
     if (!Character.isLetter((char)c) && (c != '_') && (c != '-')) {
       unread(c);
       name=buffer != null ? buffer.toString() : "";
+      try {
+        firstLetter=name.charAt(0);
+      }
+ catch (      StringIndexOutOfBoundsException ex) {
+        StringBuilder lastFive=new StringBuilder(10);
+        for (        StringInt entry : parsedEntries.subList(Math.max(0,parsedEntries.size() - 6),parsedEntries.size() - 1)) {
+          lastFive.append(entry.s);
+        }
+        throw new StringIndexOutOfBoundsException("Backslash parsing error near " + "\'" + lastFive.toString().replace("\n"," ") + "\'");
+      }
       buffer=null;
-      if (name.charAt(0) == 'b') {
+      if (firstLetter == 'b') {
         if (name.equalsIgnoreCase("begin")) {
           getBracketedField(IS_FIELD_START);
           return;
@@ -21,7 +32,7 @@
           return;
         }
       }
- else       if (name.charAt(0) == 'f') {
+ else       if (firstLetter == 'f') {
         if (name.equalsIgnoreCase("format")) {
           if (c == '[') {
             getBracketedOptionField(IS_OPTION_FIELD);
@@ -41,7 +52,7 @@
           return;
         }
       }
- else       if (name.charAt(0) == 'e') {
+ else       if (firstLetter == 'e') {
         if (name.equalsIgnoreCase("end")) {
           getBracketedField(IS_FIELD_END);
           return;
