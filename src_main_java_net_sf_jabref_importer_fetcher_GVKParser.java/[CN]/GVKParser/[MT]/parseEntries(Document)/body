@@ -1,0 +1,12 @@
+{
+  LinkedList<BibtexEntry> result=new LinkedList<BibtexEntry>();
+  Element root=(Element)content.getElementsByTagName("zs:searchRetrieveResponse").item(0);
+  Element srwrecords=getChild("zs:records",root);
+  List<Element> records=getChildren("zs:record",srwrecords);
+  for (  Element record : records) {
+    Element e=getChild("zs:recordData",record);
+    e=getChild("record",e);
+    result.add(parseEntry(e));
+  }
+  return result;
+}
