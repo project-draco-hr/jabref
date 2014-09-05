@@ -25,11 +25,12 @@
       }
     }
     for (    String field : nu.getAllFields()) {
-      if (!entry.getField(field).equals(nu.getField(field))) {
-        String toSet=nu.getField(field);
-        (new LatexFieldFormatter()).format(toSet,field);
-        compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),toSet));
-        entry.setField(field,toSet);
+      String oldValue=entry.getField(field);
+      String newValue=nu.getField(field);
+      if (oldValue == null || !oldValue.equals(newValue)) {
+        (new LatexFieldFormatter()).format(newValue,field);
+        compound.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
+        entry.setField(field,newValue);
         anyChanged=true;
       }
     }
