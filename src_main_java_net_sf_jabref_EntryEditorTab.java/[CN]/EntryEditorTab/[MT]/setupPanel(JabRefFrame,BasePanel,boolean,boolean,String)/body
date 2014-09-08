@@ -22,9 +22,10 @@
   im.put(Globals.prefs.getKey("Previous tab"),"prevtab");
   am.put("prevtab",parent.frame.prevTab);
   panel.setName(title);
-  String colSpec="fill:pref, 1dlu, fill:10dlu:grow, 1dlu, fill:pref, " + "8dlu, fill:pref, 1dlu, fill:10dlu:grow, 1dlu, fill:pref";
+  int fieldsPerRow=compressed ? 2 : 1;
+  String colSpec=compressed ? "fill:pref, 1dlu, fill:10dlu:grow, 1dlu, fill:pref, " + "8dlu, fill:pref, 1dlu, fill:10dlu:grow, 1dlu, fill:pref" : "fill:pref, 1dlu, fill:pref:grow, 1dlu, fill:pref";
   StringBuffer sb=new StringBuffer();
-  int rows=(int)Math.ceil((double)fields.length / 2.0);
+  int rows=(int)Math.ceil((double)fields.length / fieldsPerRow);
   for (int i=0; i < rows; i++) {
     sb.append("fill:pref:grow, ");
   }
@@ -35,13 +36,17 @@
   for (int i=0; i < fields.length; i++) {
     int editorType=BibtexFields.getEditorType(fields[i]);
     final FieldEditor ta;
+    int defaultHeight;
+    int wHeight=(int)(50.0 * BibtexFields.getFieldWeight(fields[i]));
     if (editorType == GUIGlobals.FILE_LIST_EDITOR) {
       ta=new FileListEditor(frame,bPanel.metaData(),fields[i],null,parent);
       fileListEditor=(FileListEditor)ta;
+      defaultHeight=0;
     }
  else {
       ta=new FieldTextArea(fields[i],null);
       frame.getSearchManager().addSearchListener((FieldTextArea)ta);
+      defaultHeight=ta.getPane().getPreferredSize().height;
     }
     JComponent ex=parent.getExtra(fields[i],ta);
     AbstractAutoCompleter autoComp=bPanel.getAutoCompleter(fields[i]);
@@ -53,6 +58,7 @@
     ta.setAutoCompleteListener(acl);
     editors.put(fields[i],ta);
     if (i == 0)     activeField=ta;
+    if (!compressed)     ta.getPane().setPreferredSize(new Dimension(100,Math.max(defaultHeight,wHeight)));
     builder.append(ta.getLabel());
     if (ex == null)     builder.append(ta.getPane(),3);
  else {
@@ -62,7 +68,7 @@
       pan.add(ex,BorderLayout.NORTH);
       builder.append(pan);
     }
-    if (i % 2 == 1)     builder.nextLine();
+    if ((i + 1) % fieldsPerRow == 0)     builder.nextLine();
   }
   if (addKeyField) {
     final FieldTextField tf=new FieldTextField(BibtexFields.KEY_FIELD,parent.getEntry().getField(BibtexFields.KEY_FIELD),true);
