@@ -1,0 +1,54 @@
+{
+  String fieldValue=getField(name);
+  if (fieldValue != null && fieldValue.length() > 0)   return fieldValue;
+  Map<String,String> aliases=new HashMap<String,String>();
+  aliases.putAll(FieldAliasesOldToNew);
+  aliases.putAll(FieldAliasesNewToOld);
+  String aliasForField=aliases.get(name);
+  if (aliasForField != null)   return getField(aliasForField);
+  if (name.equals("date")) {
+    String year=getField("year");
+    int month=Globals.ParseMonthToInteger(getField("month"));
+    if (year != null) {
+      if (month == 0)       return year;
+ else       return year + "-" + month;
+    }
+  }
+  if (name.equals("year") || name.equals("month")) {
+    String date=getField("date");
+    DateFormat df=new DateFormat(){
+      static final String FORMAT1="yyyy-MM-dd";
+      static final String FORMAT2="yyyy-MM";
+      final SimpleDateFormat sdf1=new SimpleDateFormat(FORMAT1);
+      final SimpleDateFormat sdf2=new SimpleDateFormat(FORMAT2);
+      @Override public StringBuffer format(      Date date,      StringBuffer toAppendTo,      FieldPosition fieldPosition){
+        throw new UnsupportedOperationException();
+      }
+      @Override public Date parse(      String source,      ParsePosition pos){
+        if (source.length() - pos.getIndex() == FORMAT1.length())         return sdf1.parse(source,pos);
+        return sdf2.parse(source,pos);
+      }
+    }
+;
+    try {
+      Date parsedDate=df.parse(date);
+      Calendar calendar=Calendar.getInstance();
+      calendar.setTime(parsedDate);
+      if (name.equals("year"))       return Integer.toString(calendar.get(Calendar.YEAR));
+      if (name.equals("month"))       return Integer.toString(calendar.get(Calendar.MONTH) + 1);
+    }
+ catch (    ParseException e) {
+      df=new SimpleDateFormat("yyyy");
+      try {
+        Date parsedDate=df.parse(date);
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(parsedDate);
+        if (name.equals("year"))         return Integer.toString(calendar.get(Calendar.YEAR));
+      }
+ catch (      ParseException e2) {
+        return null;
+      }
+    }
+  }
+  return null;
+}

@@ -1,0 +1,25 @@
+{
+  for (  Map.Entry<String,String> alias : entry.FieldAliasesOldToNew.entrySet()) {
+    String oldFieldName=alias.getKey();
+    String newFieldName=alias.getValue();
+    String oldValue=entry.getField(oldFieldName);
+    String newValue=entry.getField(newFieldName);
+    if (oldValue != null && oldValue.length() > 0 && newValue == null) {
+      entry.setField(newFieldName,oldValue);
+      ce.addEdit(new UndoableFieldChange(entry,newFieldName,null,oldValue));
+      entry.setField(oldFieldName,null);
+      ce.addEdit(new UndoableFieldChange(entry,oldFieldName,oldValue,null));
+    }
+  }
+  if (entry.getField("date") == null || entry.getField("date").length() == 0) {
+    String newDate=entry.getFieldOrAlias("date");
+    String oldYear=entry.getField("year");
+    String oldMonth=entry.getField("month");
+    entry.setField("date",newDate);
+    entry.setField("year",null);
+    entry.setField("month",null);
+    ce.addEdit(new UndoableFieldChange(entry,"date",null,newDate));
+    ce.addEdit(new UndoableFieldChange(entry,"date",oldYear,null));
+    ce.addEdit(new UndoableFieldChange(entry,"date",oldMonth,null));
+  }
+}
