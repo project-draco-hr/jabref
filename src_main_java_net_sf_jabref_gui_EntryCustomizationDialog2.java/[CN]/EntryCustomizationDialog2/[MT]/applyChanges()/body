@@ -25,19 +25,8 @@
       String[] oldReq=oldType.getRequiredFields(), oldOpt=oldType.getOptionalFields();
       if (biblatexMode) {
         String[] priOpt=oldType.getPrimaryOptionalFields();
-        ArrayList<String> secOpt=new ArrayList<String>();
-        for (        String anOldOpt : oldOpt) {
-          boolean inPri=false;
-          for (          String aPriOpt : priOpt) {
-            if (aPriOpt.equals(anOldOpt)) {
-              inPri=true;
-              break;
-            }
-          }
-          if (!inPri)           secOpt.add(anOldOpt);
-        }
-        String[] secOptArray=secOpt.toArray(new String[secOpt.size()]);
-        if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr) && equalArrays(secOptArray,opt2Str))         changesMade=false;
+        String[] secOpt=Util.getRemainder(oldOpt,priOpt);
+        if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr) && equalArrays(secOpt,opt2Str))         changesMade=false;
       }
  else       if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr))       changesMade=false;
     }
