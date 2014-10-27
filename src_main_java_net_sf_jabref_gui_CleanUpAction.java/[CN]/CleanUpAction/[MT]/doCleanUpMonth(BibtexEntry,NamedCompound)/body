@@ -4,15 +4,9 @@
     return;
   }
   String newValue=oldValue;
-  try {
-    int month=Integer.parseInt(newValue);
+  int month=Globals.ParseMonthToInteger(oldValue);
+  if (month > 0) {
     newValue="#" + Globals.MONTHS[month - 1] + '#';
-  }
- catch (  NumberFormatException e) {
-    String testString=newValue.substring(0,3).toLowerCase();
-    if (Globals.MONTH_STRINGS.containsKey(testString)) {
-      newValue="#" + testString + '#';
-    }
   }
   if (!oldValue.equals(newValue)) {
     entry.setField("month",newValue);
