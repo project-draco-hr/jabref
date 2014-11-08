@@ -1,4 +1,5 @@
 {
+  final HashMap<String,Boolean> bibentryKnown=new HashMap<String,Boolean>();
   boolean res=false;
   this.query=query;
   shouldContinue=true;
@@ -15,6 +16,8 @@
         bibtexUrlList.add(addr);
       }
     }
+    double saveThreshold=DuplicateCheck.duplicateThreshold;
+    DuplicateCheck.duplicateThreshold=Double.MAX_VALUE;
     int count=1;
     for (    String urlStr : bibtexUrlList) {
       if (!shouldContinue) {
@@ -31,13 +34,19 @@
           bibtexUrl=bibtexUrl.replace("dblp.uni-trier.de","www.dblp.org");
           final URL bibFileURL=new URL(bibtexUrl);
           final String bibtexPage=readFromURL(bibFileURL);
-          BibtexEntry bibtexEntry=BibtexParser.singleFromString(bibtexPage);
-          inspector.addEntry(bibtexEntry);
-          inspector.setProgress(count,bibtexUrlList.size());
-          count++;
+          Collection<BibtexEntry> bibtexEntries=BibtexParser.fromString(bibtexPage);
+          for (          BibtexEntry be : bibtexEntries) {
+            if (!bibentryKnown.containsKey(be.getCiteKey())) {
+              inspector.addEntry(be);
+              bibentryKnown.put(be.getCiteKey(),true);
+            }
+          }
         }
       }
+      inspector.setProgress(count,bibtexUrlList.size());
+      count++;
     }
+    DuplicateCheck.duplicateThreshold=saveThreshold;
     res=true;
   }
  catch (  IOException e) {
