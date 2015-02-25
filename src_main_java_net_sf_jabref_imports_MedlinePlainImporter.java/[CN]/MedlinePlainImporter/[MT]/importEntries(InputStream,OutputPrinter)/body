@@ -8,11 +8,11 @@
     sb.append("\n");
   }
   String[] entries=sb.toString().replaceAll("\u2013","-").replaceAll("\u2014","--").replaceAll("\u2015","--").split("\\n\\n");
-  for (int i=0; i < entries.length; i++) {
-    if (entries[i].trim().length() == 0)     continue;
+  for (  String entry1 : entries) {
+    if (entry1.trim().length() == 0)     continue;
     String type="", author="", editor="", comment="";
     HashMap<String,String> hm=new HashMap<String,String>();
-    String[] fields=entries[i].split("\n");
+    String[] fields=entry1.split("\n");
     for (int j=0; j < fields.length; j++) {
       if (fields[j].equals(""))       continue;
       StringBuffer current=new StringBuffer(fields[j]);
@@ -110,8 +110,7 @@
     }
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(type));
     ArrayList<Object> toRemove=new ArrayList<Object>();
-    for (Iterator<String> it=hm.keySet().iterator(); it.hasNext(); ) {
-      Object key=it.next();
+    for (    String key : hm.keySet()) {
       String content=hm.get(key);
       if ((content == null) || (content.trim().length() == 0))       toRemove.add(key);
     }
