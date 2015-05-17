@@ -1,6 +1,6 @@
 {
   int score=-3;
-  TableCellRenderer renderer=defRenderer;
+  DefaultTableCellRenderer renderer=defRenderer;
   int status=getCellStatus(row,column);
   if (!showingFloatSearch || matches(row,searchMatcher))   score++;
   if (!showingFloatGrouping || matches(row,groupMatcher))   score+=2;
@@ -33,11 +33,12 @@
       }
  else       renderer=compRenderer;
     }
+    renderer.setHorizontalAlignment(JLabel.CENTER);
   }
  else   if (tableColorCodes) {
     if (status == REQUIRED)     renderer=reqRenderer;
  else     if (status == OPTIONAL)     renderer=optRenderer;
- else     if (status == BOOLEAN)     renderer=getDefaultRenderer(Boolean.class);
+ else     if (status == BOOLEAN)     renderer=(DefaultTableCellRenderer)getDefaultRenderer(Boolean.class);
   }
   int marking=isMarked(row);
   if ((column != 0) && (marking > 0)) {
