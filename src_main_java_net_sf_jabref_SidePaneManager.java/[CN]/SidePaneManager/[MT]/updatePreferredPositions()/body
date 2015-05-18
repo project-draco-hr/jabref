@@ -1,0 +1,15 @@
+{
+  Map<String,Integer> preferredPositions=getPreferredPositions();
+  int index=0;
+  for (  SidePaneComponent comp : visible) {
+    String componentName=getComponentName(comp);
+    preferredPositions.put(componentName,index++);
+  }
+  String[] componentNames=preferredPositions.keySet().toArray(new String[0]);
+  String[] componentPositions=new String[preferredPositions.size()];
+  for (int i=0; i < componentNames.length; ++i) {
+    componentPositions[i]=preferredPositions.get(componentNames[i]).toString();
+  }
+  Globals.prefs.putStringArray("sidePaneComponentNames",componentNames);
+  Globals.prefs.putStringArray("sidePaneComponentPreferredPositions",componentPositions);
+}
