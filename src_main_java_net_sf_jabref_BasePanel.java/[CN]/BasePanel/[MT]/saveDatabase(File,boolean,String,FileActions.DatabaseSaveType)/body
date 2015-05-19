@@ -3,7 +3,7 @@
   frame.block();
   try {
     if (!selectedOnly)     session=FileActions.saveDatabase(database,metaData,file,Globals.prefs,false,false,encoding,false);
- else     session=FileActions.savePartOfDatabase(database,metaData,file,Globals.prefs,mainTable.getSelectedEntries(),encoding);
+ else     session=FileActions.savePartOfDatabase(database,metaData,file,Globals.prefs,mainTable.getSelectedEntries(),encoding,saveType);
   }
  catch (  UnsupportedCharsetException ex2) {
     JOptionPane.showMessageDialog(frame,Globals.lang("Could not save file. " + "Character encoding '%0' is not supported.",encoding),Globals.lang("Save database"),JOptionPane.ERROR_MESSAGE);
@@ -37,7 +37,7 @@ catch (  SaveException ex) {
       Object choice=JOptionPane.showInputDialog(frame,Globals.lang("Select encoding"),Globals.lang("Save database"),JOptionPane.QUESTION_MESSAGE,null,Globals.ENCODINGS,encoding);
       if (choice != null) {
         String newEncoding=(String)choice;
-        return saveDatabase(file,selectedOnly,newEncoding);
+        return saveDatabase(file,selectedOnly,newEncoding,saveType);
       }
  else       commit=false;
     }
