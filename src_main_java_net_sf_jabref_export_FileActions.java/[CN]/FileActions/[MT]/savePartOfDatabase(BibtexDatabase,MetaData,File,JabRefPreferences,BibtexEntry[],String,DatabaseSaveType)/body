@@ -11,7 +11,7 @@
   }
   try {
     VerifyingWriter fw=session.getWriter();
-    if (!writePlainBibtex) {
+    if (saveType != DatabaseSaveType.PLAIN_BIBTEX) {
       writeBibFileHeader(fw,encoding);
     }
     writePreamble(fw,database.getPreamble());
@@ -32,7 +32,7 @@
       be.write(fw,ff,true);
       fw.write(Globals.NEWLINE);
     }
-    if (!writePlainBibtex && metaData != null) {
+    if (saveType != DatabaseSaveType.PLAIN_BIBTEX && metaData != null) {
       metaData.writeMetaData(fw);
     }
     if (types.size() > 0) {
