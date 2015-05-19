@@ -11,7 +11,9 @@
   }
   try {
     VerifyingWriter fw=session.getWriter();
-    writeBibFileHeader(fw,encoding);
+    if (!writePlainBibtex) {
+      writeBibFileHeader(fw,encoding);
+    }
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
     List<Comparator<BibtexEntry>> comparators=getSaveComparators(true,metaData);
@@ -30,7 +32,7 @@
       be.write(fw,ff,true);
       fw.write(Globals.NEWLINE);
     }
-    if (metaData != null) {
+    if (!writePlainBibtex && metaData != null) {
       metaData.writeMetaData(fw);
     }
     if (types.size() > 0) {
