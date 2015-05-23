@@ -714,37 +714,16 @@ catch (          Throwable ex) {
     }
   }
 );
-  actions.put("markEntries",new AbstractWorker(){
-    private int besLength=-1;
-    public void run(){
-      NamedCompound ce=new NamedCompound(Globals.lang("Mark entries"));
-      BibtexEntry[] bes=mainTable.getSelectedEntries();
-      besLength=bes.length;
-      for (      BibtexEntry be : bes) {
-        Util.markEntry(be,1,true,ce);
-      }
-      ce.end();
-      undoManager.addEdit(ce);
-    }
-    public void update(){
-      markBaseChanged();
-      String outputStr;
-      if (besLength == 1) {
-        outputStr=Globals.lang("Marked selected entry");
-      }
- else {
-        outputStr=Globals.lang("Marked all %0 selected entries",Integer.toString(besLength));
-      }
-      output(outputStr);
-    }
-  }
-);
+  actions.put("markEntries",new MarkEntriesAction(frame,0));
   actions.put("unmarkEntries",new BaseAction(){
     public void action(){
       try {
-        NamedCompound ce=new NamedCompound(Globals.lang("Unmark entries"));
         BibtexEntry[] bes=mainTable.getSelectedEntries();
-        if (bes == null)         return;
+        if (bes.length == 0) {
+          output(Globals.lang("No entries selected."));
+          return;
+        }
+        NamedCompound ce=new NamedCompound(Globals.lang("Unmark entries"));
         for (        BibtexEntry be : bes) {
           Util.unmarkEntry(be,false,database,ce);
         }
@@ -775,6 +754,7 @@ catch (          Throwable ex) {
       ce.end();
       undoManager.addEdit(ce);
       markBaseChanged();
+      output(Globals.lang("Unmarked all entries"));
     }
   }
 );
