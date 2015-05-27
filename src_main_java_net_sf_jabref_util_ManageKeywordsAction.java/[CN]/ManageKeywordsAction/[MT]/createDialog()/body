@@ -1,7 +1,7 @@
 {
   keyword=new JTextField();
-  keywordListModel=new DefaultListModel<String>();
-  keywordList=new JList<String>(keywordListModel);
+  keywordListModel=new DefaultListModel();
+  keywordList=new JList(keywordListModel);
   keywordList.setVisibleRowCount(8);
   JScrollPane kPane=new JScrollPane(keywordList);
   diag=new JDialog(frame,Globals.lang("Manage keywords"),true);
@@ -69,7 +69,7 @@
       }
  else {
         int idx=0;
-        String element=keywordListModel.getElementAt(idx);
+        String element=(String)keywordListModel.getElementAt(idx);
         while ((idx < keywordListModel.size()) && (element.compareTo(text) < 0)) {
           idx++;
         }
@@ -90,7 +90,7 @@
   add.addActionListener(addActionListener);
   final ActionListener removeActionListenter=new ActionListener(){
     public void actionPerformed(    ActionEvent arg0){
-      List<String> values=keywordList.getSelectedValuesList();
+      String[] values=(String[])keywordList.getSelectedValues();
       for (      String val : values) {
         keywordListModel.removeElement(val);
       }
