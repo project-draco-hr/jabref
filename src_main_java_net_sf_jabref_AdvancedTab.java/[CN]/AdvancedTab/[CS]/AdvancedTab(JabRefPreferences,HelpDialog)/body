@@ -8,8 +8,17 @@
   useIEEEAbrv=new JCheckBox(Globals.lang("Use IEEE LaTeX abbreviations"));
   biblatexMode=new JCheckBox(Globals.lang("BibLaTeX mode"));
   remoteServerPort=new JTextField();
-  String[] lookAndFeels={"com.jgoodies.plaf.plastic.Plastic3DLookAndFeel","com.sun.java.swing.plaf.windows.WindowsLookAndFeel","com.sun.java.swing.plaf.motif.MotifLookAndFeel","javax.swing.plaf.mac.MacLookAndFeel","com.sun.java.swing.plaf.gtk.GTKLookAndFeel","javax.swing.plaf.metal.MetalLookAndFeel"};
-  className=new JComboBox<String>(lookAndFeels);
+  String[] possibleLookAndFeels={"com.jgoodies.plaf.plastic.Plastic3DLookAndFeel","com.sun.java.swing.plaf.windows.WindowsLookAndFeel","com.sun.java.swing.plaf.motif.MotifLookAndFeel","javax.swing.plaf.mac.MacLookAndFeel","com.sun.java.swing.plaf.gtk.GTKLookAndFeel","javax.swing.plaf.metal.MetalLookAndFeel"};
+  List<String> lookAndFeels=new ArrayList<String>();
+  for (  String lf : possibleLookAndFeels) {
+    try {
+      Class.forName(lf);
+      lookAndFeels.add(lf);
+    }
+ catch (    ClassNotFoundException e) {
+    }
+  }
+  className=new JComboBox<String>(lookAndFeels.toArray(new String[lookAndFeels.size()]));
   className.setEditable(true);
   final JComboBox<String> clName=className;
   useDefault.addChangeListener(new ChangeListener(){
