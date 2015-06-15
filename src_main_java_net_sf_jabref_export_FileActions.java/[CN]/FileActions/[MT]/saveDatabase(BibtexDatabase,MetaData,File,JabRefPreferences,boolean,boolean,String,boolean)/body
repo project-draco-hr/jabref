@@ -22,7 +22,7 @@
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
     List<BibtexEntry> sorter=getSortedEntries(database,metaData,null,true);
-    FieldFormatter ff=new LatexFieldFormatter();
+    BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
     for (    BibtexEntry be : sorter) {
       exceptionCause=be;
       BibtexEntryType tp=be.getType();
@@ -37,7 +37,7 @@
         write=false;
       }
       if (write) {
-        be.write(fw,ff,true);
+        bibtexEntryWriter.write(be,fw);
         fw.write(Globals.NEWLINE);
       }
     }
