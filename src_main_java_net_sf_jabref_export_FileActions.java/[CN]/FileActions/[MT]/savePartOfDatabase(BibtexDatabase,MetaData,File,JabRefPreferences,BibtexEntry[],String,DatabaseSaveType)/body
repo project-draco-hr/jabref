@@ -17,19 +17,17 @@
     writePreamble(fw,database.getPreamble());
     writeStrings(fw,database);
     List<Comparator<BibtexEntry>> comparators=getSaveComparators(true,metaData);
-    BasicEventList<BibtexEntry> entryList=new BasicEventList<BibtexEntry>();
-    SortedList<BibtexEntry> sorter=new SortedList<BibtexEntry>(entryList,new FieldComparatorStack<BibtexEntry>(comparators));
-    if ((bes != null) && (bes.length > 0)) {
-      Collections.addAll(sorter,bes);
-    }
-    FieldFormatter ff=new LatexFieldFormatter();
+    List<BibtexEntry> sorter=new ArrayList<BibtexEntry>(bes.length);
+    Collections.addAll(sorter,bes);
+    Collections.sort(sorter,new FieldComparatorStack<BibtexEntry>(comparators));
+    BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
     for (    BibtexEntry aSorter : sorter) {
       be=(aSorter);
       BibtexEntryType tp=be.getType();
       if (BibtexEntryType.getStandardType(tp.getName()) == null) {
         types.put(tp.getName(),tp);
       }
-      be.write(fw,ff,true);
+      bibtexEntryWriter.write(be,fw);
       fw.write(Globals.NEWLINE);
     }
     if (saveType != DatabaseSaveType.PLAIN_BIBTEX && metaData != null) {

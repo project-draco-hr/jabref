@@ -1,11 +1,11 @@
 {
   String res=url.toString();
-  URLDownload udl=null;
+  String mimeType;
   final File tmp=File.createTempFile("jabref_download","tmp");
   tmp.deleteOnExit();
+  URLDownload udl=URLDownload.buildMonitoredDownload(frame,url);
   try {
-    udl=new URLDownload(frame,url,tmp);
-    udl.openConnectionOnly();
+    mimeType=udl.determineMimeType();
   }
  catch (  IOException ex) {
     JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + ex.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
@@ -17,7 +17,7 @@
   (new Thread(){
     public void run(){
       try {
-        udlF.download();
+        udlF.downloadToFile(tmp);
       }
  catch (      IOException e2) {
         dontShowDialog=true;
@@ -36,9 +36,9 @@
   }
 ).start();
   ExternalFileType suggestedType=null;
-  if (udl.getMimeType() != null) {
-    System.out.println("mimetype:" + udl.getMimeType());
-    suggestedType=Globals.prefs.getExternalFileTypeByMimeType(udl.getMimeType());
+  if (mimeType != null) {
+    System.out.println("mimetype:" + mimeType);
+    suggestedType=Globals.prefs.getExternalFileTypeByMimeType(mimeType);
   }
   String suffix;
   if (suggestedType != null) {

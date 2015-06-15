@@ -9,15 +9,12 @@
         URL result=finder.findFullTextURL(url);
         if (result != null) {
           try {
-            URLDownload udl=new URLDownload(null,result,null);
-            udl.openConnectionOnly();
-            String mimeType=udl.getMimeType();
+            String mimeType=new URLDownload(result).determineMimeType();
             if ((mimeType != null) && (mimeType.toLowerCase().equals("application/pdf"))) {
               return new FindResult(result,url);
             }
  else {
-              udl=new URLDownload(null,result,new File("page.html"));
-              udl.download();
+              new URLDownload(result).downloadToFile(new File("page.html"));
               return new FindResult(WRONG_MIME_TYPE,url);
             }
           }

@@ -1,5 +1,5 @@
 {
-  if (text == null)   return Globals.prefs.getValueDelimiters(0) + "" + Globals.prefs.getValueDelimiters(1);
+  if (text == null)   return valueDelimitersZero + "" + valueDelimitersOne;
   if (Globals.prefs.putBracesAroundCapitals(fieldName) && !Globals.BIBTEX_STRING.equals(fieldName)) {
     text=Util.putBracesAroundCapitals(text);
   }
@@ -7,8 +7,8 @@
     text=text.replaceAll("\n",Globals.NEWLINE);
   }
   boolean resolveStrings=true;
-  if (Globals.prefs.getBoolean("resolveStringsAllFields")) {
-    String[] exceptions=Globals.prefs.getStringArray("doNotResolveStringsFor");
+  if (resolveStringsAllFields) {
+    String[] exceptions=doNotResolveStringsFors;
     for (    String exception : exceptions) {
       if (exception.equals(fieldName)) {
         resolveStrings=false;
@@ -33,14 +33,16 @@
     }
     if (brc > 0)     ok=false;
     if (!ok)     throw new IllegalArgumentException("Curly braces { and } must be balanced.");
-    sb=new StringBuffer(Globals.prefs.getValueDelimiters(0) + "");
-    if (Globals.prefs.getBoolean(JabRefPreferences.WRITEFIELD_WRAPFIELD) && !Globals.prefs.isNonWrappableField(fieldName))     sb.append(Util.wrap2(text,GUIGlobals.LINE_LENGTH));
+    sb=new StringBuffer(valueDelimitersZero + "");
+    if (writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName))     sb.append(Util.wrap2(text,GUIGlobals.LINE_LENGTH));
  else     sb.append(text);
-    sb.append(Globals.prefs.getValueDelimiters(1));
+    sb.append(valueDelimitersOne);
     return sb.toString();
   }
   sb=new StringBuffer();
-  int pivot=0, pos1, pos2;
+  int pivot=0;
+  int pos1;
+  int pos2;
   col=STARTCOL;
   checkBraces(text);
   while (pivot < text.length()) {
@@ -74,7 +76,7 @@
     if (pos2 > -1)     pivot=pos2 + 1;
  else     pivot=pos1 + 1;
   }
-  if (Globals.prefs.getBoolean(JabRefPreferences.WRITEFIELD_WRAPFIELD) && !Globals.prefs.isNonWrappableField(fieldName)) {
+  if (writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName)) {
     return Util.wrap2(sb.toString(),GUIGlobals.LINE_LENGTH);
   }
  else   return sb.toString();

@@ -1,15 +1,7 @@
 {
-  String urlQuery;
   try {
-    URL url;
-    URLDownload ud;
-    url=new URL("http://scholar.google.com");
-    ud=new URLDownload(url);
-    ud.download();
-    url=new URL(URL_SETTING);
-    ud=new URLDownload(url);
-    ud.download();
-    String settingsPage=ud.getStringContent();
+    new URLDownload(new URL("http://scholar.google.com")).downloadToString();
+    String settingsPage=new URLDownload(new URL(URL_SETTING)).downloadToString();
     HashMap<String,String> formItems=getFormElements(settingsPage);
     formItems.put("scis","yes");
     formItems.put("scisf","4");
@@ -21,9 +13,7 @@
       if (i.hasNext())       ub.append("&");
     }
     ub.append("&submit=");
-    URL url_setprefs=new URL(ub.toString());
-    ud=new URLDownload(url_setprefs);
-    ud.download();
+    new URLDownload(new URL(ub.toString())).downloadToString();
   }
  catch (  UnsupportedEncodingException ex) {
     ex.printStackTrace();
