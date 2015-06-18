@@ -1,112 +1,109 @@
 {
-  if (!graphicFailure && !cli.isDisableGui()) {
-    Util.performCompatibilityUpdate();
-    Globals.prefs.updateExternalFileTypes();
-    System.setProperty("apple.laf.useScreenMenuBar","true");
-    try {
-      setLookAndFeel();
-    }
- catch (    Throwable e) {
-      e.printStackTrace();
-    }
-    if (!cli.isBlank() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
-      String[] names=Globals.prefs.getStringArray("lastEdited");
-      lastEdLoop:       for (      String name : names) {
-        File fileToOpen=new File(name);
-        for (int j=0; j < loaded.size(); j++) {
-          ParserResult pr=loaded.elementAt(j);
-          if ((pr.getFile() != null) && pr.getFile().equals(fileToOpen))           continue lastEdLoop;
-        }
-        if (fileToOpen.exists()) {
-          ParserResult pr=openBibFile(name,false);
-          if (pr != null) {
-            if (pr == ParserResult.INVALID_FORMAT) {
-              System.out.println(Globals.lang("Error opening file") + " '" + fileToOpen.getPath()+ "'");
-            }
- else             if (pr != ParserResult.FILE_LOCKED)             loaded.add(pr);
+  Util.performCompatibilityUpdate();
+  Globals.prefs.updateExternalFileTypes();
+  System.setProperty("apple.laf.useScreenMenuBar","true");
+  try {
+    setLookAndFeel();
+  }
+ catch (  Throwable e) {
+    e.printStackTrace();
+  }
+  if (!cli.isBlank() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
+    String[] names=Globals.prefs.getStringArray("lastEdited");
+    lastEdLoop:     for (    String name : names) {
+      File fileToOpen=new File(name);
+      for (int j=0; j < loaded.size(); j++) {
+        ParserResult pr=loaded.elementAt(j);
+        if ((pr.getFile() != null) && pr.getFile().equals(fileToOpen))         continue lastEdLoop;
+      }
+      if (fileToOpen.exists()) {
+        ParserResult pr=openBibFile(name,false);
+        if (pr != null) {
+          if (pr == ParserResult.INVALID_FORMAT) {
+            System.out.println(Globals.lang("Error opening file") + " '" + fileToOpen.getPath()+ "'");
           }
+ else           if (pr != ParserResult.FILE_LOCKED)           loaded.add(pr);
         }
       }
-    }
-    GUIGlobals.init();
-    GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get("fontFamily"),Globals.prefs.getInt("fontStyle"),Globals.prefs.getInt("fontSize"));
-    jrf=new JabRefFrame();
-    boolean first=true;
-    List<File> postponed=new ArrayList<File>();
-    List<ParserResult> failed=new ArrayList<ParserResult>();
-    List<ParserResult> toOpenTab=new ArrayList<ParserResult>();
-    if (loaded.size() > 0) {
-      for (Iterator<ParserResult> i=loaded.iterator(); i.hasNext(); ) {
-        ParserResult pr=i.next();
-        if (pr.isInvalid()) {
-          failed.add(pr);
-          i.remove();
-        }
- else         if (!pr.isPostponedAutosaveFound()) {
-          if (pr.toOpenTab()) {
-            toOpenTab.add(pr);
-          }
- else {
-            jrf.addParserResult(pr,first);
-            first=false;
-          }
-        }
- else {
-          i.remove();
-          postponed.add(pr.getFile());
-        }
-      }
-    }
-    for (    ParserResult pr : toOpenTab) {
-      jrf.addParserResult(pr,first);
-      first=false;
-    }
-    if (cli.isLoadSession())     jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
-    if (splashScreen != null) {
-      splashScreen.dispose();
-      splashScreen=null;
-    }
-    if (Globals.prefs.getBoolean("autoSave"))     Globals.startAutoSaveManager(jrf);
-    if (Globals.prefs.getBoolean("windowMaximised")) {
-      jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    }
-    jrf.setVisible(true);
-    if (Globals.prefs.getBoolean("windowMaximised")) {
-      jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    }
-    startSidePanePlugins(jrf);
-    for (    ParserResult pr : failed) {
-      String message="<html>" + Globals.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
-      JOptionPane.showMessageDialog(jrf,message,Globals.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
-    }
-    for (int i=0; i < loaded.size(); i++) {
-      ParserResult pr=loaded.elementAt(i);
-      if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
-        String[] wrns=pr.warnings();
-        StringBuilder wrn=new StringBuilder();
-        for (int j=0; j < Math.min(MAX_DIALOG_WARNINGS,wrns.length); j++)         wrn.append(j + 1).append(". ").append(wrns[j]).append("\n");
-        if (wrns.length > MAX_DIALOG_WARNINGS) {
-          wrn.append("... ");
-          wrn.append(Globals.lang("%0 warnings",String.valueOf(wrns.length)));
-        }
- else         if (wrn.length() > 0)         wrn.deleteCharAt(wrn.length() - 1);
-        jrf.showBaseAt(i);
-        JOptionPane.showMessageDialog(jrf,wrn.toString(),Globals.lang("Warnings") + " (" + pr.getFile().getName()+ ")",JOptionPane.WARNING_MESSAGE);
-      }
-    }
-    for (int i=0; (i < loaded.size()) && (i < jrf.baseCount()); i++) {
-      ParserResult pr=loaded.elementAt(i);
-      BasePanel panel=jrf.baseAt(i);
-      OpenDatabaseAction.performPostOpenActions(panel,pr,true);
-    }
-    if (postponed.size() > 0) {
-      AutosaveStartupPrompter asp=new AutosaveStartupPrompter(jrf,postponed);
-      SwingUtilities.invokeLater(asp);
-    }
-    if (loaded.size() > 0) {
-      jrf.tabbedPane.setSelectedIndex(0);
-      new FocusRequester(((BasePanel)jrf.tabbedPane.getComponentAt(0)).mainTable);
     }
   }
- else   System.exit(0);
+  GUIGlobals.init();
+  GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get("fontFamily"),Globals.prefs.getInt("fontStyle"),Globals.prefs.getInt("fontSize"));
+  jrf=new JabRefFrame();
+  boolean first=true;
+  List<File> postponed=new ArrayList<File>();
+  List<ParserResult> failed=new ArrayList<ParserResult>();
+  List<ParserResult> toOpenTab=new ArrayList<ParserResult>();
+  if (loaded.size() > 0) {
+    for (Iterator<ParserResult> i=loaded.iterator(); i.hasNext(); ) {
+      ParserResult pr=i.next();
+      if (pr.isInvalid()) {
+        failed.add(pr);
+        i.remove();
+      }
+ else       if (!pr.isPostponedAutosaveFound()) {
+        if (pr.toOpenTab()) {
+          toOpenTab.add(pr);
+        }
+ else {
+          jrf.addParserResult(pr,first);
+          first=false;
+        }
+      }
+ else {
+        i.remove();
+        postponed.add(pr.getFile());
+      }
+    }
+  }
+  for (  ParserResult pr : toOpenTab) {
+    jrf.addParserResult(pr,first);
+    first=false;
+  }
+  if (cli.isLoadSession())   jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(jrf,0,""));
+  if (splashScreen != null) {
+    splashScreen.dispose();
+    splashScreen=null;
+  }
+  if (Globals.prefs.getBoolean("autoSave"))   Globals.startAutoSaveManager(jrf);
+  if (Globals.prefs.getBoolean("windowMaximised")) {
+    jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
+  }
+  jrf.setVisible(true);
+  if (Globals.prefs.getBoolean("windowMaximised")) {
+    jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
+  }
+  startSidePanePlugins(jrf);
+  for (  ParserResult pr : failed) {
+    String message="<html>" + Globals.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
+    JOptionPane.showMessageDialog(jrf,message,Globals.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
+  }
+  for (int i=0; i < loaded.size(); i++) {
+    ParserResult pr=loaded.elementAt(i);
+    if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
+      String[] wrns=pr.warnings();
+      StringBuilder wrn=new StringBuilder();
+      for (int j=0; j < Math.min(MAX_DIALOG_WARNINGS,wrns.length); j++)       wrn.append(j + 1).append(". ").append(wrns[j]).append("\n");
+      if (wrns.length > MAX_DIALOG_WARNINGS) {
+        wrn.append("... ");
+        wrn.append(Globals.lang("%0 warnings",String.valueOf(wrns.length)));
+      }
+ else       if (wrn.length() > 0)       wrn.deleteCharAt(wrn.length() - 1);
+      jrf.showBaseAt(i);
+      JOptionPane.showMessageDialog(jrf,wrn.toString(),Globals.lang("Warnings") + " (" + pr.getFile().getName()+ ")",JOptionPane.WARNING_MESSAGE);
+    }
+  }
+  for (int i=0; (i < loaded.size()) && (i < jrf.baseCount()); i++) {
+    ParserResult pr=loaded.elementAt(i);
+    BasePanel panel=jrf.baseAt(i);
+    OpenDatabaseAction.performPostOpenActions(panel,pr,true);
+  }
+  if (postponed.size() > 0) {
+    AutosaveStartupPrompter asp=new AutosaveStartupPrompter(jrf,postponed);
+    SwingUtilities.invokeLater(asp);
+  }
+  if (loaded.size() > 0) {
+    jrf.tabbedPane.setSelectedIndex(0);
+    new FocusRequester(((BasePanel)jrf.tabbedPane.getComponentAt(0)).mainTable);
+  }
 }

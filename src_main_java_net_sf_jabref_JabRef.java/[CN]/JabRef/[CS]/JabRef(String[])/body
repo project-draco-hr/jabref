@@ -66,5 +66,9 @@
   if (Globals.ON_WIN) {
     setCurrentProcessExplicitAppUserModelID("JabRef." + Globals.VERSION);
   }
-  openWindow(processArguments(args,true));
+  Vector<ParserResult> loaded=processArguments(args,true);
+  if (graphicFailure || cli.isDisableGui() || cli.isShowVersion()) {
+    System.exit(0);
+  }
+  openWindow(loaded);
 }
