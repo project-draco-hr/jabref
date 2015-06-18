@@ -1,9 +1,17 @@
 {
   BibtexParser bp=new BibtexParser(new java.io.StringReader(source.getText()));
   try {
-    BibtexDatabase db=bp.parse().getDatabase();
+    ParserResult parserResult=bp.parse();
+    BibtexDatabase db=parserResult.getDatabase();
     if (db.getEntryCount() > 1)     throw new Exception("More than one entry found.");
-    if (db.getEntryCount() < 1)     throw new Exception("No entries found.");
+    if (db.getEntryCount() < 1) {
+      if (parserResult.hasWarnings()) {
+        throw new Exception(parserResult.warnings()[0]);
+      }
+ else {
+        throw new Exception("No entries found.");
+      }
+    }
     NamedCompound compound=new NamedCompound(Globals.lang("source edit"));
     BibtexEntry nu=db.getEntryById(db.getKeySet().iterator().next());
     String id=entry.getId();
