@@ -1,0 +1,34 @@
+{
+  dispose();
+  if (basePanel() != null)   basePanel().saveDividerLocation();
+  prefs.putInt("posX",JabRefFrame.this.getLocation().x);
+  prefs.putInt("posY",JabRefFrame.this.getLocation().y);
+  prefs.putInt("sizeX",JabRefFrame.this.getSize().width);
+  prefs.putInt("sizeY",JabRefFrame.this.getSize().height);
+  prefs.putBoolean("windowMaximised",(getExtendedState() == Frame.MAXIMIZED_BOTH));
+  prefs.putBoolean("toolbarVisible",tlb.isVisible());
+  prefs.putBoolean("searchPanelVisible",sidePaneManager.isComponentVisible("search"));
+  int width=contentPane.getDividerLocation();
+  if (width > 0)   prefs.putInt("sidePaneWidth",width);
+  if (prefs.getBoolean("openLastEdited")) {
+    if (filenames.size() == 0) {
+      prefs.remove("lastEdited");
+    }
+ else {
+      String[] names=new String[filenames.size()];
+      for (int i=0; i < filenames.size(); i++) {
+        names[i]=filenames.elementAt(i);
+      }
+      prefs.putStringArray("lastEdited",names);
+    }
+  }
+  fileHistory.storeHistory();
+  prefs.customExports.store();
+  prefs.customImports.store();
+  BibtexEntryType.saveCustomEntryTypes(prefs);
+  if (Globals.autoSaveManager != null)   Globals.autoSaveManager.clearAutoSaves();
+  if (basePanel() != null) {
+    (searchManager).updatePrefs();
+  }
+  prefs.flush();
+}
