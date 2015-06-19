@@ -83,9 +83,10 @@
           hm.put("year",parts[0]);
           if ((parts.length > 1) && (parts[1].length() > 0)) {
             try {
-              int month=Integer.parseInt(parts[1]);
-              if ((month > 0) && (month <= 12)) {
-                hm.put("month","#" + Globals.MONTHS[month - 1] + "#");
+              int monthNumber=Integer.parseInt(parts[1]);
+              MonthUtil.Month month=MonthUtil.getMonthByNumber(monthNumber);
+              if (month.isValid()) {
+                hm.put("month",month.bibtexFormat);
               }
             }
  catch (            NumberFormatException ex) {
