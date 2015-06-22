@@ -15,13 +15,8 @@
   if (autoSet) {
     Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
     Collections.addAll(entries,sel);
-    Thread t=Util.autoSetLinks(entries,ce,changedEntries,null,panel.metaData(),null,null);
-    try {
-      t.join();
-    }
- catch (    InterruptedException e) {
-      e.printStackTrace();
-    }
+    Runnable r=Util.autoSetLinks(entries,ce,changedEntries,null,panel.metaData(),null,null);
+    JabRefExecutorService.INSTANCE.executeAndWait(r);
   }
   progress+=sel.length * weightAutoSet;
   panel.frame().setProgressBarValue(progress);

@@ -446,7 +446,7 @@ catch (          Throwable ex) {
   actions.put("mergeDatabase",new AppendDatabaseAction(frame,this));
   actions.put("openFile",new BaseAction(){
     public void action(){
-      (new Thread(){
+      JabRefExecutorService.INSTANCE.execute(new Runnable(){
         public void run(){
           BibtexEntry[] bes=mainTable.getSelectedEntries();
           String field="ps";
@@ -540,14 +540,14 @@ catch (          Throwable ex) {
  else           output(Globals.lang("No entries or multiple entries selected."));
         }
       }
-).start();
+);
     }
   }
 );
   actions.put("addFileLink",new AttachFileAction(this));
   actions.put("openExternalFile",new BaseAction(){
     public void action(){
-      (new Thread(){
+      JabRefExecutorService.INSTANCE.execute(new Runnable(){
         public void run(){
           BibtexEntry[] bes=mainTable.getSelectedEntries();
           String field=GUIGlobals.FILE_FIELD;
@@ -570,13 +570,13 @@ catch (          Throwable ex) {
  else           output(Globals.lang("No entries or multiple entries selected."));
         }
       }
-).start();
+);
     }
   }
 );
   actions.put("openFolder",new BaseAction(){
     public void action(){
-      (new Thread(){
+      JabRefExecutorService.INSTANCE.execute(new Runnable(){
         public void run(){
           BibtexEntry[] bes=mainTable.getSelectedEntries();
           List<File> files=Util.getListOfLinkedFiles(bes,metaData().getFileDirectory(GUIGlobals.FILE_FIELD));
@@ -590,7 +590,7 @@ catch (          Throwable ex) {
           }
         }
       }
-).start();
+);
     }
   }
 );
@@ -690,8 +690,7 @@ catch (          Throwable ex) {
 );
   actions.put("dupliCheck",new BaseAction(){
     public void action(){
-      DuplicateSearch ds=new DuplicateSearch(BasePanel.this);
-      ds.start();
+      JabRefExecutorService.INSTANCE.execute(new DuplicateSearch(BasePanel.this));
     }
   }
 );

@@ -4,7 +4,7 @@
   MetaData meta=pr.getMetaData();
   if (pr.hasWarnings()) {
     final String[] wrns=pr.warnings();
-    (new Thread(){
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
       public void run(){
         StringBuffer wrn=new StringBuffer();
         for (int i=0; i < wrns.length; i++)         wrn.append(i + 1).append(". ").append(wrns[i]).append("\n");
@@ -12,7 +12,7 @@
         JOptionPane.showMessageDialog(frame,wrn.toString(),Globals.lang("Warnings") + " (" + file.getName()+ ")",JOptionPane.WARNING_MESSAGE);
       }
     }
-).start();
+);
   }
   BasePanel bp=new BasePanel(frame,db,file,meta,pr.getEncoding());
   SwingUtilities.invokeLater(new OpenItSwingHelper(bp,file,raisePanel));

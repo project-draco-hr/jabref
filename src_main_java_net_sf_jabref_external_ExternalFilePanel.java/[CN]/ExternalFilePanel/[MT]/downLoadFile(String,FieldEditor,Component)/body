@@ -4,7 +4,7 @@
   final BibtexEntry targetEntry;
   if (entryEditor != null)   targetEntry=entryEditor.getEntry();
  else   targetEntry=entry;
-  (new Thread(){
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
     public String getPlannedFileName(    String res){
       String suffix=off.getSuffix(res);
       if (suffix == null)       suffix="." + fieldName.toLowerCase();
@@ -71,7 +71,7 @@
           fieldEditor.setText(textToSet);
           fieldEditor.setEnabled(true);
           updateEditor=false;
-          SwingUtilities.invokeLater(new Thread(){
+          SwingUtilities.invokeLater(new Runnable(){
             public void run(){
               entryEditor.updateField(fieldEditor);
             }
@@ -90,5 +90,5 @@
       }
     }
   }
-).start();
+);
 }

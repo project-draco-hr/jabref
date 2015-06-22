@@ -6,7 +6,7 @@
   if (running)   return;
  else   running=true;
   output(Globals.lang("Loading session..."));
-  (new Thread(){
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
     public void run(){
       HashSet<String> currentFiles=new HashSet<String>();
       if (tabbedPane.getTabCount() > 0) {
@@ -28,5 +28,5 @@
       running=false;
     }
   }
-).start();
+);
 }

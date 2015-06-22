@@ -24,13 +24,7 @@
       if ((old != null) && !old.equals("") && !overWriteAllowed)       continue;
       extPan.setEntry(aSel,panel.getDatabase());
       editor.setText((old != null) ? old : "");
-      Thread t=extPan.autoSetFile(fieldName,editor);
-      if (t != null)       try {
-        t.join();
-      }
- catch (      InterruptedException e) {
-        e.printStackTrace();
-      }
+      JabRefExecutorService.INSTANCE.executeAndWait(extPan.autoSetFile(fieldName,editor));
       if (!editor.getText().equals("") && !editor.getText().equals(old)) {
         ce.addEdit(new UndoableFieldChange(aSel,fieldName,old,editor.getText()));
         aSel.setField(fieldName,editor.getText());

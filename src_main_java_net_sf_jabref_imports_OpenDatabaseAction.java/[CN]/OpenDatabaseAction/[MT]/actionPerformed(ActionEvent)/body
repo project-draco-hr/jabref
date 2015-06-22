@@ -29,12 +29,12 @@
   }
   if (filesToOpen.size() > 0) {
     final List<File> theFiles=Collections.unmodifiableList(filesToOpen);
-    (new Thread(){
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
       public void run(){
         for (        File theFile : theFiles)         openIt(theFile,true);
       }
     }
-).start();
+);
     for (    File theFile : theFiles)     frame.getFileHistory().newFile(theFile.getPath());
   }
  else   if (toRaise != null) {

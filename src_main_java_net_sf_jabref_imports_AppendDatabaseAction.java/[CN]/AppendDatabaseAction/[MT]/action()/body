@@ -7,11 +7,11 @@
     String[] chosen=FileDialogs.getMultipleFiles(frame,new File(Globals.prefs.get("workingDirectory")),null,false);
     if (chosen == null)     return;
     for (    String aChosen : chosen)     filesToOpen.add(new File(aChosen));
-    (new Thread(){
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
       public void run(){
         openIt(md.importEntries(),md.importStrings(),md.importGroups(),md.importSelectorWords());
       }
     }
-).start();
+);
   }
 }

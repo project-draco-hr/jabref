@@ -20,7 +20,7 @@
   progressBarImporting.setString("");
   final BibtexEntryType entryType=((BibtexEntryTypeWrapper)comboBoxEntryTypeSelection.getSelectedItem()).entryType;
   threadState=new int[]{1};
-  new Thread(new Runnable(){
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
     public void run(){
       List<String> errors=new LinkedList<String>();
       int count=creatorManager.addEntrysFromFiles(fileList,database,frame.basePanel(),entryType,checkBoxWhyIsThereNoGetSelectedStupidSwing,new ChangeListener(){
@@ -34,5 +34,5 @@
       importFinishedHandler(count,errors);
     }
   }
-).start();
+);
 }

@@ -7,7 +7,7 @@
   }
   JDialog diag=new JDialog(JabRef.jrf,true);
   final NamedCompound nc=new NamedCompound(Globals.lang("Automatically set file links"));
-  Util.autoSetLinks(entries,nc,null,null,JabRef.jrf.basePanel().metaData(),new ActionListener(){
+  Runnable runnable=Util.autoSetLinks(entries,nc,null,null,JabRef.jrf.basePanel().metaData(),new ActionListener(){
     public void actionPerformed(    ActionEvent e){
       if (e.getID() > 0) {
         if (nc.hasEdits()) {
@@ -21,4 +21,5 @@
     }
   }
 ,diag);
+  JabRefExecutorService.INSTANCE.execute(runnable);
 }
