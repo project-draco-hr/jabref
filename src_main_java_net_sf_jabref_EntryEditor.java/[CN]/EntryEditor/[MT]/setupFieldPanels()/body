@@ -24,7 +24,7 @@
       deprecatedFields.add("year");
       deprecatedFields.add("month");
       String[] optionalFieldsNotPrimaryOrDeprecated=Util.getRemainder(entry.getOptionalFields(),entry.getType().getPrimaryOptionalFields());
-      optionalFieldsNotPrimaryOrDeprecated=Util.getRemainder(optionalFieldsNotPrimaryOrDeprecated,deprecatedFields.toArray(new String[0]));
+      optionalFieldsNotPrimaryOrDeprecated=Util.getRemainder(optionalFieldsNotPrimaryOrDeprecated,deprecatedFields.toArray(new String[deprecatedFields.size()]));
       Set<String> optionalFieldsAndAliases=new HashSet<String>();
       for (      String field : entry.getOptionalFields()) {
         optionalFieldsAndAliases.add(field);
@@ -37,7 +37,7 @@
       tabbed.addTab(Globals.lang("Optional fields 2"),GUIGlobals.getImage("optional"),optPan.getPane(),Globals.lang("Show optional fields"));
       tabs.add(optPan);
       if (!usedOptionalFieldsDeprecated.isEmpty()) {
-        optPan=new EntryEditorTab(frame,panel,java.util.Arrays.asList(usedOptionalFieldsDeprecated.toArray(new String[0])),this,false,true,Globals.lang("Deprecated fields"));
+        optPan=new EntryEditorTab(frame,panel,java.util.Arrays.asList(usedOptionalFieldsDeprecated.toArray(new String[usedOptionalFieldsDeprecated.size()])),this,false,true,Globals.lang("Deprecated fields"));
         if (optPan.fileListEditor != null)         fileListEditor=optPan.fileListEditor;
         tabbed.addTab(Globals.lang("Deprecated fields"),GUIGlobals.getImage("optional"),optPan.getPane(),Globals.lang("Show deprecated bibtex fields"));
         tabs.add(optPan);
