@@ -25,13 +25,13 @@
       parentIds.put(node,rsGroups.getString("parent_id"));
       groups.put(rsGroups.getString("groups_id"),node);
     }
-    for (    GroupTreeNode node : parentIds.keySet()) {
-      String parentId=parentIds.get(node);
+    for (    Map.Entry<GroupTreeNode,String> groupTreeNodeStringEntry : parentIds.entrySet()) {
+      String parentId=groupTreeNodeStringEntry.getValue();
       GroupTreeNode parent=groups.get(parentId);
       if (parent == null) {
       }
  else {
-        parent.add(node);
+        parent.add(groupTreeNodeStringEntry.getKey());
       }
     }
     ResultSet rsEntryGroup=SQLUtil.queryAllFromTable(conn,"entry_group");

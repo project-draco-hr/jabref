@@ -1,8 +1,8 @@
 {
-  for (  String field : autoCompleters.keySet()) {
-    AbstractAutoCompleter ac=autoCompleters.get(field);
-    if (metaData.getData(Globals.SELECTOR_META_PREFIX + field) != null) {
-      Vector<String> items=metaData.getData(Globals.SELECTOR_META_PREFIX + field);
+  for (  Map.Entry<String,AbstractAutoCompleter> stringAbstractAutoCompleterEntry : autoCompleters.entrySet()) {
+    AbstractAutoCompleter ac=stringAbstractAutoCompleterEntry.getValue();
+    if (metaData.getData(Globals.SELECTOR_META_PREFIX + stringAbstractAutoCompleterEntry.getKey()) != null) {
+      Vector<String> items=metaData.getData(Globals.SELECTOR_META_PREFIX + stringAbstractAutoCompleterEntry.getKey());
       if (items != null) {
         for (        String item : items) {
           ac.addWordToIndex(item);
