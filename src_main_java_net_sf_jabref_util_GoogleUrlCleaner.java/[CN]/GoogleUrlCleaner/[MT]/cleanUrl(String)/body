@@ -14,15 +14,18 @@
     }
     for (    String pair : pairs) {
       int idx=pair.indexOf("=");
-      if (pair.substring(0,idx).equals("url")) {
-        return URLDecoder.decode(pair.substring(idx + 1),"UTF-8");
+      if ("url".equals(pair.substring(0,idx))) {
+        try {
+          int nextIdx=idx + 1;
+          return URLDecoder.decode(pair.substring(nextIdx),"UTF-8");
+        }
+ catch (        UnsupportedEncodingException e) {
+          return dirty;
+        }
       }
     }
   }
  catch (  MalformedURLException e) {
-    return dirty;
-  }
-catch (  UnsupportedEncodingException e) {
     return dirty;
   }
   return dirty;
