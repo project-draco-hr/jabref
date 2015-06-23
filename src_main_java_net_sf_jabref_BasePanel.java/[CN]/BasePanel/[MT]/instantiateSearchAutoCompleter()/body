@@ -1,8 +1,7 @@
 {
-  searchCompleter=new NameFieldAutoCompleter(new String[]{"author","editor"},true);
-  searchAutoCompleterHM.put("x",searchCompleter);
+  AutoCompleter searchCompleter=AutoCompleterFactory.getFor("author","editor");
   for (  BibtexEntry entry : database.getEntries()) {
-    Util.updateCompletersForEntry(searchAutoCompleterHM,entry);
+    searchCompleter.addBibtexEntry(entry);
   }
   searchCompleteListener=new AutoCompleteListener(searchCompleter);
   searchCompleteListener.setConsumeEnterKey(false);
