@@ -1,7 +1,7 @@
 {
   String timeStampField=Globals.prefs.get("timeStampField");
   String defaultOwner=Globals.prefs.get("defaultOwner");
-  String timestamp=Util.easyDateFormat();
+  String timestamp=EasyDateFormat.easyDateFormat();
   boolean globalSetOwner=Globals.prefs.getBoolean("useOwner"), globalSetTimeStamp=Globals.prefs.getBoolean("useTimeStamp");
   if (!(globalSetOwner || globalSetTimeStamp || markEntries)) {
     return;
@@ -11,7 +11,7 @@
     boolean setTimeStamp=globalSetTimeStamp && (overwriteTimestamp || (curEntry.getField(timeStampField) == null));
     Util.setAutomaticFields(curEntry,setOwner,defaultOwner,setTimeStamp,timeStampField,timestamp);
     if (markEntries) {
-      Util.markEntry(curEntry,Util.IMPORT_MARK_LEVEL,false,new NamedCompound(""));
+      EntryMarker.markEntry(curEntry,EntryMarker.IMPORT_MARK_LEVEL,false,new NamedCompound(""));
     }
   }
 }
