@@ -1,14 +1,16 @@
 {
   if (!dirOnly && Globals.prefs.getBoolean("useNativeFileDialogOnMac")) {
-    return getNewFileForMac(owner,directory,extension,dialogType,updateWorkingDirectory,dirOnly,off);
+    return FileDialogs.getNewFileForMac(owner,directory,extension,dialogType,updateWorkingDirectory,dirOnly,off);
   }
   JFileChooser fc;
   try {
     fc=new JFileChooser(directory);
-    if (accessory != null)     fc.setAccessory(accessory);
+    if (accessory != null) {
+      fc.setAccessory(accessory);
+    }
   }
  catch (  InternalError errl) {
-    return getNewFileForMac(owner,directory,extension,dialogType,updateWorkingDirectory,dirOnly,off);
+    return FileDialogs.getNewFileForMac(owner,directory,extension,dialogType,updateWorkingDirectory,dirOnly,off);
   }
   if (dirOnly) {
     fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -26,7 +28,9 @@
  else {
     dialogResult=fc.showDialog(owner,description);
   }
-  if (dialogResult != JFileChooser.APPROVE_OPTION)   return null;
+  if (dialogResult != JFileChooser.APPROVE_OPTION) {
+    return null;
+  }
   File selectedFile=fc.getSelectedFile();
   if (selectedFile == null) {
     return null;
@@ -37,11 +41,15 @@
   if (updateWorkingDirectory) {
     Globals.prefs.put("workingDirectory",selectedFile.getPath());
   }
-  if (!multipleSelection)   return selectedFile.getAbsolutePath();
+  if (!multipleSelection) {
+    return selectedFile.getAbsolutePath();
+  }
  else {
     File[] files=fc.getSelectedFiles();
     String[] filenames=new String[files.length];
-    for (int i=0; i < files.length; i++)     filenames[i]=files[i].getAbsolutePath();
+    for (int i=0; i < files.length; i++) {
+      filenames[i]=files[i].getAbsolutePath();
+    }
     return filenames;
   }
 }

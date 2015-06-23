@@ -1,6 +1,6 @@
 {
   try {
-    URL url=new URL(URL_START + link);
+    URL url=new URL(GoogleScholarFetcher.URL_START + link);
     String s=new URLDownload(url).downloadToString();
     BibtexParser bp=new BibtexParser(new StringReader(s));
     ParserResult pr=bp.parse();
@@ -8,10 +8,14 @@
       Collection<BibtexEntry> entries=pr.getDatabase().getEntries();
       if (entries.size() == 1) {
         BibtexEntry entry=entries.iterator().next();
-        if (clearKeys)         entry.setField(BibtexFields.KEY_FIELD,null);
+        if (clearKeys) {
+          entry.setField(BibtexFields.KEY_FIELD,null);
+        }
         if (entry.getField("url") == null) {
           String storedUrl=entryLinks.get(link);
-          if (storedUrl != null)           entry.setField("url",storedUrl);
+          if (storedUrl != null) {
+            entry.setField("url",storedUrl);
+          }
         }
         String title=entry.getField("title");
         if (title != null) {

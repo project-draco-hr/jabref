@@ -1,14 +1,20 @@
 {
-  if (iconMap.containsKey(name)) {
-    String path=iconMap.get(name);
+  if (GUIGlobals.iconMap.containsKey(name)) {
+    String path=GUIGlobals.iconMap.get(name);
     URL url=GUIGlobals.class.getResource(path);
-    if (url == null)     try {
-      url=new URL(path);
+    if (url == null) {
+      try {
+        url=new URL(path);
+      }
+ catch (      MalformedURLException ignored) {
+      }
     }
- catch (    MalformedURLException ignored) {
+    if (url == null) {
+      System.err.println(Globals.lang("Could not find image file") + " '" + path+ "'");
     }
-    if (url == null)     System.err.println(Globals.lang("Could not find image file") + " '" + path+ "'");
     return url;
   }
- else   return null;
+ else {
+    return null;
+  }
 }

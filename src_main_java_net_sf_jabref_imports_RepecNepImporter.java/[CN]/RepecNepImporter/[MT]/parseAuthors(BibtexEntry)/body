@@ -1,21 +1,21 @@
 {
   String authors="";
   String institutions="";
-  while (this.lastLine != null && !this.lastLine.equals("") && !startsWithKeyword(recognizedFields)) {
+  while ((this.lastLine != null) && !this.lastLine.equals("") && !startsWithKeyword(RepecNepImporter.recognizedFields)) {
     String author;
     String institution=null;
     boolean institutionDone;
     if (this.lastLine.indexOf('(') >= 0) {
       author=this.lastLine.substring(0,this.lastLine.indexOf('(')).trim();
       institutionDone=this.lastLine.indexOf(')') > 0;
-      institution=this.lastLine.substring(this.lastLine.indexOf('(') + 1,institutionDone && this.lastLine.indexOf(')') > this.lastLine.indexOf('(') + 1 ? this.lastLine.indexOf(')') : this.lastLine.length()).trim();
+      institution=this.lastLine.substring(this.lastLine.indexOf('(') + 1,institutionDone && (this.lastLine.indexOf(')') > (this.lastLine.indexOf('(') + 1)) ? this.lastLine.indexOf(')') : this.lastLine.length()).trim();
     }
  else {
       author=this.lastLine.substring(0,this.lastLine.length()).trim();
       institutionDone=true;
     }
     readLine();
-    while (!institutionDone && this.lastLine != null) {
+    while (!institutionDone && (this.lastLine != null)) {
       institutionDone=this.lastLine.indexOf(')') > 0;
       institution+=this.lastLine.substring(0,institutionDone ? this.lastLine.indexOf(')') : this.lastLine.length()).trim();
       readLine();

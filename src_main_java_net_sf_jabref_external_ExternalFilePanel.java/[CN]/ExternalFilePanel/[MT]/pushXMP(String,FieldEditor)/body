@@ -1,12 +1,14 @@
 {
   JabRefExecutorService.INSTANCE.execute(new Runnable(){
-    public void run(){
+    @Override public void run(){
       output(Globals.lang("Looking for pdf..."));
       String[] dirs=metaData.getFileDirectory(fieldName);
       File file=null;
       if (dirs.length > 0) {
         File tmp=Util.expandFilename(editor.getText(),dirs);
-        if (tmp != null)         file=tmp;
+        if (tmp != null) {
+          file=tmp;
+        }
       }
       if (file == null) {
         file=new File(editor.getText());

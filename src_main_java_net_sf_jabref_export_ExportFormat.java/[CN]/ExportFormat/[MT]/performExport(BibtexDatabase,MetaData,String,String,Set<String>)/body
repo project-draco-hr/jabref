@@ -9,7 +9,9 @@
       ex.printStackTrace();
     }
   }
-  if (ss == null)   ss=getSaveSession(encoding,outFile);
+  if (ss == null) {
+    ss=getSaveSession(encoding,outFile);
+  }
   VerifyingWriter ps=ss.getWriter();
   Layout beginLayout=null;
   Reader reader;
@@ -42,7 +44,9 @@
   for (  BibtexEntry entry : sorted) {
     ExportFormats.entryNumber++;
     String type=entry.getType().getName().toLowerCase();
-    if (layouts.containsKey(type))     layout=layouts.get(type);
+    if (layouts.containsKey(type)) {
+      layout=layouts.get(type);
+    }
  else {
       try {
         reader=getReader(lfFileName + "." + type+ ".layout");
@@ -50,7 +54,9 @@
         layout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
         layouts.put(type,layout);
         reader.close();
-        if (layout != null)         missingFormatters.addAll(layout.getMissingFormatters());
+        if (layout != null) {
+          missingFormatters.addAll(layout.getMissingFormatters());
+        }
       }
  catch (      IOException ex) {
         layout=defLayout;
@@ -76,7 +82,9 @@
     StringBuilder sb=new StringBuilder("The following formatters could not be found").append(": ");
     for (Iterator<String> i=missingFormatters.iterator(); i.hasNext(); ) {
       sb.append(i.next());
-      if (i.hasNext())       sb.append(", ");
+      if (i.hasNext()) {
+        sb.append(", ");
+      }
     }
     System.err.println(sb.toString());
   }

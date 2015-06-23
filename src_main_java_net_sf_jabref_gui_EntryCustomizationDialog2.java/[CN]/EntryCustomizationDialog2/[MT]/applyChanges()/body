@@ -2,7 +2,9 @@
   valueChanged(new ListSelectionEvent(new JList(),0,0,false));
   List<String> types=typeComp.getFields();
   for (  String typeName : reqLists.keySet()) {
-    if (!types.contains(typeName))     continue;
+    if (!types.contains(typeName)) {
+      continue;
+    }
     List<String> reqFields=reqLists.get(typeName);
     List<String> optFields=optLists.get(typeName);
     List<String> opt2Fields=opt2Lists.get(typeName);
@@ -11,8 +13,12 @@
     String[] optStr=new String[optFields.size()];
     optStr=optFields.toArray(optStr);
     String[] opt2Str;
-    if (opt2Fields != null)     opt2Str=opt2Fields.toArray(new String[opt2Fields.size()]);
- else     opt2Str=new String[0];
+    if (opt2Fields != null) {
+      opt2Str=opt2Fields.toArray(new String[opt2Fields.size()]);
+    }
+ else {
+      opt2Str=new String[0];
+    }
     boolean changesMade=true;
     if (defaulted.contains(typeName)) {
       String nm=Util.nCase(typeName);
@@ -26,9 +32,13 @@
       if (biblatexMode) {
         String[] priOpt=oldType.getPrimaryOptionalFields();
         String[] secOpt=Util.getRemainder(oldOpt,priOpt);
-        if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr) && equalArrays(secOpt,opt2Str))         changesMade=false;
+        if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr) && equalArrays(secOpt,opt2Str)) {
+          changesMade=false;
+        }
       }
- else       if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr))       changesMade=false;
+ else       if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr)) {
+        changesMade=false;
+      }
     }
     if (changesMade) {
       CustomEntryType typ=biblatexMode ? new CustomEntryType(Util.nCase(typeName),reqStr,optStr,opt2Str) : new CustomEntryType(Util.nCase(typeName),reqStr,optStr);
@@ -43,7 +53,9 @@
     }
   }
   if (toRemove.size() > 0) {
-    for (    Object aToRemove : toRemove)     typeDeletion((String)aToRemove);
+    for (    Object aToRemove : toRemove) {
+      typeDeletion((String)aToRemove);
+    }
   }
   updateTables();
 }

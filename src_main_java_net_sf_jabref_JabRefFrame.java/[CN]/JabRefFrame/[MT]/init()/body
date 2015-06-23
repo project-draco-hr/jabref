@@ -7,7 +7,7 @@
   setIconImage(GUIGlobals.getImage("jabrefIcon48").getImage());
   setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   addWindowListener(new WindowAdapter(){
-    public void windowClosing(    WindowEvent e){
+    @Override public void windowClosing(    WindowEvent e){
       if (Globals.ON_MAC) {
         setState(Frame.ICONIFIED);
       }
@@ -31,11 +31,15 @@
     if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length == 1) {
       Rectangle bounds=GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration().getBounds();
       Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
-      if (posX < bounds.x)       posX=bounds.x;
-      if (posY < bounds.y)       posY=bounds.y;
+      if (posX < bounds.x) {
+        posX=bounds.x;
+      }
+      if (posY < bounds.y) {
+        posY=bounds.y;
+      }
       int height=(int)dim.getHeight();
       int width=(int)dim.getWidth();
-      if (posX + sizeX > width) {
+      if ((posX + sizeX) > width) {
         if (sizeX <= width) {
           posX=width - sizeX;
         }
@@ -44,7 +48,7 @@
           sizeX=prefs.getIntDefault("sizeX");
         }
       }
-      if (posY + sizeY > height) {
+      if ((posY + sizeY) > height) {
         if (sizeY <= height) {
           posY=height - sizeY;
         }
@@ -59,7 +63,7 @@
   tabbedPane.setBorder(null);
   tabbedPane.setForeground(GUIGlobals.inActiveTabbed);
   tabbedPane.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent e){
+    @Override public void stateChanged(    ChangeEvent e){
       markActiveBasePanel();
       BasePanel bp=basePanel();
       if (bp != null) {

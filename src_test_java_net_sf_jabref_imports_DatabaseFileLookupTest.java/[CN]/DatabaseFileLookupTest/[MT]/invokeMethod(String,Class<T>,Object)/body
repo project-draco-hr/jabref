@@ -1,10 +1,12 @@
 {
-  T instance=getInstanceFromType(targetClass);
+  T instance=DatabaseFileLookupTest.getInstanceFromType(targetClass);
   if (instance == null) {
     throw new InstantiationException("The type '" + targetClass + "' could not be instantiated.");
   }
   Class<?>[] paramTypes=new Class<?>[params.length];
-  for (int i=0; i < params.length; i++)   paramTypes[i]=params[i].getClass();
+  for (int i=0; i < params.length; i++) {
+    paramTypes[i]=params[i].getClass();
+  }
   Method method=targetClass.getDeclaredMethod(methodName,paramTypes);
   method.setAccessible(true);
   return (R)method.invoke(instance,params);

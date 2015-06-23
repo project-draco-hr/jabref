@@ -28,8 +28,12 @@
  else     if ((si.i == LayoutHelper.IS_FIELD_END) || (si.i == LayoutHelper.IS_GROUP_END)) {
       if (blockStart.equals(si.s)) {
         blockEntries.add(si);
-        if (si.i == LayoutHelper.IS_GROUP_END)         le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_GROUP_START);
- else         le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_FIELD_START);
+        if (si.i == LayoutHelper.IS_GROUP_END) {
+          le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_GROUP_START);
+        }
+ else {
+          le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_FIELD_START);
+        }
         tmpEntries.add(le);
         blockEntries=null;
       }
@@ -50,7 +54,9 @@
   for (int i=0; i < tmpEntries.size(); i++) {
     layoutEntries[i]=tmpEntries.get(i);
     if (layoutEntries[i].isInvalidFormatter()) {
-      if (invalidFormatter == null)       invalidFormatter=new ArrayList<String>(1);
+      if (invalidFormatter == null) {
+        invalidFormatter=new ArrayList<String>(1);
+      }
       invalidFormatter.addAll(layoutEntries[i].getInvalidFormatters());
     }
   }

@@ -1,6 +1,6 @@
 {
   String[] files=PluginCore.userPluginDir.list(new FilenameFilter(){
-    public boolean accept(    File file,    String s){
+    @Override public boolean accept(    File file,    String s){
       return s.endsWith(".jar");
     }
   }
@@ -8,7 +8,7 @@
   Map<VersionNumber,File> versions=new TreeMap<VersionNumber,File>();
   for (  String file : files) {
     File f=new File(PluginCore.userPluginDir,file);
-    String[] nav=getNameAndVersion(f);
+    String[] nav=PluginInstaller.getNameAndVersion(f);
     if (nav != null) {
       if (nav[0].equals(pluginName)) {
         VersionNumber vn=new VersionNumber(nav[1]);

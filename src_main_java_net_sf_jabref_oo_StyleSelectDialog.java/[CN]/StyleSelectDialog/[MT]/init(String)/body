@@ -5,11 +5,19 @@
   bg.add(useDefaultNumerical);
   bg.add(chooseDirectly);
   bg.add(setDirectory);
-  if (Globals.prefs.getBoolean("ooUseDefaultAuthoryearStyle"))   useDefaultAuthoryear.setSelected(true);
- else   if (Globals.prefs.getBoolean("ooUseDefaultNumericalStyle"))   useDefaultNumerical.setSelected(true);
+  if (Globals.prefs.getBoolean("ooUseDefaultAuthoryearStyle")) {
+    useDefaultAuthoryear.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean("ooUseDefaultNumericalStyle")) {
+    useDefaultNumerical.setSelected(true);
+  }
  else {
-    if (Globals.prefs.getBoolean("ooChooseStyleDirectly"))     chooseDirectly.setSelected(true);
- else     setDirectory.setSelected(true);
+    if (Globals.prefs.getBoolean("ooChooseStyleDirectly")) {
+      chooseDirectly.setSelected(true);
+    }
+ else {
+      setDirectory.setSelected(true);
+    }
   }
   directFile.setText(Globals.prefs.get("ooDirectFile"));
   styleDir.setText(Globals.prefs.get("ooStyleDirectory"));
@@ -21,26 +29,32 @@
   BrowseAction sdBrowse=BrowseAction.buildForDir(styleDir,setDirectory);
   browseStyleDir.addActionListener(sdBrowse);
   showDefaultAuthoryearStyle.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       displayDefaultStyle(true);
     }
   }
 );
   showDefaultNumericalStyle.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       displayDefaultStyle(false);
     }
   }
 );
   edit.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       int i=table.getSelectedRow();
-      if (i == -1)       return;
+      if (i == -1) {
+        return;
+      }
       ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("jstyle");
       String link=tableModel.getElementAt(i).getFile().getPath();
       try {
-        if (type != null)         Util.openExternalFileAnyFormat(new MetaData(),link,type);
- else         Util.openExternalFileUnknown(frame,null,new MetaData(),link,new UnknownExternalFileType("jstyle"));
+        if (type != null) {
+          Util.openExternalFileAnyFormat(new MetaData(),link,type);
+        }
+ else {
+          Util.openExternalFileUnknown(frame,null,new MetaData(),link,new UnknownExternalFileType("jstyle"));
+        }
       }
  catch (      IOException e) {
         e.printStackTrace();
@@ -64,37 +78,41 @@
   table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   table.addMouseListener(new MouseAdapter(){
     @Override public void mousePressed(    MouseEvent mouseEvent){
-      if (mouseEvent.isPopupTrigger())       tablePopup(mouseEvent);
+      if (mouseEvent.isPopupTrigger()) {
+        tablePopup(mouseEvent);
+      }
     }
     @Override public void mouseReleased(    MouseEvent mouseEvent){
-      if (mouseEvent.isPopupTrigger())       tablePopup(mouseEvent);
+      if (mouseEvent.isPopupTrigger()) {
+        tablePopup(mouseEvent);
+      }
     }
   }
 );
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
   styleDir.getDocument().addDocumentListener(new DocumentListener(){
-    public void insertUpdate(    DocumentEvent documentEvent){
+    @Override public void insertUpdate(    DocumentEvent documentEvent){
       readStyles();
       setDirectory.setSelected(true);
     }
-    public void removeUpdate(    DocumentEvent documentEvent){
+    @Override public void removeUpdate(    DocumentEvent documentEvent){
       readStyles();
       setDirectory.setSelected(true);
     }
-    public void changedUpdate(    DocumentEvent documentEvent){
+    @Override public void changedUpdate(    DocumentEvent documentEvent){
       readStyles();
       setDirectory.setSelected(true);
     }
   }
 );
   directFile.getDocument().addDocumentListener(new DocumentListener(){
-    public void insertUpdate(    DocumentEvent documentEvent){
+    @Override public void insertUpdate(    DocumentEvent documentEvent){
       chooseDirectly.setSelected(true);
     }
-    public void removeUpdate(    DocumentEvent documentEvent){
+    @Override public void removeUpdate(    DocumentEvent documentEvent){
       chooseDirectly.setSelected(true);
     }
-    public void changedUpdate(    DocumentEvent documentEvent){
+    @Override public void changedUpdate(    DocumentEvent documentEvent){
       chooseDirectly.setSelected(true);
     }
   }
@@ -127,7 +145,7 @@
   diag.add(b.getPanel(),BorderLayout.NORTH);
   diag.add(b2.getPanel(),BorderLayout.CENTER);
   AbstractAction okListener=new AbstractAction(){
-    public void actionPerformed(    ActionEvent event){
+    @Override public void actionPerformed(    ActionEvent event){
       if (!useDefaultAuthoryear.isSelected() && !useDefaultNumerical.isSelected()) {
         if (chooseDirectly.isSelected()) {
           File f=new File(directFile.getText());
@@ -137,7 +155,7 @@
           }
         }
  else {
-          if (table.getRowCount() == 0 || table.getSelectedRowCount() == 0) {
+          if ((table.getRowCount() == 0) || (table.getSelectedRowCount() == 0)) {
             JOptionPane.showMessageDialog(diag,Globals.lang("You must select either a valid style file, or use a default style."),Globals.lang("Style selection"),JOptionPane.ERROR_MESSAGE);
             return;
           }
@@ -151,7 +169,7 @@
 ;
   ok.addActionListener(okListener);
   Action cancelListener=new AbstractAction(){
-    public void actionPerformed(    ActionEvent event){
+    @Override public void actionPerformed(    ActionEvent event){
       diag.dispose();
     }
   }
@@ -173,7 +191,7 @@
   diag.pack();
   diag.setLocationRelativeTo(frame);
   SwingUtilities.invokeLater(new Runnable(){
-    public void run(){
+    @Override public void run(){
       contentPane.setDividerLocation(contentPane.getSize().height - 150);
     }
   }

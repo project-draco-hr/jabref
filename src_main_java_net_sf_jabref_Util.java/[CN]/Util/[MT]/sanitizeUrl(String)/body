@@ -1,12 +1,14 @@
 {
   link=link.trim();
-  if (link.startsWith("\\url{") && link.endsWith("}"))   link=link.substring(5,link.length() - 1);
+  if (link.startsWith("\\url{") && link.endsWith("}")) {
+    link=link.substring(5,link.length() - 1);
+  }
   if (link.matches("^doi:/*.*")) {
     link=link.replaceFirst("^doi:/*","");
     link=Globals.DOI_LOOKUP_PREFIX + link;
   }
-  if (checkForPlainDOI(link) && !link.startsWith("http://")) {
-    link=Globals.DOI_LOOKUP_PREFIX + getDOI(link);
+  if (Util.checkForPlainDOI(link) && !link.startsWith("http://")) {
+    link=Globals.DOI_LOOKUP_PREFIX + Util.getDOI(link);
   }
   link=link.replaceAll("\\+","%2B");
   try {

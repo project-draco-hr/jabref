@@ -9,9 +9,15 @@
     f2=getField(e2);
   }
   int localMultiplier=multiplier;
-  if (isMonthField)   localMultiplier=-localMultiplier;
-  if (f1 == null)   return f2 == null ? 0 : localMultiplier;
-  if (f2 == null)   return -localMultiplier;
+  if (isMonthField) {
+    localMultiplier=-localMultiplier;
+  }
+  if (f1 == null) {
+    return f2 == null ? 0 : localMultiplier;
+  }
+  if (f2 == null) {
+    return -localMultiplier;
+  }
   if (isNameField) {
     f1=AuthorList.fixAuthorForAlphabetization((String)f1);
     f2=AuthorList.fixAuthorForAlphabetization((String)f2);
@@ -36,7 +42,7 @@
     }
  catch (    NumberFormatException ex) {
     }
-    if (i2 != null && i1 != null) {
+    if ((i2 != null) && (i1 != null)) {
       f1=i1;
       f2=i2;
     }
@@ -63,7 +69,7 @@
   }
  else {
     String ours=((String)f1).toLowerCase(), theirs=((String)f2).toLowerCase();
-    result=collator.compare(ours,theirs);
+    result=FieldComparator.collator.compare(ours,theirs);
   }
   return result * localMultiplier;
 }

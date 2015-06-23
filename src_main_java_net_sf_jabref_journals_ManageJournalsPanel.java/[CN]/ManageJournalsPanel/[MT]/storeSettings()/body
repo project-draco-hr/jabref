@@ -5,7 +5,9 @@
       f=new File(newNameTf.getText());
     }
   }
- else   f=new File(personalFile.getText());
+ else {
+    f=new File(personalFile.getText());
+  }
   if (f != null) {
     if (!f.exists()) {
       throw new FileNotFoundException(f.getAbsolutePath());
@@ -24,15 +26,19 @@
       e.printStackTrace();
     }
  finally {
-      if (fw != null)       try {
-        fw.close();
-      }
- catch (      IOException e) {
-        e.printStackTrace();
+      if (fw != null) {
+        try {
+          fw.close();
+        }
+ catch (        IOException e) {
+          e.printStackTrace();
+        }
       }
     }
     String filename=f.getPath();
-    if (filename.equals(""))     filename=null;
+    if (filename.equals("")) {
+      filename=null;
+    }
     Globals.prefs.put("personalJournalList",filename);
   }
   ArrayList<String> extFiles=new ArrayList<String>();
@@ -41,7 +47,9 @@
       extFiles.add(efe.getValue());
     }
   }
-  if (extFiles.size() == 0)   Globals.prefs.put("externalJournalLists","");
+  if (extFiles.size() == 0) {
+    Globals.prefs.put("externalJournalLists","");
+  }
  else {
     String[] list=extFiles.toArray(new String[extFiles.size()]);
     Globals.prefs.putStringArray("externalJournalLists",list);

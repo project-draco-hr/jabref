@@ -15,7 +15,9 @@
     int good=-1, yearFound=-1;
     for (int i=0; i < cand.length; i++) {
       int number=Integer.parseInt(cand[i].trim());
-      if (number == yearFound)       continue;
+      if (number == yearFound) {
+        continue;
+      }
       if (number < 2500) {
         if (good == -1) {
           good=i;
@@ -54,7 +56,7 @@
     for (int i=0; i < cand.length; i++) {
       split=clean(cand[i].replaceAll("\\s","")).split("-");
       int first=Integer.parseInt(split[0]), second=Integer.parseInt(split[1]);
-      if (second - first > 3) {
+      if ((second - first) > 3) {
         found=i;
         break;
       }
@@ -79,7 +81,9 @@
       pos=journal.lastIndexOf(' ');
       if (pos > 0) {
         String last=journal.substring(pos + 1).toLowerCase();
-        if (last.equals("volume") || last.equals("vol") || last.equals("v"))         journal=clean(journal.substring(0,pos));
+        if (last.equals("volume") || last.equals("vol") || last.equals("v")) {
+          journal=clean(journal.substring(0,pos));
+        }
       }
       pos=text.indexOf(journal);
       usedParts.add(new Substring("journal",pos,pos + journal.length()));
@@ -93,13 +97,13 @@
   int piv=0;
   for (  Substring usedPart : usedParts) {
     ss=usedPart;
-    if (ss.begin() - piv > 10) {
+    if ((ss.begin() - piv) > 10) {
       Util.pr("... " + text.substring(piv,ss.begin()));
       free.add(clean(text.substring(piv,ss.begin())));
     }
     piv=ss.end();
   }
-  if (text.length() - piv > 10) {
+  if ((text.length() - piv) > 10) {
     free.add(clean(text.substring(piv)));
   }
   Util.pr("Free parts:");

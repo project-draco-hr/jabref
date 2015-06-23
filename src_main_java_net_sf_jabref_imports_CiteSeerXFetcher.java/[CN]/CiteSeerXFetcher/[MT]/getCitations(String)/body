@@ -2,13 +2,15 @@
   String urlQuery;
   ArrayList<String> ids=new ArrayList<String>();
   try {
-    urlQuery=SEARCH_URL.replace(QUERY_MARKER,URLEncoder.encode(query,"UTF-8"));
+    urlQuery=CiteSeerXFetcher.SEARCH_URL.replace(CiteSeerXFetcher.QUERY_MARKER,URLEncoder.encode(query,"UTF-8"));
     int count=1;
     String nextPage;
-    while (((nextPage=getCitationsFromUrl(urlQuery,ids)) != null) && (count < MAX_PAGES_TO_LOAD)) {
+    while (((nextPage=getCitationsFromUrl(urlQuery,ids)) != null) && (count < CiteSeerXFetcher.MAX_PAGES_TO_LOAD)) {
       urlQuery=nextPage;
       count++;
-      if (stopFetching)       break;
+      if (stopFetching) {
+        break;
+      }
     }
     return ids;
   }

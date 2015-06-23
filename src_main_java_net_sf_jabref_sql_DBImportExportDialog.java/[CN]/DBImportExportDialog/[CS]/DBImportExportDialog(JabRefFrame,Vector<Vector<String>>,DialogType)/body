@@ -5,7 +5,7 @@
   table=new JTable();
   DefaultTableModel model=new DefaultTableModel(rows,columns){
     private static final long serialVersionUID=1L;
-    public boolean isCellEditable(    int row,    int column){
+    @Override public boolean isCellEditable(    int row,    int column){
       return false;
     }
   }
@@ -20,7 +20,7 @@
     tableSelectionModel=ListSelectionModel.SINGLE_SELECTION;
     table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put((KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0)),"exportAction");
     table.getActionMap().put("exportAction",new AbstractAction(){
-      public void actionPerformed(      ActionEvent e){
+      @Override public void actionPerformed(      ActionEvent e){
         exportAction();
       }
     }
@@ -33,7 +33,7 @@
     tableSelectionModel=ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
     table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put((KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0)),"importAction");
     table.getActionMap().put("importAction",new AbstractAction(){
-      public void actionPerformed(      ActionEvent e){
+      @Override public void actionPerformed(      ActionEvent e){
         importAction();
       }
     }
@@ -58,8 +58,12 @@
   b.addGlue();
   JButton importButton=new JButton(Globals.lang("Import"));
   JButton exportButton=new JButton(Globals.lang("Export"));
-  if (dialogType.equals(DialogType.IMPORTER))   b.addButton(importButton);
- else   b.addButton(exportButton);
+  if (dialogType.equals(DialogType.IMPORTER)) {
+    b.addButton(importButton);
+  }
+ else {
+    b.addButton(exportButton);
+  }
   b.addRelatedGap();
   JButton cancelButton=new JButton(Globals.lang("Cancel"));
   b.addButton(cancelButton);
@@ -73,19 +77,19 @@
   diag.setLocationRelativeTo(frame);
   table.addMouseListener(this);
   importButton.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent arg0){
+    @Override public void actionPerformed(    ActionEvent arg0){
       importAction();
     }
   }
 );
   exportButton.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent arg0){
+    @Override public void actionPerformed(    ActionEvent arg0){
       exportAction();
     }
   }
 );
   cancelButton.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent arg0){
+    @Override public void actionPerformed(    ActionEvent arg0){
       moreThanOne=false;
       hasDBSelected=false;
       diag.dispose();
@@ -93,7 +97,7 @@
   }
 );
   removeButton.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent arg0){
+    @Override public void actionPerformed(    ActionEvent arg0){
       moreThanOne=false;
       hasDBSelected=true;
       selectedInt=table.getSelectedRow();

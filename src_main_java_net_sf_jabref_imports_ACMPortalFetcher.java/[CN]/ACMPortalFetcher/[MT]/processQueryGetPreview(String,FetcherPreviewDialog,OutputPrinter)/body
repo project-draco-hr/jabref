@@ -12,7 +12,7 @@
   try {
     URL url=new URL(address);
     String page=getResults(url);
-    int hits=getNumberOfHits(page,"Found",hitsPattern);
+    int hits=getNumberOfHits(page,"Found",ACMPortalFetcher.hitsPattern);
     int index=page.indexOf("Found");
     if (index >= 0) {
       page=page.substring(index + 5);
@@ -25,10 +25,10 @@
       status.showMessage(Globals.lang("No entries found for the search string '%0'",terms),Globals.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    hits=getNumberOfHits(page,"Results",maxHitsPattern);
+    hits=getNumberOfHits(page,"Results",ACMPortalFetcher.maxHitsPattern);
     for (int i=0; i < hits; i++) {
       parse(page,0,firstEntry,previews);
-      firstEntry+=perPage;
+      firstEntry+=ACMPortalFetcher.perPage;
     }
     for (    String s : previews.keySet()) {
       preview.addEntry(s,previews.get(s));

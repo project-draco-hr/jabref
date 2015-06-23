@@ -4,9 +4,15 @@
   StringBuffer buf=new StringBuffer();
   for (int i=0; i < s.length(); i++) {
     int c=s.charAt(i);
-    if (c == '{')     inBrace++;
- else     if (c == '}')     inBrace--;
- else     if (!escaped && (c == '#'))     inString=!inString;
+    if (c == '{') {
+      inBrace++;
+    }
+ else     if (c == '}') {
+      inBrace--;
+    }
+ else     if (!escaped && (c == '#')) {
+      inString=!inString;
+    }
     if ((inBrace == 0) && !isBracing && !inString&& Character.isLetter((char)c)&& Character.isUpperCase((char)c)) {
       buf.append('{');
       isBracing=true;
@@ -18,6 +24,8 @@
     buf.append((char)c);
     escaped=(c == '\\') && !escaped;
   }
-  if (isBracing)   buf.append('}');
+  if (isBracing) {
+    buf.append('}');
+  }
   return buf.toString();
 }

@@ -30,11 +30,15 @@
         tableModel.setContentDontGuessTypes(old);
         String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
         ArrayList<File> dirs=new ArrayList<File>();
-        for (        String dirs1 : dirsS)         dirs.add(new File(dirs1));
+        for (        String dirs1 : dirsS) {
+          dirs.add(new File(dirs1));
+        }
         for (int j=0; j < tableModel.getRowCount(); j++) {
           FileListEntry flEntry=tableModel.getEntry(j);
           boolean httpLink=flEntry.getLink().toLowerCase().startsWith("http");
-          if (httpLink)           continue;
+          if (httpLink) {
+            continue;
+          }
           boolean deleted=false;
           File file=Util.expandFilename(flEntry.getLink(),dirsS);
           if ((file == null) || !file.exists()) {
@@ -94,7 +98,9 @@ editor.setVisible(true,false);
 }
 if (!tableModel.getStringRepresentation().equals(old)) {
 String toSet=tableModel.getStringRepresentation();
-if (toSet.length() == 0) toSet=null;
+if (toSet.length() == 0) {
+toSet=null;
+}
 ce.addEdit(new UndoableFieldChange(aSel,fieldName,old,toSet));
 aSel.setField(fieldName,toSet);
 changedEntries.add(aSel);

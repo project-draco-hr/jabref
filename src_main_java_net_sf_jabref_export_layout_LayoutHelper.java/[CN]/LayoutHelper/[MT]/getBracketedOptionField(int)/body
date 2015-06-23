@@ -17,13 +17,13 @@
  else {
           tmp=buffer.toString();
         }
-        parsedEntries.add(new StringInt(tmp,IS_OPTION_FIELD));
+        parsedEntries.add(new StringInt(tmp,LayoutHelper.IS_OPTION_FIELD));
       }
       return null;
     }
     if (!inQuotes && ((c == ']') || (c == '[') || (doneWithOptions && ((c == '{') || (c == '}'))))) {
       if ((c == ']') || (doneWithOptions && (c == '}'))) {
-        if (c == ']' && buffer != null) {
+        if ((c == ']') && (buffer != null)) {
           option=buffer.toString();
           buffer=null;
           start=false;
@@ -37,7 +37,7 @@
  else {
             tmp=parameter;
           }
-          parsedEntries.add(new StringInt(tmp,IS_OPTION_FIELD));
+          parsedEntries.add(new StringInt(tmp,LayoutHelper.IS_OPTION_FIELD));
           return null;
         }
       }
@@ -47,7 +47,9 @@
     }
  else     if (c == '"') {
       inQuotes=!inQuotes;
-      if (buffer == null)       buffer=new StringBuffer(100);
+      if (buffer == null) {
+        buffer=new StringBuffer(100);
+      }
       buffer.append('"');
     }
  else {

@@ -12,9 +12,11 @@
   m.appendTail(s);
   file=s.toString();
   String[] fileParts=file.split("/");
-  if (fileParts.length == 0)   return res;
+  if (fileParts.length == 0) {
+    return res;
+  }
   if (fileParts.length > 1) {
-    for (int i=0; i < fileParts.length - 1; i++) {
+    for (int i=0; i < (fileParts.length - 1); i++) {
       String dirToProcess=fileParts[i];
       dirToProcess=Util.expandBrackets(dirToProcess,entry,database);
       if (dirToProcess.matches("^.:$")) {
@@ -34,7 +36,7 @@
           String restOfFileString=Util.join(fileParts,"/",i + 1,fileParts.length);
           for (          File subDir : subDirs) {
             if (subDir.isDirectory()) {
-              res.addAll(findFile(entry,database,subDir,restOfFileString,extensionRegExp));
+              res.addAll(RegExpFileSearch.findFile(entry,database,subDir,restOfFileString,extensionRegExp));
             }
           }
         }
@@ -45,25 +47,31 @@
         String restOfFileString=Util.join(fileParts,"/",i + 1,fileParts.length);
         while (!toDo.isEmpty()) {
           File[] subDirs=toDo.remove(0).listFiles();
-          if (subDirs == null)           continue;
+          if (subDirs == null) {
+            continue;
+          }
           toDo.addAll(Arrays.asList(subDirs));
           for (          File subDir : subDirs) {
-            if (!subDir.isDirectory())             continue;
-            res.addAll(findFile(entry,database,subDir,restOfFileString,extensionRegExp));
+            if (!subDir.isDirectory()) {
+              continue;
+            }
+            res.addAll(RegExpFileSearch.findFile(entry,database,subDir,restOfFileString,extensionRegExp));
           }
         }
       }
     }
   }
-  String filePart=fileParts[fileParts.length - 1].replaceAll("\\[extension\\]",EXT_MARKER);
-  String filenameToLookFor=Util.expandBrackets(filePart,entry,database).replaceAll(EXT_MARKER,extensionRegExp);
+  String filePart=fileParts[fileParts.length - 1].replaceAll("\\[extension\\]",RegExpFileSearch.EXT_MARKER);
+  String filenameToLookFor=Util.expandBrackets(filePart,entry,database).replaceAll(RegExpFileSearch.EXT_MARKER,extensionRegExp);
   final Pattern toMatch=Pattern.compile("^" + filenameToLookFor.replaceAll("\\\\\\\\","\\\\") + "$",Pattern.CASE_INSENSITIVE);
   File[] matches=directory.listFiles(new FilenameFilter(){
-    public boolean accept(    File arg0,    String arg1){
+    @Override public boolean accept(    File arg0,    String arg1){
       return toMatch.matcher(arg1).matches();
     }
   }
 );
-  if (matches != null && (matches.length > 0))   Collections.addAll(res,matches);
+  if ((matches != null) && (matches.length > 0)) {
+    Collections.addAll(res,matches);
+  }
   return res;
 }

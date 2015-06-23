@@ -7,13 +7,13 @@
   sortStrings();
   helpAction=new HelpAction(frame.helpDiag,GUIGlobals.stringEditorHelp,"Help");
   addWindowListener(new WindowAdapter(){
-    public void windowClosing(    WindowEvent e){
+    @Override public void windowClosing(    WindowEvent e){
       closeAction.actionPerformed(null);
     }
   }
 );
   setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
-    protected boolean accept(    Component c){
+    @Override protected boolean accept(    Component c){
       return (super.accept(c) && (c instanceof StringTable));
     }
   }
@@ -26,7 +26,9 @@
   con.weightx=1;
   StringTableModel stm=new StringTableModel(this,base);
   table=new StringTable(stm);
-  if (base.getStringCount() > 0)   table.setRowSelectionInterval(0,0);
+  if (base.getStringCount() > 0) {
+    table.setRowSelectionInterval(0,0);
+  }
   gbl.setConstraints(table.getPane(),con);
   pan.add(table.getPane());
   InputMap im=tlb.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -50,6 +52,10 @@
   tlb.add(helpAction);
   conPane.add(tlb,BorderLayout.NORTH);
   conPane.add(pan,BorderLayout.CENTER);
-  if (panel.getFile() != null)   setTitle(Globals.lang(GUIGlobals.stringsTitle) + ": " + panel.getFile().getName());
- else   setTitle(Globals.lang(GUIGlobals.stringsTitle) + ": " + Globals.lang(GUIGlobals.untitledTitle));
+  if (panel.getFile() != null) {
+    setTitle(Globals.lang(GUIGlobals.stringsTitle) + ": " + panel.getFile().getName());
+  }
+ else {
+    setTitle(Globals.lang(GUIGlobals.stringsTitle) + ": " + Globals.lang(GUIGlobals.untitledTitle));
+  }
 }

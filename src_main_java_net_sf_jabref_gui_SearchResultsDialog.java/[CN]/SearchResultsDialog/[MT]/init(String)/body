@@ -19,7 +19,7 @@
   contentPane.setTopComponent(sp);
   contentPane.setBottomComponent(preview);
   AbstractAction closeAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       diag.dispose();
     }
   }
@@ -29,7 +29,7 @@
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",closeAction);
   entryTable.getActionMap().put("copy",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       if (selectionModel.getSelected().size() > 0) {
         BibtexEntry[] bes=selectionModel.getSelected().toArray(new BibtexEntry[selectionModel.getSelected().size()]);
         TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
@@ -40,10 +40,10 @@
   }
 );
   diag.addWindowListener(new WindowAdapter(){
-    public void windowOpened(    WindowEvent e){
+    @Override public void windowOpened(    WindowEvent e){
       contentPane.setDividerLocation(0.5f);
     }
-    public void windowClosing(    WindowEvent event){
+    @Override public void windowClosing(    WindowEvent event){
       Globals.prefs.putInt("searchDialogWidth",diag.getSize().width);
       Globals.prefs.putInt("searchDialogHeight",diag.getSize().height);
     }

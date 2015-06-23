@@ -29,8 +29,12 @@
   for (int i=0; i < rows; i++) {
     sb.append("fill:pref:grow, ");
   }
-  if (addKeyField)   sb.append("4dlu, fill:pref");
- else   if (sb.length() >= 2)   sb.delete(sb.length() - 2,sb.length());
+  if (addKeyField) {
+    sb.append("4dlu, fill:pref");
+  }
+ else   if (sb.length() >= 2) {
+    sb.delete(sb.length() - 2,sb.length());
+  }
   String rowSpec=sb.toString();
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout(colSpec,rowSpec),panel);
   for (int i=0; i < fields.length; i++) {
@@ -57,10 +61,16 @@
     setupJTextComponent(ta.getTextComponent(),acl);
     ta.setAutoCompleteListener(acl);
     editors.put(fields[i],ta);
-    if (i == 0)     activeField=ta;
-    if (!compressed)     ta.getPane().setPreferredSize(new Dimension(100,Math.max(defaultHeight,wHeight)));
+    if (i == 0) {
+      activeField=ta;
+    }
+    if (!compressed) {
+      ta.getPane().setPreferredSize(new Dimension(100,Math.max(defaultHeight,wHeight)));
+    }
     builder.append(ta.getLabel());
-    if (ex == null)     builder.append(ta.getPane(),3);
+    if (ex == null) {
+      builder.append(ta.getPane(),3);
+    }
  else {
       builder.append(ta.getPane());
       JPanel pan=new JPanel();
@@ -68,13 +78,17 @@
       pan.add(ex,BorderLayout.NORTH);
       builder.append(pan);
     }
-    if ((i + 1) % fieldsPerRow == 0)     builder.nextLine();
+    if (((i + 1) % fieldsPerRow) == 0) {
+      builder.nextLine();
+    }
   }
   if (addKeyField) {
     final FieldTextField tf=new FieldTextField(BibtexFields.KEY_FIELD,parent.getEntry().getField(BibtexFields.KEY_FIELD),true);
     setupJTextComponent(tf,null);
     editors.put("bibtexkey",tf);
-    if (editors.size() == 1)     activeField=tf;
+    if (editors.size() == 1) {
+      activeField=tf;
+    }
     builder.nextLine();
     builder.append(tf.getLabel());
     builder.append(tf,3);

@@ -5,28 +5,50 @@
   if (lastSelected != null) {
     reqLists.put(lastSelected,reqComp.getFields());
     optLists.put(lastSelected,optComp.getFields());
-    if (biblatexMode)     opt2Lists.put(lastSelected,optComp2.getFields());
+    if (biblatexMode) {
+      opt2Lists.put(lastSelected,optComp2.getFields());
+    }
   }
   String s=typeComp.getFirstSelected();
-  if (s == null)   return;
+  if (s == null) {
+    return;
+  }
   List<String> rl=reqLists.get(s);
   if (rl == null) {
     BibtexEntryType type=BibtexEntryType.getType(s);
     if (type != null) {
       String[] rf=type.getRequiredFieldsForCustomization(), of=type.getOptionalFields();
       List<String> req, opt;
-      if (rf != null)       req=java.util.Arrays.asList(rf);
- else       req=new ArrayList<String>();
+      if (rf != null) {
+        req=java.util.Arrays.asList(rf);
+      }
+ else {
+        req=new ArrayList<String>();
+      }
       if (!biblatexMode) {
-        if (of != null)         opt=java.util.Arrays.asList(of);
- else         opt=new ArrayList<String>();
+        if (of != null) {
+          opt=java.util.Arrays.asList(of);
+        }
+ else {
+          opt=new ArrayList<String>();
+        }
       }
  else {
         String[] priOf=type.getPrimaryOptionalFields();
-        if (priOf != null)         opt=java.util.Arrays.asList(priOf);
- else         opt=new ArrayList<String>();
+        if (priOf != null) {
+          opt=java.util.Arrays.asList(priOf);
+        }
+ else {
+          opt=new ArrayList<String>();
+        }
         List<String> opt2=new ArrayList<String>();
-        if (of != null)         for (        String anOf : of)         if (!opt.contains(anOf))         opt2.add(anOf);
+        if (of != null) {
+          for (          String anOf : of) {
+            if (!opt.contains(anOf)) {
+              opt2.add(anOf);
+            }
+          }
+        }
         optComp2.setFields(opt2);
         optComp2.setEnabled(true);
       }
@@ -50,7 +72,9 @@
  else {
     reqComp.setFields(rl);
     optComp.setFields(optLists.get(s));
-    if (biblatexMode)     optComp2.setFields(opt2Lists.get(s));
+    if (biblatexMode) {
+      optComp2.setFields(opt2Lists.get(s));
+    }
   }
   lastSelected=s;
   typeComp.enable(s,changed.contains(lastSelected) && !defaulted.contains(lastSelected));

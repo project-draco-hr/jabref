@@ -1,6 +1,8 @@
 {
   String oldValue=entry.getField(GUIGlobals.FILE_FIELD);
-  if (oldValue == null)   return;
+  if (oldValue == null) {
+    return;
+  }
   FileListTableModel flModel=new FileListTableModel();
   flModel.setContent(oldValue);
   if (flModel.getRowCount() == 0) {
@@ -9,7 +11,9 @@
   boolean changed=false;
   for (int i=0; i < flModel.getRowCount(); i++) {
     String realOldFilename=flModel.getEntry(i).getLink();
-    if (cleanUpRenamePDFonlyRelativePaths.isSelected() && (new File(realOldFilename).isAbsolute()))     continue;
+    if (cleanUpRenamePDFonlyRelativePaths.isSelected() && (new File(realOldFilename).isAbsolute())) {
+      continue;
+    }
     String newFilename=Util.getLinkedFileName(panel.database(),entry);
     newFilename=newFilename + "." + flModel.getEntry(i).getType().getExtension();
     File expandedOldFile=Util.expandFilename(realOldFilename,panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD));
@@ -17,7 +21,9 @@
       continue;
     }
     String newPath=expandedOldFile.getParent().concat(System.getProperty("file.separator")).concat(newFilename);
-    if (new File(newPath).exists())     continue;
+    if (new File(newPath).exists()) {
+      continue;
+    }
     boolean renameSuccesfull=Util.renameFile(expandedOldFile.toString(),newPath);
     if (renameSuccesfull) {
       changed=true;

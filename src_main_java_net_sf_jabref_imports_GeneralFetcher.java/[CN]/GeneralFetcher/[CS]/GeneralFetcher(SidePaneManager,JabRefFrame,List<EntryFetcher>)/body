@@ -10,13 +10,17 @@
   }
   fetcherChoice=new JComboBox(choices);
   int defaultFetcher=Globals.prefs.getInt("selectedFetcherIndex");
-  if (defaultFetcher >= fetcherArray.length)   defaultFetcher=0;
+  if (defaultFetcher >= fetcherArray.length) {
+    defaultFetcher=0;
+  }
   this.activeFetcher=fetcherArray[defaultFetcher];
   fetcherChoice.setSelectedIndex(defaultFetcher);
-  if (this.activeFetcher.getOptionsPanel() != null)   optPanel.add(this.activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
+  if (this.activeFetcher.getOptionsPanel() != null) {
+    optPanel.add(this.activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
+  }
   helpBut.setEnabled(activeFetcher.getHelpPage() != null);
   fetcherChoice.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       activeFetcher=fetcherArray[fetcherChoice.getSelectedIndex()];
       Globals.prefs.putInt("selectedFetcherIndex",fetcherChoice.getSelectedIndex());
       if (activeFetcher.getHelpPage() != null) {
@@ -28,7 +32,9 @@
       }
       optionsCards.show(optionsPanel,String.valueOf(fetcherChoice.getSelectedIndex()));
       optPanel.removeAll();
-      if (activeFetcher.getOptionsPanel() != null)       optPanel.add(activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
+      if (activeFetcher.getOptionsPanel() != null) {
+        optPanel.add(activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
+      }
       revalidate();
     }
   }
@@ -40,7 +46,7 @@
   tf.setPreferredSize(new Dimension(1,tf.getPreferredSize().height));
   tf.setName("tf");
   reset.addActionListener(new AbstractAction(){
-    public void actionPerformed(    ActionEvent event){
+    @Override public void actionPerformed(    ActionEvent event){
       tf.setText("");
       new FocusRequester(tf);
     }

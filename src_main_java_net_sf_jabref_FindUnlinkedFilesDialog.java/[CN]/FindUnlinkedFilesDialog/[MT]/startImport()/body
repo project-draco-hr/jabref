@@ -2,10 +2,10 @@
   if (treeModel == null) {
     return;
   }
-  setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+  setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   CheckableTreeNode root=(CheckableTreeNode)treeModel.getRoot();
   final List<File> fileList=getFileListFromNode(root);
-  if (fileList == null || fileList.isEmpty()) {
+  if ((fileList == null) || fileList.isEmpty()) {
     return;
   }
   progressBarImporting.setVisible(true);
@@ -21,11 +21,11 @@
   final BibtexEntryType entryType=((BibtexEntryTypeWrapper)comboBoxEntryTypeSelection.getSelectedItem()).entryType;
   threadState=new int[]{1};
   JabRefExecutorService.INSTANCE.execute(new Runnable(){
-    public void run(){
+    @Override public void run(){
       List<String> errors=new LinkedList<String>();
       int count=creatorManager.addEntrysFromFiles(fileList,database,frame.basePanel(),entryType,checkBoxWhyIsThereNoGetSelectedStupidSwing,new ChangeListener(){
         int counter=0;
-        public void stateChanged(        ChangeEvent e){
+        @Override public void stateChanged(        ChangeEvent e){
           progressBarImporting.setValue(++counter);
           progressBarImporting.setString(counter + " of " + progressBarImporting.getMaximum());
         }

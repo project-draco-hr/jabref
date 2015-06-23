@@ -1,16 +1,18 @@
 {
   try {
     new URLDownload(new URL("http://scholar.google.com")).downloadToString();
-    String settingsPage=new URLDownload(new URL(URL_SETTING)).downloadToString();
-    HashMap<String,String> formItems=getFormElements(settingsPage);
+    String settingsPage=new URLDownload(new URL(GoogleScholarFetcher.URL_SETTING)).downloadToString();
+    HashMap<String,String> formItems=GoogleScholarFetcher.getFormElements(settingsPage);
     formItems.put("scis","yes");
     formItems.put("scisf","4");
-    formItems.put("num",String.valueOf(MAX_ENTRIES_TO_LOAD));
-    StringBuilder ub=new StringBuilder(URL_SETPREFS + "?");
+    formItems.put("num",String.valueOf(GoogleScholarFetcher.MAX_ENTRIES_TO_LOAD));
+    StringBuilder ub=new StringBuilder(GoogleScholarFetcher.URL_SETPREFS + "?");
     for (Iterator<String> i=formItems.keySet().iterator(); i.hasNext(); ) {
       String name=i.next();
       ub.append(name).append("=").append(formItems.get(name));
-      if (i.hasNext())       ub.append("&");
+      if (i.hasNext()) {
+        ub.append("&");
+      }
     }
     ub.append("&submit=");
     new URLDownload(new URL(ub.toString())).downloadToString();

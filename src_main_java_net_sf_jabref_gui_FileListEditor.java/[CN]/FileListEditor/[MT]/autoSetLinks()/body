@@ -3,13 +3,15 @@
   BibtexEntry entry=entryEditor.getEntry();
   JDialog diag=new JDialog(frame,true);
   JabRefExecutorService.INSTANCE.execute(Util.autoSetLinks(entry,tableModel,metaData,new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       auto.setEnabled(true);
       if (e.getID() > 0) {
         entryEditor.updateField(FileListEditor.this);
         frame.output(Globals.lang("Finished autosetting external links."));
       }
- else       frame.output(Globals.lang("Finished autosetting external links.") + " " + Globals.lang("No files found."));
+ else {
+        frame.output(Globals.lang("Finished autosetting external links.") + " " + Globals.lang("No files found."));
+      }
     }
   }
 ,diag));

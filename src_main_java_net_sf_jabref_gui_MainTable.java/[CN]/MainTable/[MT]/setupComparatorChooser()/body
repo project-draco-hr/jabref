@@ -23,7 +23,9 @@
   sortedForTable.getReadWriteLock().writeLock().lock();
   for (int i=0; i < sortFields.length; i++) {
     int index=-1;
-    if (!sortFields[i].startsWith(MainTableFormat.ICON_COLUMN_PREFIX))     index=tableFormat.getColumnIndex(sortFields[i]);
+    if (!sortFields[i].startsWith(MainTableFormat.ICON_COLUMN_PREFIX)) {
+      index=tableFormat.getColumnIndex(sortFields[i]);
+    }
  else {
       for (int j=0; j < tableFormat.getColumnCount(); j++) {
         if (sortFields[i].equals(tableFormat.getColumnType(j))) {
@@ -38,7 +40,7 @@
   }
   sortedForTable.getReadWriteLock().writeLock().unlock();
   comparatorChooser.addSortActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       List<String> fields=getCurrentSortFields();
       List<Boolean> order=getCurrentSortOrder();
       int count=Math.min(fields.size(),order.size());

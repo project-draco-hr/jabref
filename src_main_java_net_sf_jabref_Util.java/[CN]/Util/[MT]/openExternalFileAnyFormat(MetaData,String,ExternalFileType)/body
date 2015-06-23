@@ -1,16 +1,18 @@
 {
   boolean httpLink=false;
-  if (remoteLinkPattern.matcher(link.toLowerCase()).matches()) {
+  if (Util.remoteLinkPattern.matcher(link.toLowerCase()).matches()) {
     httpLink=true;
   }
   File file=new File(link);
   if (!httpLink) {
-    File tmp=expandFilename(metaData,link);
-    if (tmp != null)     file=tmp;
+    File tmp=Util.expandFilename(metaData,link);
+    if (tmp != null) {
+      file=tmp;
+    }
   }
   if ((httpLink || file.exists()) && (fileType != null)) {
     String filePath=httpLink ? link : file.getPath();
-    openExternalFilePlatformIndependent(fileType,filePath);
+    Util.openExternalFilePlatformIndependent(fileType,filePath);
     return true;
   }
  else {

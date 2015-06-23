@@ -18,7 +18,7 @@
       buffer.append("&#");
       code=(fieldText.charAt(i));
     }
-    if (code > 125 || forceReplace[code]) {
+    if ((code > 125) || forceReplace[code]) {
       buffer.append("&#").append(code).append(";");
     }
  else {
@@ -29,7 +29,9 @@
   for (  Map.Entry<String,String> entry : Globals.ASCII2XML_CHARS.entrySet()) {
     String s=entry.getKey();
     String repl=entry.getValue();
-    if (repl != null)     fieldText=fieldText.replaceAll(s,repl);
+    if (repl != null) {
+      fieldText=fieldText.replaceAll(s,repl);
+    }
   }
   return fieldText;
 }

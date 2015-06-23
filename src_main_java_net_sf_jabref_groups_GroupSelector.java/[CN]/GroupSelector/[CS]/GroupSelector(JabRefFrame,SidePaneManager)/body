@@ -8,25 +8,25 @@
   nonHits.add(hideNonHits);
   nonHits.add(grayOut);
   floatCb.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("groupFloatSelections",floatCb.isSelected());
     }
   }
 );
   andCb.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("groupIntersectSelections",andCb.isSelected());
     }
   }
 );
   invCb.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("groupInvertSelections",invCb.isSelected());
     }
   }
 );
   showOverlappingGroups.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("groupShowOverlapping",showOverlappingGroups.isSelected());
       if (!showOverlappingGroups.isSelected()) {
         groupsTree.setHighlight2Cells(null);
@@ -35,13 +35,13 @@
   }
 );
   select.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("groupSelectMatches",select.isSelected());
     }
   }
 );
   grayOut.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("grayOutNonHits",grayOut.isSelected());
     }
   }
@@ -74,7 +74,7 @@
   }
 );
   autoAssignGroup.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       Globals.prefs.putBoolean("autoAssignGroup",autoAssignGroup.isSelected());
     }
   }
@@ -104,7 +104,7 @@
   settings.add(showNumberOfElements);
   settings.add(autoAssignGroup);
   openset.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       if (settings.isVisible()) {
       }
  else {
@@ -117,7 +117,7 @@
   }
 );
   expand.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       int i=Globals.prefs.getInt("groupsVisibleRows") + 1;
       groupsTree.setVisibleRowCount(i);
       groupsTree.revalidate();
@@ -125,13 +125,13 @@
       GroupSelector.this.revalidate();
       GroupSelector.this.repaint();
       Globals.prefs.putInt("groupsVisibleRows",i);
-      logger.fine(Double.toString(GroupSelector.this.getHeight()));
-      logger.fine(Double.toString(GroupSelector.this.getPreferredSize().getHeight()));
+      GroupSelector.logger.fine(Double.toString(GroupSelector.this.getHeight()));
+      GroupSelector.logger.fine(Double.toString(GroupSelector.this.getPreferredSize().getHeight()));
     }
   }
 );
   reduce.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       int i=Globals.prefs.getInt("groupsVisibleRows") - 1;
       if (i < 1) {
         i=1;
@@ -146,7 +146,7 @@
   }
 );
   editModeCb.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       editModeIndicator=editModeCb.getState();
       updateBorder(editModeIndicator);
       Globals.prefs.putBoolean(JabRefPreferences.EDIT_GROUP_MEMBERSHIP_MODE,editModeIndicator);

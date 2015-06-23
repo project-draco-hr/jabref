@@ -1,28 +1,32 @@
 {
   setLayout(new BorderLayout());
   TableModel tm=new AbstractTableModel(){
-    public int getRowCount(){
+    @Override public int getRowCount(){
       return rowCount;
     }
-    public int getColumnCount(){
+    @Override public int getColumnCount(){
       return 1;
     }
-    public Object getValueAt(    int row,    int column){
-      if (row >= tableRows.size())       return "";
+    @Override public Object getValueAt(    int row,    int column){
+      if (row >= tableRows.size()) {
+        return "";
+      }
       Object rowContent=tableRows.elementAt(row);
-      if (rowContent == null)       return "";
+      if (rowContent == null) {
+        return "";
+      }
       return rowContent;
     }
-    public String getColumnName(    int col){
+    @Override public String getColumnName(    int col){
       return Globals.lang("Field to filter");
     }
-    public Class<?> getColumnClass(    int column){
+    @Override public Class<?> getColumnClass(    int column){
       return String.class;
     }
-    public boolean isCellEditable(    int row,    int col){
+    @Override public boolean isCellEditable(    int row,    int col){
       return true;
     }
-    public void setValueAt(    Object value,    int row,    int col){
+    @Override public void setValueAt(    Object value,    int row,    int col){
       tableChanged=true;
       if (tableRows.size() <= row) {
         tableRows.setSize(row + 1);

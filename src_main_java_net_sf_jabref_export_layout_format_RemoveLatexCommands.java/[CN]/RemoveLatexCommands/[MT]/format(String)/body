@@ -14,11 +14,13 @@
       incommand=true;
       currentCommand=new StringBuffer();
     }
- else     if (!incommand && (c == '{' || c == '}')) {
+ else     if (!incommand && ((c == '{') || (c == '}'))) {
     }
  else     if (Character.isLetter(c) || (Globals.SPECIAL_COMMAND_CHARS.contains("" + c))) {
       escaped=false;
-      if (!incommand)       sb.append(c);
+      if (!incommand) {
+        sb.append(c);
+      }
  else {
         currentCommand.append(c);
         if ((currentCommand.length() == 1) && (Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString()))) {
@@ -29,13 +31,21 @@
     }
  else     if (Character.isLetter(c)) {
       escaped=false;
-      if (!incommand)       sb.append(c);
- else       currentCommand.append(c);
+      if (!incommand) {
+        sb.append(c);
+      }
+ else {
+        currentCommand.append(c);
+      }
     }
  else {
-      if (!incommand || (!Character.isWhitespace(c) && (c != '{')))       sb.append(c);
+      if (!incommand || (!Character.isWhitespace(c) && (c != '{'))) {
+        sb.append(c);
+      }
  else {
-        if (c != '{')         sb.append(c);
+        if (c != '{') {
+          sb.append(c);
+        }
       }
       incommand=false;
       escaped=false;

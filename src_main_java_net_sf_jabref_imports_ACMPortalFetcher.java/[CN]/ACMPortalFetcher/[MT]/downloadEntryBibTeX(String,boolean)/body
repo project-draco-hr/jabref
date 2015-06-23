@@ -1,6 +1,6 @@
 {
   try {
-    URL url=new URL(startUrl + bibtexUrl + ID+ bibtexUrlEnd);
+    URL url=new URL(ACMPortalFetcher.startUrl + ACMPortalFetcher.bibtexUrl + ID+ ACMPortalFetcher.bibtexUrlEnd);
     BufferedReader in=new BufferedReader(new InputStreamReader(url.openStream()));
     ParserResult result=BibtexParser.parse(in);
     in.close();
@@ -9,20 +9,20 @@
       return null;
     }
     BibtexEntry entry=item.iterator().next();
-    Thread.sleep(WAIT_TIME);
+    Thread.sleep(ACMPortalFetcher.WAIT_TIME);
     if (abs) {
-      url=new URL(startUrl + abstractUrl + ID);
+      url=new URL(ACMPortalFetcher.startUrl + ACMPortalFetcher.abstractUrl + ID);
       String page=getResults(url);
-      Matcher absM=absPattern.matcher(page);
+      Matcher absM=ACMPortalFetcher.absPattern.matcher(page);
       if (absM.find()) {
         entry.setField("abstract",absM.group(1).trim());
       }
-      Thread.sleep(WAIT_TIME);
+      Thread.sleep(ACMPortalFetcher.WAIT_TIME);
     }
     return entry;
   }
  catch (  NoSuchElementException e) {
-    System.out.println("Bad Bibtex record read at: " + bibtexUrl + ID+ bibtexUrlEnd);
+    System.out.println("Bad Bibtex record read at: " + ACMPortalFetcher.bibtexUrl + ID+ ACMPortalFetcher.bibtexUrlEnd);
     e.printStackTrace();
     return null;
   }

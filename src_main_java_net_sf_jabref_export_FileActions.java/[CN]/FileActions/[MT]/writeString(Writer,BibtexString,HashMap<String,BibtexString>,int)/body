@@ -2,18 +2,18 @@
   remaining.remove(bs.getName());
   String content=bs.getContent();
   Matcher m;
-  while ((m=refPat.matcher(content)).find()) {
+  while ((m=FileActions.refPat.matcher(content)).find()) {
     String foundLabel=m.group(1);
     int restIndex=content.indexOf(foundLabel) + foundLabel.length();
     content=content.substring(restIndex);
     Object referred=remaining.get(foundLabel.substring(1,foundLabel.length() - 1));
     if (referred != null) {
-      writeString(fw,(BibtexString)referred,remaining,maxKeyLength);
+      FileActions.writeString(fw,(BibtexString)referred,remaining,maxKeyLength);
     }
   }
-  if (previousStringType != bs.getType()) {
+  if (FileActions.previousStringType != bs.getType()) {
     fw.write(Globals.NEWLINE);
-    previousStringType=bs.getType();
+    FileActions.previousStringType=bs.getType();
   }
   String suffix="";
   for (int i=maxKeyLength - bs.getName().length(); i > 0; i--) {

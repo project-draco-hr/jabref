@@ -1,10 +1,16 @@
 {
-  if (authorOrder.contains(key.trim().toLowerCase())) {
-    if (comp(key,"FirstFirst"))     flMode=FIRST_FIRST;
- else     if (comp(key,"LastFirst"))     flMode=LAST_FIRST;
- else     if (comp(key,"LastFirstFirstFirst"))     flMode=LF_FF;
+  if (Authors.authorOrder.contains(key.trim().toLowerCase())) {
+    if (comp(key,"FirstFirst")) {
+      flMode=Authors.FIRST_FIRST;
+    }
+ else     if (comp(key,"LastFirst")) {
+      flMode=Authors.LAST_FIRST;
+    }
+ else     if (comp(key,"LastFirstFirstFirst")) {
+      flMode=Authors.LF_FF;
+    }
   }
- else   if (authorAbbr.contains(key.trim().toLowerCase())) {
+ else   if (Authors.authorAbbr.contains(key.trim().toLowerCase())) {
     if (comp(key,"FullName")) {
       abbreviate=false;
     }
@@ -28,7 +34,7 @@
       abbrSpaces=false;
     }
   }
- else   if (authorPunc.contains(key.trim().toLowerCase())) {
+ else   if (Authors.authorPunc.contains(key.trim().toLowerCase())) {
     if (comp(key,"FullPunc")) {
       abbrDots=true;
       lastFirstSeparator=", ";
@@ -46,40 +52,48 @@
       lastFirstSeparator=", ";
     }
   }
- else   if (separators.contains(key.trim().toLowerCase()) || lastSeparators.contains(key.trim().toLowerCase())) {
+ else   if (Authors.separators.contains(key.trim().toLowerCase()) || Authors.lastSeparators.contains(key.trim().toLowerCase())) {
     if (comp(key,"Comma")) {
       if (!setSep) {
-        separator=COMMA;
+        separator=Authors.COMMA;
         setSep=true;
       }
- else       lastSeparator=COMMA;
+ else {
+        lastSeparator=Authors.COMMA;
+      }
     }
  else     if (comp(key,"And")) {
       if (!setSep) {
-        separator=AND;
+        separator=Authors.AND;
         setSep=true;
       }
- else       lastSeparator=AND;
+ else {
+        lastSeparator=Authors.AND;
+      }
     }
  else     if (comp(key,"Colon")) {
       if (!setSep) {
-        separator=COLON;
+        separator=Authors.COLON;
         setSep=true;
       }
- else       lastSeparator=COLON;
+ else {
+        lastSeparator=Authors.COLON;
+      }
     }
  else     if (comp(key,"Semicolon")) {
       if (!setSep) {
-        separator=SEMICOLON;
+        separator=Authors.SEMICOLON;
         setSep=true;
       }
- else       lastSeparator=SEMICOLON;
+ else {
+        lastSeparator=Authors.SEMICOLON;
+      }
     }
  else     if (comp(key,"Oxford")) {
-      lastSeparator=OXFORD;
+      lastSeparator=Authors.OXFORD;
     }
  else     if (comp(key,"Amp")) {
-      lastSeparator=AMP;
+      lastSeparator=Authors.AMP;
     }
  else     if (comp(key,"Sep") && (value.length() > 0)) {
       separator=value;
@@ -92,12 +106,14 @@
  else   if (key.trim().toLowerCase().equals("etal") && (value.length() > 0)) {
     etAlString=value;
   }
- else   if (numberPattern.matcher(key.trim()).matches()) {
+ else   if (Authors.numberPattern.matcher(key.trim()).matches()) {
     int num=Integer.parseInt(key.trim());
     if (!setMaxAuthors) {
       maxAuthors=num;
       setMaxAuthors=true;
     }
- else     authorNumberEtAl=num;
+ else {
+      authorNumberEtAl=num;
+    }
   }
 }

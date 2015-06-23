@@ -12,7 +12,7 @@
     diag.setLocationRelativeTo(diag.getParent());
   }
   Runnable r=new Runnable(){
-    public void run(){
+    @Override public void run(){
       ArrayList<File> dirs=new ArrayList<File>();
       String[] dirsS=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
       for (      String dirs1 : dirsS) {
@@ -28,7 +28,7 @@
         result=RegExpFileSearch.findFilesForSet(entries,extensions,dirs,regExp);
       }
  else {
-        result=findAssociatedFiles(entries,extensions,dirs);
+        result=Util.findAssociatedFiles(entries,extensions,dirs);
       }
       boolean foundAny=false;
       for (      BibtexEntry anEntry : result.keySet()) {
@@ -36,7 +36,9 @@
         String oldVal=anEntry.getField(GUIGlobals.FILE_FIELD);
         if (singleTableModel == null) {
           tableModel=new FileListTableModel();
-          if (oldVal != null)           tableModel.setContent(oldVal);
+          if (oldVal != null) {
+            tableModel.setContent(oldVal);
+          }
         }
  else {
           assert(entries.size() == 1);
@@ -57,7 +59,7 @@
             foundAny=true;
             ExternalFileType type;
             int index=f.getPath().lastIndexOf('.');
-            if ((index >= 0) && (index < f.getPath().length() - 1)) {
+            if ((index >= 0) && (index < (f.getPath().length() - 1))) {
               type=Globals.prefs.getExternalFileTypeByExt(f.getPath().substring(index + 1).toLowerCase());
             }
  else {
@@ -66,7 +68,9 @@
             FileListEntry flEntry=new FileListEntry(f.getName(),f.getPath(),type);
             tableModel.addEntry(tableModel.getRowCount(),flEntry);
             String newVal=tableModel.getStringRepresentation();
-            if (newVal.length() == 0)             newVal=null;
+            if (newVal.length() == 0) {
+              newVal=null;
+            }
             if (ce != null) {
               UndoableFieldChange change=new UndoableFieldChange(anEntry,GUIGlobals.FILE_FIELD,oldVal,newVal);
               ce.addEdit(change);
@@ -74,15 +78,21 @@
             if (singleTableModel == null) {
               anEntry.setField(GUIGlobals.FILE_FIELD,newVal);
             }
-            if (changedEntries != null)             changedEntries.add(anEntry);
+            if (changedEntries != null) {
+              changedEntries.add(anEntry);
+            }
           }
         }
       }
       final int id=foundAny ? 1 : 0;
       SwingUtilities.invokeLater(new Runnable(){
-        public void run(){
-          if (diag != null)           diag.dispose();
-          if (callback != null)           callback.actionPerformed(new ActionEvent(this,id,""));
+        @Override public void run(){
+          if (diag != null) {
+            diag.dispose();
+          }
+          if (callback != null) {
+            callback.actionPerformed(new ActionEvent(this,id,""));
+          }
         }
       }
 );

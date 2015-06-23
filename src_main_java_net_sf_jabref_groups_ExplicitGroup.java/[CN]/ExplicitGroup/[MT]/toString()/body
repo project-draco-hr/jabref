@@ -1,14 +1,16 @@
 {
   StringBuffer sb=new StringBuffer();
-  sb.append(ID).append(Util.quote(m_name,SEPARATOR,QUOTE_CHAR)).append(SEPARATOR).append(m_context).append(SEPARATOR);
+  sb.append(ExplicitGroup.ID).append(Util.quote(m_name,AbstractGroup.SEPARATOR,AbstractGroup.QUOTE_CHAR)).append(AbstractGroup.SEPARATOR).append(m_context).append(AbstractGroup.SEPARATOR);
   String s;
   Set<String> sortedKeys=new TreeSet<String>();
   for (  BibtexEntry m_entry : m_entries) {
     s=m_entry.getCiteKey();
-    if (s != null && !s.equals(""))     sortedKeys.add(s);
+    if ((s != null) && !s.equals("")) {
+      sortedKeys.add(s);
+    }
   }
   for (  String sortedKey : sortedKeys) {
-    sb.append(Util.quote(sortedKey,SEPARATOR,QUOTE_CHAR)).append(SEPARATOR);
+    sb.append(Util.quote(sortedKey,AbstractGroup.SEPARATOR,AbstractGroup.QUOTE_CHAR)).append(AbstractGroup.SEPARATOR);
   }
   return sb.toString();
 }

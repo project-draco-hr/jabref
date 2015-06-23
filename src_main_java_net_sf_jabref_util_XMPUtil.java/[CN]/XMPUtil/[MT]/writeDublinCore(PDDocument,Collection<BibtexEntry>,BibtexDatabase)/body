@@ -1,5 +1,7 @@
 {
-  if (database != null)   entries=database.resolveForStrings(entries,false);
+  if (database != null) {
+    entries=database.resolveForStrings(entries,false);
+  }
   PDDocumentCatalog catalog=document.getDocumentCatalog();
   PDMetadata metaRaw=catalog.getMetadata();
   XMPMetadata meta;
@@ -15,7 +17,7 @@
   }
   for (  BibtexEntry entry : entries) {
     XMPSchemaDublinCore dcSchema=new XMPSchemaDublinCore(meta);
-    writeToDCSchema(dcSchema,entry,null);
+    XMPUtil.writeToDCSchema(dcSchema,entry,null);
     meta.addSchema(dcSchema);
   }
   ByteArrayOutputStream os=new ByteArrayOutputStream();

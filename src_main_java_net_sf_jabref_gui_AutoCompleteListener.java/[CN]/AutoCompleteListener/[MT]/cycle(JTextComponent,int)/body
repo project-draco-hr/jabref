@@ -2,8 +2,12 @@
   assert(lastCompletions != null);
   assert(lastCompletions.length > 0);
   lastShownCompletion+=increment;
-  if (lastShownCompletion >= lastCompletions.length)   lastShownCompletion=0;
- else   if (lastShownCompletion < 0)   lastShownCompletion=lastCompletions.length - 1;
+  if (lastShownCompletion >= lastCompletions.length) {
+    lastShownCompletion=0;
+  }
+ else   if (lastShownCompletion < 0) {
+    lastShownCompletion=lastCompletions.length - 1;
+  }
   String sno=lastCompletions[lastShownCompletion];
   toSetIn=sno.substring(lastBeginning.length() - 1);
   StringBuilder alltext=new StringBuilder(comp.getText());
@@ -15,6 +19,6 @@
   alltext.delete(oldSelectionStart,oldSelectionEnd);
   alltext.insert(oldSelectionStart,toSetIn.substring(1));
   comp.setText(alltext.toString());
-  comp.select(oldSelectionStart,oldSelectionStart + toSetIn.length() - 1);
+  comp.select(oldSelectionStart,(oldSelectionStart + toSetIn.length()) - 1);
   lastCaretPosition=comp.getCaretPosition();
 }

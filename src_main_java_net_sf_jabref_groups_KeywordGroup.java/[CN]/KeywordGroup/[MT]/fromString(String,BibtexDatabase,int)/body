@@ -1,13 +1,15 @@
 {
-  if (!s.startsWith(ID))   throw new Exception("Internal error: KeywordGroup cannot be created from \"" + s + "\". "+ "Please report this on www.sf.net/projects/jabref");
-  QuotedStringTokenizer tok=new QuotedStringTokenizer(s.substring(ID.length()),SEPARATOR,QUOTE_CHAR);
+  if (!s.startsWith(KeywordGroup.ID)) {
+    throw new Exception("Internal error: KeywordGroup cannot be created from \"" + s + "\". "+ "Please report this on www.sf.net/projects/jabref");
+  }
+  QuotedStringTokenizer tok=new QuotedStringTokenizer(s.substring(KeywordGroup.ID.length()),AbstractGroup.SEPARATOR,AbstractGroup.QUOTE_CHAR);
 switch (version) {
 case 0:
 {
       String name=tok.nextToken();
       String field=tok.nextToken();
       String expression=tok.nextToken();
-      return new KeywordGroup(Util.unquote(name,QUOTE_CHAR),Util.unquote(field,QUOTE_CHAR),Util.unquote(expression,QUOTE_CHAR),false,true,AbstractGroup.INDEPENDENT);
+      return new KeywordGroup(Util.unquote(name,AbstractGroup.QUOTE_CHAR),Util.unquote(field,AbstractGroup.QUOTE_CHAR),Util.unquote(expression,AbstractGroup.QUOTE_CHAR),false,true,AbstractGroup.INDEPENDENT);
     }
 case 1:
 case 2:
@@ -17,7 +19,7 @@ case 2:
     String expression=tok.nextToken();
     boolean caseSensitive=Integer.parseInt(tok.nextToken()) == 1;
     boolean regExp=Integer.parseInt(tok.nextToken()) == 1;
-    return new KeywordGroup(Util.unquote(name,QUOTE_CHAR),Util.unquote(field,QUOTE_CHAR),Util.unquote(expression,QUOTE_CHAR),caseSensitive,regExp,AbstractGroup.INDEPENDENT);
+    return new KeywordGroup(Util.unquote(name,AbstractGroup.QUOTE_CHAR),Util.unquote(field,AbstractGroup.QUOTE_CHAR),Util.unquote(expression,AbstractGroup.QUOTE_CHAR),caseSensitive,regExp,AbstractGroup.INDEPENDENT);
   }
 case 3:
 {
@@ -27,7 +29,7 @@ case 3:
   String expression=tok.nextToken();
   boolean caseSensitive=Integer.parseInt(tok.nextToken()) == 1;
   boolean regExp=Integer.parseInt(tok.nextToken()) == 1;
-  return new KeywordGroup(Util.unquote(name,QUOTE_CHAR),Util.unquote(field,QUOTE_CHAR),Util.unquote(expression,QUOTE_CHAR),caseSensitive,regExp,context);
+  return new KeywordGroup(Util.unquote(name,AbstractGroup.QUOTE_CHAR),Util.unquote(field,AbstractGroup.QUOTE_CHAR),Util.unquote(expression,AbstractGroup.QUOTE_CHAR),caseSensitive,regExp,context);
 }
 default :
 throw new UnsupportedVersionException("KeywordGroup",version);

@@ -3,7 +3,9 @@
   try {
     ParserResult parserResult=bp.parse();
     BibtexDatabase db=parserResult.getDatabase();
-    if (db.getEntryCount() > 1)     throw new Exception("More than one entry found.");
+    if (db.getEntryCount() > 1) {
+      throw new Exception("More than one entry found.");
+    }
     if (db.getEntryCount() < 1) {
       if (parserResult.hasWarnings()) {
         throw new Exception(parserResult.warnings()[0]);
@@ -19,7 +21,7 @@
     boolean anyChanged=false;
     boolean changedType=false;
     boolean duplicateWarning=false;
-    boolean emptyWarning=newKey == null || newKey.equals("");
+    boolean emptyWarning=(newKey == null) || newKey.equals("");
     if (panel.database.setCiteKeyForEntry(id,newKey)) {
       duplicateWarning=true;
     }
@@ -35,7 +37,7 @@
     for (    String field : nu.getAllFields()) {
       String oldValue=entry.getField(field);
       String newValue=nu.getField(field);
-      if (oldValue == null || !oldValue.equals(newValue)) {
+      if ((oldValue == null) || !oldValue.equals(newValue)) {
         (new LatexFieldFormatter()).format(newValue,field);
         compound.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
         entry.setField(field,newValue);
@@ -49,7 +51,9 @@
       changedType=true;
     }
     compound.end();
-    if (!anyChanged)     return true;
+    if (!anyChanged) {
+      return true;
+    }
     panel.undoManager.addEdit(compound);
     if (duplicateWarning) {
       warnDuplicateBibtexkey();
@@ -71,7 +75,7 @@
     }
     panel.markBaseChanged();
     SwingUtilities.invokeLater(new Runnable(){
-      public void run(){
+      @Override public void run(){
         final int row=panel.mainTable.findEntry(entry);
         if (row >= 0) {
           panel.mainTable.ensureVisible(row);

@@ -1,13 +1,19 @@
 {
   String chosen;
   chosen=JOptionPane.showInputDialog(Globals.lang("Choose the URL to download. The default value points to a list provided by the JabRef developers."),"http://jabref.sf.net/journals/journal_abbreviations_general.txt");
-  if (chosen == null)   return;
+  if (chosen == null) {
+    return;
+  }
   File toFile;
   try {
     URL url=new URL(chosen);
     String toName=FileDialogs.getNewFile(frame,new File(System.getProperty("user.home")),null,JFileChooser.SAVE_DIALOG,false);
-    if (toName == null)     return;
- else     toFile=new File(toName);
+    if (toName == null) {
+      return;
+    }
+ else {
+      toFile=new File(toName);
+    }
     URLDownload.buildMonitoredDownload(comp,url).downloadToFile(toFile);
     comp.setText(toFile.getPath());
   }

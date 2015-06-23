@@ -55,7 +55,7 @@
   builder2.append(abbrTf);
   journalEditPanel=builder2.getPanel();
   viewBuiltin.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       JournalAbbreviations abbr=new JournalAbbreviations(Globals.JOURNALS_FILE_BUILTIN);
       JTable table=new JTable(abbr.getTableModel());
       JScrollPane pane=new JScrollPane(table);
@@ -64,9 +64,11 @@
   }
 );
   browseNew.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       File old=null;
-      if (!newNameTf.getText().equals(""))       old=new File(newNameTf.getText());
+      if (!newNameTf.getText().equals("")) {
+        old=new File(newNameTf.getText());
+      }
       String name=FileDialogs.getNewFile(frame,old,null,JFileChooser.SAVE_DIALOG,false);
       if (name != null) {
         newNameTf.setText(name);
@@ -76,9 +78,11 @@
   }
 );
   browseOld.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       File old=null;
-      if (!personalFile.getText().equals(""))       old=new File(personalFile.getText());
+      if (!personalFile.getText().equals("")) {
+        old=new File(personalFile.getText());
+      }
       String name=FileDialogs.getNewFile(frame,old,null,JFileChooser.OPEN_DIALOG,false);
       if (name != null) {
         personalFile.setText(name);
@@ -90,7 +94,7 @@
   }
 );
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       if (readyToClose()) {
         try {
           storeSettings();
@@ -105,7 +109,7 @@
 );
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.journalAbbrHelp));
   AbstractAction cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dialog.dispose();
     }
   }
@@ -114,7 +118,7 @@
   add.addActionListener(tableModel);
   remove.addActionListener(tableModel);
   addExt.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       externals.add(new ExternalFileEntry());
       buildExternalsPanel();
     }

@@ -26,15 +26,19 @@
       incommand=true;
       currentCommand=new StringBuffer();
     }
- else     if (!incommand && (c == '{' || c == '}')) {
+ else     if (!incommand && ((c == '{') || (c == '}'))) {
     }
  else     if (Character.isLetter(c) || (c == '%') || (Globals.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c)))) {
       escaped=false;
-      if (!incommand)       sb.append(c);
+      if (!incommand) {
+        sb.append(c);
+      }
  else {
         currentCommand.append(c);
         testCharCom:         if ((currentCommand.length() == 1) && (Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString()))) {
-          if (i >= field.length() - 1)           break testCharCom;
+          if (i >= (field.length() - 1)) {
+            break testCharCom;
+          }
           String command=currentCommand.toString();
           i++;
           c=field.charAt(i);
@@ -48,12 +52,14 @@
             combody=field.substring(i,i + 1);
           }
           Object result=Globals.HTMLCHARS.get(command + combody);
-          if (result != null)           sb.append((String)result);
+          if (result != null) {
+            sb.append((String)result);
+          }
           incommand=false;
           escaped=false;
         }
  else {
-          if (i + 1 == field.length()) {
+          if ((i + 1) == field.length()) {
             String command=currentCommand.toString();
             Object result=Globals.HTMLCHARS.get(command);
             if (result != null) {

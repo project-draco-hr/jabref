@@ -1,5 +1,7 @@
 {
-  if (!fileOk)   return;
+  if (!fileOk) {
+    return;
+  }
   if (bibtexResult != null) {
     if (!openInNew) {
       final BasePanel panel=(BasePanel)frame.getTabbedPane().getSelectedComponent();
@@ -15,8 +17,10 @@
  else {
         boolean generateKeys=Globals.prefs.getBoolean("generateKeysAfterInspection");
         NamedCompound ce=new NamedCompound(Globals.lang("Import entries"));
-        if (Globals.prefs.getBoolean("unmarkAllEntriesBeforeImporting"))         for (        BibtexEntry entry : toAddTo.getEntries()) {
-          Util.unmarkEntry(entry,true,toAddTo,ce);
+        if (Globals.prefs.getBoolean("unmarkAllEntriesBeforeImporting")) {
+          for (          BibtexEntry entry : toAddTo.getEntries()) {
+            Util.unmarkEntry(entry,true,toAddTo,ce);
+          }
         }
         for (        BibtexEntry entry : bibtexResult.getDatabase().getEntries()) {
           try {
@@ -24,7 +28,9 @@
             BibtexEntry duplicate=DuplicateCheck.containsDuplicate(toAddTo,entry);
             if (duplicate != null) {
               int answer=DuplicateResolverDialog.resolveDuplicateInImport(frame,duplicate,entry);
-              if (answer == DuplicateResolverDialog.DO_NOT_IMPORT)               keepEntry=false;
+              if (answer == DuplicateResolverDialog.DO_NOT_IMPORT) {
+                keepEntry=false;
+              }
               if (answer == DuplicateResolverDialog.IMPORT_AND_DELETE_OLD) {
                 toAddTo.removeEntry(duplicate.getId());
                 ce.addEdit(new UndoableRemoveEntry(toAddTo,duplicate,panel));
@@ -55,7 +61,9 @@
     }
   }
  else {
-    if (importer == null)     frame.output(Globals.lang("Could not find a suitable import format."));
+    if (importer == null) {
+      frame.output(Globals.lang("Could not find a suitable import format."));
+    }
  else {
       if (importError != null) {
         JOptionPane.showMessageDialog(frame,importError.getMessage(),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);

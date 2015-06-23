@@ -1,7 +1,7 @@
 {
   AbstractWorker worker=new AbstractWorker(){
     boolean ready=true;
-    public void run(){
+    @Override public void run(){
       int count=main.getComponentCount();
       Component[] comps=main.getComponents();
       for (int i=0; i < count; i++) {
@@ -15,8 +15,10 @@
       }
       Globals.prefs.flush();
     }
-    public void update(){
-      if (!ready)       return;
+    @Override public void update(){
+      if (!ready) {
+        return;
+      }
       setVisible(false);
       MainTable.updateRenderers();
       GUIGlobals.updateEntryEditorColors();

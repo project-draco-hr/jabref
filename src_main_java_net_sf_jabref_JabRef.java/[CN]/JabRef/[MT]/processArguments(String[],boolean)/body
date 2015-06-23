@@ -10,7 +10,7 @@
   boolean commandmode=cli.isDisableGui() || cli.isFetcherEngine();
   if (initialStartup && !commandmode && !cli.isDisableSplash()) {
     try {
-      splashScreen=SplashScreen.splash();
+      JabRef.splashScreen=SplashScreen.splash();
     }
  catch (    Throwable ex) {
       graphicFailure=true;
@@ -59,34 +59,48 @@
     for (    String aLeftOver : cli.getLeftOver()) {
       boolean bibExtension=aLeftOver.toLowerCase().endsWith("bib");
       ParserResult pr=null;
-      if (bibExtension)       pr=openBibFile(aLeftOver,false);
+      if (bibExtension) {
+        pr=JabRef.openBibFile(aLeftOver,false);
+      }
       if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
         if (initialStartup) {
           toImport.add(aLeftOver);
         }
  else {
-          ParserResult res=importToOpenBase(aLeftOver);
-          if (res != null)           loaded.add(res);
- else           loaded.add(ParserResult.INVALID_FORMAT);
+          ParserResult res=JabRef.importToOpenBase(aLeftOver);
+          if (res != null) {
+            loaded.add(res);
+          }
+ else {
+            loaded.add(ParserResult.INVALID_FORMAT);
+          }
         }
       }
- else       if (pr != ParserResult.FILE_LOCKED)       loaded.add(pr);
+ else       if (pr != ParserResult.FILE_LOCKED) {
+        loaded.add(pr);
+      }
     }
   }
   if (!cli.isBlank() && cli.isFileImport()) {
     toImport.add(cli.getFileImport());
   }
   for (  String filenameString : toImport) {
-    ParserResult pr=importFile(filenameString);
-    if (pr != null)     loaded.add(pr);
+    ParserResult pr=JabRef.importFile(filenameString);
+    if (pr != null) {
+      loaded.add(pr);
+    }
   }
   if (!cli.isBlank() && cli.isImportToOpenBase()) {
-    ParserResult res=importToOpenBase(cli.getImportToOpenBase());
-    if (res != null)     loaded.add(res);
+    ParserResult res=JabRef.importToOpenBase(cli.getImportToOpenBase());
+    if (res != null) {
+      loaded.add(res);
+    }
   }
   if (!cli.isBlank() && cli.isFetcherEngine()) {
     ParserResult res=fetch(cli.getFetcherEngine());
-    if (res != null)     loaded.add(res);
+    if (res != null) {
+      loaded.add(res);
+    }
   }
   if (cli.isExportMatches()) {
     if (loaded.size() > 0) {
@@ -96,7 +110,7 @@
       BibtexDatabase dataBase=pr.getDatabase();
       SearchManagerNoGUI smng=new SearchManagerNoGUI(searchTerm,dataBase);
       BibtexDatabase newBase=smng.getDBfromMatches();
-      if (newBase != null && newBase.getEntryCount() > 0) {
+      if ((newBase != null) && (newBase.getEntryCount() > 0)) {
         String formatName=null;
         IExportFormat format;
 switch (data.length) {
@@ -126,7 +140,9 @@ default :
       System.err.println(Globals.lang("Could not export file") + " '" + data[1]+ "': "+ ex.getMessage());
     }
   }
- else   System.err.println(Globals.lang("Unknown export format") + ": " + formatName);
+ else {
+    System.err.println(Globals.lang("Unknown export format") + ": " + formatName);
+  }
 }
  else {
   System.err.println(Globals.lang("No search matches."));
@@ -146,7 +162,9 @@ if (data.length == 1) {
       try {
         System.out.println(Globals.lang("Saving") + ": " + data[0]);
         SaveSession session=FileActions.saveDatabase(pr.getDatabase(),pr.getMetaData(),new File(data[0]),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"),false);
-        if (!session.getWriter().couldEncodeAll())         System.err.println(Globals.lang("Warning") + ": " + Globals.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding())+ session.getWriter().getProblemCharacters());
+        if (!session.getWriter().couldEncodeAll()) {
+          System.err.println(Globals.lang("Warning") + ": " + Globals.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding())+ session.getWriter().getProblemCharacters());
+        }
         session.commit();
       }
  catch (      SaveException ex) {
@@ -154,12 +172,16 @@ if (data.length == 1) {
       }
     }
   }
- else   System.err.println(Globals.lang("The output option depends on a valid import option."));
+ else {
+    System.err.println(Globals.lang("The output option depends on a valid import option."));
+  }
 }
  else if (data.length == 2) {
   ParserResult pr=loaded.elementAt(loaded.size() - 1);
   File theFile=pr.getFile();
-  if (!theFile.isAbsolute())   theFile=theFile.getAbsoluteFile();
+  if (!theFile.isAbsolute()) {
+    theFile=theFile.getAbsoluteFile();
+  }
   MetaData metaData=pr.getMetaData();
   metaData.setFile(theFile);
   Globals.prefs.fileDirForDatabase=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
@@ -174,10 +196,14 @@ if (data.length == 1) {
       System.err.println(Globals.lang("Could not export file") + " '" + data[0]+ "': "+ ex.getMessage());
     }
   }
- else   System.err.println(Globals.lang("Unknown export format") + ": " + data[1]);
+ else {
+    System.err.println(Globals.lang("Unknown export format") + ": " + data[1]);
+  }
 }
 }
- else System.err.println(Globals.lang("The output option depends on a valid import option."));
+ else {
+System.err.println(Globals.lang("The output option depends on a valid import option."));
+}
 }
 if (cli.isPreferencesExport()) {
 try {
@@ -202,7 +228,9 @@ if (data.length == 2) {
       try {
         System.out.println(Globals.lang("Saving") + ": " + subName);
         SaveSession session=FileActions.saveDatabase(newBase,new MetaData(),new File(subName),Globals.prefs,false,false,Globals.prefs.get("defaultEncoding"),false);
-        if (!session.getWriter().couldEncodeAll())         System.err.println(Globals.lang("Warning") + ": " + Globals.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding())+ session.getWriter().getProblemCharacters());
+        if (!session.getWriter().couldEncodeAll()) {
+          System.err.println(Globals.lang("Warning") + ": " + Globals.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding())+ session.getWriter().getProblemCharacters());
+        }
         session.commit();
       }
  catch (      SaveException ex) {
@@ -211,11 +239,17 @@ if (data.length == 2) {
       notSavedMsg=true;
     }
   }
-  if (!notSavedMsg)   System.out.println(Globals.lang("no database generated"));
+  if (!notSavedMsg) {
+    System.out.println(Globals.lang("no database generated"));
+  }
 }
- else usageMsg=true;
+ else {
+  usageMsg=true;
 }
- else usageMsg=true;
+}
+ else {
+usageMsg=true;
+}
 if (usageMsg) {
 System.out.println(Globals.lang("no base-bibtex-file specified"));
 System.out.println(Globals.lang("usage") + " :");

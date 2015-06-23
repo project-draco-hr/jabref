@@ -1,5 +1,5 @@
 {
-  fieldAndFormat=stripBrackets(fieldAndFormat);
+  fieldAndFormat=Util.stripBrackets(fieldAndFormat);
   int colon=fieldAndFormat.indexOf(':');
   String beforeColon, afterColon;
   if (colon == -1) {
@@ -15,9 +15,15 @@
     return null;
   }
   String fieldValue=BibtexDatabase.getResolvedField(beforeColon,entry,database);
-  if (fieldValue == null)   fieldValue=LabelPatternUtil.makeLabel(entry,beforeColon);
-  if (fieldValue == null)   return null;
-  if (afterColon == null || afterColon.length() == 0)   return fieldValue;
+  if (fieldValue == null) {
+    fieldValue=LabelPatternUtil.makeLabel(entry,beforeColon);
+  }
+  if (fieldValue == null) {
+    return null;
+  }
+  if ((afterColon == null) || (afterColon.length() == 0)) {
+    return fieldValue;
+  }
   String[] parts=afterColon.split(":");
   fieldValue=LabelPatternUtil.applyModifiers(fieldValue,parts,0);
   return fieldValue;

@@ -1,16 +1,20 @@
 {
   setLayout(new BorderLayout());
   TableModel tm=new AbstractTableModel(){
-    public int getRowCount(){
+    @Override public int getRowCount(){
       return rowCount;
     }
-    public int getColumnCount(){
+    @Override public int getColumnCount(){
       return 2;
     }
-    public Object getValueAt(    int row,    int column){
-      if (row >= tableRows.size())       return "";
+    @Override public Object getValueAt(    int row,    int column){
+      if (row >= tableRows.size()) {
+        return "";
+      }
       TableRow tr=tableRows.elementAt(row);
-      if (tr == null)       return "";
+      if (tr == null) {
+        return "";
+      }
 switch (column) {
 case 0:
         return tr.name;
@@ -19,22 +23,32 @@ case 1:
   }
   return null;
 }
-public String getColumnName(int col){
+@Override public String getColumnName(int col){
   return (col == 0 ? Globals.lang("Formatter Name") : Globals.lang("Format String"));
 }
-public Class<String> getColumnClass(int column){
-  if (column == 0)   return String.class;
- else   return String.class;
+@Override public Class<String> getColumnClass(int column){
+  if (column == 0) {
+    return String.class;
+  }
+ else {
+    return String.class;
+  }
 }
-public boolean isCellEditable(int row,int col){
+@Override public boolean isCellEditable(int row,int col){
   return true;
 }
-public void setValueAt(Object value,int row,int col){
+@Override public void setValueAt(Object value,int row,int col){
   tableChanged=true;
-  while (row >= tableRows.size())   tableRows.add(new TableRow());
+  while (row >= tableRows.size()) {
+    tableRows.add(new TableRow());
+  }
   TableRow rowContent=tableRows.elementAt(row);
-  if (col == 0)   rowContent.name=value.toString();
- else   rowContent.format=value.toString();
+  if (col == 0) {
+    rowContent.name=value.toString();
+  }
+ else {
+    rowContent.format=value.toString();
+  }
 }
 }
 ;

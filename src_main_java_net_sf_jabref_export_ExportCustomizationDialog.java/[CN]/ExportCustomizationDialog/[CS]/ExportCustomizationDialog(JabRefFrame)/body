@@ -2,7 +2,7 @@
   super(frame_,Globals.lang("Manage custom exports"),false);
   frame=frame_;
   addExport.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       CustomExportDialog ecd=new CustomExportDialog(frame);
       ecd.setVisible(true);
       if (ecd.okPressed()) {
@@ -14,9 +14,11 @@
   }
 );
   modify.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       int row=table.getSelectedRow();
-      if (row == -1)       return;
+      if (row == -1) {
+        return;
+      }
       String[] old=Globals.prefs.customExports.getSortedList().get(row);
       CustomExportDialog ecd=new CustomExportDialog(frame,old[0],old[1],old[2]);
       ecd.setVisible(true);
@@ -32,18 +34,24 @@
   }
 );
   remove.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       int[] rows=table.getSelectedRows();
-      if (rows.length == 0)       return;
+      if (rows.length == 0) {
+        return;
+      }
       String[][] entries=new String[rows.length][];
-      for (int i=0; i < rows.length; i++)       entries[i]=Globals.prefs.customExports.getSortedList().get(rows[i]);
-      for (int i=0; i < rows.length; i++)       Globals.prefs.customExports.remove(entries[i]);
+      for (int i=0; i < rows.length; i++) {
+        entries[i]=Globals.prefs.customExports.getSortedList().get(rows[i]);
+      }
+      for (int i=0; i < rows.length; i++) {
+        Globals.prefs.customExports.remove(entries[i]);
+      }
       Globals.prefs.customExports.store();
     }
   }
 );
   AbstractAction closeAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }
@@ -59,7 +67,9 @@
   JScrollPane sp=new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
   table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   table.setPreferredScrollableViewportSize(new Dimension(500,150));
-  if (table.getRowCount() > 0)   table.setRowSelectionInterval(0,0);
+  if (table.getRowCount() > 0) {
+    table.setRowSelectionInterval(0,0);
+  }
   ActionMap am=main.getActionMap();
   InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(frame.prefs().getKey("Close dialog"),"close");

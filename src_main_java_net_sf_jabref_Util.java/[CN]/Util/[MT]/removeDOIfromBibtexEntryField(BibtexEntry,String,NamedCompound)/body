@@ -1,10 +1,12 @@
 {
   String origValue=bes.getField(fieldName);
   String value=origValue;
-  value=value.replaceAll(REGEXP_DOI_WITH_HTTP_PREFIX,"");
-  value=value.replaceAll(REGEXP_PLAINDOI,"");
+  value=value.replaceAll(Util.REGEXP_DOI_WITH_HTTP_PREFIX,"");
+  value=value.replaceAll(Util.REGEXP_PLAINDOI,"");
   value=value.trim();
-  if (value.isEmpty())   value=null;
+  if (value.isEmpty()) {
+    value=null;
+  }
   if (!origValue.equals(value)) {
     ce.addEdit(new UndoableFieldChange(bes,fieldName,origValue,value));
     bes.setField(fieldName,value);

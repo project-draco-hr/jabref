@@ -6,17 +6,23 @@
     int written=0, error=0;
     for (    File file : files) {
       if (!file.exists()) {
-        if (files.size() == 1)         message=Globals.lang("PDF does not exist");
+        if (files.size() == 1) {
+          message=Globals.lang("PDF does not exist");
+        }
         error++;
       }
  else {
         try {
           XMPUtil.writeXMP(file,entry,panel.database());
-          if (files.size() == 1)           message=Globals.lang("Wrote XMP-metadata");
+          if (files.size() == 1) {
+            message=Globals.lang("Wrote XMP-metadata");
+          }
           written++;
         }
  catch (        Exception e) {
-          if (files.size() == 1)           message=Globals.lang("Error while writing") + " '" + file.getPath()+ "'";
+          if (files.size() == 1) {
+            message=Globals.lang("Error while writing") + " '" + file.getPath()+ "'";
+          }
           error++;
         }
       }
@@ -24,7 +30,9 @@
     if (files.size() > 1) {
       StringBuilder sb=new StringBuilder();
       sb.append(Globals.lang("Finished writing XMP-metadata. Wrote to %0 file(s).",String.valueOf(written)));
-      if (error > 0)       sb.append(" ").append(Globals.lang("Error writing to %0 file(s).",String.valueOf(error)));
+      if (error > 0) {
+        sb.append(" ").append(Globals.lang("Error writing to %0 file(s).",String.valueOf(error)));
+      }
       message=sb.toString();
     }
   }

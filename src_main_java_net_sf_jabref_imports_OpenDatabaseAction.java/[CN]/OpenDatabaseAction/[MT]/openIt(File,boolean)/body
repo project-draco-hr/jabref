@@ -22,12 +22,14 @@
       String encoding=Globals.prefs.get("defaultEncoding");
       if (Util.hasLockFile(file)) {
         long modTime=Util.getLockFileTimeStamp(file);
-        if ((modTime != -1) && (System.currentTimeMillis() - modTime > SaveSession.LOCKFILE_CRITICAL_AGE)) {
+        if ((modTime != -1) && ((System.currentTimeMillis() - modTime) > SaveSession.LOCKFILE_CRITICAL_AGE)) {
           int answer=JOptionPane.showConfirmDialog(null,"<html>" + Globals.lang("Error opening file") + " '"+ fileName+ "'. "+ Globals.lang("File is locked by another JabRef instance.")+ "<p>"+ Globals.lang("Do you want to override the file lock?"),Globals.lang("File locked"),JOptionPane.YES_NO_OPTION);
           if (answer == JOptionPane.YES_OPTION) {
             Util.deleteLockFile(file);
           }
- else           return;
+ else {
+            return;
+          }
         }
  else         if (!Util.waitForFileLock(file,10)) {
           JOptionPane.showMessageDialog(null,Globals.lang("Error opening file") + " '" + fileName+ "'. "+ Globals.lang("File is locked by another JabRef instance."),Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
@@ -37,7 +39,7 @@
       ParserResult pr;
       String errorMessage=null;
       try {
-        pr=loadDatabase(fileToLoad,encoding);
+        pr=OpenDatabaseAction.loadDatabase(fileToLoad,encoding);
       }
  catch (      Exception ex) {
         errorMessage=ex.getMessage();
@@ -51,16 +53,22 @@
           tryingAutosave=false;
           fileToLoad=file;
         }
- else         done=true;
+ else {
+          done=true;
+        }
         continue;
       }
- else       done=true;
+ else {
+        done=true;
+      }
       final BasePanel panel=addNewDatabase(pr,file,raisePanel);
-      if (tryingAutosave)       panel.markNonUndoableBaseChanged();
+      if (tryingAutosave) {
+        panel.markNonUndoableBaseChanged();
+      }
       final ParserResult prf=pr;
       SwingUtilities.invokeLater(new Runnable(){
-        public void run(){
-          performPostOpenActions(panel,prf,true);
+        @Override public void run(){
+          OpenDatabaseAction.performPostOpenActions(panel,prf,true);
         }
       }
 );

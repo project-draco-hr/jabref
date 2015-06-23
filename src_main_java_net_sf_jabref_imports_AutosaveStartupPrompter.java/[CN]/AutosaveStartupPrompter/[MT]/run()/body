@@ -9,7 +9,9 @@
       int answer=JOptionPane.showConfirmDialog(null,"<html>" + Globals.lang("An autosave file was found for this database. This could indicate ") + Globals.lang("that JabRef didn't shut down cleanly last time the file was used.")+ "<br>"+ Globals.lang("Do you want to recover the database from the autosave file?")+ "</html>",Globals.lang("Autosave of file '%0'",file.getName()),JOptionPane.YES_NO_OPTION);
       tryingAutosave=answer == JOptionPane.YES_OPTION;
     }
- else     tryingAutosave=true;
+ else {
+      tryingAutosave=true;
+    }
     if (tryingAutosave) {
       fileToLoad=AutoSaveManager.getAutoSaveFile(file);
     }
@@ -21,7 +23,9 @@
         loaded.add(pr);
         BasePanel panel=frame.addTab(pr.getDatabase(),file,pr.getMetaData(),pr.getEncoding(),first);
         location.put(pr,frame.baseCount() - 1);
-        if (tryingAutosave)         panel.markNonUndoableBaseChanged();
+        if (tryingAutosave) {
+          panel.markNonUndoableBaseChanged();
+        }
         first=false;
         done=true;
       }
@@ -48,8 +52,12 @@
       if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
         String[] wrns=pr.warnings();
         StringBuilder wrn=new StringBuilder();
-        for (int j=0; j < wrns.length; j++)         wrn.append(j + 1).append(". ").append(wrns[j]).append("\n");
-        if (wrn.length() > 0)         wrn.deleteCharAt(wrn.length() - 1);
+        for (int j=0; j < wrns.length; j++) {
+          wrn.append(j + 1).append(". ").append(wrns[j]).append("\n");
+        }
+        if (wrn.length() > 0) {
+          wrn.deleteCharAt(wrn.length() - 1);
+        }
         frame.showBaseAt(location.get(pr));
         JOptionPane.showMessageDialog(frame,wrn.toString(),Globals.lang("Warnings"),JOptionPane.WARNING_MESSAGE);
       }

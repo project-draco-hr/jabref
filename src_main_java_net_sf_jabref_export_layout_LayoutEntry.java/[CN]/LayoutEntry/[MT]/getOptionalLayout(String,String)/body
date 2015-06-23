@@ -14,9 +14,11 @@
       }
     }
     try {
-      LayoutFormatter f=getLayoutFormatterByClassName(className,classPrefix);
+      LayoutFormatter f=LayoutEntry.getLayoutFormatterByClassName(className,classPrefix);
       if (f instanceof ParamLayoutFormatter) {
-        if (strings.length >= 2)         ((ParamLayoutFormatter)f).setArgument(strings[1]);
+        if (strings.length >= 2) {
+          ((ParamLayoutFormatter)f).setArgument(strings[1]);
+        }
       }
       results.add(f);
       continue;
@@ -30,7 +32,7 @@
       results.add(nf);
       continue;
     }
-    LayoutFormatter f=getLayoutFormatterFromPlugins(className);
+    LayoutFormatter f=LayoutEntry.getLayoutFormatterFromPlugins(className);
     if (f != null) {
       if (f instanceof ParamLayoutFormatter) {
         if (strings.length >= 2) {

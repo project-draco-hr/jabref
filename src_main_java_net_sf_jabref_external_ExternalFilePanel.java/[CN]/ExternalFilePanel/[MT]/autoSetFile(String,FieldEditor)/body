@@ -6,14 +6,16 @@
   }
   output(Globals.lang("Searching for %0 file",fieldName.toUpperCase()) + " '" + o+ "."+ fieldName+ "'...");
   return new Runnable(){
-    public void run(){
+    @Override public void run(){
       LinkedList<String> list=new LinkedList<String>();
       String[] dirs=metaData.getFileDirectory(fieldName);
       Collections.addAll(list,dirs);
       String found=UtilFindFiles.findPdf(getEntry(),fieldName,list.toArray(new String[list.size()]));
       if (found != null) {
         editor.setText(found);
-        if (entryEditor != null)         entryEditor.updateField(editor);
+        if (entryEditor != null) {
+          entryEditor.updateField(editor);
+        }
         output(Globals.lang("%0 field set",fieldName.toUpperCase()) + ".");
       }
  else {

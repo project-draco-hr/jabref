@@ -2,12 +2,16 @@
   List<File> filesToOpen=new ArrayList<File>();
   if (showDialog) {
     String[] chosen=FileDialogs.getMultipleFiles(frame,new File(Globals.prefs.get("workingDirectory")),".bib",true);
-    if (chosen != null)     for (    String aChosen : chosen) {
-      if (aChosen != null)       filesToOpen.add(new File(aChosen));
+    if (chosen != null) {
+      for (      String aChosen : chosen) {
+        if (aChosen != null) {
+          filesToOpen.add(new File(aChosen));
+        }
+      }
     }
   }
  else {
-    Util.pr(NAME);
+    Util.pr(Action.NAME);
     Util.pr(e.getActionCommand());
     filesToOpen.add(new File(Util.checkName(e.getActionCommand())));
   }
@@ -30,12 +34,16 @@
   if (filesToOpen.size() > 0) {
     final List<File> theFiles=Collections.unmodifiableList(filesToOpen);
     JabRefExecutorService.INSTANCE.execute(new Runnable(){
-      public void run(){
-        for (        File theFile : theFiles)         openIt(theFile,true);
+      @Override public void run(){
+        for (        File theFile : theFiles) {
+          openIt(theFile,true);
+        }
       }
     }
 );
-    for (    File theFile : theFiles)     frame.getFileHistory().newFile(theFile.getPath());
+    for (    File theFile : theFiles) {
+      frame.getFileHistory().newFile(theFile.getPath());
+    }
   }
  else   if (toRaise != null) {
     frame.output(Globals.lang("File '%0' is already open.",toRaise.getFile().getPath()));

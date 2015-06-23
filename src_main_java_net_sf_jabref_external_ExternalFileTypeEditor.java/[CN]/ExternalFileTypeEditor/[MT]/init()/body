@@ -1,20 +1,20 @@
 {
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       storeSettings();
       dispose();
     }
   }
 );
   AbstractAction cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }
 ;
   cancel.addActionListener(cancelAction);
   toDefaults.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       java.util.List<ExternalFileType> list=Globals.prefs.getDefaultExternalFileTypes();
       fileTypes.clear();
       fileTypes.addAll(list);
@@ -67,6 +67,10 @@
   im=bb.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",cancelAction);
-  if (frame != null)   setLocationRelativeTo(frame);
- else   setLocationRelativeTo(dialog);
+  if (frame != null) {
+    setLocationRelativeTo(frame);
+  }
+ else {
+    setLocationRelativeTo(dialog);
+  }
 }

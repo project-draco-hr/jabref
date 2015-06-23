@@ -1,7 +1,9 @@
 {
   StringBuilder sb=new StringBuilder();
   FileListTableModel tableModel=new FileListTableModel();
-  if (field == null)   return "";
+  if (field == null) {
+    return "";
+  }
   tableModel.setContent(field);
   int piv=1;
   for (int i=0; i < tableModel.getRowCount(); i++) {
@@ -16,10 +18,16 @@ case ITERATION_COUNT:
       sb.append(String.valueOf(piv));
     break;
 case FILE_PATH:
-  if (flEntry.getLink() == null)   break;
+  if (flEntry.getLink() == null) {
+    break;
+  }
 String[] dirs;
-if (Globals.prefs.fileDirForDatabase != null) dirs=Globals.prefs.fileDirForDatabase;
- else dirs=new String[]{Globals.prefs.get(GUIGlobals.FILE_FIELD + "Directory")};
+if (Globals.prefs.fileDirForDatabase != null) {
+dirs=Globals.prefs.fileDirForDatabase;
+}
+ else {
+dirs=new String[]{Globals.prefs.get(GUIGlobals.FILE_FIELD + "Directory")};
+}
 File f=Util.expandFilename(flEntry.getLink(),dirs);
 if (f != null) {
 try {
@@ -35,13 +43,19 @@ sb.append(replaceStrings(flEntry.getLink()));
 }
 break;
 case RELATIVE_FILE_PATH:
-if (flEntry.getLink() == null) break;
+if (flEntry.getLink() == null) {
+break;
+}
 sb.append(replaceStrings(flEntry.getLink()));
 break;
 case FILE_EXTENSION:
-if (flEntry.getLink() == null) break;
+if (flEntry.getLink() == null) {
+break;
+}
 int index=flEntry.getLink().lastIndexOf('.');
-if ((index >= 0) && (index < flEntry.getLink().length() - 1)) sb.append(replaceStrings(flEntry.getLink().substring(index + 1)));
+if ((index >= 0) && (index < (flEntry.getLink().length() - 1))) {
+sb.append(replaceStrings(flEntry.getLink().substring(index + 1)));
+}
 break;
 case FILE_TYPE:
 sb.append(replaceStrings(flEntry.getType().getName()));

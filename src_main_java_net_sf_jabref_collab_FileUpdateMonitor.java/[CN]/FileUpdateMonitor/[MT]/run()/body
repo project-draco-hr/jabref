@@ -5,7 +5,9 @@
     for (; i.hasNext(); ) {
       Entry e=entries.get(i.next());
       try {
-        if (e.hasBeenUpdated())         e.notifyListener();
+        if (e.hasBeenUpdated()) {
+          e.notifyListener();
+        }
       }
  catch (      IOException ex) {
         e.notifyFileRemoved();
@@ -15,7 +17,7 @@
       Thread.sleep(WAIT);
     }
  catch (    InterruptedException ex) {
-      logger.finest("FileUpdateMonitor has been interrupted.");
+      FileUpdateMonitor.logger.finest("FileUpdateMonitor has been interrupted.");
       Thread.currentThread().interrupt();
       break;
     }

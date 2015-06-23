@@ -7,9 +7,11 @@
   this.action=action;
   this.delimiter=delimiter;
   comboBox=new JComboBox(){
-    public Dimension getPreferredSize(){
+    @Override public Dimension getPreferredSize(){
       Dimension parents=super.getPreferredSize();
-      if (parents.width > GUIGlobals.MAX_CONTENT_SELECTOR_WIDTH)       parents.width=GUIGlobals.MAX_CONTENT_SELECTOR_WIDTH;
+      if (parents.width > GUIGlobals.MAX_CONTENT_SELECTOR_WIDTH) {
+        parents.width=GUIGlobals.MAX_CONTENT_SELECTOR_WIDTH;
+      }
       return parents;
     }
   }
@@ -25,27 +27,31 @@
   con.weightx=1;
   gbl.setConstraints(comboBox,con);
   comboBox.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
-      if (e.getActionCommand().equals("comboBoxChanged") && (e.getModifiers() == 0))       return;
+    @Override public void actionPerformed(    ActionEvent e){
+      if (e.getActionCommand().equals("comboBoxChanged") && (e.getModifiers() == 0)) {
+        return;
+      }
       selectionMade();
     }
   }
 );
   comboBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),"enter");
   comboBox.getActionMap().put("enter",new AbstractAction(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       selectionMade();
       comboBox.setPopupVisible(false);
     }
   }
 );
   add(comboBox);
-  if (horizontalLayout)   add(Box.createHorizontalStrut(Sizes.dialogUnitXAsPixel(2,this)));
+  if (horizontalLayout) {
+    add(Box.createHorizontalStrut(Sizes.dialogUnitXAsPixel(2,this)));
+  }
   JButton manage=new JButton(Globals.lang("Manage"));
   gbl.setConstraints(manage,con);
   add(manage);
   manage.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       ContentSelectorDialog2 csd=new ContentSelectorDialog2(FieldContentSelector.this.owner,FieldContentSelector.this.frame,panel,true,metaData,editor.getFieldName());
       Util.placeDialog(csd,FieldContentSelector.this.frame);
       csd.setVisible(true);

@@ -36,7 +36,7 @@ con.fill=GridBagConstraints.BOTH;
 con.gridwidth=GridBagConstraints.REMAINDER;
 con.weightx=1;
 con.weighty=0;
-lab=new TitleLabel((type == DUPLICATE_SEARCH) ? "" : Globals.lang("Entry in current database"));
+lab=new TitleLabel((type == DuplicateResolverDialog.DUPLICATE_SEARCH) ? "" : Globals.lang("Entry in current database"));
 gbl.setConstraints(lab,con);
 main.add(lab);
 con.weighty=1;
@@ -46,7 +46,7 @@ gbl.setConstraints(sp,con);
 main.add(sp);
 con.weighty=0;
 con.insets=new Insets(10,10,0,10);
-lab=new TitleLabel((type == DUPLICATE_SEARCH) ? "" : Globals.lang("Entry in import"));
+lab=new TitleLabel((type == DuplicateResolverDialog.DUPLICATE_SEARCH) ? "" : Globals.lang("Entry in import"));
 gbl.setConstraints(lab,con);
 main.add(lab);
 con.weighty=1;
@@ -62,49 +62,53 @@ gbl.setConstraints(sp,con);
 source.add(sp);
 tabbed.add(Globals.lang("Short form"),main);
 tabbed.add(Globals.lang("Complete record"),source);
-if (removeExact != null) options.add(removeExact);
+if (removeExact != null) {
+options.add(removeExact);
+}
 options.add(first);
 options.add(second);
 options.add(both);
-if (type != IMPORT_CHECK) {
+if (type != DuplicateResolverDialog.IMPORT_CHECK) {
 options.add(Box.createHorizontalStrut(5));
 options.add(cancel);
 }
 first.addActionListener(new ActionListener(){
-public void actionPerformed(ActionEvent e){
-status=KEEP_UPPER;
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.KEEP_UPPER;
 block=false;
 dispose();
 }
 }
 );
 second.addActionListener(new ActionListener(){
-public void actionPerformed(ActionEvent e){
-status=KEEP_LOWER;
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.KEEP_LOWER;
 block=false;
 dispose();
 }
 }
 );
 both.addActionListener(new ActionListener(){
-public void actionPerformed(ActionEvent e){
-status=KEEP_BOTH;
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.KEEP_BOTH;
 block=false;
 dispose();
 }
 }
 );
-if (removeExact != null) removeExact.addActionListener(new ActionListener(){
-public void actionPerformed(ActionEvent e){
-status=AUTOREMOVE_EXACT;
+if (removeExact != null) {
+removeExact.addActionListener(new ActionListener(){
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.AUTOREMOVE_EXACT;
 block=false;
 dispose();
 }
 }
 );
+}
 cancel.addActionListener(new ActionListener(){
-public void actionPerformed(ActionEvent e){
-status=BREAK;
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.BREAK;
 block=false;
 dispose();
 }

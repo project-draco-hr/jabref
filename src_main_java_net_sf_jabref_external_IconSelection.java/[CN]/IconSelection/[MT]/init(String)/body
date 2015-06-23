@@ -7,7 +7,9 @@
     ImageIcon icon=GUIGlobals.getImage(key);
     if (!iconSet.contains(icon)) {
       iconKeys.add(key);
-      if (key.equals(initialSelection))       initSelIndex=iconKeys.size() - 1;
+      if (key.equals(initialSelection)) {
+        initSelIndex=iconKeys.size() - 1;
+      }
     }
     iconSet.add(icon);
   }
@@ -23,7 +25,7 @@ class MyRenderer implements ListCellRenderer {
       comp.setIconTextGap(0);
       comp.setHorizontalAlignment(JLabel.CENTER);
     }
-    public Component getListCellRendererComponent(    JList list,    Object value,    int i,    boolean isSelected,    boolean hasFocus){
+    @Override public Component getListCellRendererComponent(    JList list,    Object value,    int i,    boolean isSelected,    boolean hasFocus){
       comp.setText(null);
       comp.setIcon(((JLabel)value).getIcon());
       if (isSelected) {
@@ -39,7 +41,9 @@ class MyRenderer implements ListCellRenderer {
       return comp;
     }
   }
-  if (initSelIndex >= 0)   icons.setSelectedIndex(initSelIndex);
+  if (initSelIndex >= 0) {
+    icons.setSelectedIndex(initSelIndex);
+  }
   icons.setCellRenderer(new MyRenderer());
   icons.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   icons.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -50,15 +54,17 @@ class MyRenderer implements ListCellRenderer {
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       okPressed=true;
-      if (icons.getSelectedValue() != null)       selected=icons.getSelectedIndex();
+      if (icons.getSelectedValue() != null) {
+        selected=icons.getSelectedIndex();
+      }
       dispose();
     }
   }
 );
   cancel.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       okPressed=false;
       dispose();
     }

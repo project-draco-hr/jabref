@@ -1,12 +1,18 @@
 {
   if (Globals.prefs.getBoolean("warnAboutDuplicatesInInspection")) {
     for (    BibtexEntry entry : entries) {
-      if (!entry.isSearchHit())       continue;
+      if (!entry.isSearchHit()) {
+        continue;
+      }
       if (entry.isGroupHit()) {
         CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("There are possible duplicates (marked with a 'D' icon) that haven't been resolved. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
         int answer=JOptionPane.showConfirmDialog(ImportInspectionDialog.this,cbm,Globals.lang("Duplicates found"),JOptionPane.YES_NO_OPTION);
-        if (cbm.isSelected())         Globals.prefs.putBoolean("warnAboutDuplicatesInInspection",false);
-        if (answer == JOptionPane.NO_OPTION)         return;
+        if (cbm.isSelected()) {
+          Globals.prefs.putBoolean("warnAboutDuplicatesInInspection",false);
+        }
+        if (answer == JOptionPane.NO_OPTION) {
+          return;
+        }
         break;
       }
     }
@@ -30,8 +36,10 @@
     }
     boolean groupingCanceled=false;
     Util.setAutomaticFields(selected,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"),Globals.prefs.getBoolean("markImportedEntries"));
-    if (Globals.prefs.getBoolean("unmarkAllEntriesBeforeImporting"))     for (    BibtexEntry entry : panel.database().getEntries()) {
-      Util.unmarkEntry(entry,true,panel.database(),ce);
+    if (Globals.prefs.getBoolean("unmarkAllEntriesBeforeImporting")) {
+      for (      BibtexEntry entry : panel.database().getEntries()) {
+        Util.unmarkEntry(entry,true,panel.database(),ce);
+      }
     }
     for (    BibtexEntry entry : selected) {
       entry.setSearchHit(false);
@@ -43,13 +51,17 @@
           if (answer == JOptionPane.YES_OPTION) {
             generateKeys(false);
           }
- else           groupingCanceled=true;
+ else {
+            groupingCanceled=true;
+          }
         }
         if (entry.getField(BibtexFields.KEY_FIELD) != null) {
           for (          GroupTreeNode node : groups) {
             if (node.getGroup().supportsAdd()) {
               AbstractUndoableEdit undo=node.getGroup().add(new BibtexEntry[]{entry});
-              if (undo instanceof UndoableChangeAssignment)               ((UndoableChangeAssignment)undo).setEditedNode(node);
+              if (undo instanceof UndoableChangeAssignment) {
+                ((UndoableChangeAssignment)undo).setEditedNode(node);
+              }
               ce.addEdit(undo);
             }
  else {
@@ -71,7 +83,7 @@
   }
   dispose();
   SwingUtilities.invokeLater(new Runnable(){
-    public void run(){
+    @Override public void run(){
       if (newDatabase) {
         frame.addTab(panel,null,true);
       }

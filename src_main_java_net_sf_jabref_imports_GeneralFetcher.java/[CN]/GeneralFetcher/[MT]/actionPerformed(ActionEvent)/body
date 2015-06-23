@@ -14,13 +14,15 @@
     final PreviewEntryFetcher pFetcher=(PreviewEntryFetcher)activeFetcher;
     final FetcherPreviewDialog dialog=new FetcherPreviewDialog(frame,pFetcher.getWarningLimit(),pFetcher.getPreferredPreviewHeight());
     JabRefExecutorService.INSTANCE.execute(new Runnable(){
-      public void run(){
+      @Override public void run(){
         final boolean result=pFetcher.processQueryGetPreview(tf.getText().trim(),dialog,dialog);
         SwingUtilities.invokeLater(new Runnable(){
-          public void run(){
+          @Override public void run(){
             frame.setProgressBarVisible(false);
             frame.output("");
-            if (!result)             return;
+            if (!result) {
+              return;
+            }
             dialog.setLocationRelativeTo(frame);
             dialog.setVisible(true);
             if (dialog.isOkPressed()) {
@@ -29,7 +31,7 @@
               Util.placeDialog(d2,frame);
               d2.setVisible(true);
               JabRefExecutorService.INSTANCE.execute(new Runnable(){
-                public void run(){
+                @Override public void run(){
                   pFetcher.getEntries(dialog.getSelection(),d2);
                   d2.entryListComplete();
                 }
@@ -49,7 +51,7 @@
     Util.placeDialog(dialog,frame);
     dialog.setVisible(true);
     JabRefExecutorService.INSTANCE.execute(new Runnable(){
-      public void run(){
+      @Override public void run(){
         if (activeFetcher.processQuery(tf.getText().trim(),dialog,dialog)) {
           dialog.entryListComplete();
         }

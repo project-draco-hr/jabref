@@ -1,12 +1,16 @@
 {
-  if (stream == null)   throw new IOException("No stream given.");
+  if (stream == null) {
+    throw new IOException("No stream given.");
+  }
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   List<String> entries=new LinkedList<String>();
 {
     String str;
     StringBuffer sb=new StringBuffer();
     while ((str=in.readLine()) != null) {
-      if (str.length() < 4)       continue;
+      if (str.length() < 4) {
+        continue;
+      }
       String code=str.substring(0,4);
       if (code.equals("    ")) {
         sb.append(" ").append(str.trim());
@@ -21,7 +25,9 @@
         sb.append('\n').append(str);
       }
     }
-    if (sb.length() > 0)     entries.add(sb.toString());
+    if (sb.length() > 0) {
+      entries.add(sb.toString());
+    }
   }
   List<BibtexEntry> results=new LinkedList<BibtexEntry>();
   for (  String entry : entries) {
@@ -29,19 +35,43 @@
     String[] lines=entry.split("\n");
     for (    String line1 : lines) {
       String line=line1.trim();
-      if (line.length() < 4)       continue;
+      if (line.length() < 4) {
+        continue;
+      }
       String code=line.substring(0,4);
-      if (code.equals("TI- "))       setOrAppend(b,"title",line.substring(4).trim(),", ");
- else       if (code.equals("AU- "))       setOrAppend(b,"author",line.substring(4).trim()," and ");
- else       if (code.equals("PY- "))       setOrAppend(b,"year",line.substring(4).trim(),", ");
- else       if (code.equals("PU- "))       setOrAppend(b,"publisher",line.substring(4).trim(),", ");
- else       if (code.equals("SE- "))       setOrAppend(b,"series",line.substring(4).trim(),", ");
- else       if (code.equals("IS- "))       setOrAppend(b,"isbn",line.substring(4).trim(),", ");
- else       if (code.equals("KW- "))       setOrAppend(b,"keywords",line.substring(4).trim(),", ");
- else       if (code.equals("NT- "))       setOrAppend(b,"note",line.substring(4).trim(),", ");
- else       if (code.equals("PD- "))       setOrAppend(b,"physicaldimensions",line.substring(4).trim(),", ");
- else       if (code.equals("DT- "))       setOrAppend(b,"documenttype",line.substring(4).trim(),", ");
- else       setOrAppend(b,code.substring(0,2),line.substring(4).trim(),", ");
+      if (code.equals("TI- ")) {
+        setOrAppend(b,"title",line.substring(4).trim(),", ");
+      }
+ else       if (code.equals("AU- ")) {
+        setOrAppend(b,"author",line.substring(4).trim()," and ");
+      }
+ else       if (code.equals("PY- ")) {
+        setOrAppend(b,"year",line.substring(4).trim(),", ");
+      }
+ else       if (code.equals("PU- ")) {
+        setOrAppend(b,"publisher",line.substring(4).trim(),", ");
+      }
+ else       if (code.equals("SE- ")) {
+        setOrAppend(b,"series",line.substring(4).trim(),", ");
+      }
+ else       if (code.equals("IS- ")) {
+        setOrAppend(b,"isbn",line.substring(4).trim(),", ");
+      }
+ else       if (code.equals("KW- ")) {
+        setOrAppend(b,"keywords",line.substring(4).trim(),", ");
+      }
+ else       if (code.equals("NT- ")) {
+        setOrAppend(b,"note",line.substring(4).trim(),", ");
+      }
+ else       if (code.equals("PD- ")) {
+        setOrAppend(b,"physicaldimensions",line.substring(4).trim(),", ");
+      }
+ else       if (code.equals("DT- ")) {
+        setOrAppend(b,"documenttype",line.substring(4).trim(),", ");
+      }
+ else {
+        setOrAppend(b,code.substring(0,2),line.substring(4).trim(),", ");
+      }
     }
     results.add(b);
   }

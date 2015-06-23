@@ -1,12 +1,16 @@
 {
-  if (content == null)   return null;
-  content=unifyDiacritics(content);
+  if (content == null) {
+    return null;
+  }
+  content=LabelPatternUtil.unifyDiacritics(content);
   List<String> ignore=Arrays.asList("press","the");
   content=content.replaceAll("^\\{","").replaceAll("\\}$","");
   Pattern regex=Pattern.compile(".*\\(\\{([A-Z]+)\\}\\).*");
   Matcher matcher=regex.matcher(content);
-  if (matcher.matches())   return matcher.group(1);
-  content=removeDiacritics(content);
+  if (matcher.matches()) {
+    return matcher.group(1);
+  }
+  content=LabelPatternUtil.removeDiacritics(content);
   String[] parts=content.split(",");
   String university=null;
   String department=null;
@@ -15,7 +19,7 @@
   for (int index=0; index < parts.length; index++) {
     List<String> part=new ArrayList<String>();
     for (    String k : parts[index].replaceAll("\\{[A-Z]+\\}","").split("[ \\-_]")) {
-      if (!k.equals("") && !ignore.contains(k.toLowerCase()) && k.charAt(k.length() - 1) != '.' && (k.charAt(0) + "").matches("[A-Z]") || k.length() >= 3 && k.toLowerCase().substring(0,2).equals("uni")) {
+      if ((!k.equals("") && !ignore.contains(k.toLowerCase()) && (k.charAt(k.length() - 1) != '.')&& (k.charAt(0) + "").matches("[A-Z]")) || ((k.length() >= 3) && k.toLowerCase().substring(0,2).equals("uni"))) {
         part.add(k);
       }
     }
@@ -24,41 +28,67 @@
     boolean isDepartment=false;
     boolean isSchool=false;
     for (    String k : part) {
-      if (k.length() >= 5 && k.toLowerCase().substring(0,5).equals("univ"))       isUniversity=true;
-      if (k.length() >= 6 && k.toLowerCase().substring(0,6).equals("techn"))       isTechnology=true;
-      if (k.toLowerCase().equals("school"))       isSchool=true;
-      if (k.length() >= 7 && k.toLowerCase().substring(0,7).matches("d[ei]part") || k.length() >= 4 && k.toLowerCase().substring(0,4).equals("lab"))       isDepartment=true;
+      if ((k.length() >= 5) && k.toLowerCase().substring(0,5).equals("univ")) {
+        isUniversity=true;
+      }
+      if ((k.length() >= 6) && k.toLowerCase().substring(0,6).equals("techn")) {
+        isTechnology=true;
+      }
+      if (k.toLowerCase().equals("school")) {
+        isSchool=true;
+      }
+      if (((k.length() >= 7) && k.toLowerCase().substring(0,7).matches("d[ei]part")) || ((k.length() >= 4) && k.toLowerCase().substring(0,4).equals("lab"))) {
+        isDepartment=true;
+      }
     }
-    if (isTechnology)     isUniversity=false;
+    if (isTechnology) {
+      isUniversity=false;
+    }
     if (isUniversity) {
       university="Uni";
       for (      String k : part) {
-        if (k.length() >= 5 && !k.toLowerCase().substring(0,5).equals("univ"))         university+=k;
+        if ((k.length() >= 5) && !k.toLowerCase().substring(0,5).equals("univ")) {
+          university+=k;
+        }
       }
-      if (index > 0 && department == null)       department=parts[index - 1];
+      if ((index > 0) && (department == null)) {
+        department=parts[index - 1];
+      }
     }
  else     if (isSchool || isDepartment) {
-      if (isSchool)       school="";
-      if (isDepartment)       department="";
+      if (isSchool) {
+        school="";
+      }
+      if (isDepartment) {
+        department="";
+      }
       for (      String k : part) {
-        if (k.length() >= 7 && !k.toLowerCase().substring(0,7).matches("d[ei]part") && !k.toLowerCase().equals("school") && !k.toLowerCase().equals("faculty") && !k.replaceAll("[^A-Z]","").equals("")) {
-          if (isSchool)           school+=k.replaceAll("[^A-Z]","");
-          if (isDepartment)           department+=k.replaceAll("[^A-Z]","");
+        if ((k.length() >= 7) && !k.toLowerCase().substring(0,7).matches("d[ei]part") && !k.toLowerCase().equals("school")&& !k.toLowerCase().equals("faculty")&& !k.replaceAll("[^A-Z]","").equals("")) {
+          if (isSchool) {
+            school+=k.replaceAll("[^A-Z]","");
+          }
+          if (isDepartment) {
+            department+=k.replaceAll("[^A-Z]","");
+          }
         }
       }
     }
  else     if (rest == null) {
       rest="";
       if (part.size() < 3) {
-        for (        String k : part)         rest+=k;
+        for (        String k : part) {
+          rest+=k;
+        }
       }
  else {
         for (        String k : part) {
           k=k.replaceAll("[^A-Z]","");
-          if (!k.equals(""))           rest+=k;
+          if (!k.equals("")) {
+            rest+=k;
+          }
         }
       }
     }
   }
-  return (university == null ? rest : university) + (school == null ? "" : school) + ((department == null || (school != null && department.equals(school))) ? "" : department);
+  return (university == null ? rest : university) + (school == null ? "" : school) + (((department == null) || ((school != null) && department.equals(school))) ? "" : department);
 }

@@ -21,7 +21,7 @@
       return false;
     }
     int numberToFetch=result.count;
-    if (numberToFetch > PACING) {
+    if (numberToFetch > MedlineFetcher.PACING) {
       while (true) {
         String strCount=JOptionPane.showInputDialog(Globals.lang("References found") + ": " + numberToFetch+ "  "+ Globals.lang("Number of references to fetch?"),Integer.toString(numberToFetch));
         if (strCount == null) {
@@ -37,9 +37,11 @@
         }
       }
     }
-    for (int i=0; i < numberToFetch; i+=PACING) {
-      if (!shouldContinue)       break;
-      int noToFetch=Math.min(PACING,numberToFetch - i);
+    for (int i=0; i < numberToFetch; i+=MedlineFetcher.PACING) {
+      if (!shouldContinue) {
+        break;
+      }
+      int noToFetch=Math.min(MedlineFetcher.PACING,numberToFetch - i);
       result=getIds(searchTerm,i,noToFetch);
       List<BibtexEntry> bibs=MedlineImporter.fetchMedline(result.ids,frame);
       for (      BibtexEntry entry : bibs) {

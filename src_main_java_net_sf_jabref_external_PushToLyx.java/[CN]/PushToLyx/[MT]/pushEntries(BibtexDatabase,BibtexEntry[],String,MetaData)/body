@@ -2,7 +2,9 @@
   couldNotFindPipe=false;
   couldNotWrite=false;
   String lyxpipeSetting=Globals.prefs.get("lyxpipe");
-  if (!lyxpipeSetting.endsWith(".in"))   lyxpipeSetting=lyxpipeSetting + ".in";
+  if (!lyxpipeSetting.endsWith(".in")) {
+    lyxpipeSetting=lyxpipeSetting + ".in";
+  }
   File lp=new File(lyxpipeSetting);
   if (!lp.exists() || !lp.canWrite()) {
     lp=new File(lyxpipeSetting + ".in");
@@ -13,7 +15,7 @@
   }
   final File lyxpipe=lp;
   JabRefExecutorService.INSTANCE.executeAndWait(new Runnable(){
-    public void run(){
+    @Override public void run(){
       try {
         FileWriter fw=new FileWriter(lyxpipe);
         BufferedWriter lyx_out=new BufferedWriter(fw);

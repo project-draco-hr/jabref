@@ -2,17 +2,23 @@
   try {
     XTextViewCursor xViewCursor=xViewCursorSupplier.getViewCursor();
     if (entries.length > 1) {
-      if (style.getBooleanCitProperty("MultiCiteChronological"))       Arrays.sort(entries,yearComparator);
- else       Arrays.sort(entries,entryComparator);
+      if (style.getBooleanCitProperty("MultiCiteChronological")) {
+        Arrays.sort(entries,yearComparator);
+      }
+ else {
+        Arrays.sort(entries,entryComparator);
+      }
     }
     StringBuilder sb=new StringBuilder();
     for (int i=0; i < entries.length; i++) {
       BibtexEntry entry=entries[i];
-      if (i > 0)       sb.append(",");
+      if (i > 0) {
+        sb.append(",");
+      }
       sb.append(entry.getCiteKey());
     }
     String keyString=sb.toString();
-    String bName=getUniqueReferenceMarkName(keyString,withText ? (inParenthesis ? AUTHORYEAR_PAR : AUTHORYEAR_INTEXT) : INVISIBLE_CIT);
+    String bName=getUniqueReferenceMarkName(keyString,withText ? (inParenthesis ? OOBibBase.AUTHORYEAR_PAR : OOBibBase.AUTHORYEAR_INTEXT) : OOBibBase.INVISIBLE_CIT);
     if (pageInfo != null) {
       System.out.println("Storing page info: " + pageInfo);
       setCustomProperty(bName,pageInfo);

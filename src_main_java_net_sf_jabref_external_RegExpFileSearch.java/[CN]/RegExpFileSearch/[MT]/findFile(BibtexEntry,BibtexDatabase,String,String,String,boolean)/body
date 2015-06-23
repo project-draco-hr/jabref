@@ -10,15 +10,19 @@
   if (!root.exists()) {
     return null;
   }
-  res=findFile(entry,database,root,file,extensionRegExp);
+  res=RegExpFileSearch.findFile(entry,database,root,file,extensionRegExp);
   if (res.size() > 0) {
-    for (int i=0; i < res.size(); i++)     try {
-      String tmp=res.get(i).getCanonicalPath().substring(root.getCanonicalPath().length());
-      if ((tmp.length() > 1) && (tmp.charAt(0) == File.separatorChar))       tmp=tmp.substring(1);
-      res.set(i,new File(tmp));
-    }
- catch (    IOException e) {
-      e.printStackTrace();
+    for (int i=0; i < res.size(); i++) {
+      try {
+        String tmp=res.get(i).getCanonicalPath().substring(root.getCanonicalPath().length());
+        if ((tmp.length() > 1) && (tmp.charAt(0) == File.separatorChar)) {
+          tmp=tmp.substring(1);
+        }
+        res.set(i,new File(tmp));
+      }
+ catch (      IOException e) {
+        e.printStackTrace();
+      }
     }
   }
   return res;

@@ -9,14 +9,14 @@
   database.insertEntry(entry1);
   UnlinkedFilesCrawler crawler=new UnlinkedFilesCrawler(database);
   CheckableTreeNode treeNode=crawler.searchDirectory(ImportDataTest.EXISTING_FOLDER,new EntryFromPDFCreator());
-  assertNotNull(treeNode);
+  Assert.assertNotNull(treeNode);
   @SuppressWarnings("unchecked") Enumeration<CheckableTreeNode> enumeration=treeNode.breadthFirstEnumeration();
   while (enumeration.hasMoreElements()) {
     CheckableTreeNode nextElement=enumeration.nextElement();
     nextElement.setSelected(true);
   }
   List<File> resultList=getFileListFromNode(treeNode);
-  assertFalse(resultList.isEmpty());
-  assertTrue(resultList.contains(ImportDataTest.FILE_NOT_IN_DATABASE));
-  assertFalse(resultList.contains(ImportDataTest.FILE_IN_DATABASE));
+  Assert.assertFalse(resultList.isEmpty());
+  Assert.assertTrue(resultList.contains(ImportDataTest.FILE_NOT_IN_DATABASE));
+  Assert.assertFalse(resultList.contains(ImportDataTest.FILE_IN_DATABASE));
 }

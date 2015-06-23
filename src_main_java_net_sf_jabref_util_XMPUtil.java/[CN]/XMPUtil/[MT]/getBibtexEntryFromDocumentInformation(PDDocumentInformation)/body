@@ -1,13 +1,21 @@
 {
   BibtexEntry entry=new BibtexEntry();
   String s=di.getAuthor();
-  if (s != null)   entry.setField("author",s);
+  if (s != null) {
+    entry.setField("author",s);
+  }
   s=di.getTitle();
-  if (s != null)   entry.setField("title",s);
+  if (s != null) {
+    entry.setField("title",s);
+  }
   s=di.getKeywords();
-  if (s != null)   entry.setField("keywords",s);
+  if (s != null) {
+    entry.setField("keywords",s);
+  }
   s=di.getSubject();
-  if (s != null)   entry.setField("abstract",s);
+  if (s != null) {
+    entry.setField("abstract",s);
+  }
   COSDictionary dict=di.getDictionary();
   for (  Map.Entry<COSName,COSBase> o : dict.entrySet()) {
     String key=o.getKey().getName();
@@ -16,9 +24,13 @@
       key=key.substring("bibtex/".length());
       if (key.equals("entrytype")) {
         BibtexEntryType type=BibtexEntryType.getStandardType(value);
-        if (type != null)         entry.setType(type);
+        if (type != null) {
+          entry.setType(type);
+        }
       }
- else       entry.setField(key,value);
+ else {
+        entry.setField(key,value);
+      }
     }
   }
   return (entry.getAllFields().size() > 0 ? entry : null);

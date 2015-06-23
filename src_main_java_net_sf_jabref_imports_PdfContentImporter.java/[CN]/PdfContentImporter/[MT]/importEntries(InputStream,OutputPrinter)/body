@@ -5,12 +5,12 @@
     document=PDDocument.load(in);
   }
  catch (  IOException e) {
-    logger.log(Level.SEVERE,"Could not load document",e);
+    PdfContentImporter.logger.log(Level.SEVERE,"Could not load document",e);
     return res;
   }
   try {
     if (document.isEncrypted()) {
-      logger.log(Level.INFO,Globals.lang("Encrypted documents are not supported"));
+      PdfContentImporter.logger.log(Level.INFO,Globals.lang("Encrypted documents are not supported"));
     }
     PDFTextStripper stripper=new PDFTextStripper();
     stripper.setStartPage(1);
@@ -32,7 +32,7 @@
         }
       }
 ;
-      doiToBibTeXFetcher.processQuery(doi,i,status);
+      PdfContentImporter.doiToBibTeXFetcher.processQuery(doi,i,status);
       if (res.size() != 0) {
         return res;
       }
@@ -164,7 +164,9 @@
  else {
         if (DOI == null) {
           pos=curString.indexOf("DOI");
-          if (pos < 0)           pos=curString.indexOf("doi");
+          if (pos < 0) {
+            pos=curString.indexOf("doi");
+          }
           if (pos >= 0) {
             pos+=3;
             char delimiter=curString.charAt(pos);
@@ -172,8 +174,12 @@
               pos++;
             }
             int nextSpace=curString.indexOf(' ',pos);
-            if (nextSpace > 0)             DOI=curString.substring(pos,nextSpace);
- else             DOI=curString.substring(pos);
+            if (nextSpace > 0) {
+              DOI=curString.substring(pos,nextSpace);
+            }
+ else {
+              DOI=curString.substring(pos);
+            }
           }
         }
         if ((publisher == null) && (curString.contains("IEEE"))) {
@@ -182,7 +188,9 @@
             pos=curString.indexOf('$');
             if (pos > 0) {
               pos-=2;
-              while ((pos >= 0) && (curString.charAt(pos) != ' '))               pos--;
+              while ((pos >= 0) && (curString.charAt(pos) != ' ')) {
+                pos--;
+              }
               if (pos > 0) {
                 conference=curString.substring(0,pos);
               }
@@ -193,20 +201,48 @@
     }
     BibtexEntry entry=new BibtexEntry();
     entry.setType(type);
-    if (author != null)     entry.setField("author",author);
-    if (editor != null)     entry.setField("editor",editor);
-    if (institution != null)     entry.setField("institution",institution);
-    if (abstractT != null)     entry.setField("abstract",abstractT);
-    if (keywords != null)     entry.setField("keywords",keywords);
-    if (title != null)     entry.setField("title",title);
-    if (conference != null)     entry.setField("booktitle",conference);
-    if (DOI != null)     entry.setField("doi",DOI);
-    if (series != null)     entry.setField("series",series);
-    if (volume != null)     entry.setField("volume",volume);
-    if (number != null)     entry.setField("number",number);
-    if (pages != null)     entry.setField("pages",pages);
-    if (year != null)     entry.setField("year",year);
-    if (publisher != null)     entry.setField("publisher",publisher);
+    if (author != null) {
+      entry.setField("author",author);
+    }
+    if (editor != null) {
+      entry.setField("editor",editor);
+    }
+    if (institution != null) {
+      entry.setField("institution",institution);
+    }
+    if (abstractT != null) {
+      entry.setField("abstract",abstractT);
+    }
+    if (keywords != null) {
+      entry.setField("keywords",keywords);
+    }
+    if (title != null) {
+      entry.setField("title",title);
+    }
+    if (conference != null) {
+      entry.setField("booktitle",conference);
+    }
+    if (DOI != null) {
+      entry.setField("doi",DOI);
+    }
+    if (series != null) {
+      entry.setField("series",series);
+    }
+    if (volume != null) {
+      entry.setField("volume",volume);
+    }
+    if (number != null) {
+      entry.setField("number",number);
+    }
+    if (pages != null) {
+      entry.setField("pages",pages);
+    }
+    if (year != null) {
+      entry.setField("year",year);
+    }
+    if (publisher != null) {
+      entry.setField("publisher",publisher);
+    }
     entry.setField("review",textResult);
     res.add(entry);
   }
@@ -215,7 +251,7 @@
       status.showMessage(Globals.lang("Java Bouncy Castle library not found. Please download and install it. For more information see http://www.bouncycastle.org/."));
     }
  else {
-      logger.log(Level.SEVERE,e.getLocalizedMessage(),e);
+      PdfContentImporter.logger.log(Level.SEVERE,e.getLocalizedMessage(),e);
     }
   }
  finally {

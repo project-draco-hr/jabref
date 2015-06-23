@@ -12,11 +12,11 @@
   try {
     VerifyingWriter fw=session.getWriter();
     if (saveType != DatabaseSaveType.PLAIN_BIBTEX) {
-      writeBibFileHeader(fw,encoding);
+      FileActions.writeBibFileHeader(fw,encoding);
     }
-    writePreamble(fw,database.getPreamble());
-    writeStrings(fw,database);
-    List<Comparator<BibtexEntry>> comparators=getSaveComparators(true,metaData);
+    FileActions.writePreamble(fw,database.getPreamble());
+    FileActions.writeStrings(fw,database);
+    List<Comparator<BibtexEntry>> comparators=FileActions.getSaveComparators(true,metaData);
     List<BibtexEntry> sorter=new ArrayList<BibtexEntry>(bes.length);
     Collections.addAll(sorter,bes);
     Collections.sort(sorter,new FieldComparatorStack<BibtexEntry>(comparators));
@@ -30,7 +30,7 @@
       bibtexEntryWriter.write(be,fw);
       fw.write(Globals.NEWLINE);
     }
-    if (saveType != DatabaseSaveType.PLAIN_BIBTEX && metaData != null) {
+    if ((saveType != DatabaseSaveType.PLAIN_BIBTEX) && (metaData != null)) {
       metaData.writeMetaData(fw);
     }
     if (types.size() > 0) {

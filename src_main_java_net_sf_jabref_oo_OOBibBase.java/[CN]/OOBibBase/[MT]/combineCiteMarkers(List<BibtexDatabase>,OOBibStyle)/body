@@ -5,7 +5,7 @@
   final XTextRangeCompare compare=UnoRuntime.queryInterface(XTextRangeCompare.class,text);
   int piv=0;
   boolean madeModifications=false;
-  while (piv < names.length - 1) {
+  while (piv < (names.length - 1)) {
     XTextRange r1=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv])).getAnchor().getEnd();
     XTextRange r2=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv + 1])).getAnchor().getStart();
     if (r1.getText() != r2.getText()) {
@@ -48,13 +48,15 @@
       StringBuilder sb=new StringBuilder();
       int i=0;
       for (      BibtexEntry entry : entries) {
-        if (i > 0)         sb.append(",");
+        if (i > 0) {
+          sb.append(",");
+        }
         sb.append(entry.getCiteKey());
         i++;
       }
       String keyString=sb.toString();
       boolean inParenthesis=true;
-      String bName=getUniqueReferenceMarkName(keyString,inParenthesis ? AUTHORYEAR_PAR : AUTHORYEAR_INTEXT);
+      String bName=getUniqueReferenceMarkName(keyString,inParenthesis ? OOBibBase.AUTHORYEAR_PAR : OOBibBase.AUTHORYEAR_INTEXT);
       insertReferenceMark(bName,"tmp",mxDocCursor,true,style);
       names[piv + 1]=bName;
       madeModifications=true;

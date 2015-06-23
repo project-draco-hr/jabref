@@ -6,10 +6,10 @@
     int start=i;
     if (Character.isJavaIdentifierStart(c[i])) {
       i++;
-      while (i < c.length && (Character.isJavaIdentifierPart(c[i]) || c[i] == '.')) {
+      while ((i < c.length) && (Character.isJavaIdentifierPart(c[i]) || (c[i] == '.'))) {
         i++;
       }
-      if (i < c.length && c[i] == '(') {
+      if ((i < c.length) && (c[i] == '(')) {
         String method=calls.substring(start,i);
         i++;
         if (i < c.length) {
@@ -18,11 +18,13 @@
             int startParam=i;
             i++;
             boolean escaped=false;
-            while (i + 1 < c.length && !(!escaped && c[i] == '"' && c[i + 1] == ')')) {
+            while (((i + 1) < c.length) && !(!escaped && (c[i] == '"') && (c[i + 1] == ')'))) {
               if (c[i] == '\\') {
                 escaped=!escaped;
               }
- else               escaped=false;
+ else {
+                escaped=false;
+              }
               i++;
             }
             String param=calls.substring(startParam,i);
@@ -30,7 +32,7 @@
           }
  else {
             int startParam=i;
-            while (i < c.length && c[i] != ')') {
+            while ((i < c.length) && (c[i] != ')')) {
               i++;
             }
             String param=calls.substring(startParam,i);

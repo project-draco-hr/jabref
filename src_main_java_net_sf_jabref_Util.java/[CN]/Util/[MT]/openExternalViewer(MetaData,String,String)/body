@@ -1,15 +1,19 @@
 {
   if (fieldName.equals("ps") || fieldName.equals("pdf")) {
     String[] dir=metaData.getFileDirectory(fieldName);
-    File file=expandFilename(link,dir);
+    File file=Util.expandFilename(link,dir);
     if ((file == null) || !file.exists()) {
       throw new IOException(Globals.lang("File not found") + " (" + fieldName+ "): '"+ link+ "'.");
     }
     link=file.getCanonicalPath();
     String[] split=file.getName().split("\\.");
     if (split.length >= 2) {
-      if (split[split.length - 1].equalsIgnoreCase("pdf"))       fieldName="pdf";
- else       if (split[split.length - 1].equalsIgnoreCase("ps") || (split.length >= 3 && split[split.length - 2].equalsIgnoreCase("ps")))       fieldName="ps";
+      if (split[split.length - 1].equalsIgnoreCase("pdf")) {
+        fieldName="pdf";
+      }
+ else       if (split[split.length - 1].equalsIgnoreCase("ps") || ((split.length >= 3) && split[split.length - 2].equalsIgnoreCase("ps"))) {
+        fieldName="ps";
+      }
     }
   }
  else   if (fieldName.equals("doi")) {
@@ -17,14 +21,14 @@
   }
  else   if (fieldName.equals("eprint")) {
     fieldName="url";
-    link=sanitizeUrl(link);
+    link=Util.sanitizeUrl(link);
     if (!link.startsWith("http://")) {
       link=Globals.ARXIV_LOOKUP_PREFIX + link;
     }
   }
   if (fieldName.equals("url")) {
     try {
-      openBrowser(link);
+      Util.openBrowser(link);
     }
  catch (    IOException e) {
       System.err.println(Globals.lang("Error_opening_file_'%0'.",link));
@@ -40,7 +44,7 @@
         Runtime.getRuntime().exec(cmd);
       }
  else       if (Globals.ON_WIN) {
-        openFileOnWindows(link,true);
+        Util.openFileOnWindows(link,true);
       }
  else {
         ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("ps");
@@ -64,7 +68,7 @@
         Runtime.getRuntime().exec(cmd);
       }
  else       if (Globals.ON_WIN) {
-        openFileOnWindows(link,true);
+        Util.openFileOnWindows(link,true);
       }
  else {
         ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("pdf");

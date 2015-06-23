@@ -5,10 +5,14 @@
   md.setVisible(true);
   if (md.isOkPressed()) {
     String[] chosen=FileDialogs.getMultipleFiles(frame,new File(Globals.prefs.get("workingDirectory")),null,false);
-    if (chosen == null)     return;
-    for (    String aChosen : chosen)     filesToOpen.add(new File(aChosen));
+    if (chosen == null) {
+      return;
+    }
+    for (    String aChosen : chosen) {
+      filesToOpen.add(new File(aChosen));
+    }
     JabRefExecutorService.INSTANCE.execute(new Runnable(){
-      public void run(){
+      @Override public void run(){
         openIt(md.importEntries(),md.importStrings(),md.importGroups(),md.importSelectorWords());
       }
     }

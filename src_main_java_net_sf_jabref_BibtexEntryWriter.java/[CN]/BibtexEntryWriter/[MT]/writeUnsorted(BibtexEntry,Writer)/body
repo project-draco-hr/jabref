@@ -6,22 +6,30 @@
   written.put(BibtexFields.KEY_FIELD,null);
   boolean hasWritten=false;
   String[] s=entry.getRequiredFields();
-  if (s != null)   for (  String value : s) {
-    hasWritten=hasWritten | writeField(entry,out,value,hasWritten,false);
-    written.put(value,null);
-  }
-  s=entry.getOptionalFields();
-  if (s != null)   for (  String value : s) {
-    if (!written.containsKey(value)) {
+  if (s != null) {
+    for (    String value : s) {
       hasWritten=hasWritten | writeField(entry,out,value,hasWritten,false);
       written.put(value,null);
+    }
+  }
+  s=entry.getOptionalFields();
+  if (s != null) {
+    for (    String value : s) {
+      if (!written.containsKey(value)) {
+        hasWritten=hasWritten | writeField(entry,out,value,hasWritten,false);
+        written.put(value,null);
+      }
     }
   }
   TreeSet<String> remainingFields=new TreeSet<String>();
   for (  String key : entry.getAllFields()) {
     boolean writeIt=(write ? BibtexFields.isWriteableField(key) : BibtexFields.isDisplayableField(key));
-    if (!written.containsKey(key) && writeIt)     remainingFields.add(key);
+    if (!written.containsKey(key) && writeIt) {
+      remainingFields.add(key);
+    }
   }
-  for (  String field : remainingFields)   hasWritten=hasWritten | writeField(entry,out,field,hasWritten,false);
+  for (  String field : remainingFields) {
+    hasWritten=hasWritten | writeField(entry,out,field,hasWritten,false);
+  }
   out.write((hasWritten ? Globals.NEWLINE : "") + "}" + Globals.NEWLINE);
 }

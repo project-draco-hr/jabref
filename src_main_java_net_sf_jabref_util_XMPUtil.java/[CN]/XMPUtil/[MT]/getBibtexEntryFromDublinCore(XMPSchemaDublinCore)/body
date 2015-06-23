@@ -13,7 +13,9 @@
       }
       sb.append(it.next());
     }
-    if (sb != null)     entry.setField("editor",sb.toString());
+    if (sb != null) {
+      entry.setField("editor",sb.toString());
+    }
   }
   List<String> creators=dcSchema.getCreators();
   if (creators != null) {
@@ -28,10 +30,12 @@
       }
       sb.append(it.next());
     }
-    if (sb != null)     entry.setField("author",sb.toString());
+    if (sb != null) {
+      entry.setField("author",sb.toString());
+    }
   }
   List<String> dates=dcSchema.getSequenceList("dc:date");
-  if (dates != null && dates.size() > 0) {
+  if ((dates != null) && (dates.size() > 0)) {
     String date=dates.get(0).trim();
     Calendar c=null;
     try {
@@ -47,9 +51,13 @@
     }
   }
   String s=dcSchema.getDescription();
-  if (s != null)   entry.setField("abstract",s);
+  if (s != null) {
+    entry.setField("abstract",s);
+  }
   s=dcSchema.getIdentifier();
-  if (s != null)   entry.setField("doi",s);
+  if (s != null) {
+    entry.setField("doi",s);
+  }
   List<String> publishers=dcSchema.getPublishers();
   if (publishers != null) {
     Iterator<String> it=dcSchema.getPublishers().iterator();
@@ -63,7 +71,9 @@
       }
       sb.append(it.next());
     }
-    if (sb != null)     entry.setField("publishers",sb.toString());
+    if (sb != null) {
+      entry.setField("publishers",sb.toString());
+    }
   }
   List<String> relationships=dcSchema.getRelationships();
   if (relationships != null) {
@@ -78,9 +88,13 @@
     }
   }
   s=dcSchema.getRights();
-  if (s != null)   entry.setField("rights",s);
+  if (s != null) {
+    entry.setField("rights",s);
+  }
   s=dcSchema.getSource();
-  if (s != null)   entry.setField("source",s);
+  if (s != null) {
+    entry.setField("source",s);
+  }
   List<String> subjects=dcSchema.getSubjects();
   if (subjects != null) {
     Iterator<String> it=subjects.iterator();
@@ -94,16 +108,22 @@
       }
       sb.append(it.next());
     }
-    if (sb != null)     entry.setField("keywords",sb.toString());
+    if (sb != null) {
+      entry.setField("keywords",sb.toString());
+    }
   }
   s=dcSchema.getTitle();
-  if (s != null)   entry.setField("title",s);
+  if (s != null) {
+    entry.setField("title",s);
+  }
   List<String> l=dcSchema.getTypes();
-  if (l != null && l.size() > 0) {
+  if ((l != null) && (l.size() > 0)) {
     s=l.get(0);
     if (s != null) {
       BibtexEntryType type=BibtexEntryType.getStandardType(s);
-      if (type != null)       entry.setType(type);
+      if (type != null) {
+        entry.setType(type);
+      }
     }
   }
   return (entry.getAllFields().size() > 0 ? entry : null);

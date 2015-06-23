@@ -2,7 +2,7 @@
   String[] colSettings=Globals.prefs.getStringArray("columnNames");
   columns=new String[colSettings.length][];
   for (int i=0; i < colSettings.length; i++) {
-    String[] fields=colSettings[i].split(COL_DEFINITION_FIELD_SEPARATOR);
+    String[] fields=colSettings[i].split(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
     columns[i]=new String[fields.length];
     System.arraycopy(fields,0,columns[i],0,fields.length);
   }
@@ -16,24 +16,42 @@
   iconCols.clear();
   int coln=1;
   if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING))     iconCols.put(coln++,RANKING);
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE))     iconCols.put(coln++,RELEVANCE);
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY))     iconCols.put(coln++,QUALITY);
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY))     iconCols.put(coln++,PRIORITY);
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED))     iconCols.put(coln++,PRINTED);
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ))     iconCols.put(coln++,READ);
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+      iconCols.put(coln++,MainTableFormat.RANKING);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+      iconCols.put(coln++,MainTableFormat.RELEVANCE);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+      iconCols.put(coln++,MainTableFormat.QUALITY);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+      iconCols.put(coln++,MainTableFormat.PRIORITY);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED)) {
+      iconCols.put(coln++,MainTableFormat.PRINTED);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ)) {
+      iconCols.put(coln++,MainTableFormat.READ);
+    }
   }
-  if (Globals.prefs.getBoolean("fileColumn"))   iconCols.put(coln++,FILE);
-  if (Globals.prefs.getBoolean("pdfColumn"))   iconCols.put(coln++,PDF);
+  if (Globals.prefs.getBoolean("fileColumn")) {
+    iconCols.put(coln++,MainTableFormat.FILE);
+  }
+  if (Globals.prefs.getBoolean("pdfColumn")) {
+    iconCols.put(coln++,MainTableFormat.PDF);
+  }
   if (Globals.prefs.getBoolean("urlColumn")) {
     if (Globals.prefs.getBoolean("preferUrlDoi")) {
-      iconCols.put(coln++,DOI_FIRST);
+      iconCols.put(coln++,MainTableFormat.DOI_FIRST);
     }
  else {
-      iconCols.put(coln++,URL_FIRST);
+      iconCols.put(coln++,MainTableFormat.URL_FIRST);
     }
   }
-  if (Globals.prefs.getBoolean("arxivColumn"))   iconCols.put(coln++,ARXIV);
+  if (Globals.prefs.getBoolean("arxivColumn")) {
+    iconCols.put(coln++,MainTableFormat.ARXIV);
+  }
   if (Globals.prefs.getBoolean("extraFileColumns")) {
     String[] desiredColumns=Globals.prefs.getStringArray("listOfFileColumns");
     for (    String desiredColumn : desiredColumns) {

@@ -5,17 +5,21 @@
   String token="";
   for (int p=0; p < content.length(); p++) {
     if (b == 0) {
-      if (and.equals("") && content.charAt(p) == ' ' || and.equals(" ") && content.charAt(p) == 'a' || and.equals(" a") && content.charAt(p) == 'n' || and.equals(" an") && content.charAt(p) == 'd') {
+      if ((and.equals("") && (content.charAt(p) == ' ')) || (and.equals(" ") && (content.charAt(p) == 'a')) || (and.equals(" a") && (content.charAt(p) == 'n'))|| (and.equals(" an") && (content.charAt(p) == 'd'))) {
         and+=content.charAt(p);
       }
- else       if (and.equals(" and") && content.charAt(p) == ' ') {
+ else       if (and.equals(" and") && (content.charAt(p) == ' ')) {
         and="";
         tokens.add(token.trim());
         token="";
       }
  else {
-        if (content.charAt(p) == '{')         b++;
-        if (content.charAt(p) == '}')         b--;
+        if (content.charAt(p) == '{') {
+          b++;
+        }
+        if (content.charAt(p) == '}') {
+          b--;
+        }
         token+=and;
         and="";
         token+=content.charAt(p);
@@ -28,8 +32,10 @@
   tokens.add(token);
   StringBuilder normalized=new StringBuilder("");
   for (int i=0; i < tokens.size(); i++) {
-    if (i > 0)     normalized.append(" and ");
-    normalized.append(isInstitution(tokens.get(i)) ? generateInstitutionKey(tokens.get(i)) : removeDiacritics(tokens.get(i)));
+    if (i > 0) {
+      normalized.append(" and ");
+    }
+    normalized.append(LabelPatternUtil.isInstitution(tokens.get(i)) ? LabelPatternUtil.generateInstitutionKey(tokens.get(i)) : LabelPatternUtil.removeDiacritics(tokens.get(i)));
   }
   return normalized.toString();
 }

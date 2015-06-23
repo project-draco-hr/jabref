@@ -1,27 +1,31 @@
 {
-  if (pluginLayoutFormatter == null) {
-    pluginLayoutFormatter=new HashMap<String,LayoutFormatter>();
+  if (LayoutEntry.pluginLayoutFormatter == null) {
+    LayoutEntry.pluginLayoutFormatter=new HashMap<String,LayoutFormatter>();
     JabRefPlugin plugin=JabRefPlugin.getInstance(PluginCore.getManager());
     if (plugin != null) {
       for (      LayoutFormatterExtension e : plugin.getLayoutFormatterExtensions()) {
         LayoutFormatter formatter=e.getLayoutFormatter();
         String name=e.getName();
-        if (name == null)         name=e.getId();
+        if (name == null) {
+          name=e.getId();
+        }
         if (formatter != null) {
-          pluginLayoutFormatter.put(name,formatter);
+          LayoutEntry.pluginLayoutFormatter.put(name,formatter);
         }
       }
     }
   }
-  if (pluginLayoutFormatter.containsKey(formatterName)) {
-    Class<? extends LayoutFormatter> c=pluginLayoutFormatter.get(formatterName).getClass();
+  if (LayoutEntry.pluginLayoutFormatter.containsKey(formatterName)) {
+    Class<? extends LayoutFormatter> c=LayoutEntry.pluginLayoutFormatter.get(formatterName).getClass();
     try {
       return c.getConstructor().newInstance();
     }
  catch (    Throwable e) {
       e.printStackTrace();
     }
-    return pluginLayoutFormatter.get(formatterName);
+    return LayoutEntry.pluginLayoutFormatter.get(formatterName);
   }
- else   return null;
+ else {
+    return null;
+  }
 }

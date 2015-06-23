@@ -1,8 +1,10 @@
 {
   if (workingOnPreview) {
-    if (repeats > 0)     return;
+    if (repeats > 0) {
+      return;
+    }
     Timer t=new Timer(50,new ActionListener(){
-      public void actionPerformed(      ActionEvent actionEvent){
+      @Override public void actionPerformed(      ActionEvent actionEvent){
         updatePreview(toShow,changedPreview,1);
       }
     }
@@ -18,7 +20,7 @@
   final int mode=panel.getMode();
   workingOnPreview=true;
   final Runnable update=new Runnable(){
-    public void run(){
+    @Override public void run(){
       if (changedPreview || (mode == BasePanel.SHOWING_NOTHING)) {
         panel.showPreview(preview);
         panel.adjustSplitter();
@@ -28,7 +30,7 @@
   }
 ;
   final Runnable worker=new Runnable(){
-    public void run(){
+    @Override public void run(){
       preview.setEntry(toShow);
       SwingUtilities.invokeLater(update);
     }

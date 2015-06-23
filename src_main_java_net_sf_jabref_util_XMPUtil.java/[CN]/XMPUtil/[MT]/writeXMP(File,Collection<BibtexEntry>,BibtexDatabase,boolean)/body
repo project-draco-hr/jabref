@@ -1,14 +1,16 @@
 {
-  if (database != null)   bibtexEntries=database.resolveForStrings(bibtexEntries,false);
+  if (database != null) {
+    bibtexEntries=database.resolveForStrings(bibtexEntries,false);
+  }
   PDDocument document=null;
   try {
     document=PDDocument.load(file.getAbsoluteFile());
     if (document.isEncrypted()) {
       throw new EncryptionNotSupportedException("Error: Cannot add metadata to encrypted document.");
     }
-    if (writePDFInfo && bibtexEntries.size() == 1) {
-      writeDocumentInformation(document,bibtexEntries.iterator().next(),null);
-      writeDublinCore(document,bibtexEntries,null);
+    if (writePDFInfo && (bibtexEntries.size() == 1)) {
+      XMPUtil.writeDocumentInformation(document,bibtexEntries.iterator().next(),null);
+      XMPUtil.writeDublinCore(document,bibtexEntries,null);
     }
     PDDocumentCatalog catalog=document.getDocumentCatalog();
     PDMetadata metaRaw=catalog.getMetadata();
