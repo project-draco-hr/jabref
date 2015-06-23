@@ -9,7 +9,7 @@
     BibtexDatabase database=new BibtexDatabase();
     for (    BibtexEntry entry : bibentries) {
       try {
-        entry.setId(Util.createNeutralId());
+        entry.setId(IdGenerator.next());
         database.insertEntry(entry);
       }
  catch (      KeyCollisionException ex) {
@@ -53,7 +53,7 @@
       }
       if (!dupli) {
         try {
-          entry.setId(Util.createNeutralId());
+          entry.setId(IdGenerator.next());
           database.insertEntry(entry);
           ce.addEdit(new UndoableInsertEntry(database,entry,basePanel));
           addedEntries++;

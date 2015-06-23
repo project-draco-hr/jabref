@@ -29,7 +29,7 @@
     ResultSet rsEntries=SQLUtil.queryAllFromTable(conn,"entries WHERE database_id= '" + database_id + "';");
     while (rsEntries.next()) {
       String id=rsEntries.getString("entries_id");
-      BibtexEntry entry=new BibtexEntry(Util.createNeutralId(),types.get(rsEntries.getString("entry_types_id")));
+      BibtexEntry entry=new BibtexEntry(IdGenerator.next(),types.get(rsEntries.getString("entry_types_id")));
       entry.setField(BibtexFields.KEY_FIELD,rsEntries.getString("cite_key"));
       for (      String col : colNames) {
         String value=rsEntries.getString(col);
@@ -49,7 +49,7 @@
         database.setPreamble(content);
       }
  else {
-        BibtexString string=new BibtexString(Util.createNeutralId(),label,content);
+        BibtexString string=new BibtexString(IdGenerator.next(),label,content);
         database.addString(string);
       }
     }
