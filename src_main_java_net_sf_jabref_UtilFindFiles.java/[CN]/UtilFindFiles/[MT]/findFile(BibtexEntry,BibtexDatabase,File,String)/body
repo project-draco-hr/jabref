@@ -6,7 +6,7 @@
   Matcher m=Pattern.compile("([^\\\\])\\\\([^\\\\])").matcher(file);
   StringBuffer s=new StringBuffer();
   while (m.find()) {
-    m.appendReplacement(s,m.group(1) + "/" + m.group(2));
+    m.appendReplacement(s,m.group(1) + '/' + m.group(2));
   }
   m.appendTail(s);
   file=s.toString();
@@ -19,7 +19,7 @@
       String dirToProcess=fileParts[i];
       dirToProcess=Util.expandBrackets(dirToProcess,entry,database);
       if (dirToProcess.matches("^.:$")) {
-        directory=new File(dirToProcess + "/");
+        directory=new File(dirToProcess + '/');
         continue;
       }
       if (dirToProcess.equals(".")) {
@@ -88,7 +88,7 @@
     }
   }
   String filenameToLookFor=Util.expandBrackets(fileParts[fileParts.length - 1],entry,database);
-  final Pattern toMatch=Pattern.compile("^" + filenameToLookFor.replaceAll("\\\\\\\\","\\\\") + "$");
+  final Pattern toMatch=Pattern.compile('^' + filenameToLookFor.replaceAll("\\\\\\\\","\\\\") + '$');
   File[] matches=directory.listFiles(new FilenameFilter(){
     @Override public boolean accept(    File arg0,    String arg1){
       return toMatch.matcher(arg1).matches();

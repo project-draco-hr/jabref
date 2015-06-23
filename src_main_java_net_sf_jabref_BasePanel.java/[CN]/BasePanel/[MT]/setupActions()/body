@@ -31,7 +31,7 @@
       if ((bes != null) && (bes.length > 0)) {
         TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,BasePanel.this);
-        output(Globals.lang("Copied") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry") + "."));
+        output(Globals.lang("Copied") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry") + '.'));
       }
  else {
         int[] rows=mainTable.getSelectedRows(), cols=mainTable.getSelectedColumns();
@@ -40,7 +40,7 @@
           if (o != null) {
             StringSelection ss=new StringSelection(o.toString());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
-            output(Globals.lang("Copied cell contents") + ".");
+            output(Globals.lang("Copied cell contents") + '.');
           }
         }
       }
@@ -58,7 +58,7 @@
           ensureNotShowing(be);
           ce.addEdit(new UndoableRemoveEntry(database,be,BasePanel.this));
         }
-        frame.output(Globals.lang("Cut_pr") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
+        frame.output(Globals.lang("Cut_pr") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ '.');
         ce.end();
         undoManager.addEdit(ce);
         markBaseChanged();
@@ -79,7 +79,7 @@
             ce.addEdit(new UndoableRemoveEntry(database,be,BasePanel.this));
           }
           markBaseChanged();
-          frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
+          frame.output(Globals.lang("Deleted") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ '.');
           ce.end();
           undoManager.addEdit(ce);
         }
@@ -139,7 +139,7 @@ catch (          Throwable ex) {
           }
           ce.end();
           undoManager.addEdit(ce);
-          output(Globals.lang("Pasted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry"))+ ".");
+          output(Globals.lang("Pasted") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry"))+ '.');
           markBaseChanged();
           if (Globals.prefs.getBoolean("autoOpenForm")) {
             selectionListener.editSignalled(firstBE);
@@ -236,7 +236,7 @@ catch (          Throwable ex) {
           errorMessage=SQLUtil.getExceptionMessage(ex);
           ex.printStackTrace();
           dbs.isConfigValid(false);
-          JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + '\n' + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         }
         metaData.setDBStrings(dbs);
       }
@@ -250,7 +250,7 @@ catch (          Throwable ex) {
  else {
         String preamble="Could not export to SQL database for the following reason:";
         frame.output(Globals.lang(preamble) + "  " + errorMessage);
-        JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + '\n' + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         errorMessage=null;
       }
     }
@@ -276,7 +276,7 @@ catch (          Throwable ex) {
         return;
       }
       frame.block();
-      output(Globals.lang("Generating BibTeX key for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
+      output(Globals.lang("Generating BibTeX key for") + ' ' + numSelected+ ' '+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
     }
     @Override public void run(){
       BibtexEntry bes;
@@ -336,7 +336,7 @@ catch (          Throwable ex) {
         }
 );
       }
-      output(Globals.lang("Generated BibTeX key for") + " " + numSelected+ " "+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
+      output(Globals.lang("Generated BibTeX key for") + ' ' + numSelected+ ' '+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
       frame.unblock();
     }
   }
@@ -398,10 +398,10 @@ catch (          Throwable ex) {
         StringSelection ss=new StringSelection(sb.toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
         if (keys.size() == bes.length) {
-          output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + ".");
+          output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + '.');
         }
  else {
-          output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
+          output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
         }
       }
     }
@@ -427,13 +427,13 @@ catch (          Throwable ex) {
           sb.append(',');
           sb.append((String)keys.elementAt(i));
         }
-        StringSelection ss=new StringSelection("\\cite{" + sb.toString() + "}");
+        StringSelection ss=new StringSelection("\\cite{" + sb.toString() + '}');
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
         if (keys.size() == bes.length) {
-          output(bes.length > 1 ? Globals.lang("Copied keys") : Globals.lang("Copied key") + ".");
+          output(bes.length > 1 ? Globals.lang("Copied keys") : Globals.lang("Copied key") + '.');
         }
  else {
-          output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
+          output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
         }
       }
     }
@@ -468,10 +468,10 @@ catch (          Throwable ex) {
         StringSelection ss=new StringSelection(sb.toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
         if (copied == bes.length) {
-          output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + ".");
+          output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + '.');
         }
  else {
-          output(Globals.lang("Warning") + ": " + (copied)+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
+          output(Globals.lang("Warning") + ": " + (copied)+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
         }
       }
     }
@@ -498,7 +498,7 @@ catch (          Throwable ex) {
             if (entry != null) {
               try {
                 Util.openExternalFileAnyFormat(metaData,entry.getLink(),entry.getType());
-                output(Globals.lang("External viewer called") + ".");
+                output(Globals.lang("External viewer called") + '.');
               }
  catch (              IOException e) {
                 output(Globals.lang("Could not open link"));
@@ -550,7 +550,7 @@ catch (          Throwable ex) {
                       if (type != null) {
                         try {
                           Util.openExternalFileAnyFormat(metaData,filepath,type);
-                          output(Globals.lang("External viewer called") + ".");
+                          output(Globals.lang("External viewer called") + '.');
                           return;
                         }
  catch (                        IOException ex) {
@@ -565,14 +565,14 @@ catch (          Throwable ex) {
             if (filepath != null) {
               try {
                 Util.openExternalViewer(metaData(),filepath,field);
-                output(Globals.lang("External viewer called") + ".");
+                output(Globals.lang("External viewer called") + '.');
               }
  catch (              IOException ex) {
                 output(Globals.lang("Error") + ": " + ex.getMessage());
               }
             }
  else {
-              output(Globals.lang("No pdf or ps defined, and no file matching Bibtex key found") + ".");
+              output(Globals.lang("No pdf or ps defined, and no file matching Bibtex key found") + '.');
             }
           }
  else {
@@ -649,7 +649,7 @@ catch (          Throwable ex) {
         if (link != null) {
           try {
             Util.openExternalViewer(metaData(),link.toString(),field);
-            output(Globals.lang("External viewer called") + ".");
+            output(Globals.lang("External viewer called") + '.');
           }
  catch (          IOException ex) {
             output(Globals.lang("Error") + ": " + ex.getMessage());
@@ -669,7 +669,7 @@ catch (          Throwable ex) {
           if (entry != null) {
             try {
               Util.openExternalFileAnyFormat(metaData,entry.getLink(),entry.getType());
-              output(Globals.lang("External viewer called") + ".");
+              output(Globals.lang("External viewer called") + '.');
             }
  catch (            IOException e) {
               output(Globals.lang("Could not open link"));
@@ -677,7 +677,7 @@ catch (          Throwable ex) {
             }
           }
  else {
-            output(Globals.lang("No url defined") + ".");
+            output(Globals.lang("No url defined") + '.');
           }
         }
       }
@@ -701,14 +701,14 @@ catch (          Throwable ex) {
         if (link != null) {
           try {
             Util.openExternalViewer(metaData(),link.toString(),"url");
-            output(Globals.lang("External viewer called") + ".");
+            output(Globals.lang("External viewer called") + '.');
           }
  catch (          IOException ex) {
             output(Globals.lang("Error") + ": " + ex.getMessage());
           }
         }
  else {
-          output(Globals.lang("No url defined") + ".");
+          output(Globals.lang("No url defined") + '.');
         }
       }
  else {
@@ -737,7 +737,7 @@ catch (          Throwable ex) {
           counter+=rsd.replace(be,ce);
         }
       }
-      output(Globals.lang("Replaced") + " " + counter+ " "+ Globals.lang(counter == 1 ? "occurence" : "occurences")+ ".");
+      output(Globals.lang("Replaced") + ' ' + counter+ ' '+ Globals.lang(counter == 1 ? "occurence" : "occurences")+ '.');
       if (counter > 0) {
         ce.end();
         undoManager.addEdit(ce);

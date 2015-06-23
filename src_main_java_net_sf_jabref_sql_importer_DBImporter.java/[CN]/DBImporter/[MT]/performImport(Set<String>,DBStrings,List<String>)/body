@@ -4,9 +4,9 @@
   Iterator<String> itLista=listOfDBs.iterator();
   String jabrefDBs="(";
   while (itLista.hasNext()) {
-    jabrefDBs+="'" + itLista.next() + "',";
+    jabrefDBs+='\'' + itLista.next() + "',";
   }
-  jabrefDBs=jabrefDBs.substring(0,jabrefDBs.length() - 1) + ")";
+  jabrefDBs=jabrefDBs.substring(0,jabrefDBs.length() - 1) + ')';
   ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs);
   while (rsDatabase.next()) {
     BibtexDatabase database=new BibtexDatabase();
@@ -42,7 +42,7 @@
       database.insertEntry(entry);
     }
     rsEntries.getStatement().close();
-    ResultSet rsStrings=SQLUtil.queryAllFromTable(conn,"strings WHERE database_id='" + database_id + "'");
+    ResultSet rsStrings=SQLUtil.queryAllFromTable(conn,"strings WHERE database_id='" + database_id + '\'');
     while (rsStrings.next()) {
       String label=rsStrings.getString("label"), content=rsStrings.getString("content");
       if (label.equals("@PREAMBLE")) {

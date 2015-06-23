@@ -3,7 +3,7 @@
   String val;
   String insert="INSERT INTO entries (jabref_eid, entry_types_id, cite_key, " + fieldStr + ", database_id) VALUES (";
   for (  BibtexEntry entry : entries) {
-    query=insert + "'" + entry.getId()+ "'"+ ", (SELECT entry_types_id FROM entry_types WHERE label='"+ entry.getType().getName().toLowerCase()+ "'), '"+ entry.getCiteKey()+ "'";
+    query=insert + '\'' + entry.getId()+ '\''+ ", (SELECT entry_types_id FROM entry_types WHERE label='"+ entry.getType().getName().toLowerCase()+ "'), '"+ entry.getCiteKey()+ '\'';
     for (int i=0; i < SQLUtil.getAllFields().size(); i++) {
       query=query + ", ";
       val=entry.getField(SQLUtil.getAllFields().get(i));
@@ -12,7 +12,7 @@
         val=val.replace("\"","\\\"");
         val=val.replace("\'","''");
         val=val.replace("`","\\`");
-        query=query + "'" + val+ "'";
+        query=query + '\'' + val+ '\'';
       }
  else {
         query=query + "NULL";
