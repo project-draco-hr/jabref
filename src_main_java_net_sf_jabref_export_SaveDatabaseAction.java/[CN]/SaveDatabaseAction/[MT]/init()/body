@@ -17,7 +17,7 @@
         cancelled=true;
         JabRefExecutorService.INSTANCE.execute(new Runnable(){
           @Override public void run(){
-            if (!Util.waitForFileLock(panel.getFile(),10)) {
+            if (!FileBasedLock.waitForFileLock(panel.getFile(),10)) {
               System.err.println("File locked, this will be trouble.");
             }
             ChangeScanner scanner=new ChangeScanner(panel.frame(),panel,panel.getFile());

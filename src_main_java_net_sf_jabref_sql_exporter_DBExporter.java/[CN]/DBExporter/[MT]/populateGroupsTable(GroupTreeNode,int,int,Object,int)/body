@@ -14,10 +14,10 @@
     reg_exp=((SearchGroup)group).isRegExp() ? "1" : "0";
   }
   if (searchField != null) {
-    searchField=Util.quote(searchField,"'",'\\');
+    searchField=StringUtil.quote(searchField,"'",'\\');
   }
   if (searchExpr != null) {
-    searchExpr=Util.quote(searchExpr,"'",'\\');
+    searchExpr=StringUtil.quote(searchExpr,"'",'\\');
   }
   SQLUtil.processQuery(out,"INSERT INTO groups (label, parent_id, group_types_id, search_field, " + "search_expression, case_sensitive, reg_exp, hierarchical_context, database_id) " + "VALUES ('" + group.getName() + "', "+ parentID+ ", (SELECT group_types_id FROM group_types where label='"+ group.getTypeId()+ "')"+ ", "+ (searchField != null ? '\'' + searchField + '\'' : "NULL")+ ", "+ (searchExpr != null ? '\'' + searchExpr + '\'' : "NULL")+ ", "+ (caseSens != null ? '\'' + caseSens + '\'' : "NULL")+ ", "+ (reg_exp != null ? '\'' + reg_exp + '\'' : "NULL")+ ", "+ hierContext+ ", '"+ database_id+ "');");
   Object response=SQLUtil.processQueryWithResults(out,"SELECT groups_id FROM groups WHERE label='" + cursor.getGroup().getName() + "' AND database_id='"+ database_id+ "' AND parent_id='"+ parentID+ "';");
