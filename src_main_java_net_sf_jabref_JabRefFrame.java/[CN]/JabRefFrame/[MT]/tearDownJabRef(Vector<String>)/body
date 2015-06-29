@@ -1,4 +1,5 @@
 {
+  JabRefExecutorService.INSTANCE.shutdownEverything();
   dispose();
   if (basePanel() != null) {
     basePanel().saveDividerLocation();
@@ -37,4 +38,13 @@
     (searchManager).updatePrefs();
   }
   prefs.flush();
+  if (sysTray != null) {
+    sysTray.hide();
+  }
+  for (  Window window : Window.getWindows()) {
+    window.dispose();
+  }
+  if (Globals.autoSaveManager != null) {
+    Globals.stopAutoSaveManager();
+  }
 }

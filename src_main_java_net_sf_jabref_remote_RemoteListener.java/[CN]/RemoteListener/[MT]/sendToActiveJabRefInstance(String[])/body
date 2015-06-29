@@ -3,35 +3,21 @@
     InetAddress local=InetAddress.getByName("localhost");
     Socket socket=new Socket(local,Globals.prefs.getInt("remoteServerPort"));
     socket.setSoTimeout(2000);
-    InputStream in=socket.getInputStream();
-    OutputStream out=socket.getOutputStream();
-    int c;
-    StringBuffer sb=new StringBuffer();
+    Protocol protocol=new Protocol(socket);
     try {
-      while (((c=in.read()) != '\0') && (c >= 0)) {
-        sb.append((char)c);
+      String identifier=protocol.receiveMessage();
+      if (!RemoteListener.IDENTIFIER.equals(identifier)) {
+        String port=String.valueOf(Globals.prefs.getInt("remoteServerPort"));
+        String error=Globals.lang("Cannot use port %0 for remote operation; another application may be using it. Try specifying another port.",port);
+        System.out.println(error);
+        return false;
       }
+      protocol.sendMessage(Util.join(args,"\n"));
+      return true;
     }
- catch (    SocketTimeoutException ex) {
-      System.out.println("Connection timed out.");
+  finally {
+      protocol.close();
     }
-    if (!RemoteListener.IDENTIFIER.equals(sb.toString())) {
-      String port=String.valueOf(Globals.prefs.getInt("remoteServerPort"));
-      String error=Globals.lang("Cannot use port %0 for remote operation; another application may be using it. Try specifying another port.",port);
-      System.out.println(error);
-      return false;
-    }
-    for (    String arg : args) {
-      byte[] bytes=arg.getBytes();
-      out.write(bytes);
-      out.write('\n');
-    }
-    out.write('\0');
-    out.flush();
-    in.close();
-    out.close();
-    socket.close();
-    return true;
   }
  catch (  Exception e) {
     e.printStackTrace();

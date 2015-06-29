@@ -40,15 +40,16 @@
   ExportFormats.initAllExports();
   Globals.initializeJournalNames();
   if (Globals.prefs.getBoolean("useRemoteServer")) {
-    JabRef.remoteListener=RemoteListener.openRemoteListener(this);
-    if (JabRef.remoteListener == null) {
+    RemoteListenerLifecycle.openRemoteListener(JabRef.singleton);
+    if (!RemoteListenerLifecycle.isRemoteListenerOpen()) {
       if (RemoteListener.sendToActiveJabRefInstance(args)) {
         System.out.println(Globals.lang("Arguments passed on to running JabRef instance. Shutting down."));
-        System.exit(0);
+        JabRefExecutorService.INSTANCE.shutdownEverything();
+        return;
       }
     }
  else {
-      JabRefExecutorService.INSTANCE.executeInOwnThread(JabRef.remoteListener);
+      RemoteListenerLifecycle.startRemoteListener();
     }
   }
   String personalJournalList=prefs.get("personalJournalList");
@@ -67,8 +68,9 @@
     JabRef.setCurrentProcessExplicitAppUserModelID("JabRef." + Globals.VERSION);
   }
   Vector<ParserResult> loaded=processArguments(args,true);
-  if (graphicFailure || cli.isDisableGui() || cli.isShowVersion()) {
-    System.exit(0);
+  if (loaded == null || graphicFailure || cli.isDisableGui() || cli.isShowVersion()) {
+    JabRefExecutorService.INSTANCE.shutdownEverything();
+    return;
   }
   openWindow(loaded);
 }

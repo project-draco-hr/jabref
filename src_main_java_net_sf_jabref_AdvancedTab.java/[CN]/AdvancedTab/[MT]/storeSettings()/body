@@ -18,15 +18,11 @@
     ex.printStackTrace();
   }
   _prefs.putBoolean("useRemoteServer",useRemoteServer.isSelected());
-  if (useRemoteServer.isSelected() && (JabRef.remoteListener == null)) {
-    JabRef.remoteListener=RemoteListener.openRemoteListener(JabRef.singleton);
-    if (JabRef.remoteListener != null) {
-      JabRefExecutorService.INSTANCE.executeInOwnThread(JabRef.remoteListener);
-    }
+  if (useRemoteServer.isSelected()) {
+    RemoteListenerLifecycle.openAndStartRemoteListener(JabRef.singleton);
   }
- else   if (!useRemoteServer.isSelected() && (JabRef.remoteListener != null)) {
-    JabRef.remoteListener.disable();
-    JabRef.remoteListener=null;
+ else {
+    RemoteListenerLifecycle.disableRemoteListener();
   }
   _prefs.putBoolean("biblatexMode",biblatexMode.isSelected());
   if ((useDefault.isSelected() == oldUseDef) || !oldLnf.equals(className.getSelectedItem().toString())) {
