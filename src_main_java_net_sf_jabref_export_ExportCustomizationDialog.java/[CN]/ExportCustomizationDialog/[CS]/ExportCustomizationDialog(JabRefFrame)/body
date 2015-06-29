@@ -1,6 +1,7 @@
 {
   super(frame_,Globals.lang("Manage custom exports"),false);
   frame=frame_;
+  JButton addExport=new JButton(Globals.lang("Add new"));
   addExport.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       CustomExportDialog ecd=new CustomExportDialog(frame);
@@ -13,6 +14,7 @@
     }
   }
 );
+  JButton modify=new JButton(Globals.lang("Modify"));
   modify.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int row=table.getSelectedRow();
@@ -33,6 +35,7 @@
     }
   }
 );
+  JButton remove=new JButton(Globals.lang("Remove"));
   remove.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int[] rows=table.getSelectedRows();
@@ -56,7 +59,9 @@
     }
   }
 ;
+  JButton close=new JButton(Globals.lang("Close"));
   close.addActionListener(closeAction);
+  JButton help=new JButton(Globals.lang("Help"));
   help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.exportCustomizationHelp,"Help"));
   EventTableModel<String[]> tableModel=new EventTableModel<String[]>(Globals.prefs.customExports.getSortedList(),new ExportTableFormat());
   table=new JTable(tableModel);
@@ -70,12 +75,14 @@
   if (table.getRowCount() > 0) {
     table.setRowSelectionInterval(0,0);
   }
+  JPanel main=new JPanel();
   ActionMap am=main.getActionMap();
   InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(frame.prefs().getKey("Close dialog"),"close");
   am.put("close",closeAction);
   main.setLayout(new BorderLayout());
   main.add(sp,BorderLayout.CENTER);
+  JPanel buttons=new JPanel();
   ButtonBarBuilder bb=new ButtonBarBuilder(buttons);
   buttons.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   bb.addGlue();

@@ -140,8 +140,9 @@
   }
   if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
-      RightClickMenu.populateSpecialFieldMenu(this.rankingMenu,Rank.getInstance(),panel.frame);
-      add(this.rankingMenu);
+      JMenu rankingMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(rankingMenu,Rank.getInstance(),panel.frame);
+      add(rankingMenu);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
       add(Relevance.getInstance().getValues().get(0).getMenuAction(panel.frame));
@@ -153,12 +154,14 @@
       add(Printed.getInstance().getValues().get(0).getMenuAction(panel.frame));
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
-      RightClickMenu.populateSpecialFieldMenu(this.priorityMenu,Priority.getInstance(),panel.frame);
-      add(this.priorityMenu);
+      JMenu priorityMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(priorityMenu,Priority.getInstance(),panel.frame);
+      add(priorityMenu);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ)) {
-      RightClickMenu.populateSpecialFieldMenu(this.readStatusMenu,ReadStatus.getInstance(),panel.frame);
-      add(this.readStatusMenu);
+      JMenu readStatusMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(readStatusMenu,ReadStatus.getInstance(),panel.frame);
+      add(readStatusMenu);
     }
     addSeparator();
   }
@@ -269,7 +272,7 @@
   }
 );
   add(groupRemove);
-  groupMoveTo=add(new AbstractAction(Globals.lang("Move to group")){
+  JMenuItem groupMoveTo=add(new AbstractAction(Globals.lang("Move to group")){
     @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("moveToGroup");

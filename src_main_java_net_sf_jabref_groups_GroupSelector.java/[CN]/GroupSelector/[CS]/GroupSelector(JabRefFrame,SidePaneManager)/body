@@ -1,10 +1,10 @@
 {
   super(manager,GUIGlobals.getIconUrl("toggleGroups"),Globals.lang("Groups"));
   this.groupsRoot=new GroupTreeNode(new AllEntriesGroup());
-  this.manager=manager;
   this.frame=frame;
   hideNonHits=new JRadioButtonMenuItem(Globals.lang("Hide non-hits"),!Globals.prefs.getBoolean("grayOutNonHits"));
   grayOut=new JRadioButtonMenuItem(Globals.lang("Gray out non-hits"),Globals.prefs.getBoolean("grayOutNonHits"));
+  ButtonGroup nonHits=new ButtonGroup();
   nonHits.add(hideNonHits);
   nonHits.add(grayOut);
   floatCb.addChangeListener(new ChangeListener(){
@@ -46,6 +46,7 @@
     }
   }
 );
+  JRadioButtonMenuItem highlCb=new JRadioButtonMenuItem(Globals.lang("Highlight"),false);
   if (Globals.prefs.getBoolean("groupFloatSelections")) {
     floatCb.setSelected(true);
     highlCb.setSelected(false);
@@ -54,6 +55,7 @@
     highlCb.setSelected(true);
     floatCb.setSelected(false);
   }
+  JRadioButtonMenuItem orCb=new JRadioButtonMenuItem(Globals.lang("Union"),false);
   if (Globals.prefs.getBoolean("groupIntersectSelections")) {
     andCb.setSelected(true);
     orCb.setSelected(false);
@@ -116,6 +118,7 @@
     }
   }
 );
+  JButton expand=new JButton(GUIGlobals.getImage("down"));
   expand.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int i=Globals.prefs.getInt("groupsVisibleRows") + 1;
@@ -130,6 +133,7 @@
     }
   }
 );
+  JButton reduce=new JButton(GUIGlobals.getImage("up"));
   reduce.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int i=Globals.prefs.getInt("groupsVisibleRows") - 1;
@@ -159,6 +163,7 @@
   newButton.setMinimumSize(butDim);
   refresh.setPreferredSize(butDim);
   refresh.setMinimumSize(butDim);
+  JButton helpButton=new JButton(GUIGlobals.getImage("help"));
   helpButton.setPreferredSize(butDim);
   helpButton.setMinimumSize(butDim);
   autoGroup.setPreferredSize(butDim);
@@ -199,12 +204,16 @@
   expand.setToolTipText(Globals.lang("Show one more row"));
   reduce.setToolTipText(Globals.lang("Show one less rows"));
   editModeCb.setToolTipText(Globals.lang("Click group to toggle membership of selected entries"));
+  ButtonGroup bgr=new ButtonGroup();
   bgr.add(andCb);
   bgr.add(orCb);
+  ButtonGroup visMode=new ButtonGroup();
   visMode.add(floatCb);
   visMode.add(highlCb);
   JPanel main=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
   main.setLayout(gbl);
+  GridBagConstraints con=new GridBagConstraints();
   con.fill=GridBagConstraints.BOTH;
   con.weightx=1;
   con.gridwidth=1;
@@ -228,7 +237,7 @@
   groupsTree=new GroupsTree(this);
   groupsTree.addTreeSelectionListener(this);
   groupsTree.setModel(groupsTreeModel=new DefaultTreeModel(groupsRoot));
-  sp=new JScrollPane(groupsTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  JScrollPane sp=new JScrollPane(groupsTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   revalidateGroups();
   con.gridwidth=GridBagConstraints.REMAINDER;
   con.weighty=1;
@@ -271,8 +280,12 @@
   add(main,BorderLayout.CENTER);
   updateBorder(editModeIndicator);
   definePopup();
+  NodeAction moveNodeUpAction=new MoveNodeUpAction();
   moveNodeUpAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,KeyEvent.CTRL_MASK));
+  NodeAction moveNodeDownAction=new MoveNodeDownAction();
   moveNodeDownAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,KeyEvent.CTRL_MASK));
+  NodeAction moveNodeLeftAction=new MoveNodeLeftAction();
   moveNodeLeftAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.CTRL_MASK));
+  NodeAction moveNodeRightAction=new MoveNodeRightAction();
   moveNodeRightAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.CTRL_MASK));
 }

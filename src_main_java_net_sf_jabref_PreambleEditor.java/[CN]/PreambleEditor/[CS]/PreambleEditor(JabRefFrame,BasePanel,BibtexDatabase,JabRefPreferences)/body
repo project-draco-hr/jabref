@@ -1,6 +1,6 @@
 {
   super(baseFrame);
-  this.baseFrame=baseFrame;
+  JabRefFrame baseFrame1=baseFrame;
   this.panel=panel;
   this.base=base;
   this.prefs=prefs;
@@ -21,7 +21,10 @@
 );
   int prefHeight=(int)(GUIGlobals.PE_HEIGHT * GUIGlobals.FORM_HEIGHT[prefs.getInt("entryTypeFormHeightFactor")]);
   setSize(GUIGlobals.FORM_WIDTH[prefs.getInt("entryTypeFormWidth")],prefHeight);
+  JPanel pan=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
   pan.setLayout(gbl);
+  GridBagConstraints con=new GridBagConstraints();
   con.fill=GridBagConstraints.BOTH;
   con.weighty=1;
   con.insets=new Insets(10,5,10,5);
@@ -33,6 +36,7 @@
   con.weightx=1;
   gbl.setConstraints(ed.getPane(),con);
   pan.add(ed.getPane());
+  Container conPane=getContentPane();
   conPane.add(pan,BorderLayout.CENTER);
   setTitle(Globals.lang("Edit preamble"));
 }

@@ -11,6 +11,7 @@
     }
   }
 ;
+  JButton ok=new JButton(Globals.lang("Ok"));
   ok.addActionListener(okListener);
   name.addActionListener(okListener);
   layoutFile.addActionListener(okListener);
@@ -21,7 +22,9 @@
     }
   }
 ;
+  JButton cancel=new JButton(Globals.lang("Cancel"));
   cancel.addActionListener(cancelAction);
+  JButton browse=new JButton(Globals.lang("Browse"));
   browse.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       File directory=new File(Globals.prefs.get("exportWorkingDirectory"));
@@ -35,12 +38,15 @@
     }
   }
 );
+  JPanel main=new JPanel();
   ActionMap am=main.getActionMap();
   InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(parent.prefs().getKey("Close dialog"),"close");
   am.put("close",cancelAction);
+  GridBagLayout gbl=new GridBagLayout();
   main.setLayout(gbl);
   main.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Export properties")));
+  GridBagConstraints con=new GridBagConstraints();
   con.weightx=0;
   con.gridwidth=1;
   con.insets=new Insets(3,5,3,5);
@@ -48,12 +54,15 @@
   con.fill=GridBagConstraints.NONE;
   con.gridx=0;
   con.gridy=0;
+  JLabel nl=new JLabel(Globals.lang("Export name") + ':');
   gbl.setConstraints(nl,con);
   main.add(nl);
   con.gridy=1;
+  JLabel nr=new JLabel(Globals.lang("Main layout file") + ':');
   gbl.setConstraints(nr,con);
   main.add(nr);
   con.gridy=2;
+  JLabel nf=new JLabel(Globals.lang("File extension") + ':');
   gbl.setConstraints(nf,con);
   main.add(nf);
   con.gridwidth=2;
@@ -78,6 +87,7 @@
   con.gridy=2;
   gbl.setConstraints(extension,con);
   main.add(extension);
+  JPanel buttons=new JPanel();
   ButtonBarBuilder bb=new ButtonBarBuilder(buttons);
   buttons.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   bb.addGlue();

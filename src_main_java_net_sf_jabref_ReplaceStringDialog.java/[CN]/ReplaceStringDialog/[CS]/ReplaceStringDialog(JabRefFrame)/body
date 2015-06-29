@@ -1,5 +1,6 @@
 {
   super(parent_,Globals.lang("Replace string"),true);
+  ButtonGroup bg=new ButtonGroup();
   bg.add(allFi);
   bg.add(field);
   ActionListener okListener=new ActionListener(){
@@ -15,6 +16,7 @@
     }
   }
 ;
+  JButton ok=new JButton(Globals.lang("Ok"));
   ok.addActionListener(okListener);
   to.addActionListener(okListener);
   fields.addActionListener(okListener);
@@ -24,16 +26,22 @@
     }
   }
 ;
+  JButton cancel=new JButton(Globals.lang("Cancel"));
   cancel.addActionListener(cancelAction);
+  JPanel settings=new JPanel();
   ActionMap am=settings.getActionMap();
   InputMap im=settings.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(parent_.prefs.getKey("Close dialog"),"close");
   am.put("close",cancelAction);
+  GridBagLayout gbl=new GridBagLayout();
   settings.setLayout(gbl);
+  JPanel opt=new JPanel();
   opt.setLayout(gbl);
+  JPanel main=new JPanel();
   main.setLayout(gbl);
   settings.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Replace string")));
   main.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Strings")));
+  GridBagConstraints con=new GridBagConstraints();
   con.fill=GridBagConstraints.HORIZONTAL;
   con.gridwidth=2;
   con.weightx=0;
@@ -60,9 +68,11 @@
   con.weightx=0;
   con.gridx=0;
   con.gridy=0;
+  JLabel fl=new JLabel(Globals.lang("Search for") + ":");
   gbl.setConstraints(fl,con);
   main.add(fl);
   con.gridy=1;
+  JLabel tl=new JLabel(Globals.lang("Replace with") + ":");
   gbl.setConstraints(tl,con);
   main.add(tl);
   con.weightx=1;
