@@ -1,5 +1,4 @@
 {
-  JabRef.singleton=this;
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   if (prefs.hasKey("deletePlugins") && (prefs.get("deletePlugins").length() > 0)) {
     String[] toDelete=prefs.getStringArray("deletePlugins");
@@ -21,18 +20,7 @@
   Globals.startBackgroundTasks();
   Globals.setupLogging();
   Globals.prefs=prefs;
-  String langStr=prefs.get("language");
-  String[] parts=langStr.split("_");
-  String language, country;
-  if (parts.length == 1) {
-    language=langStr;
-    country="";
-  }
- else {
-    language=parts[0];
-    country=parts[1];
-  }
-  Globals.setLanguage(language,country);
+  setLanguage(prefs);
   Globals.prefs.setLanguageDependentDefaultValues();
   BibtexFields.setNumericFieldsFromPrefs();
   Globals.importFormatReader.resetImportFormats();
@@ -40,7 +28,7 @@
   ExportFormats.initAllExports();
   Globals.initializeJournalNames();
   if (Globals.prefs.getBoolean("useRemoteServer")) {
-    RemoteListenerLifecycle.openRemoteListener(JabRef.singleton);
+    RemoteListenerLifecycle.openRemoteListener(this);
     if (!RemoteListenerLifecycle.isRemoteListenerOpen()) {
       if (RemoteListener.sendToActiveJabRefInstance(args)) {
         System.out.println(Globals.lang("Arguments passed on to running JabRef instance. Shutting down."));

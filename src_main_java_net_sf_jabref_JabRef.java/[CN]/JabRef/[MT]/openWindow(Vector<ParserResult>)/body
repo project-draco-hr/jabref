@@ -33,7 +33,7 @@
   }
   GUIGlobals.init();
   GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get("fontFamily"),Globals.prefs.getInt("fontStyle"),Globals.prefs.getInt("fontSize"));
-  JabRef.jrf=new JabRefFrame();
+  JabRef.jrf=new JabRefFrame(this);
   boolean first=true;
   List<File> postponed=new ArrayList<File>();
   List<ParserResult> failed=new ArrayList<ParserResult>();
@@ -67,10 +67,7 @@
   if (cli.isLoadSession()) {
     JabRef.jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(JabRef.jrf,0,""));
   }
-  if (JabRef.splashScreen != null) {
-    JabRef.splashScreen.dispose();
-    JabRef.splashScreen=null;
-  }
+  splashScreen.hide();
   if (Globals.prefs.getBoolean("autoSave")) {
     Globals.startAutoSaveManager(JabRef.jrf);
   }
