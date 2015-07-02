@@ -1,15 +1,15 @@
 {
   dialogOkPressed=false;
-  final JDialog diag=new JDialog(frame,Globals.lang("Set connection parameters"),true);
+  final JDialog diag=new JDialog(OpenOfficePanel.frame,Globals.lang("Set connection parameters"),true);
   final JTextField ooPath=new JTextField(30);
   JButton browseOOPath=new JButton(Globals.lang("Browse"));
   ooPath.setText(Globals.prefs.get("ooPath"));
   final JTextField ooExec=new JTextField(30);
   JButton browseOOExec=new JButton(Globals.lang("Browse"));
-  browseOOExec.addActionListener(new BrowseAction(null,ooExec,false));
+  browseOOExec.addActionListener(BrowseAction.buildForFile(ooExec));
   final JTextField ooJars=new JTextField(30);
   JButton browseOOJars=new JButton(Globals.lang("Browse"));
-  browseOOJars.addActionListener(new BrowseAction(null,ooJars,true));
+  browseOOJars.addActionListener(BrowseAction.buildForDir(ooJars));
   ooExec.setText(Globals.prefs.get("ooExecutablePath"));
   ooJars.setText(Globals.prefs.get("ooJarsPath"));
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:pref:grow, 4dlu, fill:pref",""));
@@ -33,7 +33,7 @@
   JButton ok=new JButton(Globals.lang("Ok"));
   JButton cancel=new JButton(Globals.lang("Cancel"));
   ActionListener tfListener=new ActionListener(){
-    public void actionPerformed(    ActionEvent event){
+    @Override public void actionPerformed(    ActionEvent event){
       updateConnectionParams(ooPath.getText(),ooExec.getText(),ooJars.getText(),true);
       diag.dispose();
     }
@@ -43,7 +43,7 @@
   ooExec.addActionListener(tfListener);
   ooJars.addActionListener(tfListener);
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent event){
+    @Override public void actionPerformed(    ActionEvent event){
       updateConnectionParams(ooPath.getText(),ooExec.getText(),ooJars.getText(),true);
       dialogOkPressed=true;
       diag.dispose();
@@ -51,7 +51,7 @@
   }
 );
   cancel.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent event){
+    @Override public void actionPerformed(    ActionEvent event){
       diag.dispose();
     }
   }
@@ -66,6 +66,6 @@
   diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
   diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   diag.pack();
-  diag.setLocationRelativeTo(frame);
+  diag.setLocationRelativeTo(OpenOfficePanel.frame);
   diag.setVisible(true);
 }

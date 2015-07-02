@@ -3,7 +3,7 @@
   this.metaData=metaData;
   this.fieldName=fieldName;
   this.entryEditor=entryEditor;
-  label=new FieldNameLabel(" " + Util.nCase(fieldName) + " ");
+  label=new FieldNameLabel(" " + StringUtil.nCase(fieldName) + " ");
   tableModel=new FileListTableModel();
   setText(content);
   setModel(tableModel);
@@ -23,37 +23,37 @@
   up.setMargin(new Insets(0,0,0,0));
   down.setMargin(new Insets(0,0,0,0));
   add.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       addEntry();
     }
   }
 );
   remove.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       removeEntries();
     }
   }
 );
   up.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       moveEntry(-1);
     }
   }
 );
   down.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       moveEntry(1);
     }
   }
 );
   auto.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       autoSetLinks();
     }
   }
 );
   download.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       downloadFile();
     }
   }
@@ -74,31 +74,33 @@
   panel.setTransferHandler(th);
   getInputMap().put(KeyStroke.getKeyStroke("DELETE"),"delete");
   getActionMap().put("delete",new AbstractAction(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       int row=getSelectedRow();
       removeEntries();
       row=Math.min(row,getRowCount() - 1);
-      if (row >= 0)       setRowSelectionInterval(row,row);
+      if (row >= 0) {
+        setRowSelectionInterval(row,row);
+      }
     }
   }
 );
   getInputMap().put(KeyStroke.getKeyStroke("INSERT"),"insert");
   getActionMap().put("insert",new AbstractAction(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       addEntry();
     }
   }
 );
   getInputMap().put(Globals.prefs.getKey("File list editor, move entry up"),"move up");
   getActionMap().put("move up",new AbstractAction(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       moveEntry(-1);
     }
   }
 );
   getInputMap().put(Globals.prefs.getKey("File list editor, move entry down"),"move down");
   getActionMap().put("move down",new AbstractAction(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       moveEntry(1);
     }
   }
@@ -106,7 +108,7 @@
   JMenuItem openLink=new JMenuItem(Globals.lang("Open"));
   menu.add(openLink);
   openLink.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       openSelectedFile();
     }
   }
@@ -122,7 +124,7 @@
           Util.openFolderAndSelectFile(entry.getLink());
         }
  catch (        IOException ex) {
-          logger.fine(ex.getMessage());
+          FileListEditor.logger.fine(ex.getMessage());
         }
       }
     }

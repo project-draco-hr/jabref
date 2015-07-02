@@ -1,9 +1,19 @@
 {
   BibtexParser bp=new BibtexParser(new java.io.StringReader(source.getText()));
   try {
-    BibtexDatabase db=bp.parse().getDatabase();
-    if (db.getEntryCount() > 1)     throw new Exception("More than one entry found.");
-    if (db.getEntryCount() < 1)     throw new Exception("No entries found.");
+    ParserResult parserResult=bp.parse();
+    BibtexDatabase db=parserResult.getDatabase();
+    if (db.getEntryCount() > 1) {
+      throw new Exception("More than one entry found.");
+    }
+    if (db.getEntryCount() < 1) {
+      if (parserResult.hasWarnings()) {
+        throw new Exception(parserResult.warnings()[0]);
+      }
+ else {
+        throw new Exception("No entries found.");
+      }
+    }
     NamedCompound compound=new NamedCompound(Globals.lang("source edit"));
     BibtexEntry nu=db.getEntryById(db.getKeySet().iterator().next());
     String id=entry.getId();
@@ -11,7 +21,7 @@
     boolean anyChanged=false;
     boolean changedType=false;
     boolean duplicateWarning=false;
-    boolean emptyWarning=newKey == null || newKey.equals("");
+    boolean emptyWarning=(newKey == null) || newKey.isEmpty();
     if (panel.database.setCiteKeyForEntry(id,newKey)) {
       duplicateWarning=true;
     }
@@ -25,11 +35,12 @@
       }
     }
     for (    String field : nu.getAllFields()) {
-      if (!entry.getField(field).equals(nu.getField(field))) {
-        String toSet=nu.getField(field);
-        (new LatexFieldFormatter()).format(toSet,field);
-        compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),toSet));
-        entry.setField(field,toSet);
+      String oldValue=entry.getField(field);
+      String newValue=nu.getField(field);
+      if ((oldValue == null) || !oldValue.equals(newValue)) {
+        (new LatexFieldFormatter()).format(newValue,field);
+        compound.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
+        entry.setField(field,newValue);
         anyChanged=true;
       }
     }
@@ -40,7 +51,9 @@
       changedType=true;
     }
     compound.end();
-    if (!anyChanged)     return true;
+    if (!anyChanged) {
+      return true;
+    }
     panel.undoManager.addEdit(compound);
     if (duplicateWarning) {
       warnDuplicateBibtexkey();
@@ -49,7 +62,7 @@
       warnEmptyBibtexkey();
     }
  else {
-      panel.output(Globals.lang("Stored entry") + ".");
+      panel.output(Globals.lang("Stored entry") + '.');
     }
     lastSourceStringAccepted=source.getText();
     if (!changedType) {
@@ -62,7 +75,7 @@
     }
     panel.markBaseChanged();
     SwingUtilities.invokeLater(new Runnable(){
-      public void run(){
+      @Override public void run(){
         final int row=panel.mainTable.findEntry(entry);
         if (row >= 0) {
           panel.mainTable.ensureVisible(row);

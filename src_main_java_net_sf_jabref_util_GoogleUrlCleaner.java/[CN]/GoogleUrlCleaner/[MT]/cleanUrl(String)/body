@@ -1,0 +1,32 @@
+{
+  if ((dirty == null) || (dirty.isEmpty())) {
+    return dirty;
+  }
+  try {
+    URL u=new URL(dirty);
+    String query=u.getQuery();
+    if (query == null) {
+      return dirty;
+    }
+    String[] pairs=query.split("&");
+    if (pairs == null) {
+      return dirty;
+    }
+    for (    String pair : pairs) {
+      int idx=pair.indexOf("=");
+      if ("url".equals(pair.substring(0,idx))) {
+        try {
+          int nextIdx=idx + 1;
+          return URLDecoder.decode(pair.substring(nextIdx),"UTF-8");
+        }
+ catch (        UnsupportedEncodingException e) {
+          return dirty;
+        }
+      }
+    }
+  }
+ catch (  MalformedURLException e) {
+    return dirty;
+  }
+  return dirty;
+}

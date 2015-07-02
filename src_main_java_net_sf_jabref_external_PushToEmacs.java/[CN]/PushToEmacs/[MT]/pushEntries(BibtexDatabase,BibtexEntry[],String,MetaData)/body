@@ -20,12 +20,14 @@
     com[com.length - 1]=Globals.ON_WIN ? prefix.concat("\\\"\\" + Globals.prefs.get("citeCommandEmacs").replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\\\"").concat(suffix) : prefix.concat("\"" + Globals.prefs.get("citeCommandEmacs").replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\"").concat(suffix);
     final Process p=Runtime.getRuntime().exec(com);
     Runnable errorListener=new Runnable(){
-      public void run(){
+      @Override public void run(){
         InputStream out=p.getErrorStream();
         int c;
-        StringBuffer sb=new StringBuffer();
+        StringBuilder sb=new StringBuilder();
         try {
-          while ((c=out.read()) != -1)           sb.append((char)c);
+          while ((c=out.read()) != -1) {
+            sb.append((char)c);
+          }
         }
  catch (        IOException e) {
           e.printStackTrace();
@@ -37,14 +39,9 @@
       }
     }
 ;
-    Thread t=new Thread(errorListener);
-    t.start();
-    t.join();
+    JabRefExecutorService.INSTANCE.executeAndWait(errorListener);
   }
  catch (  IOException excep) {
     couldNotRunClient=true;
-  }
-catch (  InterruptedException e) {
-    e.printStackTrace();
   }
 }

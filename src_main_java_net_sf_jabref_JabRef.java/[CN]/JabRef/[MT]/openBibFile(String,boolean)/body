@@ -18,7 +18,7 @@
         return postp;
       }
     }
-    if (!Util.waitForFileLock(file,10)) {
+    if (!FileBasedLock.waitForFileLock(file,10)) {
       System.out.println(Globals.lang("Error opening file") + " '" + name+ "'. "+ "File is locked by another JabRef instance.");
       return ParserResult.FILE_LOCKED;
     }
@@ -33,7 +33,9 @@
     pr.setFile(file);
     if (pr.hasWarnings()) {
       String[] warn=pr.warnings();
-      for (      String aWarn : warn)       System.out.println(Globals.lang("Warning") + ": " + aWarn);
+      for (      String aWarn : warn) {
+        System.out.println(Globals.lang("Warning") + ": " + aWarn);
+      }
     }
     return pr;
   }
@@ -42,6 +44,7 @@
     pr.setFile(file);
     pr.setInvalid(true);
     pr.setErrorMessage(ex.getMessage());
+    ex.printStackTrace();
     return pr;
   }
 }

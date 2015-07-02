@@ -1,0 +1,50 @@
+{
+  TreeMap<String,BibtexEntryType> types=new TreeMap<String,BibtexEntryType>();
+  BibtexEntry be=null;
+  boolean backup=prefs.getBoolean("backup");
+  SaveSession session;
+  try {
+    session=new SaveSession(file,encoding,backup);
+  }
+ catch (  IOException e) {
+    throw new SaveException(e.getMessage());
+  }
+  try {
+    VerifyingWriter fw=session.getWriter();
+    if (saveType != DatabaseSaveType.PLAIN_BIBTEX) {
+      FileActions.writeBibFileHeader(fw,encoding);
+    }
+    FileActions.writePreamble(fw,database.getPreamble());
+    FileActions.writeStrings(fw,database);
+    List<Comparator<BibtexEntry>> comparators=FileActions.getSaveComparators(true,metaData);
+    List<BibtexEntry> sorter=new ArrayList<BibtexEntry>(bes.length);
+    Collections.addAll(sorter,bes);
+    Collections.sort(sorter,new FieldComparatorStack<BibtexEntry>(comparators));
+    BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
+    for (    BibtexEntry aSorter : sorter) {
+      be=(aSorter);
+      BibtexEntryType tp=be.getType();
+      if (BibtexEntryType.getStandardType(tp.getName()) == null) {
+        types.put(tp.getName(),tp);
+      }
+      bibtexEntryWriter.write(be,fw);
+      fw.write(Globals.NEWLINE);
+    }
+    if ((saveType != DatabaseSaveType.PLAIN_BIBTEX) && (metaData != null)) {
+      metaData.writeMetaData(fw);
+    }
+    if (!types.isEmpty()) {
+      for (      Map.Entry<String,BibtexEntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
+        CustomEntryType tp=(CustomEntryType)stringBibtexEntryTypeEntry.getValue();
+        tp.save(fw);
+        fw.write(Globals.NEWLINE);
+      }
+    }
+    fw.close();
+  }
+ catch (  Throwable ex) {
+    session.cancel();
+    throw new SaveException(ex.getMessage(),be);
+  }
+  return session;
+}

@@ -6,22 +6,28 @@
     ee.validateAllFields();
   }
   splitPane.setTopComponent(mainTable.getPane());
-  if (mode == SHOWING_PREVIEW) {
-    mode=SHOWING_NOTHING;
+  splitPane.setBorder(BorderFactory.createEmptyBorder());
+  setBorder(BorderFactory.createEmptyBorder());
+  if (mode == BasePanel.SHOWING_PREVIEW) {
+    mode=BasePanel.SHOWING_NOTHING;
     int row=mainTable.findEntry(currentPreview.entry);
-    if (row >= 0)     mainTable.setRowSelectionInterval(row,row);
+    if (row >= 0) {
+      mainTable.setRowSelectionInterval(row,row);
+    }
   }
- else   if (mode == SHOWING_EDITOR) {
-    mode=SHOWING_NOTHING;
+ else   if (mode == BasePanel.SHOWING_EDITOR) {
+    mode=BasePanel.SHOWING_NOTHING;
   }
- else   splitPane.setBottomComponent(null);
+ else {
+    splitPane.setBottomComponent(null);
+  }
   setLayout(new BorderLayout());
   removeAll();
   add(splitPane,BorderLayout.CENTER);
   instantiateSearchAutoCompleter();
   this.getDatabase().addDatabaseChangeListener(new SearchAutoCompleterUpdater());
   if (Globals.prefs.getBoolean("autoComplete")) {
-    instantiateAutoCompleters();
+    autoCompleters=new ContentAutoCompleters(getDatabase(),metaData);
     this.getDatabase().addDatabaseChangeListener(new AutoCompletersUpdater());
   }
   splitPane.revalidate();

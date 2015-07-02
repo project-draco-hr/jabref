@@ -7,8 +7,12 @@
     if ((j == -1) || (j == 65535)) {
       throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
     }
- else     if (j == '{')     brackets++;
- else     if (j == '}')     brackets--;
+ else     if (j == '{') {
+      brackets++;
+    }
+ else     if (j == '}') {
+      brackets--;
+    }
     if (Character.isWhitespace((char)j)) {
       String whs=skipAndRecordWhitespace(j);
       if (!whs.equals("") && !whs.equals("\n\t")) {
@@ -19,7 +23,9 @@
         value.append(' ');
       }
     }
- else     value.append((char)j);
+ else {
+      value.append((char)j);
+    }
   }
   consume('}');
   return value;

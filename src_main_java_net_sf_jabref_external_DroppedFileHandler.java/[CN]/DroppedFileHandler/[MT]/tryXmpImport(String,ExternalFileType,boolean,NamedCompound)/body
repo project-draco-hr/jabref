@@ -2,7 +2,7 @@
   if (!fileType.extension.equals("pdf")) {
     return false;
   }
-  List<BibtexEntry> xmpEntriesInFile=null;
+  List<BibtexEntry> xmpEntriesInFile;
   try {
     xmpEntriesInFile=XMPUtil.readXMP(fileName);
   }
@@ -25,7 +25,7 @@
   boolean success=true;
   String destFilename;
   if (linkInPlace.isSelected()) {
-    destFilename=Util.shortenFileName(new File(fileName),panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD)).toString();
+    destFilename=FileUtil.shortenFileName(new File(fileName),panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD)).toString();
   }
  else {
     if (renameCheckBox.isSelected()) {
@@ -44,11 +44,10 @@
   if (success) {
     for (    BibtexEntry aXmpEntriesInFile : xmpEntriesInFile) {
       try {
-        BibtexEntry entry=aXmpEntriesInFile;
-        entry.setId(Util.createNeutralId());
-        edits.addEdit(new UndoableInsertEntry(panel.getDatabase(),entry,panel));
-        panel.getDatabase().insertEntry(entry);
-        doLink(entry,fileType,destFilename,true,edits);
+        aXmpEntriesInFile.setId(IdGenerator.next());
+        edits.addEdit(new UndoableInsertEntry(panel.getDatabase(),aXmpEntriesInFile,panel));
+        panel.getDatabase().insertEntry(aXmpEntriesInFile);
+        doLink(aXmpEntriesInFile,fileType,destFilename,true,edits);
       }
  catch (      KeyCollisionException ignored) {
       }

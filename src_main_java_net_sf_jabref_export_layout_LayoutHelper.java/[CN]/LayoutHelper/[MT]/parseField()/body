@@ -1,6 +1,7 @@
 {
   int c;
   StringBuffer buffer=null;
+  char firstLetter;
   String name;
   while (!_eof) {
     c=read();
@@ -10,52 +11,61 @@
     if (!Character.isLetter((char)c) && (c != '_') && (c != '-')) {
       unread(c);
       name=buffer != null ? buffer.toString() : "";
-      buffer=null;
-      if (name.charAt(0) == 'b') {
+      try {
+        firstLetter=name.charAt(0);
+      }
+ catch (      StringIndexOutOfBoundsException ex) {
+        StringBuilder lastFive=new StringBuilder(10);
+        for (        StringInt entry : parsedEntries.subList(Math.max(0,parsedEntries.size() - 6),parsedEntries.size() - 1)) {
+          lastFive.append(entry.s);
+        }
+        throw new StringIndexOutOfBoundsException(Globals.lang("Backslash parsing error near") + " \'" + lastFive.toString().replace("\n"," ")+ '\'');
+      }
+      if (firstLetter == 'b') {
         if (name.equalsIgnoreCase("begin")) {
-          getBracketedField(IS_FIELD_START);
+          getBracketedField(LayoutHelper.IS_FIELD_START);
           return;
         }
  else         if (name.equalsIgnoreCase("begingroup")) {
-          getBracketedField(IS_GROUP_START);
+          getBracketedField(LayoutHelper.IS_GROUP_START);
           return;
         }
       }
- else       if (name.charAt(0) == 'f') {
+ else       if (firstLetter == 'f') {
         if (name.equalsIgnoreCase("format")) {
           if (c == '[') {
-            getBracketedOptionField(IS_OPTION_FIELD);
+            getBracketedOptionField(LayoutHelper.IS_OPTION_FIELD);
             return;
           }
  else {
-            getBracketedField(IS_OPTION_FIELD);
+            getBracketedField(LayoutHelper.IS_OPTION_FIELD);
             return;
           }
         }
  else         if (name.equalsIgnoreCase("filename")) {
-          parsedEntries.add(new StringInt(name,IS_FILENAME));
+          parsedEntries.add(new StringInt(name,LayoutHelper.IS_FILENAME));
           return;
         }
  else         if (name.equalsIgnoreCase("filepath")) {
-          parsedEntries.add(new StringInt(name,IS_FILEPATH));
+          parsedEntries.add(new StringInt(name,LayoutHelper.IS_FILEPATH));
           return;
         }
       }
- else       if (name.charAt(0) == 'e') {
+ else       if (firstLetter == 'e') {
         if (name.equalsIgnoreCase("end")) {
-          getBracketedField(IS_FIELD_END);
+          getBracketedField(LayoutHelper.IS_FIELD_END);
           return;
         }
  else         if (name.equalsIgnoreCase("endgroup")) {
-          getBracketedField(IS_GROUP_END);
+          getBracketedField(LayoutHelper.IS_GROUP_END);
           return;
         }
  else         if (name.equalsIgnoreCase("encoding")) {
-          parsedEntries.add(new StringInt(name,IS_ENCODING_NAME));
+          parsedEntries.add(new StringInt(name,LayoutHelper.IS_ENCODING_NAME));
           return;
         }
       }
-      parsedEntries.add(new StringInt(name,IS_SIMPLE_FIELD));
+      parsedEntries.add(new StringInt(name,LayoutHelper.IS_SIMPLE_FIELD));
       return;
     }
  else {

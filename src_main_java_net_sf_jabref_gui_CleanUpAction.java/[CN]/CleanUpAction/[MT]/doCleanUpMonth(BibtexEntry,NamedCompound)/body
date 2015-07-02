@@ -4,15 +4,9 @@
     return;
   }
   String newValue=oldValue;
-  try {
-    int month=Integer.parseInt(newValue);
-    newValue="#" + Globals.MONTHS[month - 1] + '#';
-  }
- catch (  NumberFormatException e) {
-    String testString=newValue.substring(0,3).toLowerCase();
-    if (Globals.MONTH_STRINGS.containsKey(testString)) {
-      newValue="#" + testString + '#';
-    }
+  MonthUtil.Month month=MonthUtil.getMonth(oldValue);
+  if (month.isValid()) {
+    newValue=month.bibtexFormat;
   }
   if (!oldValue.equals(newValue)) {
     entry.setField("month",newValue);

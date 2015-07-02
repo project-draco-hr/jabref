@@ -1,4 +1,6 @@
 {
+  boolean inURL=false;
+  boolean inMedlineID=false;
   if (inTitle) {
     title+=new String(data,start,length);
   }
@@ -36,16 +38,20 @@
     page+=new String(data,start,length);
   }
  else   if (inMedlineID) {
+    String medlineID="";
     medlineID+=new String(data,start,length);
   }
  else   if (inURL) {
+    String url="";
     url+=new String(data,start,length);
   }
  else   if (inPubMedID) {
     pubmedid=new String(data,start,length);
   }
  else   if (inQualifierName) {
-    if (!minorTopics.equals(""))     minorTopics=minorTopics + "/";
+    if (!minorTopics.equals("")) {
+      minorTopics=minorTopics + "/";
+    }
     minorTopics=minorTopics + new String(data,start,length);
   }
  else   if (inDescriptorName) {
@@ -65,6 +71,9 @@
   }
  else   if (inPii) {
     pii=new String(data,start,length);
+  }
+ else   if (inPmc) {
+    pmc=new String(data,start,length);
   }
  else   if (inAffiliation) {
     affiliation=new String(data,start,length);

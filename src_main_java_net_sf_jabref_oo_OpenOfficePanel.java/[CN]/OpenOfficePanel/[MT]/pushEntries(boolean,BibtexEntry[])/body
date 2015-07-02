@@ -1,14 +1,18 @@
 {
-  final BibtexDatabase database=frame.basePanel().database();
+  final BibtexDatabase database=OpenOfficePanel.frame.basePanel().database();
   if (entries.length > 0) {
     String pageInfo=null;
-    AdvancedCiteDialog acd=new AdvancedCiteDialog(frame);
+    AdvancedCiteDialog acd=new AdvancedCiteDialog(OpenOfficePanel.frame);
     acd.showDialog();
-    if (acd.cancelled())     return;
-    if (acd.getPageInfo().length() > 0)     pageInfo=acd.getPageInfo();
+    if (acd.cancelled()) {
+      return;
+    }
+    if (acd.getPageInfo().length() > 0) {
+      pageInfo=acd.getPageInfo();
+    }
     inParenthesis=acd.isInParenthesisCite();
     try {
-      ooBase.insertEntry(entries,database,getBaseList(),style,inParenthesis,true,pageInfo,Globals.prefs.getBoolean("syncOOWhenCiting"));
+      OpenOfficePanel.ooBase.insertEntry(entries,database,getBaseList(),OpenOfficePanel.style,inParenthesis,true,pageInfo,Globals.prefs.getBoolean("syncOOWhenCiting"));
     }
  catch (    ConnectionLostException ex) {
       showConnectionLostErrorMessage();

@@ -18,8 +18,16 @@
   selectionModel=new EventSelectionModel<BibtexEntry>(sortedForGrouping);
   setSelectionModel(selectionModel);
   pane=new JScrollPane(this);
+  pane.setBorder(BorderFactory.createEmptyBorder());
   pane.getViewport().setBackground(Globals.prefs.getColor("tableBackground"));
   setGridColor(Globals.prefs.getColor("gridColor"));
+  if (Globals.prefs.getBoolean("tableShowGrid")) {
+    setShowGrid(true);
+  }
+ else {
+    setShowGrid(false);
+    setIntercellSpacing(new Dimension(0,0));
+  }
   this.setTableHeader(new PreventDraggingJTableHeader(this.getColumnModel()));
   comparatorChooser=this.createTableComparatorChooser(this,sortedForTable,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
   this.tableColumnListener=new PersistenceTableColumnListener(this);

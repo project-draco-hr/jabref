@@ -1,6 +1,8 @@
 {
   int selected=editor.getSelectedRow();
-  if (selected == -1)   return;
+  if (selected == -1) {
+    return;
+  }
   FileListEntry flEntry=editor.getTableModel().getEntry(selected);
   String ln=flEntry.getLink();
   boolean httpLink=ln.toLowerCase().startsWith("http");
@@ -8,9 +10,11 @@
   }
   String[] dirs=frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
   int found=-1;
-  for (int i=0; i < dirs.length; i++)   if (new File(dirs[i]).exists()) {
-    found=i;
-    break;
+  for (int i=0; i < dirs.length; i++) {
+    if (new File(dirs[i]).exists()) {
+      found=i;
+      break;
+    }
   }
   if (found < 0) {
     JOptionPane.showMessageDialog(frame,Globals.lang("File_directory_is_not_set_or_does_not_exist!"),Globals.lang("Move/Rename file"),JOptionPane.ERROR_MESSAGE);
@@ -18,11 +22,13 @@
   }
   File file=new File(ln);
   if (!file.isAbsolute()) {
-    file=Util.expandFilename(ln,dirs);
+    file=FileUtil.expandFilename(ln,dirs);
   }
   if ((file != null) && file.exists()) {
     String extension=null;
-    if (flEntry.getType() != null)     extension="." + flEntry.getType().getExtension();
+    if (flEntry.getType() != null) {
+      extension="." + flEntry.getType().getExtension();
+    }
     File newFile=null;
     boolean repeat=true;
     while (repeat) {
@@ -32,12 +38,20 @@
         String suggName=Util.getLinkedFileName(eEditor.getDatabase(),eEditor.getEntry()).concat(".").concat(flEntry.getType().extension);
         CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("Move file to file directory?"),Globals.lang("Rename to '%0'",suggName),Globals.prefs.getBoolean("renameOnMoveFileToFileDir"));
         int answer;
-        if (!suggName.equals(file.getName()))         answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Move/Rename file"),JOptionPane.YES_NO_OPTION);
- else         answer=JOptionPane.showConfirmDialog(frame,Globals.lang("Move file to file directory?"),Globals.lang("Move/Rename file"),JOptionPane.YES_NO_OPTION);
-        if (answer != JOptionPane.YES_OPTION)         return;
+        if (!suggName.equals(file.getName())) {
+          answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Move/Rename file"),JOptionPane.YES_NO_OPTION);
+        }
+ else {
+          answer=JOptionPane.showConfirmDialog(frame,Globals.lang("Move file to file directory?"),Globals.lang("Move/Rename file"),JOptionPane.YES_NO_OPTION);
+        }
+        if (answer != JOptionPane.YES_OPTION) {
+          return;
+        }
         Globals.prefs.putBoolean("renameOnMoveFileToFileDir",cbm.isSelected());
         StringBuilder sb=new StringBuilder(dirs[found]);
-        if (!dirs[found].endsWith(File.separator))         sb.append(File.separator);
+        if (!dirs[found].endsWith(File.separator)) {
+          sb.append(File.separator);
+        }
         if (cbm.isSelected()) {
           sb.append(suggName);
         }
@@ -54,24 +68,34 @@
       }
       newFile=new File(chosenFile);
       if (newFile.exists() && (JOptionPane.showConfirmDialog(frame,"'" + newFile.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Move/Rename file"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)) {
-        if (!toFileDir)         repeat=true;
- else         return;
+        if (!toFileDir) {
+          repeat=true;
+        }
+ else {
+          return;
+        }
       }
     }
     if (!newFile.equals(file)) {
       try {
         boolean success=file.renameTo(newFile);
         if (!success) {
-          success=Util.copyFile(file,newFile,true);
+          success=FileUtil.copyFile(file,newFile,true);
         }
         if (success) {
           file.delete();
           String canPath=(new File(dirs[found])).getCanonicalPath();
           if (newFile.getCanonicalPath().startsWith(canPath)) {
-            if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar))             flEntry.setLink(newFile.getCanonicalPath().substring(1 + canPath.length()));
- else             flEntry.setLink(newFile.getCanonicalPath().substring(canPath.length()));
+            if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar)) {
+              flEntry.setLink(newFile.getCanonicalPath().substring(1 + canPath.length()));
+            }
+ else {
+              flEntry.setLink(newFile.getCanonicalPath().substring(canPath.length()));
+            }
           }
- else           flEntry.setLink(newFile.getCanonicalPath());
+ else {
+            flEntry.setLink(newFile.getCanonicalPath());
+          }
           eEditor.updateField(editor);
           frame.output(Globals.lang("File moved"));
         }

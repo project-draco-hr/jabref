@@ -3,7 +3,7 @@
   OutputStream out=null;
   try {
     JarFile jar=new JarFile(f);
-    ZipEntry entry=jar.getEntry(PLUGIN_XML_FILE);
+    ZipEntry entry=jar.getEntry(PluginInstaller.PLUGIN_XML_FILE);
     if (entry == null) {
       return null;
     }
@@ -14,7 +14,9 @@
     byte[] buffer=new byte[2048];
     for (; ; ) {
       int nBytes=in.read(buffer);
-      if (nBytes <= 0)       break;
+      if (nBytes <= 0) {
+        break;
+      }
       out.write(buffer,0,nBytes);
     }
     out.flush();
@@ -26,8 +28,12 @@
   }
  finally {
     try {
-      if (out != null)       out.close();
-      if (in != null)       in.close();
+      if (out != null) {
+        out.close();
+      }
+      if (in != null) {
+        in.close();
+      }
     }
  catch (    IOException ex) {
       ex.printStackTrace();

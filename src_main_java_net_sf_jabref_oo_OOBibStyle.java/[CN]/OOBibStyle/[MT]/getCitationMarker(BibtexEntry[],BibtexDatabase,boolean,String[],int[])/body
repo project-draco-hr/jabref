@@ -16,7 +16,7 @@
           AuthorList al=AuthorList.getAuthorList(author);
           int prevALim=i > 0 ? unlimAuthors[i - 1] : unlimAuthors[0];
           if (!thisMarker.equals(tmpMarker) || ((al.size() > maxAuthors) && (unlimAuthors[i] != prevALim))) {
-            if ((piv > -1) && (i > piv + 1)) {
+            if ((piv > -1) && (i > (piv + 1))) {
               group(entries,uniquefiers,piv,i - 1,(String)citProperties.get("UniquefierSeparator"));
             }
             tmpMarker=thisMarker;
@@ -25,7 +25,7 @@
         }
       }
  else {
-        if ((piv > -1) && (i > piv + 1)) {
+        if ((piv > -1) && (i > (piv + 1))) {
           group(entries,uniquefiers,piv,i - 1,(String)citProperties.get("UniquefierSeparator"));
         }
         piv=-1;
@@ -35,11 +35,15 @@
       group(entries,uniquefiers,piv,uniquefiers.length - 1,(String)citProperties.get("UniquefierSeparator"));
     }
   }
-  if (inParenthesis)   return getAuthorYearParenthesisMarker(entries,database,(String)citProperties.get("AuthorField"),(String)citProperties.get("YearField"),(Integer)citProperties.get("MaxAuthors"),(String)citProperties.get("AuthorSeparator"),(String)citProperties.get("AuthorLastSeparator"),(String)citProperties.get("EtAlString"),(String)citProperties.get("YearSeparator"),(String)citProperties.get("BracketBefore"),(String)citProperties.get("BracketAfter"),(String)citProperties.get("CitationSeparator"),uniquefiers,unlimAuthors);
+  if (inParenthesis) {
+    return getAuthorYearParenthesisMarker(entries,database,(String)citProperties.get("AuthorField"),(String)citProperties.get("YearField"),(Integer)citProperties.get("MaxAuthors"),(String)citProperties.get("AuthorSeparator"),(String)citProperties.get("AuthorLastSeparator"),(String)citProperties.get("EtAlString"),(String)citProperties.get("YearSeparator"),(String)citProperties.get("BracketBefore"),(String)citProperties.get("BracketAfter"),(String)citProperties.get("CitationSeparator"),uniquefiers,unlimAuthors);
+  }
  else {
     String authorLastSeparator=(String)citProperties.get("AuthorLastSeparator");
     String alsInText=(String)citProperties.get("AuthorLastSeparatorInText");
-    if (alsInText != null)     authorLastSeparator=alsInText;
+    if (alsInText != null) {
+      authorLastSeparator=alsInText;
+    }
     return getAuthorYearInTextMarker(entries,database,(String)citProperties.get("AuthorField"),(String)citProperties.get("YearField"),(Integer)citProperties.get("MaxAuthors"),(String)citProperties.get("AuthorSeparator"),authorLastSeparator,(String)citProperties.get("EtAlString"),(String)citProperties.get("InTextYearSeparator"),(String)citProperties.get("BracketBefore"),(String)citProperties.get("BracketAfter"),(String)citProperties.get("CitationSeparator"),uniquefiers,unlimAuthors);
   }
 }

@@ -1,0 +1,24 @@
+{
+  if (field.isEmpty()) {
+    field="UNKNOWN";
+  }
+  String suffix="";
+  if (writeFieldAddSpaces) {
+    for (int i=BibtexEntryWriter.maxFieldLength - field.length(); i > 0; i--) {
+      suffix+=" ";
+    }
+  }
+  String res;
+  if (writeFieldCameCaseName) {
+    if (BibtexEntryWriter.tagDisplayNameMap.containsKey(field.toLowerCase())) {
+      res=BibtexEntryWriter.tagDisplayNameMap.get(field.toLowerCase()) + suffix;
+    }
+ else {
+      res=(field.charAt(0) + "").toUpperCase() + field.substring(1) + suffix;
+    }
+  }
+ else {
+    res=field + suffix;
+  }
+  return res;
+}

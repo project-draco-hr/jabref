@@ -1,4 +1,5 @@
 {
+  final HashMap<String,Boolean> bibentryKnown=new HashMap<String,Boolean>();
   boolean res=false;
   this.query=query;
   shouldContinue=true;
@@ -8,30 +9,44 @@
     String page=readFromURL(url);
     String[] lines=page.split("\n");
     List<String> bibtexUrlList=new ArrayList<String>();
-    for (    String line : lines) {
+    for (    final String line : lines) {
       if (line.startsWith("\"url\"")) {
         String addr=line.replace("\"url\":\"","");
         addr=addr.substring(0,addr.length() - 2);
         bibtexUrlList.add(addr);
       }
     }
+    double saveThreshold=DuplicateCheck.duplicateThreshold;
+    DuplicateCheck.duplicateThreshold=Double.MAX_VALUE;
     int count=1;
     for (    String urlStr : bibtexUrlList) {
       if (!shouldContinue) {
         break;
       }
       final URL bibUrl=new URL(urlStr);
-      String bibtexPage=readFromURL(bibUrl);
-      List<BibtexEntry> bibtexList=helper.getBibTexFromPage(bibtexPage);
-      for (      BibtexEntry bibtexEntry : bibtexList) {
-        inspector.addEntry(bibtexEntry);
-        if (!shouldContinue) {
-          break;
+      final String bibtexHTMLPage=readFromURL(bibUrl);
+      final String[] htmlLines=bibtexHTMLPage.split("\n");
+      for (      final String line : htmlLines) {
+        if (line.contains("biburl")) {
+          int sidx=line.indexOf("{");
+          int eidx=line.indexOf("}");
+          String bibtexUrl=line.substring(sidx + 1,eidx);
+          bibtexUrl=bibtexUrl.replace("dblp.uni-trier.de","www.dblp.org");
+          final URL bibFileURL=new URL(bibtexUrl);
+          final String bibtexPage=readFromURL(bibFileURL);
+          Collection<BibtexEntry> bibtexEntries=BibtexParser.fromString(bibtexPage);
+          for (          BibtexEntry be : bibtexEntries) {
+            if (!bibentryKnown.containsKey(be.getCiteKey())) {
+              inspector.addEntry(be);
+              bibentryKnown.put(be.getCiteKey(),true);
+            }
+          }
         }
       }
       inspector.setProgress(count,bibtexUrlList.size());
       count++;
     }
+    DuplicateCheck.duplicateThreshold=saveThreshold;
     res=true;
   }
  catch (  IOException e) {

@@ -2,12 +2,16 @@
   this.entry=entry;
   this.metaData=metaData;
   AbstractAction okAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
-      if (!ok.isEnabled())       return;
+    @Override public void actionPerformed(    ActionEvent e){
+      if (!ok.isEnabled()) {
+        return;
+      }
       if (externalConfirm != null) {
         FileListEntry testEntry=new FileListEntry("","",null);
         storeSettings(testEntry);
-        if (!externalConfirm.confirmClose(testEntry))         return;
+        if (!externalConfirm.confirmClose(testEntry)) {
+          return;
+        }
       }
       diag.dispose();
       storeSettings(FileListEntryEditor.this.entry);
@@ -15,10 +19,12 @@
     }
   }
 ;
-  types=new JComboBox<ExternalFileType>();
+  types=new JComboBox();
   types.addItemListener(new ItemListener(){
-    public void itemStateChanged(    ItemEvent itemEvent){
-      if (!okDisabledExternally)       ok.setEnabled(types.getSelectedItem() != null);
+    @Override public void itemStateChanged(    ItemEvent itemEvent){
+      if (!okDisabledExternally) {
+        ok.setEnabled(types.getSelectedItem() != null);
+      }
     }
   }
 );
@@ -29,7 +35,10 @@
   final JButton browseBut=new JButton(Globals.lang("Browse"));
   browseBut.addActionListener(browse);
   builder.append(browseBut);
-  if (showOpenButton)   builder.append(open);
+  JButton open=new JButton(Globals.lang("Open"));
+  if (showOpenButton) {
+    builder.append(open);
+  }
   builder.nextLine();
   builder.append(Globals.lang("Description"));
   builder.append(description,3);
@@ -46,19 +55,20 @@
   bb.addGlue();
   bb.addRelatedGap();
   bb.addButton(ok);
+  JButton cancel=new JButton(Globals.lang("Cancel"));
   bb.addButton(cancel);
   bb.addGlue();
   ok.addActionListener(okAction);
   link.addActionListener(okAction);
   description.addActionListener(okAction);
   open.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       openFile();
     }
   }
 );
   AbstractAction cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       diag.dispose();
     }
   }
@@ -69,12 +79,12 @@
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",cancelAction);
   link.getDocument().addDocumentListener(new DocumentListener(){
-    public void insertUpdate(    DocumentEvent documentEvent){
+    @Override public void insertUpdate(    DocumentEvent documentEvent){
       checkExtension();
     }
-    public void removeUpdate(    DocumentEvent documentEvent){
+    @Override public void removeUpdate(    DocumentEvent documentEvent){
     }
-    public void changedUpdate(    DocumentEvent documentEvent){
+    @Override public void changedUpdate(    DocumentEvent documentEvent){
       checkExtension();
     }
   }
@@ -85,11 +95,11 @@
   diag.pack();
   Util.placeDialog(diag,frame);
   diag.addWindowListener(new WindowAdapter(){
-    public void windowActivated(    WindowEvent event){
+    @Override public void windowActivated(    WindowEvent event){
       if (openBrowseWhenShown && !dontOpenBrowseUntilDisposed) {
         dontOpenBrowseUntilDisposed=true;
         SwingUtilities.invokeLater(new Runnable(){
-          public void run(){
+          @Override public void run(){
             browse.actionPerformed(new ActionEvent(browseBut,0,""));
           }
         }

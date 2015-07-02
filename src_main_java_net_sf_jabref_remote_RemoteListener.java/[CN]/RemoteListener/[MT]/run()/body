@@ -1,53 +1,47 @@
 {
-  while (active) {
-    try {
-      Socket newSocket=socket.accept();
-      newSocket.setSoTimeout(1000);
-      if (toStop) {
-        active=false;
-        return;
-      }
-      OutputStream out=newSocket.getOutputStream();
-      InputStream in=newSocket.getInputStream();
-      out.write(IDENTIFIER.getBytes());
-      out.write('\0');
-      out.flush();
-      int c;
-      StringBuffer sb=new StringBuffer();
+  try {
+    while (!Thread.interrupted()) {
       try {
-        while (((c=in.read()) != '\0') && (c >= 0)) {
-          sb.append((char)c);
+        Socket socket=serverSocket.accept();
+        socket.setSoTimeout(1000);
+        if (Thread.interrupted()) {
+          return;
         }
-        if (sb.length() == 0) {
-          continue;
-        }
-        String[] args=sb.toString().split("\n");
-        Vector<ParserResult> loaded=jabref.processArguments(args,false);
-        SwingUtilities.invokeLater(new Runnable(){
-          public void run(){
-            JabRef.jrf.showIfMinimizedToSysTray();
+        Protocol protocol=new Protocol(socket);
+        protocol.sendMessage(IDENTIFIER);
+        try {
+          String message=protocol.receiveMessage();
+          if (message.isEmpty()) {
+            continue;
+          }
+          Vector<ParserResult> loaded=jabref.processArguments(message.split("\n"),false);
+          if (loaded == null) {
+            return;
+          }
+          SwingUtilities.invokeLater(new Runnable(){
+            @Override public void run(){
+              JabRef.jrf.showIfMinimizedToSysTray();
+            }
+          }
+);
+          for (int i=0; i < loaded.size(); i++) {
+            ParserResult pr=loaded.elementAt(i);
+            JabRef.jrf.addParserResult(pr,(i == 0));
           }
         }
-);
-        for (int i=0; i < loaded.size(); i++) {
-          ParserResult pr=loaded.elementAt(i);
-          JabRef.jrf.addParserResult(pr,(i == 0));
+  finally {
+          protocol.close();
         }
-        in.close();
-        out.close();
-        newSocket.close();
       }
- catch (      SocketTimeoutException ex) {
-        in.close();
-        out.close();
-        newSocket.close();
+ catch (      SocketException ex) {
+        return;
+      }
+catch (      IOException e) {
+        e.printStackTrace();
       }
     }
- catch (    SocketException ex) {
-      active=false;
-    }
-catch (    IOException e) {
-      e.printStackTrace();
-    }
+  }
+  finally {
+    closeServerSocket();
   }
 }

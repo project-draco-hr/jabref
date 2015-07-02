@@ -1,5 +1,7 @@
 {
-  if (entry == null)   return null;
+  if (entry == null) {
+    return null;
+  }
   String title=entry.getField("title");
   if (title != null) {
     title=title.replaceAll("[ ]?img src=[^ ]+ alt=\"([^\"]+)\">[ ]?","\\$$1\\$");
@@ -50,7 +52,9 @@
         if (mm.group(4).length() > 0) {
           date="#" + mm.group(4).substring(0,3) + "# "+ mm.group(1)+ "--"+ mm.group(3)+ ",";
         }
- else         date+=",";
+ else {
+          date+=",";
+        }
       }
  else {
         date="#" + mm.group(2).substring(0,3) + "# "+ mm.group(1)+ "--#"+ mm.group(4).substring(0,3)+ "# "+ mm.group(3)+ ",";
@@ -111,6 +115,7 @@
       fullName=fullName.replaceAll(" on"," ").replace("  "," ");
     }
     Matcher m1=publicationPattern.matcher(fullName);
+    String abrvPattern=".*[^,] '?\\d+\\)?";
     if (m1.find()) {
       String prefix=m1.group(2).trim();
       String postfix=m1.group(1).trim();
@@ -139,7 +144,9 @@
       fullName=fullName.trim();
       if (Globals.prefs.getBoolean("useIEEEAbrv")) {
         String id=Globals.journalAbbrev.getAbbreviatedName(fullName,false);
-        if (id != null)         fullName=id;
+        if (id != null) {
+          fullName=id;
+        }
       }
     }
     if (type.getName().equals("Inproceedings")) {
@@ -170,7 +177,9 @@
       fullName=fullName.replaceAll("^[tT]he ","").replaceAll("^\\d{4} ","").replaceAll("[,.]$","");
       String year=entry.getField("year");
       fullName=fullName.replaceAll(", " + year + "\\.?","");
-      if (!fullName.contains("Abstract") && !fullName.contains("Summaries") && !fullName.contains("Conference Record"))       fullName="Proc. " + fullName;
+      if (!fullName.contains("Abstract") && !fullName.contains("Summaries") && !fullName.contains("Conference Record")) {
+        fullName="Proc. " + fullName;
+      }
     }
     entry.setField(sourceField,fullName);
   }

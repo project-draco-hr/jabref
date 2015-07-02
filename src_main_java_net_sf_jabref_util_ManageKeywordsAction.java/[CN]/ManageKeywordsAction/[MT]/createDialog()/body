@@ -1,7 +1,7 @@
 {
   keyword=new JTextField();
-  keywordListModel=new DefaultListModel<String>();
-  keywordList=new JList<String>(keywordListModel);
+  keywordListModel=new DefaultListModel();
+  keywordList=new JList(keywordListModel);
   keywordList.setVisibleRowCount(8);
   JScrollPane kPane=new JScrollPane(keywordList);
   diag=new JDialog(frame,Globals.lang("Manage keywords"),true);
@@ -16,7 +16,7 @@
   group.add(intersectKeywords);
   group.add(mergeKeywords);
   ActionListener stateChanged=new ActionListener(){
-    public void actionPerformed(    ActionEvent arg0){
+    @Override public void actionPerformed(    ActionEvent arg0){
       fillKeyWordList();
     }
   }
@@ -44,14 +44,14 @@
   builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       cancelled=false;
       diag.dispose();
     }
   }
 );
   AbstractAction cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       cancelled=true;
       diag.dispose();
     }
@@ -59,9 +59,9 @@
 ;
   cancel.addActionListener(cancelAction);
   final ActionListener addActionListener=new ActionListener(){
-    public void actionPerformed(    ActionEvent arg0){
+    @Override public void actionPerformed(    ActionEvent arg0){
       String text=keyword.getText().trim();
-      if (text.equals("")) {
+      if (text.isEmpty()) {
         return;
       }
       if (keywordListModel.isEmpty()) {
@@ -69,7 +69,7 @@
       }
  else {
         int idx=0;
-        String element=keywordListModel.getElementAt(idx);
+        String element=(String)keywordListModel.getElementAt(idx);
         while ((idx < keywordListModel.size()) && (element.compareTo(text) < 0)) {
           idx++;
         }
@@ -89,8 +89,8 @@
 ;
   add.addActionListener(addActionListener);
   final ActionListener removeActionListenter=new ActionListener(){
-    public void actionPerformed(    ActionEvent arg0){
-      List<String> values=keywordList.getSelectedValuesList();
+    @Override public void actionPerformed(    ActionEvent arg0){
+      String[] values=(String[])keywordList.getSelectedValues();
       for (      String val : values) {
         keywordListModel.removeElement(val);
       }
@@ -99,27 +99,27 @@
 ;
   remove.addActionListener(removeActionListenter);
   keywordList.addKeyListener(new KeyListener(){
-    public void keyTyped(    KeyEvent arg0){
+    @Override public void keyTyped(    KeyEvent arg0){
     }
-    public void keyReleased(    KeyEvent arg0){
+    @Override public void keyReleased(    KeyEvent arg0){
     }
-    public void keyPressed(    KeyEvent arg0){
+    @Override public void keyPressed(    KeyEvent arg0){
       if (arg0.getKeyCode() == KeyEvent.VK_DELETE) {
         removeActionListenter.actionPerformed(null);
       }
     }
   }
 );
-  AbstractAutoCompleter autoComp=JabRef.jrf.basePanel().getAutoCompleter("keywords");
+  AutoCompleter autoComp=JabRef.jrf.basePanel().getAutoCompleters().get("keywords");
   AutoCompleteListener acl=new AutoCompleteListener(autoComp);
   keyword.addKeyListener(acl);
   keyword.addFocusListener(acl);
   keyword.addKeyListener(new KeyListener(){
-    public void keyTyped(    KeyEvent e){
+    @Override public void keyTyped(    KeyEvent e){
     }
-    public void keyReleased(    KeyEvent e){
+    @Override public void keyReleased(    KeyEvent e){
     }
-    public void keyPressed(    KeyEvent e){
+    @Override public void keyPressed(    KeyEvent e){
       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
         addActionListener.actionPerformed(null);
       }

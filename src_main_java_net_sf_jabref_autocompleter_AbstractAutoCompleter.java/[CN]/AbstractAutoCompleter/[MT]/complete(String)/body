@@ -1,18 +1,20 @@
 {
-  if (stringMinLength(str))   return null;
+  if (AbstractAutoCompleter.stringMinLength(str)) {
+    return null;
+  }
   String lstr=str.toLowerCase();
   if (lstr.equals(str)) {
-    String ender=incrementLastCharacter(lstr);
-    SortedSet<String> subset=_index_caseinsensitive.subSet(lstr,ender);
+    String ender=AbstractAutoCompleter.incrementLastCharacter(lstr);
+    SortedSet<String> subset=indexCaseInsensitive.subSet(lstr,ender);
     ArrayList<String> res=new ArrayList<String>();
     for (    String s : subset) {
-      res.addAll(_possibleStringsForSearchString.get(s));
+      res.addAll(possibleStringsForSearchString.get(s));
     }
     return res.toArray(new String[res.size()]);
   }
  else {
-    String ender=incrementLastCharacter(str);
-    SortedSet<String> subset=_index_casesensitive.subSet(str,ender);
+    String ender=AbstractAutoCompleter.incrementLastCharacter(str);
+    SortedSet<String> subset=indexCaseSensitive.subSet(str,ender);
     return subset.toArray(new String[subset.size()]);
   }
 }

@@ -2,9 +2,13 @@
   NamedCompound ce=new NamedCompound(Globals.lang("Rename field"));
   for (  BibtexEntry entry : entries) {
     String valToMove=entry.getField(field);
-    if ((valToMove == null) || (valToMove.length() == 0))     continue;
+    if ((valToMove == null) || (valToMove.length() == 0)) {
+      continue;
+    }
     String valInNewField=entry.getField(newField);
-    if (!overwriteValues && (valInNewField != null) && (valInNewField.length() > 0))     continue;
+    if (!overwriteValues && (valInNewField != null) && (valInNewField.length() > 0)) {
+      continue;
+    }
     entry.setField(newField,valToMove);
     ce.addEdit(new UndoableFieldChange(entry,newField,valInNewField,valToMove));
     entry.clearField(field);

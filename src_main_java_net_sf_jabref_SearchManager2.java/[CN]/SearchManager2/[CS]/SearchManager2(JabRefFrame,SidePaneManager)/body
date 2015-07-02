@@ -34,7 +34,7 @@
     searchGen.setEnabled(false);
   }
   searchAll.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       boolean state=!searchAll.isSelected();
       searchReq.setEnabled(state);
       searchOpt.setEnabled(state);
@@ -57,10 +57,12 @@
   searchField.addCaretListener(this);
   search.addActionListener(this);
   searchField.addFocusListener(new FocusAdapter(){
-    public void focusGained(    FocusEvent e){
-      if (increment.isSelected())       searchField.setText("");
+    @Override public void focusGained(    FocusEvent e){
+      if (increment.isSelected()) {
+        searchField.setText("");
+      }
     }
-    public void focusLost(    FocusEvent e){
+    @Override public void focusLost(    FocusEvent e){
       incSearch=false;
       incSearchPos=-1;
       if (increment.isSelected()) {
@@ -71,7 +73,7 @@
   escape.addActionListener(this);
   escape.setEnabled(false);
   openset.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       if (settings.isVisible()) {
       }
  else {
@@ -82,7 +84,7 @@
   }
 );
   searchAutoComplete.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       Globals.prefs.putBoolean("searchAutoComplete",searchAutoComplete.isSelected());
       if (SearchManager2.this.frame.basePanel() != null) {
         SearchManager2.this.frame.basePanel().updateSearchManager();
@@ -100,13 +102,25 @@
   help.setMinimumSize(butDim);
   help.setMargin(margin);
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.searchHelp,"Help"));
-  if (Globals.prefs.getBoolean("incrementS"))   increment.setSelected(true);
- else   if (Globals.prefs.getBoolean("floatSearch"))   floatSearch.setSelected(true);
- else   if (Globals.prefs.getBoolean("showSearchInDialog"))   showResultsInDialog.setSelected(true);
- else   if (Globals.prefs.getBoolean("searchAllBases"))   searchAllBases.setSelected(true);
- else   hideSearch.setSelected(true);
+  if (Globals.prefs.getBoolean("incrementS")) {
+    increment.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean("floatSearch")) {
+    floatSearch.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean("showSearchInDialog")) {
+    showResultsInDialog.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean("searchAllBases")) {
+    searchAllBases.setSelected(true);
+  }
+ else {
+    hideSearch.setSelected(true);
+  }
   JPanel main=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
   main.setLayout(gbl);
+  GridBagConstraints con=new GridBagConstraints();
   con.gridwidth=GridBagConstraints.REMAINDER;
   con.fill=GridBagConstraints.BOTH;
   con.weightx=1;
@@ -145,14 +159,16 @@
   setContent(main);
   searchField.getInputMap().put(Globals.prefs.getKey("Repeat incremental search"),"repeat");
   searchField.getActionMap().put("repeat",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
-      if (increment.isSelected())       repeatIncremental();
+    @Override public void actionPerformed(    ActionEvent e){
+      if (increment.isSelected()) {
+        repeatIncremental();
+      }
     }
   }
 );
   searchField.getInputMap().put(Globals.prefs.getKey("Clear search"),"escape");
   searchField.getActionMap().put("escape",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       hideAway();
     }
   }

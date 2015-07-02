@@ -7,7 +7,7 @@
     e.printStackTrace();
     return null;
   }
-  String urlString=String.format(URL_PATTERN,q);
+  String urlString=String.format(DOItoBibTeXFetcher.URL_PATTERN,q);
   URL url;
   try {
     url=new URL(urlString);
@@ -24,10 +24,10 @@
     e.printStackTrace();
     return null;
   }
-  conn.setRequestProperty("Accept","text/bibliography; style=bibtex");
+  conn.setRequestProperty("Accept","application/x-bibtex");
   String bibtexString;
   try {
-    bibtexString=Util.getResults(conn);
+    bibtexString=Util.getResultsWithEncoding(conn,"UTF8");
   }
  catch (  FileNotFoundException e) {
     if (status != null) {
@@ -39,6 +39,7 @@ catch (  IOException e) {
     e.printStackTrace();
     return null;
   }
+  bibtexString=bibtexString.replaceAll("(pages=\\{[0-9]+)\u2013([0-9]+\\})","$1--$2");
   BibtexEntry entry=BibtexParser.singleFromString(bibtexString);
   if (entry != null) {
     String title=entry.getField("title");

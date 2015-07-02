@@ -7,16 +7,22 @@
       return;
     }
   }
-  int status=checkInstalledVersion(file);
+  int status=PluginInstaller.checkInstalledVersion(file);
   int result;
 switch (status) {
 case NO_VERSIONS_INSTALLED:
-    result=copyPlugin(frame,file,fileName);
-  if (result == SUCCESS)   JOptionPane.showMessageDialog(frame,Globals.lang("Plugin installed successfully. You must restart JabRef to load the new plugin."),Globals.lang("Plugin installer"),JOptionPane.INFORMATION_MESSAGE);
+    result=PluginInstaller.copyPlugin(frame,file,fileName);
+  if (result == PluginInstaller.SUCCESS) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("Plugin installed successfully. You must restart JabRef to load the new plugin."),Globals.lang("Plugin installer"),JOptionPane.INFORMATION_MESSAGE);
+  }
  else {
     String reason;
-    if (result == UNABLE_TO_COPY_FILE)     reason=Globals.lang("Unable to copy file");
- else     reason=Globals.lang("Unable to create user plugin directory") + " (" + PluginCore.userPluginDir.getPath()+ ").";
+    if (result == PluginInstaller.UNABLE_TO_COPY_FILE) {
+      reason=Globals.lang("Unable to copy file");
+    }
+ else {
+      reason=Globals.lang("Unable to create user plugin directory") + " (" + PluginCore.userPluginDir.getPath()+ ").";
+    }
     JOptionPane.showMessageDialog(frame,Globals.lang("Plugin installation failed.") + " " + reason,Globals.lang("Plugin installer"),JOptionPane.ERROR_MESSAGE);
   }
 break;
@@ -27,11 +33,11 @@ case NEWER_VERSION_INSTALLED:
 JOptionPane.showMessageDialog(frame,Globals.lang("A newer version of this plugin is already installed."),Globals.lang("Plugin installer"),JOptionPane.INFORMATION_MESSAGE);
 break;
 case OLDER_VERSION_INSTALLED:
-result=copyPlugin(frame,file,fileName);
-if (result == SUCCESS) {
+result=PluginInstaller.copyPlugin(frame,file,fileName);
+if (result == PluginInstaller.SUCCESS) {
 int answer=JOptionPane.showConfirmDialog(frame,Globals.lang("One or more older versions of this plugin is installed. Delete old versions?"),Globals.lang("Plugin installer"),JOptionPane.YES_NO_OPTION);
 if (answer == JOptionPane.YES_OPTION) {
-boolean success=deleteOlderVersions(file);
+boolean success=PluginInstaller.deleteOlderVersions(file);
 if (success) {
 JOptionPane.showMessageDialog(frame,Globals.lang("Old versions deleted successfully."),Globals.lang("Plugin installer"),JOptionPane.INFORMATION_MESSAGE);
 }
@@ -42,8 +48,12 @@ JOptionPane.showMessageDialog(frame,Globals.lang("Old plugin versions will be de
 }
  else {
 String reason;
-if (result == UNABLE_TO_COPY_FILE) reason=Globals.lang("Unable to copy file");
- else reason=Globals.lang("Unable to create user plugin directory") + " (" + PluginCore.userPluginDir.getPath()+ ").";
+if (result == PluginInstaller.UNABLE_TO_COPY_FILE) {
+reason=Globals.lang("Unable to copy file");
+}
+ else {
+reason=Globals.lang("Unable to create user plugin directory") + " (" + PluginCore.userPluginDir.getPath()+ ").";
+}
 JOptionPane.showMessageDialog(frame,Globals.lang("Plugin installation failed.") + " " + reason,Globals.lang("Plugin installer"),JOptionPane.ERROR_MESSAGE);
 }
 break;
@@ -51,12 +61,18 @@ case UNKNOWN_VERSION:
 JLabel lab=new JLabel("<html>" + Globals.lang("Unable to determine plugin name and " + "version. This may not be a valid JabRef plugin.") + "<br>"+ Globals.lang("Install anyway?")+ "</html>");
 int answer=JOptionPane.showConfirmDialog(frame,lab,Globals.lang("Plugin installer"),JOptionPane.YES_NO_OPTION);
 if (answer == JOptionPane.YES_OPTION) {
-result=copyPlugin(frame,file,fileName);
-if (result == SUCCESS) JOptionPane.showMessageDialog(frame,Globals.lang("Plugin installed successfully. You must restart JabRef to load the new plugin."),Globals.lang("Plugin installer"),JOptionPane.INFORMATION_MESSAGE);
+result=PluginInstaller.copyPlugin(frame,file,fileName);
+if (result == PluginInstaller.SUCCESS) {
+JOptionPane.showMessageDialog(frame,Globals.lang("Plugin installed successfully. You must restart JabRef to load the new plugin."),Globals.lang("Plugin installer"),JOptionPane.INFORMATION_MESSAGE);
+}
  else {
 String reason;
-if (result == UNABLE_TO_COPY_FILE) reason=Globals.lang("Unable to copy file");
- else reason=Globals.lang("Unable to create user plugin directory") + " (" + PluginCore.userPluginDir.getPath()+ ").";
+if (result == PluginInstaller.UNABLE_TO_COPY_FILE) {
+reason=Globals.lang("Unable to copy file");
+}
+ else {
+reason=Globals.lang("Unable to create user plugin directory") + " (" + PluginCore.userPluginDir.getPath()+ ").";
+}
 JOptionPane.showMessageDialog(frame,Globals.lang("Plugin installation failed.") + " " + reason,Globals.lang("Plugin installer"),JOptionPane.ERROR_MESSAGE);
 }
 }

@@ -8,15 +8,19 @@
   for (int i=0; i < fetcherArray.length; i++) {
     choices[i]=fetcherArray[i].getTitle();
   }
-  fetcherChoice=new JComboBox<String>(choices);
+  fetcherChoice=new JComboBox(choices);
   int defaultFetcher=Globals.prefs.getInt("selectedFetcherIndex");
-  if (defaultFetcher >= fetcherArray.length)   defaultFetcher=0;
+  if (defaultFetcher >= fetcherArray.length) {
+    defaultFetcher=0;
+  }
   this.activeFetcher=fetcherArray[defaultFetcher];
   fetcherChoice.setSelectedIndex(defaultFetcher);
-  if (this.activeFetcher.getOptionsPanel() != null)   optPanel.add(this.activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
+  if (this.activeFetcher.getOptionsPanel() != null) {
+    optPanel.add(this.activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
+  }
   helpBut.setEnabled(activeFetcher.getHelpPage() != null);
   fetcherChoice.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       activeFetcher=fetcherArray[fetcherChoice.getSelectedIndex()];
       Globals.prefs.putInt("selectedFetcherIndex",fetcherChoice.getSelectedIndex());
       if (activeFetcher.getHelpPage() != null) {
@@ -28,7 +32,9 @@
       }
       optionsCards.show(optionsPanel,String.valueOf(fetcherChoice.getSelectedIndex()));
       optPanel.removeAll();
-      if (activeFetcher.getOptionsPanel() != null)       optPanel.add(activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
+      if (activeFetcher.getOptionsPanel() != null) {
+        optPanel.add(activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
+      }
       revalidate();
     }
   }
@@ -39,15 +45,18 @@
   helpBut.setMargin(new Insets(0,0,0,0));
   tf.setPreferredSize(new Dimension(1,tf.getPreferredSize().height));
   tf.setName("tf");
+  JButton reset=new JButton(Globals.lang("Reset"));
   reset.addActionListener(new AbstractAction(){
-    public void actionPerformed(    ActionEvent event){
+    @Override public void actionPerformed(    ActionEvent event){
       tf.setText("");
       new FocusRequester(tf);
     }
   }
 );
   JPanel main=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
   main.setLayout(gbl);
+  GridBagConstraints con=new GridBagConstraints();
   con.fill=GridBagConstraints.BOTH;
   con.insets=new Insets(0,0,2,0);
   con.gridwidth=GridBagConstraints.REMAINDER;
@@ -62,6 +71,7 @@
   main.add(tf);
   con.weighty=0;
   con.gridwidth=1;
+  JButton go=new JButton(Globals.lang("Fetch"));
   gbl.setConstraints(go,con);
   main.add(go);
   reset.setName("reset");
@@ -70,6 +80,7 @@
   con.gridwidth=GridBagConstraints.REMAINDER;
   gbl.setConstraints(helpBut,con);
   main.add(helpBut);
+  JPanel pan=new JPanel();
   if (pan != null) {
     gbl.setConstraints(optPanel,con);
     main.add(optPanel);

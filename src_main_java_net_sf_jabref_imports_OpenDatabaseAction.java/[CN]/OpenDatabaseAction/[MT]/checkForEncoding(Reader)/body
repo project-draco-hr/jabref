@@ -1,17 +1,23 @@
 {
   String suppliedEncoding=null;
-  StringBuffer headerText=new StringBuffer();
+  StringBuilder headerText=new StringBuilder();
   try {
     boolean keepon=true;
     int piv=0, offset=0;
     int c;
     while (keepon) {
       c=reader.read();
-      if ((piv == 0) && ((c == '%') || (Character.isWhitespace((char)c))))       offset++;
+      if ((piv == 0) && ((c == '%') || (Character.isWhitespace((char)c)))) {
+        offset++;
+      }
  else {
         headerText.append((char)c);
-        if (c == GUIGlobals.SIGNATURE.charAt(piv))         piv++;
- else         keepon=false;
+        if (c == GUIGlobals.SIGNATURE.charAt(piv)) {
+          piv++;
+        }
+ else {
+          keepon=false;
+        }
       }
       found:       if (piv == GUIGlobals.SIGNATURE.length()) {
         keepon=false;
@@ -19,11 +25,15 @@
         }
         while (((c=reader.read()) == '%') || (Character.isWhitespace((char)c))) {
         }
-        if ((char)c != GUIGlobals.encPrefix.charAt(0))         break found;
-        for (int i=1; i < GUIGlobals.encPrefix.length(); i++) {
-          if (reader.read() != GUIGlobals.encPrefix.charAt(i))           break found;
+        if ((char)c != GUIGlobals.encPrefix.charAt(0)) {
+          break found;
         }
-        StringBuffer sb=new StringBuffer();
+        for (int i=1; i < GUIGlobals.encPrefix.length(); i++) {
+          if (reader.read() != GUIGlobals.encPrefix.charAt(i)) {
+            break found;
+          }
+        }
+        StringBuilder sb=new StringBuilder();
         while ((c=reader.read()) != '\n') {
           sb.append((char)c);
         }

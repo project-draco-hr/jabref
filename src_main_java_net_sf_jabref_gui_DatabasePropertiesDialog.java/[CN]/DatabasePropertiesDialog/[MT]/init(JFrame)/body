@@ -3,10 +3,10 @@
   JButton browseFileIndv=new JButton(Globals.lang("Browse"));
   JButton browsePdf=new JButton(Globals.lang("Browse"));
   JButton browsePs=new JButton(Globals.lang("Browse"));
-  browseFile.addActionListener(new BrowseAction(parent,fileDir,true));
-  browseFileIndv.addActionListener(new BrowseAction(parent,fileDirIndv,true));
-  browsePdf.addActionListener(new BrowseAction(parent,pdfDir,true));
-  browsePs.addActionListener(new BrowseAction(parent,psDir,true));
+  browseFile.addActionListener(BrowseAction.buildForDir(parent,fileDir));
+  browseFileIndv.addActionListener(BrowseAction.buildForDir(parent,fileDirIndv));
+  browsePdf.addActionListener(BrowseAction.buildForDir(parent,pdfDir));
+  browsePs.addActionListener(BrowseAction.buildForDir(parent,psDir));
   setupSortOrderConfiguration();
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, left:pref, 4dlu, fill:pref",""));
   builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -72,7 +72,7 @@
   getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   pack();
   AbstractAction closeAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }
@@ -82,14 +82,14 @@
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",closeAction);
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       storeSettings();
       dispose();
     }
   }
 );
   cancel.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }

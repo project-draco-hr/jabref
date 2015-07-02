@@ -20,11 +20,10 @@
     comparators.add(new IdComparator());
   }
  else {
-    comparators=getSaveComparators(isSaveOperation,metaData);
+    comparators=FileActions.getSaveComparators(isSaveOperation,metaData);
   }
   FieldComparatorStack<BibtexEntry> comparatorStack=new FieldComparatorStack<BibtexEntry>(comparators);
-  BasicEventList<BibtexEntry> entryList=new BasicEventList<BibtexEntry>();
-  SortedList<BibtexEntry> sorter=new SortedList<BibtexEntry>(entryList,comparatorStack);
+  List<BibtexEntry> sorter=new ArrayList<BibtexEntry>();
   if (keySet == null) {
     keySet=database.getKeySet();
   }
@@ -34,5 +33,6 @@
       sorter.add(database.getEntryById((i.next())));
     }
   }
+  Collections.sort(sorter,comparatorStack);
   return sorter;
 }

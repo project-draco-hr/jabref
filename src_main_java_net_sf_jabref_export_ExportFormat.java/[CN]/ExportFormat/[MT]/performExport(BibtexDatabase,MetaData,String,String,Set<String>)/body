@@ -9,12 +9,13 @@
       ex.printStackTrace();
     }
   }
-  if (ss == null)   ss=getSaveSession(encoding,outFile);
+  if (ss == null) {
+    ss=getSaveSession(encoding,outFile);
+  }
   VerifyingWriter ps=ss.getWriter();
   Layout beginLayout=null;
-  Reader reader=null;
-  HashMap<String,String> customNameFormatters=readFormatterFile(lfFileName);
-  Globals.prefs.customExportNameFormatters=customNameFormatters;
+  Reader reader;
+  Globals.prefs.customExportNameFormatters=readFormatterFile(lfFileName);
   ArrayList<String> missingFormatters=new ArrayList<String>(1);
   try {
     reader=getReader(lfFileName + ".begin.layout");
@@ -43,15 +44,19 @@
   for (  BibtexEntry entry : sorted) {
     ExportFormats.entryNumber++;
     String type=entry.getType().getName().toLowerCase();
-    if (layouts.containsKey(type))     layout=layouts.get(type);
+    if (layouts.containsKey(type)) {
+      layout=layouts.get(type);
+    }
  else {
       try {
-        reader=getReader(lfFileName + "." + type+ ".layout");
+        reader=getReader(lfFileName + '.' + type+ ".layout");
         layoutHelper=new LayoutHelper(reader);
         layout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
         layouts.put(type,layout);
         reader.close();
-        if (layout != null)         missingFormatters.addAll(layout.getMissingFormatters());
+        if (layout != null) {
+          missingFormatters.addAll(layout.getMissingFormatters());
+        }
       }
  catch (      IOException ex) {
         layout=defLayout;
@@ -73,11 +78,13 @@
     missingFormatters.addAll(endLayout.getMissingFormatters());
   }
   Globals.prefs.customExportNameFormatters=null;
-  if (missingFormatters.size() > 0) {
+  if (!missingFormatters.isEmpty()) {
     StringBuilder sb=new StringBuilder("The following formatters could not be found").append(": ");
     for (Iterator<String> i=missingFormatters.iterator(); i.hasNext(); ) {
       sb.append(i.next());
-      if (i.hasNext())       sb.append(", ");
+      if (i.hasNext()) {
+        sb.append(", ");
+      }
     }
     System.err.println(sb.toString());
   }

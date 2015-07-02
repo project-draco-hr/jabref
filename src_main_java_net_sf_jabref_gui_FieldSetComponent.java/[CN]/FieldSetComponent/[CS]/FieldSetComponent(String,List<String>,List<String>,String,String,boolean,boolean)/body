@@ -2,10 +2,15 @@
   this.forceLowerCase=forceLowerCase;
   add=new JButton(Globals.lang(addText));
   remove=new JButton(Globals.lang(removeText));
-  listModel=new DefaultListModel<String>();
-  if (title != null)   this.title=new JLabel(title);
-  for (  String field : fields)   listModel.addElement(field);
-  list=new JList<String>(listModel);
+  listModel=new DefaultListModel();
+  JLabel title1=null;
+  if (title != null) {
+    title1=new JLabel(title);
+  }
+  for (  String field : fields) {
+    listModel.addElement(field);
+  }
+  list=new JList(listModel);
   list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
   add.addActionListener(this);
   remove.addActionListener(this);
@@ -14,9 +19,9 @@
   con.fill=GridBagConstraints.BOTH;
   con.weightx=1;
   con.gridwidth=GridBagConstraints.REMAINDER;
-  if (this.title != null) {
-    gbl.setConstraints(this.title,con);
-    add(this.title);
+  if (title1 != null) {
+    gbl.setConstraints(title1,con);
+    add(title1);
   }
   con.weighty=1;
   sp=new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -49,7 +54,7 @@
   con.gridwidth=3;
   con.weightx=1;
   if (preset != null) {
-    sel=new JComboBox<String>(preset.toArray(new String[preset.size()]));
+    sel=new JComboBox(preset.toArray(new String[preset.size()]));
     sel.setEditable(true);
     gbl.setConstraints(sel,con);
     add(sel);

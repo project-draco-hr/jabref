@@ -2,13 +2,18 @@
   BibtexEntryType type=BibtexEntryType.getType(name);
   if (type instanceof CustomEntryType) {
     if (BibtexEntryType.getStandardType(name) == null) {
-      int reply=JOptionPane.showConfirmDialog(frame,Globals.lang("All entries of this " + "type will be declared " + "typeless. Continue?"),Globals.lang("Delete custom format") + " '" + Util.nCase(name)+ "'",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
-      if (reply != JOptionPane.YES_OPTION)       return;
+      int reply=JOptionPane.showConfirmDialog(frame,Globals.lang("All entries of this " + "type will be declared " + "typeless. Continue?"),Globals.lang("Delete custom format") + " '" + StringUtil.nCase(name)+ '\'',JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+      if (reply != JOptionPane.YES_OPTION) {
+        return;
+      }
     }
     BibtexEntryType.removeType(name);
-    updateTypesForEntries(Util.nCase(name));
+    updateTypesForEntries(StringUtil.nCase(name));
     changed.remove(name);
     reqLists.remove(name);
     optLists.remove(name);
+    if (biblatexMode) {
+      opt2Lists.remove(name);
+    }
   }
 }

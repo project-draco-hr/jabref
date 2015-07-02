@@ -6,9 +6,13 @@
   Object newSelected=null;
   while (e.next()) {
     if (e.getType() == ListEvent.INSERT) {
-      if (newSelected != null)       return;
+      if (newSelected != null) {
+        return;
+      }
  else {
-        if (e.getIndex() < selected.size())         newSelected=selected.get(e.getIndex());
+        if (e.getIndex() < selected.size()) {
+          newSelected=selected.get(e.getIndex());
+        }
       }
     }
   }
@@ -22,12 +26,16 @@
         visName=oldEditor.getVisiblePanelName();
       }
       EntryEditor newEditor=panel.getEntryEditor(toShow);
-      if ((oldEditor != null))       oldEditor.setMovingToDifferentEntry();
+      if ((oldEditor != null)) {
+        oldEditor.setMovingToDifferentEntry();
+      }
       if ((newEditor != oldEditor) || (mode != BasePanel.SHOWING_EDITOR)) {
-        if (visName != null)         newEditor.setVisiblePanel(visName);
+        if (visName != null) {
+          newEditor.setVisiblePanel(visName);
+        }
         panel.showEntryEditor(newEditor);
         SwingUtilities.invokeLater(new Runnable(){
-          public void run(){
+          @Override public void run(){
             table.ensureVisible(table.getSelectedRow());
           }
         }

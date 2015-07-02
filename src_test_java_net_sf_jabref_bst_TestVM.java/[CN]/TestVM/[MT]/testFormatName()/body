@@ -3,17 +3,17 @@
     VM vm=new VM("FUNCTION {format}{ \"Charles Louis Xavier Joseph de la Vall{\\'e}e Poussin\" #1 \"{vv~}{ll}{, jj}{, f}?\" format.name$ }" + "EXECUTE {format}");
     Vector<BibtexEntry> v=new Vector<BibtexEntry>();
     vm.run(v);
-    assertEquals("de~la Vall{\\'e}e~Poussin, C.~L. X.~J?",(String)vm.getStack().pop());
-    assertEquals(0,vm.getStack().size());
+    Assert.assertEquals("de~la Vall{\\'e}e~Poussin, C.~L. X.~J?",vm.getStack().pop());
+    Assert.assertEquals(0,vm.getStack().size());
   }
 {
     VM vm=new VM("ENTRY  { author }  { }  { label } " + "FUNCTION {presort} { cite$ 'sort.key$ := } " + "ITERATE { presort } "+ "READ "+ "SORT "+ "FUNCTION {format}{ author #2 \"{vv~}{ll}{, jj}{, f}?\" format.name$ }"+ "ITERATE {format}");
     Vector<BibtexEntry> v=new Vector<BibtexEntry>();
     v.add(t1BibtexEntry());
-    v.add(bibtexString2BibtexEntry("@book{test, author=\"Jonathan Meyer and Charles Louis Xavier Joseph de la Vall{\\'e}e Poussin\"}"));
+    v.add(TestVM.bibtexString2BibtexEntry("@book{test, author=\"Jonathan Meyer and Charles Louis Xavier Joseph de la Vall{\\'e}e Poussin\"}"));
     vm.run(v);
-    assertEquals("de~la Vall{\\'e}e~Poussin, C.~L. X.~J?",vm.getStack().pop());
-    assertEquals("Annabi, H?",vm.getStack().pop());
-    assertEquals(0,vm.getStack().size());
+    Assert.assertEquals("de~la Vall{\\'e}e~Poussin, C.~L. X.~J?",vm.getStack().pop());
+    Assert.assertEquals("Annabi, H?",vm.getStack().pop());
+    Assert.assertEquals(0,vm.getStack().size());
   }
 }

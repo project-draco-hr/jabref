@@ -1,49 +1,48 @@
 {
   valueChanged(new ListSelectionEvent(new JList(),0,0,false));
   List<String> types=typeComp.getFields();
-  for (  String typeName : reqLists.keySet()) {
-    if (!types.contains(typeName))     continue;
-    List<String> reqFields=reqLists.get(typeName);
-    List<String> optFields=optLists.get(typeName);
-    List<String> opt2Fields=opt2Lists.get(typeName);
+  for (  Map.Entry<String,List<String>> stringListEntry : reqLists.entrySet()) {
+    if (!types.contains(stringListEntry.getKey())) {
+      continue;
+    }
+    List<String> reqFields=stringListEntry.getValue();
+    List<String> optFields=optLists.get(stringListEntry.getKey());
+    List<String> opt2Fields=opt2Lists.get(stringListEntry.getKey());
     String[] reqStr=new String[reqFields.size()];
     reqStr=reqFields.toArray(reqStr);
     String[] optStr=new String[optFields.size()];
     optStr=optFields.toArray(optStr);
     String[] opt2Str;
-    if (opt2Fields != null)     opt2Str=opt2Fields.toArray(new String[opt2Fields.size()]);
- else     opt2Str=new String[0];
+    if (opt2Fields != null) {
+      opt2Str=opt2Fields.toArray(new String[opt2Fields.size()]);
+    }
+ else {
+      opt2Str=new String[0];
+    }
     boolean changesMade=true;
-    if (defaulted.contains(typeName)) {
-      String nm=Util.nCase(typeName);
+    if (defaulted.contains(stringListEntry.getKey())) {
+      String nm=StringUtil.nCase(stringListEntry.getKey());
       BibtexEntryType.removeType(nm);
       updateTypesForEntries(nm);
       continue;
     }
-    BibtexEntryType oldType=BibtexEntryType.getType(typeName);
+    BibtexEntryType oldType=BibtexEntryType.getType(stringListEntry.getKey());
     if (oldType != null) {
       String[] oldReq=oldType.getRequiredFields(), oldOpt=oldType.getOptionalFields();
       if (biblatexMode) {
         String[] priOpt=oldType.getPrimaryOptionalFields();
-        ArrayList<String> secOpt=new ArrayList<String>();
-        for (        String anOldOpt : oldOpt) {
-          boolean inPri=false;
-          for (          String aPriOpt : priOpt) {
-            if (aPriOpt.equals(anOldOpt)) {
-              inPri=true;
-              break;
-            }
-          }
-          if (!inPri)           secOpt.add(anOldOpt);
+        String[] secOpt=Util.getRemainder(oldOpt,priOpt);
+        if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr) && equalArrays(secOpt,opt2Str)) {
+          changesMade=false;
         }
-        String[] secOptArray=secOpt.toArray(new String[secOpt.size()]);
-        if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr) && equalArrays(secOptArray,opt2Str))         changesMade=false;
       }
- else       if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr))       changesMade=false;
+ else       if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr)) {
+        changesMade=false;
+      }
     }
     if (changesMade) {
-      CustomEntryType typ=biblatexMode ? new CustomEntryType(Util.nCase(typeName),reqStr,optStr,opt2Str) : new CustomEntryType(Util.nCase(typeName),reqStr,optStr);
-      BibtexEntryType.ALL_TYPES.put(typeName.toLowerCase(),typ);
+      CustomEntryType typ=biblatexMode ? new CustomEntryType(StringUtil.nCase(stringListEntry.getKey()),reqStr,optStr,opt2Str) : new CustomEntryType(StringUtil.nCase(stringListEntry.getKey()),reqStr,optStr);
+      BibtexEntryType.ALL_TYPES.put(stringListEntry.getKey().toLowerCase(),typ);
       updateTypesForEntries(typ.getName());
     }
   }
@@ -53,8 +52,10 @@
       toRemove.add(o);
     }
   }
-  if (toRemove.size() > 0) {
-    for (    Object aToRemove : toRemove)     typeDeletion((String)aToRemove);
+  if (!toRemove.isEmpty()) {
+    for (    Object aToRemove : toRemove) {
+      typeDeletion((String)aToRemove);
+    }
   }
   updateTables();
 }

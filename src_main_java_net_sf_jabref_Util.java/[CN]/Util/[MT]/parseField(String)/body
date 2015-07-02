@@ -1,22 +1,23 @@
 {
-  if (content.length() == 0)   return content;
+  if (content.length() == 0) {
+    return content;
+  }
   String[] strings=content.split("#");
-  StringBuffer result=new StringBuffer();
+  StringBuilder result=new StringBuilder();
   for (  String string : strings) {
     String s=string.trim();
     if (s.length() > 0) {
       char c=s.charAt(0);
-      if (c == '{' || c == '"') {
-        result.append(shaveString(string));
+      if ((c == '{') || (c == '"')) {
+        result.append(StringUtil.shaveString(string));
       }
  else {
-        String s2=shaveString(s);
-        try {
-          Integer.parseInt(s2);
+        String s2=StringUtil.shaveString(s);
+        if (isInteger(s2)) {
           result.append(s2);
         }
- catch (        NumberFormatException ex) {
-          result.append("#").append(s2).append("#");
+ else {
+          result.append('#').append(s2).append('#');
         }
       }
     }

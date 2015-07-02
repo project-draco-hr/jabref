@@ -1,10 +1,17 @@
 {
   BibtexEntry[] entries=panel.getSelectedEntries();
-  if (entries == null)   return;
+  if (entries == null) {
+    return;
+  }
   NamedCompound ce=new NamedCompound("Unabbreviate journal names");
   int count=0;
   for (  BibtexEntry entry : entries) {
-    if (Globals.journalAbbrev.unabbreviate(panel.database(),entry,"journal",ce))     count++;
+    if (Globals.journalAbbrev.unabbreviate(panel.database(),entry,"journal",ce)) {
+      count++;
+    }
+    if (Globals.journalAbbrev.unabbreviate(panel.database(),entry,"journaltitle",ce)) {
+      count++;
+    }
   }
   if (count > 0) {
     ce.end();

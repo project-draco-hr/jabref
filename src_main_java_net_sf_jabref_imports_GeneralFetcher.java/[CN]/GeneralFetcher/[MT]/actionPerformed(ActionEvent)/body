@@ -13,14 +13,16 @@
     frame.setProgressBarVisible(true);
     final PreviewEntryFetcher pFetcher=(PreviewEntryFetcher)activeFetcher;
     final FetcherPreviewDialog dialog=new FetcherPreviewDialog(frame,pFetcher.getWarningLimit(),pFetcher.getPreferredPreviewHeight());
-    new Thread(new Runnable(){
-      public void run(){
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
+      @Override public void run(){
         final boolean result=pFetcher.processQueryGetPreview(tf.getText().trim(),dialog,dialog);
         SwingUtilities.invokeLater(new Runnable(){
-          public void run(){
+          @Override public void run(){
             frame.setProgressBarVisible(false);
             frame.output("");
-            if (!result)             return;
+            if (!result) {
+              return;
+            }
             dialog.setLocationRelativeTo(frame);
             dialog.setVisible(true);
             if (dialog.isOkPressed()) {
@@ -28,28 +30,28 @@
               d2.addCallBack(activeFetcher);
               Util.placeDialog(d2,frame);
               d2.setVisible(true);
-              new Thread(new Runnable(){
-                public void run(){
+              JabRefExecutorService.INSTANCE.execute(new Runnable(){
+                @Override public void run(){
                   pFetcher.getEntries(dialog.getSelection(),d2);
                   d2.entryListComplete();
                 }
               }
-).start();
+);
             }
           }
         }
 );
       }
     }
-).start();
+);
   }
  else {
     final ImportInspectionDialog dialog=new ImportInspectionDialog(frame,frame.basePanel(),BibtexFields.DEFAULT_INSPECTION_FIELDS,activeFetcher.getTitle(),false);
     dialog.addCallBack(activeFetcher);
     Util.placeDialog(dialog,frame);
     dialog.setVisible(true);
-    new Thread(new Runnable(){
-      public void run(){
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
+      @Override public void run(){
         if (activeFetcher.processQuery(tf.getText().trim(),dialog,dialog)) {
           dialog.entryListComplete();
         }
@@ -58,6 +60,6 @@
         }
       }
     }
-).start();
+);
   }
 }

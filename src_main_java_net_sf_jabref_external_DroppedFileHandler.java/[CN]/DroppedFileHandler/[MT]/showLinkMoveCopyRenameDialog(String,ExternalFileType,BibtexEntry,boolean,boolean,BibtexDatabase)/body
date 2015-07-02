@@ -3,9 +3,11 @@
   String dialogTitle=Globals.lang("Link to file %0",linkFileName);
   String[] dirs=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
   int found=-1;
-  for (int i=0; i < dirs.length; i++)   if (new File(dirs[i]).exists()) {
-    found=i;
-    break;
+  for (int i=0; i < dirs.length; i++) {
+    if (new File(dirs[i]).exists()) {
+      found=i;
+      break;
+    }
   }
   if (found < 0) {
     destDirLabel.setText(Globals.lang("File directory is not set or does not exist!"));
@@ -23,7 +25,7 @@
     renameCheckBox.setEnabled(true);
   }
   ChangeListener cl=new ChangeListener(){
-    public void stateChanged(    ChangeEvent arg0){
+    @Override public void stateChanged(    ChangeEvent arg0){
       renameCheckBox.setEnabled(!linkInPlace.isSelected() && (!multipleEntries));
       renameToTextBox.setEnabled(!linkInPlace.isSelected() && (!multipleEntries));
       if (multipleEntries) {
@@ -45,20 +47,20 @@
   renameCheckBox.setText(Globals.lang("Rename file to").concat(": "));
   String targetName=Util.getLinkedFileName(database,entry);
   renameToTextBox.setText(targetName.concat(".").concat(fileType.extension));
-  linkInPlace.setSelected(frame.prefs().getBoolean(DFH_LEAVE));
-  copyRadioButton.setSelected(frame.prefs().getBoolean(DFH_COPY));
-  moveRadioButton.setSelected(frame.prefs().getBoolean(DFH_MOVE));
-  renameCheckBox.setSelected(frame.prefs().getBoolean(DFH_RENAME));
+  linkInPlace.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_LEAVE));
+  copyRadioButton.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_COPY));
+  moveRadioButton.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_MOVE));
+  renameCheckBox.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_RENAME));
   linkInPlace.addChangeListener(cl);
   cl.stateChanged(new ChangeEvent(linkInPlace));
   try {
     Object[] messages={Globals.lang("How would you like to link to '%0'?",linkFileName),optionsPanel};
     int reply=JOptionPane.showConfirmDialog(frame,messages,dialogTitle,JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
     if (reply == JOptionPane.OK_OPTION) {
-      frame.prefs().putBoolean(DFH_LEAVE,linkInPlace.isSelected());
-      frame.prefs().putBoolean(DFH_COPY,copyRadioButton.isSelected());
-      frame.prefs().putBoolean(DFH_MOVE,moveRadioButton.isSelected());
-      frame.prefs().putBoolean(DFH_RENAME,renameCheckBox.isSelected());
+      frame.prefs().putBoolean(DroppedFileHandler.DFH_LEAVE,linkInPlace.isSelected());
+      frame.prefs().putBoolean(DroppedFileHandler.DFH_COPY,copyRadioButton.isSelected());
+      frame.prefs().putBoolean(DroppedFileHandler.DFH_MOVE,moveRadioButton.isSelected());
+      frame.prefs().putBoolean(DroppedFileHandler.DFH_RENAME,renameCheckBox.isSelected());
       return true;
     }
  else {

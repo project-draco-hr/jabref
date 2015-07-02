@@ -1,20 +1,28 @@
 {
   try {
-    String systemLnF;
+    String lookFeel;
+    String systemLnF=UIManager.getSystemLookAndFeelClassName();
     if (Globals.prefs.getBoolean("useDefaultLookAndFeel")) {
-      systemLnF=UIManager.getSystemLookAndFeelClassName();
+      lookFeel=systemLnF;
     }
  else {
-      systemLnF=Globals.prefs.get("lookAndFeel");
+      lookFeel=Globals.prefs.get("lookAndFeel");
     }
-    if (systemLnF.equals("javax.swing.plaf.metal.MetalLookAndFeel")) {
+    if (lookFeel.equals("javax.swing.plaf.metal.MetalLookAndFeel")) {
       Plastic3DLookAndFeel lnf=new Plastic3DLookAndFeel();
       Plastic3DLookAndFeel.setCurrentTheme(new SkyBluer());
       com.jgoodies.looks.Options.setPopupDropShadowEnabled(true);
       UIManager.setLookAndFeel(lnf);
     }
  else {
-      UIManager.setLookAndFeel(systemLnF);
+      try {
+        UIManager.setLookAndFeel(lookFeel);
+      }
+ catch (      Exception e) {
+        UIManager.setLookAndFeel(systemLnF);
+        Globals.prefs.put("lookAndFeel",systemLnF);
+        JOptionPane.showMessageDialog(JabRef.jrf,Globals.lang("Unable to find the requested Look & Feel and thus the default one is used."),Globals.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+      }
     }
   }
  catch (  Exception e) {

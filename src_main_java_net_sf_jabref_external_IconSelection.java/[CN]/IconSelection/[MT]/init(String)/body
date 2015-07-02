@@ -7,25 +7,27 @@
     ImageIcon icon=GUIGlobals.getImage(key);
     if (!iconSet.contains(icon)) {
       iconKeys.add(key);
-      if (key.equals(initialSelection))       initSelIndex=iconKeys.size() - 1;
+      if (key.equals(initialSelection)) {
+        initSelIndex=iconKeys.size() - 1;
+      }
     }
     iconSet.add(icon);
   }
-  listModel=new DefaultListModel<JLabel>();
-  icons=new JList<JLabel>(listModel);
+  DefaultListModel listModel=new DefaultListModel();
+  icons=new JList(listModel);
   for (  ImageIcon anIconSet : iconSet) {
     listModel.addElement(new JLabel(anIconSet));
   }
-class MyRenderer implements ListCellRenderer<JLabel> {
-    JLabel comp=new JLabel();
+class MyRenderer implements ListCellRenderer {
+    final JLabel comp=new JLabel();
     public MyRenderer(){
       comp.setOpaque(true);
       comp.setIconTextGap(0);
       comp.setHorizontalAlignment(JLabel.CENTER);
     }
-    public Component getListCellRendererComponent(    JList<? extends JLabel> list,    JLabel value,    int i,    boolean isSelected,    boolean hasFocus){
+    @Override public Component getListCellRendererComponent(    JList list,    Object value,    int i,    boolean isSelected,    boolean hasFocus){
       comp.setText(null);
-      comp.setIcon(value.getIcon());
+      comp.setIcon(((JLabel)value).getIcon());
       if (isSelected) {
         comp.setBackground(list.getSelectionBackground());
         comp.setForeground(list.getSelectionForeground());
@@ -39,7 +41,9 @@ class MyRenderer implements ListCellRenderer<JLabel> {
       return comp;
     }
   }
-  if (initSelIndex >= 0)   icons.setSelectedIndex(initSelIndex);
+  if (initSelIndex >= 0) {
+    icons.setSelectedIndex(initSelIndex);
+  }
   icons.setCellRenderer(new MyRenderer());
   icons.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
   icons.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -50,15 +54,17 @@ class MyRenderer implements ListCellRenderer<JLabel> {
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       okPressed=true;
-      if (icons.getSelectedValue() != null)       selected=icons.getSelectedIndex();
+      if (icons.getSelectedValue() != null) {
+        selected=icons.getSelectedIndex();
+      }
       dispose();
     }
   }
 );
   cancel.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       okPressed=false;
       dispose();
     }

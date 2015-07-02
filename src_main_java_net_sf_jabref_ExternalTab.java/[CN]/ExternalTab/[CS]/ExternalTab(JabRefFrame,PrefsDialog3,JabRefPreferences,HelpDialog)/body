@@ -9,18 +9,18 @@
   bibLocAsPrimaryDir=new JCheckBox(Globals.lang("Use the bib file location as primary file directory"));
   bibLocAsPrimaryDir.setToolTipText(Globals.lang("When downloading files, or moving linked files to the " + "file directory, prefer the bib file location rather than the file directory set above"));
   bibLocationAsFileDir.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent changeEvent){
+    @Override public void stateChanged(    ChangeEvent changeEvent){
       bibLocAsPrimaryDir.setEnabled(bibLocationAsFileDir.isSelected());
     }
   }
 );
-  editFileTypes=new JButton(Globals.lang("Manage external file types"));
+  JButton editFileTypes=new JButton(Globals.lang("Manage external file types"));
   runAutoFileSearch=new JCheckBox(Globals.lang("When opening file link, search for matching file if no link is defined"));
   allowFileAutoOpenBrowse=new JCheckBox(Globals.lang("Automatically open browse dialog when creating new file link"));
   regExpTextField=new JTextField(25);
   useRegExpComboBox=new JRadioButton(Globals.lang("Use Regular Expression Search"));
-  regExpListener=new ItemListener(){
-    public void itemStateChanged(    ItemEvent e){
+  ItemListener regExpListener=new ItemListener(){
+    @Override public void itemStateChanged(    ItemEvent e){
       regExpTextField.setEditable(useRegExpComboBox.isSelected());
     }
   }
@@ -37,10 +37,10 @@
   builder.appendSeparator(Globals.lang("External file links"));
   JPanel pan=new JPanel();
   builder.append(pan);
-  JLabel lab=new JLabel(Globals.lang("Main file directory") + ":");
+  JLabel lab=new JLabel(Globals.lang("Main file directory") + ':');
   builder.append(lab);
   builder.append(fileDir);
-  browse=new BrowseAction(_frame,fileDir,true);
+  browse=BrowseAction.buildForDir(_frame,fileDir);
   builder.append(new JButton(browse));
   builder.nextLine();
   builder.append(new JPanel());
@@ -85,18 +85,18 @@
   builder.nextLine();
   pan=new JPanel();
   builder.append(pan);
-  lab=new JLabel(Globals.lang("Main PDF directory") + ":");
+  lab=new JLabel(Globals.lang("Main PDF directory") + ':');
   builder.append(lab);
   builder.append(pdfDir);
-  browse=new BrowseAction(_frame,pdfDir,true);
+  browse=BrowseAction.buildForDir(_frame,pdfDir);
   builder.append(new JButton(browse));
   builder.nextLine();
   pan=new JPanel();
   builder.append(pan);
-  lab=new JLabel(Globals.lang("Main PS directory") + ":");
+  lab=new JLabel(Globals.lang("Main PS directory") + ':');
   builder.append(lab);
   builder.append(psDir);
-  browse=new BrowseAction(_frame,psDir,true);
+  browse=BrowseAction.buildForDir(_frame,psDir);
   builder.append(new JButton(browse));
   builder.nextLine();
   builder.appendSeparator(Globals.lang("External programs"));

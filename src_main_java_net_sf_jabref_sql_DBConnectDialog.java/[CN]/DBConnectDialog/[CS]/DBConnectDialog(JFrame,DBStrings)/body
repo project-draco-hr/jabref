@@ -3,11 +3,18 @@
   this.setResizable(false);
   this.setLocationRelativeTo(parent);
   dbStrings=dbs;
+  ArrayList<JLabel> lhs=new ArrayList<JLabel>();
+  JLabel lblServerType=new JLabel();
   lhs.add(lblServerType);
+  JLabel lblServerHostname=new JLabel();
   lhs.add(lblServerHostname);
+  JLabel lblDatabase=new JLabel();
   lhs.add(lblDatabase);
+  JLabel lblUsername=new JLabel();
   lhs.add(lblUsername);
+  JLabel lblPassword=new JLabel();
   lhs.add(lblPassword);
+  ArrayList<JComponent> rhs=new ArrayList<JComponent>();
   rhs.add(cmbServerType);
   rhs.add(txtServerHostname);
   rhs.add(txtDatabase);
@@ -19,9 +26,11 @@
   lblUsername.setText(Globals.lang("Username :"));
   lblPassword.setText(Globals.lang("Password :"));
   for (  JLabel label : lhs) {
-    label.setHorizontalAlignment(JLabel.RIGHT);
+    label.setHorizontalAlignment(SwingConstants.RIGHT);
   }
+  JButton btnConnect=new JButton();
   btnConnect.setText(Globals.lang("Connect"));
+  JButton btnCancel=new JButton();
   btnCancel.setText(Globals.lang("Cancel"));
   String srvSel=dbStrings.getServerType();
   String[] srv=dbStrings.getServerTypes();
@@ -59,7 +68,7 @@
   getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   pack();
   ActionListener connectAction=new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       String errorMessage=checkInput();
       if (errorMessage == null) {
         storeSettings();
@@ -78,7 +87,7 @@
   txtUsername.addActionListener(connectAction);
   pwdPassword.addActionListener(connectAction);
   AbstractAction cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       setVisible(false);
       dispose();
       setConnectToDB(false);

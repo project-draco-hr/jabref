@@ -40,14 +40,20 @@
     _prefs.putBoolean("autoCompFF",false);
     _prefs.putBoolean("autoCompLF",true);
   }
-  if (autoCompFirstNameMode_Abbr.isSelected())   _prefs.put(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE,JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_ONLY_ABBR);
- else   if (autoCompFirstNameMode_Full.isSelected())   _prefs.put(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE,JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_ONLY_FULL);
- else   _prefs.put(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE,JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_BOTH);
+  if (autoCompFirstNameMode_Abbr.isSelected()) {
+    _prefs.put(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE,JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_ONLY_ABBR);
+  }
+ else   if (autoCompFirstNameMode_Full.isSelected()) {
+    _prefs.put(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE,JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_ONLY_FULL);
+  }
+ else {
+    _prefs.put(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE,JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_BOTH);
+  }
   if ((oldShowSource != showSource.isSelected()) || (oldAutoComplete != autoComplete.isSelected()) || (!oldAutoCompFields.equals(autoCompFields.getText()))|| (oldAutoCompFF != autoCompFF.isSelected())|| (oldAutoCompLF != autoCompLF.isSelected())|| (oldAutoCompFModeAbbr != autoCompFirstNameMode_Abbr.isSelected())|| (oldAutoCompFModeFull != autoCompFirstNameMode_Full.isSelected())) {
     for (int j=0; j < _frame.getTabbedPane().getTabCount(); j++) {
       BasePanel bp=(BasePanel)_frame.getTabbedPane().getComponentAt(j);
       bp.entryEditors.clear();
     }
   }
-  AbstractAutoCompleter.SHORTEST_TO_COMPLETE=(Integer)shortestToComplete.getValue();
+  AutoCompleterFactory.SHORTEST_TO_COMPLETE=(Integer)shortestToComplete.getValue();
 }

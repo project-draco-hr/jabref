@@ -1,6 +1,5 @@
 {
   _prefs=prefs;
-  _frame=frame;
   setLayout(new BorderLayout());
   useProxy=new JCheckBox(Globals.lang("Use custom proxy configuration"));
   defProxyHostname=new JTextField();
@@ -11,7 +10,7 @@
   useProxy.setMargin(marg);
   defProxyPort.setMargin(marg);
   useProxy.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       defProxyHostname.setEnabled(useProxy.isSelected());
       defProxyPort.setEnabled(useProxy.isSelected());
     }
@@ -24,12 +23,12 @@
   builder.append(useProxy,5);
   builder.nextLine();
   builder.append(new JPanel());
-  JLabel lap=new JLabel(Globals.lang("Host") + ":");
+  JLabel lap=new JLabel(Globals.lang("Host") + ':');
   builder.append(lap);
   builder.append(defProxyHostname);
   builder.nextLine();
   builder.append(new JPanel());
-  JLabel lap2=new JLabel(Globals.lang("Port") + ":");
+  JLabel lap2=new JLabel(Globals.lang("Port") + ':');
   builder.append(lap2);
   builder.append(defProxyPort);
   JPanel pan=builder.getPanel();

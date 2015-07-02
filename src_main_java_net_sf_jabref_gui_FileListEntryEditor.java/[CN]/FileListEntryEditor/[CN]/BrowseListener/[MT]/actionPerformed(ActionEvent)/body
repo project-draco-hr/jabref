@@ -1,6 +1,6 @@
 {
   File initial=new File(comp.getText().trim());
-  if (comp.getText().trim().length() == 0) {
+  if (comp.getText().trim().isEmpty()) {
     initial=new File(Globals.prefs.get("fileWorkingDirectory"));
   }
   String chosen=FileDialogs.getNewFile(parent,initial,Globals.NONE,JFileChooser.OPEN_DIALOG,false);
@@ -8,7 +8,7 @@
     File newFile=new File(chosen);
     Globals.prefs.put("fileWorkingDirectory",newFile.getParent());
     String[] dirsS=metaData.getFileDirectory(GUIGlobals.FILE_FIELD);
-    newFile=Util.shortenFileName(newFile,dirsS);
+    newFile=FileUtil.shortenFileName(newFile,dirsS);
     comp.setText(newFile.getPath());
     comp.requestFocus();
   }

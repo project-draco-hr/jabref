@@ -1,6 +1,6 @@
 {
   mb.setBorder(null);
-  JMenu file=subMenu("File"), sessions=subMenu("Sessions"), edit=subMenu("Edit"), search=subMenu("Search"), bibtex=subMenu("BibTeX"), view=subMenu("View"), tools=subMenu("Tools"), options=subMenu("Options"), newSpec=subMenu("New entry..."), helpMenu=subMenu("Help");
+  JMenu file=JabRefFrame.subMenu("File"), sessions=JabRefFrame.subMenu("Sessions"), edit=JabRefFrame.subMenu("Edit"), search=JabRefFrame.subMenu("Search"), bibtex=JabRefFrame.subMenu("BibTeX"), view=JabRefFrame.subMenu("View"), tools=JabRefFrame.subMenu("Tools"), options=JabRefFrame.subMenu("Options"), newSpec=JabRefFrame.subMenu("New entry..."), helpMenu=JabRefFrame.subMenu("Help");
   setUpImportMenus();
   newDatabaseMenu.add(newDatabaseAction);
   newDatabaseMenu.add(newSubDatabaseAction);
@@ -11,6 +11,7 @@
   file.add(saveAs);
   file.add(saveAll);
   file.add(saveSelectedAs);
+  file.add(saveSelectedAsPlain);
   file.addSeparator();
   file.add(importNew);
   file.add(importCurrent);
@@ -43,8 +44,10 @@
   edit.add(copyKeyAndTitle);
   edit.addSeparator();
   edit.add(mark);
-  JMenu markSpecific=subMenu("Mark specific color");
-  for (int i=0; i < Util.MAX_MARKING_LEVEL; i++)   markSpecific.add(new MarkEntriesAction(this,i).getMenuItem());
+  JMenu markSpecific=JabRefFrame.subMenu("Mark specific color");
+  for (int i=0; i < EntryMarker.MAX_MARKING_LEVEL; i++) {
+    markSpecific.add(new MarkEntriesAction(this,i).getMenuItem());
+  }
   edit.add(markSpecific);
   edit.add(unmark);
   edit.add(unmarkAll);
@@ -65,6 +68,14 @@
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
       m=new JMenu();
       RightClickMenu.populateSpecialFieldMenu(m,Priority.getInstance(),this);
+      edit.add(m);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED)) {
+      edit.add(togglePrinted);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ)) {
+      m=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(m,ReadStatus.getInstance(),this);
       edit.add(m);
     }
   }
@@ -98,6 +109,7 @@
   view.add(increaseFontSize);
   view.add(decreseFontSize);
   view.addSeparator();
+  view.add(toggleToolbar);
   view.add(toggleGroups);
   view.add(togglePreview);
   view.add(switchPreview);
@@ -161,6 +173,7 @@
   helpMenu.add(contents);
   helpMenu.addSeparator();
   helpMenu.add(errorConsole);
+  helpMenu.add(forkMeOnGitHubAction);
   helpMenu.addSeparator();
   helpMenu.add(about);
   mb.add(helpMenu);

@@ -1,18 +1,30 @@
 {
   BasePanel bp=frame.basePanel();
-  if (bp == null)   return;
+  if (bp == null) {
+    return;
+  }
   BibtexEntry[] entries=bp.getSelectedEntries();
-  if (diag == null)   createDialog();
+  if (diag == null) {
+    createDialog();
+  }
   cancelled=true;
   prepareDialog(entries.length > 0);
   Util.placeDialog(diag,frame);
   diag.setVisible(true);
-  if (cancelled)   return;
+  if (cancelled) {
+    return;
+  }
   Collection<BibtexEntry> entryList;
-  if (all.isSelected())   entryList=bp.database().getEntries();
- else   entryList=Arrays.asList(entries);
+  if (all.isSelected()) {
+    entryList=bp.database().getEntries();
+  }
+ else {
+    entryList=Arrays.asList(entries);
+  }
   String toSet=text.getText();
-  if (toSet.length() == 0)   toSet=null;
+  if (toSet.isEmpty()) {
+    toSet=null;
+  }
   String[] fields=getFieldNames(field.getText().trim().toLowerCase());
   NamedCompound ce=new NamedCompound(Globals.lang("Set field"));
   if (rename.isSelected()) {

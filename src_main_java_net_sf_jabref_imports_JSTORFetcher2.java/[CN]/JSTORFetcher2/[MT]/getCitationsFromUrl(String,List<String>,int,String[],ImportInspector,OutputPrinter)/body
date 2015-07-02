@@ -1,14 +1,13 @@
 {
   URL url=new URL(urlQuery);
   URLDownload ud=new URLDownload(url);
-  ud.download();
-  String cont=ud.getStringContent();
+  String cont=ud.downloadToString();
   String entirePage=cont;
-  String pageEntire=ud.getStringContent();
+  String pageEntire=cont;
   int countOfRefs=0;
-  int refsRequested=0;
+  int refsRequested;
   if (count == 1) {
-    Matcher mn=numberofhits.matcher(pageEntire);
+    Matcher mn=JSTORFetcher2.numberofhits.matcher(pageEntire);
     if (mn.find()) {
       numberOfRefs[0]=mn.group(1);
       countOfRefs=Integer.valueOf(numberOfRefs[0]);
@@ -20,7 +19,7 @@
       String strCount=JOptionPane.showInputDialog(Globals.lang("References found") + ": " + countOfRefs+ "  "+ Globals.lang("Number of references to fetch?"),Integer.toString(countOfRefs));
       if (strCount == null) {
         status.setStatus(Globals.lang("JSTOR import cancelled"));
-        return CANCELLED;
+        return JSTORFetcher2.CANCELLED;
       }
       try {
         numberOfRefs[1]=strCount.trim();
@@ -34,26 +33,25 @@
   }
   countOfRefs=Integer.valueOf(numberOfRefs[0]);
   refsRequested=Integer.valueOf(numberOfRefs[1]);
-  Matcher m=idPattern.matcher(cont);
-  if (m.find() && (ids.size() + 1 <= refsRequested)) {
+  Matcher m=JSTORFetcher2.idPattern.matcher(cont);
+  if (m.find() && ((ids.size() + 1) <= refsRequested)) {
     do {
       ids.add(m.group(1));
       cont=cont.substring(m.end());
-      m=idPattern.matcher(cont);
+      m=JSTORFetcher2.idPattern.matcher(cont);
     }
- while (m.find() && (ids.size() + 1 <= refsRequested));
+ while (m.find() && ((ids.size() + 1) <= refsRequested));
   }
- else   if (entirePage.contains(noAccessIndicator)) {
+ else   if (entirePage.contains(JSTORFetcher2.noAccessIndicator)) {
     noAccessFound=true;
     return null;
   }
  else {
     return null;
   }
-  m=nextPagePattern.matcher(entirePage);
+  m=JSTORFetcher2.nextPagePattern.matcher(entirePage);
   if (m.find()) {
-    String newQuery=JSTOR_URL + m.group(1);
-    return newQuery;
+    return JSTORFetcher2.JSTOR_URL + m.group(1);
   }
  else {
     return null;

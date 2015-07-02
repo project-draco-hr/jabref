@@ -5,10 +5,16 @@
     changedFieldSet=true;
   }
   for (  String fieldName : wordListModels.keySet()) {
-    if ((fieldName == null) || FIELD_FIRST_LINE.equals(fieldName))     continue;
-    DefaultListModel<String> lm=wordListModels.get(fieldName);
+    if ((fieldName == null) || FIELD_FIRST_LINE.equals(fieldName)) {
+      continue;
+    }
+    DefaultListModel lm=wordListModels.get(fieldName);
     int start=0;
-    if (lm.size() > 0)     while ((start < lm.size()) && (lm.get(start)).equals(WORD_FIRSTLINE_TEXT))     start++;
+    if (lm.size() > 0) {
+      while ((start < lm.size()) && (lm.get(start)).equals(WORD_FIRSTLINE_TEXT)) {
+        start++;
+      }
+    }
     Vector<String> data=metaData.getData(Globals.SELECTOR_META_PREFIX + fieldName);
     boolean newField=false;
     if (data == null) {
@@ -16,12 +22,16 @@
       data=new Vector<String>();
       changedFieldSet=true;
     }
- else     data.clear();
+ else {
+      data.clear();
+    }
     for (int wrd=start; wrd < lm.size(); wrd++) {
-      String word=lm.get(wrd);
+      String word=(String)lm.get(wrd);
       data.add(word);
     }
-    if (newField)     metaData.putData(Globals.SELECTOR_META_PREFIX + fieldName,data);
+    if (newField) {
+      metaData.putData(Globals.SELECTOR_META_PREFIX + fieldName,data);
+    }
   }
   panel.markNonUndoableBaseChanged();
   if (changedFieldSet) {
@@ -30,5 +40,5 @@
  else {
     panel.updateAllContentSelectors();
   }
-  panel.addContentSelectorValuesToAutoCompleters();
+  panel.getAutoCompleters().addContentSelectorValuesToAutoCompleters(panel.metaData);
 }

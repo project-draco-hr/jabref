@@ -1,6 +1,4 @@
 {
-  this.dialog=dialog;
-  this.status=status;
   terms=query;
   piv=0;
   shouldContinue=true;
@@ -30,17 +28,19 @@
     hits=getNumberOfHits(page,"display-status",hitsPattern);
     includeAbstract=absCheckBox.isSelected();
     importBibtex=bibButton.isSelected();
-    if (hits > MAX_FETCH) {
-      status.showMessage(Globals.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(MAX_FETCH)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
-      hits=MAX_FETCH;
+    if (hits > IEEEXploreFetcher.MAX_FETCH) {
+      status.showMessage(Globals.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)}),Globals.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      hits=IEEEXploreFetcher.MAX_FETCH;
     }
     parse(dialog,page,0,1);
     int firstEntry=perPage;
-    while (shouldContinue && firstEntry < hits) {
+    while (shouldContinue && (firstEntry < hits)) {
       pageNumber++;
       searchUrl=makeUrl(pageNumber);
       page=getResults(new URL(searchUrl));
-      if (!shouldContinue)       break;
+      if (!shouldContinue) {
+        break;
+      }
       parse(dialog,page,0,firstEntry + 1);
       firstEntry+=perPage;
     }

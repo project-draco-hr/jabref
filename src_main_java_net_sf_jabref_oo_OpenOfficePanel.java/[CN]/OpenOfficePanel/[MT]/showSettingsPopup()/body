@@ -7,35 +7,39 @@
   ButtonGroup bg=new ButtonGroup();
   bg.add(useActiveBase);
   bg.add(useAllBases);
-  if (Globals.prefs.getBoolean("useAllOpenBases"))   useAllBases.setSelected(true);
- else   useActiveBase.setSelected(true);
+  if (Globals.prefs.getBoolean("useAllOpenBases")) {
+    useAllBases.setSelected(true);
+  }
+ else {
+    useActiveBase.setSelected(true);
+  }
   autoSync.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       Globals.prefs.putBoolean("syncOOWhenCiting",autoSync.isSelected());
     }
   }
 );
   useAllBases.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       Globals.prefs.putBoolean("useAllOpenBases",useAllBases.isSelected());
     }
   }
 );
   useActiveBase.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       Globals.prefs.putBoolean("useAllOpenBases",!useActiveBase.isSelected());
     }
   }
 );
   clearConnectionSettings.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       Globals.prefs.clear("ooPAth");
       Globals.prefs.clear("ooExecutablePath");
       Globals.prefs.clear("ooJarsPath");
       Globals.prefs.clear("connectToOO3");
       Globals.prefs.clear("ooUnoilPath");
       Globals.prefs.clear("ooJurtPath");
-      frame.output(Globals.lang("Cleared connection settings."));
+      OpenOfficePanel.frame.output(Globals.lang("Cleared connection settings."));
     }
   }
 );
@@ -45,5 +49,5 @@
   menu.add(useAllBases);
   menu.addSeparator();
   menu.add(clearConnectionSettings);
-  menu.show(settingsB,0,settingsB.getHeight());
+  menu.show(OpenOfficePanel.settingsB,0,OpenOfficePanel.settingsB.getHeight());
 }

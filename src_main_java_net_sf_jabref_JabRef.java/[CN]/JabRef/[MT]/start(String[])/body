@@ -1,0 +1,64 @@
+{
+  JabRefPreferences prefs=JabRefPreferences.getInstance();
+  if (prefs.hasKey("deletePlugins") && (prefs.get("deletePlugins").length() > 0)) {
+    String[] toDelete=prefs.getStringArray("deletePlugins");
+    PluginInstaller.deletePluginsOnStartup(toDelete);
+    prefs.put("deletePlugins","");
+  }
+  if (prefs.getBoolean("useProxy")) {
+    System.getProperties().put("http.proxyHost",prefs.get("proxyHostname"));
+    System.getProperties().put("http.proxyPort",prefs.get("proxyPort"));
+    if (prefs.get("proxyUsername") != null) {
+      System.getProperties().put("http.proxyUser",prefs.get("proxyUsername"));
+      System.getProperties().put("http.proxyPassword",prefs.get("proxyPassword"));
+    }
+  }
+ else {
+    System.setProperty("java.net.useSystemProxies","true");
+    System.getProperties().put("proxySet","true");
+  }
+  Globals.startBackgroundTasks();
+  Globals.setupLogging();
+  Globals.prefs=prefs;
+  setLanguage(prefs);
+  Globals.prefs.setLanguageDependentDefaultValues();
+  BibtexFields.setNumericFieldsFromPrefs();
+  Globals.importFormatReader.resetImportFormats();
+  BibtexEntryType.loadCustomEntryTypes(prefs);
+  ExportFormats.initAllExports();
+  Globals.initializeJournalNames();
+  if (Globals.prefs.getBoolean("useRemoteServer")) {
+    RemoteListenerLifecycle.openRemoteListener(this);
+    if (!RemoteListenerLifecycle.isRemoteListenerOpen()) {
+      if (RemoteListener.sendToActiveJabRefInstance(args)) {
+        System.out.println(Globals.lang("Arguments passed on to running JabRef instance. Shutting down."));
+        JabRefExecutorService.INSTANCE.shutdownEverything();
+        return;
+      }
+    }
+ else {
+      RemoteListenerLifecycle.startRemoteListener();
+    }
+  }
+  String personalJournalList=prefs.get("personalJournalList");
+  if ((personalJournalList != null) && !personalJournalList.isEmpty()) {
+    try {
+      Globals.journalAbbrev.readJournalList(new File(personalJournalList));
+    }
+ catch (    FileNotFoundException e) {
+      JOptionPane.showMessageDialog(null,Globals.lang("Journal file not found") + ": " + e.getMessage(),Globals.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
+      Globals.prefs.put("personalJournalList","");
+    }
+  }
+  Globals.NEWLINE=Globals.prefs.get(JabRefPreferences.NEWLINE);
+  Globals.NEWLINE_LENGTH=Globals.NEWLINE.length();
+  if (Globals.ON_WIN) {
+    JabRef.setCurrentProcessExplicitAppUserModelID("JabRef." + Globals.BUILD_INFO.getVersion());
+  }
+  Vector<ParserResult> loaded=processArguments(args,true);
+  if (loaded == null || graphicFailure || cli.isDisableGui() || cli.isShowVersion()) {
+    JabRefExecutorService.INSTANCE.shutdownEverything();
+    return;
+  }
+  openWindow(loaded);
+}

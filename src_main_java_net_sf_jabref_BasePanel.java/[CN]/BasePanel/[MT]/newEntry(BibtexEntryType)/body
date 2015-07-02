@@ -6,7 +6,7 @@
     type=etd.getChoice();
   }
   if (type != null) {
-    String id=Util.createNeutralId();
+    String id=IdGenerator.next();
     final BibtexEntry be=new BibtexEntry(id,type);
     try {
       database.insertEntry(be);
@@ -14,12 +14,14 @@
       list.add(be);
       Util.setAutomaticFields(list,true,true,false);
       undoManager.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
-      output(Globals.lang("Added new") + " '" + type.getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
-      if (mode != SHOWING_EDITOR) {
-        mode=WILL_SHOW_EDITOR;
+      output(Globals.lang("Added new") + " '" + type.getName().toLowerCase()+ "' "+ Globals.lang("entry")+ '.');
+      if (mode != BasePanel.SHOWING_EDITOR) {
+        mode=BasePanel.WILL_SHOW_EDITOR;
       }
       int row=mainTable.findEntry(be);
-      if (row >= 0)       highlightEntry(be);
+      if (row >= 0) {
+        highlightEntry(be);
+      }
  else {
         showEntry(be);
       }

@@ -1,7 +1,7 @@
 {
   classPrefix=classPrefix_;
-  String blockStart=null;
-  String blockEnd=null;
+  String blockStart;
+  String blockEnd;
   StringInt si;
   Vector<StringInt> blockEntries=null;
   Vector<LayoutEntry> tmpEntries=new Vector<LayoutEntry>();
@@ -17,9 +17,7 @@
   text=si.s;
   for (int i=1; i < (parsedEntries.size() - 1); i++) {
     si=parsedEntries.get(i);
-    if (si.i == LayoutHelper.IS_LAYOUT_TEXT) {
-    }
- else     if (si.i == LayoutHelper.IS_SIMPLE_FIELD) {
+    if (si.i == LayoutHelper.IS_LAYOUT_TEXT || si.i == LayoutHelper.IS_SIMPLE_FIELD) {
     }
  else     if ((si.i == LayoutHelper.IS_FIELD_START) || (si.i == LayoutHelper.IS_GROUP_START)) {
       blockEntries=new Vector<StringInt>();
@@ -28,8 +26,12 @@
  else     if ((si.i == LayoutHelper.IS_FIELD_END) || (si.i == LayoutHelper.IS_GROUP_END)) {
       if (blockStart.equals(si.s)) {
         blockEntries.add(si);
-        if (si.i == LayoutHelper.IS_GROUP_END)         le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_GROUP_START);
- else         le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_FIELD_START);
+        if (si.i == LayoutHelper.IS_GROUP_END) {
+          le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_GROUP_START);
+        }
+ else {
+          le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_FIELD_START);
+        }
         tmpEntries.add(le);
         blockEntries=null;
       }
@@ -50,7 +52,9 @@
   for (int i=0; i < tmpEntries.size(); i++) {
     layoutEntries[i]=tmpEntries.get(i);
     if (layoutEntries[i].isInvalidFormatter()) {
-      if (invalidFormatter == null)       invalidFormatter=new ArrayList<String>(1);
+      if (invalidFormatter == null) {
+        invalidFormatter=new ArrayList<String>(1);
+      }
       invalidFormatter.addAll(layoutEntries[i].getInvalidFormatters());
     }
   }

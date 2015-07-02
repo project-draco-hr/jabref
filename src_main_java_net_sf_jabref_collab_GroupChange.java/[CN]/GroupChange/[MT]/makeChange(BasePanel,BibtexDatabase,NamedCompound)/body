@@ -7,15 +7,21 @@
   }
  else {
     root.setGroup(m_changedGroups.getGroup());
-    for (int i=0; i < m_changedGroups.getChildCount(); ++i)     root.add(((GroupTreeNode)m_changedGroups.getChildAt(i)).deepCopy());
+    for (int i=0; i < m_changedGroups.getChildCount(); ++i) {
+      root.add(((GroupTreeNode)m_changedGroups.getChildAt(i)).deepCopy());
+    }
     root.refreshGroupsForNewDatabase(panel.database());
   }
-  if (panel.getGroupSelector().getGroupTreeRoot() == root)   panel.getGroupSelector().revalidateGroups();
+  if (panel.getGroupSelector().getGroupTreeRoot() == root) {
+    panel.getGroupSelector().revalidateGroups();
+  }
   undoEdit.addEdit(undo);
   GroupTreeNode copied=m_changedGroups.deepCopy();
   tmpGroupRoot.removeAllChildren();
   tmpGroupRoot.setGroup(copied.getGroup());
-  for (int i=0; i < copied.getChildCount(); ++i)   tmpGroupRoot.add(((GroupTreeNode)copied.getChildAt(i)).deepCopy());
+  for (int i=0; i < copied.getChildCount(); ++i) {
+    tmpGroupRoot.add(((GroupTreeNode)copied.getChildAt(i)).deepCopy());
+  }
   tmpGroupRoot.refreshGroupsForNewDatabase(secondary);
   return true;
 }

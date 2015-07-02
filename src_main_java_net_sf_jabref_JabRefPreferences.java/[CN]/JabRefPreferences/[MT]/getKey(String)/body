@@ -2,10 +2,11 @@
   String s=keyBinds.get(bindName);
   if (s == null) {
     s=defKeyBinds.get(bindName);
+    if (s == null) {
+      Globals.logger("Could not get key binding for \"" + bindName + '"');
+      s="Not associated";
+    }
     keyBinds.put(bindName,s);
-  }
-  if (s == null) {
-    Globals.logger("Could not get key binding for \"" + bindName + "\"");
   }
   if (Globals.ON_MAC) {
     return getKeyForMac(KeyStroke.getKeyStroke(s));

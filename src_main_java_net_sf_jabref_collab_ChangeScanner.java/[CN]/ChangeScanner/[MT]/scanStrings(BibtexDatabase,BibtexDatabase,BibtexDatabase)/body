@@ -1,6 +1,8 @@
 {
   int nTmp=onTmp.getStringCount(), nDisk=onDisk.getStringCount();
-  if ((nTmp == 0) && (nDisk == 0))   return;
+  if ((nTmp == 0) && (nDisk == 0)) {
+    return;
+  }
   HashSet<Object> used=new HashSet<Object>();
   HashSet<Object> usedInMem=new HashSet<Object>();
   HashSet<String> notMatched=new HashSet<String>(onTmp.getStringCount());
@@ -12,8 +14,12 @@
         if (disk.getName().equals(tmp.getName())) {
           if ((tmp.getContent() != null) && !tmp.getContent().equals(disk.getContent())) {
             BibtexString mem=findString(inMem,tmp.getName(),usedInMem);
-            if (mem != null)             changes.add(new StringChange(mem,tmp,tmp.getName(),mem.getContent(),tmp.getContent(),disk.getContent()));
- else             changes.add(new StringChange(null,tmp,tmp.getName(),null,tmp.getContent(),disk.getContent()));
+            if (mem != null) {
+              changes.add(new StringChange(mem,tmp,tmp.getName(),mem.getContent(),tmp.getContent(),disk.getContent()));
+            }
+ else {
+              changes.add(new StringChange(null,tmp,tmp.getName(),null,tmp.getContent(),disk.getContent()));
+            }
           }
           used.add(diskId);
           continue mainLoop;
@@ -22,7 +28,7 @@
     }
     notMatched.add(tmp.getId());
   }
-  if (notMatched.size() > 0) {
+  if (!notMatched.isEmpty()) {
     for (Iterator<String> i=notMatched.iterator(); i.hasNext(); ) {
       BibtexString tmp=onTmp.getString(i.next());
       for (      String diskId : onDisk.getStringKeySet()) {
@@ -46,7 +52,7 @@
       }
     }
   }
-  if (notMatched.size() > 0) {
+  if (!notMatched.isEmpty()) {
     for (    String nmId : notMatched) {
       BibtexString tmp=onTmp.getString(nmId);
       BibtexString mem=findString(inMem,tmp.getName(),usedInMem);

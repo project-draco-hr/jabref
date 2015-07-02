@@ -5,14 +5,20 @@
   }
  else   if (Globals.ON_WIN) {
     if ((fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0)) {
-      openFileWithApplicationOnWindows(filePath,fileType.getOpenWith());
+      Util.openFileWithApplicationOnWindows(filePath,fileType.getOpenWith());
     }
- else     openFileOnWindows(filePath,true);
+ else {
+      Util.openFileOnWindows(filePath,true);
+    }
   }
  else {
     String[] openWith;
-    if ((fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0))     openWith=fileType.getOpenWith().split(" ");
- else     openWith=new String[]{"xdg-open"};
+    if ((fileType.getOpenWith() != null) && (fileType.getOpenWith().length() > 0)) {
+      openWith=fileType.getOpenWith().split(" ");
+    }
+ else {
+      openWith=new String[]{"xdg-open"};
+    }
     String[] cmdArray=new String[openWith.length + 1];
     System.arraycopy(openWith,0,cmdArray,0,openWith.length);
     cmdArray[cmdArray.length - 1]=filePath;

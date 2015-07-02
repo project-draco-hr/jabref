@@ -2,8 +2,8 @@
   super(parent_,Globals.lang("Edit custom export"),true);
   parent=parent_;
   ActionListener okListener=new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
-      if ((layoutFile.getText().equals("")) || (name.getText().equals("")) || (extension.getText().equals(""))|| (!layoutFile.getText().endsWith(".layout"))) {
+    @Override public void actionPerformed(    ActionEvent e){
+      if ((layoutFile.getText().isEmpty()) || (name.getText().isEmpty()) || (extension.getText().isEmpty())|| (!layoutFile.getText().endsWith(".layout"))) {
         return;
       }
       ok_pressed=true;
@@ -11,34 +11,42 @@
     }
   }
 ;
+  JButton ok=new JButton(Globals.lang("Ok"));
   ok.addActionListener(okListener);
   name.addActionListener(okListener);
   layoutFile.addActionListener(okListener);
   extension.addActionListener(okListener);
   AbstractAction cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }
 ;
+  JButton cancel=new JButton(Globals.lang("Cancel"));
   cancel.addActionListener(cancelAction);
+  JButton browse=new JButton(Globals.lang("Browse"));
   browse.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       File directory=new File(Globals.prefs.get("exportWorkingDirectory"));
       String chosenStr=FileDialogs.getNewFile(parent,directory,".layout",JFileChooser.OPEN_DIALOG,false);
-      if (chosenStr == null)       return;
+      if (chosenStr == null) {
+        return;
+      }
       File chosen=new File(chosenStr);
       Globals.prefs.put("exportWorkingDirectory",chosen.getParent());
       layoutFile.setText(chosen.getPath());
     }
   }
 );
+  JPanel main=new JPanel();
   ActionMap am=main.getActionMap();
   InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(parent.prefs().getKey("Close dialog"),"close");
   am.put("close",cancelAction);
+  GridBagLayout gbl=new GridBagLayout();
   main.setLayout(gbl);
   main.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),Globals.lang("Export properties")));
+  GridBagConstraints con=new GridBagConstraints();
   con.weightx=0;
   con.gridwidth=1;
   con.insets=new Insets(3,5,3,5);
@@ -46,12 +54,15 @@
   con.fill=GridBagConstraints.NONE;
   con.gridx=0;
   con.gridy=0;
+  JLabel nl=new JLabel(Globals.lang("Export name") + ':');
   gbl.setConstraints(nl,con);
   main.add(nl);
   con.gridy=1;
+  JLabel nr=new JLabel(Globals.lang("Main layout file") + ':');
   gbl.setConstraints(nr,con);
   main.add(nr);
   con.gridy=2;
+  JLabel nf=new JLabel(Globals.lang("File extension") + ':');
   gbl.setConstraints(nf,con);
   main.add(nf);
   con.gridwidth=2;
@@ -76,6 +87,7 @@
   con.gridy=2;
   gbl.setConstraints(extension,con);
   main.add(extension);
+  JPanel buttons=new JPanel();
   ButtonBarBuilder bb=new ButtonBarBuilder(buttons);
   buttons.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   bb.addGlue();
