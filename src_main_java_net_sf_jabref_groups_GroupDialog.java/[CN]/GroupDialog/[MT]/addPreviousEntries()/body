@@ -1,14 +1,22 @@
 {
   int i=JOptionPane.showConfirmDialog(m_basePanel.frame(),Globals.lang("Assign the original group's entries to this group?"),Globals.lang("Change of Grouping Method"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-  if (i == JOptionPane.NO_OPTION)   return;
+  if (i == JOptionPane.NO_OPTION) {
+    return;
+  }
   Vector<BibtexEntry> vec=new Vector<BibtexEntry>();
   for (  BibtexEntry entry : m_basePanel.database().getEntries()) {
-    if (m_editedGroup.contains(entry))     vec.add(entry);
+    if (m_editedGroup.contains(entry)) {
+      vec.add(entry);
+    }
   }
-  if (vec.size() > 0) {
+  if (!vec.isEmpty()) {
     BibtexEntry[] entries=new BibtexEntry[vec.size()];
     vec.toArray(entries);
-    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{m_resultingGroup},entries,m_basePanel.getDatabase(),this))     return;
-    if (!(m_resultingGroup instanceof ExplicitGroup))     m_undoAddPreviousEntires=m_resultingGroup.add(entries);
+    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{m_resultingGroup},entries,m_basePanel.getDatabase(),this)) {
+      return;
+    }
+    if (!(m_resultingGroup instanceof ExplicitGroup)) {
+      m_undoAddPreviousEntires=m_resultingGroup.add(entries);
+    }
   }
 }

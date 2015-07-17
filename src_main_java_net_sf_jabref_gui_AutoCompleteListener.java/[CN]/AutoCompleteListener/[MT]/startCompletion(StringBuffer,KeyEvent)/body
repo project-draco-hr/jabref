@@ -2,12 +2,12 @@
   JTextComponent comp=(JTextComponent)e.getSource();
   String[] completed=findCompletions(currentword.toString(),comp);
   String prefix=completer.getPrefix();
-  String cWord=(prefix != null) && (prefix.length() > 0) ? currentword.toString().substring(prefix.length()) : currentword.toString();
-  if (logger.isLoggable(Level.FINEST)) {
-    logger.finest("startCompletion");
-    logger.finest("currentword: >" + currentword + "<");
-    logger.finest("prefix: >" + prefix + "<");
-    logger.finest("cword: >" + cWord + "<");
+  String cWord=(prefix != null) && (!prefix.isEmpty()) ? currentword.toString().substring(prefix.length()) : currentword.toString();
+  if (AutoCompleteListener.logger.isLoggable(Level.FINEST)) {
+    AutoCompleteListener.logger.finest("startCompletion");
+    AutoCompleteListener.logger.finest("currentword: >" + currentword + '<');
+    AutoCompleteListener.logger.finest("prefix: >" + prefix + '<');
+    AutoCompleteListener.logger.finest("cword: >" + cWord + '<');
   }
   int no=0;
   if ((completed != null) && (completed.length > 0)) {
@@ -15,19 +15,19 @@
     lastCompletions=completed;
     String sno=completed[no];
     toSetIn=sno.substring(cWord.length() - 1);
-    if (logger.isLoggable(Level.FINEST)) {
-      logger.finest("toSetIn: >" + toSetIn + "<");
+    if (AutoCompleteListener.logger.isLoggable(Level.FINEST)) {
+      AutoCompleteListener.logger.finest("toSetIn: >" + toSetIn + '<');
     }
     StringBuilder alltext=new StringBuilder(comp.getText());
     int cp=comp.getCaretPosition();
     alltext.insert(cp,toSetIn);
     comp.setText(alltext.toString());
     comp.setCaretPosition(cp);
-    comp.select(cp + 1,cp + 1 + sno.length() - cWord.length());
+    comp.select(cp + 1,(cp + 1 + sno.length()) - cWord.length());
     e.consume();
     lastCaretPosition=comp.getCaretPosition();
     char ch=e.getKeyChar();
-    logger.finest("Appending >" + ch + "<");
+    AutoCompleteListener.logger.finest("Appending >" + ch + '<');
     if (cWord.length() <= 1) {
       lastBeginning=Character.toString(ch);
     }

@@ -5,29 +5,31 @@
     o="#";
   }
  else   if (iconType != null) {
-    int hasField=-1;
+    int hasField;
     int[] fieldCount=hasField(be,iconType);
     hasField=fieldCount[0];
-    if (hasField < 0)     return null;
+    if (hasField < 0) {
+      return null;
+    }
     if (iconType[hasField].equals(GUIGlobals.FILE_FIELD)) {
       o=FileListTableModel.getFirstLabel(be.getField(GUIGlobals.FILE_FIELD));
       if (fieldCount[1] > 1) {
         o=modifyIconForMultipleLinks((JLabel)o);
       }
     }
- else     if (iconType[hasField].equals(PRIORITY[0])) {
+ else     if (iconType[hasField].equals(MainTableFormat.PRIORITY[0])) {
       SpecialFieldValue prio=Priority.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_PRIORITY));
       if (prio != null) {
         o=prio.createLabel();
       }
     }
- else     if (iconType[hasField].equals(RANKING[0])) {
+ else     if (iconType[hasField].equals(MainTableFormat.RANKING[0])) {
       SpecialFieldValue rank=Rank.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_RANKING));
       if (rank != null) {
         o=rank.createLabel();
       }
     }
- else     if (iconType[hasField].equals(READ[0])) {
+ else     if (iconType[hasField].equals(MainTableFormat.READ[0])) {
       SpecialFieldValue status=ReadStatus.getInstance().parse(be.getField(SpecialFieldsUtils.FIELDNAME_READ));
       if (status != null) {
         o=status.createLabel();
@@ -44,10 +46,12 @@
     String[] fld=columns[col - padleft];
     int j=0;
     for (int i=0; i < fld.length; i++) {
-      if (fld[i].equals(GUIGlobals.TYPE_HEADER))       o=be.getType().getName();
+      if (fld[i].equals(GUIGlobals.TYPE_HEADER)) {
+        o=be.getType().getName();
+      }
  else {
         o=be.getFieldOrAlias(fld[i]);
-        if (getColumnName(col).equals("Author") && o != null) {
+        if (getColumnName(col).equals("Author") && (o != null)) {
           o=panel.database().resolveForStrings((String)o);
         }
       }
@@ -57,7 +61,7 @@
       }
     }
     for (    int[] nameCol : nameCols) {
-      if ((col - padleft == nameCol[0]) && (nameCol[1] == j)) {
+      if (((col - padleft) == nameCol[0]) && (nameCol[1] == j)) {
         return formatName(o);
       }
     }

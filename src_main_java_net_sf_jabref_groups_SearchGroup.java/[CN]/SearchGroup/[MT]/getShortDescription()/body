@@ -1,13 +1,17 @@
 {
-  StringBuffer sb=new StringBuffer();
+  StringBuilder sb=new StringBuilder();
   sb.append("<b>");
-  if (Globals.prefs.getBoolean("groupShowDynamic"))   sb.append("<i>").append(Util.quoteForHTML(getName())).append("</i>");
- else   sb.append(Util.quoteForHTML(getName()));
+  if (Globals.prefs.getBoolean("groupShowDynamic")) {
+    sb.append("<i>").append(StringUtil.quoteForHTML(getName())).append("</i>");
+  }
+ else {
+    sb.append(StringUtil.quoteForHTML(getName()));
+  }
   sb.append("</b> - ");
   sb.append(Globals.lang("dynamic group"));
   sb.append(" (");
   sb.append(Globals.lang("search expression"));
-  sb.append(" <b>").append(Util.quoteForHTML(m_searchExpression)).append("</b>)");
+  sb.append(" <b>").append(StringUtil.quoteForHTML(m_searchExpression)).append("</b>)");
 switch (getHierarchicalContext()) {
 case AbstractGroup.INCLUDING:
     sb.append(", ").append(Globals.lang("includes subgroups"));

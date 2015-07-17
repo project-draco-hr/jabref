@@ -5,6 +5,7 @@
   group.add(newFile);
   group.add(oldFile);
   addExtPan.setLayout(new BorderLayout());
+  JButton addExt=new JButton(GUIGlobals.getImage("add"));
   addExtPan.add(addExt,BorderLayout.EAST);
   addExtPan.setToolTipText(Globals.lang("Add"));
   FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:200dlu:grow, 4dlu, fill:pref","pref, pref, pref, 20dlu, 20dlu, fill:200dlu, 4dlu, pref");
@@ -14,13 +15,16 @@
   JLabel description=new JLabel("<HTML>" + Globals.lang("JabRef includes a built-in list of journal abbreviations.") + "<br>"+ Globals.lang("You can add additional journal names by setting up a personal journal list,<br>as " + "well as linking to external journal lists.")+ "</HTML>");
   description.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
   builder.add(description,cc.xyw(2,2,6));
+  JButton viewBuiltin=new JButton(Globals.lang("View"));
   builder.add(viewBuiltin,cc.xy(7,2));
   builder.addSeparator(Globals.lang("Personal journal list"),cc.xyw(2,3,6));
   builder.add(newFile,cc.xy(3,4));
   builder.add(newNameTf,cc.xy(5,4));
+  JButton browseNew=new JButton(Globals.lang("Browse"));
   builder.add(browseNew,cc.xy(7,4));
   builder.add(oldFile,cc.xy(3,5));
   builder.add(personalFile,cc.xy(5,5));
+  JButton browseOld=new JButton(Globals.lang("Browse"));
   builder.add(browseOld,cc.xy(7,5));
   userPanel.setLayout(new BorderLayout());
   builder.add(userPanel,cc.xyw(2,6,4));
@@ -37,9 +41,12 @@
   add(externalFilesPanel,BorderLayout.CENTER);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
+  JButton ok=new JButton(Globals.lang("Ok"));
   bb.addButton(ok);
+  JButton cancel=new JButton(Globals.lang("Cancel"));
   bb.addButton(cancel);
   bb.addUnrelatedGap();
+  JButton help=new JButton(Globals.lang("Help"));
   bb.addButton(help);
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -55,7 +62,7 @@
   builder2.append(abbrTf);
   journalEditPanel=builder2.getPanel();
   viewBuiltin.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       JournalAbbreviations abbr=new JournalAbbreviations(Globals.JOURNALS_FILE_BUILTIN);
       JTable table=new JTable(abbr.getTableModel());
       JScrollPane pane=new JScrollPane(table);
@@ -64,9 +71,11 @@
   }
 );
   browseNew.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       File old=null;
-      if (!newNameTf.getText().equals(""))       old=new File(newNameTf.getText());
+      if (!newNameTf.getText().equals("")) {
+        old=new File(newNameTf.getText());
+      }
       String name=FileDialogs.getNewFile(frame,old,null,JFileChooser.SAVE_DIALOG,false);
       if (name != null) {
         newNameTf.setText(name);
@@ -76,9 +85,11 @@
   }
 );
   browseOld.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       File old=null;
-      if (!personalFile.getText().equals(""))       old=new File(personalFile.getText());
+      if (!personalFile.getText().equals("")) {
+        old=new File(personalFile.getText());
+      }
       String name=FileDialogs.getNewFile(frame,old,null,JFileChooser.OPEN_DIALOG,false);
       if (name != null) {
         personalFile.setText(name);
@@ -90,7 +101,7 @@
   }
 );
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       if (readyToClose()) {
         try {
           storeSettings();
@@ -105,7 +116,7 @@
 );
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.journalAbbrHelp));
   AbstractAction cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dialog.dispose();
     }
   }
@@ -114,7 +125,7 @@
   add.addActionListener(tableModel);
   remove.addActionListener(tableModel);
   addExt.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       externals.add(new ExternalFileEntry());
       buildExternalsPanel();
     }

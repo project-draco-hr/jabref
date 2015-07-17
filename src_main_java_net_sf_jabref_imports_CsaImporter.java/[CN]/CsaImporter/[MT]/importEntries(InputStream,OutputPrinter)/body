@@ -1,6 +1,6 @@
 {
   ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
-  StringBuffer sb=new StringBuffer();
+  StringBuilder sb=new StringBuilder();
   HashMap<String,String> hm=new HashMap<String,String>();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String Type=null;
@@ -9,14 +9,14 @@
   line=1;
   str=readLine(in);
   while (true) {
-    if (str == null || str.length() == 0) {
+    if ((str == null) || (str.length() == 0)) {
       if (!hm.isEmpty()) {
         if (Type == null) {
           addNote(hm,"Publication Type: [NOT SPECIFIED]");
           addNote(hm,"[PERHAPS NOT FULL FORMAT]");
           Type="article";
         }
-        if (Type.equals("article") && hm.get("booktitle") != null) {
+        if (Type.equals("article") && (hm.get("booktitle") != null)) {
           String booktitle=hm.get("booktitle");
           hm.remove("booktitle");
           hm.put("journal",booktitle);
@@ -27,18 +27,22 @@
       }
       hm.clear();
       first=true;
-      if (str == null)       break;
+      if (str == null) {
+        break;
+      }
       str=readLine(in);
       continue;
     }
     int fline=line;
-    Matcher fm=FIELD_PATTERN.matcher(str);
+    Matcher fm=CsaImporter.FIELD_PATTERN.matcher(str);
     if (fm.find()) {
       String fabbr=fm.group(1);
       String fname=fm.group(2);
       sb.setLength(0);
       while ((str=readLine(in)) != null) {
-        if (!str.startsWith("    "))         break;
+        if (!str.startsWith("    ")) {
+          break;
+        }
         if (sb.length() > 0) {
           sb.append(" ");
         }
@@ -49,8 +53,10 @@
         int line1=line - 1;
         throw new IOException("illegal empty field at line " + line1);
       }
-      fm=LT_PATTERN.matcher(fstr);
-      if (fm.find())       fstr=fm.replaceAll("<");
+      fm=CsaImporter.LT_PATTERN.matcher(fstr);
+      if (fm.find()) {
+        fstr=fm.replaceAll("<");
+      }
       if (fabbr.equals("DN") && fname.equalsIgnoreCase("Database Name")) {
         if (!first) {
           throw new IOException("format error at line " + fline + ": DN out of order");
@@ -77,11 +83,11 @@
             Type="inproceedings";
             break;
           }
- else           if (type.equals("book monograph") && Type == null) {
+ else           if (type.equals("book monograph") && (Type == null)) {
             Type="book";
             break;
           }
- else           if (type.equals("report") && Type == null) {
+ else           if (type.equals("report") && (Type == null)) {
             Type="techreport";
             break;
           }
@@ -91,21 +97,45 @@
         }
       }
       String ftype=null;
-      if (fabbr.equals("AB"))       ftype="abstract";
- else       if (fabbr.equals("AF"))       ftype="affiliation";
+      if (fabbr.equals("AB")) {
+        ftype="abstract";
+      }
+ else       if (fabbr.equals("AF")) {
+        ftype="affiliation";
+      }
  else       if (fabbr.equals("AU")) {
         ftype="author";
-        if (fstr.contains(";"))         fstr=fstr.replaceAll("; "," and ");
+        if (fstr.contains(";")) {
+          fstr=fstr.replaceAll("; "," and ");
+        }
       }
- else       if (fabbr.equals("CA"))       ftype="organization";
- else       if (fabbr.equals("DE"))       ftype="keywords";
- else       if (fabbr.equals("DO"))       ftype="doi";
- else       if (fabbr.equals("ED"))       ftype="editor";
- else       if (fabbr.equals("IB"))       ftype="ISBN";
- else       if (fabbr.equals("IS"))       ftype="ISSN";
- else       if (fabbr.equals("JN"))       ftype="journal";
- else       if (fabbr.equals("LA"))       ftype="language";
- else       if (fabbr.equals("PB"))       ftype="publisher";
+ else       if (fabbr.equals("CA")) {
+        ftype="organization";
+      }
+ else       if (fabbr.equals("DE")) {
+        ftype="keywords";
+      }
+ else       if (fabbr.equals("DO")) {
+        ftype="doi";
+      }
+ else       if (fabbr.equals("ED")) {
+        ftype="editor";
+      }
+ else       if (fabbr.equals("IB")) {
+        ftype="ISBN";
+      }
+ else       if (fabbr.equals("IS")) {
+        ftype="ISSN";
+      }
+ else       if (fabbr.equals("JN")) {
+        ftype="journal";
+      }
+ else       if (fabbr.equals("LA")) {
+        ftype="language";
+      }
+ else       if (fabbr.equals("PB")) {
+        ftype="publisher";
+      }
  else       if (fabbr.equals("PY")) {
         ftype="year";
         if (hm.get("year") != null) {
@@ -120,43 +150,57 @@
         String[] lines=fstr.split(" ");
         StringBuilder urls=new StringBuilder();
         for (int ii=0; ii < lines.length; ++ii) {
-          if (lines[ii].startsWith("[URL:"))           urls.append(lines[ii].substring(5));
+          if (lines[ii].startsWith("[URL:")) {
+            urls.append(lines[ii].substring(5));
+          }
  else           if (lines[ii].endsWith("]")) {
             int len=lines[ii].length();
             urls.append(lines[ii].substring(0,len - 1));
-            if (ii < lines.length - 1)             urls.append("\n");
+            if (ii < (lines.length - 1)) {
+              urls.append("\n");
+            }
           }
- else           urls.append(lines[ii]);
+ else {
+            urls.append(lines[ii]);
+          }
         }
         fstr=urls.toString();
       }
  else       if (fabbr.equals("SO")) {
         ftype="booktitle";
-        Matcher pm=VOLNOPP_PATTERN.matcher(fstr);
+        Matcher pm=CsaImporter.VOLNOPP_PATTERN.matcher(fstr);
         if (pm.find()) {
           hm.put("volume",pm.group(1));
           hm.put("number",pm.group(2));
           hm.put("pages",pm.group(3));
           fstr=pm.replaceFirst("");
         }
-        pm=PAGES_PATTERN.matcher(fstr);
+        pm=CsaImporter.PAGES_PATTERN.matcher(fstr);
         StringBuilder pages=new StringBuilder();
         while (pm.find()) {
-          if (pages.length() > 0)           pages.append(",");
+          if (pages.length() > 0) {
+            pages.append(",");
+          }
           String pp=pm.group(1);
-          if (pp == null)           pp=pm.group(2);
-          if (pp == null)           pp=pm.group(3);
+          if (pp == null) {
+            pp=pm.group(2);
+          }
+          if (pp == null) {
+            pp=pm.group(3);
+          }
           pages.append(pp);
           fstr=pm.replaceFirst("");
-          pm=PAGES_PATTERN.matcher(fstr);
+          pm=CsaImporter.PAGES_PATTERN.matcher(fstr);
         }
-        if (pages.length() > 0)         hm.put("pages",pages.toString());
-        pm=VOLUME_PATTERN.matcher(fstr);
+        if (pages.length() > 0) {
+          hm.put("pages",pages.toString());
+        }
+        pm=CsaImporter.VOLUME_PATTERN.matcher(fstr);
         if (pm.find()) {
           hm.put("volume",pm.group(1));
           fstr=pm.replaceFirst("");
         }
-        pm=NUMBER_PATTERN.matcher(fstr);
+        pm=CsaImporter.NUMBER_PATTERN.matcher(fstr);
         if (pm.find()) {
           hm.put("number",pm.group(1));
           fstr=pm.replaceFirst("");
@@ -164,11 +208,19 @@
         fstr=parseDate(hm,fstr);
         Pattern pp=Pattern.compile(",?\\s*$");
         pm=pp.matcher(fstr);
-        if (pm.find())         fstr=pm.replaceFirst("");
-        if (fstr.equals(""))         continue;
+        if (pm.find()) {
+          fstr=pm.replaceFirst("");
+        }
+        if (fstr.equals("")) {
+          continue;
+        }
       }
- else       if (fabbr.equals("TI"))       ftype="title";
- else       if (fabbr.equals("RE"))       continue;
+ else       if (fabbr.equals("TI")) {
+        ftype="title";
+      }
+ else       if (fabbr.equals("RE")) {
+        continue;
+      }
       if (ftype != null) {
         hm.put(ftype,fstr);
       }
@@ -176,7 +228,9 @@
         addNote(hm,fname + ": " + fstr+ ".");
       }
     }
- else     str=readLine(in);
+ else {
+      str=readLine(in);
+    }
   }
   return bibitems;
 }

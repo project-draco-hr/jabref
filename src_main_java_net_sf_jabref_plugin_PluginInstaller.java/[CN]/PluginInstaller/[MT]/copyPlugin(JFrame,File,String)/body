@@ -1,9 +1,11 @@
 {
-  if (destFileName == null)   destFileName=source.getName();
+  if (destFileName == null) {
+    destFileName=source.getName();
+  }
   if (!PluginCore.userPluginDir.exists()) {
     boolean created=PluginCore.userPluginDir.mkdirs();
     if (!created) {
-      return UNABLE_TO_CREATE_DIR;
+      return PluginInstaller.UNABLE_TO_CREATE_DIR;
     }
   }
   File destFile=new File(PluginCore.userPluginDir,destFileName);
@@ -20,7 +22,7 @@
   }
  catch (  IOException ex) {
     ex.printStackTrace();
-    return UNABLE_TO_COPY_FILE;
+    return PluginInstaller.UNABLE_TO_COPY_FILE;
   }
  finally {
     if (in != null) {
@@ -38,5 +40,5 @@
       }
     }
   }
-  return SUCCESS;
+  return PluginInstaller.SUCCESS;
 }

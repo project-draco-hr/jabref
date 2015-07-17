@@ -1,5 +1,5 @@
 {
-  int piv1=0, piv2=0;
+  int piv1, piv2=0;
   HashSet<String> used=new HashSet<String>(disk.getEntryCount());
   HashSet<Integer> notMatched=new HashSet<Integer>(tmp.getEntryCount());
   mainLoop:   for (piv1=0; piv1 < tmp.getEntryCount(); piv1++) {
@@ -12,10 +12,14 @@
       piv2++;
       continue;
     }
-    if (piv2 < disk.getEntryCount() - 1) {
+    if (piv2 < (disk.getEntryCount() - 1)) {
       for (int i=piv2 + 1; i < disk.getEntryCount(); i++) {
-        if (!used.contains("" + i))         comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
- else         comp=-1;
+        if (!used.contains("" + i)) {
+          comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
+        }
+ else {
+          comp=-1;
+        }
         if (comp > 1) {
           used.add("" + i);
           continue mainLoop;
@@ -24,25 +28,27 @@
     }
     notMatched.add(piv1);
   }
-  if (notMatched.size() > 0) {
+  if (!notMatched.isEmpty()) {
     for (Iterator<Integer> it=notMatched.iterator(); it.hasNext(); ) {
-      Integer integ=it.next();
-      piv1=integ;
+      piv1=it.next();
       int bestMatchI=-1;
       double bestMatch=0;
-      double comp=-1;
-      if (piv2 < disk.getEntryCount() - 1) {
+      double comp;
+      if (piv2 < (disk.getEntryCount() - 1)) {
         for (int i=piv2; i < disk.getEntryCount(); i++) {
           if (!used.contains("" + i)) {
             comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
           }
- else           comp=-1;
+ else {
+            comp=-1;
+          }
           if (comp > bestMatch) {
             bestMatch=comp;
             bestMatchI=i;
           }
         }
       }
+      double MATCH_THRESHOLD=0.4;
       if (bestMatch > MATCH_THRESHOLD) {
         used.add("" + bestMatchI);
         it.remove();

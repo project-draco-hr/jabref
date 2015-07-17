@@ -5,39 +5,69 @@
         year=MedlineDate.substring(0,4);
       }
     }
-    StringBuffer sb=new StringBuffer();
+    StringBuilder sb=new StringBuilder();
     for (Iterator<String> iterator=descriptors.iterator(); iterator.hasNext(); ) {
       String s=iterator.next();
       sb.append(s);
-      if (iterator.hasNext())       sb.append(KEYWORD_SEPARATOR);
+      if (iterator.hasNext()) {
+        sb.append(MedlineHandler.KEYWORD_SEPARATOR);
+      }
     }
-    keywords=sb.toString();
-    BibtexEntry b=new BibtexEntry(Util.createNeutralId(),Globals.getEntryType("article"));
+    String keywords=sb.toString();
+    BibtexEntry b=new BibtexEntry(IdGenerator.next(),Globals.getEntryType("article"));
     if (!author.equals("")) {
-      b.setField("author",htmlConverter.formatUnicode(ImportFormatReader.expandAuthorInitials(author)));
+      b.setField("author",MedlineHandler.htmlConverter.formatUnicode(ImportFormatReader.expandAuthorInitials(author)));
       author="";
     }
-    if (!title.equals(""))     b.setField("title",htmlConverter.formatUnicode(title));
-    if (!journal.equals(""))     b.setField("journal",journal);
-    if (!year.equals(""))     b.setField("year",year);
-    if (!page.equals(""))     b.setField("pages",fixPageRange(page));
-    if (!volume.equals(""))     b.setField("volume",volume);
-    if (!language.equals(""))     b.setField("language",language);
-    if (!pst.equals(""))     b.setField("medline-pst",pst);
-    if (!abstractText.equals(""))     b.setField("abstract",abstractText.replaceAll("%","\\\\%"));
-    if (!keywords.equals(""))     b.setField("keywords",keywords);
-    if (!month.equals(""))     b.setField("month",month);
-    if (!number.equals(""))     b.setField("number",number);
+    if (!title.equals("")) {
+      b.setField("title",MedlineHandler.htmlConverter.formatUnicode(title));
+    }
+    if (!journal.equals("")) {
+      b.setField("journal",journal);
+    }
+    if (!year.equals("")) {
+      b.setField("year",year);
+    }
+    if (!page.equals("")) {
+      b.setField("pages",fixPageRange(page));
+    }
+    if (!volume.equals("")) {
+      b.setField("volume",volume);
+    }
+    if (!language.equals("")) {
+      b.setField("language",language);
+    }
+    if (!pst.equals("")) {
+      b.setField("medline-pst",pst);
+    }
+    if (!abstractText.equals("")) {
+      b.setField("abstract",abstractText.replaceAll("%","\\\\%"));
+    }
+    if (!keywords.equals("")) {
+      b.setField("keywords",keywords);
+    }
+    if (!month.equals("")) {
+      b.setField("month",month);
+    }
+    if (!number.equals("")) {
+      b.setField("number",number);
+    }
     if (!doi.equals("")) {
       b.setField("doi",doi);
       b.setField("url","http://dx.doi.org/" + doi);
     }
-    if (!pii.equals(""))     b.setField("pii",pii);
-    if (!pmc.equals(""))     b.setField("pmc",pmc);
+    if (!pii.equals("")) {
+      b.setField("pii",pii);
+    }
+    if (!pmc.equals("")) {
+      b.setField("pmc",pmc);
+    }
     if (!affiliation.equals("")) {
       b.setField("institution",affiliation.replaceAll("#","\\\\#"));
     }
-    if (!pubmedid.equals(""))     b.setField("pmid",pubmedid);
+    if (!pubmedid.equals("")) {
+      b.setField("pmid",pubmedid);
+    }
     bibitems.add(b);
     abstractText="";
     author="";
@@ -65,8 +95,8 @@
     initials="";
     number="";
     page="";
-    medlineID="";
-    url="";
+    String medlineID="";
+    String url="";
     MedlineDate="";
     descriptors.clear();
   }
@@ -105,13 +135,21 @@
     inAuthorList=false;
   }
  else   if (localName.equals("Author")) {
-    if (forename.length() == 3 && forename.charAt(1) == ' ') {
+    if ((forename.length() == 3) && (forename.charAt(1) == ' ')) {
       forename=initials;
     }
-    if (lastname.indexOf(" ") > 0)     author="{" + lastname + "}";
- else     author=lastname;
-    if (suffix.length() > 0)     author=author + ", " + suffix;
-    if (forename.length() > 0)     author=author + ", " + forename;
+    if (lastname.indexOf(" ") > 0) {
+      author="{" + lastname + "}";
+    }
+ else {
+      author=lastname;
+    }
+    if (suffix.length() > 0) {
+      author=author + ", " + suffix;
+    }
+    if (forename.length() > 0) {
+      author=author + ", " + forename;
+    }
     authors.add(author);
     inAuthor=false;
     forename="";
@@ -119,12 +157,20 @@
     lastname="";
     suffix="";
   }
- else   if (localName.equals("DescriptorName"))   inDescriptorName=false;
- else   if (localName.equals("QualifierName"))   inQualifierName=false;
+ else   if (localName.equals("DescriptorName")) {
+    inDescriptorName=false;
+  }
+ else   if (localName.equals("QualifierName")) {
+    inQualifierName=false;
+  }
  else   if (localName.equals("MeshHeading")) {
     inMeshHeader=false;
-    if (minorTopics.equals(""))     descriptors.add(majorTopic);
- else     descriptors.add(majorTopic + ", " + minorTopics);
+    if (minorTopics.equals("")) {
+      descriptors.add(majorTopic);
+    }
+ else {
+      descriptors.add(majorTopic + ", " + minorTopics);
+    }
   }
  else   if (localName.equals("LastName")) {
     inLastName=false;
@@ -154,8 +200,14 @@
     inAffiliation=false;
   }
  else   if (localName.equals("ArticleId")) {
-    if (inDoi)     inDoi=false;
- else     if (inPii)     inPii=false;
- else     if (inPmc)     inPmc=false;
+    if (inDoi) {
+      inDoi=false;
+    }
+ else     if (inPii) {
+      inPii=false;
+    }
+ else     if (inPmc) {
+      inPmc=false;
+    }
   }
 }

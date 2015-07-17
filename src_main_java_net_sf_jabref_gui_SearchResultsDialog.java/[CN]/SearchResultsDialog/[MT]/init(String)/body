@@ -9,7 +9,7 @@
   entryTable.setDefaultRenderer(JLabel.class,renderer);
   entryTable.setDefaultRenderer(String.class,renderer);
   setWidths();
-  TableComparatorChooser<BibtexEntry> tableSorter=TableComparatorChooser.install(entryTable,sortedEntries,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  TableComparatorChooser<BibtexEntry> tableSorter=TableComparatorChooser.install(entryTable,sortedEntries,AbstractTableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
   setupComparatorChooser(tableSorter);
   JScrollPane sp=new JScrollPane(entryTable);
   final EventSelectionModel<BibtexEntry> selectionModel=new EventSelectionModel<BibtexEntry>(sortedEntries);
@@ -19,7 +19,7 @@
   contentPane.setTopComponent(sp);
   contentPane.setBottomComponent(preview);
   AbstractAction closeAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       diag.dispose();
     }
   }
@@ -29,21 +29,21 @@
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",closeAction);
   entryTable.getActionMap().put("copy",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
-      if (selectionModel.getSelected().size() > 0) {
+    @Override public void actionPerformed(    ActionEvent e){
+      if (!selectionModel.getSelected().isEmpty()) {
         BibtexEntry[] bes=selectionModel.getSelected().toArray(new BibtexEntry[selectionModel.getSelected().size()]);
         TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,frame.basePanel());
-        frame.output(Globals.lang("Copied") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry") + "."));
+        frame.output(Globals.lang("Copied") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry") + '.'));
       }
     }
   }
 );
   diag.addWindowListener(new WindowAdapter(){
-    public void windowOpened(    WindowEvent e){
+    @Override public void windowOpened(    WindowEvent e){
       contentPane.setDividerLocation(0.5f);
     }
-    public void windowClosing(    WindowEvent event){
+    @Override public void windowClosing(    WindowEvent event){
       Globals.prefs.putInt("searchDialogWidth",diag.getSize().width);
       Globals.prefs.putInt("searchDialogHeight",diag.getSize().height);
     }

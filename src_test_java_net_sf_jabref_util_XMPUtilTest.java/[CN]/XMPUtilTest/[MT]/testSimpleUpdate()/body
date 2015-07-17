@@ -1,14 +1,14 @@
 {
   String s=" <rdf:Description rdf:about=''" + "  xmlns:xmp='http://ns.adobe.com/xap/1.0/'>" + "  <xmp:CreatorTool>Acrobat PDFMaker 7.0.7</xmp:CreatorTool>"+ "  <xmp:ModifyDate>2006-08-07T18:50:24+02:00</xmp:ModifyDate>"+ "  <xmp:CreateDate>2006-08-07T14:44:24+02:00</xmp:CreateDate>"+ "  <xmp:MetadataDate>2006-08-07T18:50:24+02:00</xmp:MetadataDate>"+ " </rdf:Description>"+ ""+ " <rdf:Description rdf:about=''"+ "  xmlns:xapMM='http://ns.adobe.com/xap/1.0/mm/'>"+ "  <xapMM:DocumentID>uuid:843cd67d-495e-4c1e-a4cd-64178f6b3299</xapMM:DocumentID>"+ "  <xapMM:InstanceID>uuid:1e56b4c0-6782-440d-ba76-d2b3d87547d1</xapMM:InstanceID>"+ "  <xapMM:VersionID>"+ "   <rdf:Seq>"+ "    <rdf:li>17</rdf:li>"+ "   </rdf:Seq>"+ "  </xapMM:VersionID>"+ " </rdf:Description>"+ ""+ " <rdf:Description rdf:about=''"+ "  xmlns:dc='http://purl.org/dc/elements/1.1/'>"+ "  <dc:format>application/pdf</dc:format>"+ "</rdf:Description>";
-  writeManually(pdfFile,bibtexXPacket(s));
-  assertNull(XMPUtil.readXMP(pdfFile));
+  writeManually(pdfFile,XMPUtilTest.bibtexXPacket(s));
+  Assert.assertNull(XMPUtil.readXMP(pdfFile));
   s=" <rdf:Description rdf:about=''" + "  xmlns:xmp='http://ns.adobe.com/xap/1.0/'>" + "  <xmp:CreatorTool>Acrobat PDFMaker 7.0.7</xmp:CreatorTool>"+ "  <xmp:ModifyDate>2006-08-07T18:50:24+02:00</xmp:ModifyDate>"+ "  <xmp:CreateDate>2006-08-07T14:44:24+02:00</xmp:CreateDate>"+ "  <xmp:MetadataDate>2006-08-07T18:50:24+02:00</xmp:MetadataDate>"+ " </rdf:Description>"+ ""+ " <rdf:Description rdf:about=''"+ "  xmlns:xapMM='http://ns.adobe.com/xap/1.0/mm/'>"+ "  <xapMM:DocumentID>uuid:843cd67d-495e-4c1e-a4cd-64178f6b3299</xapMM:DocumentID>"+ "  <xapMM:InstanceID>uuid:1e56b4c0-6782-440d-ba76-d2b3d87547d1</xapMM:InstanceID>"+ "  <xapMM:VersionID>"+ "   <rdf:Seq>"+ "    <rdf:li>17</rdf:li>"+ "   </rdf:Seq>"+ "  </xapMM:VersionID>"+ " </rdf:Description>"+ ""+ " <rdf:Description rdf:about=''"+ "  xmlns:dc='http://purl.org/dc/elements/1.1/'>"+ "  <dc:format>application/pdf</dc:format>"+ "  <dc:title>"+ "   <rdf:Alt>"+ "    <rdf:li xml:lang='x-default'>Questionnaire.pdf</rdf:li>"+ "   </rdf:Alt>"+ "  </dc:title>"+ ""+ "</rdf:Description>";
-  writeManually(pdfFile,bibtexXPacket(s));
-  assertEquals(1,XMPUtil.readXMP(pdfFile).size());
+  writeManually(pdfFile,XMPUtilTest.bibtexXPacket(s));
+  Assert.assertEquals(1,XMPUtil.readXMP(pdfFile).size());
 {
     XMPUtil.writeXMP(pdfFile,t1BibtexEntry(),null);
     List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
-    assertEquals(1,l.size());
+    Assert.assertEquals(1,l.size());
     BibtexEntry e=l.get(0);
     assertEqualsBibtexEntry(t1BibtexEntry(),e);
     PDDocument document=null;
@@ -28,17 +28,17 @@
       }
       meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
       List<XMPSchema> schemas=meta.getSchemas();
-      assertEquals(4,schemas.size());
+      Assert.assertEquals(4,schemas.size());
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
-      assertEquals(1,schemas.size());
+      Assert.assertEquals(1,schemas.size());
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
-      assertEquals(1,schemas.size());
+      Assert.assertEquals(1,schemas.size());
       XMPSchemaDublinCore dc=(XMPSchemaDublinCore)schemas.get(0);
-      assertEquals("application/pdf",dc.getFormat());
+      Assert.assertEquals("application/pdf",dc.getFormat());
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaBasic.NAMESPACE);
-      assertEquals(1,schemas.size());
+      Assert.assertEquals(1,schemas.size());
       XMPSchemaBasic bs=(XMPSchemaBasic)schemas.get(0);
-      assertEquals("Acrobat PDFMaker 7.0.7",bs.getCreatorTool());
+      Assert.assertEquals("Acrobat PDFMaker 7.0.7",bs.getCreatorTool());
       Calendar c=Calendar.getInstance();
       c.clear();
       c.set(Calendar.YEAR,2006);
@@ -49,17 +49,17 @@
       c.set(Calendar.SECOND,24);
       c.setTimeZone(TimeZone.getTimeZone("GMT+2"));
       Calendar other=bs.getCreateDate();
-      assertEquals(c.get(Calendar.YEAR),other.get(Calendar.YEAR));
-      assertEquals(c.get(Calendar.MONTH),other.get(Calendar.MONTH));
-      assertEquals(c.get(Calendar.DATE),other.get(Calendar.DATE));
-      assertEquals(c.get(Calendar.HOUR),other.get(Calendar.HOUR));
-      assertEquals(c.get(Calendar.MINUTE),other.get(Calendar.MINUTE));
-      assertEquals(c.get(Calendar.SECOND),other.get(Calendar.SECOND));
-      assertTrue(c.getTimeZone().hasSameRules(other.getTimeZone()));
+      Assert.assertEquals(c.get(Calendar.YEAR),other.get(Calendar.YEAR));
+      Assert.assertEquals(c.get(Calendar.MONTH),other.get(Calendar.MONTH));
+      Assert.assertEquals(c.get(Calendar.DATE),other.get(Calendar.DATE));
+      Assert.assertEquals(c.get(Calendar.HOUR),other.get(Calendar.HOUR));
+      Assert.assertEquals(c.get(Calendar.MINUTE),other.get(Calendar.MINUTE));
+      Assert.assertEquals(c.get(Calendar.SECOND),other.get(Calendar.SECOND));
+      Assert.assertTrue(c.getTimeZone().hasSameRules(other.getTimeZone()));
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaMediaManagement.NAMESPACE);
-      assertEquals(1,schemas.size());
+      Assert.assertEquals(1,schemas.size());
       XMPSchemaMediaManagement mm=(XMPSchemaMediaManagement)schemas.get(0);
-      assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
+      Assert.assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
     }
   finally {
       if (document != null) {
@@ -72,7 +72,7 @@
     toSet.setField("author","Pokemon!");
     XMPUtil.writeXMP(pdfFile,toSet,null);
     List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
-    assertEquals(1,l.size());
+    Assert.assertEquals(1,l.size());
     BibtexEntry e=l.get(0);
     assertEqualsBibtexEntry(toSet,e);
     PDDocument document=null;
@@ -92,17 +92,17 @@
       }
       meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
       List<XMPSchema> schemas=meta.getSchemas();
-      assertEquals(4,schemas.size());
+      Assert.assertEquals(4,schemas.size());
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
-      assertEquals(1,schemas.size());
+      Assert.assertEquals(1,schemas.size());
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
-      assertEquals(1,schemas.size());
+      Assert.assertEquals(1,schemas.size());
       XMPSchemaDublinCore dc=(XMPSchemaDublinCore)schemas.get(0);
-      assertEquals("application/pdf",dc.getFormat());
+      Assert.assertEquals("application/pdf",dc.getFormat());
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaBasic.NAMESPACE);
-      assertEquals(1,schemas.size());
+      Assert.assertEquals(1,schemas.size());
       XMPSchemaBasic bs=(XMPSchemaBasic)schemas.get(0);
-      assertEquals("Acrobat PDFMaker 7.0.7",bs.getCreatorTool());
+      Assert.assertEquals("Acrobat PDFMaker 7.0.7",bs.getCreatorTool());
       Calendar c=Calendar.getInstance();
       c.clear();
       c.set(Calendar.YEAR,2006);
@@ -113,17 +113,17 @@
       c.set(Calendar.SECOND,24);
       c.setTimeZone(TimeZone.getTimeZone("GMT+2"));
       Calendar other=bs.getCreateDate();
-      assertEquals(c.get(Calendar.YEAR),other.get(Calendar.YEAR));
-      assertEquals(c.get(Calendar.MONTH),other.get(Calendar.MONTH));
-      assertEquals(c.get(Calendar.DATE),other.get(Calendar.DATE));
-      assertEquals(c.get(Calendar.HOUR),other.get(Calendar.HOUR));
-      assertEquals(c.get(Calendar.MINUTE),other.get(Calendar.MINUTE));
-      assertEquals(c.get(Calendar.SECOND),other.get(Calendar.SECOND));
-      assertTrue(c.getTimeZone().hasSameRules(other.getTimeZone()));
+      Assert.assertEquals(c.get(Calendar.YEAR),other.get(Calendar.YEAR));
+      Assert.assertEquals(c.get(Calendar.MONTH),other.get(Calendar.MONTH));
+      Assert.assertEquals(c.get(Calendar.DATE),other.get(Calendar.DATE));
+      Assert.assertEquals(c.get(Calendar.HOUR),other.get(Calendar.HOUR));
+      Assert.assertEquals(c.get(Calendar.MINUTE),other.get(Calendar.MINUTE));
+      Assert.assertEquals(c.get(Calendar.SECOND),other.get(Calendar.SECOND));
+      Assert.assertTrue(c.getTimeZone().hasSameRules(other.getTimeZone()));
       schemas=meta.getSchemasByNamespaceURI(XMPSchemaMediaManagement.NAMESPACE);
-      assertEquals(1,schemas.size());
+      Assert.assertEquals(1,schemas.size());
       XMPSchemaMediaManagement mm=(XMPSchemaMediaManagement)schemas.get(0);
-      assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
+      Assert.assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
     }
   finally {
       if (document != null) {

@@ -10,7 +10,7 @@
   panel.frame().setProgressBarMaximum(progressBarMax);
   int progress=0;
   entriesChanged=0;
-  brokenLinks=0;
+  int brokenLinks=0;
   NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
   final OpenFileFilter off=Util.getFileFilterForField(fieldName);
   ExternalFilePanel extPan=new ExternalFilePanel(fieldName,panel.metaData(),null,null,off);
@@ -21,16 +21,12 @@
       progress+=weightAutoSet;
       panel.frame().setProgressBarValue(progress);
       final String old=aSel.getField(fieldName);
-      if ((old != null) && !old.equals("") && !overWriteAllowed)       continue;
+      if ((old != null) && !old.equals("") && !overWriteAllowed) {
+        continue;
+      }
       extPan.setEntry(aSel,panel.getDatabase());
       editor.setText((old != null) ? old : "");
-      Thread t=extPan.autoSetFile(fieldName,editor);
-      if (t != null)       try {
-        t.join();
-      }
- catch (      InterruptedException e) {
-        e.printStackTrace();
-      }
+      JabRefExecutorService.INSTANCE.executeAndWait(extPan.autoSetFile(fieldName,editor));
       if (!editor.getText().equals("") && !editor.getText().equals(old)) {
         ce.addEdit(new UndoableFieldChange(aSel,fieldName,old,editor.getText()));
         aSel.setField(fieldName,editor.getText());
@@ -43,7 +39,7 @@
       panel.frame().setProgressBarValue(progress++);
       final String old=aSel.getField(fieldName);
       if ((old != null) && !old.equals("")) {
-        File file=Util.expandFilename(old,dirs);
+        File file=FileUtil.expandFilename(old,dirs);
         if ((file == null) || !file.exists()) {
           int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{old,aSel.getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
 switch (answer) {

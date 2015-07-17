@@ -1,15 +1,19 @@
 {
   String oldValue=entry.getField(GUIGlobals.FILE_FIELD);
   FileListTableModel tm=new FileListTableModel();
-  if (oldValue != null)   tm.setContent(oldValue);
+  if (oldValue != null) {
+    tm.setContent(oldValue);
+  }
   if (avoidDuplicate) {
     String[] dirs=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
-    String absFilename=(!(new File(filename).isAbsolute()) && (dirs.length > 0)) ? Util.expandFilename(filename,dirs).getAbsolutePath() : filename;
+    String absFilename=(!(new File(filename).isAbsolute()) && (dirs.length > 0)) ? FileUtil.expandFilename(filename,dirs).getAbsolutePath() : filename;
     for (int i=0; i < tm.getRowCount(); i++) {
       FileListEntry flEntry=tm.getEntry(i);
-      String absName=(!(new File(flEntry.getLink()).isAbsolute()) && (dirs.length > 0)) ? Util.expandFilename(flEntry.getLink(),dirs).getAbsolutePath() : flEntry.getLink();
+      String absName=(!(new File(flEntry.getLink()).isAbsolute()) && (dirs.length > 0)) ? FileUtil.expandFilename(flEntry.getLink(),dirs).getAbsolutePath() : flEntry.getLink();
       System.out.println("absName: " + absName);
-      if (absFilename.equals(absName))       return;
+      if (absFilename.equals(absName)) {
+        return;
+      }
     }
   }
   tm.addEntry(tm.getRowCount(),new FileListEntry("",filename,fileType));

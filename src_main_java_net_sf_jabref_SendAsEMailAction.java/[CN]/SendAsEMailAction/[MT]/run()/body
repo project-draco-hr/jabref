@@ -4,17 +4,19 @@
     return;
   }
   BasePanel panel=frame.basePanel();
-  if (panel == null)   return;
+  if (panel == null) {
+    return;
+  }
   if (panel.getSelectedEntries().length == 0) {
     message=Globals.lang("No entries selected.");
     return;
   }
   StringWriter sw=new StringWriter();
   BibtexEntry[] bes=panel.getSelectedEntries();
-  LatexFieldFormatter ff=new LatexFieldFormatter();
+  BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
   for (  BibtexEntry entry : bes) {
     try {
-      entry.write(sw,ff,true);
+      bibtexEntryWriter.write(entry,sw);
     }
  catch (    IOException e) {
       e.printStackTrace();
@@ -30,7 +32,7 @@
         Util.openFolderAndSelectFile(f.getAbsolutePath());
       }
  catch (      IOException e) {
-        logger.fine(e.getMessage());
+        SendAsEMailAction.logger.fine(e.getMessage());
       }
     }
   }
@@ -41,7 +43,7 @@
     mailTo=mailTo.concat("&Attachment=\"").concat(path);
     mailTo=mailTo.concat("\"");
   }
-  URI uriMailTo=null;
+  URI uriMailTo;
   try {
     uriMailTo=new URI("mailto",mailTo,null);
   }

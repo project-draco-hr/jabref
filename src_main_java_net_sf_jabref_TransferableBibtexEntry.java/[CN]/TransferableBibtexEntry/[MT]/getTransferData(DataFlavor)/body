@@ -1,10 +1,14 @@
 {
-  if (flavor.equals(entryFlavor))   return data;
+  if (flavor.equals(TransferableBibtexEntry.entryFlavor)) {
+    return data;
+  }
  else   if (flavor.equals(DataFlavor.stringFlavor)) {
     try {
       StringWriter sw=new StringWriter();
-      LatexFieldFormatter ff=new LatexFieldFormatter();
-      for (      BibtexEntry aData : data)       aData.write(sw,ff,false);
+      BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),false);
+      for (      BibtexEntry entry : data) {
+        bibtexEntryWriter.write(entry,sw);
+      }
       return sw.toString();
     }
  catch (    IOException ex) {
@@ -12,5 +16,7 @@
       return "";
     }
   }
- else   throw new UnsupportedFlavorException(flavor);
+ else {
+    throw new UnsupportedFlavorException(flavor);
+  }
 }

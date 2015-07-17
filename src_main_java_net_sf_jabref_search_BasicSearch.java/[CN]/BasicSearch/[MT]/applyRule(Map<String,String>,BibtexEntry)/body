@@ -6,14 +6,16 @@
     flags=Pattern.CASE_INSENSITIVE;
   }
   ArrayList<String> words=parseQuery(searchString);
-  if (regExp)   try {
-    pattern=new Pattern[words.size()];
-    for (int i=0; i < pattern.length; i++) {
-      pattern[i]=Pattern.compile(words.get(i),flags);
+  if (regExp) {
+    try {
+      pattern=new Pattern[words.size()];
+      for (int i=0; i < pattern.length; i++) {
+        pattern[i]=Pattern.compile(words.get(i),flags);
+      }
     }
-  }
- catch (  PatternSyntaxException ex) {
-    return 0;
+ catch (    PatternSyntaxException ex) {
+      return 0;
+    }
   }
   boolean[] matchFound=new boolean[words.size()];
   Object fieldContentAsObject;
@@ -21,8 +23,10 @@
   for (  String field : bibtexEntry.getAllFields()) {
     fieldContentAsObject=bibtexEntry.getField(field);
     if (fieldContentAsObject != null) {
-      fieldContent=removeBrackets.format(fieldContentAsObject.toString());
-      if (!caseSensitive)       fieldContent=fieldContent.toLowerCase();
+      fieldContent=BasicSearch.removeBrackets.format(fieldContentAsObject.toString());
+      if (!caseSensitive) {
+        fieldContent=fieldContent.toLowerCase();
+      }
       int index=0;
       for (int j=0; j < words.size(); j++) {
         if (!regExp) {
@@ -31,7 +35,7 @@
         }
  else {
           if (fieldContent != null) {
-            Matcher m=pattern[j].matcher(removeBrackets.format(fieldContent));
+            Matcher m=pattern[j].matcher(BasicSearch.removeBrackets.format(fieldContent));
             matchFound[index]=matchFound[index] || m.find();
           }
         }
@@ -40,7 +44,9 @@
     }
   }
   for (  boolean aMatchFound : matchFound) {
-    if (!aMatchFound)     return 0;
+    if (!aMatchFound) {
+      return 0;
+    }
   }
   return 1;
 }

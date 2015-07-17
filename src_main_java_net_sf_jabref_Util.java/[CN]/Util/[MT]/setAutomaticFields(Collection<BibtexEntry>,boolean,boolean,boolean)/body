@@ -1,13 +1,17 @@
 {
   String timeStampField=Globals.prefs.get("timeStampField");
   String defaultOwner=Globals.prefs.get("defaultOwner");
-  String timestamp=easyDateFormat();
+  String timestamp=EasyDateFormat.easyDateFormat();
   boolean globalSetOwner=Globals.prefs.getBoolean("useOwner"), globalSetTimeStamp=Globals.prefs.getBoolean("useTimeStamp");
-  if (!(globalSetOwner || globalSetTimeStamp || markEntries))   return;
+  if (!(globalSetOwner || globalSetTimeStamp || markEntries)) {
+    return;
+  }
   for (  BibtexEntry curEntry : bibs) {
     boolean setOwner=globalSetOwner && (overwriteOwner || (curEntry.getField(BibtexFields.OWNER) == null));
     boolean setTimeStamp=globalSetTimeStamp && (overwriteTimestamp || (curEntry.getField(timeStampField) == null));
-    setAutomaticFields(curEntry,setOwner,defaultOwner,setTimeStamp,timeStampField,timestamp);
-    if (markEntries)     Util.markEntry(curEntry,IMPORT_MARK_LEVEL,false,new NamedCompound(""));
+    Util.setAutomaticFields(curEntry,setOwner,defaultOwner,setTimeStamp,timeStampField,timestamp);
+    if (markEntries) {
+      EntryMarker.markEntry(curEntry,EntryMarker.IMPORT_MARK_LEVEL,false,new NamedCompound(""));
+    }
   }
 }

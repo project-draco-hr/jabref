@@ -2,12 +2,19 @@
   String firstNamePart=a.getFirst();
   String lastNamePart=a.getLast();
   String von=a.getVon();
-  if ((von != null) && (von.length() > 0))   lastNamePart=von + " " + lastNamePart;
+  if ((von != null) && (!von.isEmpty())) {
+    lastNamePart=von + ' ' + lastNamePart;
+  }
   String jr=a.getJr();
-  if ((jr != null) && (jr.length() > 0))   lastNamePart=lastNamePart + jrSeparator + jr;
+  if ((jr != null) && (!jr.isEmpty())) {
+    String jrSeparator=" ";
+    lastNamePart=lastNamePart + jrSeparator + jr;
+  }
   if (abbreviate && (firstNamePart != null)) {
     firstNamePart=a.getFirstAbbr();
-    if (firstInitialOnly && (firstNamePart.length() > 2))     firstNamePart=firstNamePart.substring(0,2);
+    if (firstInitialOnly && (firstNamePart.length() > 2)) {
+      firstNamePart=firstNamePart.substring(0,2);
+    }
  else     if (middleInitial) {
       String abbr=firstNamePart;
       firstNamePart=a.getFirst();
@@ -19,13 +26,18 @@
         }
       }
     }
-    if (!abbrDots)     firstNamePart=firstNamePart.replaceAll("\\.","");
-    if (!abbrSpaces)     firstNamePart=firstNamePart.replaceAll(" ","");
+    if (!abbrDots) {
+      firstNamePart=firstNamePart.replaceAll("\\.","");
+    }
+    if (!abbrSpaces) {
+      firstNamePart=firstNamePart.replaceAll(" ","");
+    }
   }
   if (lastNameOnly || (firstNamePart == null)) {
     sb.append(lastNamePart);
   }
  else   if (firstFirst) {
+    String firstFirstSeparator=" ";
     sb.append(firstNamePart).append(firstFirstSeparator);
     sb.append(lastNamePart);
   }

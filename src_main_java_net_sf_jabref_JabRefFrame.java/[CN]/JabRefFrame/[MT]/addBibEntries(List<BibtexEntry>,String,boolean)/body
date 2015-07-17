@@ -1,5 +1,5 @@
 {
-  if (bibentries == null || bibentries.size() == 0) {
+  if ((bibentries == null) || (bibentries.isEmpty())) {
     JOptionPane.showMessageDialog(JabRefFrame.this,Globals.lang("No entries found. Please make sure you are " + "using the correct import filter."),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
     return 0;
   }
@@ -9,7 +9,7 @@
     BibtexDatabase database=new BibtexDatabase();
     for (    BibtexEntry entry : bibentries) {
       try {
-        entry.setId(Util.createNeutralId());
+        entry.setId(IdGenerator.next());
         database.insertEntry(entry);
       }
  catch (      KeyCollisionException ex) {
@@ -21,7 +21,9 @@
     tabbedPane.add(GUIGlobals.untitledTitle,bp);
     bp.markBaseChanged();
     tabbedPane.setSelectedComponent(bp);
-    if (filename != null)     output(Globals.lang("Imported database") + " '" + filename+ "' "+ Globals.lang("with")+ " "+ database.getEntryCount()+ " "+ Globals.lang("entries into new database")+ ".");
+    if (filename != null) {
+      output(Globals.lang("Imported database") + " '" + filename+ "' "+ Globals.lang("with")+ ' '+ database.getEntryCount()+ ' '+ Globals.lang("entries into new database")+ '.');
+    }
   }
  else {
     BasePanel basePanel=basePanel();
@@ -51,7 +53,7 @@
       }
       if (!dupli) {
         try {
-          entry.setId(Util.createNeutralId());
+          entry.setId(IdGenerator.next());
           database.insertEntry(entry);
           ce.addEdit(new UndoableInsertEntry(database,entry,basePanel));
           addedEntries++;
@@ -65,7 +67,9 @@
       ce.end();
       basePanel.undoManager.addEdit(ce);
       basePanel.markBaseChanged();
-      if (filename != null)       output(Globals.lang("Imported database") + " '" + filename+ "' "+ Globals.lang("with")+ " "+ (database.getEntryCount() - oldCount)+ " "+ Globals.lang("entries into new database")+ ".");
+      if (filename != null) {
+        output(Globals.lang("Imported database") + " '" + filename+ "' "+ Globals.lang("with")+ ' '+ (database.getEntryCount() - oldCount)+ ' '+ Globals.lang("entries into new database")+ '.');
+      }
     }
   }
   return addedEntries;

@@ -1,5 +1,7 @@
 {
-  if (selectionModel.getSelected().size() != 1)   return;
+  if (selectionModel.getSelected().size() != 1) {
+    return;
+  }
   final BibtexEntry entry=selectionModel.getSelected().get(0);
   String bibtexKey=entry.getCiteKey();
   if (bibtexKey == null) {
@@ -8,14 +10,18 @@
       generateKeySelectedEntry();
       bibtexKey=entry.getCiteKey();
     }
- else     return;
+ else {
+      return;
+    }
   }
   final FileListTableModel model=new FileListTableModel();
   String oldVal=entry.getField(GUIGlobals.FILE_FIELD);
-  if (oldVal != null)   model.setContent(oldVal);
+  if (oldVal != null) {
+    model.setContent(oldVal);
+  }
   JDialog diag=new JDialog(ImportInspectionDialog.this,true);
-  Util.autoSetLinks(entry,model,metaData,new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+  JabRefExecutorService.INSTANCE.execute(Util.autoSetLinks(entry,model,metaData,new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
       if (e.getID() > 0) {
         entries.getReadWriteLock().writeLock().lock();
         entry.setField(GUIGlobals.FILE_FIELD,model.getStringRepresentation());
@@ -24,5 +30,5 @@
       }
     }
   }
-,diag);
+,diag));
 }

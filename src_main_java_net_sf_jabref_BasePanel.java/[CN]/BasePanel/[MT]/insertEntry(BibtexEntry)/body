@@ -2,9 +2,11 @@
   if (bibEntry != null) {
     try {
       database.insertEntry(bibEntry);
-      if (Globals.prefs.getBoolean("useOwner"))       Util.setAutomaticFields(bibEntry,true,true);
+      if (Globals.prefs.getBoolean("useOwner")) {
+        Util.setAutomaticFields(bibEntry,true,true);
+      }
       undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,BasePanel.this));
-      output(Globals.lang("Added new") + " '" + bibEntry.getType().getName().toLowerCase()+ "' "+ Globals.lang("entry")+ ".");
+      output(Globals.lang("Added new") + " '" + bibEntry.getType().getName().toLowerCase()+ "' "+ Globals.lang("entry")+ '.');
       markBaseChanged();
       if (Globals.prefs.getBoolean("autoOpenForm")) {
         selectionListener.editSignalled(bibEntry);

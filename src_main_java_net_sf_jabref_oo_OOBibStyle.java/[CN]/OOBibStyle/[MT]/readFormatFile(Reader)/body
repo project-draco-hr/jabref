@@ -5,34 +5,40 @@
     sb.append((char)c);
   }
   String[] lines=sb.toString().split("\n");
-  int mode=NONE;
+  int mode=OOBibStyle.NONE;
   for (  String line1 : lines) {
     String line=line1;
-    if ((line.length() > 0) && (line.charAt(line.length() - 1) == '\r'))     line=line.substring(0,line.length() - 1);
-    if ((line.trim().length() == 0) || (line.charAt(0) == '#'))     continue;
-    if (line.equals(NAME_MARK)) {
-      mode=NAME;
+    if ((line.length() > 0) && (line.charAt(line.length() - 1) == '\r')) {
+      line=line.substring(0,line.length() - 1);
+    }
+    if ((line.trim().length() == 0) || (line.charAt(0) == '#')) {
       continue;
     }
- else     if (line.equals(LAYOUT_MRK)) {
-      mode=LAYOUT;
+    if (line.equals(OOBibStyle.NAME_MARK)) {
+      mode=OOBibStyle.NAME;
       continue;
     }
- else     if (line.equals(PROPERTIES_MARK)) {
-      mode=PROPERTIES;
+ else     if (line.equals(OOBibStyle.LAYOUT_MRK)) {
+      mode=OOBibStyle.LAYOUT;
       continue;
     }
- else     if (line.equals(CITATION_MARK)) {
-      mode=CITATION;
+ else     if (line.equals(OOBibStyle.PROPERTIES_MARK)) {
+      mode=OOBibStyle.PROPERTIES;
       continue;
     }
- else     if (line.equals(JOURNALS_MARK)) {
-      mode=JOURNALS;
+ else     if (line.equals(OOBibStyle.CITATION_MARK)) {
+      mode=OOBibStyle.CITATION;
+      continue;
+    }
+ else     if (line.equals(OOBibStyle.JOURNALS_MARK)) {
+      mode=OOBibStyle.JOURNALS;
       continue;
     }
 switch (mode) {
 case NAME:
-      if (line.trim().length() > 0)       name=line.trim();
+      if (line.trim().length() > 0) {
+        name=line.trim();
+      }
 case LAYOUT:
     handleStructureLine(line);
   break;
@@ -46,5 +52,7 @@ case JOURNALS:
 handleJournalsLine(line);
 }
 }
-if (mode != NONE) valid=true;
+if (mode != OOBibStyle.NONE) {
+valid=true;
+}
 }

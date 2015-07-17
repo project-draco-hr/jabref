@@ -1,5 +1,7 @@
 {
-  if (value == null)   value="";
+  if (value == null) {
+    value="";
+  }
   ArrayList<FileListEntry> newList=new ArrayList<FileListEntry>();
   StringBuilder sb=new StringBuilder();
   ArrayList<String> thisEntry=new ArrayList<String>();
@@ -13,7 +15,9 @@
     }
  else     if (!escaped && (c == '&') && !inXmlChar) {
       sb.append(c);
-      if ((value.length() > i + 1) && (value.charAt(i + 1) == '#'))       inXmlChar=true;
+      if ((value.length() > (i + 1)) && (value.charAt(i + 1) == '#')) {
+        inXmlChar=true;
+      }
     }
  else     if (!escaped && inXmlChar && (c == ';')) {
       sb.append(c);
@@ -26,19 +30,29 @@
  else     if (!escaped && (c == ';') && !inXmlChar) {
       thisEntry.add(sb.toString());
       sb=new StringBuilder();
-      if (firstOnly)       return decodeEntry(thisEntry,deduceUnknownTypes);
+      if (firstOnly) {
+        return decodeEntry(thisEntry,deduceUnknownTypes);
+      }
  else {
         newList.add(decodeEntry(thisEntry,deduceUnknownTypes));
         thisEntry.clear();
       }
     }
- else     sb.append(c);
+ else {
+      sb.append(c);
+    }
     escaped=false;
   }
-  if (sb.length() > 0)   thisEntry.add(sb.toString());
-  if (thisEntry.size() > 0) {
-    if (firstOnly)     return decodeEntry(thisEntry,deduceUnknownTypes);
- else     newList.add(decodeEntry(thisEntry,deduceUnknownTypes));
+  if (sb.length() > 0) {
+    thisEntry.add(sb.toString());
+  }
+  if (!thisEntry.isEmpty()) {
+    if (firstOnly) {
+      return decodeEntry(thisEntry,deduceUnknownTypes);
+    }
+ else {
+      newList.add(decodeEntry(thisEntry,deduceUnknownTypes));
+    }
   }
 synchronized (list) {
     list.clear();

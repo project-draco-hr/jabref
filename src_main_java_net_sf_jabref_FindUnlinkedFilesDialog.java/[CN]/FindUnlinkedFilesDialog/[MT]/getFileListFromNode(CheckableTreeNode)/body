@@ -6,7 +6,7 @@
     CheckableTreeNode child=childs.nextElement();
     if (child.isLeaf() && child.getSelected()) {
       File nodeFile=((FileNodeWrapper)child.getUserObject()).file;
-      if (nodeFile != null && nodeFile.isFile()) {
+      if ((nodeFile != null) && nodeFile.isFile()) {
         filesList.add(nodeFile);
         nodesToRemove.add(child);
       }
@@ -16,7 +16,7 @@
   for (  CheckableTreeNode nodeToRemove : nodesToRemove) {
     DefaultMutableTreeNode parent=(DefaultMutableTreeNode)nodeToRemove.getParent();
     model.removeNodeFromParent(nodeToRemove);
-    while (parent != null && parent.isLeaf()) {
+    while ((parent != null) && parent.isLeaf()) {
       DefaultMutableTreeNode pp=(DefaultMutableTreeNode)parent.getParent();
       if (pp != null) {
         model.removeNodeFromParent(parent);

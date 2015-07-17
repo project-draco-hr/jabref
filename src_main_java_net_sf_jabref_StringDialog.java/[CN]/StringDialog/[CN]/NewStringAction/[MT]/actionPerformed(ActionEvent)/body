@@ -1,6 +1,8 @@
 {
   String name=JOptionPane.showInputDialog(parent,Globals.lang("Please enter the string's label"));
-  if (name == null)   return;
+  if (name == null) {
+    return;
+  }
   if (isNumber(name)) {
     JOptionPane.showMessageDialog(parent,Globals.lang("The label of the string can not be a number."),Globals.lang("Label"),JOptionPane.ERROR_MESSAGE);
     return;
@@ -14,7 +16,7 @@
     return;
   }
   try {
-    String newId=Util.createNeutralId();
+    String newId=IdGenerator.next();
     BibtexString bs=new BibtexString(newId,name,"");
     panel.undoManager.addEdit(new UndoableInsertString(panel,panel.database,bs));
     base.addString(bs);

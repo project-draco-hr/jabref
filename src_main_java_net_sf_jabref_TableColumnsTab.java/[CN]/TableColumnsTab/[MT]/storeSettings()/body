@@ -15,9 +15,9 @@
  else {
     _prefs.putStringArray("listOfFileColumns",new String[]{});
   }
-  _prefs.putBoolean(JabRefPreferences.SHOWONELETTERHEADINGFORICONCOLUMNS,showOneLetterHeadingForIconColumns.isSelected());
+  _prefs.putBoolean(JabRefPreferences.SHOW_ONE_LETTER_HEADING_FOR_ICON_COLUMNS,showOneLetterHeadingForIconColumns.isSelected());
   boolean newSpecialFieldsEnabled=specialFieldsEnabled.isSelected(), newRankingColumn=rankingColumn.isSelected(), newCompactRankingColumn=compactRankingColumn.isSelected(), newQualityColumn=qualityColumn.isSelected(), newPriorityColumn=priorityColumn.isSelected(), newRelevanceColumn=relevanceColumn.isSelected(), newPrintedColumn=printedColumn.isSelected(), newReadStatusColumn=readStatusColumn.isSelected(), newSyncKeyWords=syncKeywords.isSelected(), newWriteSpecialFields=writeSpecialFields.isSelected();
-  boolean restartRequired=false;
+  boolean restartRequired;
   restartRequired=(oldSpecialFieldsEnabled != newSpecialFieldsEnabled) || (oldRankingColumn != newRankingColumn) || (oldCompcatRankingColumn != newCompactRankingColumn)|| (oldQualityColumn != newQualityColumn)|| (oldPriorityColumn != newPriorityColumn)|| (oldRelevanceColumn != newRelevanceColumn)|| (oldPrintedColumn != newPrintedColumn)|| (oldReadStatusColumn != newReadStatusColumn)|| (oldSyncKeyWords != newSyncKeyWords)|| (oldWriteSpecialFields != newWriteSpecialFields);
   if (restartRequired) {
     JOptionPane.showMessageDialog(null,Globals.lang("You have changed settings for special fields.").concat(" ").concat(Globals.lang("You must restart JabRef for this to come into effect.")),Globals.lang("Changed special field settings"),JOptionPane.WARNING_MESSAGE);
@@ -41,8 +41,12 @@
   if (tableChanged) {
     int i=0;
     while (i < tableRows.size()) {
-      if (tableRows.elementAt(i).name.equals(""))       tableRows.removeElementAt(i);
- else       i++;
+      if (tableRows.elementAt(i).name.isEmpty()) {
+        tableRows.removeElementAt(i);
+      }
+ else {
+        i++;
+      }
     }
     String[] names=new String[tableRows.size()], widths=new String[tableRows.size()];
     int[] nWidths=new int[tableRows.size()];

@@ -7,8 +7,7 @@
         tabbedPane.setSelectedIndex(i);
         int answer=JOptionPane.showConfirmDialog(JabRefFrame.this,Globals.lang("Database has changed. Do you " + "want to save before closing?"),Globals.lang("Save before closing"),JOptionPane.YES_NO_CANCEL_OPTION);
         if ((answer == JOptionPane.CANCEL_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {
-          close=false;
-          return;
+          return false;
         }
         if (answer == JOptionPane.YES_OPTION) {
           try {
@@ -35,41 +34,13 @@
       if (baseAt(i).isSaving()) {
         WaitForSaveOperation w=new WaitForSaveOperation(this);
         w.show();
-        if (w.cancelled())         return;
-      }
-    }
-    dispose();
-    if (basePanel() != null)     basePanel().saveDividerLocation();
-    prefs.putInt("posX",JabRefFrame.this.getLocation().x);
-    prefs.putInt("posY",JabRefFrame.this.getLocation().y);
-    prefs.putInt("sizeX",JabRefFrame.this.getSize().width);
-    prefs.putInt("sizeY",JabRefFrame.this.getSize().height);
-    prefs.putBoolean("windowMaximised",(getExtendedState() == Frame.MAXIMIZED_BOTH));
-    prefs.putBoolean("toolbarVisible",tlb.isVisible());
-    prefs.putBoolean("searchPanelVisible",sidePaneManager.isComponentVisible("search"));
-    int width=contentPane.getDividerLocation();
-    if (width > 0)     prefs.putInt("sidePaneWidth",width);
-    if (prefs.getBoolean("openLastEdited")) {
-      if (filenames.size() == 0) {
-        prefs.remove("lastEdited");
-      }
- else {
-        String[] names=new String[filenames.size()];
-        for (int i=0; i < filenames.size(); i++) {
-          names[i]=filenames.elementAt(i);
+        if (w.cancelled()) {
+          return false;
         }
-        prefs.putStringArray("lastEdited",names);
       }
     }
-    fileHistory.storeHistory();
-    prefs.customExports.store();
-    prefs.customImports.store();
-    BibtexEntryType.saveCustomEntryTypes(prefs);
-    if (Globals.autoSaveManager != null)     Globals.autoSaveManager.clearAutoSaves();
-    if (basePanel() != null) {
-      (searchManager).updatePrefs();
-    }
-    prefs.flush();
-    System.exit(0);
+    tearDownJabRef(filenames);
+    return true;
   }
+  return false;
 }

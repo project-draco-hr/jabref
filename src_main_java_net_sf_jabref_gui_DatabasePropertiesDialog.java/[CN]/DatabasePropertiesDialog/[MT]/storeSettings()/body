@@ -1,7 +1,7 @@
 {
   SaveOrderConfig newSaveOrderConfig;
   if (saveAsConfiguredGlobally.isSelected()) {
-    metaData.remove(SAVE_ORDER_CONFIG);
+    metaData.remove(DatabasePropertiesDialog.SAVE_ORDER_CONFIG);
     newSaveOrderConfig=null;
   }
  else {
@@ -20,45 +20,55 @@
     saveOrderConfig.sortCriteria[2].field=saveTerField.getText();
     saveOrderConfig.sortCriteria[2].descending=saveTerDesc.isSelected();
     Vector<String> serialized=saveOrderConfig.getVector();
-    metaData.putData(SAVE_ORDER_CONFIG,serialized);
+    metaData.putData(DatabasePropertiesDialog.SAVE_ORDER_CONFIG,serialized);
   }
   String oldEncoding=panel.getEncoding();
   String newEncoding=(String)encoding.getSelectedItem();
   panel.setEncoding(newEncoding);
   Vector<String> dir=new Vector<String>(1);
   String text=fileDir.getText().trim();
-  if (text.length() > 0) {
+  if (!text.isEmpty()) {
     dir.add(text);
     metaData.putData(Globals.prefs.get("userFileDir"),dir);
   }
- else   metaData.remove(Globals.prefs.get("userFileDir"));
+ else {
+    metaData.remove(Globals.prefs.get("userFileDir"));
+  }
   dir=new Vector<String>(1);
   text=fileDirIndv.getText().trim();
-  if (text.length() > 0) {
+  if (!text.isEmpty()) {
     dir.add(text);
     metaData.putData(Globals.prefs.get("userFileDirIndividual"),dir);
   }
- else   metaData.remove(Globals.prefs.get("userFileDirIndividual"));
+ else {
+    metaData.remove(Globals.prefs.get("userFileDirIndividual"));
+  }
   dir=new Vector<String>(1);
   text=pdfDir.getText().trim();
-  if (text.length() > 0) {
+  if (!text.isEmpty()) {
     dir.add(text);
     metaData.putData("pdfDirectory",dir);
   }
- else   metaData.remove("pdfDirectory");
+ else {
+    metaData.remove("pdfDirectory");
+  }
   dir=new Vector<String>(1);
   text=psDir.getText().trim();
-  if (text.length() > 0) {
+  if (!text.isEmpty()) {
     dir.add(text);
     metaData.putData("psDirectory",dir);
   }
- else   metaData.remove("psDirectory");
+ else {
+    metaData.remove("psDirectory");
+  }
   if (protect.isSelected()) {
     dir=new Vector<String>(1);
     dir.add("true");
     metaData.putData(Globals.PROTECTED_FLAG_META,dir);
   }
- else   metaData.remove(Globals.PROTECTED_FLAG_META);
+ else {
+    metaData.remove(Globals.PROTECTED_FLAG_META);
+  }
   boolean saveOrderConfigChanged;
   if (oldSaveOrderConfig == newSaveOrderConfig) {
     saveOrderConfigChanged=false;
@@ -70,5 +80,7 @@
     saveOrderConfigChanged=!oldSaveOrderConfig.getVector().equals(newSaveOrderConfig.getVector());
   }
   boolean changed=saveOrderConfigChanged || !newEncoding.equals(oldEncoding) || !oldFileVal.equals(fileDir.getText())|| !oldFileIndvVal.equals(fileDirIndv.getText())|| !oldPdfVal.equals(pdfDir.getText())|| !oldPsVal.equals(psDir.getText())|| (oldProtectVal != protect.isSelected());
-  if (changed)   panel.markNonUndoableBaseChanged();
+  if (changed) {
+    panel.markNonUndoableBaseChanged();
+  }
 }

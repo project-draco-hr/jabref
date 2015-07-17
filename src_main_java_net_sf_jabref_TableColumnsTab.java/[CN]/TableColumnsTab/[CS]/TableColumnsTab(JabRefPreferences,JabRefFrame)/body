@@ -3,18 +3,24 @@
   this.frame=frame;
   setLayout(new BorderLayout());
   TableModel tm=new AbstractTableModel(){
-    public int getRowCount(){
+    @Override public int getRowCount(){
       return rowCount;
     }
-    public int getColumnCount(){
+    @Override public int getColumnCount(){
       return 2;
     }
-    public Object getValueAt(    int row,    int column){
-      if (row == 0)       return (column == 0 ? GUIGlobals.NUMBER_COL : "" + ncWidth);
+    @Override public Object getValueAt(    int row,    int column){
+      if (row == 0) {
+        return (column == 0 ? GUIGlobals.NUMBER_COL : "" + ncWidth);
+      }
       row--;
-      if (row >= tableRows.size())       return "";
+      if (row >= tableRows.size()) {
+        return "";
+      }
       Object rowContent=tableRows.elementAt(row);
-      if (rowContent == null)       return "";
+      if (rowContent == null) {
+        return "";
+      }
       TableRow tr=(TableRow)rowContent;
 switch (column) {
 case 0:
@@ -24,19 +30,25 @@ case 1:
   }
   return null;
 }
-public String getColumnName(int col){
+@Override public String getColumnName(int col){
   return (col == 0 ? Globals.lang("Field name") : Globals.lang("Column width"));
 }
-public Class<?> getColumnClass(int column){
-  if (column == 0)   return String.class;
- else   return Integer.class;
+@Override public Class<?> getColumnClass(int column){
+  if (column == 0) {
+    return String.class;
+  }
+ else {
+    return Integer.class;
+  }
 }
-public boolean isCellEditable(int row,int col){
+@Override public boolean isCellEditable(int row,int col){
   return !((row == 0) && (col == 0));
 }
-public void setValueAt(Object value,int row,int col){
+@Override public void setValueAt(Object value,int row,int col){
   tableChanged=true;
-  while (row >= tableRows.size())   tableRows.add(new TableRow("",-1));
+  while (row >= tableRows.size()) {
+    tableRows.add(new TableRow("",-1));
+  }
   if ((row == 0) && (col == 1)) {
     ncWidth=Integer.parseInt(value.toString());
     return;
@@ -44,11 +56,17 @@ public void setValueAt(Object value,int row,int col){
   TableRow rowContent=tableRows.elementAt(row - 1);
   if (col == 0) {
     rowContent.name=value.toString();
-    if (getValueAt(row,1).equals(""))     setValueAt("" + GUIGlobals.DEFAULT_FIELD_LENGTH,row,1);
+    if (getValueAt(row,1).equals("")) {
+      setValueAt("" + GUIGlobals.DEFAULT_FIELD_LENGTH,row,1);
+    }
   }
  else {
-    if (value == null)     rowContent.length=-1;
- else     rowContent.length=Integer.parseInt(value.toString());
+    if (value == null) {
+      rowContent.length=-1;
+    }
+ else {
+      rowContent.length=Integer.parseInt(value.toString());
+    }
   }
 }
 }
@@ -62,7 +80,7 @@ DefaultFormBuilder builder=new DefaultFormBuilder(layout);
 JPanel pan=new JPanel();
 JPanel tabPanel=new JPanel();
 tabPanel.setLayout(new BorderLayout());
-JScrollPane sp=new JScrollPane(colSetup,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+JScrollPane sp=new JScrollPane(colSetup,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 colSetup.setPreferredScrollableViewportSize(new Dimension(250,200));
 sp.setMinimumSize(new Dimension(250,300));
 tabPanel.add(sp,BorderLayout.CENTER);
@@ -117,7 +135,7 @@ hlb.setToolTipText(Globals.lang("Help on special fields"));
 hlb.addActionListener(help);
 specialFieldsEnabled=new JCheckBox(Globals.lang("Enable special fields"));
 specialFieldsEnabled.addChangeListener(new ChangeListener(){
-public void stateChanged(ChangeEvent event){
+@Override public void stateChanged(ChangeEvent event){
   boolean isEnabled=specialFieldsEnabled.isSelected();
   rankingColumn.setEnabled(isEnabled);
   compactRankingColumn.setEnabled(isEnabled && rankingColumn.isSelected());
@@ -133,7 +151,7 @@ public void stateChanged(ChangeEvent event){
 );
 rankingColumn=new JCheckBox(Globals.lang("Show rank"));
 rankingColumn.addChangeListener(new ChangeListener(){
-public void stateChanged(ChangeEvent event){
+@Override public void stateChanged(ChangeEvent event){
   compactRankingColumn.setEnabled(rankingColumn.isSelected());
 }
 }

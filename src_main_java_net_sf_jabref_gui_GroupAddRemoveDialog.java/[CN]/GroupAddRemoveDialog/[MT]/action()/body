@@ -14,14 +14,14 @@
   tree.addTreeSelectionListener(new SelectionListener());
   JButton jbExpandAll=new JButton("Expand All");
   jbExpandAll.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       expandAll(tree,true);
     }
   }
 );
   JButton jbCollapseAll=new JButton("Collapse All");
   jbCollapseAll.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       expandAll(tree,false);
     }
   }
@@ -35,13 +35,15 @@
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
-      if (doAddOrRemove())       diag.dispose();
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      if (doAddOrRemove()) {
+        diag.dispose();
+      }
     }
   }
 );
   cancel.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       diag.dispose();
     }
   }
@@ -52,7 +54,7 @@
   InputMap im=sp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       diag.dispose();
     }
   }

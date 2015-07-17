@@ -4,9 +4,9 @@
   Iterator<String> itLista=listOfDBs.iterator();
   String jabrefDBs="(";
   while (itLista.hasNext()) {
-    jabrefDBs+="'" + itLista.next() + "',";
+    jabrefDBs+='\'' + itLista.next() + "',";
   }
-  jabrefDBs=jabrefDBs.substring(0,jabrefDBs.length() - 1) + ")";
+  jabrefDBs=jabrefDBs.substring(0,jabrefDBs.length() - 1) + ')';
   ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs);
   while (rsDatabase.next()) {
     BibtexDatabase database=new BibtexDatabase();
@@ -19,7 +19,9 @@
     ResultSet rsColumns=this.readColumnNames(conn);
     ArrayList<String> colNames=new ArrayList<String>();
     while (rsColumns.next()) {
-      if (!columnsNotConsideredForEntries.contains(rsColumns.getString(1)))       colNames.add(rsColumns.getString(1));
+      if (!columnsNotConsideredForEntries.contains(rsColumns.getString(1))) {
+        colNames.add(rsColumns.getString(1));
+      }
     }
     rsColumns.getStatement().close();
     String database_id=rsDatabase.getString("database_id");
@@ -27,7 +29,7 @@
     ResultSet rsEntries=SQLUtil.queryAllFromTable(conn,"entries WHERE database_id= '" + database_id + "';");
     while (rsEntries.next()) {
       String id=rsEntries.getString("entries_id");
-      BibtexEntry entry=new BibtexEntry(Util.createNeutralId(),types.get(rsEntries.getString("entry_types_id")));
+      BibtexEntry entry=new BibtexEntry(IdGenerator.next(),types.get(rsEntries.getString("entry_types_id")));
       entry.setField(BibtexFields.KEY_FIELD,rsEntries.getString("cite_key"));
       for (      String col : colNames) {
         String value=rsEntries.getString(col);
@@ -40,14 +42,14 @@
       database.insertEntry(entry);
     }
     rsEntries.getStatement().close();
-    ResultSet rsStrings=SQLUtil.queryAllFromTable(conn,"strings WHERE database_id='" + database_id + "'");
+    ResultSet rsStrings=SQLUtil.queryAllFromTable(conn,"strings WHERE database_id='" + database_id + '\'');
     while (rsStrings.next()) {
       String label=rsStrings.getString("label"), content=rsStrings.getString("content");
       if (label.equals("@PREAMBLE")) {
         database.setPreamble(content);
       }
  else {
-        BibtexString string=new BibtexString(Util.createNeutralId(),label,content);
+        BibtexString string=new BibtexString(IdGenerator.next(),label,content);
         database.addString(string);
       }
     }

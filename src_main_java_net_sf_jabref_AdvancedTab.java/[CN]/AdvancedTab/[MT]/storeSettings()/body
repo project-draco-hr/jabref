@@ -5,7 +5,9 @@
   _prefs.putBoolean("filechooserDisableRename",filechooserDisableRename.isSelected());
   UIManager.put("FileChooser.readOnly",filechooserDisableRename.isSelected());
   _prefs.putBoolean("useIEEEAbrv",useIEEEAbrv.isSelected());
-  if (useIEEEAbrv.isSelected())   Globals.journalAbbrev=new JournalAbbreviations("/resource/IEEEJournalList.txt");
+  if (useIEEEAbrv.isSelected()) {
+    Globals.journalAbbrev=new JournalAbbreviations("/resource/IEEEJournalList.txt");
+  }
   try {
     int port=Integer.parseInt(remoteServerPort.getText());
     if (port != oldPort) {
@@ -16,15 +18,11 @@
     ex.printStackTrace();
   }
   _prefs.putBoolean("useRemoteServer",useRemoteServer.isSelected());
-  if (useRemoteServer.isSelected() && (JabRef.remoteListener == null)) {
-    JabRef.remoteListener=RemoteListener.openRemoteListener(JabRef.singleton);
-    if (JabRef.remoteListener != null) {
-      JabRef.remoteListener.start();
-    }
+  if (useRemoteServer.isSelected()) {
+    RemoteListenerLifecycle.openAndStartRemoteListener(jabRef);
   }
- else   if (!useRemoteServer.isSelected() && (JabRef.remoteListener != null)) {
-    JabRef.remoteListener.disable();
-    JabRef.remoteListener=null;
+ else {
+    RemoteListenerLifecycle.disableRemoteListener();
   }
   _prefs.putBoolean("biblatexMode",biblatexMode.isSelected());
   if ((useDefault.isSelected() == oldUseDef) || !oldLnf.equals(className.getSelectedItem().toString())) {

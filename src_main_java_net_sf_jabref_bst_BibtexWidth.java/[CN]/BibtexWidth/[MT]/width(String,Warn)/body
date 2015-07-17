@@ -7,33 +7,35 @@
   while (i < n) {
     if (c[i] == '{') {
       braceLevel++;
-      if (braceLevel == 1 && i + 1 < n && (c[i + 1] == '\\')) {
+      if ((braceLevel == 1) && ((i + 1) < n) && (c[i + 1] == '\\')) {
         i++;
-        while (i < n && braceLevel > 0) {
+        while ((i < n) && (braceLevel > 0)) {
           i++;
           int afterBackslash=i;
-          while (i < n && Character.isLetter(c[i])) {
+          while ((i < n) && Character.isLetter(c[i])) {
             i++;
           }
-          if (i < n && i == afterBackslash) {
+          if ((i < n) && (i == afterBackslash)) {
             i++;
           }
  else {
             if (BibtexCaseChanger.findSpecialChar(c,afterBackslash) != null) {
-              result+=getSpecialCharWidth(c,afterBackslash);
+              result+=BibtexWidth.getSpecialCharWidth(c,afterBackslash);
             }
           }
-          while (i < n && Character.isWhitespace(c[i])) {
+          while ((i < n) && Character.isWhitespace(c[i])) {
             i++;
           }
-          while (i < n && braceLevel > 0 && c[i] != '\\') {
+          while ((i < n) && (braceLevel > 0) && (c[i] != '\\')) {
             if (c[i] == '}') {
               braceLevel--;
             }
  else             if (c[i] == '{') {
               braceLevel++;
             }
- else             result+=getCharWidth(c[i]);
+ else {
+              result+=BibtexWidth.getCharWidth(c[i]);
+            }
             i++;
           }
         }
@@ -48,7 +50,7 @@
         BibtexCaseChanger.complain(toMeasure);
       }
     }
-    result+=getCharWidth(c[i]);
+    result+=BibtexWidth.getCharWidth(c[i]);
     i++;
   }
   BibtexCaseChanger.checkBrace(toMeasure,braceLevel);

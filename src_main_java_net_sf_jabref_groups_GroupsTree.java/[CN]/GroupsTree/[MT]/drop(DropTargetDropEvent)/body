@@ -36,12 +36,18 @@
       final BibtexEntry[] entries=selection.getSelection();
       int assignedEntries=0;
       for (      BibtexEntry entry : entries) {
-        if (!target.getGroup().contains(entry))         ++assignedEntries;
+        if (!target.getGroup().contains(entry)) {
+          ++assignedEntries;
+        }
       }
-      if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{group},selection.getSelection(),groupSelector.getActiveBasePanel().getDatabase(),groupSelector.frame))       return;
+      if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{group},selection.getSelection(),groupSelector.getActiveBasePanel().getDatabase(),groupSelector.frame)) {
+        return;
+      }
       groupSelector.getActiveBasePanel().storeCurrentEdit();
       AbstractUndoableEdit undo=group.add(selection.getSelection());
-      if (undo instanceof UndoableChangeAssignment)       ((UndoableChangeAssignment)undo).setEditedNode(target);
+      if (undo instanceof UndoableChangeAssignment) {
+        ((UndoableChangeAssignment)undo).setEditedNode(target);
+      }
       dtde.getDropTargetContext().dropComplete(true);
       groupSelector.revalidateGroups();
       groupSelector.concludeAssignment(undo,target,assignedEntries);
