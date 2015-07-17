@@ -1,8 +1,9 @@
 {
-  String tmpFile="src/test/resources/net/sf/jabref/preferencesTest.xml";
-  prefs.exportPreferences(tmpFile);
-  List<String> actual=Files.readAllLines(Paths.get(tmpFile));
-  List<String> expected=Files.readAllLines(Paths.get("src/test/resources/net/sf/jabref/defaultPreferences.xml"));
-  Files.delete(Paths.get(tmpFile));
+  File tmpFile=new File("src/test/resources/net/sf/jabref/preferencesTest.xml");
+  File expectedFile=new File("src/test/resources/net/sf/jabref/defaultPreferences.xml");
+  prefs.exportPreferences(tmpFile.getAbsolutePath());
+  List<String> actual=Files.readLines(tmpFile,Charset.defaultCharset());
+  List<String> expected=Files.readLines(expectedFile,Charset.defaultCharset());
+  tmpFile.delete();
   assertEquals(expected,actual);
 }
