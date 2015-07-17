@@ -1,13 +1,14 @@
 {
-  Globals.journalAbbrev=new JournalAbbreviations(Globals.JOURNALS_FILE_BUILTIN);
+  Globals.journalAbbrev=new JournalAbbreviationRepository();
+  Globals.journalAbbrev.readJournalListFromResource(Globals.JOURNALS_FILE_BUILTIN);
   if (Globals.prefs.getBoolean("useIEEEAbrv")) {
-    Globals.journalAbbrev.readJournalList("/resource/IEEEJournalList.txt");
+    Globals.journalAbbrev.readJournalListFromResource(JOURNALS_IEEE_INTERNAL_LIST);
   }
   String[] lists=Globals.prefs.getStringArray("externalJournalLists");
   if ((lists != null) && (lists.length > 0)) {
     for (int i=lists.length - 1; i >= 0; i--) {
       try {
-        Globals.journalAbbrev.readJournalList(new File(lists[i]));
+        Globals.journalAbbrev.readJournalListFromFile(new File(lists[i]));
       }
  catch (      FileNotFoundException e) {
         Globals.logger(e.getMessage());
@@ -16,7 +17,7 @@
   }
   if (Globals.prefs.get("personalJournalList") != null) {
     try {
-      Globals.journalAbbrev.readJournalList(new File(Globals.prefs.get("personalJournalList")));
+      Globals.journalAbbrev.readJournalListFromFile(new File(Globals.prefs.get("personalJournalList")));
     }
  catch (    FileNotFoundException e) {
       Globals.logger("Personal journal list file '" + Globals.prefs.get("personalJournalList") + "' not found.");

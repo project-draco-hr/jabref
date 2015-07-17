@@ -1,0 +1,26 @@
+{
+  try {
+    InetAddress local=InetAddress.getByName("localhost");
+    Socket socket=new Socket(local,remoteServerPort);
+    socket.setSoTimeout(TWO_SECONDS_TIMEOUT);
+    Protocol protocol=new Protocol(socket);
+    try {
+      String identifier=protocol.receiveMessage();
+      if (!Protocol.IDENTIFIER.equals(identifier)) {
+        String port=String.valueOf(remoteServerPort);
+        String error=Globals.lang("Cannot use port %0 for remote operation; another application may be using it. Try specifying another port.",port);
+        System.out.println(error);
+        return false;
+      }
+      protocol.sendMessage(StringUtil.join(args,"\n"));
+      return true;
+    }
+  finally {
+      protocol.close();
+    }
+  }
+ catch (  Exception e) {
+    LOGGER.debug("could not send args " + StringUtil.join(args,", ") + " to the server at port "+ remoteServerPort,e);
+    return false;
+  }
+}

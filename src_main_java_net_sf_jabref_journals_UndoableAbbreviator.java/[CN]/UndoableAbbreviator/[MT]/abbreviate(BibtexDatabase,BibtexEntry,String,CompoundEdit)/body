@@ -1,0 +1,20 @@
+{
+  String text=entry.getField(fieldName);
+  if (text == null) {
+    return false;
+  }
+  String origText=text;
+  if (database != null) {
+    text=database.resolveForStrings(text);
+  }
+  if (!journalAbbreviationRepository.isKnownName(text)) {
+    return false;
+  }
+  String newText=getAbbreviatedName(journalAbbreviationRepository.getAbbreviation(text).get());
+  if (newText.equals(origText)) {
+    return false;
+  }
+  entry.setField(fieldName,newText);
+  ce.addEdit(new UndoableFieldChange(entry,fieldName,origText,newText));
+  return true;
+}

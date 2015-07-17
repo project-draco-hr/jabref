@@ -3,13 +3,14 @@
   if (entries == null) {
     return;
   }
+  UndoableUnabbreviator undoableAbbreviator=new UndoableUnabbreviator(Globals.journalAbbrev);
   NamedCompound ce=new NamedCompound("Unabbreviate journal names");
   int count=0;
   for (  BibtexEntry entry : entries) {
-    if (Globals.journalAbbrev.unabbreviate(panel.database(),entry,"journal",ce)) {
+    if (undoableAbbreviator.unabbreviate(panel.database(),entry,"journal",ce)) {
       count++;
     }
-    if (Globals.journalAbbrev.unabbreviate(panel.database(),entry,"journaltitle",ce)) {
+    if (undoableAbbreviator.unabbreviate(panel.database(),entry,"journaltitle",ce)) {
       count++;
     }
   }
