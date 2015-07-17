@@ -7,11 +7,28 @@
     System.arraycopy(EmacsKeyBindings.EMACS_ACTIONS,0,actions,origActions.length,EmacsKeyBindings.EMACS_ACTIONS.length);
     Keymap k=JTC.getKeymap();
     JTextComponent.KeyBinding[] keybindings;
-    if (JabRefPreferences.getInstance().getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CA)) {
-      int size=EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE.length + 1;
+    boolean rebindCA=JabRefPreferences.getInstance().getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CA);
+    boolean rebindCF=JabRefPreferences.getInstance().getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CF);
+    if (rebindCA || rebindCF) {
+      int size=EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE.length;
+      int CAPos=-1;
+      int CFPos=-1;
+      if (rebindCA) {
+        CAPos=size;
+        size++;
+      }
+      if (rebindCF) {
+        CFPos=size;
+        size++;
+      }
       keybindings=new JTextComponent.KeyBinding[size];
       System.arraycopy(EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE,0,keybindings,0,EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE.length);
-      keybindings[EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE.length]=EmacsKeyBindings.EMACS_KEY_BINDING_C_A;
+      if (rebindCA) {
+        keybindings[CAPos]=EmacsKeyBindings.EMACS_KEY_BINDING_C_A;
+      }
+      if (rebindCF) {
+        keybindings[CFPos]=EmacsKeyBindings.EMACS_KEY_BINDING_C_F;
+      }
     }
  else {
       keybindings=EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE;
