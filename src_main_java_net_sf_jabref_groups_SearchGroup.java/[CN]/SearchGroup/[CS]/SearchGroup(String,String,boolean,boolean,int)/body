@@ -3,27 +3,14 @@
   this.searchExpression=searchExpression;
   this.caseSensitive=caseSensitive;
   this.regExp=regExp;
-  AST ast;
-  try {
-    SearchExpressionParser parser=new SearchExpressionParser(new SearchExpressionLexer(new StringReader(this.searchExpression)));
-    parser.caseSensitive=this.caseSensitive;
-    parser.regex=this.regExp;
-    parser.searchExpression();
-    ast=parser.getAST();
+  expressionSearchRule=new SearchExpression(caseSensitive,regExp);
+  if (expressionSearchRule.validateSearchStrings(this.searchExpression)) {
+    searchRule=getSearchRule();
   }
- catch (  Exception e) {
-    ast=null;
-  }
-  this.ast=ast;
-  if (this.ast != null) {
-    searchRule=this;
+ else   if (this.regExp) {
+    searchRule=new RegExpSearchRule(this.caseSensitive);
   }
  else {
-    if (this.regExp) {
-      searchRule=new RegExpSearchRule(this.caseSensitive);
-    }
- else {
-      searchRule=new SimpleSearchRule(this.caseSensitive);
-    }
+    searchRule=new SimpleSearchRule(this.caseSensitive);
   }
 }
