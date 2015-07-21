@@ -1,12 +1,12 @@
 {
-  String content=entry.getField(m_searchField);
+  String content=entry.getField(searchField);
   if (content == null) {
     return;
   }
   StringBuffer sbOrig=new StringBuffer(content);
   StringBuffer sbLower=new StringBuffer(content.toLowerCase());
-  StringBuffer haystack=m_caseSensitive ? sbOrig : sbLower;
-  String needle=m_caseSensitive ? m_searchExpression : m_searchExpression.toLowerCase();
+  StringBuffer haystack=caseSensitive ? sbOrig : sbLower;
+  String needle=caseSensitive ? searchExpression : searchExpression.toLowerCase();
   int i, j, k;
   final String separator=Globals.prefs.get("groupKeywordSeparator");
   while ((i=haystack.indexOf(needle)) >= 0) {
@@ -24,5 +24,5 @@
     sbLower.replace(j,k,(j >= 0) && (k < sbOrig.length()) ? separator : "");
   }
   String result=sbOrig.toString().trim();
-  entry.setField(m_searchField,(!result.isEmpty() ? result : null));
+  entry.setField(searchField,(!result.isEmpty() ? result : null));
 }
