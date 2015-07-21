@@ -2,7 +2,8 @@
   final SearchRuleSet searchRules=SearchRuleSets.build(andCb.isSelected() ? SearchRuleSets.RuleSetType.AND : SearchRuleSets.RuleSetType.OR);
   TreePath[] selection=groupsTree.getSelectionPaths();
   for (  TreePath aSelection : selection) {
-    searchRules.addRule(((GroupTreeNode)aSelection.getLastPathComponent()).getSearchRule());
+    SearchRule searchRule=((GroupTreeNode)aSelection.getLastPathComponent()).getSearchRule();
+    searchRules.addRule(searchRule);
   }
   SearchRule searchRule=invCb.isSelected() ? new InvertSearchRule(searchRules) : searchRules;
   GroupingWorker worker=new GroupingWorker(searchRule,SearchRule.DUMMY_QUERY);

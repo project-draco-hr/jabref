@@ -1,0 +1,26 @@
+{
+  StringBuilder sb=new StringBuilder();
+  sb.append("<b>");
+  if (Globals.prefs.getBoolean("groupShowDynamic")) {
+    sb.append("<i>").append(StringUtil.quoteForHTML(getName())).append("</i>");
+  }
+ else {
+    sb.append(StringUtil.quoteForHTML(getName()));
+  }
+  sb.append("</b> - ");
+  sb.append(Globals.lang("dynamic group"));
+  sb.append(" (");
+  sb.append(Globals.lang("search expression"));
+  sb.append(" <b>").append(StringUtil.quoteForHTML(searchExpression)).append("</b>)");
+switch (getHierarchicalContext()) {
+case INCLUDING:
+    sb.append(", ").append(Globals.lang("includes subgroups"));
+  break;
+case REFINING:
+sb.append(", ").append(Globals.lang("refines supergroup"));
+break;
+default :
+break;
+}
+return sb.toString();
+}
