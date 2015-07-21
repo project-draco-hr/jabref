@@ -10,26 +10,24 @@
       return;
     }
     fireSearchlistenerEvent(searchField.getText());
-    SearchRuleSet searchRules=new SearchRuleSet();
-    SearchRule rule1;
+    SearchRule searchRule;
     if (Globals.prefs.getBoolean("regExpSearch")) {
-      rule1=new BasicRegexSearchRule(Globals.prefs.getBoolean("caseSensitiveSearch"));
+      searchRule=new BasicRegexSearchRule(Globals.prefs.getBoolean("caseSensitiveSearch"));
     }
  else {
-      rule1=new BasicSearchRule(Globals.prefs.getBoolean("caseSensitiveSearch"));
+      searchRule=new BasicSearchRule(Globals.prefs.getBoolean("caseSensitiveSearch"));
     }
     try {
-      rule1=new SearchExpression(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("regExpSearch"),searchField.getText());
+      searchRule=new SearchExpression(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("regExpSearch"),searchField.getText());
     }
  catch (    Exception ex) {
     }
-    searchRules.addRule(rule1);
-    if (!searchRules.validateSearchStrings(searchField.getText())) {
+    if (!searchRule.validateSearchStrings(searchField.getText())) {
       panel.output(Globals.lang("Search failed: illegal search expression"));
       panel.stopShowingSearchResults();
       return;
     }
-    SearchWorker worker=new SearchWorker(searchRules,searchField.getText());
+    SearchWorker worker=new SearchWorker(searchRule,searchField.getText());
     worker.getWorker().run();
     worker.getCallBack().update();
     escape.setEnabled(true);
