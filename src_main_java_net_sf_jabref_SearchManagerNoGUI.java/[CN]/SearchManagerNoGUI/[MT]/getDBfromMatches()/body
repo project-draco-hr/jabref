@@ -4,24 +4,28 @@
   if (specifiedYears()) {
     searchTerm=fieldYear();
   }
-  searchOptions.put("option",searchTerm);
   SearchRuleSet searchRules=new SearchRuleSet();
   SearchRule rule1;
-  rule1=new BasicSearchRule(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("regExpSearch"));
+  if (Globals.prefs.getBoolean("regExpSearch")) {
+    rule1=new BasicRegexSearchRule(Globals.prefs.getBoolean("caseSensitiveSearch"));
+  }
+ else {
+    rule1=new BasicSearchRule(Globals.prefs.getBoolean("caseSensitiveSearch"));
+  }
   try {
-    rule1=new SearchExpression(Globals.prefs,searchOptions);
+    rule1=new SearchExpression(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("regExpSearch"),searchTerm);
   }
  catch (  Exception ignored) {
   }
   searchRules.addRule(rule1);
-  if (!searchRules.validateSearchStrings(searchOptions)) {
+  if (!searchRules.validateSearchStrings(searchTerm)) {
     System.out.println(Globals.lang("Search failed: illegal search expression"));
     return base;
   }
   Collection<BibtexEntry> entries=database.getEntries();
   Vector<BibtexEntry> matchEntries=new Vector<BibtexEntry>();
   for (  BibtexEntry entry : entries) {
-    boolean hit=searchRules.applyRule(searchOptions,entry) > 0;
+    boolean hit=searchRules.applyRule(searchTerm,entry) > 0;
     entry.setSearchHit(hit);
     if (hit) {
       hits++;
