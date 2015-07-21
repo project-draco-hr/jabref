@@ -1,29 +1,29 @@
 {
   super(name,context);
-  m_searchExpression=searchExpression;
-  m_caseSensitive=caseSensitive;
-  m_regExp=regExp;
+  this.searchExpression=searchExpression;
+  this.caseSensitive=caseSensitive;
+  this.regExp=regExp;
   AST ast;
   try {
-    SearchExpressionParser parser=new SearchExpressionParser(new SearchExpressionLexer(new StringReader(m_searchExpression)));
-    parser.caseSensitive=m_caseSensitive;
-    parser.regex=m_regExp;
+    SearchExpressionParser parser=new SearchExpressionParser(new SearchExpressionLexer(new StringReader(this.searchExpression)));
+    parser.caseSensitive=this.caseSensitive;
+    parser.regex=this.regExp;
     parser.searchExpression();
     ast=parser.getAST();
   }
  catch (  Exception e) {
     ast=null;
   }
-  m_ast=ast;
-  if (m_ast != null) {
-    m_searchRule=this;
+  this.ast=ast;
+  if (this.ast != null) {
+    searchRule=this;
   }
  else {
-    if (m_regExp) {
-      m_searchRule=new RegExpSearchRule(m_caseSensitive);
+    if (this.regExp) {
+      searchRule=new RegExpSearchRule(this.caseSensitive);
     }
  else {
-      m_searchRule=new SimpleSearchRule(m_caseSensitive);
+      searchRule=new SimpleSearchRule(this.caseSensitive);
     }
   }
 }
