@@ -1,0 +1,30 @@
+{
+  String searchString=searchStrings.values().iterator().next();
+  if (!caseSensitive) {
+    searchString=searchString.toLowerCase();
+  }
+  List<String> words=parseQuery(searchString);
+  boolean[] matchFound=new boolean[words.size()];
+  Object fieldContentAsObject;
+  String fieldContent;
+  for (  String field : bibtexEntry.getAllFields()) {
+    fieldContentAsObject=bibtexEntry.getField(field);
+    if (fieldContentAsObject != null) {
+      fieldContent=BasicSearchRule.removeBrackets.format(fieldContentAsObject.toString());
+      if (!caseSensitive) {
+        fieldContent=fieldContent.toLowerCase();
+      }
+      int index=0;
+      for (      String s : words) {
+        matchFound[index]=matchFound[index] || (fieldContent.contains(s));
+        index++;
+      }
+    }
+  }
+  for (  boolean aMatchFound : matchFound) {
+    if (!aMatchFound) {
+      return 0;
+    }
+  }
+  return 1;
+}

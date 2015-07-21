@@ -1,12 +1,13 @@
 {
-  final AndOrSearchRuleSet searchRules=new AndOrSearchRuleSet(andCb.isSelected(),invCb.isSelected());
+  final AndOrSearchRuleSet searchRules=new AndOrSearchRuleSet(andCb.isSelected());
   TreePath[] selection=groupsTree.getSelectionPaths();
   for (  TreePath aSelection : selection) {
     searchRules.addRule(((GroupTreeNode)aSelection.getLastPathComponent()).getSearchRule());
   }
   Hashtable<String,String> searchOptions=new Hashtable<String,String>();
   searchOptions.put("option","dummy");
-  GroupingWorker worker=new GroupingWorker(searchRules,searchOptions);
+  SearchRule searchRule=invCb.isSelected() ? new InvertSearchRule(searchRules) : searchRules;
+  GroupingWorker worker=new GroupingWorker(searchRule,searchOptions);
   worker.getWorker().run();
   worker.getCallBack().update();
 }

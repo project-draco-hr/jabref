@@ -1,0 +1,23 @@
+{
+  Globals.prefs=JabRefPreferences.getInstance();
+  BibtexEntry be=makeBibtexEntry();
+  BasicSearchRule bsCaseSensitive=new BasicSearchRule(true,false);
+  BasicSearchRule bsCaseInsensitive=new BasicSearchRule(false,false);
+  BasicSearchRule bsCaseSensitiveRegexp=new BasicSearchRule(true,true);
+  BasicSearchRule bsCaseInsensitiveRegexp=new BasicSearchRule(false,true);
+  String query="marine 2001 shields";
+  Assert.assertEquals(0,bsCaseSensitive.applyRule(query,be));
+  Assert.assertEquals(1,bsCaseInsensitive.applyRule(query,be));
+  Assert.assertEquals(0,bsCaseSensitiveRegexp.applyRule(query,be));
+  Assert.assertEquals(1,bsCaseInsensitiveRegexp.applyRule(query,be));
+  query="\"marine larviculture\"";
+  Assert.assertEquals(0,bsCaseSensitive.applyRule(query,be));
+  Assert.assertEquals(0,bsCaseInsensitive.applyRule(query,be));
+  Assert.assertEquals(0,bsCaseSensitiveRegexp.applyRule(query,be));
+  Assert.assertEquals(0,bsCaseInsensitiveRegexp.applyRule(query,be));
+  query="\"marine [A-Za-z]* larviculture\"";
+  Assert.assertEquals(0,bsCaseSensitive.applyRule(query,be));
+  Assert.assertEquals(0,bsCaseInsensitive.applyRule(query,be));
+  Assert.assertEquals(0,bsCaseSensitiveRegexp.applyRule(query,be));
+  Assert.assertEquals(1,bsCaseInsensitiveRegexp.applyRule(query,be));
+}
