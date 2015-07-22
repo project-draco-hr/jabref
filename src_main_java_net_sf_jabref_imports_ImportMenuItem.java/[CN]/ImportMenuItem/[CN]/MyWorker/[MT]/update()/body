@@ -6,7 +6,7 @@
     if (!openInNew) {
       final BasePanel panel=(BasePanel)frame.getTabbedPane().getSelectedComponent();
       BibtexDatabase toAddTo=panel.database();
-      if (Globals.prefs.getBoolean("useImportInspectionDialog") && (Globals.prefs.getBoolean("useImportInspectionDialogForSingle") || (bibtexResult.getDatabase().getEntryCount() > 1))) {
+      if (Globals.prefs.getBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG) && (Globals.prefs.getBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG_FOR_SINGLE) || (bibtexResult.getDatabase().getEntryCount() > 1))) {
         ImportInspectionDialog diag=new ImportInspectionDialog(frame,panel,BibtexFields.DEFAULT_INSPECTION_FIELDS,Globals.lang("Import"),openInNew);
         diag.addEntries(bibtexResult.getDatabase().getEntries());
         diag.entryListComplete();
@@ -15,9 +15,9 @@
         diag.toFront();
       }
  else {
-        boolean generateKeys=Globals.prefs.getBoolean("generateKeysAfterInspection");
+        boolean generateKeys=Globals.prefs.getBoolean(JabRefPreferences.GENERATE_KEYS_AFTER_INSPECTION);
         NamedCompound ce=new NamedCompound(Globals.lang("Import entries"));
-        if (Globals.prefs.getBoolean("unmarkAllEntriesBeforeImporting")) {
+        if (Globals.prefs.getBoolean(JabRefPreferences.UNMARK_ALL_ENTRIES_BEFORE_IMPORTING)) {
           for (          BibtexEntry entry : toAddTo.getEntries()) {
             EntryMarker.unmarkEntry(entry,true,toAddTo,ce);
           }

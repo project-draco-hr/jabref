@@ -128,7 +128,7 @@ catch (          Throwable ex) {
               if (firstBE == null) {
                 firstBE=be;
               }
-              Util.setAutomaticFields(be,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"));
+              Util.setAutomaticFields(be,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
               be.setId(IdGenerator.next());
               database.insertEntry(be);
               ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
@@ -831,8 +831,8 @@ catch (          Throwable ex) {
   }
   actions.put("togglePreview",new BaseAction(){
     @Override public void action(){
-      boolean enabled=!Globals.prefs.getBoolean("previewEnabled");
-      Globals.prefs.putBoolean("previewEnabled",enabled);
+      boolean enabled=!Globals.prefs.getBoolean(JabRefPreferences.PREVIEW_ENABLED);
+      Globals.prefs.putBoolean(JabRefPreferences.PREVIEW_ENABLED,enabled);
       frame.setPreviewActive(enabled);
       frame.previewToggle.setSelected(enabled);
     }
