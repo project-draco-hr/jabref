@@ -128,7 +128,7 @@ catch (          Throwable ex) {
               if (firstBE == null) {
                 firstBE=be;
               }
-              Util.setAutomaticFields(be,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
+              Util.setAutomaticFields(be,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
               be.setId(IdGenerator.next());
               database.insertEntry(be);
               ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
@@ -284,14 +284,14 @@ catch (          Throwable ex) {
       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
         bes=i.next();
         if (bes.getField(BibtexFields.KEY_FIELD) != null) {
-          if (Globals.prefs.getBoolean("avoidOverwritingKey")) {
+          if (Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
             i.remove();
           }
- else           if (Globals.prefs.getBoolean("warnBeforeOverwritingKey")) {
+ else           if (Globals.prefs.getBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY)) {
             CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("One or more keys will be overwritten. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
             int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Overwrite keys"),JOptionPane.YES_NO_OPTION);
             if (cbm.isSelected()) {
-              Globals.prefs.putBoolean("warnBeforeOverwritingKey",false);
+              Globals.prefs.putBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY,false);
             }
             if (answer == JOptionPane.NO_OPTION) {
               cancelled=true;
@@ -302,7 +302,7 @@ catch (          Throwable ex) {
         }
       }
       HashMap<BibtexEntry,Object> oldvals=new HashMap<BibtexEntry,Object>();
-      if (!Globals.prefs.getBoolean("avoidOverwritingKey")) {
+      if (!Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
         for (        BibtexEntry entry : entries) {
           bes=entry;
           oldvals.put(bes,bes.getField(BibtexFields.KEY_FIELD));
