@@ -1,0 +1,35 @@
+{
+  StringBuffer sb=new StringBuffer();
+  List<String> result=new ArrayList<String>();
+  boolean escaped=false;
+  boolean quoted=false;
+  for (int i=0; i < query.length(); i++) {
+    int c=query.charAt(i);
+    if (!escaped && (c == '\\')) {
+      escaped=true;
+    }
+ else {
+      if (!escaped && !quoted && Character.isWhitespace((char)c)) {
+        if (sb.length() > 0) {
+          result.add(sb.toString());
+          sb=new StringBuffer();
+        }
+      }
+ else       if (c == '"') {
+        if (sb.length() > 0) {
+          result.add(sb.toString());
+          sb=new StringBuffer();
+        }
+        quoted=!quoted;
+      }
+ else {
+        sb.append((char)c);
+      }
+      escaped=false;
+    }
+  }
+  if (sb.length() > 0) {
+    result.add(sb.toString());
+  }
+  return result;
+}

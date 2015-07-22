@@ -1,0 +1,32 @@
+{
+  if (!(o instanceof ExplicitGroup)) {
+    return false;
+  }
+  ExplicitGroup other=(ExplicitGroup)o;
+  if (entries.size() != other.entries.size()) {
+    return false;
+  }
+  HashSet<String> keys=new HashSet<String>();
+  BibtexEntry entry;
+  String key;
+  for (  BibtexEntry m_entry1 : entries) {
+    entry=m_entry1;
+    key=entry.getCiteKey();
+    if (key != null) {
+      keys.add(key);
+    }
+  }
+  for (  BibtexEntry m_entry : other.entries) {
+    entry=m_entry;
+    key=entry.getCiteKey();
+    if (key != null) {
+      if (!keys.remove(key)) {
+        return false;
+      }
+    }
+  }
+  if (!keys.isEmpty()) {
+    return false;
+  }
+  return other.name.equals(name) && (other.getHierarchicalContext() == getHierarchicalContext());
+}

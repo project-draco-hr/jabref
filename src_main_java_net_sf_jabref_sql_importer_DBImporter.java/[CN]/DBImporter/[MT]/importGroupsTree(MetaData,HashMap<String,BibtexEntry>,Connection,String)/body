@@ -10,15 +10,15 @@
       groups.put(rsGroups.getString("groups_id"),rootNode);
     }
  else     if (typeId.equals(ExplicitGroup.ID)) {
-      group=new ExplicitGroup(rsGroups.getString("label"),rsGroups.getInt("hierarchical_context"));
+      group=new ExplicitGroup(rsGroups.getString("label"),GroupHierarchyType.getByNumber(rsGroups.getInt("hierarchical_context")));
     }
  else     if (typeId.equals(KeywordGroup.ID)) {
       System.out.println("Keyw: " + rsGroups.getBoolean("case_sensitive"));
-      group=new KeywordGroup(rsGroups.getString("label"),StringUtil.unquote(rsGroups.getString("search_field"),'\\'),StringUtil.unquote(rsGroups.getString("search_expression"),'\\'),rsGroups.getBoolean("case_sensitive"),rsGroups.getBoolean("reg_exp"),rsGroups.getInt("hierarchical_context"));
+      group=new KeywordGroup(rsGroups.getString("label"),StringUtil.unquote(rsGroups.getString("search_field"),'\\'),StringUtil.unquote(rsGroups.getString("search_expression"),'\\'),rsGroups.getBoolean("case_sensitive"),rsGroups.getBoolean("reg_exp"),GroupHierarchyType.getByNumber(rsGroups.getInt("hierarchical_context")));
     }
  else     if (typeId.equals(SearchGroup.ID)) {
       System.out.println("Search: " + rsGroups.getBoolean("case_sensitive"));
-      group=new SearchGroup(rsGroups.getString("label"),StringUtil.unquote(rsGroups.getString("search_expression"),'\\'),rsGroups.getBoolean("case_sensitive"),rsGroups.getBoolean("reg_exp"),rsGroups.getInt("hierarchical_context"));
+      group=new SearchGroup(rsGroups.getString("label"),StringUtil.unquote(rsGroups.getString("search_expression"),'\\'),rsGroups.getBoolean("case_sensitive"),rsGroups.getBoolean("reg_exp"),GroupHierarchyType.getByNumber(rsGroups.getInt("hierarchical_context")));
     }
     if (group != null) {
       GroupTreeNode node=new GroupTreeNode(group);

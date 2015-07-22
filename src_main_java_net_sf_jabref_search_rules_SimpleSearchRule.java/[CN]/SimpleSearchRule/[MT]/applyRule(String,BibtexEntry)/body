@@ -1,0 +1,29 @@
+{
+  String searchString=query;
+  if (!caseSensitive) {
+    searchString=searchString.toLowerCase();
+  }
+  int score=0;
+  int counter=0;
+  for (  String field : bibtexEntry.getAllFields()) {
+    Object fieldContentAsObject=bibtexEntry.getField(field);
+    if (fieldContentAsObject != null) {
+      try {
+        String fieldContent=SimpleSearchRule.REMOVE_LATEX_COMMANDS.format(fieldContentAsObject.toString());
+        if (!caseSensitive) {
+          fieldContent=fieldContent.toLowerCase();
+        }
+        counter=fieldContent.indexOf(searchString,counter);
+        while (counter >= 0) {
+          score++;
+          counter=fieldContent.indexOf(searchString,counter + 1);
+        }
+      }
+ catch (      Throwable t) {
+        System.err.println("sorting error: " + t);
+      }
+    }
+    counter=0;
+  }
+  return score;
+}

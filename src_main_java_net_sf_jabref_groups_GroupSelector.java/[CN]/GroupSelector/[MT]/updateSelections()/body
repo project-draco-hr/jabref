@@ -1,12 +1,12 @@
 {
-  final AndOrSearchRuleSet searchRules=new AndOrSearchRuleSet(andCb.isSelected(),invCb.isSelected());
+  final SearchRuleSet searchRules=SearchRuleSets.build(andCb.isSelected() ? SearchRuleSets.RuleSetType.AND : SearchRuleSets.RuleSetType.OR);
   TreePath[] selection=groupsTree.getSelectionPaths();
   for (  TreePath aSelection : selection) {
-    searchRules.addRule(((GroupTreeNode)aSelection.getLastPathComponent()).getSearchRule());
+    SearchRule searchRule=((GroupTreeNode)aSelection.getLastPathComponent()).getSearchRule();
+    searchRules.addRule(searchRule);
   }
-  Hashtable<String,String> searchOptions=new Hashtable<String,String>();
-  searchOptions.put("option","dummy");
-  GroupingWorker worker=new GroupingWorker(searchRules,searchOptions);
+  SearchRule searchRule=invCb.isSelected() ? new InvertSearchRule(searchRules) : searchRules;
+  GroupingWorker worker=new GroupingWorker(searchRule,SearchRule.DUMMY_QUERY);
   worker.getWorker().run();
   worker.getCallBack().update();
 }
