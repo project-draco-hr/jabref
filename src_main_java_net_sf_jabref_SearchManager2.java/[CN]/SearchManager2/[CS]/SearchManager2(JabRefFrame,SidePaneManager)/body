@@ -2,10 +2,10 @@
   super(manager,GUIGlobals.getIconUrl("search"),Globals.lang("Search"));
   this.frame=frame;
   incSearcher=new IncrementalSearcher(Globals.prefs);
-  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),Globals.prefs.getBoolean("searchReq"));
-  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),Globals.prefs.getBoolean("searchOpt"));
-  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),Globals.prefs.getBoolean("searchGen"));
-  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean("searchAll"));
+  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REQ));
+  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_OPT));
+  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_GEN));
+  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_ALL));
   regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),Globals.prefs.getBoolean("regExpSearch"));
   increment=new JRadioButton(Globals.lang("Incremental"),false);
   floatSearch=new JRadioButton(Globals.lang("Float"),true);
@@ -42,9 +42,9 @@
     }
   }
 );
-  caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),Globals.prefs.getBoolean("caseSensitiveSearch"));
+  caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH));
   highLightWords=new JCheckBoxMenuItem(Globals.lang("Highlight Words"),Globals.prefs.getBoolean("highLightWords"));
-  searchAutoComplete=new JCheckBoxMenuItem(Globals.lang("Autocomplete names"),Globals.prefs.getBoolean("searchAutoComplete"));
+  searchAutoComplete=new JCheckBoxMenuItem(Globals.lang("Autocomplete names"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_AUTO_COMPLETE));
   settings.add(select);
   settings.addSeparator();
   settings.add(caseSensitive);
@@ -85,7 +85,7 @@
 );
   searchAutoComplete.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent actionEvent){
-      Globals.prefs.putBoolean("searchAutoComplete",searchAutoComplete.isSelected());
+      Globals.prefs.putBoolean(JabRefPreferences.SEARCH_AUTO_COMPLETE,searchAutoComplete.isSelected());
       if (SearchManager2.this.frame.basePanel() != null) {
         SearchManager2.this.frame.basePanel().updateSearchManager();
       }
@@ -102,7 +102,7 @@
   help.setMinimumSize(butDim);
   help.setMargin(margin);
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.searchHelp,"Help"));
-  if (Globals.prefs.getBoolean("incrementS")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.INCREMENT_S)) {
     increment.setSelected(true);
   }
  else   if (Globals.prefs.getBoolean("floatSearch")) {
