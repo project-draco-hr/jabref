@@ -1,7 +1,7 @@
 {
   diag=new JDialog(frame,title,false);
-  int activePreview=Globals.prefs.getInt("activePreview");
-  preview=new PreviewPanel(null,new MetaData(),activePreview == 0 ? Globals.prefs.get("preview0") : Globals.prefs.get("preview1"));
+  int activePreview=Globals.prefs.getInt(JabRefPreferences.ACTIVE_PREVIEW);
+  preview=new PreviewPanel(null,new MetaData(),activePreview == 0 ? Globals.prefs.get(JabRefPreferences.PREVIEW_0) : Globals.prefs.get(JabRefPreferences.PREVIEW_1));
   sortedEntries=new SortedList<BibtexEntry>(entries,new EntryComparator(false,true,"author"));
   model=new EventTableModel<BibtexEntry>(sortedEntries,new EntryTableFormat());
   entryTable=new JTable(model);
@@ -44,12 +44,12 @@
       contentPane.setDividerLocation(0.5f);
     }
     @Override public void windowClosing(    WindowEvent event){
-      Globals.prefs.putInt("searchDialogWidth",diag.getSize().width);
-      Globals.prefs.putInt("searchDialogHeight",diag.getSize().height);
+      Globals.prefs.putInt(JabRefPreferences.SEARCH_DIALOG_WIDTH,diag.getSize().width);
+      Globals.prefs.putInt(JabRefPreferences.SEARCH_DIALOG_HEIGHT,diag.getSize().height);
     }
   }
 );
   diag.getContentPane().add(contentPane,BorderLayout.CENTER);
-  diag.setSize(new Dimension(Globals.prefs.getInt("searchDialogWidth"),Globals.prefs.getInt("searchDialogHeight")));
+  diag.setSize(new Dimension(Globals.prefs.getInt(JabRefPreferences.SEARCH_DIALOG_WIDTH),Globals.prefs.getInt(JabRefPreferences.SEARCH_DIALOG_HEIGHT)));
   diag.setLocationRelativeTo(frame);
 }

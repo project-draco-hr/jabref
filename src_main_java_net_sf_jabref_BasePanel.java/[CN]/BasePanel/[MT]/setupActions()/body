@@ -128,7 +128,7 @@ catch (          Throwable ex) {
               if (firstBE == null) {
                 firstBE=be;
               }
-              Util.setAutomaticFields(be,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"));
+              Util.setAutomaticFields(be,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
               be.setId(IdGenerator.next());
               database.insertEntry(be);
               ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
@@ -141,7 +141,7 @@ catch (          Throwable ex) {
           undoManager.addEdit(ce);
           output(Globals.lang("Pasted") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry"))+ '.');
           markBaseChanged();
-          if (Globals.prefs.getBoolean("autoOpenForm")) {
+          if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_OPEN_FORM)) {
             selectionListener.editSignalled(firstBE);
           }
           highlightEntry(firstBE);
@@ -284,14 +284,14 @@ catch (          Throwable ex) {
       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
         bes=i.next();
         if (bes.getField(BibtexFields.KEY_FIELD) != null) {
-          if (Globals.prefs.getBoolean("avoidOverwritingKey")) {
+          if (Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
             i.remove();
           }
- else           if (Globals.prefs.getBoolean("warnBeforeOverwritingKey")) {
+ else           if (Globals.prefs.getBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY)) {
             CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("One or more keys will be overwritten. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
             int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Overwrite keys"),JOptionPane.YES_NO_OPTION);
             if (cbm.isSelected()) {
-              Globals.prefs.putBoolean("warnBeforeOverwritingKey",false);
+              Globals.prefs.putBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY,false);
             }
             if (answer == JOptionPane.NO_OPTION) {
               cancelled=true;
@@ -302,7 +302,7 @@ catch (          Throwable ex) {
         }
       }
       HashMap<BibtexEntry,Object> oldvals=new HashMap<BibtexEntry,Object>();
-      if (!Globals.prefs.getBoolean("avoidOverwritingKey")) {
+      if (!Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
         for (        BibtexEntry entry : entries) {
           bes=entry;
           oldvals.put(bes,bes.getField(BibtexFields.KEY_FIELD));
@@ -516,7 +516,7 @@ catch (          Throwable ex) {
               filepath=link.toString();
             }
  else {
-              if (Globals.prefs.getBoolean("runAutomaticFileSearch")) {
+              if (Globals.prefs.getBoolean(JabRefPreferences.RUN_AUTOMATIC_FILE_SEARCH)) {
                 final Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
                 entries.add(bes[0]);
                 ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
@@ -831,8 +831,8 @@ catch (          Throwable ex) {
   }
   actions.put("togglePreview",new BaseAction(){
     @Override public void action(){
-      boolean enabled=!Globals.prefs.getBoolean("previewEnabled");
-      Globals.prefs.putBoolean("previewEnabled",enabled);
+      boolean enabled=!Globals.prefs.getBoolean(JabRefPreferences.PREVIEW_ENABLED);
+      Globals.prefs.putBoolean(JabRefPreferences.PREVIEW_ENABLED,enabled);
       frame.setPreviewActive(enabled);
       frame.previewToggle.setSelected(enabled);
     }
@@ -840,12 +840,12 @@ catch (          Throwable ex) {
 );
   actions.put("toggleHighlightGroupsMatchingAny",new BaseAction(){
     @Override public void action(){
-      boolean enabled=!Globals.prefs.getBoolean("highlightGroupsMatchingAny");
-      Globals.prefs.putBoolean("highlightGroupsMatchingAny",enabled);
+      boolean enabled=!Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY);
+      Globals.prefs.putBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY,enabled);
       frame.highlightAny.setSelected(enabled);
       if (enabled) {
         frame.highlightAll.setSelected(false);
-        Globals.prefs.putBoolean("highlightGroupsMatchingAll",false);
+        Globals.prefs.putBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL,false);
       }
       groupsHighlightListener.listChanged(null);
     }
@@ -853,12 +853,12 @@ catch (          Throwable ex) {
 );
   actions.put("toggleHighlightGroupsMatchingAll",new BaseAction(){
     @Override public void action(){
-      boolean enabled=!Globals.prefs.getBoolean("highlightGroupsMatchingAll");
-      Globals.prefs.putBoolean("highlightGroupsMatchingAll",enabled);
+      boolean enabled=!Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL);
+      Globals.prefs.putBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL,enabled);
       frame.highlightAll.setSelected(enabled);
       if (enabled) {
         frame.highlightAny.setSelected(false);
-        Globals.prefs.putBoolean("highlightGroupsMatchingAny",false);
+        Globals.prefs.putBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY,false);
       }
       groupsHighlightListener.listChanged(null);
     }

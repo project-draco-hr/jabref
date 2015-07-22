@@ -2,16 +2,16 @@
   super(manager,GUIGlobals.getIconUrl("search"),Globals.lang("Search"));
   this.frame=frame;
   incSearcher=new IncrementalSearcher(Globals.prefs);
-  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),Globals.prefs.getBoolean("searchReq"));
-  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),Globals.prefs.getBoolean("searchOpt"));
-  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),Globals.prefs.getBoolean("searchGen"));
-  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean("searchAll"));
-  regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),Globals.prefs.getBoolean("regExpSearch"));
+  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REQ));
+  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_OPT));
+  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_GEN));
+  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_ALL));
+  regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),Globals.prefs.getBoolean(JabRefPreferences.REG_EXP_SEARCH));
   increment=new JRadioButton(Globals.lang("Incremental"),false);
   floatSearch=new JRadioButton(Globals.lang("Float"),true);
   hideSearch=new JRadioButton(Globals.lang("Filter"),true);
   showResultsInDialog=new JRadioButton(Globals.lang("Show results in dialog"),true);
-  searchAllBases=new JRadioButton(Globals.lang("Global search"),Globals.prefs.getBoolean("searchAllBases"));
+  searchAllBases=new JRadioButton(Globals.lang("Global search"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_ALL_BASES));
   ButtonGroup types=new ButtonGroup();
   types.add(increment);
   types.add(floatSearch);
@@ -42,9 +42,9 @@
     }
   }
 );
-  caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),Globals.prefs.getBoolean("caseSensitiveSearch"));
-  highLightWords=new JCheckBoxMenuItem(Globals.lang("Highlight Words"),Globals.prefs.getBoolean("highLightWords"));
-  searchAutoComplete=new JCheckBoxMenuItem(Globals.lang("Autocomplete names"),Globals.prefs.getBoolean("searchAutoComplete"));
+  caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH));
+  highLightWords=new JCheckBoxMenuItem(Globals.lang("Highlight Words"),Globals.prefs.getBoolean(JabRefPreferences.HIGH_LIGHT_WORDS));
+  searchAutoComplete=new JCheckBoxMenuItem(Globals.lang("Autocomplete names"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_AUTO_COMPLETE));
   settings.add(select);
   settings.addSeparator();
   settings.add(caseSensitive);
@@ -85,7 +85,7 @@
 );
   searchAutoComplete.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent actionEvent){
-      Globals.prefs.putBoolean("searchAutoComplete",searchAutoComplete.isSelected());
+      Globals.prefs.putBoolean(JabRefPreferences.SEARCH_AUTO_COMPLETE,searchAutoComplete.isSelected());
       if (SearchManager2.this.frame.basePanel() != null) {
         SearchManager2.this.frame.basePanel().updateSearchManager();
       }
@@ -102,16 +102,16 @@
   help.setMinimumSize(butDim);
   help.setMargin(margin);
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.searchHelp,"Help"));
-  if (Globals.prefs.getBoolean("incrementS")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.INCREMENT_S)) {
     increment.setSelected(true);
   }
- else   if (Globals.prefs.getBoolean("floatSearch")) {
+ else   if (Globals.prefs.getBoolean(JabRefPreferences.FLOAT_SEARCH)) {
     floatSearch.setSelected(true);
   }
- else   if (Globals.prefs.getBoolean("showSearchInDialog")) {
+ else   if (Globals.prefs.getBoolean(JabRefPreferences.SHOW_SEARCH_IN_DIALOG)) {
     showResultsInDialog.setSelected(true);
   }
- else   if (Globals.prefs.getBoolean("searchAllBases")) {
+ else   if (Globals.prefs.getBoolean(JabRefPreferences.SEARCH_ALL_BASES)) {
     searchAllBases.setSelected(true);
   }
  else {

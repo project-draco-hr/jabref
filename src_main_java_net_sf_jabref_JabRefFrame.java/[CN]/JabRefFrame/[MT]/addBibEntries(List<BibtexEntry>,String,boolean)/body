@@ -4,7 +4,7 @@
     return 0;
   }
   int addedEntries=0;
-  Util.setAutomaticFields(bibentries,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"),Globals.prefs.getBoolean("markImportedEntries"));
+  Util.setAutomaticFields(bibentries,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
   if (intoNew || (tabbedPane.getTabCount() == 0)) {
     BibtexDatabase database=new BibtexDatabase();
     for (    BibtexEntry entry : bibentries) {
@@ -16,7 +16,7 @@
         System.err.println("KeyCollisionException [ addBibEntries(...) ]");
       }
     }
-    BasePanel bp=new BasePanel(JabRefFrame.this,database,null,new MetaData(),Globals.prefs.get("defaultEncoding"));
+    BasePanel bp=new BasePanel(JabRefFrame.this,database,null,new MetaData(),Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING));
     addedEntries=database.getEntryCount();
     tabbedPane.add(GUIGlobals.untitledTitle,bp);
     bp.markBaseChanged();

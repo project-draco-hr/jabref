@@ -1,5 +1,5 @@
 {
-  boolean offerChangeSettings=!Globals.prefs.getBoolean("fileColumn") || !showsFileInGenFields();
+  boolean offerChangeSettings=!Globals.prefs.getBoolean(JabRefPreferences.FILE_COLUMN) || !showsFileInGenFields();
   boolean offerChangeDatabase=linksFound(pr.getDatabase(),FileLinksUpgradeWarning.FIELDS_TO_LOOK_FOR);
   boolean offerSetFileDir=!Globals.prefs.hasKey(GUIGlobals.FILE_FIELD + "Directory") && (Globals.prefs.hasKey("pdfDirectory") || Globals.prefs.hasKey("psDirectory"));
   if (!offerChangeDatabase && !offerChangeSettings && !offerSetFileDir) {
@@ -43,7 +43,7 @@
   b.append(doNotShowDialog);
   int answer=JOptionPane.showConfirmDialog(panel.frame(),message,Globals.lang("Upgrade file"),JOptionPane.YES_NO_OPTION);
   if (doNotShowDialog.isSelected()) {
-    Globals.prefs.putBoolean("showFileLinksUpgradeWarning",false);
+    Globals.prefs.putBoolean(JabRefPreferences.SHOW_FILE_LINKS_UPGRADE_WARNING,false);
   }
   if (answer == JOptionPane.YES_OPTION) {
     makeChanges(panel,pr,changeSettings.isSelected(),changeDatabase.isSelected(),setFileDir.isSelected() ? fileDir.getText() : null);

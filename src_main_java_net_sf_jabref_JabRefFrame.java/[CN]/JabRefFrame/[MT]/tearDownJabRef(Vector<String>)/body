@@ -4,27 +4,27 @@
   if (basePanel() != null) {
     basePanel().saveDividerLocation();
   }
-  prefs.putInt("posX",JabRefFrame.this.getLocation().x);
-  prefs.putInt("posY",JabRefFrame.this.getLocation().y);
-  prefs.putInt("sizeX",JabRefFrame.this.getSize().width);
-  prefs.putInt("sizeY",JabRefFrame.this.getSize().height);
-  prefs.putBoolean("windowMaximised",(getExtendedState() == Frame.MAXIMIZED_BOTH));
-  prefs.putBoolean("toolbarVisible",tlb.isVisible());
-  prefs.putBoolean("searchPanelVisible",sidePaneManager.isComponentVisible("search"));
+  prefs.putInt(JabRefPreferences.POS_X,JabRefFrame.this.getLocation().x);
+  prefs.putInt(JabRefPreferences.POS_Y,JabRefFrame.this.getLocation().y);
+  prefs.putInt(JabRefPreferences.SIZE_X,JabRefFrame.this.getSize().width);
+  prefs.putInt(JabRefPreferences.SIZE_Y,JabRefFrame.this.getSize().height);
+  prefs.putBoolean(JabRefPreferences.WINDOW_MAXIMISED,(getExtendedState() == Frame.MAXIMIZED_BOTH));
+  prefs.putBoolean(JabRefPreferences.TOOLBAR_VISIBLE,tlb.isVisible());
+  prefs.putBoolean(JabRefPreferences.SEARCH_PANEL_VISIBLE,sidePaneManager.isComponentVisible("search"));
   int width=contentPane.getDividerLocation();
   if (width > 0) {
-    prefs.putInt("sidePaneWidth",width);
+    prefs.putInt(JabRefPreferences.SIDE_PANE_WIDTH,width);
   }
-  if (prefs.getBoolean("openLastEdited")) {
+  if (prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED)) {
     if (filenames.isEmpty()) {
-      prefs.remove("lastEdited");
+      prefs.remove(JabRefPreferences.LAST_EDITED);
     }
  else {
       String[] names=new String[filenames.size()];
       for (int i=0; i < filenames.size(); i++) {
         names[i]=filenames.elementAt(i);
       }
-      prefs.putStringArray("lastEdited",names);
+      prefs.putStringArray(JabRefPreferences.LAST_EDITED,names);
     }
   }
   fileHistory.storeHistory();

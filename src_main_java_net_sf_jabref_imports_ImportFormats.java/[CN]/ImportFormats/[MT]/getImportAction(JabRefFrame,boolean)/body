@@ -9,7 +9,7 @@ class ImportAction extends MnemonicAwareAction {
       putValue(Action.ACCELERATOR_KEY,openInNew ? Globals.prefs.getKey("Import into new database") : Globals.prefs.getKey("Import into current database"));
     }
     @Override public void actionPerformed(    ActionEvent e){
-      JFileChooser fc=ImportFormats.createImportFileChooser(Globals.prefs.get("importWorkingDirectory"));
+      JFileChooser fc=ImportFormats.createImportFileChooser(Globals.prefs.get(JabRefPreferences.WORKING_DIRECTORY));
       fc.showOpenDialog(frame);
       File file=fc.getSelectedFile();
       if (file == null) {
@@ -33,7 +33,7 @@ class ImportAction extends MnemonicAwareAction {
  else {
           Globals.prefs.put("lastUsedImport","__all");
         }
-        Globals.prefs.put("importWorkingDirectory",file.getParent());
+        Globals.prefs.put(JabRefPreferences.IMPORT_WORKING_DIRECTORY,file.getParent());
       }
  catch (      Exception ex) {
         ex.printStackTrace();

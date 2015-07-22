@@ -10,7 +10,7 @@ class ExportAction extends MnemonicAwareAction {
     }
     @Override public void actionPerformed(    ActionEvent e){
       ExportFormats.initAllExports();
-      JFileChooser fc=ExportFormats.createExportFileChooser(Globals.prefs.get("exportWorkingDirectory"));
+      JFileChooser fc=ExportFormats.createExportFileChooser(Globals.prefs.get(JabRefPreferences.EXPORT_WORKING_DIRECTORY));
       fc.showSaveDialog(frame);
       File file=fc.getSelectedFile();
       if (file == null) {
@@ -40,8 +40,8 @@ class ExportAction extends MnemonicAwareAction {
         }
         Globals.prefs.fileDirForDatabase=frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
         Globals.prefs.databaseFile=frame.basePanel().metaData().getFile();
-        Globals.prefs.put("lastUsedExport",format.getConsoleName());
-        Globals.prefs.put("exportWorkingDirectory",file.getParent());
+        Globals.prefs.put(JabRefPreferences.LAST_USED_EXPORT,format.getConsoleName());
+        Globals.prefs.put(JabRefPreferences.EXPORT_WORKING_DIRECTORY,file.getParent());
         final File finFile=file;
         final Set<String> finEntryIDs=entryIds;
         AbstractWorker exportWorker=new AbstractWorker(){

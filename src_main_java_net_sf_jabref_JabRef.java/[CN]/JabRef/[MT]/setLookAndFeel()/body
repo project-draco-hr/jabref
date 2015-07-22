@@ -2,11 +2,11 @@
   try {
     String lookFeel;
     String systemLnF=UIManager.getSystemLookAndFeelClassName();
-    if (Globals.prefs.getBoolean("useDefaultLookAndFeel")) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.USE_DEFAULT_LOOK_AND_FEEL)) {
       lookFeel=systemLnF;
     }
  else {
-      lookFeel=Globals.prefs.get("lookAndFeel");
+      lookFeel=Globals.prefs.get(JabRefPreferences.WIN_LOOK_AND_FEEL);
     }
     if (lookFeel.equals("javax.swing.plaf.metal.MetalLookAndFeel")) {
       Plastic3DLookAndFeel lnf=new Plastic3DLookAndFeel();
@@ -20,7 +20,7 @@
       }
  catch (      Exception e) {
         UIManager.setLookAndFeel(systemLnF);
-        Globals.prefs.put("lookAndFeel",systemLnF);
+        Globals.prefs.put(JabRefPreferences.WIN_LOOK_AND_FEEL,systemLnF);
         JOptionPane.showMessageDialog(JabRef.jrf,Globals.lang("Unable to find the requested Look & Feel and thus the default one is used."),Globals.lang("Warning"),JOptionPane.WARNING_MESSAGE);
       }
     }
@@ -28,9 +28,9 @@
  catch (  Exception e) {
     e.printStackTrace();
   }
-  boolean overrideDefaultFonts=Globals.prefs.getBoolean("overrideDefaultFonts");
+  boolean overrideDefaultFonts=Globals.prefs.getBoolean(JabRefPreferences.OVERRIDE_DEFAULT_FONTS);
   if (overrideDefaultFonts) {
-    int fontSize=Globals.prefs.getInt("menuFontSize");
+    int fontSize=Globals.prefs.getInt(JabRefPreferences.MENU_FONT_SIZE);
     UIDefaults defaults=UIManager.getDefaults();
     Enumeration<Object> keys=defaults.keys();
     Double zoomLevel=null;

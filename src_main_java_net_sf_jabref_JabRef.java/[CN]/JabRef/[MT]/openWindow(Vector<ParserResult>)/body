@@ -10,8 +10,8 @@
  catch (  Throwable e) {
     e.printStackTrace();
   }
-  if (!cli.isBlank() && Globals.prefs.getBoolean("openLastEdited") && (Globals.prefs.get("lastEdited") != null)) {
-    String[] names=Globals.prefs.getStringArray("lastEdited");
+  if (!cli.isBlank() && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED) && (Globals.prefs.get(JabRefPreferences.LAST_EDITED) != null)) {
+    String[] names=Globals.prefs.getStringArray(JabRefPreferences.LAST_EDITED);
     lastEdLoop:     for (    String name : names) {
       File fileToOpen=new File(name);
       for (int j=0; j < loaded.size(); j++) {
@@ -34,7 +34,7 @@
     }
   }
   GUIGlobals.init();
-  GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get("fontFamily"),Globals.prefs.getInt("fontStyle"),Globals.prefs.getInt("fontSize"));
+  GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get(JabRefPreferences.FONT_FAMILY),Globals.prefs.getInt(JabRefPreferences.FONT_STYLE),Globals.prefs.getInt(JabRefPreferences.FONT_SIZE));
   JabRef.jrf=new JabRefFrame(this);
   boolean first=true;
   List<File> postponed=new ArrayList<File>();
@@ -70,14 +70,14 @@
     JabRef.jrf.loadSessionAction.actionPerformed(new java.awt.event.ActionEvent(JabRef.jrf,0,""));
   }
   splashScreen.hide();
-  if (Globals.prefs.getBoolean("autoSave")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_SAVE)) {
     Globals.startAutoSaveManager(JabRef.jrf);
   }
-  if (Globals.prefs.getBoolean("windowMaximised")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
     JabRef.jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
   JabRef.jrf.setVisible(true);
-  if (Globals.prefs.getBoolean("windowMaximised")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
     JabRef.jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
   startSidePanePlugins(JabRef.jrf);
@@ -87,7 +87,7 @@
   }
   for (int i=0; i < loaded.size(); i++) {
     ParserResult pr=loaded.elementAt(i);
-    if (Globals.prefs.getBoolean("displayKeyWarningDialogAtStartup") && pr.hasWarnings()) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.DISPLAY_KEY_WARNING_DIALOG_AT_STARTUP) && pr.hasWarnings()) {
       String[] wrns=pr.warnings();
       StringBuilder wrn=new StringBuilder();
       for (int j=0; j < Math.min(JabRef.MAX_DIALOG_WARNINGS,wrns.length); j++) {
