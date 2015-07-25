@@ -4,18 +4,7 @@
   if (specifiedYears()) {
     searchTerm=fieldYear();
   }
-  SearchRule searchRule;
-  if (Globals.prefs.getBoolean(JabRefPreferences.REG_EXP_SEARCH)) {
-    searchRule=new BasicRegexSearchRule(Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH));
-  }
- else {
-    searchRule=new BasicSearchRule(Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH));
-  }
-  try {
-    searchRule=new SearchExpression(Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH),Globals.prefs.getBoolean(JabRefPreferences.REG_EXP_SEARCH));
-  }
- catch (  Exception ignored) {
-  }
+  SearchRule searchRule=SearchRules.getSearchRuleByQuery(searchTerm,Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH),Globals.prefs.getBoolean(JabRefPreferences.REG_EXP_SEARCH));
   if (!searchRule.validateSearchStrings(searchTerm)) {
     System.out.println(Globals.lang("Search failed: illegal search expression"));
     return base;
