@@ -6,7 +6,7 @@
     NamedCompound ce=new NamedCompound(Globals.lang("add entries to group"));
     boolean modified=false;
     for (    BibtexEntry entry : entries) {
-      if (getSearchRule().applyRule(SearchRule.NULL_QUERY,entry) == 0) {
+      if (!getSearchRule().applyRule(SearchRule.NULL_QUERY,entry)) {
         String oldContent=entry.getField(searchField), pre=Globals.prefs.get(JabRefPreferences.GROUP_KEYWORD_SEPARATOR);
         String newContent=(oldContent == null ? "" : oldContent + pre) + searchExpression;
         entry.setField(searchField,newContent);
