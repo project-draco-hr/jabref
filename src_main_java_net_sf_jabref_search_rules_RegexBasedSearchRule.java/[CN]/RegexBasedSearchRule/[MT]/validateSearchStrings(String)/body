@@ -1,0 +1,16 @@
+{
+  String searchString=query;
+  if (!caseSensitive) {
+    searchString=searchString.toLowerCase();
+  }
+  List<String> words=new SentenceAnalyzer(searchString).getWords();
+  try {
+    for (    String word : words) {
+      Pattern.compile(word,caseSensitive ? 0 : Pattern.CASE_INSENSITIVE);
+    }
+  }
+ catch (  PatternSyntaxException ex) {
+    return false;
+  }
+  return true;
+}

@@ -10,7 +10,6 @@
   }
   String urlString=String.format(ISBNtoBibTeXFetcher.URL_PATTERN,q);
   URL url;
-  URLConnection conn;
   try {
     url=new URL(urlString);
   }
@@ -22,17 +21,19 @@
   try {
     source=url.openStream();
   }
- catch (  IOException e) {
-    e.printStackTrace();
+ catch (  FileNotFoundException e) {
+    status.showMessage(Globals.lang("Invalid ISBN"));
+    return false;
+  }
+catch (  java.net.UnknownHostException e) {
+    status.showMessage(Globals.lang("No_Internet_Connection."));
+    return false;
+  }
+catch (  Exception e) {
+    status.showMessage(e.toString());
     return false;
   }
   String bibtexString=new Scanner(source).useDelimiter("\\A").next();
-  if (bibtexString.startsWith("@comment")) {
-    String errorMsg=bibtexString.substring("@comment{".length());
-    errorMsg=errorMsg.substring(0,errorMsg.length() - 1);
-    status.showMessage(errorMsg);
-    return false;
-  }
   BibtexEntry entry=BibtexParser.singleFromString(bibtexString);
   if (entry != null) {
     String title=entry.getField("title");
