@@ -6,7 +6,7 @@
     dtURL=new DataFlavor("application/x-java-url; class=java.net.URL");
   }
  catch (  ClassNotFoundException e) {
-    SimpleUrlDragDrop.logger.log(Level.WARNING,"Class not found for DnD... should not happen",e);
+    LOGGER.debug("Could not find DropTargetDropEvent class",e);
   }
   try {
     URL url=(URL)tsf.getTransferData(dtURL);
@@ -15,9 +15,9 @@
   }
  catch (  UnsupportedFlavorException nfe) {
     JOptionPane.showMessageDialog((Component)editor,Globals.lang("Operation not supported"),Globals.lang("Drag and Drop Error"),JOptionPane.ERROR_MESSAGE);
-    SimpleUrlDragDrop.logger.log(Level.WARNING,"Transfer exception",nfe);
+    LOGGER.debug("Could not perform drage and drop",nfe);
   }
 catch (  IOException ioex) {
-    SimpleUrlDragDrop.logger.log(Level.WARNING,"!should not happen!",ioex);
+    LOGGER.debug("Could not perform drage and drop",ioex);
   }
 }

@@ -6,7 +6,7 @@
     dtURL=new DataFlavor("application/x-java-url; class=java.net.URL");
   }
  catch (  ClassNotFoundException e) {
-    UrlDragDrop.logger.log(Level.WARNING,"Class not found for DnD... should not happen",e);
+    LOGGER.debug("Could not find DropTargetDropEvent class",e);
   }
   try {
     URL url=(URL)tsf.getTransferData(dtURL);
@@ -26,7 +26,7 @@ try {
   editor.updateField(feditor);
 }
  catch (IOException ioex) {
-  UrlDragDrop.logger.log(Level.SEVERE,"Error while downloading file",ioex);
+  LOGGER.debug("Error while downloading file",ioex);
   JOptionPane.showMessageDialog(editor,Globals.lang("File download"),Globals.lang("Error while downloading file:" + ioex.getMessage()),JOptionPane.ERROR_MESSAGE);
 }
 break;
@@ -34,9 +34,10 @@ break;
 return;
 }
  catch (UnsupportedFlavorException nfe) {
+LOGGER.debug("Could not parse URL",nfe);
 }
 catch (IOException ioex) {
-UrlDragDrop.logger.log(Level.WARNING,"!should not happen!",ioex);
+LOGGER.debug("Could not perform drage and drop",ioex);
 }
 try {
 @SuppressWarnings("unchecked") List<File> filelist=(List<File>)tsf.getTransferData(DataFlavor.javaFileListFlavor);
@@ -50,9 +51,9 @@ editor.updateField(feditor);
 }
  catch (UnsupportedFlavorException nfe) {
 JOptionPane.showMessageDialog(editor,Globals.lang("Operation not supported"),Globals.lang("Drag and Drop Error"),JOptionPane.ERROR_MESSAGE);
-UrlDragDrop.logger.log(Level.WARNING,"Transfer exception",nfe);
+LOGGER.debug("Could not perform drage and drop",nfe);
 }
 catch (IOException ioex) {
-UrlDragDrop.logger.log(Level.WARNING,"Transfer exception",ioex);
+LOGGER.debug("Could not perform drage and drop",ioex);
 }
 }
