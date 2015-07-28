@@ -12,10 +12,11 @@
   builder.append(clear);
   pan=builder.getPanel();
   view.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
-        JournalAbbreviations abbr=new JournalAbbreviations(new File(tf.getText()));
-        JTable table=new JTable(abbr.getTableModel());
+        JournalAbbreviationRepository abbr=new JournalAbbreviationRepository();
+        abbr.readJournalListFromFile(new File(tf.getText()));
+        JTable table=new JTable(JournalAbbreviationsUtil.getTableModel(Globals.journalAbbrev));
         JScrollPane pane=new JScrollPane(table);
         JOptionPane.showMessageDialog(null,pane,Globals.lang("Journal list preview"),JOptionPane.INFORMATION_MESSAGE);
       }
@@ -26,7 +27,7 @@
   }
 );
   clear.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       externals.remove(ExternalFileEntry.this);
       buildExternalsPanel();
     }

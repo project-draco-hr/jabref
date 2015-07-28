@@ -2,13 +2,15 @@
   sb.append(valueDelimitersZero);
   boolean escape=false, inCommandName=false, inCommand=false, inCommandOption=false;
   int nestedEnvironments=0;
-  StringBuffer commandName=new StringBuffer();
+  StringBuilder commandName=new StringBuilder();
   char c;
   for (int i=start_pos; i < end_pos; i++) {
     c=text.charAt(i);
     if (Character.isLetter(c) && (escape || inCommandName)) {
       inCommandName=true;
-      if (!inCommandOption)       commandName.append(c);
+      if (!inCommandOption) {
+        commandName.append(c);
+      }
     }
  else     if (Character.isWhitespace(c) && (inCommand || inCommandOption)) {
     }
@@ -16,7 +18,9 @@
       if (c == '[') {
         inCommandOption=true;
       }
- else       if (inCommandOption && (c == ']'))       inCommandOption=false;
+ else       if (inCommandOption && (c == ']')) {
+        inCommandOption=false;
+      }
  else       if (!inCommandOption && (c == '{')) {
         inCommandName=false;
         inCommand=true;
@@ -30,7 +34,7 @@
       if (commandName.toString().equals("begin")) {
         nestedEnvironments++;
       }
-      if (nestedEnvironments > 0 && commandName.toString().equals("end")) {
+      if ((nestedEnvironments > 0) && commandName.toString().equals("end")) {
         nestedEnvironments--;
       }
       commandName.delete(0,commandName.length());
@@ -39,7 +43,9 @@
     if ((c == '&') && !escape && !(inCommand && commandName.toString().equals("url"))&& (nestedEnvironments == 0)) {
       sb.append("\\&");
     }
- else     sb.append(c);
+ else {
+      sb.append(c);
+    }
     escape=(c == '\\');
   }
   sb.append(valueDelimitersOne);

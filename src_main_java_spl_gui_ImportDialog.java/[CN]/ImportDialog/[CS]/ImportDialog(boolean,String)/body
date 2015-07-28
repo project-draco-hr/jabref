@@ -53,13 +53,12 @@
   if (!targetIsARow1) {
     this.radioButtononlyAttachPDF.setEnabled(false);
   }
-  String fileName1=fileName;
-  String name=new File(fileName1).getName();
+  String name=new File(fileName).getName();
   if (name.length() < 34) {
     labelFileName.setText(name);
   }
  else {
-    labelFileName.setText(new File(fileName1).getName().substring(0,33) + "...");
+    labelFileName.setText(new File(fileName).getName().substring(0,33) + "...");
   }
   this.setTitle(LocalizationSupport.message("Import_Metadata_From_PDF"));
   setModal(true);
@@ -70,26 +69,26 @@
   bg.add(radioButtonPDFcontent);
   bg.add(radioButtononlyAttachPDF);
   buttonOK.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       onOK();
     }
   }
 );
   buttonCancel.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       onCancel();
     }
   }
 );
-  setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+  setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   addWindowListener(new WindowAdapter(){
-    public void windowClosing(    WindowEvent e){
+    @Override public void windowClosing(    WindowEvent e){
       onCancel();
     }
   }
 );
   contentPane.registerKeyboardAction(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       onCancel();
     }
   }

@@ -3,42 +3,57 @@
   tabs.clear();
   String[] fields=entry.getRequiredFields();
   List<String> fieldList=null;
-  if (fields != null)   fieldList=java.util.Arrays.asList(fields);
-  reqPan=new EntryEditorTab(frame,panel,fieldList,this,true,false,Globals.lang("Required fields"));
-  if (reqPan.fileListEditor != null)   fileListEditor=reqPan.fileListEditor;
+  if (fields != null) {
+    fieldList=java.util.Arrays.asList(fields);
+  }
+  EntryEditorTab reqPan=new EntryEditorTab(frame,panel,fieldList,this,true,false,Globals.lang("Required fields"));
+  if (reqPan.fileListEditor != null) {
+    fileListEditor=reqPan.fileListEditor;
+  }
   tabbed.addTab(Globals.lang("Required fields"),GUIGlobals.getImage("required"),reqPan.getPane(),Globals.lang("Show required fields"));
   tabs.add(reqPan);
   if ((entry.getOptionalFields() != null) && (entry.getOptionalFields().length >= 1)) {
-    if (!prefs.getBoolean("biblatexMode")) {
+    EntryEditorTab optPan;
+    if (!prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE)) {
       optPan=new EntryEditorTab(frame,panel,java.util.Arrays.asList(entry.getOptionalFields()),this,false,false,Globals.lang("Optional fields"));
-      if (optPan.fileListEditor != null)       fileListEditor=optPan.fileListEditor;
+      if (optPan.fileListEditor != null) {
+        fileListEditor=optPan.fileListEditor;
+      }
       tabbed.addTab(Globals.lang("Optional fields"),GUIGlobals.getImage("optional"),optPan.getPane(),Globals.lang("Show optional fields"));
       tabs.add(optPan);
     }
  else {
       optPan=new EntryEditorTab(frame,panel,java.util.Arrays.asList(entry.getType().getPrimaryOptionalFields()),this,false,true,Globals.lang("Optional fields"));
-      if (optPan.fileListEditor != null)       fileListEditor=optPan.fileListEditor;
+      if (optPan.fileListEditor != null) {
+        fileListEditor=optPan.fileListEditor;
+      }
       tabbed.addTab(Globals.lang("Optional fields"),GUIGlobals.getImage("optional"),optPan.getPane(),Globals.lang("Show optional fields"));
       tabs.add(optPan);
       Set<String> deprecatedFields=new HashSet<String>(BibtexEntry.FieldAliasesOldToNew.keySet());
       deprecatedFields.add("year");
       deprecatedFields.add("month");
       String[] optionalFieldsNotPrimaryOrDeprecated=Util.getRemainder(entry.getOptionalFields(),entry.getType().getPrimaryOptionalFields());
-      optionalFieldsNotPrimaryOrDeprecated=Util.getRemainder(optionalFieldsNotPrimaryOrDeprecated,deprecatedFields.toArray(new String[0]));
+      optionalFieldsNotPrimaryOrDeprecated=Util.getRemainder(optionalFieldsNotPrimaryOrDeprecated,deprecatedFields.toArray(new String[deprecatedFields.size()]));
       Set<String> optionalFieldsAndAliases=new HashSet<String>();
       for (      String field : entry.getOptionalFields()) {
         optionalFieldsAndAliases.add(field);
-        if (BibtexEntry.FieldAliasesNewToOld.containsKey(field))         optionalFieldsAndAliases.add(BibtexEntry.FieldAliasesNewToOld.get(field));
+        if (BibtexEntry.FieldAliasesNewToOld.containsKey(field)) {
+          optionalFieldsAndAliases.add(BibtexEntry.FieldAliasesNewToOld.get(field));
+        }
       }
       Set<String> usedOptionalFieldsDeprecated=new HashSet<String>(deprecatedFields);
       usedOptionalFieldsDeprecated.retainAll(optionalFieldsAndAliases);
       optPan=new EntryEditorTab(frame,panel,java.util.Arrays.asList(optionalFieldsNotPrimaryOrDeprecated),this,false,true,Globals.lang("Optional fields 2"));
-      if (optPan.fileListEditor != null)       fileListEditor=optPan.fileListEditor;
+      if (optPan.fileListEditor != null) {
+        fileListEditor=optPan.fileListEditor;
+      }
       tabbed.addTab(Globals.lang("Optional fields 2"),GUIGlobals.getImage("optional"),optPan.getPane(),Globals.lang("Show optional fields"));
       tabs.add(optPan);
       if (!usedOptionalFieldsDeprecated.isEmpty()) {
-        optPan=new EntryEditorTab(frame,panel,java.util.Arrays.asList(usedOptionalFieldsDeprecated.toArray(new String[0])),this,false,true,Globals.lang("Deprecated fields"));
-        if (optPan.fileListEditor != null)         fileListEditor=optPan.fileListEditor;
+        optPan=new EntryEditorTab(frame,panel,java.util.Arrays.asList(usedOptionalFieldsDeprecated.toArray(new String[usedOptionalFieldsDeprecated.size()])),this,false,true,Globals.lang("Deprecated fields"));
+        if (optPan.fileListEditor != null) {
+          fileListEditor=optPan.fileListEditor;
+        }
         tabbed.addTab(Globals.lang("Deprecated fields"),GUIGlobals.getImage("optional"),optPan.getPane(),Globals.lang("Show deprecated bibtex fields"));
         tabs.add(optPan);
       }
@@ -47,12 +62,14 @@
   EntryEditorTabList tabList=Globals.prefs.getEntryEditorTabList();
   for (int i=0; i < tabList.getTabCount(); i++) {
     EntryEditorTab newTab=new EntryEditorTab(frame,panel,tabList.getTabFields(i),this,false,false,tabList.getTabName(i));
-    if (newTab.fileListEditor != null)     fileListEditor=newTab.fileListEditor;
+    if (newTab.fileListEditor != null) {
+      fileListEditor=newTab.fileListEditor;
+    }
     tabbed.addTab(tabList.getTabName(i),GUIGlobals.getImage("general"),newTab.getPane());
     tabs.add(newTab);
   }
   srcPanel.setName(Globals.lang("BibTeX source"));
-  if (Globals.prefs.getBoolean("showSource")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.SHOW_SOURCE)) {
     tabbed.addTab(Globals.lang("BibTeX source"),GUIGlobals.getImage("source"),srcPanel,Globals.lang("Show/edit BibTeX source"));
     tabs.add(srcPanel);
   }

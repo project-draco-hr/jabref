@@ -13,7 +13,7 @@
         entry.setType(entryType);
       }
       if (entry.getId() == null) {
-        entry.setId(Util.createNeutralId());
+        entry.setId(IdGenerator.next());
       }
       if (database.getEntryById(entry.getId()) == null) {
         if (database.insertEntry(entry)) {
@@ -21,14 +21,18 @@
         }
  else {
           count++;
-          if (panel != null)           ce.addEdit(new UndoableInsertEntry(database,entry,panel));
+          if (panel != null) {
+            ce.addEdit(new UndoableInsertEntry(database,entry,panel));
+          }
         }
       }
     }
  else {
       importGUIMessages.add("Problem importing " + f.getPath() + ": Unknown filetype.");
     }
-    if (changeListener != null)     changeListener.stateChanged(new ChangeEvent(this));
+    if (changeListener != null) {
+      changeListener.stateChanged(new ChangeEvent(this));
+    }
   }
   System.out.println("count = " + count);
   if ((count > 0) && (panel != null)) {

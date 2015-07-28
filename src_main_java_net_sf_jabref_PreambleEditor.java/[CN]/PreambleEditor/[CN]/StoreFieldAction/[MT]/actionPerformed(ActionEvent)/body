@@ -1,7 +1,9 @@
 {
   String toSet=null;
   boolean set;
-  if (ed.getText().length() > 0)   toSet=ed.getText();
+  if (!ed.getText().isEmpty()) {
+    toSet=ed.getText();
+  }
   if (toSet == null) {
     set=base.getPreamble() != null;
   }
@@ -11,7 +13,7 @@
   if (set) {
     panel.undoManager.addEdit(new UndoablePreambleChange(base,panel,base.getPreamble(),toSet));
     base.setPreamble(toSet);
-    if ((toSet != null) && (toSet.length() > 0)) {
+    if ((toSet != null) && (!toSet.isEmpty())) {
       ed.setLabelColor(GUIGlobals.entryEditorLabelColor);
       ed.setValidBackgroundColor();
     }
@@ -19,7 +21,9 @@
       ed.setLabelColor(GUIGlobals.nullFieldColor);
       ed.setValidBackgroundColor();
     }
-    if (ed.getTextComponent().hasFocus())     ed.setActiveBackgroundColor();
+    if (ed.getTextComponent().hasFocus()) {
+      ed.setActiveBackgroundColor();
+    }
     panel.markBaseChanged();
   }
 }

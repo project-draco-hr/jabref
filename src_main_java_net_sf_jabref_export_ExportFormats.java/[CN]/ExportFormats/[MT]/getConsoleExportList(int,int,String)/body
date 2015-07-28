@@ -1,13 +1,15 @@
 {
-  StringBuffer sb=new StringBuffer();
+  StringBuilder sb=new StringBuilder();
   int lastBreak=-firstLineSubtr;
-  for (  String name : exportFormats.keySet()) {
-    if (sb.length() + 2 + name.length() - lastBreak > maxLineLength) {
+  for (  String name : ExportFormats.exportFormats.keySet()) {
+    if (((sb.length() + 2 + name.length()) - lastBreak) > maxLineLength) {
       sb.append(",\n");
       lastBreak=sb.length();
       sb.append(linePrefix);
     }
- else     if (sb.length() > 0)     sb.append(", ");
+ else     if (sb.length() > 0) {
+      sb.append(", ");
+    }
     sb.append(name);
   }
   return sb.toString();

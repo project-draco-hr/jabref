@@ -1,10 +1,10 @@
 {
-  if (Globals.prefs.getBoolean("generateKeysBeforeSaving")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.GENERATE_KEYS_BEFORE_SAVING)) {
     NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
     boolean any=false;
     for (    BibtexEntry bes : database.getEntries()) {
       String oldKey=bes.getCiteKey();
-      if ((oldKey == null) || (oldKey.equals(""))) {
+      if ((oldKey == null) || (oldKey.isEmpty())) {
         LabelPatternUtil.makeLabel(metaData,database,bes);
         ce.addEdit(new UndoableKeyChange(database,bes.getId(),null,bes.getField(BibtexFields.KEY_FIELD)));
         any=true;

@@ -3,15 +3,25 @@
   double totWeights=0.;
   for (  String field : fields) {
     double weight;
-    if (fieldWeights.containsKey(field))     weight=fieldWeights.get(field);
- else     weight=1.0;
+    if (DuplicateCheck.fieldWeights.containsKey(field)) {
+      weight=DuplicateCheck.fieldWeights.get(field);
+    }
+ else {
+      weight=1.0;
+    }
     totWeights+=weight;
-    int result=compareSingleField(field,one,two);
-    if (result == Util.EQUAL) {
+    int result=DuplicateCheck.compareSingleField(field,one,two);
+    if (result == EQUAL) {
       res+=weight;
     }
- else     if (result == Util.EMPTY_IN_BOTH)     totWeights-=weight;
+ else     if (result == EMPTY_IN_BOTH) {
+      totWeights-=weight;
+    }
   }
-  if (totWeights > 0)   return new double[]{res / totWeights,totWeights};
- else   return new double[]{0.5,0.0};
+  if (totWeights > 0) {
+    return new double[]{res / totWeights,totWeights};
+  }
+ else {
+    return new double[]{0.5,0.0};
+  }
 }

@@ -1,13 +1,13 @@
 {
-  key=fixKey(key);
+  key=OAI2Fetcher.fixKey(key);
   String url=constructUrl(key);
   try {
     URL oai2Url=new URL(url);
     HttpURLConnection oai2Connection=(HttpURLConnection)oai2Url.openConnection();
     oai2Connection.setRequestProperty("User-Agent","Jabref");
     InputStream inputStream=oai2Connection.getInputStream();
-    BibtexEntry be=new BibtexEntry(Util.createNeutralId(),BibtexEntryType.ARTICLE);
-    be.setField(OAI2_IDENTIFIER_FIELD,key);
+    BibtexEntry be=new BibtexEntry(IdGenerator.next(),BibtexEntryType.ARTICLE);
+    be.setField(OAI2Fetcher.OAI2_IDENTIFIER_FIELD,key);
     DefaultHandler handlerBase=new OAI2Handler(be);
     saxParser.parse(inputStream,handlerBase);
     for (    String name : be.getAllFields()) {

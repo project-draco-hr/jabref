@@ -1,13 +1,18 @@
 {
   int i=0;
   while (i < history.size()) {
-    if (history.get(i).equals(filename))     history.remove(i--);
+    if (history.get(i).equals(filename)) {
+      history.remove(i);
+      i--;
+    }
     i++;
   }
   history.addFirst(filename);
-  while (history.size() > prefs.getInt("historySize")) {
+  while (history.size() > prefs.getInt(JabRefPreferences.HISTORY_SIZE)) {
     history.removeLast();
   }
   setItems();
-  if (!isEnabled())   setEnabled(true);
+  if (!isEnabled()) {
+    setEnabled(true);
+  }
 }

@@ -1,0 +1,39 @@
+{
+  String searchString=query;
+  if (!caseSensitive) {
+    searchString=searchString.toLowerCase();
+  }
+  List<String> words=parseQuery(searchString);
+  List<Pattern> patterns=new ArrayList<Pattern>();
+  try {
+    for (    String word : words) {
+      patterns.add(Pattern.compile(word,caseSensitive ? 0 : Pattern.CASE_INSENSITIVE));
+    }
+  }
+ catch (  PatternSyntaxException ex) {
+    return false;
+  }
+  boolean[] matchFound=new boolean[words.size()];
+  for (  String field : bibtexEntry.getAllFields()) {
+    Object fieldContentAsObject=bibtexEntry.getField(field);
+    if (fieldContentAsObject != null) {
+      String fieldContent=BasicRegexSearchRule.removeBrackets.format(fieldContentAsObject.toString());
+      if (!caseSensitive) {
+        fieldContent=fieldContent.toLowerCase();
+      }
+      int index=0;
+      for (      Pattern pattern : patterns) {
+        String fieldContentNoBrackets=BasicRegexSearchRule.removeBrackets.format(fieldContent);
+        Matcher m=pattern.matcher(fieldContentNoBrackets);
+        matchFound[index]=matchFound[index] || m.find();
+        index++;
+      }
+    }
+  }
+  for (  boolean aMatchFound : matchFound) {
+    if (!aMatchFound) {
+      return false;
+    }
+  }
+  return true;
+}

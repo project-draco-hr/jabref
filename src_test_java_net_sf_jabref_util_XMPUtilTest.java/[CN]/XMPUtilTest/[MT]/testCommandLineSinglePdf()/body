@@ -11,7 +11,7 @@
     String bibtex=s.toString();
     ParserResult result=BibtexParser.parse(new StringReader(bibtex));
     Collection<BibtexEntry> c=result.getDatabase().getEntries();
-    assertEquals(1,c.size());
+    Assert.assertEquals(1,c.size());
     BibtexEntry x=c.iterator().next();
     assertEqualsBibtexEntry(e,x);
   }
@@ -25,17 +25,17 @@
     System.setOut(oldOut);
     s.close();
     String xmp=s.toString();
-    assertTrue(0 < xmp.indexOf("xpacket"));
-    assertTrue(0 < xmp.indexOf("adobe:ns:meta"));
-    assertTrue(0 < xmp.indexOf("<bibtex:bibtexkey>canh05</bibtex:bibtexkey>") || 0 < xmp.indexOf("bibtex:bibtexkey="));
-    assertTrue(0 < xmp.indexOf("<rdf:li>K. Crowston</rdf:li>"));
-    assertTrue(0 < xmp.indexOf("id='W5M0MpCehiHzreSzNTczkc9d'?>") || 0 < xmp.indexOf("id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"));
-    assertTrue(0 < xmp.indexOf("xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'") || 0 < xmp.indexOf("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""));
-    assertTrue(0 < xmp.indexOf("<rdf:Description"));
-    assertTrue(0 < xmp.indexOf("<?xpacket end='w'?>") || 0 < xmp.indexOf("<?xpacket end=\"w\"?>"));
+    Assert.assertTrue(0 < xmp.indexOf("xpacket"));
+    Assert.assertTrue(0 < xmp.indexOf("adobe:ns:meta"));
+    Assert.assertTrue((0 < xmp.indexOf("<bibtex:bibtexkey>canh05</bibtex:bibtexkey>")) || (0 < xmp.indexOf("bibtex:bibtexkey=")));
+    Assert.assertTrue(0 < xmp.indexOf("<rdf:li>K. Crowston</rdf:li>"));
+    Assert.assertTrue((0 < xmp.indexOf("id='W5M0MpCehiHzreSzNTczkc9d'?>")) || (0 < xmp.indexOf("id=\"W5M0MpCehiHzreSzNTczkc9d\"?>")));
+    Assert.assertTrue((0 < xmp.indexOf("xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'")) || (0 < xmp.indexOf("xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"")));
+    Assert.assertTrue(0 < xmp.indexOf("<rdf:Description"));
+    Assert.assertTrue((0 < xmp.indexOf("<?xpacket end='w'?>")) || (0 < xmp.indexOf("<?xpacket end=\"w\"?>")));
     writeManually(pdfFile,xmp);
     List<BibtexEntry> l=XMPUtil.readXMP(pdfFile);
-    assertEquals(1,l.size());
+    Assert.assertEquals(1,l.size());
     assertEqualsBibtexEntry(t1BibtexEntry(),l.get(0));
   }
 }

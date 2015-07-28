@@ -1,34 +1,50 @@
 {
+  JabRefExecutorService.INSTANCE.shutdownEverything();
   dispose();
-  if (basePanel() != null)   basePanel().saveDividerLocation();
-  prefs.putInt("posX",JabRefFrame.this.getLocation().x);
-  prefs.putInt("posY",JabRefFrame.this.getLocation().y);
-  prefs.putInt("sizeX",JabRefFrame.this.getSize().width);
-  prefs.putInt("sizeY",JabRefFrame.this.getSize().height);
-  prefs.putBoolean("windowMaximised",(getExtendedState() == Frame.MAXIMIZED_BOTH));
-  prefs.putBoolean("toolbarVisible",tlb.isVisible());
-  prefs.putBoolean("searchPanelVisible",sidePaneManager.isComponentVisible("search"));
+  if (basePanel() != null) {
+    basePanel().saveDividerLocation();
+  }
+  prefs.putInt(JabRefPreferences.POS_X,JabRefFrame.this.getLocation().x);
+  prefs.putInt(JabRefPreferences.POS_Y,JabRefFrame.this.getLocation().y);
+  prefs.putInt(JabRefPreferences.SIZE_X,JabRefFrame.this.getSize().width);
+  prefs.putInt(JabRefPreferences.SIZE_Y,JabRefFrame.this.getSize().height);
+  prefs.putBoolean(JabRefPreferences.WINDOW_MAXIMISED,(getExtendedState() == Frame.MAXIMIZED_BOTH));
+  prefs.putBoolean(JabRefPreferences.TOOLBAR_VISIBLE,tlb.isVisible());
+  prefs.putBoolean(JabRefPreferences.SEARCH_PANEL_VISIBLE,sidePaneManager.isComponentVisible("search"));
   int width=contentPane.getDividerLocation();
-  if (width > 0)   prefs.putInt("sidePaneWidth",width);
-  if (prefs.getBoolean("openLastEdited")) {
-    if (filenames.size() == 0) {
-      prefs.remove("lastEdited");
+  if (width > 0) {
+    prefs.putInt(JabRefPreferences.SIDE_PANE_WIDTH,width);
+  }
+  if (prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED)) {
+    if (filenames.isEmpty()) {
+      prefs.remove(JabRefPreferences.LAST_EDITED);
     }
  else {
       String[] names=new String[filenames.size()];
       for (int i=0; i < filenames.size(); i++) {
         names[i]=filenames.elementAt(i);
       }
-      prefs.putStringArray("lastEdited",names);
+      prefs.putStringArray(JabRefPreferences.LAST_EDITED,names);
     }
   }
   fileHistory.storeHistory();
   prefs.customExports.store();
   prefs.customImports.store();
   BibtexEntryType.saveCustomEntryTypes(prefs);
-  if (Globals.autoSaveManager != null)   Globals.autoSaveManager.clearAutoSaves();
+  if (Globals.autoSaveManager != null) {
+    Globals.autoSaveManager.clearAutoSaves();
+  }
   if (basePanel() != null) {
     (searchManager).updatePrefs();
   }
   prefs.flush();
+  if (sysTray != null) {
+    sysTray.hide();
+  }
+  for (  Window window : Window.getWindows()) {
+    window.dispose();
+  }
+  if (Globals.autoSaveManager != null) {
+    Globals.stopAutoSaveManager();
+  }
 }

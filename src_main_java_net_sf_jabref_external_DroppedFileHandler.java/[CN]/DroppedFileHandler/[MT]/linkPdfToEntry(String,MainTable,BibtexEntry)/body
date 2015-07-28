@@ -3,11 +3,13 @@
   NamedCompound edits=new NamedCompound(Globals.lang("Drop %0",fileType.extension));
   boolean newEntry=false;
   String citeKey=entry.getCiteKey();
-  if (!showLinkMoveCopyRenameDialog(fileName,fileType,entry,newEntry,false,panel.database()))   return;
+  if (!showLinkMoveCopyRenameDialog(fileName,fileType,entry,newEntry,false,panel.database())) {
+    return;
+  }
   boolean success=true;
   String destFilename;
   if (linkInPlace.isSelected()) {
-    destFilename=Util.shortenFileName(new File(fileName),panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD)).toString();
+    destFilename=FileUtil.shortenFileName(new File(fileName),panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD)).toString();
   }
  else {
     destFilename=(renameCheckBox.isSelected() ? renameToTextBox.getText() : new File(fileName).getName());

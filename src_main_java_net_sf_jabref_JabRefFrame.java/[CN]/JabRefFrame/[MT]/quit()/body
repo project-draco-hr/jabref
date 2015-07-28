@@ -7,7 +7,6 @@
         tabbedPane.setSelectedIndex(i);
         int answer=JOptionPane.showConfirmDialog(JabRefFrame.this,Globals.lang("Database has changed. Do you " + "want to save before closing?"),Globals.lang("Save before closing"),JOptionPane.YES_NO_CANCEL_OPTION);
         if ((answer == JOptionPane.CANCEL_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {
-          close=false;
           return false;
         }
         if (answer == JOptionPane.YES_OPTION) {
@@ -35,7 +34,9 @@
       if (baseAt(i).isSaving()) {
         WaitForSaveOperation w=new WaitForSaveOperation(this);
         w.show();
-        if (w.cancelled())         return false;
+        if (w.cancelled()) {
+          return false;
+        }
       }
     }
     tearDownJabRef(filenames);

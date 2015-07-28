@@ -1,6 +1,6 @@
 {
   TreeMap<String,BibtexEntryType> types=new TreeMap<String,BibtexEntryType>();
-  boolean backup=prefs.getBoolean("backup");
+  boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
   if (suppressBackup) {
     backup=false;
   }
@@ -18,10 +18,10 @@
   }
   try {
     VerifyingWriter fw=session.getWriter();
-    writeBibFileHeader(fw,encoding);
-    writePreamble(fw,database.getPreamble());
-    writeStrings(fw,database);
-    List<BibtexEntry> sorter=getSortedEntries(database,metaData,null,true);
+    FileActions.writeBibFileHeader(fw,encoding);
+    FileActions.writePreamble(fw,database.getPreamble());
+    FileActions.writeStrings(fw,database);
+    List<BibtexEntry> sorter=FileActions.getSortedEntries(database,metaData,null,true);
     BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
     for (    BibtexEntry be : sorter) {
       exceptionCause=be;
@@ -30,10 +30,10 @@
         types.put(tp.getName(),tp);
       }
       boolean write=true;
-      if (checkSearch && !nonZeroField(be,BibtexFields.SEARCH)) {
+      if (checkSearch && !FileActions.nonZeroField(be,BibtexFields.SEARCH)) {
         write=false;
       }
-      if (checkGroup && !nonZeroField(be,BibtexFields.GROUPSEARCH)) {
+      if (checkGroup && !FileActions.nonZeroField(be,BibtexFields.GROUPSEARCH)) {
         write=false;
       }
       if (write) {
@@ -44,9 +44,9 @@
     if (metaData != null) {
       metaData.writeMetaData(fw);
     }
-    if (types.size() > 0) {
-      for (      String s : types.keySet()) {
-        BibtexEntryType type=types.get(s);
+    if (!types.isEmpty()) {
+      for (      Map.Entry<String,BibtexEntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
+        BibtexEntryType type=stringBibtexEntryTypeEntry.getValue();
         if (type instanceof CustomEntryType) {
           CustomEntryType tp=(CustomEntryType)type;
           tp.save(fw);

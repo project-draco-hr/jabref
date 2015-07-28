@@ -1,17 +1,20 @@
 {
   panel=frame.basePanel();
-  if (panel == null)   return;
-  entries=panel.getSelectedEntries();
-  if (entries.length == 0) {
-    JOptionPane.showMessageDialog(frame,Globals.lang("This operation requires one or more entries to be selected."),(String)getValue(NAME),JOptionPane.ERROR_MESSAGE);
+  if (panel == null) {
     return;
   }
-  if (operation.requiresBibtexKeys())   for (  BibtexEntry entry : entries) {
-    if ((entry.getCiteKey() == null) || (entry.getCiteKey().trim().length() == 0)) {
-      JOptionPane.showMessageDialog(frame,Globals.lang("This operation requires all selected entries to have BibTex keys defined."),(String)getValue(NAME),JOptionPane.ERROR_MESSAGE);
-      return;
+  entries=panel.getSelectedEntries();
+  if (entries.length == 0) {
+    JOptionPane.showMessageDialog(frame,Globals.lang("This operation requires one or more entries to be selected."),(String)getValue(Action.NAME),JOptionPane.ERROR_MESSAGE);
+    return;
+  }
+  if (operation.requiresBibtexKeys()) {
+    for (    BibtexEntry entry : entries) {
+      if ((entry.getCiteKey() == null) || (entry.getCiteKey().trim().length() == 0)) {
+        JOptionPane.showMessageDialog(frame,Globals.lang("This operation requires all selected entries to have BibTex keys defined."),(String)getValue(Action.NAME),JOptionPane.ERROR_MESSAGE);
+        return;
+      }
     }
   }
-  Thread t=new Thread(this);
-  t.start();
+  JabRefExecutorService.INSTANCE.execute(this);
 }

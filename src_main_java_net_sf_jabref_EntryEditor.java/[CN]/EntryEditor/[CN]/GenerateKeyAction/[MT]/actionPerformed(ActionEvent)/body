@@ -3,14 +3,16 @@
     storeCurrentEdit();
     Object oldValue=entry.getField(BibtexFields.KEY_FIELD);
     if (oldValue != null) {
-      if (Globals.prefs.getBoolean("avoidOverwritingKey")) {
+      if (Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
         panel.output(Globals.lang("Not overwriting existing key. To change this setting, open Options -> Prefererences -> BibTeX key generator"));
         return;
       }
- else       if (Globals.prefs.getBoolean("warnBeforeOverwritingKey")) {
+ else       if (Globals.prefs.getBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY)) {
         CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("The current BibTeX key will be overwritten. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
         int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Overwrite key"),JOptionPane.YES_NO_OPTION);
-        if (cbm.isSelected())         Globals.prefs.putBoolean("warnBeforeOverwritingKey",false);
+        if (cbm.isSelected()) {
+          Globals.prefs.putBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY,false);
+        }
         if (answer == JOptionPane.NO_OPTION) {
           return;
         }

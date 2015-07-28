@@ -1,7 +1,7 @@
 {
   int i;
   field=field.replaceAll("&|\\\\&","&amp;").replaceAll("[\\n]{1,}","<p>");
-  StringBuffer sb=new StringBuffer();
+  StringBuilder sb=new StringBuilder();
   StringBuffer currentCommand=null;
   char c;
   boolean escaped=false, incommand=false;
@@ -14,7 +14,7 @@
  else     if (c == '\\') {
       if (incommand) {
         String command=currentCommand.toString();
-        Object result=CHARS.get(command);
+        Object result=FormatChars.CHARS.get(command);
         if (result != null) {
           sb.append((String)result);
         }
@@ -26,36 +26,42 @@
       incommand=true;
       currentCommand=new StringBuffer();
     }
- else     if (!incommand && (c == '{' || c == '}')) {
+ else     if (!incommand && ((c == '{') || (c == '}'))) {
     }
  else     if (Character.isLetter(c) || (c == '%') || (Globals.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c)))) {
       escaped=false;
-      if (!incommand)       sb.append(c);
+      if (!incommand) {
+        sb.append(c);
+      }
  else {
         currentCommand.append(c);
         testCharCom:         if ((currentCommand.length() == 1) && (Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString()))) {
-          if (i >= field.length() - 1)           break testCharCom;
+          if (i >= (field.length() - 1)) {
+            break testCharCom;
+          }
           String command=currentCommand.toString();
           i++;
           c=field.charAt(i);
           String combody;
           if (c == '{') {
-            String part=Util.getPart(field,i,false);
+            String part=StringUtil.getPart(field,i,false);
             i+=part.length();
             combody=part;
           }
  else {
             combody=field.substring(i,i + 1);
           }
-          Object result=CHARS.get(command + combody);
-          if (result != null)           sb.append((String)result);
+          Object result=FormatChars.CHARS.get(command + combody);
+          if (result != null) {
+            sb.append((String)result);
+          }
           incommand=false;
           escaped=false;
         }
  else {
-          if (i + 1 == field.length()) {
+          if ((i + 1) == field.length()) {
             String command=currentCommand.toString();
-            Object result=CHARS.get(command);
+            Object result=FormatChars.CHARS.get(command);
             if (result != null) {
               sb.append((String)result);
             }
@@ -67,18 +73,18 @@
       }
     }
  else {
-      String argument=null;
+      String argument;
       if (!incommand) {
         sb.append(c);
       }
  else       if (Character.isWhitespace(c) || (c == '{') || (c == '}')) {
         String command=currentCommand.toString();
         if (c == '{') {
-          String part=Util.getPart(field,i,true);
+          String part=StringUtil.getPart(field,i,true);
           i+=part.length();
           argument=part;
           if (argument != null) {
-            Object result=CHARS.get(command + argument);
+            Object result=FormatChars.CHARS.get(command + argument);
             if (result != null) {
               sb.append((String)result);
             }
@@ -88,7 +94,7 @@
           }
         }
  else         if (c == '}') {
-          Object result=CHARS.get(command);
+          Object result=FormatChars.CHARS.get(command);
           if (result != null) {
             sb.append((String)result);
           }
@@ -97,7 +103,7 @@
           }
         }
  else {
-          Object result=CHARS.get(command);
+          Object result=FormatChars.CHARS.get(command);
           if (result != null) {
             sb.append((String)result);
           }

@@ -2,20 +2,26 @@
   final GroupTreeNode root=panel.metaData().getGroups();
   final UndoableModifySubtree undo=new UndoableModifySubtree(panel.getGroupSelector(),panel.metaData().getGroups(),root,Globals.lang("Modified groups"));
   root.removeAllChildren();
-  if (m_changedGroups == null) {
+  if (changedGroups == null) {
     root.setGroup(new AllEntriesGroup());
   }
  else {
-    root.setGroup(m_changedGroups.getGroup());
-    for (int i=0; i < m_changedGroups.getChildCount(); ++i)     root.add(((GroupTreeNode)m_changedGroups.getChildAt(i)).deepCopy());
+    root.setGroup(changedGroups.getGroup());
+    for (int i=0; i < changedGroups.getChildCount(); ++i) {
+      root.add(((GroupTreeNode)changedGroups.getChildAt(i)).deepCopy());
+    }
     root.refreshGroupsForNewDatabase(panel.database());
   }
-  if (panel.getGroupSelector().getGroupTreeRoot() == root)   panel.getGroupSelector().revalidateGroups();
+  if (panel.getGroupSelector().getGroupTreeRoot() == root) {
+    panel.getGroupSelector().revalidateGroups();
+  }
   undoEdit.addEdit(undo);
-  GroupTreeNode copied=m_changedGroups.deepCopy();
+  GroupTreeNode copied=changedGroups.deepCopy();
   tmpGroupRoot.removeAllChildren();
   tmpGroupRoot.setGroup(copied.getGroup());
-  for (int i=0; i < copied.getChildCount(); ++i)   tmpGroupRoot.add(((GroupTreeNode)copied.getChildAt(i)).deepCopy());
+  for (int i=0; i < copied.getChildCount(); ++i) {
+    tmpGroupRoot.add(((GroupTreeNode)copied.getChildAt(i)).deepCopy());
+  }
   tmpGroupRoot.refreshGroupsForNewDatabase(secondary);
   return true;
 }

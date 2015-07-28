@@ -10,8 +10,10 @@
     file=filename;
     reference="";
   }
-  String middle=prefs.get("language") + "/";
-  if (middle.equals("en/"))   middle="";
+  String middle=prefs.get(JabRefPreferences.LANGUAGE) + '/';
+  if (middle.equals("en/")) {
+    middle="";
+  }
   URL old=getPage();
   try {
     URL resource=resourceOwner.getResource(GUIGlobals.helpPre + middle + file);
@@ -19,14 +21,16 @@
       resource=resourceOwner.getResource(GUIGlobals.helpPre + file);
     }
     if (resource == null) {
-      log.error("Could not find html-help for file '" + file + "'.");
+      HelpContent.log.error("Could not find html-help for file '" + file + "'.");
       return;
     }
-    setPageOnly(new URL(resource.toString() + "#" + reference));
+    setPageOnly(new URL(resource.toString() + '#' + reference));
   }
  catch (  IOException ex) {
     ex.printStackTrace();
   }
   forw.removeAllElements();
-  if (old != null)   history.push(old);
+  if (old != null) {
+    history.push(old);
+  }
 }

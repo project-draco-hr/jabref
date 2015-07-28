@@ -1,7 +1,9 @@
 {
-  if (database != null)   entry=database.resolveForStrings(entry,false);
+  if (database != null) {
+    entry=database.resolveForStrings(entry,false);
+  }
   JabRefPreferences prefs=JabRefPreferences.getInstance();
-  boolean useXmpPrivacyFilter=prefs.getBoolean("useXmpPrivacyFilter");
+  boolean useXmpPrivacyFilter=prefs.getBoolean(JabRefPreferences.USE_XMP_PRIVACY_FILTER);
   TreeSet<String> filters=new TreeSet<String>(Arrays.asList(prefs.getStringArray(JabRefPreferences.XMP_PRIVACY_FILTERS)));
   for (  String field : entry.getAllFields()) {
     if (useXmpPrivacyFilter && filters.contains(field)) {
@@ -64,9 +66,11 @@
       continue;
     }
     String o=entry.getField(field);
-    dcSchema.addRelation("bibtex/" + field + "/"+ o);
+    dcSchema.addRelation("bibtex/" + field + '/'+ o);
   }
   dcSchema.setFormat("application/pdf");
   Object o=entry.getType().getName();
-  if (o != null)   dcSchema.addType(o.toString());
+  if (o != null) {
+    dcSchema.addType(o.toString());
+  }
 }

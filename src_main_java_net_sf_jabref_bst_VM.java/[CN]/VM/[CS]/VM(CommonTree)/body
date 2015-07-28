@@ -7,13 +7,13 @@
  * the integer 1 if the second is greater than the first, 0
  * otherwise.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Not enough operands on stack for operation >");
       }
       Object o2=stack.pop();
       Object o1=stack.pop();
-      if (!(o1 instanceof Integer && o2 instanceof Integer)) {
+      if (!((o1 instanceof Integer) && (o2 instanceof Integer))) {
         throw new VMException("Can only compare two integers with >");
       }
       if (o1 == o2) {
@@ -28,13 +28,13 @@
     /** 
  * Analogous. 
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Not enough operands on stack for operation <");
       }
       Object o2=stack.pop();
       Object o1=stack.pop();
-      if (!(o1 instanceof Integer && o2 instanceof Integer)) {
+      if (!((o1 instanceof Integer) && (o2 instanceof Integer))) {
         throw new VMException("Can only compare two integers with <");
       }
       if (o1 == o2) {
@@ -50,13 +50,13 @@
  * Pops the top two (both integer or both string) literals, compares
  * them, and pushes the integer 1 if they're equal, 0 otherwise.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Not enough operands on stack for operation =");
       }
       Object o1=stack.pop();
       Object o2=stack.pop();
-      if (o1 == null ^ o2 == null) {
+      if ((o1 == null) ^ (o2 == null)) {
         stack.push(VM.FALSE);
         return;
       }
@@ -72,13 +72,13 @@
     /** 
  * Pops the top two (integer) literals and pushes their sum. 
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Not enough operands on stack for operation +");
       }
       Object o2=stack.pop();
       Object o1=stack.pop();
-      if (!(o1 instanceof Integer && o2 instanceof Integer)) {
+      if (!((o1 instanceof Integer) && (o2 instanceof Integer))) {
         throw new VMException("Can only compare two integers with +");
       }
       stack.push((Integer)o1 + (Integer)o2);
@@ -90,13 +90,13 @@
  * Pops the top two (integer) literals and pushes their difference
  * (the first subtracted from the second).
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Not enough operands on stack for operation -");
       }
       Object o2=stack.pop();
       Object o1=stack.pop();
-      if (!(o1 instanceof Integer && o2 instanceof Integer)) {
+      if (!((o1 instanceof Integer) && (o2 instanceof Integer))) {
         throw new VMException("Can only subtract two integers with -");
       }
       stack.push((Integer)o1 - (Integer)o2);
@@ -109,13 +109,13 @@
  * order, that is, the order in which pushed), and pushes the
  * resulting string.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Not enough operands on stack for operation *");
       }
       Object o2=stack.pop();
       Object o1=stack.pop();
-      if (!(o1 instanceof String && o2 instanceof String)) {
+      if (!((o1 instanceof String) && (o2 instanceof String))) {
         throw new VMException("Can only concatenate two String with *");
       }
       stack.push(o1.toString() + o2.toString());
@@ -127,7 +127,7 @@
  * Pops the top two literals and assigns to the first (which must be
  * a global or entry variable) the value of the second.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Invalid call to operation :=");
       }
@@ -138,13 +138,13 @@
   }
 );
   buildInFunctions.put("add.period$",new BstFunction(){
-    Pattern p=Pattern.compile("([^\\.\\?\\!\\}\\s])(\\}|\\s)*$");
+    final Pattern p=Pattern.compile("([^\\.\\?\\!\\}\\s])(\\}|\\s)*$");
     /** 
  * Pops the top (string) literal, adds a `.' to it if the last non
  * '}' character isn't a `.', `?', or `!', and pushes this resulting
  * string.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation add.period$");
       }
@@ -159,7 +159,9 @@
         m.appendReplacement(sb,m.group(1));
         sb.append('.');
         String group2=m.group(2);
-        if (group2 != null)         sb.append(m.group(2));
+        if (group2 != null) {
+          sb.append(m.group(2));
+        }
         stack.push(sb.toString());
       }
  else {
@@ -179,7 +181,7 @@
  * one function for each standard entry type as well as a
  * default.type function.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (context == null) {
         throw new VMException("Call.type$ can only be called from within a context (ITERATE or REVERSE).");
       }
@@ -194,12 +196,12 @@
  * character, converts it to the corresponding ASCII integer, and
  * pushes this integer.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation chr.to.int$");
       }
       Object o1=stack.pop();
-      if (!(o1 instanceof String && ((String)o1).length() == 1)) {
+      if (!((o1 instanceof String) && (((String)o1).length() == 1))) {
         throw new VMException("Can only perform chr.to.int$ on string with length 1");
       }
       String s=(String)o1;
@@ -212,7 +214,7 @@
  * Pushes the string that was the \cite-command argument for this
  * entry.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       stack.push(context.entry.getCiteKey());
     }
   }
@@ -221,7 +223,7 @@
     /** 
  * Pops the top literal from the stack and pushes two copies of it.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation duplicate$");
       }
@@ -237,7 +239,7 @@
  * field or a string having no non-white-space characters, 0
  * otherwise.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation empty$");
       }
@@ -262,14 +264,14 @@
  * than 0, it executes the second literal, else it executes the
  * first.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 3) {
         throw new VMException("Not enough operands on stack for operation =");
       }
       Object f1=stack.pop();
       Object f2=stack.pop();
       Object i=stack.pop();
-      if (!(f1 instanceof Identifier || f1 instanceof Tree) && (f2 instanceof Identifier || f2 instanceof Tree) && (i instanceof Integer)) {
+      if (!((f1 instanceof Identifier) || (f1 instanceof Tree)) && ((f2 instanceof Identifier) || (f2 instanceof Tree)) && (i instanceof Integer)) {
         throw new VMException("Expecting two functions and an integer for if$.");
       }
       Object toExe;
@@ -289,7 +291,7 @@
  * value of a single character, converts it to the corresponding
  * single-character string, and pushes this string.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation int.to.chr$");
       }
@@ -307,7 +309,7 @@
  * Pops the top (integer) literal, converts it to its (unique)
  * string equivalent, and pushes this string.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation int.to.str$");
       }
@@ -324,7 +326,7 @@
  * Pops the top literal and pushes the integer 1 if it's a missing
  * field, 0 otherwise.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation missing$");
       }
@@ -350,7 +352,7 @@
  * function only when you want a blank line or an explicit line
  * break.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       VM.this.bbl.append('\n');
     }
   }
@@ -362,7 +364,7 @@
  * substring "and" (ignoring case differences) surrounded by
  * non-null white-space at the top brace level.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation num.names$");
       }
@@ -380,7 +382,7 @@
  * Pops the top of the stack but doesn't print it; this gets rid of
  * an unwanted stack literal.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       stack.pop();
     }
   }
@@ -392,7 +394,7 @@
  * database files. (or the empty string if there where none)
  * @PREAMBLE strings read from the database files.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (preamble != null) {
         stack.push(preamble);
       }
@@ -407,7 +409,7 @@
     /** 
  * Pushes the string consisting of the double-quote character.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       stack.push("\"");
     }
   }
@@ -416,7 +418,7 @@
     /** 
  * Is a no-op.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
     }
   }
 );
@@ -425,7 +427,7 @@
  * Pops and prints the whole stack; it's meant to be used for style
  * designers while debugging.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       while (!stack.empty()) {
         System.out.println(stack.pop());
       }
@@ -442,7 +444,7 @@
  * (including) from the end if start is negative (where the first
  * character from the end is the last character).
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 3) {
         throw new VMException("Not enough operands on stack for operation substring$");
       }
@@ -456,15 +458,21 @@
       Integer start=(Integer)o2;
       int lenI=len;
       int startI=start;
-      if (lenI > Integer.MAX_VALUE / 2)       lenI=Integer.MAX_VALUE / 2;
-      if (startI > Integer.MAX_VALUE / 2)       startI=Integer.MAX_VALUE / 2;
-      if (startI < Integer.MIN_VALUE / 2)       startI=-Integer.MIN_VALUE / 2;
+      if (lenI > (Integer.MAX_VALUE / 2)) {
+        lenI=Integer.MAX_VALUE / 2;
+      }
+      if (startI > (Integer.MAX_VALUE / 2)) {
+        startI=Integer.MAX_VALUE / 2;
+      }
+      if (startI < (Integer.MIN_VALUE / 2)) {
+        startI=-Integer.MIN_VALUE / 2;
+      }
       String s=(String)o3;
       if (startI < 0) {
         startI+=s.length() + 1;
-        startI=Math.max(1,startI + 1 - lenI);
+        startI=Math.max(1,(startI + 1) - lenI);
       }
-      stack.push(s.substring(startI - 1,Math.min(startI - 1 + lenI,s.length())));
+      stack.push(s.substring(startI - 1,Math.min((startI - 1) + lenI,s.length())));
     }
   }
 );
@@ -477,7 +485,7 @@
  * text character, even if it's missing its matching right brace,
  * and where braces don't count as text characters.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Not enough operands on stack for operation swap$");
       }
@@ -499,7 +507,7 @@
  * BibTEX considers everything contained inside the braces as a
  * single letter.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 1) {
         throw new VMException("Not enough operands on stack for operation text.length$");
       }
@@ -517,20 +525,30 @@
         i++;
         if (c[i - 1] == '{') {
           braceLevel++;
-          if (braceLevel == 1 && i < n)           if (c[i] == '\\') {
-            i++;
-            while (i < n && braceLevel > 0) {
-              if (c[i] == '}')               braceLevel--;
- else               if (c[i] == '{')               braceLevel++;
+          if ((braceLevel == 1) && (i < n)) {
+            if (c[i] == '\\') {
               i++;
+              while ((i < n) && (braceLevel > 0)) {
+                if (c[i] == '}') {
+                  braceLevel--;
+                }
+ else                 if (c[i] == '{') {
+                  braceLevel++;
+                }
+                i++;
+              }
+              result++;
             }
-            result++;
           }
         }
  else         if (c[i - 1] == '}') {
-          if (braceLevel > 0)           braceLevel--;
+          if (braceLevel > 0) {
+            braceLevel--;
+          }
         }
- else         result++;
+ else {
+          result++;
+        }
       }
       stack.push(result);
     }
@@ -542,7 +560,7 @@
  * Pops and prints the top of the stack on the terminal and log
  * file. It's useful for debugging.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       System.out.println(stack.pop());
     }
   }
@@ -552,7 +570,7 @@
  * Pushes the current entry's type (book, article, etc.), but pushes
  * the null string if the type is either unknown or undefined.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       stack.push(context.entry.getType().getName());
     }
   }
@@ -564,7 +582,7 @@
  * messages issued.
  */
     int warning=1;
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       out.println("Warning (#" + (warning++) + "): "+ stack.pop());
     }
   }
@@ -575,13 +593,13 @@
  * second as long as the (integer) literal left on the stack by
  * executing the first is greater than 0.
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       if (stack.size() < 2) {
         throw new VMException("Not enough operands on stack for operation while$");
       }
       Object f2=stack.pop();
       Object f1=stack.pop();
-      if (!(f1 instanceof Identifier || f1 instanceof Tree) && (f2 instanceof Identifier || f2 instanceof Tree)) {
+      if (!((f1 instanceof Identifier) || (f1 instanceof Tree)) && ((f2 instanceof Identifier) || (f2 instanceof Tree))) {
         throw new VMException("Expecting two functions for while$.");
       }
       do {
@@ -606,7 +624,7 @@
  * (which will result in stuff being written onto the bbl file when
  * the buffer fills up).
  */
-    public void execute(    BstEntry context){
+    @Override public void execute(    BstEntry context){
       String s=(String)stack.pop();
       System.out.println(s);
       VM.this.bbl.append(s);

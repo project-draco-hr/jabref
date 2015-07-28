@@ -1,20 +1,32 @@
 {
   List<PersonName> result=null;
   NodeList nodeLst=authors.getElementsByTagName(_bcol + type);
-  if (nodeLst.getLength() <= 0)   return result;
+  if (nodeLst.getLength() <= 0) {
+    return result;
+  }
   nodeLst=((Element)(nodeLst.item(0))).getElementsByTagName(_bcol + "NameList");
-  if (nodeLst.getLength() <= 0)   return result;
+  if (nodeLst.getLength() <= 0) {
+    return result;
+  }
   NodeList person=((Element)(nodeLst.item(0))).getElementsByTagName(_bcol + "Person");
-  if (person.getLength() <= 0)   return result;
+  if (person.getLength() <= 0) {
+    return result;
+  }
   result=new LinkedList<PersonName>();
   for (int i=0; i < person.getLength(); i++) {
     NodeList firstName=((Element)(person.item(i))).getElementsByTagName(_bcol + "First");
     NodeList lastName=((Element)(person.item(i))).getElementsByTagName(_bcol + "Last");
     NodeList middleName=((Element)(person.item(i))).getElementsByTagName(_bcol + "Middle");
     PersonName name=new PersonName();
-    if (firstName.getLength() > 0)     name.setFirstname(firstName.item(0).getTextContent());
-    if (middleName.getLength() > 0)     name.setMiddlename(middleName.item(0).getTextContent());
-    if (lastName.getLength() > 0)     name.setSurname(lastName.item(0).getTextContent());
+    if (firstName.getLength() > 0) {
+      name.setFirstname(firstName.item(0).getTextContent());
+    }
+    if (middleName.getLength() > 0) {
+      name.setMiddlename(middleName.item(0).getTextContent());
+    }
+    if (lastName.getLength() > 0) {
+      name.setSurname(lastName.item(0).getTextContent());
+    }
     result.add(name);
   }
   return result;

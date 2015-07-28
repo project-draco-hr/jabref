@@ -1,11 +1,13 @@
 {
-  if (file == null)   return;
+  if (file == null) {
+    return;
+  }
   if (file.exists() && backup) {
     String name=file.getName();
     String path=file.getParent();
     File backupFile=new File(path,name + GUIGlobals.backupExt);
     try {
-      Util.copyFile(file,backupFile,true);
+      FileUtil.copyFile(file,backupFile,true);
     }
  catch (    IOException ex) {
       ex.printStackTrace();
@@ -16,7 +18,9 @@
     if (useLockFile) {
       try {
         if (createLockFile()) {
-          if (!Util.waitForFileLock(file,10))           throw SaveException.FILE_LOCKED;
+          if (!FileBasedLock.waitForFileLock(file,10)) {
+            throw SaveException.FILE_LOCKED;
+          }
         }
       }
  catch (      IOException ex) {
@@ -24,7 +28,7 @@
         ex.printStackTrace();
       }
     }
-    Util.copyFile(tmp,file,true);
+    FileUtil.copyFile(tmp,file,true);
   }
  catch (  IOException ex2) {
     throw new SaveException(Globals.lang("Save failed while committing changes") + ": " + ex2.getMessage());

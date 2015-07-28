@@ -18,7 +18,9 @@
   shortTitle=getFromXml(_bcol + "ShortTitle",entry);
   comments=getFromXml(_bcol + "Comments",entry);
   temp=getFromXml(_bcol + "Pages",entry);
-  if (temp != null)   pages=new PageNumbers(temp);
+  if (temp != null) {
+    pages=new PageNumbers(temp);
+  }
   volume=getFromXml(_bcol + "Volume",entry);
   numberOfVolumes=getFromXml(_bcol + "NumberVolumes",entry);
   edition=getFromXml(_bcol + "Edition",entry);
@@ -28,11 +30,19 @@
   String state=getFromXml(_bcol + "StateProvince",entry);
   String country=getFromXml(_bcol + "CountryRegion",entry);
   address="";
-  if (city != null)   address+=city + ", ";
-  if (state != null)   address+=state + " ";
-  if (country != null)   address+=country;
+  if (city != null) {
+    address+=city + ", ";
+  }
+  if (state != null) {
+    address+=state + ' ';
+  }
+  if (country != null) {
+    address+=country;
+  }
   address=address.trim();
-  if (address.equals("") || address.equals(","))   address=null;
+  if (address.isEmpty() || address.equals(",")) {
+    address=null;
+  }
   bookTitle=getFromXml(_bcol + "BookTitle",entry);
   chapterNumber=getFromXml(_bcol + "ChapterNumber",entry);
   journalName=getFromXml(_bcol + "JournalName",entry);
@@ -47,11 +57,19 @@
   String day=getFromXml(_bcol + "DayAccessed",entry);
   String year=getFromXml(_bcol + "YearAccessed",entry);
   dateAccessed="";
-  if (month != null)   dateAccessed+=month + " ";
-  if (day != null)   dateAccessed+=day + ", ";
-  if (year != null)   dateAccessed+=year;
+  if (month != null) {
+    dateAccessed+=month + ' ';
+  }
+  if (day != null) {
+    dateAccessed+=day + ", ";
+  }
+  if (year != null) {
+    dateAccessed+=year;
+  }
   dateAccessed=dateAccessed.trim();
-  if (dateAccessed.equals("") || dateAccessed.equals(","))   dateAccessed=null;
+  if (dateAccessed.isEmpty() || dateAccessed.equals(",")) {
+    dateAccessed=null;
+  }
   url=getFromXml(_bcol + "URL",entry);
   productionCompany=getFromXml(_bcol + "ProductionCompany",entry);
   publicationTitle=getFromXml(_bcol + "PublicationTitle",entry);
@@ -80,5 +98,7 @@
   bibTex_Price=getFromXml(_bcol + BIBTEX + "Price",entry);
   bibTex_Size=getFromXml(_bcol + BIBTEX + "Size",entry);
   NodeList nodeLst=entry.getElementsByTagName(_bcol + "Author");
-  if (nodeLst.getLength() > 0)   getAuthors((Element)(nodeLst.item(0)),_bcol);
+  if (nodeLst.getLength() > 0) {
+    getAuthors((Element)(nodeLst.item(0)),_bcol);
+  }
 }

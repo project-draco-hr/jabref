@@ -1,17 +1,21 @@
 {
   String fieldValue=getField(name);
-  if (fieldValue != null && fieldValue.length() > 0)   return fieldValue;
+  if ((fieldValue != null) && (!fieldValue.isEmpty())) {
+    return fieldValue;
+  }
   Map<String,String> aliases=new HashMap<String,String>();
-  aliases.putAll(FieldAliasesOldToNew);
-  aliases.putAll(FieldAliasesNewToOld);
+  aliases.putAll(BibtexEntry.FieldAliasesOldToNew);
+  aliases.putAll(BibtexEntry.FieldAliasesNewToOld);
   String aliasForField=aliases.get(name);
-  if (aliasForField != null)   return getField(aliasForField);
+  if (aliasForField != null) {
+    return getField(aliasForField);
+  }
   if (name.equals("date")) {
     String year=getField("year");
     MonthUtil.Month month=MonthUtil.getMonth(getField("month"));
     if (year != null) {
       if (month.isValid()) {
-        return year + "-" + month.twoDigitNumber;
+        return year + '-' + month.twoDigitNumber;
       }
  else {
         return year;
@@ -20,7 +24,9 @@
   }
   if (name.equals("year") || name.equals("month")) {
     String date=getField("date");
-    if (date == null)     return null;
+    if (date == null) {
+      return null;
+    }
     DateFormat df=new DateFormat(){
       static final String FORMAT1="yyyy-MM-dd";
       static final String FORMAT2="yyyy-MM";
@@ -30,7 +36,9 @@
         throw new UnsupportedOperationException();
       }
       @Override public Date parse(      String source,      ParsePosition pos){
-        if (source.length() - pos.getIndex() == FORMAT1.length())         return sdf1.parse(source,pos);
+        if ((source.length() - pos.getIndex()) == FORMAT1.length()) {
+          return sdf1.parse(source,pos);
+        }
         return sdf2.parse(source,pos);
       }
     }
@@ -39,8 +47,12 @@
       Date parsedDate=df.parse(date);
       Calendar calendar=Calendar.getInstance();
       calendar.setTime(parsedDate);
-      if (name.equals("year"))       return Integer.toString(calendar.get(Calendar.YEAR));
-      if (name.equals("month"))       return Integer.toString(calendar.get(Calendar.MONTH) + 1);
+      if (name.equals("year")) {
+        return Integer.toString(calendar.get(Calendar.YEAR));
+      }
+      if (name.equals("month")) {
+        return Integer.toString(calendar.get(Calendar.MONTH) + 1);
+      }
     }
  catch (    ParseException e) {
       df=new SimpleDateFormat("yyyy");
@@ -48,7 +60,9 @@
         Date parsedDate=df.parse(date);
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(parsedDate);
-        if (name.equals("year"))         return Integer.toString(calendar.get(Calendar.YEAR));
+        if (name.equals("year")) {
+          return Integer.toString(calendar.get(Calendar.YEAR));
+        }
       }
  catch (      ParseException e2) {
         return null;

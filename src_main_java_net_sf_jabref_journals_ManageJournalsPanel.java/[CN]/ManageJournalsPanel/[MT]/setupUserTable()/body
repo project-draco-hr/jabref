@@ -1,15 +1,15 @@
 {
-  JournalAbbreviations userAbbr=new JournalAbbreviations();
+  JournalAbbreviationRepository userAbbr=new JournalAbbreviationRepository();
   String filename=personalFile.getText();
   if (!filename.equals("") && (new File(filename)).exists()) {
     try {
-      userAbbr.readJournalList(new File(filename));
+      userAbbr.readJournalListFromFile(new File(filename));
     }
  catch (    FileNotFoundException e) {
       e.printStackTrace();
     }
   }
-  tableModel.setJournals(userAbbr.getJournals());
+  tableModel.setJournals(userAbbr.getAbbreviations());
   userTable=new JTable(tableModel);
   userTable.addMouseListener(tableModel.getMouseListener());
   userPanel.add(new JScrollPane(userTable),BorderLayout.CENTER);

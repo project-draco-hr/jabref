@@ -1,0 +1,25 @@
+{
+  String[] names=Globals.prefs.getStringArray(NameFormatterTab.NAME_FORMATER_KEY);
+  if (names == null) {
+    names=new String[]{};
+  }
+  String[] formats=Globals.prefs.getStringArray(NameFormatterTab.NAME_FORMATTER_VALUE);
+  if (formats == null) {
+    formats=new String[]{};
+  }
+  try {
+    List<String> f=new LinkedList<String>(Arrays.asList(formats));
+    List<String> n=new LinkedList<String>(Arrays.asList(names));
+    n.add("testMe123454321");
+    f.add("*@*@test");
+    String[] newNames=n.toArray(new String[n.size()]);
+    String[] newFormats=f.toArray(new String[f.size()]);
+    Globals.prefs.putStringArray(NameFormatterTab.NAME_FORMATER_KEY,newNames);
+    Globals.prefs.putStringArray(NameFormatterTab.NAME_FORMATTER_VALUE,newFormats);
+    Assert.assertEquals("testtest",Util.getFieldAndFormat("[author:testMe123454321]",entry,database));
+  }
+  finally {
+    Globals.prefs.putStringArray(NameFormatterTab.NAME_FORMATER_KEY,names);
+    Globals.prefs.putStringArray(NameFormatterTab.NAME_FORMATTER_VALUE,formats);
+  }
+}

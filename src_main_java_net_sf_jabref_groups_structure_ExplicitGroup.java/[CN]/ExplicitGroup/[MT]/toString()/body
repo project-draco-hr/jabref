@@ -1,0 +1,16 @@
+{
+  StringBuilder sb=new StringBuilder();
+  sb.append(ExplicitGroup.ID).append(StringUtil.quote(name,AbstractGroup.SEPARATOR,AbstractGroup.QUOTE_CHAR)).append(AbstractGroup.SEPARATOR).append(context.ordinal()).append(AbstractGroup.SEPARATOR);
+  String s;
+  Set<String> sortedKeys=new TreeSet<String>();
+  for (  BibtexEntry m_entry : entries) {
+    s=m_entry.getCiteKey();
+    if ((s != null) && !s.isEmpty()) {
+      sortedKeys.add(s);
+    }
+  }
+  for (  String sortedKey : sortedKeys) {
+    sb.append(StringUtil.quote(sortedKey,AbstractGroup.SEPARATOR,AbstractGroup.QUOTE_CHAR)).append(AbstractGroup.SEPARATOR);
+  }
+  return sb.toString();
+}

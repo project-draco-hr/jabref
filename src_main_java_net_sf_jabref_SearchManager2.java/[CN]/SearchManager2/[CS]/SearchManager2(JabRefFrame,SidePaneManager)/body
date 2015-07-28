@@ -2,16 +2,16 @@
   super(manager,GUIGlobals.getIconUrl("search"),Globals.lang("Search"));
   this.frame=frame;
   incSearcher=new IncrementalSearcher(Globals.prefs);
-  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),Globals.prefs.getBoolean("searchReq"));
-  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),Globals.prefs.getBoolean("searchOpt"));
-  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),Globals.prefs.getBoolean("searchGen"));
-  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean("searchAll"));
-  regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),Globals.prefs.getBoolean("regExpSearch"));
+  searchReq=new JCheckBoxMenuItem(Globals.lang("Search required fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REQ));
+  searchOpt=new JCheckBoxMenuItem(Globals.lang("Search optional fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_OPT));
+  searchGen=new JCheckBoxMenuItem(Globals.lang("Search general fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_GEN));
+  searchAll=new JCheckBoxMenuItem(Globals.lang("Search all fields"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_ALL));
+  regExpSearch=new JCheckBoxMenuItem(Globals.lang("Use regular expressions"),Globals.prefs.getBoolean(JabRefPreferences.REG_EXP_SEARCH));
   increment=new JRadioButton(Globals.lang("Incremental"),false);
   floatSearch=new JRadioButton(Globals.lang("Float"),true);
   hideSearch=new JRadioButton(Globals.lang("Filter"),true);
   showResultsInDialog=new JRadioButton(Globals.lang("Show results in dialog"),true);
-  searchAllBases=new JRadioButton(Globals.lang("Global search"),Globals.prefs.getBoolean("searchAllBases"));
+  searchAllBases=new JRadioButton(Globals.lang("Global search"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_ALL_BASES));
   ButtonGroup types=new ButtonGroup();
   types.add(increment);
   types.add(floatSearch);
@@ -34,7 +34,7 @@
     searchGen.setEnabled(false);
   }
   searchAll.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
+    @Override public void stateChanged(    ChangeEvent event){
       boolean state=!searchAll.isSelected();
       searchReq.setEnabled(state);
       searchOpt.setEnabled(state);
@@ -42,9 +42,9 @@
     }
   }
 );
-  caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),Globals.prefs.getBoolean("caseSensitiveSearch"));
-  highLightWords=new JCheckBoxMenuItem(Globals.lang("Highlight Words"),Globals.prefs.getBoolean("highLightWords"));
-  searchAutoComplete=new JCheckBoxMenuItem(Globals.lang("Autocomplete names"),Globals.prefs.getBoolean("searchAutoComplete"));
+  caseSensitive=new JCheckBoxMenuItem(Globals.lang("Case sensitive"),Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH));
+  highLightWords=new JCheckBoxMenuItem(Globals.lang("Highlight Words"),Globals.prefs.getBoolean(JabRefPreferences.HIGH_LIGHT_WORDS));
+  searchAutoComplete=new JCheckBoxMenuItem(Globals.lang("Autocomplete names"),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_AUTO_COMPLETE));
   settings.add(select);
   settings.addSeparator();
   settings.add(caseSensitive);
@@ -57,10 +57,12 @@
   searchField.addCaretListener(this);
   search.addActionListener(this);
   searchField.addFocusListener(new FocusAdapter(){
-    public void focusGained(    FocusEvent e){
-      if (increment.isSelected())       searchField.setText("");
+    @Override public void focusGained(    FocusEvent e){
+      if (increment.isSelected()) {
+        searchField.setText("");
+      }
     }
-    public void focusLost(    FocusEvent e){
+    @Override public void focusLost(    FocusEvent e){
       incSearch=false;
       incSearchPos=-1;
       if (increment.isSelected()) {
@@ -71,7 +73,7 @@
   escape.addActionListener(this);
   escape.setEnabled(false);
   openset.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       if (settings.isVisible()) {
       }
  else {
@@ -82,8 +84,8 @@
   }
 );
   searchAutoComplete.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
-      Globals.prefs.putBoolean("searchAutoComplete",searchAutoComplete.isSelected());
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      Globals.prefs.putBoolean(JabRefPreferences.SEARCH_AUTO_COMPLETE,searchAutoComplete.isSelected());
       if (SearchManager2.this.frame.basePanel() != null) {
         SearchManager2.this.frame.basePanel().updateSearchManager();
       }
@@ -100,13 +102,25 @@
   help.setMinimumSize(butDim);
   help.setMargin(margin);
   help.addActionListener(new HelpAction(Globals.helpDiag,GUIGlobals.searchHelp,"Help"));
-  if (Globals.prefs.getBoolean("incrementS"))   increment.setSelected(true);
- else   if (Globals.prefs.getBoolean("floatSearch"))   floatSearch.setSelected(true);
- else   if (Globals.prefs.getBoolean("showSearchInDialog"))   showResultsInDialog.setSelected(true);
- else   if (Globals.prefs.getBoolean("searchAllBases"))   searchAllBases.setSelected(true);
- else   hideSearch.setSelected(true);
+  if (Globals.prefs.getBoolean(JabRefPreferences.INCREMENT_S)) {
+    increment.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean(JabRefPreferences.FLOAT_SEARCH)) {
+    floatSearch.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean(JabRefPreferences.SHOW_SEARCH_IN_DIALOG)) {
+    showResultsInDialog.setSelected(true);
+  }
+ else   if (Globals.prefs.getBoolean(JabRefPreferences.SEARCH_ALL_BASES)) {
+    searchAllBases.setSelected(true);
+  }
+ else {
+    hideSearch.setSelected(true);
+  }
   JPanel main=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
   main.setLayout(gbl);
+  GridBagConstraints con=new GridBagConstraints();
   con.gridwidth=GridBagConstraints.REMAINDER;
   con.fill=GridBagConstraints.BOTH;
   con.weightx=1;
@@ -142,17 +156,19 @@
   pan.add(help);
   main.add(pan);
   main.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-  setContent(main);
+  setContentContainer(main);
   searchField.getInputMap().put(Globals.prefs.getKey("Repeat incremental search"),"repeat");
   searchField.getActionMap().put("repeat",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
-      if (increment.isSelected())       repeatIncremental();
+    @Override public void actionPerformed(    ActionEvent e){
+      if (increment.isSelected()) {
+        repeatIncremental();
+      }
     }
   }
 );
   searchField.getInputMap().put(Globals.prefs.getKey("Clear search"),"escape");
   searchField.getActionMap().put("escape",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       hideAway();
     }
   }

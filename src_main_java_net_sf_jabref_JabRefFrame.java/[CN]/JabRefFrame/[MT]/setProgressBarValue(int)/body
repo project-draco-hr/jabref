@@ -1,9 +1,13 @@
 {
-  if (SwingUtilities.isEventDispatchThread())   progressBar.setValue(value);
- else   SwingUtilities.invokeLater(new Runnable(){
-    public void run(){
-      progressBar.setValue(value);
-    }
+  if (SwingUtilities.isEventDispatchThread()) {
+    progressBar.setValue(value);
   }
+ else {
+    SwingUtilities.invokeLater(new Runnable(){
+      @Override public void run(){
+        progressBar.setValue(value);
+      }
+    }
 );
+  }
 }

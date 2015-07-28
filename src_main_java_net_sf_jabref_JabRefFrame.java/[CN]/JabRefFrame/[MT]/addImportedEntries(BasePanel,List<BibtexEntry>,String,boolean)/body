@@ -1,7 +1,7 @@
 {
-  if (Globals.prefs.getBoolean("useImportInspectionDialog") && (Globals.prefs.getBoolean("useImportInspectionDialogForSingle") || (entries.size() > 1))) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG) && (Globals.prefs.getBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG_FOR_SINGLE) || (entries.size() > 1))) {
     SwingUtilities.invokeLater(new Runnable(){
-      public void run(){
+      @Override public void run(){
         ImportInspectionDialog diag=new ImportInspectionDialog(JabRefFrame.this,panel,BibtexFields.DEFAULT_INSPECTION_FIELDS,Globals.lang("Import"),openInNew);
         diag.addEntries(entries);
         diag.entryListComplete();
@@ -16,7 +16,7 @@
     JabRefFrame.this.addBibEntries(entries,filename,openInNew);
     if ((panel != null) && (entries.size() == 1)) {
       SwingUtilities.invokeLater(new Runnable(){
-        public void run(){
+        @Override public void run(){
           panel.highlightEntry(entries.get(0));
         }
       }

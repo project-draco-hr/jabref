@@ -1,7 +1,9 @@
 {
-  if (text == null)   return null;
+  if (text == null) {
+    return null;
+  }
   StringBuffer sb=new StringBuffer();
-  if (Globals.prefs.getBoolean("useConvertToEquation")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.USE_CONVERT_TO_EQUATION)) {
     text=text.replaceAll("<[ ]?sup>([^<]+)</sup>","\\$\\^\\{$1\\}\\$");
     text=text.replaceAll("<[ ]?sub>([^<]+)</sub>","\\$_\\{$1\\}\\$");
   }
@@ -14,7 +16,9 @@
     if (c == '<') {
       i=readTag(text,sb,i);
     }
- else     sb.append((char)c);
+ else {
+      sb.append((char)c);
+    }
   }
   text=sb.toString();
   Set<String> patterns=escapedSymbols.keySet();

@@ -1,18 +1,30 @@
 {
   final String res=JOptionPane.showInputDialog(parent,Globals.lang("Enter URL to download"));
-  if (res == null || res.trim().length() == 0)   return;
+  if ((res == null) || (res.trim().isEmpty())) {
+    return;
+  }
   final BibtexEntry targetEntry;
-  if (entryEditor != null)   targetEntry=entryEditor.getEntry();
- else   targetEntry=entry;
-  (new Thread(){
+  if (entryEditor != null) {
+    targetEntry=entryEditor.getEntry();
+  }
+ else {
+    targetEntry=entry;
+  }
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
     public String getPlannedFileName(    String res){
       String suffix=off.getSuffix(res);
-      if (suffix == null)       suffix="." + fieldName.toLowerCase();
-      String plannedName=null;
-      if (getKey() != null)       plannedName=getKey() + suffix;
+      if (suffix == null) {
+        suffix='.' + fieldName.toLowerCase();
+      }
+      String plannedName;
+      if (getKey() != null) {
+        plannedName=getKey() + suffix;
+      }
  else {
         plannedName=JOptionPane.showInputDialog(parent,Globals.lang("BibTeX key not set. Enter a name for the downloaded file"));
-        if (plannedName != null && !off.accept(plannedName))         plannedName+=suffix;
+        if ((plannedName != null) && !off.accept(plannedName)) {
+          plannedName+=suffix;
+        }
       }
       if (Globals.ON_WIN) {
         plannedName=plannedName.replaceAll("\\?|\\*|\\<|\\>|\\||\\\"|\\:|\\.$|\\[|\\]","");
@@ -22,7 +34,7 @@
       }
       return plannedName;
     }
-    public void run(){
+    @Override public void run(){
       String originalText=fieldEditor.getText();
       fieldEditor.setEnabled(false);
       boolean updateEditor=true;
@@ -39,8 +51,12 @@
           }
         }
         if (directory == null) {
-          if (dirs.length > 0)           JOptionPane.showMessageDialog(parent,Globals.lang("Could not find directory for %0-files: %1",fieldName,dirs[0]),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
- else           JOptionPane.showMessageDialog(parent,Globals.lang("No directory defined for %0-files",fieldName),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          if (dirs.length > 0) {
+            JOptionPane.showMessageDialog(parent,Globals.lang("Could not find directory for %0-files: %1",fieldName,dirs[0]),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          }
+ else {
+            JOptionPane.showMessageDialog(parent,Globals.lang("No directory defined for %0-files",fieldName),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          }
           return;
         }
         File file=new File(new File(directory),plannedName);
@@ -61,7 +77,7 @@
             textToSet=textToSet.substring(File.separator.length());
           }
         }
-        if (entryEditor == null || entryEditor.getEntry() != targetEntry) {
+        if ((entryEditor == null) || (entryEditor.getEntry() != targetEntry)) {
           targetEntry.setField(fieldName,textToSet);
           fieldEditor.setText(textToSet);
           fieldEditor.setEnabled(true);
@@ -71,8 +87,8 @@
           fieldEditor.setText(textToSet);
           fieldEditor.setEnabled(true);
           updateEditor=false;
-          SwingUtilities.invokeLater(new Thread(){
-            public void run(){
+          SwingUtilities.invokeLater(new Runnable(){
+            @Override public void run(){
               entryEditor.updateField(fieldEditor);
             }
           }
@@ -90,5 +106,5 @@
       }
     }
   }
-).start();
+);
 }

@@ -45,7 +45,7 @@
   bb.addButton(cancel);
   bb.addGlue();
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       okPressed=true;
       storeSettings(ExternalFileTypeEntryEditor.this.entry);
       diag.dispose();
@@ -53,15 +53,17 @@
   }
 );
   cancel.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       diag.dispose();
     }
   }
 );
   icon.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       String initSel=ExternalFileTypeEntryEditor.this.entry.getIconName();
-      if (selectedIcon != null)       initSel=selectedIcon;
+      if (selectedIcon != null) {
+        initSel=selectedIcon;
+      }
       IconSelection ic=new IconSelection(diag,initSel);
       ic.setVisible(true);
       if (ic.isOkPressed()) {
@@ -81,26 +83,34 @@
           other.setSelected(true);
         }
       }
-      public void insertUpdate(      DocumentEvent e){
+      @Override public void insertUpdate(      DocumentEvent e){
         handle(e);
       }
-      public void removeUpdate(      DocumentEvent documentEvent){
+      @Override public void removeUpdate(      DocumentEvent documentEvent){
         handle(documentEvent);
       }
-      public void changedUpdate(      DocumentEvent documentEvent){
+      @Override public void changedUpdate(      DocumentEvent documentEvent){
         handle(documentEvent);
       }
     }
 );
   }
-  if (dParent != null)   diag=new JDialog(dParent,Globals.lang("Edit file type"),true);
- else   diag=new JDialog(fParent,Globals.lang("Edit file type"),true);
+  if (dParent != null) {
+    diag=new JDialog(dParent,Globals.lang("Edit file type"),true);
+  }
+ else {
+    diag=new JDialog(fParent,Globals.lang("Edit file type"),true);
+  }
   diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
   diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   diag.pack();
   BrowseListener browse=new BrowseListener(diag,application);
   browseBut.addActionListener(browse);
-  if (dParent != null)   diag.setLocationRelativeTo(dParent);
- else   diag.setLocationRelativeTo(fParent);
+  if (dParent != null) {
+    diag.setLocationRelativeTo(dParent);
+  }
+ else {
+    diag.setLocationRelativeTo(fParent);
+  }
   setValues(entry);
 }

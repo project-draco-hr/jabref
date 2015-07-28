@@ -1,12 +1,16 @@
 {
-  String id=Util.createNeutralId();
+  String id=IdGenerator.next();
   BibtexEntry result=new BibtexEntry(id,tp);
   skipWhitespace();
   consume('{','(');
   int c=peek();
-  if ((c != '\n') && (c != '\r'))   skipWhitespace();
+  if ((c != '\n') && (c != '\r')) {
+    skipWhitespace();
+  }
   String key=parseKey();
-  if ((key != null) && key.equals(""))   key=null;
+  if ((key != null) && key.equals("")) {
+    key=null;
+  }
   result.setField(BibtexFields.KEY_FIELD,key);
   skipWhitespace();
   while (true) {
@@ -14,7 +18,9 @@
     if ((c == '}') || (c == ')')) {
       break;
     }
-    if (c == ',')     consume(',');
+    if (c == ',') {
+      consume(',');
+    }
     skipWhitespace();
     c=peek();
     if ((c == '}') || (c == ')')) {

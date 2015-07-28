@@ -2,28 +2,32 @@
   String defaultPrefix="/images/crystal_16/", prefix=defaultPrefix;
   URL defaultResource=GUIGlobals.class.getResource(prefix + "Icons.properties");
   URL resource=defaultResource;
-  if (Globals.prefs.getBoolean("useCustomIconTheme")) {
-    String filename=Globals.prefs.get("customIconThemeFile");
-    if (filename != null)     try {
-      File file=new File(filename);
-      String parent=file.getParentFile().getAbsolutePath();
-      prefix="file://" + parent + System.getProperty("file.separator");
-      resource=new URL("file://" + file.getAbsolutePath());
-    }
- catch (    MalformedURLException e) {
-      e.printStackTrace();
+  if (Globals.prefs.getBoolean(JabRefPreferences.USE_CUSTOM_ICON_THEME)) {
+    String filename=Globals.prefs.get(JabRefPreferences.CUSTOM_ICON_THEME_FILE);
+    if (filename != null) {
+      try {
+        File file=new File(filename);
+        String parent=file.getParentFile().getAbsolutePath();
+        prefix="file://" + parent + System.getProperty("file.separator");
+        resource=new URL("file://" + file.getAbsolutePath());
+      }
+ catch (      MalformedURLException e) {
+        e.printStackTrace();
+      }
     }
   }
   try {
-    iconMap=readIconThemeFile(resource,prefix);
+    GUIGlobals.iconMap=GUIGlobals.readIconThemeFile(resource,prefix);
   }
  catch (  IOException e) {
-    System.err.println(Globals.lang("Unable to read icon theme file") + " '" + resource.toString()+ "'");
-    if (resource != defaultResource)     try {
-      iconMap=readIconThemeFile(defaultResource,defaultPrefix);
-    }
- catch (    IOException e2) {
-      System.err.println(Globals.lang("Unable to read default icon theme."));
+    System.err.println(Globals.lang("Unable to read icon theme file") + " '" + resource.toString()+ '\'');
+    if (resource != defaultResource) {
+      try {
+        GUIGlobals.iconMap=GUIGlobals.readIconThemeFile(defaultResource,defaultPrefix);
+      }
+ catch (      IOException e2) {
+        System.err.println(Globals.lang("Unable to read default icon theme."));
+      }
     }
   }
 }

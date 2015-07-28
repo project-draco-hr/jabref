@@ -10,11 +10,11 @@
         this.inOverviewSection=this.preLine.startsWith("In this issue we have");
       }
       if (isStartOfWorkingPaper()) {
-        BibtexEntry be=new BibtexEntry(Util.createNeutralId());
+        BibtexEntry be=new BibtexEntry(IdGenerator.next());
         be.setType(BibtexEntryType.getType("techreport"));
         paperNoStr=this.lastLine.substring(0,this.lastLine.indexOf('.'));
         parseTitleString(be);
-        if (startsWithKeyword(recognizedFields)) {
+        if (startsWithKeyword(RepecNepImporter.recognizedFields)) {
           parseAdditionalFields(be,false);
         }
  else {
@@ -22,7 +22,7 @@
           parseAuthors(be);
           readLine();
         }
-        if (!startsWithKeyword(recognizedFields)) {
+        if (!startsWithKeyword(RepecNepImporter.recognizedFields)) {
           parseAbstract(be);
         }
         parseAdditionalFields(be,true);
@@ -41,7 +41,7 @@
       message+=", paper no. " + paperNoStr + ": ";
     }
     message+=e.getMessage();
-    logger.log(Level.SEVERE,message,e);
+    RepecNepImporter.logger.log(Level.SEVERE,message,e);
     if (!(e instanceof IOException)) {
       e.printStackTrace();
       e=new IOException(message);

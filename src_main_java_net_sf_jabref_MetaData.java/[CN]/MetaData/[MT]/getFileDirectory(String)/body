@@ -1,9 +1,9 @@
 {
-  String key=Globals.prefs.get("userFileDirIndividual");
+  String key=Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL);
   List<String> dirs=new ArrayList<String>();
   Vector<String> vec=getData(key);
   if (vec == null) {
-    key=Globals.prefs.get("userFileDir");
+    key=Globals.prefs.get(JabRefPreferences.USER_FILE_DIR);
     vec=getData(key);
   }
   if ((vec != null) && (vec.size() > 0)) {
@@ -17,17 +17,25 @@
  else {
         relDir=file.getParent() + System.getProperty("file.separator") + dir;
       }
-      if ((new File(relDir)).exists())       dir=relDir;
+      if ((new File(relDir)).exists()) {
+        dir=relDir;
+      }
     }
     dirs.add(dir);
   }
  else {
     String dir=Globals.prefs.get(fieldName + "Directory");
-    if (dir != null)     dirs.add(dir);
+    if (dir != null) {
+      dirs.add(dir);
+    }
   }
-  if (Globals.prefs.getBoolean("bibLocationAsFileDir") && getFile() != null) {
-    if (Globals.prefs.getBoolean("bibLocAsPrimaryDir"))     dirs.add(0,getFile().getParent());
- else     dirs.add(getFile().getParent());
+  if (Globals.prefs.getBoolean(JabRefPreferences.BIB_LOCATION_AS_FILE_DIR) && (getFile() != null)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.BIB_LOC_AS_PRIMARY_DIR)) {
+      dirs.add(0,getFile().getParent());
+    }
+ else {
+      dirs.add(getFile().getParent());
+    }
   }
   return dirs.toArray(new String[dirs.size()]);
 }

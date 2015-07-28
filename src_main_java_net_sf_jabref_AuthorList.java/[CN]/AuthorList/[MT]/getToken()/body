@@ -2,14 +2,18 @@
   token_start=token_end;
   while (token_start < orig.length()) {
     char c=orig.charAt(token_start);
-    if (!(c == '~' || c == '-' || Character.isWhitespace(c)))     break;
+    if (!((c == '~') || (c == '-') || Character.isWhitespace(c))) {
+      break;
+    }
     token_start++;
   }
   token_end=token_start;
-  if (token_start >= orig.length())   return TOKEN_EOF;
+  if (token_start >= orig.length()) {
+    return AuthorList.TOKEN_EOF;
+  }
   if (orig.charAt(token_start) == ',') {
     token_end++;
-    return TOKEN_COMMA;
+    return AuthorList.TOKEN_COMMA;
   }
   token_abbr=-1;
   token_term=' ';
@@ -22,29 +26,53 @@
     if (c == '{') {
       braces_level++;
     }
-    if (braces_level > 0)     if (c == '}')     braces_level--;
-    if (first_letter_is_found && token_abbr < 0 && braces_level == 0)     token_abbr=token_end;
-    if (!first_letter_is_found && current_backslash < 0 && Character.isLetter(c)) {
-      if (braces_level == 0)       token_case=Character.isUpperCase(c);
- else       token_case=true;
+    if (braces_level > 0) {
+      if (c == '}') {
+        braces_level--;
+      }
+    }
+    if (first_letter_is_found && (token_abbr < 0) && (braces_level == 0)) {
+      token_abbr=token_end;
+    }
+    if (!first_letter_is_found && (current_backslash < 0) && Character.isLetter(c)) {
+      if (braces_level == 0) {
+        token_case=Character.isUpperCase(c);
+      }
+ else {
+        token_case=true;
+      }
       first_letter_is_found=true;
     }
-    if (current_backslash >= 0 && !Character.isLetter(c)) {
+    if ((current_backslash >= 0) && !Character.isLetter(c)) {
       if (!first_letter_is_found) {
         String tex_cmd_name=orig.substring(current_backslash + 1,token_end);
-        if (tex_names.contains(tex_cmd_name)) {
+        if (AuthorList.tex_names.contains(tex_cmd_name)) {
           token_case=Character.isUpperCase(tex_cmd_name.charAt(0));
           first_letter_is_found=true;
         }
       }
       current_backslash=-1;
     }
-    if (c == '\\')     current_backslash=token_end;
-    if (braces_level == 0)     if (c == ',' || c == '~' || c == '-' || Character.isWhitespace(c))     break;
+    if (c == '\\') {
+      current_backslash=token_end;
+    }
+    if (braces_level == 0) {
+      if ((c == ',') || (c == '~') || (c == '-')|| Character.isWhitespace(c)) {
+        break;
+      }
+    }
     token_end++;
   }
-  if (token_abbr < 0)   token_abbr=token_end;
-  if (token_end < orig.length() && orig.charAt(token_end) == '-')   token_term='-';
-  if (orig.substring(token_start,token_end).equalsIgnoreCase("and"))   return TOKEN_AND;
- else   return TOKEN_WORD;
+  if (token_abbr < 0) {
+    token_abbr=token_end;
+  }
+  if ((token_end < orig.length()) && (orig.charAt(token_end) == '-')) {
+    token_term='-';
+  }
+  if (orig.substring(token_start,token_end).equalsIgnoreCase("and")) {
+    return AuthorList.TOKEN_AND;
+  }
+ else {
+    return AuthorList.TOKEN_WORD;
+  }
 }

@@ -2,8 +2,14 @@
   super.undo();
   m_modifiedSubtree.clear();
   final GroupTreeNode subtreeRoot=m_groupRoot.getNode(m_subtreeRootPath);
-  for (int i=0; i < subtreeRoot.getChildCount(); ++i)   m_modifiedSubtree.add(subtreeRoot.getChildAt(i));
+  for (int i=0; i < subtreeRoot.getChildCount(); ++i) {
+    m_modifiedSubtree.add(subtreeRoot.getChildAt(i));
+  }
   subtreeRoot.removeAllChildren();
-  for (int i=0; i < m_subtreeBackup.getChildCount(); ++i)   subtreeRoot.add(((GroupTreeNode)m_subtreeBackup.getChildAt(i)).deepCopy());
-  if (m_revalidate)   m_groupSelector.revalidateGroups();
+  for (int i=0; i < m_subtreeBackup.getChildCount(); ++i) {
+    subtreeRoot.add(((GroupTreeNode)m_subtreeBackup.getChildAt(i)).deepCopy());
+  }
+  if (m_revalidate) {
+    m_groupSelector.revalidateGroups();
+  }
 }

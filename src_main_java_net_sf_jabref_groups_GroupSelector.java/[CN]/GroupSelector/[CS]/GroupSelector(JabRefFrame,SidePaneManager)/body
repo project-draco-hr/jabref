@@ -1,33 +1,33 @@
 {
   super(manager,GUIGlobals.getIconUrl("toggleGroups"),Globals.lang("Groups"));
   this.groupsRoot=new GroupTreeNode(new AllEntriesGroup());
-  this.manager=manager;
   this.frame=frame;
-  hideNonHits=new JRadioButtonMenuItem(Globals.lang("Hide non-hits"),!Globals.prefs.getBoolean("grayOutNonHits"));
-  grayOut=new JRadioButtonMenuItem(Globals.lang("Gray out non-hits"),Globals.prefs.getBoolean("grayOutNonHits"));
+  hideNonHits=new JRadioButtonMenuItem(Globals.lang("Hide non-hits"),!Globals.prefs.getBoolean(JabRefPreferences.GRAY_OUT_NON_HITS));
+  grayOut=new JRadioButtonMenuItem(Globals.lang("Gray out non-hits"),Globals.prefs.getBoolean(JabRefPreferences.GRAY_OUT_NON_HITS));
+  ButtonGroup nonHits=new ButtonGroup();
   nonHits.add(hideNonHits);
   nonHits.add(grayOut);
   floatCb.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("groupFloatSelections",floatCb.isSelected());
+    @Override public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean(JabRefPreferences.GROUP_FLOAT_SELECTIONS,floatCb.isSelected());
     }
   }
 );
   andCb.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("groupIntersectSelections",andCb.isSelected());
+    @Override public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean(JabRefPreferences.GROUP_INTERSECT_SELECTIONS,andCb.isSelected());
     }
   }
 );
   invCb.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("groupInvertSelections",invCb.isSelected());
+    @Override public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean(JabRefPreferences.GROUP_INVERT_SELECTIONS,invCb.isSelected());
     }
   }
 );
   showOverlappingGroups.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("groupShowOverlapping",showOverlappingGroups.isSelected());
+    @Override public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean(JabRefPreferences.GROUP_SHOW_OVERLAPPING,showOverlappingGroups.isSelected());
       if (!showOverlappingGroups.isSelected()) {
         groupsTree.setHighlight2Cells(null);
       }
@@ -35,18 +35,19 @@
   }
 );
   select.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("groupSelectMatches",select.isSelected());
+    @Override public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean(JabRefPreferences.GROUP_SELECT_MATCHES,select.isSelected());
     }
   }
 );
   grayOut.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("grayOutNonHits",grayOut.isSelected());
+    @Override public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean(JabRefPreferences.GRAY_OUT_NON_HITS,grayOut.isSelected());
     }
   }
 );
-  if (Globals.prefs.getBoolean("groupFloatSelections")) {
+  JRadioButtonMenuItem highlCb=new JRadioButtonMenuItem(Globals.lang("Highlight"),false);
+  if (Globals.prefs.getBoolean(JabRefPreferences.GROUP_FLOAT_SELECTIONS)) {
     floatCb.setSelected(true);
     highlCb.setSelected(false);
   }
@@ -54,7 +55,8 @@
     highlCb.setSelected(true);
     floatCb.setSelected(false);
   }
-  if (Globals.prefs.getBoolean("groupIntersectSelections")) {
+  JRadioButtonMenuItem orCb=new JRadioButtonMenuItem(Globals.lang("Union"),false);
+  if (Globals.prefs.getBoolean(JabRefPreferences.GROUP_INTERSECT_SELECTIONS)) {
     andCb.setSelected(true);
     orCb.setSelected(false);
   }
@@ -74,18 +76,18 @@
   }
 );
   autoAssignGroup.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent event){
-      Globals.prefs.putBoolean("autoAssignGroup",autoAssignGroup.isSelected());
+    @Override public void stateChanged(    ChangeEvent event){
+      Globals.prefs.putBoolean(JabRefPreferences.AUTO_ASSIGN_GROUP,autoAssignGroup.isSelected());
     }
   }
 );
-  invCb.setSelected(Globals.prefs.getBoolean("groupInvertSelections"));
-  showOverlappingGroups.setSelected(Globals.prefs.getBoolean("groupShowOverlapping"));
-  select.setSelected(Globals.prefs.getBoolean("groupSelectMatches"));
+  invCb.setSelected(Globals.prefs.getBoolean(JabRefPreferences.GROUP_INVERT_SELECTIONS));
+  showOverlappingGroups.setSelected(Globals.prefs.getBoolean(JabRefPreferences.GROUP_SHOW_OVERLAPPING));
+  select.setSelected(Globals.prefs.getBoolean(JabRefPreferences.GROUP_SELECT_MATCHES));
   editModeIndicator=Globals.prefs.getBoolean(JabRefPreferences.EDIT_GROUP_MEMBERSHIP_MODE);
   editModeCb.setSelected(editModeIndicator);
   showNumberOfElements.setSelected(Globals.prefs.getBoolean(JabRefPreferences.GROUP_SHOW_NUMBER_OF_ELEMENTS));
-  autoAssignGroup.setSelected(Globals.prefs.getBoolean("autoAssignGroup"));
+  autoAssignGroup.setSelected(Globals.prefs.getBoolean(JabRefPreferences.AUTO_ASSIGN_GROUP));
   openset.setMargin(new Insets(0,0,0,0));
   settings.add(andCb);
   settings.add(orCb);
@@ -104,35 +106,37 @@
   settings.add(showNumberOfElements);
   settings.add(autoAssignGroup);
   openset.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       if (settings.isVisible()) {
       }
  else {
         JButton src=(JButton)e.getSource();
         showNumberOfElements.setSelected(Globals.prefs.getBoolean(JabRefPreferences.GROUP_SHOW_NUMBER_OF_ELEMENTS));
-        autoAssignGroup.setSelected(Globals.prefs.getBoolean("autoAssignGroup"));
+        autoAssignGroup.setSelected(Globals.prefs.getBoolean(JabRefPreferences.AUTO_ASSIGN_GROUP));
         settings.show(src,0,openset.getHeight());
       }
     }
   }
 );
+  JButton expand=new JButton(GUIGlobals.getImage("down"));
   expand.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
-      int i=Globals.prefs.getInt("groupsVisibleRows") + 1;
+    @Override public void actionPerformed(    ActionEvent e){
+      int i=Globals.prefs.getInt(JabRefPreferences.GROUPS_VISIBLE_ROWS) + 1;
       groupsTree.setVisibleRowCount(i);
       groupsTree.revalidate();
       groupsTree.repaint();
       GroupSelector.this.revalidate();
       GroupSelector.this.repaint();
-      Globals.prefs.putInt("groupsVisibleRows",i);
-      logger.fine(Double.toString(GroupSelector.this.getHeight()));
-      logger.fine(Double.toString(GroupSelector.this.getPreferredSize().getHeight()));
+      Globals.prefs.putInt(JabRefPreferences.GROUPS_VISIBLE_ROWS,i);
+      GroupSelector.logger.fine(Double.toString(GroupSelector.this.getHeight()));
+      GroupSelector.logger.fine(Double.toString(GroupSelector.this.getPreferredSize().getHeight()));
     }
   }
 );
+  JButton reduce=new JButton(GUIGlobals.getImage("up"));
   reduce.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
-      int i=Globals.prefs.getInt("groupsVisibleRows") - 1;
+    @Override public void actionPerformed(    ActionEvent e){
+      int i=Globals.prefs.getInt(JabRefPreferences.GROUPS_VISIBLE_ROWS) - 1;
       if (i < 1) {
         i=1;
       }
@@ -141,12 +145,12 @@
       groupsTree.repaint();
       GroupSelector.this.revalidate();
       GroupSelector.this.repaint();
-      Globals.prefs.putInt("groupsVisibleRows",i);
+      Globals.prefs.putInt(JabRefPreferences.GROUPS_VISIBLE_ROWS,i);
     }
   }
 );
   editModeCb.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       editModeIndicator=editModeCb.getState();
       updateBorder(editModeIndicator);
       Globals.prefs.putBoolean(JabRefPreferences.EDIT_GROUP_MEMBERSHIP_MODE,editModeIndicator);
@@ -159,6 +163,7 @@
   newButton.setMinimumSize(butDim);
   refresh.setPreferredSize(butDim);
   refresh.setMinimumSize(butDim);
+  JButton helpButton=new JButton(GUIGlobals.getImage("help"));
   helpButton.setPreferredSize(butDim);
   helpButton.setMinimumSize(butDim);
   autoGroup.setPreferredSize(butDim);
@@ -199,12 +204,16 @@
   expand.setToolTipText(Globals.lang("Show one more row"));
   reduce.setToolTipText(Globals.lang("Show one less rows"));
   editModeCb.setToolTipText(Globals.lang("Click group to toggle membership of selected entries"));
+  ButtonGroup bgr=new ButtonGroup();
   bgr.add(andCb);
   bgr.add(orCb);
+  ButtonGroup visMode=new ButtonGroup();
   visMode.add(floatCb);
   visMode.add(highlCb);
   JPanel main=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
   main.setLayout(gbl);
+  GridBagConstraints con=new GridBagConstraints();
   con.fill=GridBagConstraints.BOTH;
   con.weightx=1;
   con.gridwidth=1;
@@ -228,7 +237,7 @@
   groupsTree=new GroupsTree(this);
   groupsTree.addTreeSelectionListener(this);
   groupsTree.setModel(groupsTreeModel=new DefaultTreeModel(groupsRoot));
-  sp=new JScrollPane(groupsTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  JScrollPane sp=new JScrollPane(groupsTree,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   revalidateGroups();
   con.gridwidth=GridBagConstraints.REMAINDER;
   con.weighty=1;
@@ -271,8 +280,12 @@
   add(main,BorderLayout.CENTER);
   updateBorder(editModeIndicator);
   definePopup();
+  NodeAction moveNodeUpAction=new MoveNodeUpAction();
   moveNodeUpAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_UP,KeyEvent.CTRL_MASK));
+  NodeAction moveNodeDownAction=new MoveNodeDownAction();
   moveNodeDownAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,KeyEvent.CTRL_MASK));
+  NodeAction moveNodeLeftAction=new MoveNodeLeftAction();
   moveNodeLeftAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.CTRL_MASK));
+  NodeAction moveNodeRightAction=new MoveNodeRightAction();
   moveNodeRightAction.putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.CTRL_MASK));
 }

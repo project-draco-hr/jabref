@@ -1,5 +1,5 @@
 {
-  if (fetchCommand == null || !fetchCommand.contains(":") || fetchCommand.split(":").length != 2) {
+  if ((fetchCommand == null) || !fetchCommand.contains(":") || (fetchCommand.split(":").length != 2)) {
     System.out.println(Globals.lang("Expected syntax for --fetch='<name of fetcher>:<query>'"));
     System.out.println(Globals.lang("The following fetchers are available:"));
     return null;
@@ -8,7 +8,9 @@
   String query=fetchCommand.split(":")[1];
   EntryFetcher fetcher=null;
   for (  EntryFetcherExtension e : JabRefPlugin.getInstance(PluginCore.getManager()).getEntryFetcherExtensions()) {
-    if (engine.toLowerCase().equals(e.getId().replaceAll("Fetcher","").toLowerCase()))     fetcher=e.getEntryFetcher();
+    if (engine.toLowerCase().equals(e.getId().replaceAll("Fetcher","").toLowerCase())) {
+      fetcher=e.getEntryFetcher();
+    }
   }
   if (fetcher == null) {
     System.out.println(Globals.lang("Could not find fetcher '%0'",engine));
@@ -20,7 +22,7 @@
   }
   System.out.println(Globals.lang("Running Query '%0' with fetcher '%1'.",query,engine) + " " + Globals.lang("Please wait..."));
   Collection<BibtexEntry> result=new ImportInspectionCommandLine().query(query,fetcher);
-  if (result == null || result.size() == 0) {
+  if ((result == null) || (result.size() == 0)) {
     System.out.println(Globals.lang("Query '%0' with fetcher '%1' did not return any results.",query,engine));
     return null;
   }

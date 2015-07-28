@@ -14,12 +14,12 @@
   labelSearchingDirectoryInfo.setEnabled(true);
   final FileFilter selectedFileFilter=(FileFilter)comboBoxFileTypeSelection.getSelectedItem();
   threadState=new int[]{1};
-  new Thread(new Runnable(){
-    public void run(){
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
+    @Override public void run(){
       UnlinkedPDFFileFilter ff=new UnlinkedPDFFileFilter(selectedFileFilter,database);
       CheckableTreeNode rootNode=crawler.searchDirectory(directory,ff,threadState,new ChangeListener(){
         int counter=0;
-        public void stateChanged(        ChangeEvent e){
+        @Override public void stateChanged(        ChangeEvent e){
           progressBarSearching.setString(++counter + " files found");
         }
       }
@@ -27,5 +27,5 @@
       searchFinishedHandler(rootNode);
     }
   }
-).start();
+);
 }

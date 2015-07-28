@@ -3,11 +3,15 @@
   ButtonGroup bg=new ButtonGroup();
   bg.add(inPar);
   bg.add(inText);
-  if (defaultInPar)   inPar.setSelected(true);
- else   inText.setSelected(true);
+  if (AdvancedCiteDialog.defaultInPar) {
+    inPar.setSelected(true);
+  }
+ else {
+    inText.setSelected(true);
+  }
   inPar.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent changeEvent){
-      defaultInPar=inPar.isSelected();
+    @Override public void stateChanged(    ChangeEvent changeEvent){
+      AdvancedCiteDialog.defaultInPar=inPar.isSelected();
     }
   }
 );
@@ -29,7 +33,7 @@
   diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   diag.pack();
   Action okAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       okPressed=true;
       diag.dispose();
     }
@@ -40,7 +44,7 @@
   inPar.addActionListener(okAction);
   inText.addActionListener(okAction);
   Action cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent actionEvent){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
       okPressed=false;
       diag.dispose();
     }

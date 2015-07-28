@@ -8,7 +8,7 @@
     e.printStackTrace();
     return false;
   }
-  String urlString=String.format(URL_PATTERN,q);
+  String urlString=String.format(ISBNtoBibTeXFetcher.URL_PATTERN,q);
   URL url;
   URLConnection conn;
   try {
@@ -37,10 +37,10 @@
   if (entry != null) {
     String title=entry.getField("title");
     if (title != null) {
-      if (Globals.prefs.getBoolean("useUnitFormatterOnSearch")) {
+      if (Globals.prefs.getBoolean(JabRefPreferences.USE_UNIT_FORMATTER_ON_SEARCH)) {
         title=unitFormatter.format(title);
       }
-      if (Globals.prefs.getBoolean("useCaseKeeperOnSearch")) {
+      if (Globals.prefs.getBoolean(JabRefPreferences.USE_CASE_KEEPER_ON_SEARCH)) {
         title=caseKeeper.format(title);
       }
       entry.setField("title",title);

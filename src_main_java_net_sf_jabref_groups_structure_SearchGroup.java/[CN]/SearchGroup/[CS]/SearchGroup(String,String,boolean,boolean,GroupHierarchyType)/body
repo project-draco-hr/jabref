@@ -1,0 +1,16 @@
+{
+  super(name,context);
+  this.searchExpression=searchExpression;
+  this.caseSensitive=caseSensitive;
+  this.regExp=regExp;
+  expressionSearchRule=new SearchExpression(caseSensitive,regExp);
+  if (expressionSearchRule.validateSearchStrings(this.searchExpression)) {
+    searchRule=expressionSearchRule;
+  }
+ else   if (this.regExp) {
+    searchRule=new RegExpSearchRule(this.caseSensitive);
+  }
+ else {
+    searchRule=new SimpleSearchRule(this.caseSensitive);
+  }
+}

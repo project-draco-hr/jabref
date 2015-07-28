@@ -1,27 +1,33 @@
 {
 class ExportAction extends MnemonicAwareAction {
     private static final long serialVersionUID=639463604530580554L;
-    private JabRefFrame frame;
-    private boolean selectedOnly;
+    private final JabRefFrame frame;
+    private final boolean selectedOnly;
     public ExportAction(    JabRefFrame frame,    boolean selectedOnly){
       this.frame=frame;
       this.selectedOnly=selectedOnly;
-      putValue(NAME,selectedOnly ? "Export selected entries" : "Export");
+      putValue(Action.NAME,selectedOnly ? "Export selected entries" : "Export");
     }
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       ExportFormats.initAllExports();
-      JFileChooser fc=ExportFormats.createExportFileChooser(Globals.prefs.get("exportWorkingDirectory"));
+      JFileChooser fc=ExportFormats.createExportFileChooser(Globals.prefs.get(JabRefPreferences.EXPORT_WORKING_DIRECTORY));
       fc.showSaveDialog(frame);
       File file=fc.getSelectedFile();
-      if (file == null)       return;
+      if (file == null) {
+        return;
+      }
       FileFilter ff=fc.getFileFilter();
       if (ff instanceof ExportFileFilter) {
         ExportFileFilter eff=(ExportFileFilter)ff;
         String path=file.getPath();
-        if (!path.endsWith(eff.getExtension()))         path=path + eff.getExtension();
+        if (!path.endsWith(eff.getExtension())) {
+          path=path + eff.getExtension();
+        }
         file=new File(path);
         if (file.exists()) {
-          if (JOptionPane.showConfirmDialog(frame,"'" + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)           return;
+          if (JOptionPane.showConfirmDialog(frame,'\'' + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION) {
+            return;
+          }
         }
         final IExportFormat format=eff.getExportFormat();
         Set<String> entryIds=null;
@@ -34,13 +40,13 @@ class ExportAction extends MnemonicAwareAction {
         }
         Globals.prefs.fileDirForDatabase=frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
         Globals.prefs.databaseFile=frame.basePanel().metaData().getFile();
-        Globals.prefs.put("lastUsedExport",format.getConsoleName());
-        Globals.prefs.put("exportWorkingDirectory",file.getParent());
+        Globals.prefs.put(JabRefPreferences.LAST_USED_EXPORT,format.getConsoleName());
+        Globals.prefs.put(JabRefPreferences.EXPORT_WORKING_DIRECTORY,file.getParent());
         final File finFile=file;
         final Set<String> finEntryIDs=entryIds;
         AbstractWorker exportWorker=new AbstractWorker(){
           String errorMessage=null;
-          public void run(){
+          @Override public void run(){
             try {
               format.performExport(frame.basePanel().database(),frame.basePanel().metaData(),finFile.getPath(),frame.basePanel().getEncoding(),finEntryIDs);
             }
@@ -54,7 +60,7 @@ class ExportAction extends MnemonicAwareAction {
               }
             }
           }
-          public void update(){
+          @Override public void update(){
             if (errorMessage == null) {
               frame.output(Globals.lang("%0 export successful",format.getDisplayName()));
             }

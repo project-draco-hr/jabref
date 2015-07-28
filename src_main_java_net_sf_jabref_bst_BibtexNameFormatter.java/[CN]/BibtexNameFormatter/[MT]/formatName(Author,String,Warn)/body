@@ -13,7 +13,7 @@
       braceLevel++;
       StringBuffer level1Chars=new StringBuffer();
       StringBuffer wholeChar=new StringBuffer();
-      while (i < n && braceLevel > 0) {
+      while ((i < n) && (braceLevel > 0)) {
         wholeChar.append(c[i]);
         if (c[i] == '{') {
           braceLevel++;
@@ -28,17 +28,25 @@
         if (braceLevel == 1) {
           if (Character.isLetter(c[i])) {
             if ("fvlj".indexOf(c[i]) == -1) {
-              if (warn != null)               warn.warn("Format String in format.name$ may only contain fvlj on brace level 1 in group " + group + ": "+ format);
+              if (warn != null) {
+                warn.warn("Format String in format.name$ may only contain fvlj on brace level 1 in group " + group + ": "+ format);
+              }
             }
- else             level1Chars.append(c[i]);
+ else {
+              level1Chars.append(c[i]);
+            }
           }
         }
         i++;
       }
       i--;
       String control=level1Chars.toString().toLowerCase();
-      if (control.length() == 0)       continue;
-      if (control.length() > 2 && warn != null)       warn.warn("Format String in format.name$ may only be one or two character long on brace level 1 in group " + group + ": "+ format);
+      if (control.length() == 0) {
+        continue;
+      }
+      if ((control.length() > 2) && (warn != null)) {
+        warn.warn("Format String in format.name$ may only be one or two character long on brace level 1 in group " + group + ": "+ format);
+      }
       char type=control.charAt(0);
       String tokenS;
 switch (type) {
@@ -68,25 +76,27 @@ if (control.charAt(1) == control.charAt(0)) {
 abbreviateThatIsSingleLetter=false;
 }
  else {
-if (warn != null) warn.warn("Format String in format.name$ may only contain one type of vlfj on brace level 1 in group " + group + ": "+ format);
+if (warn != null) {
+warn.warn("Format String in format.name$ may only contain one type of vlfj on brace level 1 in group " + group + ": "+ format);
 }
 }
-if (braceLevel == 0 && wholeChar.charAt(wholeChar.length() - 1) == '}') {
+}
+if ((braceLevel == 0) && (wholeChar.charAt(wholeChar.length() - 1) == '}')) {
 wholeChar.deleteCharAt(wholeChar.length() - 1);
 }
 char[] d=wholeChar.toString().toCharArray();
 int bLevel=1;
 String interToken=null;
 for (int j=0; j < d.length; j++) {
-if (Character.isLetter(d[j]) && bLevel == 1) {
+if (Character.isLetter(d[j]) && (bLevel == 1)) {
 groupStart=sb.length();
 if (!abbreviateThatIsSingleLetter) {
 j++;
 }
-if (j + 1 < d.length) {
+if ((j + 1) < d.length) {
 if (d[j + 1] == '{') {
 StringBuffer interTokenSb=new StringBuffer();
-j=consumeToMatchingBrace(interTokenSb,d,j + 1);
+j=BibtexNameFormatter.consumeToMatchingBrace(interTokenSb,d,j + 1);
 interToken=interTokenSb.substring(1,interTokenSb.length() - 1);
 }
 }
@@ -95,19 +105,21 @@ String token=tokens[k];
 if (abbreviateThatIsSingleLetter) {
 String[] dashes=token.split("-");
 StringBuffer abbToken=new StringBuffer();
-for (int t=0; t < dashes.length - 1; t++) {
-abbToken.append(getFirstCharOfString(dashes[t])).append(".-");
+for (int t=0; t < (dashes.length - 1); t++) {
+abbToken.append(BibtexNameFormatter.getFirstCharOfString(dashes[t])).append(".-");
 }
-if (dashes.length > 0) abbToken.append(getFirstCharOfString(dashes[dashes.length - 1]));
+if (dashes.length > 0) {
+abbToken.append(BibtexNameFormatter.getFirstCharOfString(dashes[dashes.length - 1]));
+}
 token=abbToken.toString();
 }
 sb.append(token);
-if (k < tokens.length - 1) {
+if (k < (tokens.length - 1)) {
 if (interToken == null) {
 if (abbreviateThatIsSingleLetter) {
 sb.append(".");
 }
-if (k == tokens.length - 2 || numberOfChars(sb.substring(groupStart,sb.length()),3) < 3) {
+if ((k == (tokens.length - 2)) || (BibtexNameFormatter.numberOfChars(sb.substring(groupStart,sb.length()),3) < 3)) {
 sb.append("~");
 }
  else {
@@ -136,20 +148,26 @@ sb.append(d[j]);
 }
 if (sb.length() > 0) {
 boolean noDisTie=false;
-if (sb.charAt(sb.length() - 1) == '~' && (numberOfChars(sb.substring(groupStart,sb.length()),4) >= 4 || (sb.length() > 1 && (noDisTie=sb.charAt(sb.length() - 2) == '~')))) {
+if ((sb.charAt(sb.length() - 1) == '~') && ((BibtexNameFormatter.numberOfChars(sb.substring(groupStart,sb.length()),4) >= 4) || ((sb.length() > 1) && (noDisTie=sb.charAt(sb.length() - 2) == '~')))) {
 sb.deleteCharAt(sb.length() - 1);
-if (!noDisTie) sb.append(' ');
+if (!noDisTie) {
+sb.append(' ');
+}
 }
 }
 }
  else if (c[i] == '}') {
-if (warn != null) warn.warn("Unmatched brace in format string: " + format);
+if (warn != null) {
+warn.warn("Unmatched brace in format string: " + format);
+}
 }
  else {
 sb.append(c[i]);
 }
 i++;
 }
-if (braceLevel != 0) warn.warn("Unbalanced brace in format string for nameFormat: " + format);
+if (braceLevel != 0) {
+warn.warn("Unbalanced brace in format string for nameFormat: " + format);
+}
 return sb.toString();
 }

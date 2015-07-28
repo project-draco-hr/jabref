@@ -1,8 +1,8 @@
 {
-  _db=database;
+  LabelPatternUtil._db=database;
   ArrayList<String> _al;
   String _label;
-  StringBuffer _sb=new StringBuffer();
+  StringBuilder _sb=new StringBuilder();
   boolean forceUpper=false, forceLower=false;
   try {
     String _type=_entry.getType().getName().toLowerCase();
@@ -18,9 +18,11 @@
         field=false;
       }
  else       if (field) {
-        String[] parts=parseFieldMarker(val);
-        String label=makeLabel(_entry,parts[0]);
-        if (parts.length > 1)         label=applyModifiers(label,parts,1);
+        String[] parts=LabelPatternUtil.parseFieldMarker(val);
+        String label=LabelPatternUtil.makeLabel(_entry,parts[0]);
+        if (parts.length > 1) {
+          label=LabelPatternUtil.applyModifiers(label,parts,1);
+        }
         _sb.append(label);
       }
  else {
@@ -44,37 +46,45 @@
     _label=_label.toLowerCase();
   }
   String oldKey=_entry.getCiteKey();
-  int occurences=_db.getNumberOfKeyOccurences(_label);
-  if ((oldKey != null) && oldKey.equals(_label))   occurences--;
-  boolean alwaysAddLetter=Globals.prefs.getBoolean("keyGenAlwaysAddLetter"), firstLetterA=Globals.prefs.getBoolean("keyGenFirstLetterA");
+  int occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(_label);
+  if ((oldKey != null) && oldKey.equals(_label)) {
+    occurences--;
+  }
+  boolean alwaysAddLetter=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_ALWAYS_ADD_LETTER), firstLetterA=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_FIRST_LETTER_A);
   if (!alwaysAddLetter && (occurences == 0)) {
     if (!_label.equals(oldKey)) {
-      if (_db.getEntryById(_entry.getId()) == null) {
+      if (LabelPatternUtil._db.getEntryById(_entry.getId()) == null) {
         _entry.setField(BibtexFields.KEY_FIELD,_label);
       }
  else {
-        _db.setCiteKeyForEntry(_entry.getId(),_label);
+        LabelPatternUtil._db.setCiteKeyForEntry(_entry.getId(),_label);
       }
     }
   }
  else {
     int number=0;
-    if (!alwaysAddLetter && !firstLetterA)     number=1;
-    String moddedKey=_label + getAddition(number);
-    occurences=_db.getNumberOfKeyOccurences(moddedKey);
-    if ((oldKey != null) && oldKey.equals(moddedKey))     occurences--;
+    if (!alwaysAddLetter && !firstLetterA) {
+      number=1;
+    }
+    String moddedKey=_label + LabelPatternUtil.getAddition(number);
+    occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(moddedKey);
+    if ((oldKey != null) && oldKey.equals(moddedKey)) {
+      occurences--;
+    }
     while (occurences > 0) {
       number++;
-      moddedKey=_label + getAddition(number);
-      occurences=_db.getNumberOfKeyOccurences(moddedKey);
-      if ((oldKey != null) && oldKey.equals(moddedKey))       occurences--;
+      moddedKey=_label + LabelPatternUtil.getAddition(number);
+      occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(moddedKey);
+      if ((oldKey != null) && oldKey.equals(moddedKey)) {
+        occurences--;
+      }
     }
     if (!moddedKey.equals(oldKey)) {
-      if (_db.getEntryById(_entry.getId()) == null) {
+      if (LabelPatternUtil._db.getEntryById(_entry.getId()) == null) {
         _entry.setField(BibtexFields.KEY_FIELD,moddedKey);
       }
  else {
-        _db.setCiteKeyForEntry(_entry.getId(),moddedKey);
+        LabelPatternUtil._db.setCiteKeyForEntry(_entry.getId(),moddedKey);
       }
     }
   }

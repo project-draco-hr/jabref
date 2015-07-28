@@ -4,8 +4,12 @@
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
   while ((str=in.readLine()) != null) {
-    if (str.length() < 3)     continue;
-    if (str.substring(0,6).equals("PMID- "))     sb.append("::").append(str);
+    if (str.length() < 3) {
+      continue;
+    }
+    if (str.substring(0,6).equals("PMID- ")) {
+      sb.append("::").append(str);
+    }
  else {
       String beg=str.substring(0,6);
       if (beg.indexOf(" ") > 0) {
@@ -22,7 +26,9 @@
   HashMap<String,String> hm=new HashMap<String,String>();
   for (  String entry : entries) {
     String[] fields=entry.split(" ## ");
-    if (fields.length == 0)     fields=entry.split("\n");
+    if (fields.length == 0) {
+      fields=entry.split("\n");
+    }
     String Type="";
     String pages="";
     String shortauthor="";
@@ -30,7 +36,9 @@
     hm.clear();
     for (    String field : fields) {
       System.out.println(">>>" + field + "<<<");
-      if (field.length() <= 2)       continue;
+      if (field.length() <= 2) {
+        continue;
+      }
       String beg=field.substring(0,6);
       String value=field.substring(6);
       value=value.trim();
@@ -38,29 +46,53 @@
         Type="article";
       }
  else       if (beg.equals("TY  - ")) {
-        if ("CONF".equals(value))         Type="inproceedings";
+        if ("CONF".equals(value)) {
+          Type="inproceedings";
+        }
       }
- else       if (beg.equals("JO  - "))       hm.put("booktitle",value);
+ else       if (beg.equals("JO  - ")) {
+        hm.put("booktitle",value);
+      }
  else       if (beg.equals("FAU - ")) {
         String tmpauthor=value.replaceAll("EOLEOL"," and ");
-        if (!"".equals(fullauthor))         fullauthor=fullauthor + " and " + tmpauthor;
- else         fullauthor=tmpauthor;
+        if (!"".equals(fullauthor)) {
+          fullauthor=fullauthor + " and " + tmpauthor;
+        }
+ else {
+          fullauthor=tmpauthor;
+        }
       }
  else       if (beg.equals("AU  - ")) {
         String tmpauthor=value.replaceAll("EOLEOL"," and ").replaceAll(" ",", ");
-        if (!"".equals(shortauthor))         shortauthor=shortauthor + " and " + tmpauthor;
- else         shortauthor=tmpauthor;
+        if (!"".equals(shortauthor)) {
+          shortauthor=shortauthor + " and " + tmpauthor;
+        }
+ else {
+          shortauthor=tmpauthor;
+        }
       }
- else       if (beg.equals("TI  - "))       hm.put("title",value.replaceAll("EOLEOL"," "));
- else       if (beg.equals("TA  - "))       hm.put("journal",value.replaceAll("EOLEOL"," "));
- else       if (beg.equals("AB  - "))       hm.put("abstract",value.replaceAll("EOLEOL"," "));
- else       if (beg.equals("PG  - "))       pages=value.replaceAll("-","--");
- else       if (beg.equals("IP  - "))       hm.put("number",value);
+ else       if (beg.equals("TI  - ")) {
+        hm.put("title",value.replaceAll("EOLEOL"," "));
+      }
+ else       if (beg.equals("TA  - ")) {
+        hm.put("journal",value.replaceAll("EOLEOL"," "));
+      }
+ else       if (beg.equals("AB  - ")) {
+        hm.put("abstract",value.replaceAll("EOLEOL"," "));
+      }
+ else       if (beg.equals("PG  - ")) {
+        pages=value.replaceAll("-","--");
+      }
+ else       if (beg.equals("IP  - ")) {
+        hm.put("number",value);
+      }
  else       if (beg.equals("DP  - ")) {
         String[] parts=value.split(" ");
         hm.put("year",parts[0]);
       }
- else       if (beg.equals("VI  - "))       hm.put("volume",value);
+ else       if (beg.equals("VI  - ")) {
+        hm.put("volume",value);
+      }
  else       if (beg.equals("AID - ")) {
         String[] parts=value.split(" ");
         if ("[doi]".equals(parts[1])) {
@@ -69,12 +101,20 @@
         }
       }
     }
-    if (!"".equals(pages))     hm.put("pages",pages);
-    if (!"".equals(fullauthor))     hm.put("author",fullauthor);
- else     if (!"".equals(shortauthor))     hm.put("author",shortauthor);
+    if (!"".equals(pages)) {
+      hm.put("pages",pages);
+    }
+    if (!"".equals(fullauthor)) {
+      hm.put("author",fullauthor);
+    }
+ else     if (!"".equals(shortauthor)) {
+      hm.put("author",shortauthor);
+    }
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
     b.setField(hm);
-    if (hm.get("author") != null || hm.get("title") != null)     bibitems.add(b);
+    if ((hm.get("author") != null) || (hm.get("title") != null)) {
+      bibitems.add(b);
+    }
   }
   return bibitems;
 }

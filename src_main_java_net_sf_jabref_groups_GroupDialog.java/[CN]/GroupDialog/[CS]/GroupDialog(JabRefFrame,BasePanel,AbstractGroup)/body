@@ -1,9 +1,8 @@
 {
   super(jabrefFrame,Globals.lang("Edit group"),true);
   m_basePanel=basePanel;
-  JabRefFrame m_parent=jabrefFrame;
   m_editedGroup=editedGroup;
-  m_kgSearchField.setText(jabrefFrame.prefs().get("groupsDefaultField"));
+  m_kgSearchField.setText(jabrefFrame.prefs().get(JabRefPreferences.GROUPS_DEFAULT_FIELD));
   ButtonGroup groupType=new ButtonGroup();
   groupType.add(m_explicitRadioButton);
   groupType.add(m_keywordsRadioButton);
@@ -12,10 +11,10 @@
   groupHierarchy.add(m_independentButton);
   groupHierarchy.add(m_intersectionButton);
   groupHierarchy.add(m_unionButton);
-  m_description.setVerticalAlignment(JLabel.TOP);
+  m_description.setVerticalAlignment(SwingConstants.TOP);
   getRootPane().setDefaultButton(m_ok);
   m_optionsPanel.setLayout(m_optionsLayout);
-  m_optionsPanel.add(new JPanel(),"" + INDEX_EXPLICITGROUP);
+  m_optionsPanel.add(new JPanel(),"" + GroupDialog.INDEX_EXPLICITGROUP);
   FormLayout layoutKG=new FormLayout("right:pref, 4dlu, fill:1dlu:grow, 2dlu, left:pref");
   DefaultFormBuilder builderKG=new DefaultFormBuilder(layoutKG);
   builderKG.append(Globals.lang("Field"));
@@ -23,12 +22,12 @@
   builderKG.nextLine();
   builderKG.append(Globals.lang("Keyword"));
   builderKG.append(m_kgSearchTerm);
-  builderKG.append(new FieldContentSelector(m_parent,m_basePanel,this,m_kgSearchTerm,m_basePanel.metaData(),null,true,", "));
+  builderKG.append(new FieldContentSelector(jabrefFrame,m_basePanel,this,m_kgSearchTerm,m_basePanel.metaData(),null,true,", "));
   builderKG.nextLine();
   builderKG.append(m_kgCaseSensitive,3);
   builderKG.nextLine();
   builderKG.append(m_kgRegExp,3);
-  m_optionsPanel.add(builderKG.getPanel(),"" + INDEX_KEYWORDGROUP);
+  m_optionsPanel.add(builderKG.getPanel(),"" + GroupDialog.INDEX_KEYWORDGROUP);
   FormLayout layoutSG=new FormLayout("right:pref, 4dlu, fill:1dlu:grow");
   DefaultFormBuilder builderSG=new DefaultFormBuilder(layoutSG);
   builderSG.append(Globals.lang("Search expression"));
@@ -37,7 +36,7 @@
   builderSG.append(m_sgCaseSensitive,3);
   builderSG.nextLine();
   builderSG.append(m_sgRegExp,3);
-  m_optionsPanel.add(builderSG.getPanel(),"" + INDEX_SEARCHGROUP);
+  m_optionsPanel.add(builderSG.getPanel(),"" + GroupDialog.INDEX_SEARCHGROUP);
   FormLayout layoutBP=new FormLayout("pref, 4dlu, pref","p");
   layoutBP.setColumnGroups(new int[][]{{1,3}});
   ButtonBarBuilder builderBP=new ButtonBarBuilder();
@@ -87,8 +86,8 @@
   builderAll.appendSeparator(Globals.lang("Description"));
   builderAll.nextLine();
   builderAll.nextLine();
-  JScrollPane sp=new JScrollPane(m_description,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED){
-    public Dimension getPreferredSize(){
+  JScrollPane sp=new JScrollPane(m_description,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED){
+    @Override public Dimension getPreferredSize(){
       return getMaximumSize();
     }
   }
@@ -106,9 +105,9 @@
   setResizable(false);
   updateComponents();
   setLayoutForSelectedGroup();
-  Util.placeDialog(this,m_parent);
+  Util.placeDialog(this,jabrefFrame);
   ItemListener radioButtonItemListener=new ItemListener(){
-    public void itemStateChanged(    ItemEvent e){
+    @Override public void itemStateChanged(    ItemEvent e){
       setLayoutForSelectedGroup();
       updateComponents();
     }
@@ -118,7 +117,7 @@
   m_keywordsRadioButton.addItemListener(radioButtonItemListener);
   m_searchRadioButton.addItemListener(radioButtonItemListener);
   Action cancelAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }
@@ -127,7 +126,7 @@
   builderAll.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(Globals.prefs.getKey("Close dialog"),"close");
   builderAll.getPanel().getActionMap().put("close",cancelAction);
   m_ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       m_okPressed=true;
       if (m_explicitRadioButton.isSelected()) {
         if (m_editedGroup instanceof ExplicitGroup) {
@@ -137,18 +136,20 @@
         }
  else {
           m_resultingGroup=new ExplicitGroup(m_name.getText().trim(),getContext());
-          if (m_editedGroup != null)           addPreviousEntries();
+          if (m_editedGroup != null) {
+            addPreviousEntries();
+          }
         }
       }
  else       if (m_keywordsRadioButton.isSelected()) {
         m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_kgSearchField.getText().trim(),m_kgSearchTerm.getText().trim(),m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected(),getContext());
-        if ((m_editedGroup instanceof ExplicitGroup || m_editedGroup instanceof SearchGroup) && m_resultingGroup.supportsAdd()) {
+        if (((m_editedGroup instanceof ExplicitGroup) || (m_editedGroup instanceof SearchGroup)) && m_resultingGroup.supportsAdd()) {
           addPreviousEntries();
         }
       }
  else       if (m_searchRadioButton.isSelected()) {
         try {
-          m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),m_sgCaseSensitive.isSelected(),m_sgRegExp.isSelected(),getContext());
+          m_resultingGroup=new SearchGroup(m_name.getText().trim(),m_sgSearchExpression.getText().trim(),isCaseSensitive(),isRegex(),getContext());
         }
  catch (        Exception e1) {
         }
@@ -158,13 +159,13 @@
   }
 );
   CaretListener caretListener=new CaretListener(){
-    public void caretUpdate(    CaretEvent e){
+    @Override public void caretUpdate(    CaretEvent e){
       updateComponents();
     }
   }
 ;
   ItemListener itemListener=new ItemListener(){
-    public void itemStateChanged(    ItemEvent e){
+    @Override public void itemStateChanged(    ItemEvent e){
       updateComponents();
     }
   }
@@ -203,6 +204,6 @@
   }
  else {
     m_explicitRadioButton.setSelected(true);
-    setContext(AbstractGroup.INDEPENDENT);
+    setContext(GroupHierarchyType.INDEPENDENT);
   }
 }

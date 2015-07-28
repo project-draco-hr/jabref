@@ -3,71 +3,73 @@
   metaData=metaData_;
   boolean multiple=(panel.mainTable.getSelectedRowCount() > 1);
   BibtexEntry be=null;
-  if (panel.mainTable.getSelectedRowCount() == 1)   be=panel.mainTable.getSelected().get(0);
+  if (panel.mainTable.getSelectedRowCount() == 1) {
+    be=panel.mainTable.getSelected().get(0);
+  }
   addPopupMenuListener(this);
   add(new AbstractAction(Globals.lang("Copy"),GUIGlobals.getImage("copy")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("copy");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(new AbstractAction(Globals.lang("Paste"),GUIGlobals.getImage("paste")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("paste");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(new AbstractAction(Globals.lang("Cut"),GUIGlobals.getImage("cut")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("cut");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(new AbstractAction(Globals.lang("Delete"),GUIGlobals.getImage("delete")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("delete");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   addSeparator();
   add(new AbstractAction(Globals.lang("Export to clipboard")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("exportToClipboard");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(new AbstractAction(Globals.lang("Send as email")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("sendAsEmail");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
@@ -75,27 +77,29 @@
   addSeparator();
   JMenu markSpecific=JabRefFrame.subMenu("Mark specific color");
   JabRefFrame frame=panel.frame;
-  for (int i=0; i < Util.MAX_MARKING_LEVEL; i++)   markSpecific.add(new MarkEntriesAction(frame,i).getMenuItem());
+  for (int i=0; i < EntryMarker.MAX_MARKING_LEVEL; i++) {
+    markSpecific.add(new MarkEntriesAction(frame,i).getMenuItem());
+  }
   if (multiple) {
     add(new AbstractAction(Globals.lang("Mark entries"),GUIGlobals.getImage("markEntries")){
-      public void actionPerformed(      ActionEvent e){
+      @Override public void actionPerformed(      ActionEvent e){
         try {
           panel.runCommand("markEntries");
         }
  catch (        Throwable ex) {
-          logger.warning(ex.getMessage());
+          RightClickMenu.logger.warning(ex.getMessage());
         }
       }
     }
 );
     add(markSpecific);
     add(new AbstractAction(Globals.lang("Unmark entries"),GUIGlobals.getImage("unmarkEntries")){
-      public void actionPerformed(      ActionEvent e){
+      @Override public void actionPerformed(      ActionEvent e){
         try {
           panel.runCommand("unmarkEntries");
         }
  catch (        Throwable ex) {
-          logger.warning(ex.getMessage());
+          RightClickMenu.logger.warning(ex.getMessage());
         }
       }
     }
@@ -106,12 +110,12 @@
     String marked=be.getField(BibtexFields.MARKED);
     if ((marked == null) || (marked.isEmpty())) {
       add(new AbstractAction(Globals.lang("Mark entry"),GUIGlobals.getImage("markEntries")){
-        public void actionPerformed(        ActionEvent e){
+        @Override public void actionPerformed(        ActionEvent e){
           try {
             panel.runCommand("markEntries");
           }
  catch (          Throwable ex) {
-            logger.warning(ex.getMessage());
+            RightClickMenu.logger.warning(ex.getMessage());
           }
         }
       }
@@ -121,12 +125,12 @@
  else {
       add(markSpecific);
       add(new AbstractAction(Globals.lang("Unmark entry"),GUIGlobals.getImage("unmarkEntries")){
-        public void actionPerformed(        ActionEvent e){
+        @Override public void actionPerformed(        ActionEvent e){
           try {
             panel.runCommand("unmarkEntries");
           }
  catch (          Throwable ex) {
-            logger.warning(ex.getMessage());
+            RightClickMenu.logger.warning(ex.getMessage());
           }
         }
       }
@@ -136,8 +140,9 @@
   }
   if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
-      populateSpecialFieldMenu(this.rankingMenu,Rank.getInstance(),panel.frame);
-      add(this.rankingMenu);
+      JMenu rankingMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(rankingMenu,Rank.getInstance(),panel.frame);
+      add(rankingMenu);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
       add(Relevance.getInstance().getValues().get(0).getMenuAction(panel.frame));
@@ -149,77 +154,79 @@
       add(Printed.getInstance().getValues().get(0).getMenuAction(panel.frame));
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
-      populateSpecialFieldMenu(this.priorityMenu,Priority.getInstance(),panel.frame);
-      add(this.priorityMenu);
+      JMenu priorityMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(priorityMenu,Priority.getInstance(),panel.frame);
+      add(priorityMenu);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ)) {
-      populateSpecialFieldMenu(this.readStatusMenu,ReadStatus.getInstance(),panel.frame);
-      add(this.readStatusMenu);
+      JMenu readStatusMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(readStatusMenu,ReadStatus.getInstance(),panel.frame);
+      add(readStatusMenu);
     }
     addSeparator();
   }
   add(new AbstractAction(Globals.lang("Open folder"),GUIGlobals.getImage("openFolder")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("openFolder");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(new AbstractAction(Globals.lang("Open file"),GUIGlobals.getImage("openExternalFile")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("openExternalFile");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(new AbstractAction(Globals.lang("Attach file"),GUIGlobals.getImage("open")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("addFileLink");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(new AbstractAction(Globals.lang("Open URL or DOI"),GUIGlobals.getImage("www")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("openUrl");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(new AbstractAction(Globals.lang("Copy BibTeX key")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("copyKey");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
-  add(new AbstractAction(Globals.lang("Copy") + " \\cite{" + Globals.lang("BibTeX key")+ "}"){
-    public void actionPerformed(    ActionEvent e){
+  add(new AbstractAction(Globals.lang("Copy") + " \\cite{" + Globals.lang("BibTeX key")+ '}'){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("copyCiteKey");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
@@ -228,12 +235,12 @@
   populateTypeMenu();
   add(typeMenu);
   add(new AbstractAction(Globals.lang("Plain text import")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("importPlainText");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
@@ -242,44 +249,44 @@
   add(JabRef.jrf.manageKeywords);
   addSeparator();
   groupAdd=new JMenuItem(new AbstractAction(Globals.lang("Add to group")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("addToGroup");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(groupAdd);
   groupRemove=new JMenuItem(new AbstractAction(Globals.lang("Remove from group")){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("removeFromGroup");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(groupRemove);
-  groupMoveTo=add(new AbstractAction(Globals.lang("Move to group")){
-    public void actionPerformed(    ActionEvent e){
+  JMenuItem groupMoveTo=add(new AbstractAction(Globals.lang("Move to group")){
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand("moveToGroup");
       }
  catch (      Throwable ex) {
-        logger.warning(ex.getMessage());
+        RightClickMenu.logger.warning(ex.getMessage());
       }
     }
   }
 );
   add(groupMoveTo);
   floatMarked.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
-      Globals.prefs.putBoolean("floatMarkedEntries",floatMarked.isSelected());
+    @Override public void actionPerformed(    ActionEvent e){
+      Globals.prefs.putBoolean(JabRefPreferences.FLOAT_MARKED_ENTRIES,floatMarked.isSelected());
       panel.mainTable.refreshSorting();
     }
   }
