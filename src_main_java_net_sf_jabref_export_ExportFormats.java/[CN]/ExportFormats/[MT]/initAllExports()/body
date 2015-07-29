@@ -23,42 +23,7 @@
   ExportFormats.putFormat(new MSBibExportFormat());
   ExportFormats.putFormat(new MySQLExport());
   ExportFormats.putFormat(new PostgreSQLExport());
-  JabRefPlugin plugin=JabRefPlugin.getInstance(PluginCore.getManager());
-  if (plugin != null) {
-    for (    ExportFormatTemplateExtension e : plugin.getExportFormatTemplateExtensions()) {
-      ExportFormat format=PluginBasedExportFormat.getFormat(e);
-      if (format != null) {
-        ExportFormats.putFormat(format);
-      }
-    }
-    for (    final ExportFormatExtension e : plugin.getExportFormatExtensions()) {
-      ExportFormats.putFormat(new IExportFormat(){
-        @Override public String getConsoleName(){
-          return e.getConsoleName();
-        }
-        @Override public String getDisplayName(){
-          return e.getDisplayName();
-        }
-        @Override public FileFilter getFileFilter(){
-          return new ExportFileFilter(this,e.getExtension());
-        }
-        IExportFormat wrapped;
-        @Override public void performExport(        BibtexDatabase database,        MetaData metaData,        String file,        String encoding,        Set<String> entryIds) throws Exception {
-          if (wrapped == null) {
-            wrapped=e.getExportFormat();
-          }
-          wrapped.performExport(database,metaData,file,encoding,entryIds);
-        }
-      }
-);
-    }
-    for (    ExportFormatProviderExtension e : plugin.getExportFormatProviderExtensions()) {
-      IExportFormatProvider formatProvider=e.getFormatProvider();
-      for (      IExportFormat exportFormat : formatProvider.getExportFormats()) {
-        ExportFormats.putFormat(exportFormat);
-      }
-    }
-  }
+  ExportFormats.putFormat(new ModsExportFormat());
   TreeMap<String,ExportFormat> customFormats=Globals.prefs.customExports.getCustomExportFormats();
   for (  IExportFormat format : customFormats.values()) {
     ExportFormats.putFormat(format);
