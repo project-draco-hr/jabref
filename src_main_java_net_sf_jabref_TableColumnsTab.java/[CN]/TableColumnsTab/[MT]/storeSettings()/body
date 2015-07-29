@@ -16,9 +16,18 @@
     _prefs.putStringArray(JabRefPreferences.LIST_OF_FILE_COLUMNS,new String[]{});
   }
   _prefs.putBoolean(JabRefPreferences.SHOW_ONE_LETTER_HEADING_FOR_ICON_COLUMNS,showOneLetterHeadingForIconColumns.isSelected());
-  boolean newSpecialFieldsEnabled=specialFieldsEnabled.isSelected(), newRankingColumn=rankingColumn.isSelected(), newCompactRankingColumn=compactRankingColumn.isSelected(), newQualityColumn=qualityColumn.isSelected(), newPriorityColumn=priorityColumn.isSelected(), newRelevanceColumn=relevanceColumn.isSelected(), newPrintedColumn=printedColumn.isSelected(), newReadStatusColumn=readStatusColumn.isSelected(), newSyncKeyWords=syncKeywords.isSelected(), newWriteSpecialFields=writeSpecialFields.isSelected();
+  boolean newSpecialFieldsEnabled=specialFieldsEnabled.isSelected();
+  boolean newRankingColumn=rankingColumn.isSelected();
+  boolean newCompactRankingColumn=compactRankingColumn.isSelected();
+  boolean newQualityColumn=qualityColumn.isSelected();
+  boolean newPriorityColumn=priorityColumn.isSelected();
+  boolean newRelevanceColumn=relevanceColumn.isSelected();
+  boolean newPrintedColumn=printedColumn.isSelected();
+  boolean newReadStatusColumn=readStatusColumn.isSelected();
+  boolean newSyncKeyWords=syncKeywords.isSelected();
+  boolean newWriteSpecialFields=writeSpecialFields.isSelected();
   boolean restartRequired;
-  restartRequired=(oldSpecialFieldsEnabled != newSpecialFieldsEnabled) || (oldRankingColumn != newRankingColumn) || (oldCompcatRankingColumn != newCompactRankingColumn)|| (oldQualityColumn != newQualityColumn)|| (oldPriorityColumn != newPriorityColumn)|| (oldRelevanceColumn != newRelevanceColumn)|| (oldPrintedColumn != newPrintedColumn)|| (oldReadStatusColumn != newReadStatusColumn)|| (oldSyncKeyWords != newSyncKeyWords)|| (oldWriteSpecialFields != newWriteSpecialFields);
+  restartRequired=oldSpecialFieldsEnabled != newSpecialFieldsEnabled || oldRankingColumn != newRankingColumn || oldCompcatRankingColumn != newCompactRankingColumn || oldQualityColumn != newQualityColumn || oldPriorityColumn != newPriorityColumn || oldRelevanceColumn != newRelevanceColumn || oldPrintedColumn != newPrintedColumn || oldReadStatusColumn != newReadStatusColumn || oldSyncKeyWords != newSyncKeyWords || oldWriteSpecialFields != newWriteSpecialFields;
   if (restartRequired) {
     JOptionPane.showMessageDialog(null,Globals.lang("You have changed settings for special fields.").concat(" ").concat(Globals.lang("You must restart JabRef for this to come into effect.")),Globals.lang("Changed special field settings"),JOptionPane.WARNING_MESSAGE);
   }
@@ -35,7 +44,8 @@
     _prefs.putBoolean(SpecialFieldsUtils.PREF_SERIALIZESPECIALFIELDS,newWriteSpecialFields);
   }
   if (colSetup.isEditing()) {
-    int col=colSetup.getEditingColumn(), row=colSetup.getEditingRow();
+    int col=colSetup.getEditingColumn();
+    int row=colSetup.getEditingRow();
     colSetup.getCellEditor(row,col).stopCellEditing();
   }
   if (tableChanged) {
@@ -48,7 +58,8 @@
         i++;
       }
     }
-    String[] names=new String[tableRows.size()], widths=new String[tableRows.size()];
+    String[] names=new String[tableRows.size()];
+    String[] widths=new String[tableRows.size()];
     int[] nWidths=new int[tableRows.size()];
     _prefs.putInt(JabRefPreferences.NUMBER_COL_WIDTH,ncWidth);
     for (i=0; i < tableRows.size(); i++) {

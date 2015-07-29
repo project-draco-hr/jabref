@@ -1,5 +1,7 @@
 {
-  boolean inString=false, isBracing=false, escaped=false;
+  boolean inString=false;
+  boolean isBracing=false;
+  boolean escaped=false;
   int inBrace=0;
   StringBuilder buf=new StringBuilder();
   for (int i=0; i < s.length(); i++) {
@@ -10,10 +12,10 @@
  else     if (c == '}') {
       inBrace--;
     }
- else     if (!escaped && (c == '#')) {
+ else     if (!escaped && c == '#') {
       inString=!inString;
     }
-    if ((inBrace == 0) && !isBracing && !inString&& Character.isLetter((char)c)&& Character.isUpperCase((char)c)) {
+    if (inBrace == 0 && !isBracing && !inString && Character.isLetter((char)c) && Character.isUpperCase((char)c)) {
       buf.append('{');
       isBracing=true;
     }
@@ -22,7 +24,7 @@
       isBracing=false;
     }
     buf.append((char)c);
-    escaped=(c == '\\') && !escaped;
+    escaped=c == '\\' && !escaped;
   }
   if (isBracing) {
     buf.append('}');

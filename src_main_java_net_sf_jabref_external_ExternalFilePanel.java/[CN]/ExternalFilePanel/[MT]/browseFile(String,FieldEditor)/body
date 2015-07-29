@@ -4,8 +4,9 @@
   if (dirs.length > 0) {
     directory=dirs[0];
   }
-  String dir=editor.getText(), retVal;
-  if ((directory == null) || !(new File(dir)).isAbsolute()) {
+  String dir=editor.getText();
+  String retVal;
+  if (directory == null || !new File(dir).isAbsolute()) {
     if (directory != null) {
       dir=directory;
     }
@@ -17,7 +18,7 @@
   if (chosenFile != null) {
     File newFile=new File(chosenFile);
     String position=newFile.getParent();
-    if ((directory != null) && position.startsWith(directory)) {
+    if (directory != null && position.startsWith(directory)) {
       String relPath=position.substring(directory.length(),position.length()) + File.separator + newFile.getName();
       if (relPath.startsWith(File.separator)) {
         relPath=relPath.substring(File.separator.length(),relPath.length());

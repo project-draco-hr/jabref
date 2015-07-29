@@ -38,7 +38,7 @@ if (field != null) {
 }
 }
 }
-if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && (field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())))) {
+if (field == null || type == LayoutHelper.IS_GROUP_START && field.equalsIgnoreCase(LayoutHelper.getCurrentGroup())) {
 return null;
 }
  else {
@@ -51,7 +51,7 @@ boolean previousSkipped=false;
 for (int i=0; i < layoutEntries.length; i++) {
 fieldText=layoutEntries[i].doLayout(bibtex,database);
 if (fieldText == null) {
-  if ((i + 1) < layoutEntries.length) {
+  if (i + 1 < layoutEntries.length) {
     if (layoutEntries[i + 1].doLayout(bibtex,database).trim().isEmpty()) {
       i++;
       previousSkipped=true;
@@ -62,7 +62,7 @@ if (fieldText == null) {
  else {
   if (previousSkipped) {
     int eol=0;
-    while ((eol < fieldText.length()) && ((fieldText.charAt(eol) == '\n') || (fieldText.charAt(eol) == '\r'))) {
+    while (eol < fieldText.length() && (fieldText.charAt(eol) == '\n' || fieldText.charAt(eol) == '\r')) {
       eol++;
     }
     if (eol < fieldText.length()) {

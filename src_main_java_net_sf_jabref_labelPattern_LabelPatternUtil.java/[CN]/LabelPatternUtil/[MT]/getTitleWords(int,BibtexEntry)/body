@@ -1,16 +1,18 @@
 {
-  String ss=(new RemoveLatexCommands()).format(_entry.getField("title"));
-  StringBuffer _sbvalue=new StringBuffer(), current;
-  int piv=0, words=0;
-  mainl:   while ((piv < ss.length()) && (words < number)) {
+  String ss=new RemoveLatexCommands().format(_entry.getField("title"));
+  StringBuffer _sbvalue=new StringBuffer();
+  StringBuffer current;
+  int piv=0;
+  int words=0;
+  mainl:   while (piv < ss.length() && words < number) {
     current=new StringBuffer();
-    while ((piv < ss.length()) && !Character.isWhitespace(ss.charAt(piv)) && (ss.charAt(piv) != '-')) {
+    while (piv < ss.length() && !Character.isWhitespace(ss.charAt(piv)) && ss.charAt(piv) != '-') {
       current.append(ss.charAt(piv));
       piv++;
     }
     piv++;
     String word=current.toString().trim();
-    if (word.length() == 0) {
+    if (word.isEmpty()) {
       continue;
     }
     for (int _i=0; _i < SKIP_WORDS.length; _i++) {

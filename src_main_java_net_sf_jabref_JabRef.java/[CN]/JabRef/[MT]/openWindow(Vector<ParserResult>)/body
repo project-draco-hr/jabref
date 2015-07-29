@@ -10,13 +10,13 @@
  catch (  Throwable e) {
     e.printStackTrace();
   }
-  if (!cli.isBlank() && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED) && (Globals.prefs.get(JabRefPreferences.LAST_EDITED) != null)) {
+  if (!cli.isBlank() && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED) && Globals.prefs.get(JabRefPreferences.LAST_EDITED) != null) {
     String[] names=Globals.prefs.getStringArray(JabRefPreferences.LAST_EDITED);
     lastEdLoop:     for (    String name : names) {
       File fileToOpen=new File(name);
       for (int j=0; j < loaded.size(); j++) {
         ParserResult pr=loaded.elementAt(j);
-        if ((pr.getFile() != null) && pr.getFile().equals(fileToOpen)) {
+        if (pr.getFile() != null && pr.getFile().equals(fileToOpen)) {
           continue lastEdLoop;
         }
       }
@@ -104,7 +104,7 @@
       JOptionPane.showMessageDialog(JabRef.jrf,wrn.toString(),Globals.lang("Warnings") + " (" + pr.getFile().getName()+ ")",JOptionPane.WARNING_MESSAGE);
     }
   }
-  for (int i=0; (i < loaded.size()) && (i < JabRef.jrf.baseCount()); i++) {
+  for (int i=0; i < loaded.size() && i < JabRef.jrf.baseCount(); i++) {
     ParserResult pr=loaded.elementAt(i);
     BasePanel panel=JabRef.jrf.baseAt(i);
     OpenDatabaseAction.performPostOpenActions(panel,pr,true);

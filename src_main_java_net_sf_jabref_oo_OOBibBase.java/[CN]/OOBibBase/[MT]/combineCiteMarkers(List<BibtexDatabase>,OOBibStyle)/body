@@ -5,7 +5,7 @@
   final XTextRangeCompare compare=UnoRuntime.queryInterface(XTextRangeCompare.class,text);
   int piv=0;
   boolean madeModifications=false;
-  while (piv < (names.length - 1)) {
+  while (piv < names.length - 1) {
     XTextRange r1=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv])).getAnchor().getEnd();
     XTextRange r2=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv + 1])).getAnchor().getStart();
     if (r1.getText() != r2.getText()) {
@@ -15,11 +15,11 @@
     XTextCursor mxDocCursor=r1.getText().createTextCursorByRange(r1);
     mxDocCursor.goRight((short)1,true);
     boolean couldExpand=true;
-    while (couldExpand && (compare.compareRegionEnds(mxDocCursor,r2) > 0)) {
+    while (couldExpand && compare.compareRegionEnds(mxDocCursor,r2) > 0) {
       couldExpand=mxDocCursor.goRight((short)1,true);
     }
     String text=mxDocCursor.getString();
-    if ((text.indexOf('\n') == -1) && (text.trim().isEmpty())) {
+    if (text.indexOf('\n') == -1 && text.trim().isEmpty()) {
       if (style.isFormatCitations()) {
         XPropertySet xCursorProps=UnoRuntime.queryInterface(XPropertySet.class,mxDocCursor);
         String charStyle=style.getCitationCharacterFormat();

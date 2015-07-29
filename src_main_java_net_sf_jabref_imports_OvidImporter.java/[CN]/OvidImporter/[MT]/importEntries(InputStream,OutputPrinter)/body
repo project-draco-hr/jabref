@@ -4,7 +4,7 @@
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String line;
   while ((line=in.readLine()) != null) {
-    if ((!line.isEmpty()) && (line.charAt(0) != ' ')) {
+    if (!line.isEmpty() && line.charAt(0) != ' ') {
       sb.append("__NEWFIELD__");
     }
     sb.append(line);
@@ -18,7 +18,7 @@
       int linebreak=field.indexOf('\n');
       String fieldName=field.substring(0,linebreak).trim();
       String content=field.substring(linebreak).trim();
-      boolean isAuthor=(fieldName.indexOf("Author") == 0) && !fieldName.contains("Author Keywords") && !fieldName.contains("Author e-mail");
+      boolean isAuthor=fieldName.indexOf("Author") == 0 && !fieldName.contains("Author Keywords") && !fieldName.contains("Author e-mail");
       if (!isAuthor && content.endsWith(".")) {
         content=content.substring(0,content.length() - 1);
       }
@@ -92,7 +92,7 @@
       }
     }
     String auth=h.get("author");
-    if ((auth != null) && (auth.contains(" [Ed]"))) {
+    if (auth != null && auth.contains(" [Ed]")) {
       h.remove("author");
       h.put("editor",auth.replaceAll(" \\[Ed\\]",""));
     }

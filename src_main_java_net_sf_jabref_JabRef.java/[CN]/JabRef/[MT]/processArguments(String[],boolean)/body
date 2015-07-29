@@ -55,14 +55,14 @@
   GUIGlobals.setUpIconTheme();
   Vector<ParserResult> loaded=new Vector<ParserResult>();
   Vector<String> toImport=new Vector<String>();
-  if (!cli.isBlank() && (cli.getLeftOver().length > 0)) {
+  if (!cli.isBlank() && cli.getLeftOver().length > 0) {
     for (    String aLeftOver : cli.getLeftOver()) {
       boolean bibExtension=aLeftOver.toLowerCase().endsWith("bib");
       ParserResult pr=null;
       if (bibExtension) {
         pr=JabRef.openBibFile(aLeftOver,false);
       }
-      if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
+      if (pr == null || pr == ParserResult.INVALID_FORMAT) {
         if (initialStartup) {
           toImport.add(aLeftOver);
         }
@@ -110,14 +110,14 @@
       BibtexDatabase dataBase=pr.getDatabase();
       SearchManagerNoGUI smng=new SearchManagerNoGUI(searchTerm,dataBase);
       BibtexDatabase newBase=smng.getDBfromMatches();
-      if ((newBase != null) && (newBase.getEntryCount() > 0)) {
+      if (newBase != null && newBase.getEntryCount() > 0) {
         String formatName=null;
         IExportFormat format;
 switch (data.length) {
-case (3):
+case 3:
           formatName=data[2];
         break;
-case (2):
+case 2:
       formatName="tablerefsabsbib";
     break;
 default :

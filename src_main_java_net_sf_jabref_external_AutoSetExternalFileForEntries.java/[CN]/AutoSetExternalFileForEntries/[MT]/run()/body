@@ -21,11 +21,11 @@
       progress+=weightAutoSet;
       panel.frame().setProgressBarValue(progress);
       final String old=aSel.getField(fieldName);
-      if ((old != null) && !old.equals("") && !overWriteAllowed) {
+      if (old != null && !old.equals("") && !overWriteAllowed) {
         continue;
       }
       extPan.setEntry(aSel,panel.getDatabase());
-      editor.setText((old != null) ? old : "");
+      editor.setText(old != null ? old : "");
       JabRefExecutorService.INSTANCE.executeAndWait(extPan.autoSetFile(fieldName,editor));
       if (!editor.getText().equals("") && !editor.getText().equals(old)) {
         ce.addEdit(new UndoableFieldChange(aSel,fieldName,old,editor.getText()));
@@ -38,9 +38,9 @@
     mainLoop:     for (    BibtexEntry aSel : sel) {
       panel.frame().setProgressBarValue(progress++);
       final String old=aSel.getField(fieldName);
-      if ((old != null) && !old.equals("")) {
+      if (old != null && !old.equals("")) {
         File file=FileUtil.expandFilename(old,dirs);
-        if ((file == null) || !file.exists()) {
+        if (file == null || !file.exists()) {
           int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{old,aSel.getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
 switch (answer) {
 case 1:

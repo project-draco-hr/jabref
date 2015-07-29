@@ -24,7 +24,7 @@
   if (!file.isAbsolute()) {
     file=FileUtil.expandFilename(ln,dirs);
   }
-  if ((file != null) && file.exists()) {
+  if (file != null && file.exists()) {
     String extension=null;
     if (flEntry.getType() != null) {
       extension="." + flEntry.getType().getExtension();
@@ -67,7 +67,7 @@
         return;
       }
       newFile=new File(chosenFile);
-      if (newFile.exists() && (JOptionPane.showConfirmDialog(frame,"'" + newFile.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Move/Rename file"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)) {
+      if (newFile.exists() && JOptionPane.showConfirmDialog(frame,"'" + newFile.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Move/Rename file"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION) {
         if (!toFileDir) {
           repeat=true;
         }
@@ -84,9 +84,9 @@
         }
         if (success) {
           file.delete();
-          String canPath=(new File(dirs[found])).getCanonicalPath();
+          String canPath=new File(dirs[found]).getCanonicalPath();
           if (newFile.getCanonicalPath().startsWith(canPath)) {
-            if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar)) {
+            if (newFile.getCanonicalPath().length() > canPath.length() && newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar) {
               flEntry.setLink(newFile.getCanonicalPath().substring(1 + canPath.length()));
             }
  else {

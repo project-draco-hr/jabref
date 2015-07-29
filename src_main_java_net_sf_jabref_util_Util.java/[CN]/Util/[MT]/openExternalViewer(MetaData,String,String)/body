@@ -2,7 +2,7 @@
   if (fieldName.equals("ps") || fieldName.equals("pdf")) {
     String[] dir=metaData.getFileDirectory(fieldName);
     File file=FileUtil.expandFilename(link,dir);
-    if ((file == null) || !file.exists()) {
+    if (file == null || !file.exists()) {
       throw new IOException(Globals.lang("File not found") + " (" + fieldName+ "): '"+ link+ "'.");
     }
     link=file.getCanonicalPath();
@@ -11,7 +11,7 @@
       if (split[split.length - 1].equalsIgnoreCase("pdf")) {
         fieldName="pdf";
       }
- else       if (split[split.length - 1].equalsIgnoreCase("ps") || ((split.length >= 3) && split[split.length - 2].equalsIgnoreCase("ps"))) {
+ else       if (split[split.length - 1].equalsIgnoreCase("ps") || split.length >= 3 && split[split.length - 2].equalsIgnoreCase("ps")) {
         fieldName="ps";
       }
     }

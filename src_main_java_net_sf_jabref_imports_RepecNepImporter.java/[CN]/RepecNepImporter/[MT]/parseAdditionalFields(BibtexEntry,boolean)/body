@@ -1,8 +1,8 @@
 {
-  if ((this.lastLine != null) && this.lastLine.trim().equals("")) {
+  if (this.lastLine != null && this.lastLine.trim().equals("")) {
     readLine();
   }
-  while ((this.lastLine != null) && !isStartOfWorkingPaper() && (startsWithKeyword(RepecNepImporter.recognizedFields) || this.lastLine.equals(""))) {
+  while (this.lastLine != null && !isStartOfWorkingPaper() && (startsWithKeyword(RepecNepImporter.recognizedFields) || this.lastLine.equals(""))) {
     String keyword=this.lastLine.equals("") ? "" : this.lastLine.substring(0,this.lastLine.indexOf(':')).trim();
     this.lastLine=this.lastLine.equals("") ? "" : this.lastLine.substring(this.lastLine.indexOf(':') + 1,this.lastLine.length()).trim();
     if (keyword.equals("Keywords")) {
@@ -22,7 +22,7 @@
       String content=readMultipleLines();
       String[] recognizedDateFormats=new String[]{"yyyy-MM-dd","yyyy-MM","yyyy"};
       int i=0;
-      for (; (i < recognizedDateFormats.length) && (date == null); i++) {
+      for (; i < recognizedDateFormats.length && date == null; i++) {
         try {
           date=new SimpleDateFormat(recognizedDateFormats[i]).parse(content);
         }
@@ -32,7 +32,7 @@
       Calendar cal=new GregorianCalendar();
       cal.setTime(date != null ? date : new Date());
       be.setField("year","" + cal.get(Calendar.YEAR));
-      if ((date != null) && recognizedDateFormats[i - 1].contains("MM")) {
+      if (date != null && recognizedDateFormats[i - 1].contains("MM")) {
         be.setField("month","" + cal.get(Calendar.MONTH));
       }
     }

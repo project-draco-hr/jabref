@@ -11,7 +11,7 @@
     }
     @Override public Object getValueAt(    int row,    int column){
       if (row == 0) {
-        return (column == 0 ? GUIGlobals.NUMBER_COL : "" + ncWidth);
+        return column == 0 ? GUIGlobals.NUMBER_COL : "" + ncWidth;
       }
       row--;
       if (row >= tableRows.size()) {
@@ -26,12 +26,12 @@ switch (column) {
 case 0:
         return tr.name;
 case 1:
-      return ((tr.length > 0) ? Integer.toString(tr.length) : "");
+      return tr.length > 0 ? Integer.toString(tr.length) : "";
   }
   return null;
 }
 @Override public String getColumnName(int col){
-  return (col == 0 ? Globals.lang("Field name") : Globals.lang("Column width"));
+  return col == 0 ? Globals.lang("Field name") : Globals.lang("Column width");
 }
 @Override public Class<?> getColumnClass(int column){
   if (column == 0) {
@@ -42,14 +42,14 @@ case 1:
   }
 }
 @Override public boolean isCellEditable(int row,int col){
-  return !((row == 0) && (col == 0));
+  return !(row == 0 && col == 0);
 }
 @Override public void setValueAt(Object value,int row,int col){
   tableChanged=true;
   while (row >= tableRows.size()) {
     tableRows.add(new TableRow("",-1));
   }
-  if ((row == 0) && (col == 1)) {
+  if (row == 0 && col == 1) {
     ncWidth=Integer.parseInt(value.toString());
     return;
   }

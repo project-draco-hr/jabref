@@ -25,7 +25,7 @@
     mainLoop:     for (    BibtexEntry aSel : sel) {
       panel.frame().setProgressBarValue(progress++);
       final String old=aSel.getField(fieldName);
-      if ((old != null) && !old.equals("")) {
+      if (old != null && !old.equals("")) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old);
         String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
@@ -41,7 +41,7 @@
           }
           boolean deleted=false;
           File file=FileUtil.expandFilename(flEntry.getLink(),dirsS);
-          if ((file == null) || !file.exists()) {
+          if (file == null || !file.exists()) {
             int answer;
             if (!removeAllBroken) {
               answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{flEntry.getLink(),aSel.getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
@@ -70,7 +70,7 @@ break mainLoop;
 }
 brokenLinks++;
 }
-if (!deleted && (flEntry.getType() instanceof UnknownExternalFileType)) {
+if (!deleted && flEntry.getType() instanceof UnknownExternalFileType) {
 String[] options=new String[]{Globals.lang("Define '%0'",flEntry.getType().getName()),Globals.lang("Change file type"),Globals.lang("Cancel")};
 String defOption=options[0];
 int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("One or more file links are of the type '%0', which is undefined. What do you want to do?",flEntry.getType().getName()),Globals.lang("Undefined file type"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,defOption);

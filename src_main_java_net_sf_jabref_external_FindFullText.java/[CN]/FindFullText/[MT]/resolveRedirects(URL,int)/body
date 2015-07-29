@@ -7,7 +7,7 @@
     int responseCode=huc.getResponseCode();
     String location=huc.getHeaderField("location");
     huc.disconnect();
-    if ((responseCode == HttpURLConnection.HTTP_MOVED_TEMP) && (redirectCount < 5)) {
+    if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP && redirectCount < 5) {
       try {
         URL newUrl=new URL(location);
         return resolveRedirects(newUrl,redirectCount + 1);
