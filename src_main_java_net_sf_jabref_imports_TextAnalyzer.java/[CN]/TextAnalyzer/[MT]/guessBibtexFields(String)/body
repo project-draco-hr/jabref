@@ -12,7 +12,8 @@
     LOGGER.info("Guessing 'year': '" + year + "'");
   }
  else   if (cand.length > 1) {
-    int good=-1, yearFound=-1;
+    int good=-1;
+    int yearFound=-1;
     for (int i=0; i < cand.length; i++) {
       int number=Integer.parseInt(cand[i].trim());
       if (number == yearFound) {
@@ -55,7 +56,8 @@
     int found=-1;
     for (int i=0; i < cand.length; i++) {
       split=clean(cand[i].replaceAll("\\s","")).split("-");
-      int first=Integer.parseInt(split[0]), second=Integer.parseInt(split[1]);
+      int first=Integer.parseInt(split[0]);
+      int second=Integer.parseInt(split[1]);
       if (second - first > 3) {
         found=i;
         break;
@@ -68,7 +70,8 @@
       usedParts.add(new Substring("pages",pos,pos + pages.length()));
     }
   }
-  String journal, volume;
+  String journal;
+  String volume;
   String journalRx="(,|\\.|\\n)\\s??([a-zA-Z\\. ]{8,30}+)((.){0,2})((vol\\.|Vol\\.|Volume|volume))??\\s??(\\d{1,3})(\\.|,|\\s|:)";
   cand=getMatches(text,journalRx);
   if (cand.length > 0) {
