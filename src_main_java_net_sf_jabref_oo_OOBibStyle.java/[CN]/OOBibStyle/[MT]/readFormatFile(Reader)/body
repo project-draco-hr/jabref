@@ -1,5 +1,5 @@
 {
-  StringBuffer sb=new StringBuffer();
+  StringBuilder sb=new StringBuilder();
   int c;
   while ((c=in.read()) != -1) {
     sb.append((char)c);
@@ -14,34 +14,31 @@
     if (line.trim().isEmpty() || line.charAt(0) == '#') {
       continue;
     }
-    if (line.equals(OOBibStyle.NAME_MARK)) {
+switch (line) {
+case OOBibStyle.NAME_MARK:
       mode=OOBibStyle.NAME;
-      continue;
-    }
- else     if (line.equals(OOBibStyle.LAYOUT_MRK)) {
-      mode=OOBibStyle.LAYOUT;
-      continue;
-    }
- else     if (line.equals(OOBibStyle.PROPERTIES_MARK)) {
-      mode=OOBibStyle.PROPERTIES;
-      continue;
-    }
- else     if (line.equals(OOBibStyle.CITATION_MARK)) {
-      mode=OOBibStyle.CITATION;
-      continue;
-    }
- else     if (line.equals(OOBibStyle.JOURNALS_MARK)) {
-      mode=OOBibStyle.JOURNALS;
-      continue;
-    }
+    continue;
+case OOBibStyle.LAYOUT_MRK:
+  mode=OOBibStyle.LAYOUT;
+continue;
+case OOBibStyle.PROPERTIES_MARK:
+mode=OOBibStyle.PROPERTIES;
+continue;
+case OOBibStyle.CITATION_MARK:
+mode=OOBibStyle.CITATION;
+continue;
+case OOBibStyle.JOURNALS_MARK:
+mode=OOBibStyle.JOURNALS;
+continue;
+}
 switch (mode) {
 case NAME:
-      if (!line.trim().isEmpty()) {
-        name=line.trim();
-      }
+if (!line.trim().isEmpty()) {
+name=line.trim();
+}
 case LAYOUT:
-    handleStructureLine(line);
-  break;
+handleStructureLine(line);
+break;
 case PROPERTIES:
 handlePropertiesLine(line,properties);
 break;

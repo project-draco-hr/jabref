@@ -12,47 +12,52 @@
  else   if (s2 == null) {
     return EMPTY_IN_TWO;
   }
-  if (field.equals("author") || field.equals("editor")) {
-    String auth1=AuthorList.fixAuthor_lastNameOnlyCommas(s1,false).replaceAll(" and "," ").toLowerCase();
-    String auth2=AuthorList.fixAuthor_lastNameOnlyCommas(s2,false).replaceAll(" and "," ").toLowerCase();
-    double similarity=DuplicateCheck.correlateByWords(auth1,auth2,false);
-    if (similarity > 0.8) {
-      return EQUAL;
-    }
+switch (field) {
+case "author":
+case "editor":
+{
+      String auth1=AuthorList.fixAuthor_lastNameOnlyCommas(s1,false).replaceAll(" and "," ").toLowerCase();
+      String auth2=AuthorList.fixAuthor_lastNameOnlyCommas(s2,false).replaceAll(" and "," ").toLowerCase();
+      double similarity=DuplicateCheck.correlateByWords(auth1,auth2,false);
+      if (similarity > 0.8) {
+        return EQUAL;
+      }
  else {
-      return NOT_EQUAL;
+        return NOT_EQUAL;
+      }
     }
-  }
- else   if (field.equals("pages")) {
-    s1=s1.replaceAll("[- ]+","-");
-    s2=s2.replaceAll("[- ]+","-");
-    if (s1.equals(s2)) {
-      return EQUAL;
-    }
+case "pages":
+  s1=s1.replaceAll("[- ]+","-");
+s2=s2.replaceAll("[- ]+","-");
+if (s1.equals(s2)) {
+return EQUAL;
+}
  else {
-      return NOT_EQUAL;
-    }
-  }
- else   if (field.equals("journal")) {
-    s1=s1.replaceAll("\\.","").toLowerCase();
-    s2=s2.replaceAll("\\.","").toLowerCase();
-    double similarity=DuplicateCheck.correlateByWords(s1,s2,true);
-    if (similarity > 0.8) {
-      return EQUAL;
-    }
+return NOT_EQUAL;
+}
+case "journal":
+{
+s1=s1.replaceAll("\\.","").toLowerCase();
+s2=s2.replaceAll("\\.","").toLowerCase();
+double similarity=DuplicateCheck.correlateByWords(s1,s2,true);
+if (similarity > 0.8) {
+return EQUAL;
+}
  else {
-      return NOT_EQUAL;
-    }
-  }
+return NOT_EQUAL;
+}
+}
+default :
+{
+s1=s1.toLowerCase();
+s2=s2.toLowerCase();
+double similarity=DuplicateCheck.correlateByWords(s1,s2,false);
+if (similarity > 0.8) {
+return EQUAL;
+}
  else {
-    s1=s1.toLowerCase();
-    s2=s2.toLowerCase();
-    double similarity=DuplicateCheck.correlateByWords(s1,s2,false);
-    if (similarity > 0.8) {
-      return EQUAL;
-    }
- else {
-      return NOT_EQUAL;
-    }
-  }
+return NOT_EQUAL;
+}
+}
+}
 }

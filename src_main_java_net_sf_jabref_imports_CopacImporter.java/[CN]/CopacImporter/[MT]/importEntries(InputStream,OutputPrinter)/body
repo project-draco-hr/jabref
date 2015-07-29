@@ -3,7 +3,7 @@
     throw new IOException("No stream given.");
   }
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  List<String> entries=new LinkedList<String>();
+  List<String> entries=new LinkedList<>();
   String str;
   StringBuffer sb=new StringBuffer();
   while ((str=in.readLine()) != null) {
@@ -27,7 +27,7 @@
   if (sb.length() > 0) {
     entries.add(sb.toString());
   }
-  List<BibtexEntry> results=new LinkedList<BibtexEntry>();
+  List<BibtexEntry> results=new LinkedList<>();
   for (  String entry : entries) {
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,BibtexEntryType.BOOK);
     String[] lines=entry.split("\n");
@@ -37,41 +37,43 @@
         continue;
       }
       String code=line.substring(0,4);
-      if (code.equals("TI- ")) {
+switch (code) {
+case "TI- ":
         setOrAppend(b,"title",line.substring(4).trim(),", ");
-      }
- else       if (code.equals("AU- ")) {
-        setOrAppend(b,"author",line.substring(4).trim()," and ");
-      }
- else       if (code.equals("PY- ")) {
-        setOrAppend(b,"year",line.substring(4).trim(),", ");
-      }
- else       if (code.equals("PU- ")) {
-        setOrAppend(b,"publisher",line.substring(4).trim(),", ");
-      }
- else       if (code.equals("SE- ")) {
-        setOrAppend(b,"series",line.substring(4).trim(),", ");
-      }
- else       if (code.equals("IS- ")) {
-        setOrAppend(b,"isbn",line.substring(4).trim(),", ");
-      }
- else       if (code.equals("KW- ")) {
-        setOrAppend(b,"keywords",line.substring(4).trim(),", ");
-      }
- else       if (code.equals("NT- ")) {
-        setOrAppend(b,"note",line.substring(4).trim(),", ");
-      }
- else       if (code.equals("PD- ")) {
-        setOrAppend(b,"physicaldimensions",line.substring(4).trim(),", ");
-      }
- else       if (code.equals("DT- ")) {
-        setOrAppend(b,"documenttype",line.substring(4).trim(),", ");
-      }
- else {
-        setOrAppend(b,code.substring(0,2),line.substring(4).trim(),", ");
-      }
-    }
-    results.add(b);
-  }
-  return results;
+      break;
+case "AU- ":
+    setOrAppend(b,"author",line.substring(4).trim()," and ");
+  break;
+case "PY- ":
+setOrAppend(b,"year",line.substring(4).trim(),", ");
+break;
+case "PU- ":
+setOrAppend(b,"publisher",line.substring(4).trim(),", ");
+break;
+case "SE- ":
+setOrAppend(b,"series",line.substring(4).trim(),", ");
+break;
+case "IS- ":
+setOrAppend(b,"isbn",line.substring(4).trim(),", ");
+break;
+case "KW- ":
+setOrAppend(b,"keywords",line.substring(4).trim(),", ");
+break;
+case "NT- ":
+setOrAppend(b,"note",line.substring(4).trim(),", ");
+break;
+case "PD- ":
+setOrAppend(b,"physicaldimensions",line.substring(4).trim(),", ");
+break;
+case "DT- ":
+setOrAppend(b,"documenttype",line.substring(4).trim(),", ");
+break;
+default :
+setOrAppend(b,code.substring(0,2),line.substring(4).trim(),", ");
+break;
+}
+}
+results.add(b);
+}
+return results;
 }

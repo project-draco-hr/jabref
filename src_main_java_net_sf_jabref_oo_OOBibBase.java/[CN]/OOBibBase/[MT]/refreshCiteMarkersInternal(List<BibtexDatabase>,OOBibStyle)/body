@@ -1,6 +1,6 @@
 {
   List<String> cited=findCitedKeys();
-  HashMap<String,BibtexDatabase> linkSourceBase=new HashMap<String,BibtexDatabase>();
+  HashMap<String,BibtexDatabase> linkSourceBase=new HashMap<>();
   Map<BibtexEntry,BibtexDatabase> entries=findCitedEntries(databases,cited,linkSourceBase);
   XNameAccess nameAccess=getReferenceMarks();
   String[] names;
@@ -8,7 +8,7 @@
     names=sortedReferenceMarks;
   }
  else   if (style.isNumberEntries()) {
-    SortedMap<BibtexEntry,BibtexDatabase> newMap=new TreeMap<BibtexEntry,BibtexDatabase>(entryComparator);
+    SortedMap<BibtexEntry,BibtexDatabase> newMap=new TreeMap<>(entryComparator);
     for (    Map.Entry<BibtexEntry,BibtexDatabase> bibtexEntryBibtexDatabaseEntry : entries.entrySet()) {
       newMap.put(bibtexEntryBibtexDatabaseEntry.getKey(),bibtexEntryBibtexDatabaseEntry.getValue());
     }
@@ -22,14 +22,14 @@
  else {
     names=sortedReferenceMarks;
   }
-  ArrayList<String> tmp=new ArrayList<String>();
+  ArrayList<String> tmp=new ArrayList<>();
   for (  String name : names) {
     if (citePattern.matcher(name).find()) {
       tmp.add(name);
     }
   }
   names=tmp.toArray(new String[tmp.size()]);
-  HashMap<String,Integer> numbers=new HashMap<String,Integer>();
+  HashMap<String,Integer> numbers=new HashMap<>();
   int lastNum=0;
   String[] citMarkers=new String[names.length];
   String[][] normCitMarkers=new String[names.length][];
@@ -130,17 +130,17 @@
   }
   uniquefiers.clear();
   if (!style.isBibtexKeyCiteMarkers() && !style.isNumberEntries()) {
-    HashMap<String,List<String>> refKeys=new HashMap<String,List<String>>();
-    HashMap<String,List<Integer>> refNums=new HashMap<String,List<Integer>>();
+    HashMap<String,List<String>> refKeys=new HashMap<>();
+    HashMap<String,List<Integer>> refNums=new HashMap<>();
     for (int i=0; i < citMarkers.length; i++) {
       String[] markers=normCitMarkers[i];
       for (int j=0; j < markers.length; j++) {
         String marker=markers[j];
         if (!refKeys.containsKey(marker)) {
-          List<String> l=new ArrayList<String>(1);
+          List<String> l=new ArrayList<>(1);
           l.add(bibtexKeys[i][j]);
           refKeys.put(marker,l);
-          List<Integer> l2=new ArrayList<Integer>(1);
+          List<Integer> l2=new ArrayList<>(1);
           l2.add(i);
           refNums.put(marker,l2);
         }
@@ -163,7 +163,7 @@
       }
     }
     int maxAuthorsFirst=style.getIntCitProperty("MaxAuthorsFirst");
-    HashSet<String> seenBefore=new HashSet<String>();
+    HashSet<String> seenBefore=new HashSet<>();
     for (int j=0; j < bibtexKeys.length; j++) {
       boolean needsChange=false;
       int[] firstLimAuthors=new int[bibtexKeys[j].length];
@@ -232,7 +232,7 @@
       insertBookMark(OOBibBase.BIB_SECTION_NAME,cursor);
     }
   }
-  ArrayList<String> unresolvedKeys=new ArrayList<String>();
+  ArrayList<String> unresolvedKeys=new ArrayList<>();
   for (  BibtexEntry entry : entries.keySet()) {
     if (entry instanceof UndefinedBibtexEntry) {
       String key=((UndefinedBibtexEntry)entry).getKey();

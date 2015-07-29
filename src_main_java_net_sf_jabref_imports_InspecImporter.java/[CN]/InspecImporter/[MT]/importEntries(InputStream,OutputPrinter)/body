@@ -1,5 +1,5 @@
 {
-  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
@@ -17,7 +17,7 @@
   in.close();
   String[] entries=sb.toString().split("__::__");
   String Type="";
-  HashMap<String,String> h=new HashMap<String,String>();
+  HashMap<String,String> h=new HashMap<>();
   for (  String entry : entries) {
     if (entry.indexOf("Record") != 0) {
       continue;
@@ -27,57 +27,62 @@
     for (    String s : fields) {
       String f3=s.substring(0,2);
       String frest=s.substring(5);
-      if (f3.equals("TI")) {
+switch (f3) {
+case "TI":
         h.put("title",frest);
-      }
- else       if (f3.equals("PY")) {
-        h.put("year",frest);
-      }
- else       if (f3.equals("AU")) {
-        h.put("author",AuthorList.fixAuthor_lastNameFirst(frest.replaceAll(",-",", ").replaceAll(";"," and ")));
-      }
- else       if (f3.equals("AB")) {
-        h.put("abstract",frest);
-      }
- else       if (f3.equals("ID")) {
-        h.put("keywords",frest);
-      }
- else       if (f3.equals("SO")) {
-        int m=frest.indexOf(".");
-        if (m >= 0) {
-          String jr=frest.substring(0,m);
-          h.put("journal",jr.replaceAll("-"," "));
-          frest=frest.substring(m);
-          m=frest.indexOf(";");
-          if (m >= 5) {
-            String yr=frest.substring(m - 5,m);
-            h.put("year",yr);
-            frest=frest.substring(m);
-            m=frest.indexOf(":");
-            if (m >= 0) {
-              String pg=frest.substring(m + 1).trim();
-              h.put("pages",pg);
-              h.put("volume",frest.substring(1,m));
-            }
-          }
-        }
-      }
- else       if (f3.equals("RT")) {
-        frest=frest.trim();
-        if (frest.equals("Journal-Paper")) {
-          Type="article";
-        }
- else         if (frest.equals("Conference-Paper") || frest.equals("Conference-Paper; Journal-Paper")) {
-          Type="inproceedings";
-        }
- else {
-          Type=frest.replaceAll(" ","");
-        }
-      }
-    }
-    BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
-    b.setField(h);
-    bibitems.add(b);
-  }
-  return bibitems;
+      break;
+case "PY":
+    h.put("year",frest);
+  break;
+case "AU":
+h.put("author",AuthorList.fixAuthor_lastNameFirst(frest.replaceAll(",-",", ").replaceAll(";"," and ")));
+break;
+case "AB":
+h.put("abstract",frest);
+break;
+case "ID":
+h.put("keywords",frest);
+break;
+case "SO":
+int m=frest.indexOf(".");
+if (m >= 0) {
+String jr=frest.substring(0,m);
+h.put("journal",jr.replaceAll("-"," "));
+frest=frest.substring(m);
+m=frest.indexOf(";");
+if (m >= 5) {
+String yr=frest.substring(m - 5,m);
+h.put("year",yr);
+frest=frest.substring(m);
+m=frest.indexOf(":");
+if (m >= 0) {
+String pg=frest.substring(m + 1).trim();
+h.put("pages",pg);
+h.put("volume",frest.substring(1,m));
+}
+}
+}
+break;
+case "RT":
+frest=frest.trim();
+switch (frest) {
+case "Journal-Paper":
+Type="article";
+break;
+case "Conference-Paper":
+case "Conference-Paper; Journal-Paper":
+Type="inproceedings";
+break;
+default :
+Type=frest.replaceAll(" ","");
+break;
+}
+break;
+}
+}
+BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
+b.setField(h);
+bibitems.add(b);
+}
+return bibitems;
 }

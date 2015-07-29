@@ -1,6 +1,5 @@
 {
-  ZipOutputStream out=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
-  try {
+  try (ZipOutputStream out=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)))){
     ZipEntry zipEntry=new ZipEntry("content.xml");
     out.putNextEntry(zipEntry);
     int c;
@@ -12,7 +11,4 @@
     OpenOfficeDocumentCreator.addResourceFile("mimetype","/resource/openoffice/mimetype",out);
     OpenOfficeDocumentCreator.addResourceFile("META-INF/manifest.xml","/resource/openoffice/manifest.xml",out);
   }
-  finally {
-    out.close();
-  }
-}
+ }
