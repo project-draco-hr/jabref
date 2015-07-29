@@ -98,7 +98,7 @@
       }
  else       if (beg.equals("EP")) {
         int detpos=value.indexOf(' ');
-        if ((detpos != -1) && (value.substring(0,detpos).trim().length() > 0)) {
+        if ((detpos != -1) && (!value.substring(0,detpos).trim().isEmpty())) {
           value=value.substring(0,detpos);
         }
         pages=pages + "--" + value;
@@ -155,14 +155,14 @@
     if (!"".equals(pages)) {
       hm.put("pages",pages);
     }
-    if (hm.size() == 0) {
+    if (hm.isEmpty()) {
       continue;
     }
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
     ArrayList<Object> toRemove=new ArrayList<Object>();
     for (    String key : hm.keySet()) {
       String content=hm.get(key);
-      if ((content == null) || (content.trim().length() == 0)) {
+      if ((content == null) || (content.trim().isEmpty())) {
         toRemove.add(key);
       }
     }
