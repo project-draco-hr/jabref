@@ -22,7 +22,7 @@
     formDataMultiPart.field("source","jabref",MediaType.TEXT_PLAIN_TYPE);
     formDataMultiPart.field("filename",file.getName(),MediaType.TEXT_PLAIN_TYPE);
     ClientResponse response=SplWebClient.WEBRESOURCE.path("documents").type(MediaType.MULTIPART_FORM_DATA_TYPE).post(ClientResponse.class,formDataMultiPart);
-    if ((response.getClientResponseStatus() == ClientResponse.Status.OK) && response.hasEntity()) {
+    if ((response.getStatusInfo().getStatusCode() == ClientResponse.Status.OK.getStatusCode()) && response.hasEntity()) {
       String entity=response.getEntity(String.class);
       byte[] bytes=new byte[0];
       try {
@@ -59,7 +59,7 @@
         return WebServiceStatus.NO_METADATA;
       }
     }
-    if (response.getClientResponseStatus() == ClientResponse.Status.SERVICE_UNAVAILABLE) {
+    if (response.getStatusInfo().getStatusCode() == ClientResponse.Status.SERVICE_UNAVAILABLE.getStatusCode()) {
       return WebServiceStatus.UNAVAILABLE;
     }
   }
