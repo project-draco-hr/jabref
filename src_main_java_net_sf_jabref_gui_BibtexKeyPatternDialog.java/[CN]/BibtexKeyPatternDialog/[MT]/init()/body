@@ -1,2 +1,35 @@
 {
+  getContentPane().setLayout(new BorderLayout());
+  getContentPane().add(labelPatternPanel,BorderLayout.CENTER);
+  JButton ok=new JButton(Globals.lang("Ok"));
+  JButton cancel=new JButton();
+  JPanel lower=new JPanel();
+  lower.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+  ButtonBarBuilder bb=new ButtonBarBuilder(lower);
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  getContentPane().add(lower,BorderLayout.SOUTH);
+  this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  getContentPane().setPreferredSize(new Dimension(500,600));
+  pack();
+  ok.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      metaData.setLabelPattern(labelPatternPanel.getLabelPattern());
+      panel.markNonUndoableBaseChanged();
+      dispose();
+    }
+  }
+);
+  final JDialog dialog=this;
+  Action cancelAction=new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      dialog.dispatchEvent(new WindowEvent(dialog,WindowEvent.WINDOW_CLOSING));
+    }
+  }
+;
+  cancel.setAction(cancelAction);
+  cancel.setText(Globals.lang("Cancel"));
+  Util.bindCloseDialogKeyToCancelAction(this.getRootPane(),cancelAction);
 }

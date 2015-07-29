@@ -1,2 +1,55 @@
 {
+  final BooleanHolder okPressed=new BooleanHolder(false);
+  JDialog dg;
+  if (parent instanceof JDialog) {
+    dg=new JDialog((JDialog)parent,Globals.lang("Settings"),true);
+  }
+ else {
+    dg=new JDialog((JFrame)parent,Globals.lang("Settings"),true);
+  }
+  final JDialog diag=dg;
+  options.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(options,BorderLayout.CENTER);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  JButton ok=new JButton(Globals.lang("Ok"));
+  JButton cancel=new JButton(Globals.lang("Cancel"));
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  ok.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent event){
+      okPressed.value=true;
+      diag.dispose();
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent event){
+      diag.dispose();
+    }
+  }
+);
+  ActionMap am=bb.getPanel().getActionMap();
+  InputMap im=bb.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.prefs.getKey("Close dialog"),"close");
+  am.put("close",new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      diag.dispose();
+    }
+  }
+);
+  diag.pack();
+  if (parent instanceof JDialog) {
+    diag.setLocationRelativeTo((JDialog)parent);
+  }
+ else {
+    diag.setLocationRelativeTo((JFrame)parent);
+  }
+  diag.setVisible(true);
+  if (okPressed.value) {
+    toApp.storeSettings();
+  }
 }

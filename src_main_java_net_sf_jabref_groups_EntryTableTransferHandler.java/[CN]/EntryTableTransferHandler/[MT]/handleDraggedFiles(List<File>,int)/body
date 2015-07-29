@@ -1,2 +1,18 @@
 {
+  final String[] fileNames=new String[files.size()];
+  int i=0;
+  for (  File file : files) {
+    fileNames[i]=file.getAbsolutePath();
+    i++;
+  }
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
+    @Override public void run(){
+      final ImportPdfFilesResult importRes=new PdfImporter(frame,panel,entryTable,dropRow).importPdfFiles(fileNames,frame);
+      if (importRes.noPdfFiles.length > 0) {
+        loadOrImportFiles(importRes.noPdfFiles,dropRow);
+      }
+    }
+  }
+);
+  return true;
 }

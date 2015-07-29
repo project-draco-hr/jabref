@@ -1,2 +1,39 @@
 {
+  this.setModal(true);
+  getContentPane().setLayout(new BorderLayout());
+  String typeStr=Globals.lang("for");
+  if (entry != null) {
+    if (entry.getType() != null) {
+      typeStr=typeStr + " " + entry.getType().getName();
+    }
+  }
+  this.setTitle(Globals.lang("Plain_text_import") + " " + typeStr);
+  getContentPane().add(panel1,BorderLayout.CENTER);
+  initRawPanel();
+  initButtonPanel();
+  initSourcePanel();
+  JTabbedPane tabbed=new JTabbedPane();
+  tabbed.addChangeListener(new ChangeListener(){
+    @Override public void stateChanged(    ChangeEvent e){
+      if (inputChanged) {
+        warnPanel.updateView(entry);
+      }
+    }
+  }
+);
+  tabbed.add(rawPanel,Globals.lang("Raw_source"));
+  tabbed.add(sourcePanel,Globals.lang("BibTeX_source"));
+  tabbed.add(warnPanel,Globals.lang("Messages_and_Hints"));
+  panel1.setLayout(new BorderLayout());
+  panel1.add(tabbed,BorderLayout.CENTER);
+  panel1.add(buttons,BorderLayout.SOUTH);
+  ActionMap am=buttons.getActionMap();
+  InputMap im=buttons.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(parent.prefs().getKey("Close dialog"),"close");
+  am.put("close",new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+);
 }

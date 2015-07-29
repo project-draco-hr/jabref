@@ -21,50 +21,46 @@
       OOUtil.insertTextAtCurrentLocation(text,cursor,ss,bold % 2 > 0,italic % 2 > 0,mono > 0,smallCaps > 0,sup > 0,sub > 0);
     }
     String tag=m.group();
-switch (tag) {
-case "<b>":
+    if (tag.equals("<b>")) {
       bold++;
-    break;
-case "</b>":
-  bold--;
-break;
-case "<i>":
-case "<em>":
-italic++;
-break;
-case "</i>":
-case "</em>":
-italic--;
-break;
-case "</monospace>":
-mono=0;
-break;
-case "<monospace>":
-mono=1;
-break;
-case "</smallcaps>":
-smallCaps=0;
-break;
-case "<smallcaps>":
-smallCaps=1;
-break;
-case "</sup>":
-sup=0;
-break;
-case "<sup>":
-sup=1;
-break;
-case "</sub>":
-sub=0;
-break;
-case "<sub>":
-sub=1;
-break;
-}
-piv=m.end();
-}
-if (piv < lText.length()) {
-OOUtil.insertTextAtCurrentLocation(text,cursor,lText.substring(piv),bold % 2 > 0,italic % 2 > 0,mono > 0,smallCaps > 0,sup > 0,sub > 0);
-}
-cursor.collapseToEnd();
+    }
+ else     if (tag.equals("</b>")) {
+      bold--;
+    }
+ else     if (tag.equals("<i>") || tag.equals("<em>")) {
+      italic++;
+    }
+ else     if (tag.equals("</i>") || tag.equals("</em>")) {
+      italic--;
+    }
+ else     if (tag.equals("</monospace>")) {
+      mono=0;
+    }
+ else     if (tag.equals("<monospace>")) {
+      mono=1;
+    }
+ else     if (tag.equals("</smallcaps>")) {
+      smallCaps=0;
+    }
+ else     if (tag.equals("<smallcaps>")) {
+      smallCaps=1;
+    }
+ else     if (tag.equals("</sup>")) {
+      sup=0;
+    }
+ else     if (tag.equals("<sup>")) {
+      sup=1;
+    }
+ else     if (tag.equals("</sub>")) {
+      sub=0;
+    }
+ else     if (tag.equals("<sub>")) {
+      sub=1;
+    }
+    piv=m.end();
+  }
+  if (piv < lText.length()) {
+    OOUtil.insertTextAtCurrentLocation(text,cursor,lText.substring(piv),bold % 2 > 0,italic % 2 > 0,mono > 0,smallCaps > 0,sup > 0,sub > 0);
+  }
+  cursor.collapseToEnd();
 }

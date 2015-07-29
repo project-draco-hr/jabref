@@ -1,2 +1,102 @@
 {
+  BibtexParser bp=new BibtexParser(new java.io.StringReader(source.getText()));
+  try {
+    ParserResult parserResult=bp.parse();
+    BibtexDatabase db=parserResult.getDatabase();
+    if (db.getEntryCount() > 1) {
+      throw new Exception("More than one entry found.");
+    }
+    if (db.getEntryCount() < 1) {
+      if (parserResult.hasWarnings()) {
+        throw new Exception(parserResult.warnings()[0]);
+      }
+ else {
+        throw new Exception("No entries found.");
+      }
+    }
+    NamedCompound compound=new NamedCompound(Globals.lang("source edit"));
+    BibtexEntry nu=db.getEntryById(db.getKeySet().iterator().next());
+    String id=entry.getId();
+    String newKey=nu.getCiteKey();
+    boolean anyChanged=false;
+    boolean changedType=false;
+    boolean duplicateWarning=false;
+    boolean emptyWarning=newKey == null || newKey.isEmpty();
+    if (panel.database.setCiteKeyForEntry(id,newKey)) {
+      duplicateWarning=true;
+    }
+    for (    String field : entry.getAllFields()) {
+      if (BibtexFields.isDisplayableField(field)) {
+        if (nu.getField(field) == null) {
+          compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),null));
+          entry.clearField(field);
+          anyChanged=true;
+        }
+      }
+    }
+    for (    String field : nu.getAllFields()) {
+      String oldValue=entry.getField(field);
+      String newValue=nu.getField(field);
+      if (oldValue == null || !oldValue.equals(newValue)) {
+        new LatexFieldFormatter().format(newValue,field);
+        compound.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
+        entry.setField(field,newValue);
+        anyChanged=true;
+      }
+    }
+    if (nu.getType() != entry.getType()) {
+      compound.addEdit(new UndoableChangeType(entry,entry.getType(),nu.getType()));
+      entry.setType(nu.getType());
+      anyChanged=true;
+      changedType=true;
+    }
+    compound.end();
+    if (!anyChanged) {
+      return true;
+    }
+    panel.undoManager.addEdit(compound);
+    if (duplicateWarning) {
+      warnDuplicateBibtexkey();
+    }
+ else     if (emptyWarning && showError) {
+      warnEmptyBibtexkey();
+    }
+ else {
+      panel.output(Globals.lang("Stored entry") + '.');
+    }
+    lastSourceStringAccepted=source.getText();
+    if (!changedType) {
+      updateAllFields();
+      lastSourceAccepted=true;
+      updateSource=true;
+    }
+ else {
+      panel.updateEntryEditorIfShowing();
+    }
+    panel.markBaseChanged();
+    SwingUtilities.invokeLater(new Runnable(){
+      @Override public void run(){
+        final int row=panel.mainTable.findEntry(entry);
+        if (row >= 0) {
+          panel.mainTable.ensureVisible(row);
+        }
+      }
+    }
+);
+    return true;
+  }
+ catch (  Throwable ex) {
+    updateSource=false;
+    lastSourceAccepted=false;
+    tabbed.setSelectedComponent(srcPanel);
+    if (showError) {
+      Object[] options={Globals.lang("Edit"),Globals.lang("Revert to original source")};
+      int answer=JOptionPane.showOptionDialog(frame,Globals.lang("Error") + ": " + ex.getMessage(),Globals.lang("Problem with parsing entry"),JOptionPane.YES_NO_OPTION,JOptionPane.ERROR_MESSAGE,null,options,options[0]);
+      if (answer != 0) {
+        updateSource=true;
+        updateSource();
+      }
+    }
+    return false;
+  }
 }

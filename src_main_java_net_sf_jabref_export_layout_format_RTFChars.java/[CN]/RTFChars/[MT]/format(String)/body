@@ -75,47 +75,39 @@
         }
         if ((c == '{' || c == ' ') && currentCommand.length() > 0) {
           String command=currentCommand.toString();
-switch (command) {
-case "em":
-case "emph":
-case "textit":
-{
-              IntAndString part=getPart(field,i,c == '{');
-              i+=part.i;
-              sb.append("{\\i ").append(part.s).append('}');
-              break;
-            }
-case "textbf":
-{
+          if (command.equals("em") || command.equals("emph") || command.equals("textit")) {
+            IntAndString part=getPart(field,i,c == '{');
+            i+=part.i;
+            sb.append("{\\i ").append(part.s).append('}');
+          }
+ else           if (command.equals("textbf")) {
             IntAndString part=getPart(field,i,c == '{');
             i+=part.i;
             sb.append("{\\b ").append(part.s).append('}');
-            break;
           }
-default :
-        LOGGER.info("Unknown command " + command);
-      break;
-  }
-  if (c == ' ') {
-  }
-}
  else {
-  sb.append(c);
-}
-}
-incommand=false;
-escaped=false;
-}
-}
-char[] chars=sb.toString().toCharArray();
-sb=new StringBuffer();
-for (char c : chars) {
-if (c < 128) {
-sb.append(c);
-}
+            LOGGER.info("Unknown command " + command);
+          }
+          if (c == ' ') {
+          }
+        }
  else {
-sb.append("\\u").append((long)c).append('?');
-}
-}
-return sb.toString().replaceAll("---","{\\\\emdash}").replaceAll("--","{\\\\endash}").replaceAll("``","{\\\\ldblquote}").replaceAll("''","{\\\\rdblquote}");
+          sb.append(c);
+        }
+      }
+      incommand=false;
+      escaped=false;
+    }
+  }
+  char[] chars=sb.toString().toCharArray();
+  sb=new StringBuffer();
+  for (  char c : chars) {
+    if (c < 128) {
+      sb.append(c);
+    }
+ else {
+      sb.append("\\u").append((long)c).append('?');
+    }
+  }
+  return sb.toString().replaceAll("---","{\\\\emdash}").replaceAll("--","{\\\\endash}").replaceAll("``","{\\\\ldblquote}").replaceAll("''","{\\\\rdblquote}");
 }

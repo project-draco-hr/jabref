@@ -1,9 +1,9 @@
 {
-  ArrayList<BibtexEntry> bibItems=new ArrayList<>();
+  ArrayList<BibtexEntry> bibItems=new ArrayList<BibtexEntry>();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String line;
-  HashMap<String,String> hm=new HashMap<>();
-  HashMap<String,StringBuffer> lines=new HashMap<>();
+  HashMap<String,String> hm=new HashMap<String,String>();
+  HashMap<String,StringBuffer> lines=new HashMap<String,StringBuffer>();
   StringBuffer previousLine=null;
   while ((line=in.readLine()) != null) {
     if (line.isEmpty()) {
@@ -16,7 +16,7 @@
       String address=null;
       String titleST=null;
       String titleTI=null;
-      Vector<String> comments=new Vector<>();
+      Vector<String> comments=new Vector<String>();
       for (      Map.Entry<String,StringBuffer> entry : lines.entrySet()) {
         if (entry.getKey().equals("AU")) {
           hm.put("author",entry.getValue().toString());
@@ -162,61 +162,59 @@
           bibtexType="phdthesis";
         }
       }
-switch (bibtexType) {
-case "article":
+      if (bibtexType.equals("article")) {
         if (titleST != null) {
           hm.put("journal",titleST);
         }
-      if (titleTI != null) {
-        hm.put("title",titleTI);
+        if (titleTI != null) {
+          hm.put("title",titleTI);
+        }
       }
-    break;
-case "inbook":
-  if (titleST != null) {
-    hm.put("booktitle",titleST);
+ else       if (bibtexType.equals("inbook")) {
+        if (titleST != null) {
+          hm.put("booktitle",titleST);
+        }
+        if (titleTI != null) {
+          hm.put("title",titleTI);
+        }
+      }
+ else {
+        if (titleST != null) {
+          hm.put("booktitle",titleST);
+        }
+        if (titleTI != null) {
+          hm.put("title",titleTI);
+        }
+      }
+      if (pages[0] != null || pages[1] != null) {
+        hm.put("pages",(pages[0] != null ? pages[0] : "") + (pages[1] != null ? "--" + pages[1] : ""));
+      }
+      if (address != null) {
+        hm.put("address",address + (country != null ? ", " + country : ""));
+      }
+      if (!comments.isEmpty()) {
+        StringBuilder s=new StringBuilder();
+        for (int i=0; i < comments.size(); ++i) {
+          s.append(i > 0 ? "; " : "").append(comments.elementAt(i));
+        }
+        hm.put("comment",s.toString());
+      }
+      BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(bibtexType));
+      b.setField(hm);
+      bibItems.add(b);
+      hm.clear();
+      lines.clear();
+      previousLine=null;
+      continue;
+    }
+    if (line.startsWith("--") && line.length() >= 7 && line.substring(4,7).equals("-- ")) {
+      lines.put(line.substring(2,4),previousLine=new StringBuffer(line.substring(7)));
+      continue;
+    }
+    if (previousLine == null) {
+      return null;
+    }
+    previousLine.append(line.trim());
   }
-if (titleTI != null) {
-  hm.put("title",titleTI);
-}
-break;
-default :
-if (titleST != null) {
-hm.put("booktitle",titleST);
-}
-if (titleTI != null) {
-hm.put("title",titleTI);
-}
-break;
-}
-if (pages[0] != null || pages[1] != null) {
-hm.put("pages",(pages[0] != null ? pages[0] : "") + (pages[1] != null ? "--" + pages[1] : ""));
-}
-if (address != null) {
-hm.put("address",address + (country != null ? ", " + country : ""));
-}
-if (!comments.isEmpty()) {
-StringBuilder s=new StringBuilder();
-for (int i=0; i < comments.size(); ++i) {
-s.append(i > 0 ? "; " : "").append(comments.elementAt(i));
-}
-hm.put("comment",s.toString());
-}
-BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(bibtexType));
-b.setField(hm);
-bibItems.add(b);
-hm.clear();
-lines.clear();
-previousLine=null;
-continue;
-}
-if (line.startsWith("--") && line.length() >= 7 && line.substring(4,7).equals("-- ")) {
-lines.put(line.substring(2,4),previousLine=new StringBuffer(line.substring(7)));
-continue;
-}
-if (previousLine == null) {
-return null;
-}
-previousLine.append(line.trim());
-}
-return bibItems;
+  return bibItems;
 }

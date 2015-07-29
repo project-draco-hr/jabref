@@ -1,14 +1,18 @@
 {
   OpenDocumentRepresentation od=new OpenDocumentRepresentation(database,keySet);
   try {
-    try (Writer ps=new OutputStreamWriter(new FileOutputStream(tmpFile),"UTF8")){
+    Writer ps=new OutputStreamWriter(new FileOutputStream(tmpFile),"UTF8");
+    try {
       DOMSource source=new DOMSource(od.getDOMrepresentation());
       StreamResult result=new StreamResult(ps);
       Transformer trans=TransformerFactory.newInstance().newTransformer();
       trans.setOutputProperty(OutputKeys.INDENT,"yes");
       trans.transform(source,result);
     }
-   }
+  finally {
+      ps.close();
+    }
+  }
  catch (  Exception e) {
     throw new Error(e);
   }

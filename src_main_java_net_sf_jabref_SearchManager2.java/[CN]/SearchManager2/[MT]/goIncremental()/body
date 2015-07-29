@@ -1,2 +1,37 @@
 {
+  incSearch=true;
+  escape.setEnabled(true);
+  SwingUtilities.invokeLater(new Runnable(){
+    @Override public void run(){
+      String text=searchField.getText();
+      if (incSearchPos >= panel.getDatabase().getEntryCount()) {
+        panel.output('\'' + text + "' : "+ Globals.lang("Incremental search failed. Repeat to search from top.")+ '.');
+        incSearchPos=-1;
+        return;
+      }
+      if (searchField.getText().isEmpty()) {
+        return;
+      }
+      if (incSearchPos < 0) {
+        incSearchPos=0;
+      }
+      BibtexEntry be=panel.mainTable.getEntryAt(incSearchPos);
+      while (!incSearcher.search(text,be)) {
+        incSearchPos++;
+        if (incSearchPos < panel.getDatabase().getEntryCount()) {
+          be=panel.mainTable.getEntryAt(incSearchPos);
+        }
+ else {
+          panel.output('\'' + text + "' : "+ Globals.lang("Incremental search failed. Repeat to search from top."));
+          incSearchPos=-1;
+          return;
+        }
+      }
+      if (incSearchPos >= 0) {
+        panel.selectSingleEntry(incSearchPos);
+        panel.output('\'' + text + "' "+ Globals.lang("found")+ '.');
+      }
+    }
+  }
+);
 }

@@ -1,2 +1,15 @@
 {
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
+    @Override public void run(){
+      try {
+        PrintRequestAttributeSet pras=new HashPrintRequestAttributeSet();
+        pras.add(new JobName(entry.getCiteKey(),null));
+        previewPane.print(null,null,true,null,pras,false);
+      }
+ catch (      PrinterException e) {
+        JOptionPane.showMessageDialog(PreviewPanel.this,Globals.lang("Could not print preview") + ".\n" + e.getMessage(),Globals.lang("Printing Entry Preview"),JOptionPane.ERROR_MESSAGE);
+      }
+    }
+  }
+);
 }

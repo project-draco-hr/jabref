@@ -1,2 +1,64 @@
 {
+  _prefs=prefs;
+  setLayout(new BorderLayout());
+  fontSize=new JTextField(5);
+  rowPadding=new JTextField(5);
+  colorCodes=new JCheckBox(Globals.lang("Color codes for required and optional fields"));
+  overrideFonts=new JCheckBox(Globals.lang("Override default font settings"));
+  showGrid=new JCheckBox(Globals.lang("Show gridlines"));
+  FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  builder.leadingColumnOffset(2);
+  JLabel lab;
+  builder.appendSeparator(Globals.lang("General"));
+  JPanel p1=new JPanel();
+  lab=new JLabel(Globals.lang("Menu and label font size") + ":");
+  p1.add(lab);
+  p1.add(fontSize);
+  builder.append(p1);
+  builder.nextLine();
+  builder.append(overrideFonts);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Table appearance"));
+  JPanel p2=new JPanel();
+  p2.add(new JLabel(Globals.lang("Table row height padding") + ":"));
+  p2.add(rowPadding);
+  builder.append(p2);
+  builder.nextLine();
+  builder.append(colorCodes);
+  builder.nextLine();
+  builder.append(showGrid);
+  builder.nextLine();
+  JButton fontButton=new JButton(Globals.lang("Set table font"));
+  builder.append(fontButton);
+  builder.nextLine();
+  builder.appendSeparator(Globals.lang("Table and entry editor colors"));
+  builder.append(colorPanel);
+  JPanel upper=new JPanel();
+  JPanel sort=new JPanel();
+  JPanel namesp=new JPanel();
+  JPanel iconCol=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
+  upper.setLayout(gbl);
+  sort.setLayout(gbl);
+  namesp.setLayout(gbl);
+  iconCol.setLayout(gbl);
+  overrideFonts.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      fontSize.setEnabled(overrideFonts.isSelected());
+    }
+  }
+);
+  fontButton.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      Font f=new FontSelectorDialog(null,GUIGlobals.CURRENTFONT).getSelectedFont();
+      if (f != null) {
+        font=f;
+      }
+    }
+  }
+);
+  JPanel pan=builder.getPanel();
+  pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  add(pan,BorderLayout.CENTER);
 }

@@ -1,2 +1,25 @@
 {
+  String fileName=file.getPath();
+  BibtexDatabase db=pr.getDatabase();
+  MetaData meta=pr.getMetaData();
+  if (pr.hasWarnings()) {
+    final String[] wrns=pr.warnings();
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
+      @Override public void run(){
+        StringBuilder wrn=new StringBuilder();
+        for (int i=0; i < wrns.length; i++) {
+          wrn.append(i + 1).append(". ").append(wrns[i]).append("\n");
+        }
+        if (wrn.length() > 0) {
+          wrn.deleteCharAt(wrn.length() - 1);
+        }
+        JOptionPane.showMessageDialog(frame,wrn.toString(),Globals.lang("Warnings") + " (" + file.getName()+ ")",JOptionPane.WARNING_MESSAGE);
+      }
+    }
+);
+  }
+  BasePanel bp=new BasePanel(frame,db,file,meta,pr.getEncoding());
+  SwingUtilities.invokeLater(new OpenItSwingHelper(bp,file,raisePanel));
+  frame.output(Globals.lang("Opened database") + " '" + fileName+ "' "+ Globals.lang("with")+ " "+ db.getEntryCount()+ " "+ Globals.lang("entries")+ ".");
+  return bp;
 }

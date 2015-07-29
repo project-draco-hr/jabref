@@ -1,8 +1,9 @@
 {
-  List<BibtexEntry> l=new LinkedList<>();
+  List<BibtexEntry> l=new LinkedList<BibtexEntry>();
   l.add(t3BibtexEntry());
   XMPUtil.writeXMP(pdfFile,l,null,true);
-  try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
+  PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile());
+  try {
     if (document.isEncrypted()) {
       System.err.println("Error: Cannot add metadata to encrypted document.");
     }
@@ -39,4 +40,7 @@
     Assert.assertEquals(4,dcSchema.getRelationships().size());
     assertEqualsBibtexEntry(t3BibtexEntry(),XMPUtil.getBibtexEntryFromDublinCore(dcSchema));
   }
- }
+  finally {
+    document.close();
+  }
+}

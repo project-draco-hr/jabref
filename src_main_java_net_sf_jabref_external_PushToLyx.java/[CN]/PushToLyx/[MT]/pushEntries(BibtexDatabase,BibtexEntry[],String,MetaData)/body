@@ -1,2 +1,33 @@
 {
+  couldNotFindPipe=false;
+  couldNotWrite=false;
+  String lyxpipeSetting=Globals.prefs.get(JabRefPreferences.LYXPIPE);
+  if (!lyxpipeSetting.endsWith(".in")) {
+    lyxpipeSetting=lyxpipeSetting + ".in";
+  }
+  File lp=new File(lyxpipeSetting);
+  if (!lp.exists() || !lp.canWrite()) {
+    lp=new File(lyxpipeSetting + ".in");
+    if (!lp.exists() || !lp.canWrite()) {
+      couldNotFindPipe=true;
+      return;
+    }
+  }
+  final File lyxpipe=lp;
+  JabRefExecutorService.INSTANCE.executeAndWait(new Runnable(){
+    @Override public void run(){
+      try {
+        FileWriter fw=new FileWriter(lyxpipe);
+        BufferedWriter lyx_out=new BufferedWriter(fw);
+        String citeStr;
+        citeStr="LYXCMD:sampleclient:citation-insert:" + keyString;
+        lyx_out.write(citeStr + "\n");
+        lyx_out.close();
+      }
+ catch (      IOException excep) {
+        couldNotWrite=true;
+      }
+    }
+  }
+);
 }

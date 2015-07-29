@@ -5,46 +5,42 @@
   }
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   boolean useXmpPrivacyFilter=prefs.getBoolean(JabRefPreferences.USE_XMP_PRIVACY_FILTER);
-  TreeSet<String> filters=new TreeSet<>(Arrays.asList(prefs.getStringArray(JabRefPreferences.XMP_PRIVACY_FILTERS)));
+  TreeSet<String> filters=new TreeSet<String>(Arrays.asList(prefs.getStringArray(JabRefPreferences.XMP_PRIVACY_FILTERS)));
   Set<String> fields=entry.getAllFields();
   for (  String field : fields) {
     if (useXmpPrivacyFilter && filters.contains(field)) {
-switch (field) {
-case "author":
+      if (field.equals("author")) {
         di.setAuthor(null);
-      break;
-case "title":
-    di.setTitle(null);
-  break;
-case "keywords":
-di.setKeywords(null);
-break;
-case "abstract":
-di.setSubject(null);
-break;
-default :
-di.setCustomMetadataValue("bibtex/" + field,null);
-break;
-}
-continue;
-}
-switch (field) {
-case "author":
-di.setAuthor(entry.getField("author"));
-break;
-case "title":
-di.setTitle(entry.getField("title"));
-break;
-case "keywords":
-di.setKeywords(entry.getField("keywords"));
-break;
-case "abstract":
-di.setSubject(entry.getField("abstract"));
-break;
-default :
-di.setCustomMetadataValue("bibtex/" + field,entry.getField(field));
-break;
-}
-}
-di.setCustomMetadataValue("bibtex/entrytype",entry.getType().getName());
+      }
+ else       if (field.equals("title")) {
+        di.setTitle(null);
+      }
+ else       if (field.equals("keywords")) {
+        di.setKeywords(null);
+      }
+ else       if (field.equals("abstract")) {
+        di.setSubject(null);
+      }
+ else {
+        di.setCustomMetadataValue("bibtex/" + field,null);
+      }
+      continue;
+    }
+    if (field.equals("author")) {
+      di.setAuthor(entry.getField("author"));
+    }
+ else     if (field.equals("title")) {
+      di.setTitle(entry.getField("title"));
+    }
+ else     if (field.equals("keywords")) {
+      di.setKeywords(entry.getField("keywords"));
+    }
+ else     if (field.equals("abstract")) {
+      di.setSubject(entry.getField("abstract"));
+    }
+ else {
+      di.setCustomMetadataValue("bibtex/" + field,entry.getField(field));
+    }
+  }
+  di.setCustomMetadataValue("bibtex/entrytype",entry.getType().getName());
 }

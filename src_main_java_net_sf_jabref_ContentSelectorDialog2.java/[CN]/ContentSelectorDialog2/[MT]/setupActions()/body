@@ -1,2 +1,171 @@
 {
+  wordList.addListSelectionListener(new ListSelectionListener(){
+    @Override public void valueChanged(    ListSelectionEvent e){
+      wordEditField.setText((String)wordList.getSelectedValue());
+      wordEditField.selectAll();
+      new FocusRequester(wordEditField);
+    }
+  }
+);
+  newWord.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      newWordAction();
+    }
+  }
+);
+  wordEditFieldListener=new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      int index=wordList.getSelectedIndex();
+      String old=(String)wordList.getSelectedValue();
+      String newVal=wordEditField.getText();
+      if (newVal.equals("") || newVal.equals(old)) {
+        return;
+      }
+      if (wordListModel.contains(newVal)) {
+        index=wordListModel.indexOf(newVal);
+        wordList.ensureIndexIsVisible(index);
+        return;
+      }
+      int newIndex=findPos(wordListModel,newVal);
+      if (index >= 0) {
+        wordListModel.remove(index);
+        if (newIndex > index) {
+          newIndex--;
+        }
+      }
+      wordListModel.add(newIndex,newVal);
+      wordList.ensureIndexIsVisible(newIndex);
+      wordEditField.selectAll();
+    }
+  }
+;
+  wordEditField.addActionListener(wordEditFieldListener);
+  removeWord.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      int index=wordList.getSelectedIndex();
+      if (index == -1) {
+        return;
+      }
+      wordListModel.remove(index);
+      wordEditField.setText("");
+      if (!wordListModel.isEmpty()) {
+        wordList.setSelectedIndex(Math.min(index,wordListModel.size() - 1));
+      }
+    }
+  }
+);
+  fieldList.addListSelectionListener(new ListSelectionListener(){
+    @Override public void valueChanged(    ListSelectionEvent e){
+      currentField=(String)fieldList.getSelectedValue();
+      fieldNameField.setText("");
+      setupWordSelector();
+    }
+  }
+);
+  newField.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      if (!fieldListModel.get(0).equals(FIELD_FIRST_LINE)) {
+        fieldListModel.add(0,FIELD_FIRST_LINE);
+      }
+      fieldList.setSelectedIndex(0);
+      fPane.getVerticalScrollBar().setValue(0);
+      fieldNameField.setEnabled(true);
+      fieldNameField.setText(currentField);
+      fieldNameField.selectAll();
+      new FocusRequester(fieldNameField);
+    }
+  }
+);
+  fieldNameField.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      fieldNameField.transferFocus();
+    }
+  }
+);
+  fieldNameField.addFocusListener(new FocusAdapter(){
+    /** 
+ * Adds the text value to the list
+ */
+    @Override public void focusLost(    FocusEvent e){
+      String s=fieldNameField.getText();
+      fieldNameField.setText("");
+      fieldNameField.setEnabled(false);
+      if (!FIELD_FIRST_LINE.equals(s) && !"".equals(s)) {
+        fieldListModel.remove(0);
+        int pos;
+        if (fieldListModel.contains(s)) {
+          pos=fieldListModel.indexOf(s);
+        }
+ else {
+          pos=findPos(fieldListModel,s);
+          fieldListModel.add(Math.max(0,pos),s);
+        }
+        fieldList.setSelectedIndex(pos);
+        fieldList.ensureIndexIsVisible(pos);
+        currentField=s;
+        setupWordSelector();
+        newWordAction();
+      }
+    }
+  }
+);
+  removeField.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      int index=fieldList.getSelectedIndex();
+      if (index == -1) {
+        return;
+      }
+      String fieldName=(String)fieldListModel.get(index);
+      removedFields.add(fieldName);
+      fieldListModel.remove(index);
+      wordListModels.remove(fieldName);
+      fieldNameField.setText("");
+      if (!fieldListModel.isEmpty()) {
+        fieldList.setSelectedIndex(Math.min(index,wordListModel.size() - 1));
+      }
+    }
+  }
+);
+  help.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      frame.helpDiag.showPage(GUIGlobals.contentSelectorHelp);
+    }
+  }
+);
+  ok.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      try {
+        applyChanges();
+        dispose();
+      }
+ catch (      Exception ex) {
+        LOGGER.info("Could not apply changes in \"Setup selectors\"",ex);
+        JOptionPane.showMessageDialog(frame,Globals.lang("Could not apply changes."));
+      }
+    }
+  }
+);
+  apply.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      if (!wordEditField.getText().equals("")) {
+        wordEditFieldListener.actionPerformed(null);
+      }
+      try {
+        applyChanges();
+      }
+ catch (      Exception ex) {
+        LOGGER.info("Could not apply changes in \"Setup selectors\"",ex);
+        JOptionPane.showMessageDialog(frame,Globals.lang("Could not apply changes."));
+      }
+    }
+  }
+);
+  @SuppressWarnings("serial") Action cancelAction=new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+;
+  cancelAction.putValue(Action.NAME,Globals.lang("Cancel"));
+  cancel.setAction(cancelAction);
 }

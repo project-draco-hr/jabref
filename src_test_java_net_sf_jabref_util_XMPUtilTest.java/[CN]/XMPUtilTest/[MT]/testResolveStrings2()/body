@@ -6,7 +6,8 @@
     XMPUtil.writeXMP(pdfFile,result.getDatabase().getEntryByKey("Patterson06"),result.getDatabase());
     BibtexEntry b=XMPUtil.readXMP(pdfFile).get(0);
     Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
-    try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
+    PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile());
+    try {
       Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(document.getDocumentInformation().getAuthor()));
       b=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
       Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
@@ -27,7 +28,10 @@
       b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema);
       Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
     }
-   }
+  finally {
+      document.close();
+    }
+  }
   finally {
     pdfFile.delete();
   }

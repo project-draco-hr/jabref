@@ -1,2 +1,124 @@
 {
+  super(parent,Globals.lang("JabRef preferences"),false);
+  this.jabRef=jabRef;
+  final JabRefPreferences prefs=JabRefPreferences.getInstance();
+  frame=parent;
+  final JList chooser;
+  JButton importPrefs=new JButton(Globals.lang("Import preferences"));
+  JButton exportPrefs=new JButton(Globals.lang("Export preferences"));
+  main=new JPanel();
+  JPanel upper=new JPanel();
+  JPanel lower=new JPanel();
+  getContentPane().setLayout(new BorderLayout());
+  getContentPane().add(upper,BorderLayout.CENTER);
+  getContentPane().add(lower,BorderLayout.SOUTH);
+  final CardLayout cardLayout=new CardLayout();
+  main.setLayout(cardLayout);
+  ArrayList<PrefsTab> tabs=new ArrayList<PrefsTab>();
+  tabs.add(new GeneralTab(frame,prefs));
+  tabs.add(new NetworkTab(frame,prefs));
+  tabs.add(new FileTab(frame,prefs));
+  tabs.add(new FileSortTab(frame,prefs));
+  tabs.add(new EntryEditorPrefsTab(frame,prefs));
+  tabs.add(new GroupsPrefsTab(prefs));
+  tabs.add(new AppearancePrefsTab(prefs));
+  tabs.add(new ExternalTab(frame,this,prefs,parent.helpDiag));
+  tabs.add(new TablePrefsTab(prefs,parent));
+  tabs.add(new TableColumnsTab(prefs,parent));
+  tabs.add(new TabLabelPattern(prefs,parent.helpDiag));
+  tabs.add(new PreviewPrefsTab(prefs));
+  tabs.add(new NameFormatterTab(parent.helpDiag));
+  tabs.add(new ImportSettingsTab());
+  tabs.add(new XmpPrefsTab());
+  tabs.add(new AdvancedTab(prefs,parent.helpDiag,jabRef));
+  Iterator<PrefsTab> it=tabs.iterator();
+  String[] names=new String[tabs.size()];
+  int i=0;
+  while (it.hasNext()) {
+    PrefsTab tab=it.next();
+    names[i]=tab.getTabName();
+    i++;
+    main.add((Component)tab,tab.getTabName());
+  }
+  upper.setBorder(BorderFactory.createEtchedBorder());
+  chooser=new JList(names);
+  chooser.setBorder(BorderFactory.createEtchedBorder());
+  chooser.setPrototypeCellValue("This should be wide enough");
+  chooser.setSelectedIndex(0);
+  chooser.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  chooser.addListSelectionListener(new ListSelectionListener(){
+    @Override public void valueChanged(    ListSelectionEvent e){
+      if (e.getValueIsAdjusting()) {
+        return;
+      }
+      String o=(String)chooser.getSelectedValue();
+      cardLayout.show(main,o);
+    }
+  }
+);
+  JPanel one=new JPanel();
+  JPanel two=new JPanel();
+  one.setLayout(new BorderLayout());
+  two.setLayout(new BorderLayout());
+  one.add(chooser,BorderLayout.CENTER);
+  one.add(importPrefs,BorderLayout.SOUTH);
+  two.add(one,BorderLayout.CENTER);
+  two.add(exportPrefs,BorderLayout.SOUTH);
+  upper.setLayout(new BorderLayout());
+  upper.add(two,BorderLayout.WEST);
+  upper.add(main,BorderLayout.CENTER);
+  JButton ok=new JButton(Globals.lang("Ok"));
+  JButton cancel=new JButton(Globals.lang("Cancel"));
+  ok.addActionListener(new OkAction());
+  CancelAction cancelAction=new CancelAction();
+  cancel.addActionListener(cancelAction);
+  lower.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+  ButtonBarBuilder bb=new ButtonBarBuilder(lower);
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  Util.bindCloseDialogKeyToCancelAction(this.getRootPane(),cancelAction);
+  exportPrefs.setToolTipText(Globals.lang("Export preferences to file"));
+  importPrefs.setToolTipText(Globals.lang("Import preferences from file"));
+  exportPrefs.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      String filename=FileDialogs.getNewFile(frame,new File(System.getProperty("user.home")),".xml",JFileChooser.SAVE_DIALOG,false);
+      if (filename == null) {
+        return;
+      }
+      File file=new File(filename);
+      if (!file.exists() || JOptionPane.showConfirmDialog(PrefsDialog3.this,'\'' + file.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Export preferences"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+        try {
+          prefs.exportPreferences(filename);
+        }
+ catch (        IOException ex) {
+          JOptionPane.showMessageDialog(PrefsDialog3.this,Globals.lang("Could not export preferences") + ": " + ex.getMessage(),Globals.lang("Export preferences"),JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    }
+  }
+);
+  importPrefs.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      String filename=FileDialogs.getNewFile(frame,new File(System.getProperty("user.home")),".xml",JFileChooser.OPEN_DIALOG,false);
+      if (filename == null) {
+        return;
+      }
+      try {
+        prefs.importPreferences(filename);
+        setValues();
+        BibtexEntryType.loadCustomEntryTypes(prefs);
+        ExportFormats.initAllExports();
+        frame.removeCachedEntryEditors();
+        Globals.prefs.updateEntryEditorTabList();
+      }
+ catch (      IOException ex) {
+        JOptionPane.showMessageDialog(PrefsDialog3.this,Globals.lang("Could not import preferences") + ": " + ex.getMessage(),Globals.lang("Import preferences"),JOptionPane.ERROR_MESSAGE);
+      }
+    }
+  }
+);
+  setValues();
+  pack();
 }

@@ -1,5 +1,5 @@
 {
-  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
   StringBuilder sb=new StringBuilder();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
@@ -23,7 +23,7 @@
     }
   }
   String[] entries=sb.toString().split("::");
-  HashMap<String,String> hm=new HashMap<>();
+  HashMap<String,String> hm=new HashMap<String,String>();
   for (  String entry : entries) {
     String[] fields=entry.split(" ## ");
     if (fields.length == 0) {
@@ -42,89 +42,79 @@
       String beg=field.substring(0,6);
       String value=field.substring(6);
       value=value.trim();
-switch (beg) {
-case "PT  - ":
+      if (beg.equals("PT  - ")) {
         Type="article";
-      break;
-case "TY  - ":
-    if ("CONF".equals(value)) {
-      Type="inproceedings";
+      }
+ else       if (beg.equals("TY  - ")) {
+        if ("CONF".equals(value)) {
+          Type="inproceedings";
+        }
+      }
+ else       if (beg.equals("JO  - ")) {
+        hm.put("booktitle",value);
+      }
+ else       if (beg.equals("FAU - ")) {
+        String tmpauthor=value.replaceAll("EOLEOL"," and ");
+        if (!"".equals(fullauthor)) {
+          fullauthor=fullauthor + " and " + tmpauthor;
+        }
+ else {
+          fullauthor=tmpauthor;
+        }
+      }
+ else       if (beg.equals("AU  - ")) {
+        String tmpauthor=value.replaceAll("EOLEOL"," and ").replaceAll(" ",", ");
+        if (!"".equals(shortauthor)) {
+          shortauthor=shortauthor + " and " + tmpauthor;
+        }
+ else {
+          shortauthor=tmpauthor;
+        }
+      }
+ else       if (beg.equals("TI  - ")) {
+        hm.put("title",value.replaceAll("EOLEOL"," "));
+      }
+ else       if (beg.equals("TA  - ")) {
+        hm.put("journal",value.replaceAll("EOLEOL"," "));
+      }
+ else       if (beg.equals("AB  - ")) {
+        hm.put("abstract",value.replaceAll("EOLEOL"," "));
+      }
+ else       if (beg.equals("PG  - ")) {
+        pages=value.replaceAll("-","--");
+      }
+ else       if (beg.equals("IP  - ")) {
+        hm.put("number",value);
+      }
+ else       if (beg.equals("DP  - ")) {
+        String[] parts=value.split(" ");
+        hm.put("year",parts[0]);
+      }
+ else       if (beg.equals("VI  - ")) {
+        hm.put("volume",value);
+      }
+ else       if (beg.equals("AID - ")) {
+        String[] parts=value.split(" ");
+        if ("[doi]".equals(parts[1])) {
+          hm.put("doi",parts[0]);
+          hm.put("url","http://dx.doi.org/" + parts[0]);
+        }
+      }
     }
-  break;
-case "JO  - ":
-hm.put("booktitle",value);
-break;
-case "FAU - ":
-{
-String tmpauthor=value.replaceAll("EOLEOL"," and ");
-if (!"".equals(fullauthor)) {
-fullauthor=fullauthor + " and " + tmpauthor;
-}
- else {
-fullauthor=tmpauthor;
-}
-break;
-}
-case "AU  - ":
-{
-String tmpauthor=value.replaceAll("EOLEOL"," and ").replaceAll(" ",", ");
-if (!"".equals(shortauthor)) {
-shortauthor=shortauthor + " and " + tmpauthor;
-}
- else {
-shortauthor=tmpauthor;
-}
-break;
-}
-case "TI  - ":
-hm.put("title",value.replaceAll("EOLEOL"," "));
-break;
-case "TA  - ":
-hm.put("journal",value.replaceAll("EOLEOL"," "));
-break;
-case "AB  - ":
-hm.put("abstract",value.replaceAll("EOLEOL"," "));
-break;
-case "PG  - ":
-pages=value.replaceAll("-","--");
-break;
-case "IP  - ":
-hm.put("number",value);
-break;
-case "DP  - ":
-{
-String[] parts=value.split(" ");
-hm.put("year",parts[0]);
-break;
-}
-case "VI  - ":
-hm.put("volume",value);
-break;
-case "AID - ":
-{
-String[] parts=value.split(" ");
-if ("[doi]".equals(parts[1])) {
-hm.put("doi",parts[0]);
-hm.put("url","http://dx.doi.org/" + parts[0]);
-}
-break;
-}
-}
-}
-if (!"".equals(pages)) {
-hm.put("pages",pages);
-}
-if (!"".equals(fullauthor)) {
-hm.put("author",fullauthor);
-}
- else if (!"".equals(shortauthor)) {
-hm.put("author",shortauthor);
-}
-BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
-b.setField(hm);
-if (hm.get("author") != null || hm.get("title") != null) {
-bibitems.add(b);
-}
-}
-return bibitems;
+    if (!"".equals(pages)) {
+      hm.put("pages",pages);
+    }
+    if (!"".equals(fullauthor)) {
+      hm.put("author",fullauthor);
+    }
+ else     if (!"".equals(shortauthor)) {
+      hm.put("author",shortauthor);
+    }
+    BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(Type));
+    b.setField(hm);
+    if (hm.get("author") != null || hm.get("title") != null) {
+      bibitems.add(b);
+    }
+  }
+  return bibitems;
 }

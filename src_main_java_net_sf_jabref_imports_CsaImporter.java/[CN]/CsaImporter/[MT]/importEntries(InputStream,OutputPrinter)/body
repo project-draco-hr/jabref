@@ -1,7 +1,7 @@
 {
-  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
   StringBuilder sb=new StringBuilder();
-  HashMap<String,String> hm=new HashMap<>();
+  HashMap<String,String> hm=new HashMap<String,String>();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String Type=null;
   String str;
@@ -97,141 +97,140 @@
         }
       }
       String ftype=null;
-switch (fabbr) {
-case "AB":
+      if (fabbr.equals("AB")) {
         ftype="abstract";
-      break;
-case "AF":
-    ftype="affiliation";
-  break;
-case "AU":
-ftype="author";
-if (fstr.contains(";")) {
-fstr=fstr.replaceAll("; "," and ");
-}
-break;
-case "CA":
-ftype="organization";
-break;
-case "DE":
-ftype="keywords";
-break;
-case "DO":
-ftype="doi";
-break;
-case "ED":
-ftype="editor";
-break;
-case "IB":
-ftype="ISBN";
-break;
-case "IS":
-ftype="ISSN";
-break;
-case "JN":
-ftype="journal";
-break;
-case "LA":
-ftype="language";
-break;
-case "PB":
-ftype="publisher";
-break;
-case "PY":
-ftype="year";
-if (hm.get("year") != null) {
-String oyear=hm.get("year");
-if (!fstr.equals(oyear)) {
-addNote(hm,"Source Year: " + oyear + ".");
-}
-}
-break;
-case "RL":
-ftype="url";
-String[] lines=fstr.split(" ");
-StringBuilder urls=new StringBuilder();
-for (int ii=0; ii < lines.length; ++ii) {
-if (lines[ii].startsWith("[URL:")) {
-urls.append(lines[ii].substring(5));
-}
- else if (lines[ii].endsWith("]")) {
-int len=lines[ii].length();
-urls.append(lines[ii].substring(0,len - 1));
-if (ii < lines.length - 1) {
-urls.append("\n");
-}
-}
+      }
+ else       if (fabbr.equals("AF")) {
+        ftype="affiliation";
+      }
+ else       if (fabbr.equals("AU")) {
+        ftype="author";
+        if (fstr.contains(";")) {
+          fstr=fstr.replaceAll("; "," and ");
+        }
+      }
+ else       if (fabbr.equals("CA")) {
+        ftype="organization";
+      }
+ else       if (fabbr.equals("DE")) {
+        ftype="keywords";
+      }
+ else       if (fabbr.equals("DO")) {
+        ftype="doi";
+      }
+ else       if (fabbr.equals("ED")) {
+        ftype="editor";
+      }
+ else       if (fabbr.equals("IB")) {
+        ftype="ISBN";
+      }
+ else       if (fabbr.equals("IS")) {
+        ftype="ISSN";
+      }
+ else       if (fabbr.equals("JN")) {
+        ftype="journal";
+      }
+ else       if (fabbr.equals("LA")) {
+        ftype="language";
+      }
+ else       if (fabbr.equals("PB")) {
+        ftype="publisher";
+      }
+ else       if (fabbr.equals("PY")) {
+        ftype="year";
+        if (hm.get("year") != null) {
+          String oyear=hm.get("year");
+          if (!fstr.equals(oyear)) {
+            addNote(hm,"Source Year: " + oyear + ".");
+          }
+        }
+      }
+ else       if (fabbr.equals("RL")) {
+        ftype="url";
+        String[] lines=fstr.split(" ");
+        StringBuilder urls=new StringBuilder();
+        for (int ii=0; ii < lines.length; ++ii) {
+          if (lines[ii].startsWith("[URL:")) {
+            urls.append(lines[ii].substring(5));
+          }
+ else           if (lines[ii].endsWith("]")) {
+            int len=lines[ii].length();
+            urls.append(lines[ii].substring(0,len - 1));
+            if (ii < lines.length - 1) {
+              urls.append("\n");
+            }
+          }
  else {
-urls.append(lines[ii]);
-}
-}
-fstr=urls.toString();
-break;
-case "SO":
-ftype="booktitle";
-Matcher pm=CsaImporter.VOLNOPP_PATTERN.matcher(fstr);
-if (pm.find()) {
-hm.put("volume",pm.group(1));
-hm.put("number",pm.group(2));
-hm.put("pages",pm.group(3));
-fstr=pm.replaceFirst("");
-}
-pm=CsaImporter.PAGES_PATTERN.matcher(fstr);
-StringBuilder pages=new StringBuilder();
-while (pm.find()) {
-if (pages.length() > 0) {
-pages.append(",");
-}
-String pp=pm.group(1);
-if (pp == null) {
-pp=pm.group(2);
-}
-if (pp == null) {
-pp=pm.group(3);
-}
-pages.append(pp);
-fstr=pm.replaceFirst("");
-pm=CsaImporter.PAGES_PATTERN.matcher(fstr);
-}
-if (pages.length() > 0) {
-hm.put("pages",pages.toString());
-}
-pm=CsaImporter.VOLUME_PATTERN.matcher(fstr);
-if (pm.find()) {
-hm.put("volume",pm.group(1));
-fstr=pm.replaceFirst("");
-}
-pm=CsaImporter.NUMBER_PATTERN.matcher(fstr);
-if (pm.find()) {
-hm.put("number",pm.group(1));
-fstr=pm.replaceFirst("");
-}
-fstr=parseDate(hm,fstr);
-Pattern pp=Pattern.compile(",?\\s*$");
-pm=pp.matcher(fstr);
-if (pm.find()) {
-fstr=pm.replaceFirst("");
-}
-if (fstr.equals("")) {
-continue;
-}
-break;
-case "TI":
-ftype="title";
-break;
-case "RE":
-continue;
-}
-if (ftype != null) {
-hm.put(ftype,fstr);
-}
+            urls.append(lines[ii]);
+          }
+        }
+        fstr=urls.toString();
+      }
+ else       if (fabbr.equals("SO")) {
+        ftype="booktitle";
+        Matcher pm=CsaImporter.VOLNOPP_PATTERN.matcher(fstr);
+        if (pm.find()) {
+          hm.put("volume",pm.group(1));
+          hm.put("number",pm.group(2));
+          hm.put("pages",pm.group(3));
+          fstr=pm.replaceFirst("");
+        }
+        pm=CsaImporter.PAGES_PATTERN.matcher(fstr);
+        StringBuilder pages=new StringBuilder();
+        while (pm.find()) {
+          if (pages.length() > 0) {
+            pages.append(",");
+          }
+          String pp=pm.group(1);
+          if (pp == null) {
+            pp=pm.group(2);
+          }
+          if (pp == null) {
+            pp=pm.group(3);
+          }
+          pages.append(pp);
+          fstr=pm.replaceFirst("");
+          pm=CsaImporter.PAGES_PATTERN.matcher(fstr);
+        }
+        if (pages.length() > 0) {
+          hm.put("pages",pages.toString());
+        }
+        pm=CsaImporter.VOLUME_PATTERN.matcher(fstr);
+        if (pm.find()) {
+          hm.put("volume",pm.group(1));
+          fstr=pm.replaceFirst("");
+        }
+        pm=CsaImporter.NUMBER_PATTERN.matcher(fstr);
+        if (pm.find()) {
+          hm.put("number",pm.group(1));
+          fstr=pm.replaceFirst("");
+        }
+        fstr=parseDate(hm,fstr);
+        Pattern pp=Pattern.compile(",?\\s*$");
+        pm=pp.matcher(fstr);
+        if (pm.find()) {
+          fstr=pm.replaceFirst("");
+        }
+        if (fstr.equals("")) {
+          continue;
+        }
+      }
+ else       if (fabbr.equals("TI")) {
+        ftype="title";
+      }
+ else       if (fabbr.equals("RE")) {
+        continue;
+      }
+      if (ftype != null) {
+        hm.put(ftype,fstr);
+      }
  else {
-addNote(hm,fname + ": " + fstr+ ".");
-}
-}
+        addNote(hm,fname + ": " + fstr+ ".");
+      }
+    }
  else {
-str=readLine(in);
-}
-}
-return bibitems;
+      str=readLine(in);
+    }
+  }
+  return bibitems;
 }

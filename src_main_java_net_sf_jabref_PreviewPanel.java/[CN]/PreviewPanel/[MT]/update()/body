@@ -1,2 +1,19 @@
 {
+  StringBuilder sb=new StringBuilder();
+  ExportFormats.entryNumber=1;
+  if (entry != null) {
+    sb.append(layout.doLayout(entry,database,wordsToHighlight));
+  }
+  previewPane.setText(sb.toString());
+  previewPane.revalidate();
+  final JScrollBar bar=scrollPane.getVerticalScrollBar();
+  SwingUtilities.invokeLater(new Runnable(){
+    @Override public void run(){
+      bar.setValue(0);
+    }
+  }
+);
+  if (pdfPreviewPanel != null) {
+    pdfPreviewPanel.updatePanel(entry);
+  }
 }

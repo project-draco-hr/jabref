@@ -1,2 +1,130 @@
 {
+  JButton both;
+  JButton second;
+  JButton first;
+switch (type) {
+case DUPLICATE_SEARCH:
+    first=new JButton(Globals.lang("Keep upper"));
+  second=new JButton(Globals.lang("Keep lower"));
+both=new JButton(Globals.lang("Keep both"));
+break;
+case INSPECTION:
+first=new JButton(Globals.lang("Remove old entry"));
+second=new JButton(Globals.lang("Remove entry from import"));
+both=new JButton(Globals.lang("Keep both"));
+break;
+case DUPLICATE_SEARCH_WITH_EXACT:
+first=new JButton(Globals.lang("Keep upper"));
+second=new JButton(Globals.lang("Keep lower"));
+both=new JButton(Globals.lang("Keep both"));
+removeExact=new JButton(Globals.lang("Automatically remove exact duplicates"));
+break;
+default :
+first=new JButton(Globals.lang("Import and remove old entry"));
+second=new JButton(Globals.lang("Do not import entry"));
+both=new JButton(Globals.lang("Import and keep old entry"));
+}
+String layout=Globals.prefs.get(JabRefPreferences.PREVIEW_0);
+p1=new PreviewPanel(null,one,null,new MetaData(),layout);
+p2=new PreviewPanel(null,two,null,new MetaData(),layout);
+ta1=new JTextArea();
+ta2=new JTextArea();
+ta1.setEditable(false);
+ta2.setEditable(false);
+setSourceView(one,two);
+main.setLayout(gbl);
+source.setLayout(gbl);
+con.insets=new Insets(10,10,0,10);
+con.fill=GridBagConstraints.BOTH;
+con.gridwidth=GridBagConstraints.REMAINDER;
+con.weightx=1;
+con.weighty=0;
+TitleLabel lab=new TitleLabel(type == DuplicateResolverDialog.DUPLICATE_SEARCH ? "" : Globals.lang("Entry in current database"));
+gbl.setConstraints(lab,con);
+main.add(lab);
+con.weighty=1;
+con.insets=new Insets(5,10,10,10);
+JScrollPane sp=new JScrollPane(p1);
+gbl.setConstraints(sp,con);
+main.add(sp);
+con.weighty=0;
+con.insets=new Insets(10,10,0,10);
+lab=new TitleLabel(type == DuplicateResolverDialog.DUPLICATE_SEARCH ? "" : Globals.lang("Entry in import"));
+gbl.setConstraints(lab,con);
+main.add(lab);
+con.weighty=1;
+con.insets=new Insets(5,10,10,10);
+sp=new JScrollPane(ta1);
+gbl.setConstraints(sp,con);
+source.add(sp);
+sp=new JScrollPane(p2);
+gbl.setConstraints(sp,con);
+main.add(sp);
+sp=new JScrollPane(ta2);
+gbl.setConstraints(sp,con);
+source.add(sp);
+tabbed.add(Globals.lang("Short form"),main);
+tabbed.add(Globals.lang("Complete record"),source);
+if (removeExact != null) {
+options.add(removeExact);
+}
+options.add(first);
+options.add(second);
+options.add(both);
+if (type != DuplicateResolverDialog.IMPORT_CHECK) {
+options.add(Box.createHorizontalStrut(5));
+options.add(cancel);
+}
+first.addActionListener(new ActionListener(){
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.KEEP_UPPER;
+block=false;
+dispose();
+}
+}
+);
+second.addActionListener(new ActionListener(){
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.KEEP_LOWER;
+block=false;
+dispose();
+}
+}
+);
+both.addActionListener(new ActionListener(){
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.KEEP_BOTH;
+block=false;
+dispose();
+}
+}
+);
+if (removeExact != null) {
+removeExact.addActionListener(new ActionListener(){
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.AUTOREMOVE_EXACT;
+block=false;
+dispose();
+}
+}
+);
+}
+cancel.addActionListener(new ActionListener(){
+@Override public void actionPerformed(ActionEvent e){
+status=DuplicateResolverDialog.BREAK;
+block=false;
+dispose();
+}
+}
+);
+getContentPane().add(tabbed,BorderLayout.CENTER);
+getContentPane().add(options,BorderLayout.SOUTH);
+pack();
+if (getHeight() > DIM.height) {
+setSize(new Dimension(getWidth(),DIM.height));
+}
+if (getWidth() > DIM.width) {
+setSize(new Dimension(DIM.width,getHeight()));
+}
+both.requestFocus();
 }

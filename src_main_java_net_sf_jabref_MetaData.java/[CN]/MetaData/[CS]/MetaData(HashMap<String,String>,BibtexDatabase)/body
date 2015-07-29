@@ -7,7 +7,7 @@
     for (    String key : inData.keySet()) {
       StringReader data=new StringReader(inData.get(key));
       String unit;
-      Vector<String> orderedData=new Vector<>();
+      Vector<String> orderedData=new Vector<String>();
       try {
         while ((unit=getNextUnit(data)) != null) {
           orderedData.add(unit);
@@ -16,35 +16,33 @@
  catch (      IOException ex) {
         System.err.println("Weird error while parsing meta data.");
       }
-switch (key) {
-case "groupsversion":
+      if (key.equals("groupsversion")) {
         if (orderedData.size() >= 1) {
           groupsVersionOnDisk=Integer.parseInt(orderedData.firstElement());
         }
-      break;
-case "groupstree":
-    groupsTreePresent=true;
-  treeGroupsData=orderedData;
-break;
-case "groups":
-flatGroupsData=orderedData;
-break;
-default :
-putData(key,orderedData);
-break;
-}
-}
-}
-if (groupsTreePresent) {
-putGroups(treeGroupsData,db,groupsVersionOnDisk);
-}
-if (!groupsTreePresent && flatGroupsData != null) {
-try {
-groupsRoot=VersionHandling.importFlatGroups(flatGroupsData);
-groupTreeValid=true;
-}
- catch (IllegalArgumentException ex) {
-groupTreeValid=true;
-}
-}
+      }
+ else       if (key.equals("groupstree")) {
+        groupsTreePresent=true;
+        treeGroupsData=orderedData;
+      }
+ else       if (key.equals("groups")) {
+        flatGroupsData=orderedData;
+      }
+ else {
+        putData(key,orderedData);
+      }
+    }
+  }
+  if (groupsTreePresent) {
+    putGroups(treeGroupsData,db,groupsVersionOnDisk);
+  }
+  if (!groupsTreePresent && flatGroupsData != null) {
+    try {
+      groupsRoot=VersionHandling.importFlatGroups(flatGroupsData);
+      groupTreeValid=true;
+    }
+ catch (    IllegalArgumentException ex) {
+      groupTreeValid=true;
+    }
+  }
 }

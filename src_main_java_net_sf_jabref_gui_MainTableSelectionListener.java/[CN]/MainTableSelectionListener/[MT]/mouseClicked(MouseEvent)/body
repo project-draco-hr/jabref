@@ -1,2 +1,97 @@
 {
+  final int col=table.columnAtPoint(e.getPoint());
+  final int row=table.rowAtPoint(e.getPoint());
+  if (e.getClickCount() == 2) {
+    BibtexEntry toShow=tableRows.get(row);
+    editSignalled(toShow);
+  }
+  final String[] iconType=table.getIconTypeForColumn(col);
+  if (Globals.ON_WIN && (iconType != null) && (e.getButton() != MouseEvent.BUTTON1)) {
+    return;
+  }
+  if (iconType != null) {
+    SpecialField field=SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(iconType[0]);
+    if ((e.getClickCount() == 1) && (field != null)) {
+      if (field.isSingleValueField()) {
+        field.getValues().get(0).getAction(panel.frame()).action();
+      }
+ else {
+        JPopupMenu menu=new JPopupMenu();
+        for (        SpecialFieldValue val : field.getValues()) {
+          menu.add(val.getMenuAction(panel.frame()));
+        }
+        menu.show(table,e.getX(),e.getY());
+      }
+      return;
+    }
+    Object value=table.getValueAt(row,col);
+    if (value == null) {
+      return;
+    }
+    final BibtexEntry entry=tableRows.get(row);
+    int hasField=-1;
+    for (int i=iconType.length - 1; i >= 0; i--) {
+      if (entry.getField(iconType[i]) != null) {
+        hasField=i;
+      }
+    }
+    if (hasField == -1) {
+      return;
+    }
+    final String fieldName=iconType[hasField];
+    String[] fileTypes={};
+    if ((hasField == 0) && iconType[hasField].equals(GUIGlobals.FILE_FIELD) && (iconType.length > 1)) {
+      fileTypes=iconType;
+    }
+    final List<String> listOfFileTypes=Collections.unmodifiableList(Arrays.asList(fileTypes));
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
+      @Override public void run(){
+        panel.output(Globals.lang("External viewer called") + '.');
+        Object link=entry.getField(fieldName);
+        if (link == null) {
+          LOGGER.info("Error: no link to " + fieldName + '.');
+          return;
+        }
+        if (fieldName.equals(GUIGlobals.FILE_FIELD)) {
+          FileListTableModel fileList=new FileListTableModel();
+          fileList.setContent((String)link);
+          FileListEntry flEntry=null;
+          if (!listOfFileTypes.isEmpty()) {
+            for (int i=0; i < fileList.getRowCount(); i++) {
+              flEntry=fileList.getEntry(i);
+              boolean correctType=false;
+              for (              String listOfFileType : listOfFileTypes) {
+                if (flEntry.getType().toString().equals(listOfFileType)) {
+                  correctType=true;
+                }
+              }
+              if (correctType) {
+                break;
+              }
+              flEntry=null;
+            }
+          }
+ else           if (fileList.getRowCount() > 0) {
+            flEntry=fileList.getEntry(0);
+          }
+          if (flEntry != null) {
+            ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.getLink(),flEntry.getType().getIcon(),panel.metaData(),flEntry.getType());
+            boolean success=item.openLink();
+            if (!success) {
+              panel.output(Globals.lang("Unable to open link."));
+            }
+          }
+        }
+ else {
+          try {
+            Util.openExternalViewer(panel.metaData(),(String)link,fieldName);
+          }
+ catch (          IOException ex) {
+            panel.output(Globals.lang("Unable to open link."));
+          }
+        }
+      }
+    }
+);
+  }
 }

@@ -1,2 +1,15 @@
 {
+  if (listEvent.getSourceList().size() == 1) {
+    OOBibStyle style=listEvent.getSourceList().get(0);
+    initSelection=style.getFile().getPath();
+    preview.setLayout(style.getReferenceFormat("default"));
+    contentPane.setDividerLocation(contentPane.getSize().height - 150);
+    SwingUtilities.invokeLater(new Runnable(){
+      @Override public void run(){
+        preview.update();
+        preview.scrollRectToVisible(toRect);
+      }
+    }
+);
+  }
 }

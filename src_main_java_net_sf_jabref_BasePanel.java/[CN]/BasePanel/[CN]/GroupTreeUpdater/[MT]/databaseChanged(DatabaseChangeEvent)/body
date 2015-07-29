@@ -1,2 +1,17 @@
 {
+  if (e.getType() == ChangeType.ADDED_ENTRY && Globals.prefs.getBoolean(JabRefPreferences.AUTO_ASSIGN_GROUP) && frame.groupToggle.isSelected()) {
+    BibtexEntry[] entries={e.getEntry()};
+    TreePath[] selection=frame.groupSelector.getGroupsTree().getSelectionPaths();
+    if (selection != null) {
+      for (      TreePath tree : selection) {
+        ((GroupTreeNode)tree.getLastPathComponent()).addToGroup(entries);
+      }
+    }
+    SwingUtilities.invokeLater(new Runnable(){
+      @Override public void run(){
+        BasePanel.this.getGroupSelector().valueChanged(null);
+      }
+    }
+);
+  }
 }

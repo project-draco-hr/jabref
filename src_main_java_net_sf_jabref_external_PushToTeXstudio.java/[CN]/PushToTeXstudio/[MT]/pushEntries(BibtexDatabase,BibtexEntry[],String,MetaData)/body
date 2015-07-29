@@ -1,2 +1,40 @@
 {
+  couldNotConnect=false;
+  couldNotRunClient=false;
+  String citeCom=Globals.prefs.get("citeCommandTeXstudio");
+  if (citeCom == null) {
+    citeCom=defaultCiteCommand;
+  }
+  String programPath=Globals.prefs.get("TeXstudioPath");
+  if (programPath == null) {
+    programPath=defaultProgramPath();
+  }
+  try {
+    String[] com=Globals.ON_WIN ? new String[]{programPath,"--insert-cite",citeCom + "{" + keys+ "}"} : new String[]{programPath,"--insert-cite",citeCom + "{" + keys+ "}"};
+    final Process p=Runtime.getRuntime().exec(com);
+    System.out.println(keys);
+    Runnable errorListener=new Runnable(){
+      @Override public void run(){
+        InputStream out=p.getErrorStream();
+        int c;
+        StringBuilder sb=new StringBuilder();
+        try {
+          while ((c=out.read()) != -1) {
+            sb.append((char)c);
+          }
+        }
+ catch (        IOException e) {
+          e.printStackTrace();
+        }
+        if (!sb.toString().trim().isEmpty()) {
+          couldNotConnect=true;
+        }
+      }
+    }
+;
+    JabRefExecutorService.INSTANCE.executeAndWait(errorListener);
+  }
+ catch (  IOException excep) {
+    couldNotRunClient=true;
+  }
 }
