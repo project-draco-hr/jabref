@@ -21,7 +21,7 @@
     boolean anyChanged=false;
     boolean changedType=false;
     boolean duplicateWarning=false;
-    boolean emptyWarning=(newKey == null) || newKey.isEmpty();
+    boolean emptyWarning=newKey == null || newKey.isEmpty();
     if (panel.database.setCiteKeyForEntry(id,newKey)) {
       duplicateWarning=true;
     }
@@ -37,8 +37,8 @@
     for (    String field : nu.getAllFields()) {
       String oldValue=entry.getField(field);
       String newValue=nu.getField(field);
-      if ((oldValue == null) || !oldValue.equals(newValue)) {
-        (new LatexFieldFormatter()).format(newValue,field);
+      if (oldValue == null || !oldValue.equals(newValue)) {
+        new LatexFieldFormatter().format(newValue,field);
         compound.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
         entry.setField(field,newValue);
         anyChanged=true;

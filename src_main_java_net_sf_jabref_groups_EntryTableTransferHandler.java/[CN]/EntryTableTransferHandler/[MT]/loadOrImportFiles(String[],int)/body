@@ -6,7 +6,7 @@
     String extension="";
     ExternalFileType fileType=null;
     int index=fileName.lastIndexOf('.');
-    if ((index >= 0) && (index < fileName.length())) {
+    if (index >= 0 && index < fileName.length()) {
       extension=fileName.substring(index + 1).toLowerCase();
       fileType=Globals.prefs.getExternalFileTypeByExt(extension);
     }
@@ -14,7 +14,7 @@
       File f=new File(fileName);
       try {
         ParserResult pr=OpenDatabaseAction.loadDatabase(f,encoding);
-        if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
+        if (pr == null || pr == ParserResult.INVALID_FORMAT) {
           notBibFiles.add(fileName);
         }
  else {
@@ -27,7 +27,7 @@
       }
       continue;
     }
-    if ((fileType != null) && (dropRow >= 0)) {
+    if (fileType != null && dropRow >= 0) {
       boolean local=true;
       DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
       dfh.handleDroppedfile(fileName,fileType,local,entryTable,dropRow);
@@ -38,7 +38,7 @@
   if (!notBibFiles.isEmpty()) {
     String[] toImport=new String[notBibFiles.size()];
     notBibFiles.toArray(toImport);
-    ImportMenuItem importer=new ImportMenuItem(frame,(entryTable == null));
+    ImportMenuItem importer=new ImportMenuItem(frame,entryTable == null);
     importer.automatedImport(toImport);
   }
 }

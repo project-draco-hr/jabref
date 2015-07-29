@@ -35,7 +35,7 @@
   }
   _label=Util.checkLegalKey(_sb.toString());
   String regex=Globals.prefs.get("KeyPatternRegex");
-  if ((regex != null) && (!regex.trim().isEmpty())) {
+  if (regex != null && !regex.trim().isEmpty()) {
     String replacement=Globals.prefs.get("KeyPatternReplacement");
     _label=_label.replaceAll(regex,replacement);
   }
@@ -47,11 +47,11 @@
   }
   String oldKey=_entry.getCiteKey();
   int occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(_label);
-  if ((oldKey != null) && oldKey.equals(_label)) {
+  if (oldKey != null && oldKey.equals(_label)) {
     occurences--;
   }
   boolean alwaysAddLetter=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_ALWAYS_ADD_LETTER), firstLetterA=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_FIRST_LETTER_A);
-  if (!alwaysAddLetter && (occurences == 0)) {
+  if (!alwaysAddLetter && occurences == 0) {
     if (!_label.equals(oldKey)) {
       if (LabelPatternUtil._db.getEntryById(_entry.getId()) == null) {
         _entry.setField(BibtexFields.KEY_FIELD,_label);
@@ -68,14 +68,14 @@
     }
     String moddedKey=_label + LabelPatternUtil.getAddition(number);
     occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(moddedKey);
-    if ((oldKey != null) && oldKey.equals(moddedKey)) {
+    if (oldKey != null && oldKey.equals(moddedKey)) {
       occurences--;
     }
     while (occurences > 0) {
       number++;
       moddedKey=_label + LabelPatternUtil.getAddition(number);
       occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(moddedKey);
-      if ((oldKey != null) && oldKey.equals(moddedKey)) {
+      if (oldKey != null && oldKey.equals(moddedKey)) {
         occurences--;
       }
     }

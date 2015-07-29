@@ -19,7 +19,7 @@
   for (int index=0; index < parts.length; index++) {
     List<String> part=new ArrayList<String>();
     for (    String k : parts[index].replaceAll("\\{[A-Z]+\\}","").split("[ \\-_]")) {
-      if ((!k.equals("") && !ignore.contains(k.toLowerCase()) && (k.charAt(k.length() - 1) != '.')&& (k.charAt(0) + "").matches("[A-Z]")) || ((k.length() >= 3) && k.toLowerCase().substring(0,2).equals("uni"))) {
+      if (!k.equals("") && !ignore.contains(k.toLowerCase()) && k.charAt(k.length() - 1) != '.' && (k.charAt(0) + "").matches("[A-Z]") || k.length() >= 3 && k.toLowerCase().substring(0,2).equals("uni")) {
         part.add(k);
       }
     }
@@ -28,16 +28,16 @@
     boolean isDepartment=false;
     boolean isSchool=false;
     for (    String k : part) {
-      if ((k.length() >= 5) && k.toLowerCase().substring(0,5).equals("univ")) {
+      if (k.length() >= 5 && k.toLowerCase().substring(0,5).equals("univ")) {
         isUniversity=true;
       }
-      if ((k.length() >= 6) && k.toLowerCase().substring(0,6).equals("techn")) {
+      if (k.length() >= 6 && k.toLowerCase().substring(0,6).equals("techn")) {
         isTechnology=true;
       }
       if (k.toLowerCase().equals("school")) {
         isSchool=true;
       }
-      if (((k.length() >= 7) && k.toLowerCase().substring(0,7).matches("d[ei]part")) || ((k.length() >= 4) && k.toLowerCase().substring(0,4).equals("lab"))) {
+      if (k.length() >= 7 && k.toLowerCase().substring(0,7).matches("d[ei]part") || k.length() >= 4 && k.toLowerCase().substring(0,4).equals("lab")) {
         isDepartment=true;
       }
     }
@@ -47,11 +47,11 @@
     if (isUniversity) {
       university="Uni";
       for (      String k : part) {
-        if ((k.length() >= 5) && !k.toLowerCase().substring(0,5).equals("univ")) {
+        if (k.length() >= 5 && !k.toLowerCase().substring(0,5).equals("univ")) {
           university+=k;
         }
       }
-      if ((index > 0) && (department == null)) {
+      if (index > 0 && department == null) {
         department=parts[index - 1];
       }
     }
@@ -63,7 +63,7 @@
         department="";
       }
       for (      String k : part) {
-        if ((k.length() >= 7) && !k.toLowerCase().substring(0,7).matches("d[ei]part") && !k.toLowerCase().equals("school")&& !k.toLowerCase().equals("faculty")&& !k.replaceAll("[^A-Z]","").equals("")) {
+        if (k.length() >= 7 && !k.toLowerCase().substring(0,7).matches("d[ei]part") && !k.toLowerCase().equals("school") && !k.toLowerCase().equals("faculty") && !k.replaceAll("[^A-Z]","").equals("")) {
           if (isSchool) {
             school+=k.replaceAll("[^A-Z]","");
           }
@@ -90,5 +90,5 @@
       }
     }
   }
-  return (university == null ? rest : university) + (school == null ? "" : school) + (((department == null) || ((school != null) && department.equals(school))) ? "" : department);
+  return (university == null ? rest : university) + (school == null ? "" : school) + (department == null || school != null && department.equals(school) ? "" : department);
 }

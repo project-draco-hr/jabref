@@ -81,7 +81,7 @@
     title=streamlineTitle(curString);
     curString="";
     author=null;
-    while ((i < split.length) && (!split[i].equals(""))) {
+    while (i < split.length && !split[i].equals("")) {
       curString=streamlineNames(split[i]);
       if (author == null) {
         author=curString;
@@ -99,7 +99,7 @@
     i++;
     while (i < split.length) {
       curString=split[i];
-      if ((curString.length() >= "Abstract".length()) && (curString.substring(0,"Abstract".length()).equalsIgnoreCase("Abstract"))) {
+      if (curString.length() >= "Abstract".length() && curString.substring(0,"Abstract".length()).equalsIgnoreCase("Abstract")) {
         if (curString.length() == "Abstract".length()) {
           curString="";
         }
@@ -107,14 +107,14 @@
           curString=curString.substring("Abstract".length() + 1).trim().concat(lineBreak);
         }
         i++;
-        while ((i < split.length) && (!split[i].equals(""))) {
+        while (i < split.length && !split[i].equals("")) {
           curString=curString.concat(split[i]).concat(lineBreak);
           i++;
         }
         abstractT=curString;
         i++;
       }
- else       if ((curString.length() >= "Keywords".length()) && (curString.substring(0,"Keywords".length()).equalsIgnoreCase("Keywords"))) {
+ else       if (curString.length() >= "Keywords".length() && curString.substring(0,"Keywords".length()).equalsIgnoreCase("Keywords")) {
         if (curString.length() == "Keywords".length()) {
           curString="";
         }
@@ -144,7 +144,7 @@
       readLastBlock();
       extractYear();
       int pos=curString.indexOf("(Eds.)");
-      if ((pos >= 0) && (publisher == null)) {
+      if (pos >= 0 && publisher == null) {
         publisher="Springer";
         editor=streamlineNames(curString.substring(0,pos - 1));
         curString=curString.substring(pos + "(Eds.)".length() + 2);
@@ -170,7 +170,7 @@
           if (pos >= 0) {
             pos+=3;
             char delimiter=curString.charAt(pos);
-            if ((delimiter == ':') || (delimiter == ' ')) {
+            if (delimiter == ':' || delimiter == ' ') {
               pos++;
             }
             int nextSpace=curString.indexOf(' ',pos);
@@ -182,13 +182,13 @@
             }
           }
         }
-        if ((publisher == null) && (curString.contains("IEEE"))) {
+        if (publisher == null && curString.contains("IEEE")) {
           publisher="IEEE";
           if (conference == null) {
             pos=curString.indexOf('$');
             if (pos > 0) {
               pos-=2;
-              while ((pos >= 0) && (curString.charAt(pos) != ' ')) {
+              while (pos >= 0 && curString.charAt(pos) != ' ') {
                 pos--;
               }
               if (pos > 0) {

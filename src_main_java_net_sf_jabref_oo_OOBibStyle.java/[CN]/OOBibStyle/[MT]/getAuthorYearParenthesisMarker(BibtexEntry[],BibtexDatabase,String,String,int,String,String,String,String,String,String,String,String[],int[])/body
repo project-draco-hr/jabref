@@ -1,7 +1,7 @@
 {
   StringBuffer sb=new StringBuffer(startBrace);
   for (int j=0; j < entries.length; j++) {
-    int unlimA=(unlimAuthors != null ? unlimAuthors[j] : -1);
+    int unlimA=unlimAuthors != null ? unlimAuthors[j] : -1;
     int maxAuthors=unlimA > 0 ? unlimA : maxA;
     BibtexEntry entry=entries[j];
     if (entry == null) {
@@ -14,9 +14,9 @@
     if (author != null) {
       AuthorList al=AuthorList.getAuthorList(author);
       sb.append(getAuthorLastName(al,0));
-      if ((al.size() > 1) && ((al.size() <= maxAuthors) || (maxAuthors < 0))) {
+      if (al.size() > 1 && (al.size() <= maxAuthors || maxAuthors < 0)) {
         int i=1;
-        while (i < (al.size() - 1)) {
+        while (i < al.size() - 1) {
           sb.append(authorSep);
           sb.append(getAuthorLastName(al,i));
           i++;
@@ -33,7 +33,7 @@
     if (year != null) {
       sb.append(year);
     }
-    if ((uniquifiers != null) && (uniquifiers[j] != null)) {
+    if (uniquifiers != null && uniquifiers[j] != null) {
       sb.append(uniquifiers[j]);
     }
   }

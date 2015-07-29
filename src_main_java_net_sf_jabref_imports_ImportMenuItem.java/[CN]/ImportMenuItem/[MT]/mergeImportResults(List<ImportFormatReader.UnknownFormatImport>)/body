@@ -8,7 +8,7 @@
     }
     if (ImportFormatReader.BIBTEX_FORMAT.equals(importResult.format)) {
       ParserResult pr=importResult.parserResult;
-      anythingUseful=anythingUseful || ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0));
+      anythingUseful=anythingUseful || pr.getDatabase().getEntryCount() > 0 || pr.getDatabase().getStringCount() > 0;
       if (directParserResult == null) {
         directParserResult=pr;
       }
@@ -26,7 +26,7 @@
  else {
       ParserResult pr=importResult.parserResult;
       Collection<BibtexEntry> entries=pr.getDatabase().getEntries();
-      anythingUseful=anythingUseful | (!entries.isEmpty());
+      anythingUseful=anythingUseful | !entries.isEmpty();
       Util.setAutomaticFields(entries,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),!openInNew && Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
       for (      BibtexEntry entry : entries) {
         database.insertEntry(entry);
@@ -36,7 +36,7 @@
   if (!anythingUseful) {
     return null;
   }
-  if ((imports.size() == 1) && (directParserResult != null)) {
+  if (imports.size() == 1 && directParserResult != null) {
     return directParserResult;
   }
  else {

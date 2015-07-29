@@ -1,5 +1,5 @@
 {
-  if ((file != null) && (file.exists())) {
+  if (file != null && file.exists()) {
     File fileToLoad=file;
     frame.output(Globals.lang("Opening") + ": '" + file.getPath()+ "'");
     boolean tryingAutosave=false;
@@ -22,7 +22,7 @@
       String encoding=Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING);
       if (FileBasedLock.hasLockFile(file)) {
         long modTime=FileBasedLock.getLockFileTimeStamp(file);
-        if ((modTime != -1) && ((System.currentTimeMillis() - modTime) > SaveSession.LOCKFILE_CRITICAL_AGE)) {
+        if (modTime != -1 && System.currentTimeMillis() - modTime > SaveSession.LOCKFILE_CRITICAL_AGE) {
           int answer=JOptionPane.showConfirmDialog(null,"<html>" + Globals.lang("Error opening file") + " '"+ fileName+ "'. "+ Globals.lang("File is locked by another JabRef instance.")+ "<p>"+ Globals.lang("Do you want to override the file lock?"),Globals.lang("File locked"),JOptionPane.YES_NO_OPTION);
           if (answer == JOptionPane.YES_OPTION) {
             FileBasedLock.deleteLockFile(file);
@@ -45,7 +45,7 @@
         errorMessage=ex.getMessage();
         pr=null;
       }
-      if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
+      if (pr == null || pr == ParserResult.INVALID_FORMAT) {
         JOptionPane.showMessageDialog(null,Globals.lang("Error opening file") + " '" + fileName+ "'",Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
         String message="<html>" + errorMessage + "<p>"+ (tryingAutosave ? Globals.lang("Error opening autosave of '%0'. Trying to load '%0' instead.",file.getName()) : "")+ "</html>";
         JOptionPane.showMessageDialog(null,message,Globals.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
