@@ -107,7 +107,7 @@ catch (          IOException ex) {
           try {
             BibtexParser bp=new BibtexParser(new java.io.StringReader((String)(content.getTransferData(DataFlavor.stringFlavor))));
             BibtexDatabase db=bp.parse().getDatabase();
-            Util.pr("Parsed " + db.getEntryCount() + " entries from clipboard text");
+            LOGGER.info("Parsed " + db.getEntryCount() + " entries from clipboard text");
             if (db.getEntryCount() > 0) {
               bes=db.getEntries().toArray(new BibtexEntry[db.getEntryCount()]);
             }
@@ -134,7 +134,7 @@ catch (          Throwable ex) {
               ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
             }
  catch (            KeyCollisionException ex) {
-              Util.pr("KeyCollisionException... this shouldn't happen.");
+              LOGGER.info("KeyCollisionException... this shouldn't happen.",ex);
             }
           }
           ce.end();

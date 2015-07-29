@@ -1,19 +1,19 @@
 {
   if (panel.database().hasStringLabel(string.getName())) {
-    Globals.logInfo("Cannot add string '" + string.getName() + "' because the name "+ "is already in use.");
+    LOGGER.info("Cannot add string '" + string.getName() + "' because the name "+ "is already in use.");
   }
   try {
     panel.database().addString(string);
     undoEdit.addEdit(new UndoableInsertString(panel,panel.database(),string));
   }
  catch (  KeyCollisionException ex) {
-    Globals.logInfo("Error: could not add string '" + string.getName() + "': "+ ex.getMessage());
+    LOGGER.info("Error: could not add string '" + string.getName() + "': "+ ex.getMessage(),ex);
   }
   try {
     secondary.addString(new BibtexString(IdGenerator.next(),string.getName(),string.getContent()));
   }
  catch (  KeyCollisionException ex) {
-    Globals.logInfo("Error: could not add string '" + string.getName() + "' to tmp database: "+ ex.getMessage());
+    LOGGER.info("Error: could not add string '" + string.getName() + "' to tmp database: "+ ex.getMessage(),ex);
   }
   return true;
 }
