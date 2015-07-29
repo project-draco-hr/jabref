@@ -1,2 +1,122 @@
 {
+  if (panel == null) {
+    return Collections.emptyList();
+  }
+  ImportDialog importDialog=null;
+  boolean doNotShowAgain=false;
+  boolean neverShow=Globals.prefs.getBoolean(ImportSettingsTab.PREF_IMPORT_ALWAYSUSE);
+  int globalChoice=Globals.prefs.getInt(ImportSettingsTab.PREF_IMPORT_DEFAULT_PDF_IMPORT_STYLE);
+  String[] dirsS=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  List<BibtexEntry> res=new ArrayList<BibtexEntry>();
+  fileNameLoop:   for (  String fileName : fileNames) {
+    List<BibtexEntry> xmpEntriesInFile=readXmpEntries(fileName);
+    if (!neverShow && !doNotShowAgain) {
+      importDialog=new ImportDialog(dropRow >= 0,fileName);
+      if (!hasXmpEntries(xmpEntriesInFile)) {
+        importDialog.disableXMPChoice();
+      }
+      Tools.centerRelativeToWindow(importDialog,frame);
+      importDialog.showDialog();
+      doNotShowAgain=importDialog.getDoNotShowAgain();
+    }
+    if (neverShow || importDialog.getResult() == JOptionPane.OK_OPTION) {
+      int choice=neverShow ? globalChoice : importDialog.getChoice();
+      DroppedFileHandler dfh;
+      BibtexEntry entry;
+      BibtexEntryType type;
+      InputStream in=null;
+      List<BibtexEntry> localRes=null;
+switch (choice) {
+case ImportDialog.XMP:
+        PdfXmpImporter importer=new PdfXmpImporter();
+      try {
+        in=new FileInputStream(fileName);
+        localRes=importer.importEntries(in,frame);
+      }
+ catch (      IOException ex) {
+        ex.printStackTrace();
+      }
+ finally {
+        try {
+          in.close();
+        }
+ catch (        Exception ignored) {
+        }
+      }
+    if (localRes == null || localRes.isEmpty()) {
+      LOGGER.info(Globals.lang("Import failed"));
+      entry=createNewBlankEntry(fileName);
+      res.add(entry);
+      continue fileNameLoop;
+    }
+  entry=localRes.get(0);
+panel.database().insertEntry(entry);
+panel.markBaseChanged();
+FileListTableModel tm=new FileListTableModel();
+File toLink=new File(fileName);
+tm.addEntry(0,new FileListEntry(toLink.getName(),FileUtil.shortenFileName(toLink,dirsS).getPath(),Globals.prefs.getExternalFileTypeByName("pdf")));
+entry.setField(GUIGlobals.FILE_FIELD,tm.getStringRepresentation());
+res.add(entry);
+break;
+case ImportDialog.CONTENT:
+PdfContentImporter contentImporter=new PdfContentImporter();
+File file=new File(fileName);
+try {
+in=new FileInputStream(file);
+}
+ catch (Exception e) {
+LOGGER.info(Globals.lang("Import failed"),e);
+e.printStackTrace();
+entry=createNewBlankEntry(fileName);
+res.add(entry);
+continue fileNameLoop;
+}
+try {
+localRes=contentImporter.importEntries(in,status);
+}
+ catch (Exception e) {
+LOGGER.info(Globals.lang("Import failed"),e);
+e.printStackTrace();
+entry=createNewBlankEntry(fileName);
+res.add(entry);
+continue fileNameLoop;
+}
+ finally {
+try {
+in.close();
+}
+ catch (Exception ignored) {
+}
+}
+if (localRes == null || localRes.isEmpty()) {
+entry=createNewBlankEntry(fileName);
+res.add(entry);
+continue fileNameLoop;
+}
+entry=localRes.get(0);
+panel.database().insertEntry(entry);
+panel.markBaseChanged();
+LabelPatternUtil.makeLabel(panel.metaData(),panel.database(),entry);
+dfh=new DroppedFileHandler(frame,panel);
+dfh.linkPdfToEntry(fileName,entryTable,entry);
+panel.highlightEntry(entry);
+if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_OPEN_FORM)) {
+EntryEditor editor=panel.getEntryEditor(entry);
+panel.showEntryEditor(editor);
+panel.adjustSplitter();
+}
+res.add(entry);
+break;
+case ImportDialog.NOMETA:
+entry=createNewBlankEntry(fileName);
+res.add(entry);
+break;
+case ImportDialog.ONLYATTACH:
+dfh=new DroppedFileHandler(frame,panel);
+dfh.linkPdfToEntry(fileName,entryTable,dropRow);
+break;
+}
+}
+}
+return res;
 }
