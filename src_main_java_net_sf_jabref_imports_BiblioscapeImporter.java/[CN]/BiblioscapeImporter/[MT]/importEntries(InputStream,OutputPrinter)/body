@@ -6,7 +6,7 @@
   HashMap<String,StringBuffer> lines=new HashMap<String,StringBuffer>();
   StringBuffer previousLine=null;
   while ((line=in.readLine()) != null) {
-    if (line.length() == 0) {
+    if (line.isEmpty()) {
       continue;
     }
     if (line.equals("------")) {
@@ -49,10 +49,10 @@
           type[0]=entry.getValue().toString();
         }
  else         if (entry.getKey().equals("SB")) {
-          comments.add("Subject: " + entry.getValue().toString());
+          comments.add("Subject: " + entry.getValue());
         }
  else         if (entry.getKey().equals("SA")) {
-          comments.add("Secondary Authors: " + entry.getValue().toString());
+          comments.add("Secondary Authors: " + entry.getValue());
         }
  else         if (entry.getKey().equals("NT")) {
           hm.put("note",entry.getValue().toString());
@@ -61,10 +61,10 @@
           hm.put("publisher",entry.getValue().toString());
         }
  else         if (entry.getKey().equals("TA")) {
-          comments.add("Tertiary Authors: " + entry.getValue().toString());
+          comments.add("Tertiary Authors: " + entry.getValue());
         }
  else         if (entry.getKey().equals("TT")) {
-          comments.add("Tertiary Title: " + entry.getValue().toString());
+          comments.add("Tertiary Title: " + entry.getValue());
         }
  else         if (entry.getKey().equals("ED")) {
           hm.put("edition",entry.getValue().toString());
@@ -73,10 +73,10 @@
           type[1]=entry.getValue().toString();
         }
  else         if (entry.getKey().equals("QA")) {
-          comments.add("Quaternary Authors: " + entry.getValue().toString());
+          comments.add("Quaternary Authors: " + entry.getValue());
         }
  else         if (entry.getKey().equals("QT")) {
-          comments.add("Quaternary Title: " + entry.getValue().toString());
+          comments.add("Quaternary Title: " + entry.getValue());
         }
  else         if (entry.getKey().equals("IS")) {
           hm.put("isbn",entry.getValue().toString());
@@ -98,31 +98,31 @@
           hm.put(s.startsWith("http://") || s.startsWith("ftp://") ? "url" : "pdf",entry.getValue().toString());
         }
  else         if (entry.getKey().equals("C1")) {
-          comments.add("Custom1: " + entry.getValue().toString());
+          comments.add("Custom1: " + entry.getValue());
         }
  else         if (entry.getKey().equals("C2")) {
-          comments.add("Custom2: " + entry.getValue().toString());
+          comments.add("Custom2: " + entry.getValue());
         }
  else         if (entry.getKey().equals("C3")) {
-          comments.add("Custom3: " + entry.getValue().toString());
+          comments.add("Custom3: " + entry.getValue());
         }
  else         if (entry.getKey().equals("C4")) {
-          comments.add("Custom4: " + entry.getValue().toString());
+          comments.add("Custom4: " + entry.getValue());
         }
  else         if (entry.getKey().equals("C5")) {
-          comments.add("Custom5: " + entry.getValue().toString());
+          comments.add("Custom5: " + entry.getValue());
         }
  else         if (entry.getKey().equals("C6")) {
-          comments.add("Custom6: " + entry.getValue().toString());
+          comments.add("Custom6: " + entry.getValue());
         }
  else         if (entry.getKey().equals("DE")) {
           hm.put("annote",entry.getValue().toString());
         }
  else         if (entry.getKey().equals("CA")) {
-          comments.add("Categories: " + entry.getValue().toString());
+          comments.add("Categories: " + entry.getValue());
         }
  else         if (entry.getKey().equals("TH")) {
-          comments.add("Short Title: " + entry.getValue().toString());
+          comments.add("Short Title: " + entry.getValue());
         }
  else         if (entry.getKey().equals("SE")) {
           hm.put("chapter",entry.getValue().toString());
@@ -192,7 +192,7 @@
       if (address != null) {
         hm.put("address",address + (country != null ? ", " + country : ""));
       }
-      if (comments.size() > 0) {
+      if (!comments.isEmpty()) {
         StringBuilder s=new StringBuilder();
         for (int i=0; i < comments.size(); ++i) {
           s.append(i > 0 ? "; " : "").append(comments.elementAt(i));

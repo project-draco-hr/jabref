@@ -9,7 +9,7 @@
   }
   String[] entries=sb.toString().replaceAll("\u2013","-").replaceAll("\u2014","--").replaceAll("\u2015","--").split("\\n\\n");
   for (  String entry1 : entries) {
-    if (entry1.trim().length() == 0) {
+    if (entry1.trim().isEmpty()) {
       continue;
     }
     String type="", author="", editor="", comment="";
@@ -128,7 +128,7 @@
  else       if ((lab.equals("DP"))) {
         String[] parts=val.split(" ");
         hm.put("year",parts[0]);
-        if ((parts.length > 1) && (parts[1].length() > 0)) {
+        if ((parts.length > 1) && (!parts[1].isEmpty())) {
           hm.put("month",parts[1]);
         }
       }
@@ -142,7 +142,7 @@
         }
       }
  else       if (lab.equals("CON") || lab.equals("CIN") || lab.equals("EIN")|| lab.equals("EFR")|| lab.equals("CRI")|| lab.equals("CRF")|| lab.equals("PRIN")|| lab.equals("PROF")|| lab.equals("RPI")|| lab.equals("RPF")|| lab.equals("RIN")|| lab.equals("ROF")|| lab.equals("UIN")|| lab.equals("UOF")|| lab.equals("SPIN")|| lab.equals("ORI")) {
-        if (comment.length() > 0) {
+        if (!comment.isEmpty()) {
           comment=comment + "\n";
         }
         comment=comment + val;
@@ -155,22 +155,22 @@
         }
       }
     }
-    if (author.length() > 0) {
+    if (!author.isEmpty()) {
       author=AuthorList.fixAuthor_lastNameFirst(author);
       hm.put("author",author);
     }
-    if (editor.length() > 0) {
+    if (!editor.isEmpty()) {
       editor=AuthorList.fixAuthor_lastNameFirst(editor);
       hm.put("editor",editor);
     }
-    if (comment.length() > 0) {
+    if (!comment.isEmpty()) {
       hm.put("comment",comment);
     }
     BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,Globals.getEntryType(type));
     ArrayList<Object> toRemove=new ArrayList<Object>();
     for (    String key : hm.keySet()) {
       String content=hm.get(key);
-      if ((content == null) || (content.trim().length() == 0)) {
+      if ((content == null) || (content.trim().isEmpty())) {
         toRemove.add(key);
       }
     }
