@@ -1,5 +1,5 @@
 {
-  AutoCompleteListener.logger.finest("key typed event caught");
+  LOGGER.debug("key typed event caught " + e.getKeyCode());
   char ch=e.getKeyChar();
   if (ch == '\n') {
     return;
@@ -7,16 +7,14 @@
   if ((e.getModifiers() | InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK) {
     if (Character.isLetter(ch) || Character.isDigit(ch) || (Character.isWhitespace(ch) && completer.isSingleUnitField())) {
       JTextComponent comp=(JTextComponent)e.getSource();
-      if (AutoCompleteListener.logger.isLoggable(Level.FINEST)) {
-        if (toSetIn == null) {
-          AutoCompleteListener.logger.finest("toSetIn: NULL");
-        }
+      if (toSetIn == null) {
+        LOGGER.debug("toSetIn is null");
+      }
  else {
-          AutoCompleteListener.logger.finest("toSetIn: >" + toSetIn + '<');
-        }
+        LOGGER.debug("toSetIn: >" + toSetIn + '<');
       }
       if ((toSetIn != null) && (toSetIn.length() > 1) && (ch == toSetIn.charAt(1))) {
-        AutoCompleteListener.logger.finest("cont");
+        LOGGER.debug("cont");
         toSetIn=toSetIn.substring(1);
         if (!toSetIn.isEmpty()) {
           int cp=comp.getCaretPosition();
@@ -43,11 +41,7 @@
       }
       if ((toSetIn != null) && ((toSetIn.length() <= 1) || (ch != toSetIn.charAt(1)))) {
         lastBeginning=lastBeginning + ch;
-        if (AutoCompleteListener.logger.isLoggable(Level.FINEST)) {
-          AutoCompleteListener.logger.finest("discont");
-          AutoCompleteListener.logger.finest("toSetIn: >" + toSetIn + '<');
-          AutoCompleteListener.logger.finest("lastBeginning: >" + lastBeginning + '<');
-        }
+        LOGGER.debug("discont toSetIn: >" + toSetIn + "'<' lastBeginning: >"+ lastBeginning+ '<');
         String[] completed=findCompletions(lastBeginning,comp);
         if ((completed != null) && (completed.length > 0)) {
           lastShownCompletion=0;
@@ -71,7 +65,7 @@
           return;
         }
       }
-      AutoCompleteListener.logger.finest("case else");
+      LOGGER.debug("case else");
       comp.replaceSelection("");
       StringBuffer currentword=getCurrentWord(comp);
       if (currentword == null) {
@@ -85,12 +79,12 @@
  else {
       if (Character.isWhitespace(ch)) {
         assert(!completer.isSingleUnitField());
-        AutoCompleteListener.logger.finest("whitespace && !singleUnitField");
+        LOGGER.debug("whitespace && !singleUnitField");
         setUnmodifiedTypedLetters((JTextComponent)e.getSource(),false,true);
         resetAutoCompletion();
         return;
       }
-      AutoCompleteListener.logger.finest("No letter/digit/whitespace or CHAR_UNDEFINED");
+      LOGGER.debug("No letter/digit/whitespace or CHAR_UNDEFINED");
       setUnmodifiedTypedLetters((JTextComponent)e.getSource(),false,!Character.isISOControl(ch));
       resetAutoCompletion();
       return;

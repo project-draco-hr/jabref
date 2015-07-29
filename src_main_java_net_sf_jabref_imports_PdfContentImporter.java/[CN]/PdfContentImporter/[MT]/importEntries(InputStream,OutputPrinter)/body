@@ -5,12 +5,12 @@
     document=PDDocument.load(in);
   }
  catch (  IOException e) {
-    PdfContentImporter.logger.log(Level.SEVERE,"Could not load document",e);
+    LOGGER.error("Could not load document",e);
     return res;
   }
   try {
     if (document.isEncrypted()) {
-      PdfContentImporter.logger.log(Level.INFO,Globals.lang("Encrypted documents are not supported"));
+      LOGGER.error(Globals.lang("Encrypted documents are not supported"));
     }
     PDFTextStripper stripper=new PDFTextStripper();
     stripper.setStartPage(1);
@@ -251,7 +251,7 @@
       status.showMessage(Globals.lang("Java Bouncy Castle library not found. Please download and install it. For more information see http://www.bouncycastle.org/."));
     }
  else {
-      PdfContentImporter.logger.log(Level.SEVERE,e.getLocalizedMessage(),e);
+      LOGGER.error("Could not find class",e);
     }
   }
  finally {
