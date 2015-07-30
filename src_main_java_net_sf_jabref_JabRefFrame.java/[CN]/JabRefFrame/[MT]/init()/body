@@ -82,12 +82,10 @@
 );
   if (Globals.ON_MAC) {
     try {
-      Class<?> macreg=Class.forName("osx.macadapter.MacAdapter");
-      Method method=macreg.getMethod("registerMacEvents",JabRefFrame.class);
-      method.invoke(macreg.newInstance(),this);
+      new MacAdapter().registerMacEvents(this);
     }
  catch (    Exception e) {
-      System.err.println("Exception (" + e.getClass() + "): "+ e.getMessage());
+      LOGGER.fatal("could not interface with Mac OS X methods",e);
     }
   }
 }
