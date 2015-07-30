@@ -1,17 +1,17 @@
 {
-  if (c instanceof JEditorPane) {
-    JEditorPane e=(JEditorPane)c;
-    StringWriter sw=new StringWriter();
+  if (component instanceof JEditorPane) {
+    JEditorPane editorPane=(JEditorPane)component;
+    StringWriter stringWriter=new StringWriter();
     try {
-      e.getEditorKit().write(sw,e.getDocument(),e.getSelectionStart(),e.getSelectionEnd());
+      editorPane.getEditorKit().write(stringWriter,editorPane.getDocument(),editorPane.getSelectionStart(),editorPane.getSelectionEnd());
     }
- catch (    IOException e1) {
-      e1.printStackTrace();
+ catch (    IOException e) {
+      LOGGER.warn("Cannot write preview",e);
     }
-catch (    BadLocationException e1) {
-      e1.printStackTrace();
+catch (    BadLocationException e) {
+      LOGGER.warn("Cannot write preview",e);
     }
-    return new HtmlTransferable(sw.toString(),e.getSelectedText());
+    return new HtmlTransferable(stringWriter.toString(),editorPane.getSelectedText());
   }
  else {
     return new StringSelection(Globals.lang("Operation not supported"));
