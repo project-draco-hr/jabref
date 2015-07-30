@@ -1,0 +1,34 @@
+{
+  prefs.putBoolean(JabRefPreferences.USE_OWNER,useOwner.isSelected());
+  prefs.putBoolean(JabRefPreferences.OVERWRITE_OWNER,overwriteOwner.isSelected());
+  prefs.putBoolean(JabRefPreferences.USE_TIME_STAMP,useTimeStamp.isSelected());
+  prefs.putBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP,overwriteTimeStamp.isSelected());
+  prefs.putBoolean(JabRefPreferences.UPDATE_TIMESTAMP,updateTimeStamp.isSelected());
+  prefs.putBoolean(JabRefPreferences.DIALOG_WARNING_FOR_DUPLICATE_KEY,keyDuplicateWarningDialog.isSelected());
+  prefs.putBoolean(JabRefPreferences.DIALOG_WARNING_FOR_EMPTY_KEY,keyEmptyWarningDialog.isSelected());
+  prefs.putBoolean(JabRefPreferences.ENFORCE_LEGAL_BIBTEX_KEY,enforceLegalKeys.isSelected());
+  if (prefs.getBoolean(JabRefPreferences.MEMORY_STICK_MODE) && !memoryStick.isSelected()) {
+    JOptionPane.showMessageDialog(null,Globals.lang("To disable the memory stick mode" + " rename or remove the jabref.xml file in the same folder as JabRef."),Globals.lang("Memory Stick Mode"),JOptionPane.INFORMATION_MESSAGE);
+  }
+  prefs.putBoolean(JabRefPreferences.MEMORY_STICK_MODE,memoryStick.isSelected());
+  prefs.putBoolean(JabRefPreferences.CONFIRM_DELETE,confirmDelete.isSelected());
+  prefs.putBoolean(JabRefPreferences.ALLOW_TABLE_EDITING,allowEditing.isSelected());
+  prefs.putBoolean(JabRefPreferences.CTRL_CLICK,ctrlClick.isSelected());
+  prefs.putBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG,useImportInspector.isSelected());
+  prefs.putBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG_FOR_SINGLE,useImportInspectorForSingle.isSelected());
+  prefs.putBoolean(JabRefPreferences.WARN_ABOUT_DUPLICATES_IN_INSPECTION,inspectionWarnDupli.isSelected());
+  String owner=defOwnerField.getText().trim();
+  prefs.put(JabRefPreferences.DEFAULT_OWNER,owner);
+  prefs.WRAPPED_USERNAME='[' + owner + ']';
+  prefs.put(JabRefPreferences.TIME_STAMP_FORMAT,timeStampFormat.getText().trim());
+  prefs.put(JabRefPreferences.TIME_STAMP_FIELD,timeStampField.getText().trim());
+  prefs.put(JabRefPreferences.DEFAULT_ENCODING,(String)encodings.getSelectedItem());
+  prefs.putBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES,markImportedEntries.isSelected());
+  prefs.putBoolean(JabRefPreferences.UNMARK_ALL_ENTRIES_BEFORE_IMPORTING,unmarkAllEntriesBeforeImporting.isSelected());
+  if (!GUIGlobals.LANGUAGES.get(language.getSelectedItem()).equals(prefs.get(JabRefPreferences.LANGUAGE))) {
+    prefs.put(JabRefPreferences.LANGUAGE,GUIGlobals.LANGUAGES.get(language.getSelectedItem()));
+    Globals.setLanguage(GUIGlobals.LANGUAGES.get(language.getSelectedItem()),"");
+    Globals.prefs.setLanguageDependentDefaultValues();
+    JOptionPane.showMessageDialog(null,Globals.lang("You have changed the language setting.").concat(" ").concat(Globals.lang("You must restart JabRef for this to come into effect.")),Globals.lang("Changed language settings"),JOptionPane.WARNING_MESSAGE);
+  }
+}

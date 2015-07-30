@@ -1,0 +1,24 @@
+{
+  prefs.putBoolean(JabRefPreferences.NAMES_AS_IS,namesAsIs.isSelected());
+  prefs.putBoolean(JabRefPreferences.NAMES_FIRST_LAST,namesFf.isSelected());
+  prefs.putBoolean(JabRefPreferences.NAMES_NATBIB,namesNatbib.isSelected());
+  prefs.putBoolean(JabRefPreferences.NAMES_LAST_ONLY,lastNamesOnly.isSelected());
+  prefs.putBoolean(JabRefPreferences.ABBR_AUTHOR_NAMES,abbrNames.isSelected());
+  prefs.putInt(JabRefPreferences.AUTO_RESIZE_MODE,autoResizeMode.isSelected() ? JTable.AUTO_RESIZE_ALL_COLUMNS : JTable.AUTO_RESIZE_OFF);
+  prefs.putBoolean(JabRefPreferences.PRIMARY_SORT_DESCENDING,priDesc.isSelected());
+  prefs.putBoolean(JabRefPreferences.SECONDARY_SORT_DESCENDING,secDesc.isSelected());
+  prefs.putBoolean(JabRefPreferences.TERTIARY_SORT_DESCENDING,terDesc.isSelected());
+  prefs.put(JabRefPreferences.PRIMARY_SORT_FIELD,priField.getText().toLowerCase().trim());
+  prefs.put(JabRefPreferences.SECONDARY_SORT_FIELD,secField.getText().toLowerCase().trim());
+  prefs.put(JabRefPreferences.TERTIARY_SORT_FIELD,terField.getText().toLowerCase().trim());
+  prefs.putBoolean(JabRefPreferences.FLOAT_MARKED_ENTRIES,floatMarked.isSelected());
+  String oldVal=prefs.get(JabRefPreferences.NUMERIC_FIELDS);
+  String newVal=numericFields.getText().trim();
+  if (newVal.isEmpty()) {
+    newVal=null;
+  }
+  if (newVal != null && oldVal == null || newVal == null && oldVal != null || newVal != null && !newVal.equals(oldVal)) {
+    prefs.put(JabRefPreferences.NUMERIC_FIELDS,newVal);
+    BibtexFields.setNumericFieldsFromPrefs();
+  }
+}

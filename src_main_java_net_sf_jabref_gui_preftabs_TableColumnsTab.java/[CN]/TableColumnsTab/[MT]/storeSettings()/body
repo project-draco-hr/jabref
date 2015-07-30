@@ -1,0 +1,74 @@
+{
+  prefs.putBoolean(JabRefPreferences.FILE_COLUMN,fileColumn.isSelected());
+  prefs.putBoolean(JabRefPreferences.PDF_COLUMN,pdfColumn.isSelected());
+  prefs.putBoolean(JabRefPreferences.URL_COLUMN,urlColumn.isSelected());
+  prefs.putBoolean(JabRefPreferences.PREFER_URL_DOI,preferDoi.isSelected());
+  prefs.putBoolean(JabRefPreferences.ARXIV_COLUMN,arxivColumn.isSelected());
+  prefs.putBoolean(JabRefPreferences.EXTRA_FILE_COLUMNS,extraFileColumns.isSelected());
+  if (extraFileColumns.isSelected() && !listOfFileColumns.isSelectionEmpty()) {
+    String[] selections=new String[listOfFileColumns.getSelectedIndices().length];
+    for (int i=0; i < selections.length; i++) {
+      selections[i]=(String)listOfFileColumns.getModel().getElementAt(listOfFileColumns.getSelectedIndices()[i]);
+    }
+    prefs.putStringArray(JabRefPreferences.LIST_OF_FILE_COLUMNS,selections);
+  }
+ else {
+    prefs.putStringArray(JabRefPreferences.LIST_OF_FILE_COLUMNS,new String[]{});
+  }
+  prefs.putBoolean(JabRefPreferences.SHOW_ONE_LETTER_HEADING_FOR_ICON_COLUMNS,showOneLetterHeadingForIconColumns.isSelected());
+  boolean newSpecialFieldsEnabled=specialFieldsEnabled.isSelected();
+  boolean newRankingColumn=rankingColumn.isSelected();
+  boolean newCompactRankingColumn=compactRankingColumn.isSelected();
+  boolean newQualityColumn=qualityColumn.isSelected();
+  boolean newPriorityColumn=priorityColumn.isSelected();
+  boolean newRelevanceColumn=relevanceColumn.isSelected();
+  boolean newPrintedColumn=printedColumn.isSelected();
+  boolean newReadStatusColumn=readStatusColumn.isSelected();
+  boolean newSyncKeyWords=syncKeywords.isSelected();
+  boolean newWriteSpecialFields=writeSpecialFields.isSelected();
+  boolean restartRequired;
+  restartRequired=oldSpecialFieldsEnabled != newSpecialFieldsEnabled || oldRankingColumn != newRankingColumn || oldCompcatRankingColumn != newCompactRankingColumn || oldQualityColumn != newQualityColumn || oldPriorityColumn != newPriorityColumn || oldRelevanceColumn != newRelevanceColumn || oldPrintedColumn != newPrintedColumn || oldReadStatusColumn != newReadStatusColumn || oldSyncKeyWords != newSyncKeyWords || oldWriteSpecialFields != newWriteSpecialFields;
+  if (restartRequired) {
+    JOptionPane.showMessageDialog(null,Globals.lang("You have changed settings for special fields.").concat(" ").concat(Globals.lang("You must restart JabRef for this to come into effect.")),Globals.lang("Changed special field settings"),JOptionPane.WARNING_MESSAGE);
+  }
+  if (restartRequired) {
+    prefs.putBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED,newSpecialFieldsEnabled);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING,newRankingColumn);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_RANKING_COMPACT,newCompactRankingColumn);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY,newPriorityColumn);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY,newQualityColumn);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE,newRelevanceColumn);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED,newPrintedColumn);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ,newReadStatusColumn);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_AUTOSYNCSPECIALFIELDSTOKEYWORDS,newSyncKeyWords);
+    prefs.putBoolean(SpecialFieldsUtils.PREF_SERIALIZESPECIALFIELDS,newWriteSpecialFields);
+  }
+  if (colSetup.isEditing()) {
+    int col=colSetup.getEditingColumn();
+    int row=colSetup.getEditingRow();
+    colSetup.getCellEditor(row,col).stopCellEditing();
+  }
+  if (tableChanged) {
+    int i=0;
+    while (i < tableRows.size()) {
+      if (tableRows.elementAt(i).name.isEmpty()) {
+        tableRows.removeElementAt(i);
+      }
+ else {
+        i++;
+      }
+    }
+    String[] names=new String[tableRows.size()];
+    String[] widths=new String[tableRows.size()];
+    int[] nWidths=new int[tableRows.size()];
+    prefs.putInt(JabRefPreferences.NUMBER_COL_WIDTH,ncWidth);
+    for (i=0; i < tableRows.size(); i++) {
+      TableRow tr=tableRows.elementAt(i);
+      names[i]=tr.name.toLowerCase();
+      nWidths[i]=tr.length;
+      widths[i]="" + tr.length;
+    }
+    prefs.putStringArray(JabRefPreferences.COLUMN_NAMES,names);
+    prefs.putStringArray(JabRefPreferences.COLUMN_WIDTHS,widths);
+  }
+}

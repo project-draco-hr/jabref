@@ -1,0 +1,67 @@
+{
+  setLayout(new BorderLayout());
+  TableModel tableModel=new AbstractTableModel(){
+    @Override public int getRowCount(){
+      return rowCount;
+    }
+    @Override public int getColumnCount(){
+      return 1;
+    }
+    @Override public Object getValueAt(    int row,    int column){
+      if (row >= tableRows.size()) {
+        return "";
+      }
+      Object rowContent=tableRows.elementAt(row);
+      if (rowContent == null) {
+        return "";
+      }
+      return rowContent;
+    }
+    @Override public String getColumnName(    int col){
+      return Globals.lang("Field to filter");
+    }
+    @Override public Class<?> getColumnClass(    int column){
+      return String.class;
+    }
+    @Override public boolean isCellEditable(    int row,    int col){
+      return true;
+    }
+    @Override public void setValueAt(    Object value,    int row,    int col){
+      tableChanged=true;
+      if (tableRows.size() <= row) {
+        tableRows.setSize(row + 1);
+      }
+      tableRows.setElementAt(value,row);
+    }
+  }
+;
+  table=new JTable(tableModel);
+  TableColumnModel columnModel=table.getColumnModel();
+  columnModel.getColumn(0).setPreferredWidth(140);
+  FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref","");
+  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  JPanel pan=new JPanel();
+  JPanel tablePanel=new JPanel();
+  tablePanel.setLayout(new BorderLayout());
+  JScrollPane scrollPane=new JScrollPane(table,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+  table.setPreferredScrollableViewportSize(new Dimension(250,200));
+  scrollPane.setMinimumSize(new Dimension(250,300));
+  tablePanel.add(scrollPane,BorderLayout.CENTER);
+  JToolBar toolbar=new JToolBar(SwingConstants.VERTICAL);
+  toolbar.setFloatable(false);
+  toolbar.setBorder(null);
+  toolbar.add(new AddRowAction());
+  toolbar.add(new DeleteRowAction());
+  tablePanel.add(toolbar,BorderLayout.EAST);
+  builder.appendSeparator(Globals.lang("XMP Export Privacy Settings"));
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(privacyFilterCheckBox);
+  builder.nextLine();
+  builder.append(pan);
+  builder.append(tablePanel);
+  builder.nextLine();
+  pan=builder.getPanel();
+  pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  add(pan,BorderLayout.CENTER);
+}
