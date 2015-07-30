@@ -1,5 +1,5 @@
 {
-  _prefs=prefs;
+  this.prefs=prefs;
   this.frame=frame;
   setLayout(new BorderLayout());
   TableModel tm=new AbstractTableModel(){
@@ -84,19 +84,19 @@ JScrollPane sp=new JScrollPane(colSetup,ScrollPaneConstants.VERTICAL_SCROLLBAR_A
 colSetup.setPreferredScrollableViewportSize(new Dimension(250,200));
 sp.setMinimumSize(new Dimension(250,300));
 tabPanel.add(sp,BorderLayout.CENTER);
-JToolBar tlb=new JToolBar(SwingConstants.VERTICAL);
-tlb.setFloatable(false);
-AddRowAction ara=new AddRowAction();
-DeleteRowAction dra=new DeleteRowAction();
+JToolBar toolBar=new JToolBar(SwingConstants.VERTICAL);
+toolBar.setFloatable(false);
+AddRowAction addRow=new AddRowAction();
+DeleteRowAction deleteRow=new DeleteRowAction();
 MoveRowUpAction moveUp=new MoveRowUpAction();
 MoveRowDownAction moveDown=new MoveRowDownAction();
-tlb.setBorder(null);
-tlb.add(ara);
-tlb.add(dra);
-tlb.addSeparator();
-tlb.add(moveUp);
-tlb.add(moveDown);
-tabPanel.add(tlb,BorderLayout.EAST);
+toolBar.setBorder(null);
+toolBar.add(addRow);
+toolBar.add(deleteRow);
+toolBar.addSeparator();
+toolBar.add(moveUp);
+toolBar.add(moveDown);
+tabPanel.add(toolBar,BorderLayout.EAST);
 showOneLetterHeadingForIconColumns=new JCheckBox(Globals.lang("Show one letter heading for icon columns"));
 fileColumn=new JCheckBox(Globals.lang("Show file column"));
 pdfColumn=new JCheckBox(Globals.lang("Show PDF/PS column"));
@@ -130,9 +130,9 @@ listOfFileColumns=new JList(fileTypeNames);
 JScrollPane listOfFileColumnsScrollPane=new JScrollPane(listOfFileColumns);
 listOfFileColumns.setVisibleRowCount(3);
 HelpAction help=new HelpAction(frame.helpDiag,GUIGlobals.specialFieldsHelp);
-JButton hlb=new JButton(GUIGlobals.getImage("helpSmall"));
-hlb.setToolTipText(Globals.lang("Help on special fields"));
-hlb.addActionListener(help);
+JButton helpButton=new JButton(GUIGlobals.getImage("helpSmall"));
+helpButton.setToolTipText(Globals.lang("Help on special fields"));
+helpButton.addActionListener(help);
 specialFieldsEnabled=new JCheckBox(Globals.lang("Enable special fields"));
 specialFieldsEnabled.addChangeListener(new ChangeListener(){
 @Override public void stateChanged(ChangeEvent event){
@@ -183,7 +183,7 @@ specialTableColumnsBuilder.add(readStatusColumn,cc.xyw(2,8,2));
 specialTableColumnsBuilder.add(syncKeywords,cc.xyw(2,10,2));
 specialTableColumnsBuilder.add(writeSpecialFields,cc.xyw(2,11,2));
 specialTableColumnsBuilder.add(showOneLetterHeadingForIconColumns,cc.xyw(1,12,4));
-specialTableColumnsBuilder.add(hlb,cc.xyw(1,13,2));
+specialTableColumnsBuilder.add(helpButton,cc.xyw(1,13,2));
 specialTableColumnsBuilder.add(fileColumn,cc.xyw(5,1,2));
 specialTableColumnsBuilder.add(pdfColumn,cc.xyw(5,2,2));
 specialTableColumnsBuilder.add(urlColumn,cc.xyw(5,3,2));
