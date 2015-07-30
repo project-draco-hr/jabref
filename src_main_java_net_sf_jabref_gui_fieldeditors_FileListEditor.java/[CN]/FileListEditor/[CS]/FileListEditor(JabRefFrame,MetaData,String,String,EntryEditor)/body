@@ -1,0 +1,139 @@
+{
+  this.frame=frame;
+  this.metaData=metaData;
+  this.fieldName=fieldName;
+  this.entryEditor=entryEditor;
+  label=new FieldNameLabel(" " + StringUtil.nCase(fieldName) + " ");
+  tableModel=new FileListTableModel();
+  setText(content);
+  setModel(tableModel);
+  JScrollPane sPane=new JScrollPane(this);
+  setTableHeader(null);
+  addMouseListener(new TableClickListener());
+  JButton add=new JButton(GUIGlobals.getImage("add"));
+  add.setToolTipText(Globals.lang("New file link (INSERT)"));
+  JButton remove=new JButton(GUIGlobals.getImage("remove"));
+  remove.setToolTipText(Globals.lang("Remove file link (DELETE)"));
+  JButton up=new JButton(GUIGlobals.getImage("up"));
+  JButton down=new JButton(GUIGlobals.getImage("down"));
+  auto=new JButton(Globals.lang("Auto"));
+  JButton download=new JButton(Globals.lang("Download"));
+  add.setMargin(new Insets(0,0,0,0));
+  remove.setMargin(new Insets(0,0,0,0));
+  up.setMargin(new Insets(0,0,0,0));
+  down.setMargin(new Insets(0,0,0,0));
+  add.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      addEntry();
+    }
+  }
+);
+  remove.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      removeEntries();
+    }
+  }
+);
+  up.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      moveEntry(-1);
+    }
+  }
+);
+  down.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      moveEntry(1);
+    }
+  }
+);
+  auto.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      autoSetLinks();
+    }
+  }
+);
+  download.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      downloadFile();
+    }
+  }
+);
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:pref,1dlu,fill:pref,1dlu,fill:pref","fill:pref,fill:pref"));
+  builder.append(up);
+  builder.append(add);
+  builder.append(auto);
+  builder.append(down);
+  builder.append(remove);
+  builder.append(download);
+  panel=new JPanel();
+  panel.setLayout(new BorderLayout());
+  panel.add(sPane,BorderLayout.CENTER);
+  panel.add(builder.getPanel(),BorderLayout.EAST);
+  TransferHandler transferHandler=new FileListEditorTransferHandler(frame,entryEditor,null);
+  setTransferHandler(transferHandler);
+  panel.setTransferHandler(transferHandler);
+  getInputMap().put(KeyStroke.getKeyStroke("DELETE"),"delete");
+  getActionMap().put("delete",new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      int row=getSelectedRow();
+      removeEntries();
+      row=Math.min(row,getRowCount() - 1);
+      if (row >= 0) {
+        setRowSelectionInterval(row,row);
+      }
+    }
+  }
+);
+  getInputMap().put(KeyStroke.getKeyStroke("INSERT"),"insert");
+  getActionMap().put("insert",new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      addEntry();
+    }
+  }
+);
+  getInputMap().put(Globals.prefs.getKey("File list editor, move entry up"),"move up");
+  getActionMap().put("move up",new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      moveEntry(-1);
+    }
+  }
+);
+  getInputMap().put(Globals.prefs.getKey("File list editor, move entry down"),"move down");
+  getActionMap().put("move down",new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      moveEntry(1);
+    }
+  }
+);
+  JMenuItem openLink=new JMenuItem(Globals.lang("Open"));
+  menu.add(openLink);
+  openLink.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      openSelectedFile();
+    }
+  }
+);
+  JMenuItem openFolder=new JMenuItem(Globals.lang("Open folder"));
+  menu.add(openFolder);
+  openFolder.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      int row=getSelectedRow();
+      if (row >= 0) {
+        FileListEntry entry=tableModel.getEntry(row);
+        try {
+          Util.openFolderAndSelectFile(entry.getLink());
+        }
+ catch (        IOException ex) {
+          LOGGER.debug("Cannot open folder",ex);
+        }
+      }
+    }
+  }
+);
+  JMenuItem rename=new JMenuItem(Globals.lang("Move/Rename file"));
+  menu.add(rename);
+  rename.addActionListener(new MoveFileAction(frame,entryEditor,this,false));
+  JMenuItem moveToFileDir=new JMenuItem(Globals.lang("Move to file directory"));
+  menu.add(moveToFileDir);
+  moveToFileDir.addActionListener(new MoveFileAction(frame,entryEditor,this,true));
+}

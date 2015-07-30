@@ -1,0 +1,54 @@
+{
+  try {
+    List<File> files=null;
+    if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+      files=(List<File>)t.getTransferData(DataFlavor.javaFileListFlavor);
+    }
+    if (t.isDataFlavorSupported(urlFlavor)) {
+      URL dropLink=(URL)t.getTransferData(urlFlavor);
+      System.out.println("URL: " + dropLink);
+    }
+    if (t.isDataFlavorSupported(stringFlavor)) {
+      String dropStr=(String)t.getTransferData(stringFlavor);
+      files=EntryTableTransferHandler.getFilesFromDraggedFilesString(dropStr);
+    }
+    if (files != null) {
+      final List<File> theFiles=files;
+      SwingUtilities.invokeLater(new Runnable(){
+        @Override public void run(){
+          for (          File file : theFiles) {
+            String name=file.getAbsolutePath();
+            String extension;
+            ExternalFileType fileType=null;
+            int index=name.lastIndexOf('.');
+            if ((index >= 0) && (index < name.length())) {
+              extension=name.substring(index + 1).toLowerCase();
+              fileType=Globals.prefs.getExternalFileTypeByExt(extension);
+            }
+            if (fileType != null) {
+              if (droppedFileHandler == null) {
+                droppedFileHandler=new DroppedFileHandler(frame,frame.basePanel());
+              }
+              droppedFileHandler.handleDroppedfile(name,fileType,true,entryContainer.getEntry());
+            }
+          }
+        }
+      }
+);
+      return true;
+    }
+  }
+ catch (  IOException ioe) {
+    LOGGER.warn("failed to read dropped data: " + ioe);
+  }
+catch (  UnsupportedFlavorException ufe) {
+    LOGGER.warn("drop type error: " + ufe);
+  }
+  StringBuilder logMessage=new StringBuilder("can't transfer input: ");
+  DataFlavor[] inflavs=t.getTransferDataFlavors();
+  for (  DataFlavor inflav : inflavs) {
+    logMessage.append("  " + inflav);
+  }
+  LOGGER.warn(logMessage.toString());
+  return false;
+}

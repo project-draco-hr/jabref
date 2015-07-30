@@ -1,0 +1,20 @@
+{
+  Highlighter highlighter=getHighlighter();
+  highlighter.removeAllHighlights();
+  if (words == null || words.isEmpty() || words.get(0).isEmpty()) {
+    return;
+  }
+  String content=getText();
+  if (content.isEmpty()) {
+    return;
+  }
+  Matcher matcher=Globals.getPatternForWords(words).matcher(content);
+  while (matcher.find()) {
+    try {
+      highlighter.addHighlight(matcher.start(),matcher.end(),DefaultHighlighter.DefaultPainter);
+    }
+ catch (    BadLocationException ble) {
+      System.out.println(ble);
+    }
+  }
+}
