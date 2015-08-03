@@ -1,65 +1,65 @@
 {
-  LabelPatternUtil._db=database;
-  ArrayList<String> _al;
-  String _label;
-  StringBuilder _sb=new StringBuilder();
+  LabelPatternUtil.database=database;
+  ArrayList<String> typeList;
+  String key;
+  StringBuilder stringBuilder=new StringBuilder();
   boolean forceUpper=false;
   boolean forceLower=false;
   try {
-    String _type=_entry.getType().getName().toLowerCase();
-    _al=metaData.getLabelPattern().getValue(_type);
-    int _alSize=_al.size();
+    String entryType=entry.getType().getName().toLowerCase();
+    typeList=metaData.getLabelPattern().getValue(entryType);
+    int typeListSize=typeList.size();
     boolean field=false;
-    for (int i=1; i < _alSize; i++) {
-      String val=_al.get(i);
-      if (val.equals("[")) {
+    for (int i=1; i < typeListSize; i++) {
+      String typeListEntry=typeList.get(i);
+      if (typeListEntry.equals("[")) {
         field=true;
       }
- else       if (val.equals("]")) {
+ else       if (typeListEntry.equals("]")) {
         field=false;
       }
  else       if (field) {
-        String[] parts=LabelPatternUtil.parseFieldMarker(val);
-        String label=LabelPatternUtil.makeLabel(_entry,parts[0]);
+        String[] parts=LabelPatternUtil.parseFieldMarker(typeListEntry);
+        String label=LabelPatternUtil.makeLabel(entry,parts[0]);
         if (parts.length > 1) {
           label=LabelPatternUtil.applyModifiers(label,parts,1);
         }
-        _sb.append(label);
+        stringBuilder.append(label);
       }
  else {
-        _sb.append(val);
+        stringBuilder.append(typeListEntry);
       }
     }
   }
  catch (  Exception e) {
-    System.err.println(e);
+    LOGGER.warn("Cannot make label",e);
   }
-  _label=Util.checkLegalKey(_sb.toString());
+  key=Util.checkLegalKey(stringBuilder.toString());
   String regex=Globals.prefs.get("KeyPatternRegex");
   if (regex != null && !regex.trim().isEmpty()) {
     String replacement=Globals.prefs.get("KeyPatternReplacement");
-    _label=_label.replaceAll(regex,replacement);
+    key=key.replaceAll(regex,replacement);
   }
   if (forceUpper) {
-    _label=_label.toUpperCase();
+    key=key.toUpperCase();
   }
   if (forceLower) {
-    _label=_label.toLowerCase();
+    key=key.toLowerCase();
   }
-  String oldKey=_entry.getCiteKey();
-  int occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(_label);
-  if (oldKey != null && oldKey.equals(_label)) {
-    occurences--;
+  String oldKey=entry.getCiteKey();
+  int occurrences=LabelPatternUtil.database.getNumberOfKeyOccurences(key);
+  if (oldKey != null && oldKey.equals(key)) {
+    occurrences--;
   }
   boolean alwaysAddLetter=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_ALWAYS_ADD_LETTER);
   boolean firstLetterA=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_FIRST_LETTER_A);
-  if (!alwaysAddLetter && occurences == 0) {
-    if (!_label.equals(oldKey)) {
-      if (LabelPatternUtil._db.getEntryById(_entry.getId()) == null) {
-        _entry.setField(BibtexFields.KEY_FIELD,_label);
+  if (!alwaysAddLetter && occurrences == 0) {
+    if (!key.equals(oldKey)) {
+      if (LabelPatternUtil.database.getEntryById(entry.getId()) == null) {
+        entry.setField(BibtexFields.KEY_FIELD,key);
       }
  else {
-        LabelPatternUtil._db.setCiteKeyForEntry(_entry.getId(),_label);
+        LabelPatternUtil.database.setCiteKeyForEntry(entry.getId(),key);
       }
     }
   }
@@ -68,27 +68,27 @@
     if (!alwaysAddLetter && !firstLetterA) {
       number=1;
     }
-    String moddedKey=_label + LabelPatternUtil.getAddition(number);
-    occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(moddedKey);
+    String moddedKey=key + LabelPatternUtil.getAddition(number);
+    occurrences=LabelPatternUtil.database.getNumberOfKeyOccurences(moddedKey);
     if (oldKey != null && oldKey.equals(moddedKey)) {
-      occurences--;
+      occurrences--;
     }
-    while (occurences > 0) {
+    while (occurrences > 0) {
       number++;
-      moddedKey=_label + LabelPatternUtil.getAddition(number);
-      occurences=LabelPatternUtil._db.getNumberOfKeyOccurences(moddedKey);
+      moddedKey=key + LabelPatternUtil.getAddition(number);
+      occurrences=LabelPatternUtil.database.getNumberOfKeyOccurences(moddedKey);
       if (oldKey != null && oldKey.equals(moddedKey)) {
-        occurences--;
+        occurrences--;
       }
     }
     if (!moddedKey.equals(oldKey)) {
-      if (LabelPatternUtil._db.getEntryById(_entry.getId()) == null) {
-        _entry.setField(BibtexFields.KEY_FIELD,moddedKey);
+      if (LabelPatternUtil.database.getEntryById(entry.getId()) == null) {
+        entry.setField(BibtexFields.KEY_FIELD,moddedKey);
       }
  else {
-        LabelPatternUtil._db.setCiteKeyForEntry(_entry.getId(),moddedKey);
+        LabelPatternUtil.database.setCiteKeyForEntry(entry.getId(),moddedKey);
       }
     }
   }
-  return _entry;
+  return entry;
 }
