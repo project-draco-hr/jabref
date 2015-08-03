@@ -5,7 +5,8 @@
   defaulted.add(lastSelected);
   BibtexEntryType type=BibtexEntryType.getStandardType(lastSelected);
   if (type != null) {
-    String[] rf=type.getRequiredFieldsForCustomization(), of=type.getOptionalFields();
+    String[] rf=type.getRequiredFieldsForCustomization();
+    String[] of=type.getOptionalFields();
     List<String> req, opt1, opt2;
     if (rf != null) {
       req=java.util.Arrays.asList(rf);
@@ -18,7 +19,7 @@
     if (biblatexMode) {
       if (of != null) {
         String[] priOptArray=type.getPrimaryOptionalFields();
-        String[] secOptArray=Util.getRemainder(of,priOptArray);
+        String[] secOptArray=type.getSecondaryOptionalFields();
         if (priOptArray != null) {
           opt1=java.util.Arrays.asList(priOptArray);
         }
