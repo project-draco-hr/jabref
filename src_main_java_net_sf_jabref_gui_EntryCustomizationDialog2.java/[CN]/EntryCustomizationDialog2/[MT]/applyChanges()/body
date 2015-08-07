@@ -42,12 +42,12 @@
     }
     if (changesMade) {
       CustomEntryType typ=biblatexMode ? new CustomEntryType(StringUtil.nCase(stringListEntry.getKey()),reqStr,optStr,opt2Str) : new CustomEntryType(StringUtil.nCase(stringListEntry.getKey()),reqStr,optStr);
-      BibtexEntryType.ALL_TYPES.put(stringListEntry.getKey().toLowerCase(),typ);
+      BibtexEntryType.addOrModifyCustomEntryType(typ);
       updateTypesForEntries(typ.getName());
     }
   }
   Set<Object> toRemove=new HashSet<Object>();
-  for (  String o : BibtexEntryType.ALL_TYPES.keySet()) {
+  for (  String o : BibtexEntryType.getAllTypes()) {
     if (!types.contains(o)) {
       toRemove.add(o);
     }
