@@ -9,7 +9,7 @@
       diag.dispose();
     }
  else     if (!adp.cancelled()) {
-      JOptionPane.showMessageDialog(diag,Globals.lang("Autodetection failed"),Globals.lang("Autodetection failed"),JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(diag,Localization.lang("Autodetection failed"),Localization.lang("Autodetection failed"),JOptionPane.ERROR_MESSAGE);
     }
     if (!autoDetected) {
       return;
@@ -47,12 +47,12 @@
     URL[] jarList=new URL[jarFiles.length];
     for (int i=0; i < jarList.length; i++) {
       if (!jarFiles[i].exists()) {
-        throw new Exception(Globals.lang("File not found") + ": " + jarFiles[i].getPath());
+        throw new Exception(Localization.lang("File not found") + ": " + jarFiles[i].getPath());
       }
       jarList[i]=jarFiles[i].toURI().toURL();
     }
     OpenOfficePanel.addURL(jarList);
-    final JDialog progDiag=new AutoDetectPaths(diag).showProgressDialog(diag,Globals.lang("Connecting"),Globals.lang("Please wait..."),false);
+    final JDialog progDiag=new AutoDetectPaths(diag).showProgressDialog(diag,Localization.lang("Connecting"),Localization.lang("Please wait..."),false);
     getWorker().run();
     progDiag.dispose();
     diag.dispose();
@@ -60,7 +60,7 @@
       throw connectException;
     }
     if (OpenOfficePanel.ooBase.isConnectedToDocument()) {
-      OpenOfficePanel.frame.output(Globals.lang("Connected to document") + ": " + OpenOfficePanel.ooBase.getCurrentDocumentTitle());
+      OpenOfficePanel.frame.output(Localization.lang("Connected to document") + ": " + OpenOfficePanel.ooBase.getCurrentDocumentTitle());
     }
     OpenOfficePanel.selectDocument.setEnabled(true);
     OpenOfficePanel.pushEntries.setEnabled(true);
@@ -77,10 +77,10 @@
  catch (  Throwable e) {
     e.printStackTrace();
     if (e instanceof UnsatisfiedLinkError) {
-      JOptionPane.showMessageDialog(OpenOfficePanel.frame,Globals.lang("Unable to connect. One possible reason is that JabRef " + "and OpenOffice/LibreOffice are not both running in either 32 bit mode or 64 bit mode."));
+      JOptionPane.showMessageDialog(OpenOfficePanel.frame,Localization.lang("Unable to connect. One possible reason is that JabRef " + "and OpenOffice/LibreOffice are not both running in either 32 bit mode or 64 bit mode."));
     }
  else {
-      JOptionPane.showMessageDialog(OpenOfficePanel.frame,Globals.lang("Could not connect to running OpenOffice.\n" + "Make sure you have installed OpenOffice with Java support.\nIf connecting manually, please verify program and library paths.\n" + "\nError message: "+ e.getMessage()));
+      JOptionPane.showMessageDialog(OpenOfficePanel.frame,Localization.lang("Could not connect to running OpenOffice.\n" + "Make sure you have installed OpenOffice with Java support.\nIf connecting manually, please verify program and library paths.\n" + "\nError message: "+ e.getMessage()));
     }
   }
 }

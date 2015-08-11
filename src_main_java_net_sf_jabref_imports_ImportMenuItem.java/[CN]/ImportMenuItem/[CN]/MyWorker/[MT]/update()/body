@@ -7,7 +7,7 @@
       final BasePanel panel=(BasePanel)frame.getTabbedPane().getSelectedComponent();
       BibtexDatabase toAddTo=panel.database();
       if (Globals.prefs.getBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG) && (Globals.prefs.getBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG_FOR_SINGLE) || bibtexResult.getDatabase().getEntryCount() > 1)) {
-        ImportInspectionDialog diag=new ImportInspectionDialog(frame,panel,BibtexFields.DEFAULT_INSPECTION_FIELDS,Globals.lang("Import"),openInNew);
+        ImportInspectionDialog diag=new ImportInspectionDialog(frame,panel,BibtexFields.DEFAULT_INSPECTION_FIELDS,Localization.lang("Import"),openInNew);
         diag.addEntries(bibtexResult.getDatabase().getEntries());
         diag.entryListComplete();
         Util.placeDialog(diag,frame);
@@ -16,7 +16,7 @@
       }
  else {
         boolean generateKeys=Globals.prefs.getBoolean(JabRefPreferences.GENERATE_KEYS_AFTER_INSPECTION);
-        NamedCompound ce=new NamedCompound(Globals.lang("Import entries"));
+        NamedCompound ce=new NamedCompound(Localization.lang("Import entries"));
         if (Globals.prefs.getBoolean(JabRefPreferences.UNMARK_ALL_ENTRIES_BEFORE_IMPORTING)) {
           for (          BibtexEntry entry : toAddTo.getEntries()) {
             EntryMarker.unmarkEntry(entry,true,toAddTo,ce);
@@ -57,19 +57,19 @@
     }
  else {
       frame.addTab(bibtexResult.getDatabase(),bibtexResult.getFile(),bibtexResult.getMetaData(),Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING),true);
-      frame.output(Globals.lang("Imported entries") + ": " + bibtexResult.getDatabase().getEntryCount());
+      frame.output(Localization.lang("Imported entries") + ": " + bibtexResult.getDatabase().getEntryCount());
     }
   }
  else {
     if (importer == null) {
-      frame.output(Globals.lang("Could not find a suitable import format."));
+      frame.output(Localization.lang("Could not find a suitable import format."));
     }
  else {
       if (importError != null) {
-        JOptionPane.showMessageDialog(frame,importError.getMessage(),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame,importError.getMessage(),Localization.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
       }
  else {
-        JOptionPane.showMessageDialog(frame,Globals.lang("No entries found. Please make sure you are " + "using the correct import filter."),Globals.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame,Localization.lang("No entries found. Please make sure you are " + "using the correct import filter."),Localization.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
       }
     }
   }

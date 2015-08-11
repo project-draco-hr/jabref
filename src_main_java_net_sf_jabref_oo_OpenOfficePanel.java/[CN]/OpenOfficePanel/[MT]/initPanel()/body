@@ -14,15 +14,15 @@
     }
   }
 );
-  OpenOfficePanel.selectDocument.setToolTipText(Globals.lang("Select which open Writer document to work on"));
+  OpenOfficePanel.selectDocument.setToolTipText(Localization.lang("Select which open Writer document to work on"));
   OpenOfficePanel.selectDocument.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent event){
       try {
         OpenOfficePanel.ooBase.selectDocument();
-        OpenOfficePanel.frame.output(Globals.lang("Connected to document") + ": " + OpenOfficePanel.ooBase.getCurrentDocumentTitle());
+        OpenOfficePanel.frame.output(Localization.lang("Connected to document") + ": " + OpenOfficePanel.ooBase.getCurrentDocumentTitle());
       }
  catch (      Exception ex) {
-        JOptionPane.showMessageDialog(OpenOfficePanel.frame,ex.getMessage(),Globals.lang("Error"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(OpenOfficePanel.frame,ex.getMessage(),Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
       }
     }
   }
@@ -47,28 +47,28 @@
     }
   }
 );
-  OpenOfficePanel.pushEntries.setToolTipText(Globals.lang("Cite selected entries"));
+  OpenOfficePanel.pushEntries.setToolTipText(Localization.lang("Cite selected entries"));
   OpenOfficePanel.pushEntries.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       pushEntries(true,true,false);
     }
   }
 );
-  OpenOfficePanel.pushEntriesInt.setToolTipText(Globals.lang("Cite selected entries with in-text citation"));
+  OpenOfficePanel.pushEntriesInt.setToolTipText(Localization.lang("Cite selected entries with in-text citation"));
   OpenOfficePanel.pushEntriesInt.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       pushEntries(false,true,false);
     }
   }
 );
-  OpenOfficePanel.pushEntriesEmpty.setToolTipText(Globals.lang("Insert a citation without text (the entry will appear in the reference list)"));
+  OpenOfficePanel.pushEntriesEmpty.setToolTipText(Localization.lang("Insert a citation without text (the entry will appear in the reference list)"));
   OpenOfficePanel.pushEntriesEmpty.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent event){
       pushEntries(false,false,false);
     }
   }
 );
-  OpenOfficePanel.pushEntriesAdvanced.setToolTipText(Globals.lang("Cite selected entries with extra information"));
+  OpenOfficePanel.pushEntriesAdvanced.setToolTipText(Localization.lang("Cite selected entries with extra information"));
   OpenOfficePanel.pushEntriesAdvanced.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent event){
       pushEntries(false,true,true);
@@ -81,7 +81,7 @@
     }
   }
 );
-  OpenOfficePanel.update.setToolTipText(Globals.lang("Ensure that the bibliography is up-to-date"));
+  OpenOfficePanel.update.setToolTipText(Localization.lang("Ensure that the bibliography is up-to-date"));
   Action updateAction=new AbstractAction(){
     @Override public void actionPerformed(    ActionEvent e){
       try {
@@ -94,7 +94,7 @@
           }
         }
  catch (        Throwable ex) {
-          JOptionPane.showMessageDialog(OpenOfficePanel.frame,Globals.lang("You must select either a valid style file, or use one of the default styles."),Globals.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(OpenOfficePanel.frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
           return;
         }
         OpenOfficePanel.ooBase.updateSortedReferenceMarks();
@@ -102,7 +102,7 @@
         java.util.List<String> unresolvedKeys=OpenOfficePanel.ooBase.refreshCiteMarkers(databases,OpenOfficePanel.style);
         OpenOfficePanel.ooBase.rebuildBibTextSection(databases,OpenOfficePanel.style);
         if (!unresolvedKeys.isEmpty()) {
-          JOptionPane.showMessageDialog(OpenOfficePanel.frame,Globals.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",unresolvedKeys.get(0)),Globals.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(OpenOfficePanel.frame,Localization.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",unresolvedKeys.get(0)),Localization.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
         }
       }
  catch (      UndefinedCharacterFormatException ex) {
@@ -115,7 +115,7 @@ catch (      ConnectionLostException ex) {
         showConnectionLostErrorMessage();
       }
 catch (      BibtexEntryNotFoundException ex) {
-        JOptionPane.showMessageDialog(OpenOfficePanel.frame,Globals.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",ex.getBibtexKey()),Globals.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(OpenOfficePanel.frame,Localization.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",ex.getBibtexKey()),Localization.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
       }
 catch (      Exception e1) {
         e1.printStackTrace();
@@ -135,7 +135,7 @@ catch (      Exception e1) {
     }
   }
 );
-  OpenOfficePanel.merge.setToolTipText(Globals.lang("Combine pairs of citations that are separated by spaces only"));
+  OpenOfficePanel.merge.setToolTipText(Localization.lang("Combine pairs of citations that are separated by spaces only"));
   OpenOfficePanel.merge.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent event){
       try {

@@ -31,7 +31,7 @@
       if (bes != null && bes.length > 0) {
         TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,BasePanel.this);
-        output(Globals.lang("Copied") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry") + '.'));
+        output(Localization.lang("Copied") + ' ' + (bes.length > 1 ? bes.length + " " + Localization.lang("entries") : "1 " + Localization.lang("entry") + '.'));
       }
  else {
         int[] rows=mainTable.getSelectedRows();
@@ -41,7 +41,7 @@
           if (o != null) {
             StringSelection ss=new StringSelection(o.toString());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
-            output(Globals.lang("Copied cell contents") + '.');
+            output(Localization.lang("Copied cell contents") + '.');
           }
         }
       }
@@ -53,13 +53,13 @@
       runCommand("copy");
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if (bes != null && bes.length > 0) {
-        NamedCompound ce=new NamedCompound(Globals.lang(bes.length > 1 ? "cut entries" : "cut entry"));
+        NamedCompound ce=new NamedCompound(Localization.lang(bes.length > 1 ? "cut entries" : "cut entry"));
         for (        BibtexEntry be : bes) {
           database.removeEntry(be.getId());
           ensureNotShowing(be);
           ce.addEdit(new UndoableRemoveEntry(database,be,BasePanel.this));
         }
-        frame.output(Globals.lang("Cut_pr") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ '.');
+        frame.output(Localization.lang("Cut_pr") + ' ' + (bes.length > 1 ? bes.length + " " + Localization.lang("entries") : Localization.lang("entry"))+ '.');
         ce.end();
         undoManager.addEdit(ce);
         markBaseChanged();
@@ -73,14 +73,14 @@
       if (bes != null && bes.length > 0) {
         boolean goOn=showDeleteConfirmationDialog(bes.length);
         if (goOn) {
-          NamedCompound ce=new NamedCompound(Globals.lang(bes.length > 1 ? "delete entries" : "delete entry"));
+          NamedCompound ce=new NamedCompound(Localization.lang(bes.length > 1 ? "delete entries" : "delete entry"));
           for (          BibtexEntry be : bes) {
             database.removeEntry(be.getId());
             ensureNotShowing(be);
             ce.addEdit(new UndoableRemoveEntry(database,be,BasePanel.this));
           }
           markBaseChanged();
-          frame.output(Globals.lang("Deleted") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ '.');
+          frame.output(Localization.lang("Deleted") + ' ' + (bes.length > 1 ? bes.length + " " + Localization.lang("entries") : Localization.lang("entry"))+ '.');
           ce.end();
           undoManager.addEdit(ce);
         }
@@ -121,7 +121,7 @@ catch (          Throwable ex) {
           }
         }
         if (bes != null && bes.length > 0) {
-          NamedCompound ce=new NamedCompound(Globals.lang(bes.length > 1 ? "paste entries" : "paste entry"));
+          NamedCompound ce=new NamedCompound(Localization.lang(bes.length > 1 ? "paste entries" : "paste entry"));
           BibtexEntry firstBE=null;
           for (          BibtexEntry be1 : bes) {
             try {
@@ -140,7 +140,7 @@ catch (          Throwable ex) {
           }
           ce.end();
           undoManager.addEdit(ce);
-          output(Globals.lang("Pasted") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry"))+ '.');
+          output(Localization.lang("Pasted") + ' ' + (bes.length > 1 ? bes.length + " " + Localization.lang("entries") : "1 " + Localization.lang("entry"))+ '.');
           markBaseChanged();
           if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_OPEN_FORM)) {
             selectionListener.editSignalled(firstBE);
@@ -226,7 +226,7 @@ catch (          Throwable ex) {
       if (connectToDB) {
         DBStrings dbs=metaData.getDBStrings();
         try {
-          frame.output(Globals.lang("Attempting SQL export..."));
+          frame.output(Localization.lang("Attempting SQL export..."));
           DBExporterAndImporterFactory factory=new DBExporterAndImporterFactory();
           DBExporter exporter=factory.getExporter(dbs.getServerType());
           exporter.exportDatabaseToDBMS(database,metaData,null,dbs,frame);
@@ -237,7 +237,7 @@ catch (          Throwable ex) {
           errorMessage=SQLUtil.getExceptionMessage(ex);
           ex.printStackTrace();
           dbs.isConfigValid(false);
-          JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + '\n' + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(frame,Localization.lang(preamble) + '\n' + errorMessage,Localization.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         }
         metaData.setDBStrings(dbs);
       }
@@ -245,13 +245,13 @@ catch (          Throwable ex) {
     @Override public void update(){
       if (errorMessage == null) {
         if (connectToDB) {
-          frame.output(Globals.lang("%0 export successful"));
+          frame.output(Localization.lang("%0 export successful"));
         }
       }
  else {
         String preamble="Could not export to SQL database for the following reason:";
-        frame.output(Globals.lang(preamble) + "  " + errorMessage);
-        JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + '\n' + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
+        frame.output(Localization.lang(preamble) + "  " + errorMessage);
+        JOptionPane.showMessageDialog(frame,Localization.lang(preamble) + '\n' + errorMessage,Localization.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         errorMessage=null;
       }
     }
@@ -273,15 +273,15 @@ catch (          Throwable ex) {
       entries=new ArrayList<BibtexEntry>(Arrays.asList(getSelectedEntries()));
       numSelected=entries.size();
       if (entries.isEmpty()) {
-        JOptionPane.showMessageDialog(frame,Globals.lang("First select the entries you want keys to be generated for."),Globals.lang("Autogenerate BibTeX key"),JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(frame,Localization.lang("First select the entries you want keys to be generated for."),Localization.lang("Autogenerate BibTeX key"),JOptionPane.INFORMATION_MESSAGE);
         return;
       }
       frame.block();
-      output(Globals.lang("Generating BibTeX key for") + ' ' + numSelected+ ' '+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
+      output(Localization.lang("Generating BibTeX key for") + ' ' + numSelected+ ' '+ (numSelected > 1 ? Localization.lang("entries") : Localization.lang("entry"))+ "...");
     }
     @Override public void run(){
       BibtexEntry bes;
-      NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
+      NamedCompound ce=new NamedCompound(Localization.lang("autogenerate keys"));
       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
         bes=i.next();
         if (bes.getField(BibtexFields.KEY_FIELD) != null) {
@@ -289,8 +289,8 @@ catch (          Throwable ex) {
             i.remove();
           }
  else           if (Globals.prefs.getBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY)) {
-            CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("One or more keys will be overwritten. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
-            int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Overwrite keys"),JOptionPane.YES_NO_OPTION);
+            CheckBoxMessage cbm=new CheckBoxMessage(Localization.lang("One or more keys will be overwritten. Continue?"),Localization.lang("Disable this confirmation dialog"),false);
+            int answer=JOptionPane.showConfirmDialog(frame,cbm,Localization.lang("Overwrite keys"),JOptionPane.YES_NO_OPTION);
             if (cbm.isSelected()) {
               Globals.prefs.putBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY,false);
             }
@@ -337,7 +337,7 @@ catch (          Throwable ex) {
         }
 );
       }
-      output(Globals.lang("Generated BibTeX key for") + ' ' + numSelected+ ' '+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
+      output(Localization.lang("Generated BibTeX key for") + ' ' + numSelected+ ' '+ (numSelected != 1 ? Localization.lang("entries") : Localization.lang("entry")));
       frame.unblock();
     }
   }
@@ -399,10 +399,10 @@ catch (          Throwable ex) {
         StringSelection ss=new StringSelection(sb.toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
         if (keys.size() == bes.length) {
-          output(Globals.lang(bes.length > 1 ? "Copied keys" : "Copied key") + '.');
+          output(Localization.lang(bes.length > 1 ? "Copied keys" : "Copied key") + '.');
         }
  else {
-          output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
+          output(Localization.lang("Warning") + ": " + (bes.length - keys.size())+ ' '+ Localization.lang("out of")+ ' '+ bes.length+ ' '+ Localization.lang("entries have undefined BibTeX key")+ '.');
         }
       }
     }
@@ -431,10 +431,10 @@ catch (          Throwable ex) {
         StringSelection ss=new StringSelection("\\cite{" + sb.toString() + '}');
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
         if (keys.size() == bes.length) {
-          output(bes.length > 1 ? Globals.lang("Copied keys") : Globals.lang("Copied key") + '.');
+          output(bes.length > 1 ? Localization.lang("Copied keys") : Localization.lang("Copied key") + '.');
         }
  else {
-          output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
+          output(Localization.lang("Warning") + ": " + (bes.length - keys.size())+ ' '+ Localization.lang("out of")+ ' '+ bes.length+ ' '+ Localization.lang("entries have undefined BibTeX key")+ '.');
         }
       }
     }
@@ -469,10 +469,10 @@ catch (          Throwable ex) {
         StringSelection ss=new StringSelection(sb.toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
         if (copied == bes.length) {
-          output(Globals.lang(bes.length > 1 ? "Copied keys" : "Copied key") + '.');
+          output(Localization.lang(bes.length > 1 ? "Copied keys" : "Copied key") + '.');
         }
  else {
-          output(Globals.lang("Warning") + ": " + copied+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
+          output(Localization.lang("Warning") + ": " + copied+ ' '+ Localization.lang("out of")+ ' '+ bes.length+ ' '+ Localization.lang("entries have undefined BibTeX key")+ '.');
         }
       }
     }
@@ -499,10 +499,10 @@ catch (          Throwable ex) {
             if (entry != null) {
               try {
                 Util.openExternalFileAnyFormat(metaData,entry.getLink(),entry.getType());
-                output(Globals.lang("External viewer called") + '.');
+                output(Localization.lang("External viewer called") + '.');
               }
  catch (              IOException e) {
-                output(Globals.lang("Could not open link"));
+                output(Localization.lang("Could not open link"));
                 e.printStackTrace();
               }
               return;
@@ -551,11 +551,11 @@ catch (          Throwable ex) {
                       if (type != null) {
                         try {
                           Util.openExternalFileAnyFormat(metaData,filepath,type);
-                          output(Globals.lang("External viewer called") + '.');
+                          output(Localization.lang("External viewer called") + '.');
                           return;
                         }
  catch (                        IOException ex) {
-                          output(Globals.lang("Error") + ": " + ex.getMessage());
+                          output(Localization.lang("Error") + ": " + ex.getMessage());
                         }
                       }
                     }
@@ -566,18 +566,18 @@ catch (          Throwable ex) {
             if (filepath != null) {
               try {
                 Util.openExternalViewer(metaData(),filepath,field);
-                output(Globals.lang("External viewer called") + '.');
+                output(Localization.lang("External viewer called") + '.');
               }
  catch (              IOException ex) {
-                output(Globals.lang("Error") + ": " + ex.getMessage());
+                output(Localization.lang("Error") + ": " + ex.getMessage());
               }
             }
  else {
-              output(Globals.lang("No pdf or ps defined, and no file matching Bibtex key found") + '.');
+              output(Localization.lang("No pdf or ps defined, and no file matching Bibtex key found") + '.');
             }
           }
  else {
-            output(Globals.lang("No entries or multiple entries selected."));
+            output(Localization.lang("No entries or multiple entries selected."));
           }
         }
       }
@@ -609,7 +609,7 @@ catch (          Throwable ex) {
             item.openLink();
           }
  else {
-            output(Globals.lang("No entries or multiple entries selected."));
+            output(Localization.lang("No entries or multiple entries selected."));
           }
         }
       }
@@ -650,10 +650,10 @@ catch (          Throwable ex) {
         if (link != null) {
           try {
             Util.openExternalViewer(metaData(),link.toString(),field);
-            output(Globals.lang("External viewer called") + '.');
+            output(Localization.lang("External viewer called") + '.');
           }
  catch (          IOException ex) {
-            output(Globals.lang("Error") + ": " + ex.getMessage());
+            output(Localization.lang("Error") + ": " + ex.getMessage());
           }
         }
  else {
@@ -670,20 +670,20 @@ catch (          Throwable ex) {
           if (entry != null) {
             try {
               Util.openExternalFileAnyFormat(metaData,entry.getLink(),entry.getType());
-              output(Globals.lang("External viewer called") + '.');
+              output(Localization.lang("External viewer called") + '.');
             }
  catch (            IOException e) {
-              output(Globals.lang("Could not open link"));
+              output(Localization.lang("Could not open link"));
               e.printStackTrace();
             }
           }
  else {
-            output(Globals.lang("No url defined") + '.');
+            output(Localization.lang("No url defined") + '.');
           }
         }
       }
  else {
-        output(Globals.lang("No entries or multiple entries selected."));
+        output(Localization.lang("No entries or multiple entries selected."));
       }
     }
   }
@@ -702,18 +702,18 @@ catch (          Throwable ex) {
         if (link != null) {
           try {
             Util.openExternalViewer(metaData(),link.toString(),"url");
-            output(Globals.lang("External viewer called") + '.');
+            output(Localization.lang("External viewer called") + '.');
           }
  catch (          IOException ex) {
-            output(Globals.lang("Error") + ": " + ex.getMessage());
+            output(Localization.lang("Error") + ": " + ex.getMessage());
           }
         }
  else {
-          output(Globals.lang("No url defined") + '.');
+          output(Localization.lang("No url defined") + '.');
         }
       }
  else {
-        output(Globals.lang("No entries or multiple entries selected."));
+        output(Localization.lang("No entries or multiple entries selected."));
       }
     }
   }
@@ -726,7 +726,7 @@ catch (          Throwable ex) {
         return;
       }
       int counter=0;
-      NamedCompound ce=new NamedCompound(Globals.lang("Replace string"));
+      NamedCompound ce=new NamedCompound(Localization.lang("Replace string"));
       if (!rsd.selOnly()) {
         for (        BibtexEntry entry : database.getEntries()) {
           counter+=rsd.replace(entry,ce);
@@ -738,7 +738,7 @@ catch (          Throwable ex) {
           counter+=rsd.replace(be,ce);
         }
       }
-      output(Globals.lang("Replaced") + ' ' + counter+ ' '+ Globals.lang(counter == 1 ? "occurence" : "occurences")+ '.');
+      output(Localization.lang("Replaced") + ' ' + counter+ ' '+ Localization.lang(counter == 1 ? "occurence" : "occurences")+ '.');
       if (counter > 0) {
         ce.end();
         undoManager.addEdit(ce);
@@ -780,10 +780,10 @@ catch (          Throwable ex) {
       try {
         BibtexEntry[] bes=mainTable.getSelectedEntries();
         if (bes.length == 0) {
-          output(Globals.lang("No entries selected."));
+          output(Localization.lang("No entries selected."));
           return;
         }
-        NamedCompound ce=new NamedCompound(Globals.lang("Unmark entries"));
+        NamedCompound ce=new NamedCompound(Localization.lang("Unmark entries"));
         for (        BibtexEntry be : bes) {
           EntryMarker.unmarkEntry(be,false,database,ce);
         }
@@ -792,10 +792,10 @@ catch (          Throwable ex) {
         markBaseChanged();
         String outputStr;
         if (bes.length == 1) {
-          outputStr=Globals.lang("Unmarked selected entry");
+          outputStr=Localization.lang("Unmarked selected entry");
         }
  else {
-          outputStr=Globals.lang("Unmarked all %0 selected entries",Integer.toString(bes.length));
+          outputStr=Localization.lang("Unmarked all %0 selected entries",Integer.toString(bes.length));
         }
         output(outputStr);
       }
@@ -807,20 +807,20 @@ catch (          Throwable ex) {
 );
   actions.put("unmarkAll",new BaseAction(){
     @Override public void action(){
-      NamedCompound ce=new NamedCompound(Globals.lang("Unmark all"));
+      NamedCompound ce=new NamedCompound(Localization.lang("Unmark all"));
       for (      BibtexEntry be : database.getEntries()) {
         EntryMarker.unmarkEntry(be,false,database,ce);
       }
       ce.end();
       undoManager.addEdit(ce);
       markBaseChanged();
-      output(Globals.lang("Unmarked all entries"));
+      output(Localization.lang("Unmarked all entries"));
     }
   }
 );
-  actions.put(Relevance.getInstance().getValues().get(0).getActionName(),new SpecialFieldAction(frame,Relevance.getInstance(),Relevance.getInstance().getValues().get(0).getFieldValue(),true,Globals.lang("Toggle relevance"),Globals.lang("Toggled relevance for %0 entries")));
-  actions.put(Quality.getInstance().getValues().get(0).getActionName(),new SpecialFieldAction(frame,Quality.getInstance(),Quality.getInstance().getValues().get(0).getFieldValue(),true,Globals.lang("Toggle quality"),Globals.lang("Toggled quality for %0 entries")));
-  actions.put(Printed.getInstance().getValues().get(0).getActionName(),new SpecialFieldAction(frame,Printed.getInstance(),Printed.getInstance().getValues().get(0).getFieldValue(),true,Globals.lang("Toggle print status"),Globals.lang("Toggled print status for %0 entries")));
+  actions.put(Relevance.getInstance().getValues().get(0).getActionName(),new SpecialFieldAction(frame,Relevance.getInstance(),Relevance.getInstance().getValues().get(0).getFieldValue(),true,Localization.lang("Toggle relevance"),Localization.lang("Toggled relevance for %0 entries")));
+  actions.put(Quality.getInstance().getValues().get(0).getActionName(),new SpecialFieldAction(frame,Quality.getInstance(),Quality.getInstance().getValues().get(0).getFieldValue(),true,Localization.lang("Toggle quality"),Localization.lang("Toggled quality for %0 entries")));
+  actions.put(Printed.getInstance().getValues().get(0).getActionName(),new SpecialFieldAction(frame,Printed.getInstance(),Printed.getInstance().getValues().get(0).getFieldValue(),true,Localization.lang("Toggle print status"),Localization.lang("Toggled print status for %0 entries")));
   for (  SpecialFieldValue prio : Priority.getInstance().getValues()) {
     actions.put(prio.getActionName(),prio.getAction(this.frame));
   }

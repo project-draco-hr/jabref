@@ -1,15 +1,16 @@
 {
   String translation=null;
   try {
-    if (Globals.messages != null) {
-      translation=Globals.menuTitles.getString(key.replaceAll(" ","_"));
+    if (intMessages != null) {
+      translation=intMessages.getString(key);
     }
   }
  catch (  MissingResourceException ex) {
     translation=key;
+    LOGGER.warn("Warning: could not get menu item translation for \"" + key + "\"");
   }
   if (translation != null && !translation.isEmpty()) {
-    return translation.replaceAll("_"," ");
+    return translation;
   }
  else {
     return key;

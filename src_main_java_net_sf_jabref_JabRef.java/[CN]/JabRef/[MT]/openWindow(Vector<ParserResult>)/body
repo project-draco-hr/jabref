@@ -24,7 +24,7 @@
         ParserResult pr=JabRef.openBibFile(name,false);
         if (pr != null) {
           if (pr == ParserResult.INVALID_FORMAT) {
-            System.out.println(Globals.lang("Error opening file") + " '" + fileToOpen.getPath()+ "'");
+            System.out.println(Localization.lang("Error opening file") + " '" + fileToOpen.getPath()+ "'");
           }
  else           if (pr != ParserResult.FILE_LOCKED) {
             loaded.add(pr);
@@ -80,8 +80,8 @@
     JabRef.jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
   for (  ParserResult pr : failed) {
-    String message="<html>" + Globals.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
-    JOptionPane.showMessageDialog(JabRef.jrf,message,Globals.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
+    String message="<html>" + Localization.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
+    JOptionPane.showMessageDialog(JabRef.jrf,message,Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
   }
   for (int i=0; i < loaded.size(); i++) {
     ParserResult pr=loaded.elementAt(i);
@@ -93,13 +93,13 @@
       }
       if (wrns.length > JabRef.MAX_DIALOG_WARNINGS) {
         wrn.append("... ");
-        wrn.append(Globals.lang("%0 warnings",String.valueOf(wrns.length)));
+        wrn.append(Localization.lang("%0 warnings",String.valueOf(wrns.length)));
       }
  else       if (wrn.length() > 0) {
         wrn.deleteCharAt(wrn.length() - 1);
       }
       JabRef.jrf.showBaseAt(i);
-      JOptionPane.showMessageDialog(JabRef.jrf,wrn.toString(),Globals.lang("Warnings") + " (" + pr.getFile().getName()+ ")",JOptionPane.WARNING_MESSAGE);
+      JOptionPane.showMessageDialog(JabRef.jrf,wrn.toString(),Localization.lang("Warnings") + " (" + pr.getFile().getName()+ ")",JOptionPane.WARNING_MESSAGE);
     }
   }
   for (int i=0; i < loaded.size() && i < JabRef.jrf.baseCount(); i++) {
