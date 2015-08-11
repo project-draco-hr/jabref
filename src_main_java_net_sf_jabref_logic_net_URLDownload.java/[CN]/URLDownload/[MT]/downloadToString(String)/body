@@ -1,23 +1,10 @@
 {
-  InputStream input=new BufferedInputStream(openConnection().getInputStream());
-  Writer output=new StringWriter();
-  try {
+  try (InputStream input=new BufferedInputStream(openConnection().getInputStream());Writer output=new StringWriter()){
     copy(input,output,encoding);
+    return output.toString();
   }
  catch (  IOException e) {
-    e.printStackTrace();
+    LOGGER.warn("Could not copy input",e);
+    return "";
   }
- finally {
-    try {
-      input.close();
-    }
- catch (    Exception ignored) {
-    }
-    try {
-      output.close();
-    }
- catch (    Exception ignored) {
-    }
-  }
-  return output.toString();
 }

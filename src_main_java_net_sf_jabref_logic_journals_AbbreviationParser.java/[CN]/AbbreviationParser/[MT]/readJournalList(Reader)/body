@@ -1,20 +1,11 @@
 {
-  BufferedReader reader=new BufferedReader(in);
-  try {
+  try (BufferedReader reader=new BufferedReader(in)){
     String line;
     while ((line=reader.readLine()) != null) {
       addLine(line);
     }
   }
  catch (  IOException ex) {
-    ex.printStackTrace();
-  }
- finally {
-    try {
-      reader.close();
-    }
- catch (    IOException ex2) {
-      ex2.printStackTrace();
-    }
+    LOGGER.info("Could not read journal list from file ",ex);
   }
 }

@@ -1,49 +1,49 @@
 {
-  if (s == null) {
+  if (toShave == null) {
     return null;
   }
-  char ch;
-  char ch2;
-  int beg=0;
-  int end=s.length();
-  boolean begok=false;
-  boolean endok=false;
-  while (!begok) {
-    if (beg < s.length()) {
-      ch=s.charAt(beg);
-      if (Character.isWhitespace(ch)) {
-        beg++;
+  char first;
+  char second;
+  int begin=0;
+  int end=toShave.length();
+  boolean beginOk=false;
+  boolean endOk=false;
+  while (!beginOk) {
+    if (begin < toShave.length()) {
+      first=toShave.charAt(begin);
+      if (Character.isWhitespace(first)) {
+        begin++;
       }
  else {
-        begok=true;
+        beginOk=true;
       }
     }
  else {
-      begok=true;
+      beginOk=true;
     }
   }
-  while (!endok) {
-    if (end > beg + 1) {
-      ch=s.charAt(end - 1);
-      if (Character.isWhitespace(ch)) {
+  while (!endOk) {
+    if (end > begin + 1) {
+      first=toShave.charAt(end - 1);
+      if (Character.isWhitespace(first)) {
         end--;
       }
  else {
-        endok=true;
+        endOk=true;
       }
     }
  else {
-      endok=true;
+      endOk=true;
     }
   }
-  if (end > beg + 1) {
-    ch=s.charAt(beg);
-    ch2=s.charAt(end - 1);
-    if (ch == '{' && ch2 == '}' || ch == '"' && ch2 == '"') {
-      beg++;
+  if (end > begin + 1) {
+    first=toShave.charAt(begin);
+    second=toShave.charAt(end - 1);
+    if (first == '{' && second == '}' || first == '"' && second == '"') {
+      begin++;
       end--;
     }
   }
-  s=s.substring(beg,end);
-  return s;
+  toShave=toShave.substring(begin,end);
+  return toShave;
 }

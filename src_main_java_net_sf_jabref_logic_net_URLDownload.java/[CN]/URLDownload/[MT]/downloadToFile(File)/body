@@ -1,22 +1,8 @@
 {
-  InputStream input=new BufferedInputStream(openConnection().getInputStream());
-  OutputStream output=new BufferedOutputStream(new FileOutputStream(destination));
-  try {
+  try (InputStream input=new BufferedInputStream(openConnection().getInputStream());OutputStream output=new BufferedOutputStream(new FileOutputStream(destination))){
     copy(input,output);
   }
  catch (  IOException e) {
-    e.printStackTrace();
-  }
- finally {
-    try {
-      input.close();
-    }
- catch (    Exception ignored) {
-    }
-    try {
-      output.close();
-    }
- catch (    Exception ignored) {
-    }
+    LOGGER.warn("Could not copy input",e);
   }
 }

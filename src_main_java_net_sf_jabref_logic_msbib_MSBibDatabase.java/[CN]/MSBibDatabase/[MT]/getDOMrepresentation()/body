@@ -1,8 +1,8 @@
 {
   Document result=null;
   try {
-    DocumentBuilder dbuild=DocumentBuilderFactory.newInstance().newDocumentBuilder();
-    result=dbuild.newDocument();
+    DocumentBuilder documentBuilder=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    result=documentBuilder.newDocument();
     Element msbibCollection=result.createElement("b:Sources");
     msbibCollection.setAttribute("SelectedStyle","");
     msbibCollection.setAttribute("xmlns","http://schemas.openxmlformats.org/officeDocument/2006/bibliography");
@@ -13,9 +13,8 @@
     }
     result.appendChild(msbibCollection);
   }
- catch (  Exception e) {
-    System.out.println("Exception caught..." + e);
-    e.printStackTrace();
+ catch (  ParserConfigurationException e) {
+    LOGGER.warn("Could not build document",e);
   }
   return result;
 }

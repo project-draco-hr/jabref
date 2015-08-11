@@ -1,18 +1,18 @@
 {
   try {
     if (val.startsWith("auth") || val.startsWith("pureauth")) {
-      String authString=_entry.getField("author");
+      String authString=entry.getField("author");
       if (authString != null) {
-        authString=LabelPatternUtil.normalize(LabelPatternUtil._db.resolveForStrings(authString));
+        authString=LabelPatternUtil.normalize(LabelPatternUtil.database.resolveForStrings(authString));
       }
       if (val.startsWith("pure")) {
         val=val.substring(4);
       }
  else {
         if (authString == null || authString.equals("")) {
-          authString=_entry.getField("editor");
+          authString=entry.getField("editor");
           if (authString != null) {
-            authString=LabelPatternUtil.normalize(LabelPatternUtil._db.resolveForStrings(authString));
+            authString=LabelPatternUtil.normalize(LabelPatternUtil.database.resolveForStrings(authString));
           }
         }
       }
@@ -80,50 +80,50 @@
         return s == null ? "" : s;
       }
  else {
-        return LabelPatternUtil.getField(_entry,val);
+        return LabelPatternUtil.getField(entry,val);
       }
     }
  else     if (val.startsWith("ed")) {
       if (val.equals("edtr")) {
-        return LabelPatternUtil.firstAuthor(_entry.getField("editor"));
+        return LabelPatternUtil.firstAuthor(entry.getField("editor"));
       }
  else       if (val.equals("edtrForeIni")) {
-        return LabelPatternUtil.firstAuthorForenameInitials(_entry.getField("editor"));
+        return LabelPatternUtil.firstAuthorForenameInitials(entry.getField("editor"));
       }
  else       if (val.equals("editors")) {
-        return LabelPatternUtil.allAuthors(_entry.getField("editor"));
+        return LabelPatternUtil.allAuthors(entry.getField("editor"));
       }
  else       if (val.equals("editorLast")) {
-        return LabelPatternUtil.lastAuthor(_entry.getField("editor"));
+        return LabelPatternUtil.lastAuthor(entry.getField("editor"));
       }
  else       if (val.equals("editorLastForeIni")) {
-        return LabelPatternUtil.lastAuthorForenameInitials(_entry.getField("editor"));
+        return LabelPatternUtil.lastAuthorForenameInitials(entry.getField("editor"));
       }
  else       if (val.equals("editorIni")) {
-        String s=LabelPatternUtil.oneAuthorPlusIni(_entry.getField("editor"));
+        String s=LabelPatternUtil.oneAuthorPlusIni(entry.getField("editor"));
         return s == null ? "" : s;
       }
  else       if (val.matches("edtrIni[\\d]+")) {
         int num=Integer.parseInt(val.substring(7));
-        String s=LabelPatternUtil.authIniN(_entry.getField("editor"),num);
+        String s=LabelPatternUtil.authIniN(entry.getField("editor"),num);
         return s == null ? "" : s;
       }
  else       if (val.matches("edtr[\\d]+_[\\d]+")) {
         String[] nums=val.substring(4).split("_");
-        String s=LabelPatternUtil.authN_M(_entry.getField("editor"),Integer.parseInt(nums[0]),Integer.parseInt(nums[1]) - 1);
+        String s=LabelPatternUtil.authN_M(entry.getField("editor"),Integer.parseInt(nums[0]),Integer.parseInt(nums[1]) - 1);
         return s == null ? "" : s;
       }
  else       if (val.equals("edtr.edtr.ea")) {
-        String s=LabelPatternUtil.authAuthEa(_entry.getField("editor"));
+        String s=LabelPatternUtil.authAuthEa(entry.getField("editor"));
         return s == null ? "" : s;
       }
  else       if (val.equals("edtrshort")) {
-        String s=LabelPatternUtil.authshort(_entry.getField("editor"));
+        String s=LabelPatternUtil.authshort(entry.getField("editor"));
         return s == null ? "" : s;
       }
  else       if (val.matches("edtr\\d+")) {
         int num=Integer.parseInt(val.substring(4));
-        String fa=LabelPatternUtil.firstAuthor(_entry.getField("editor"));
+        String fa=LabelPatternUtil.firstAuthor(entry.getField("editor"));
         if (fa == null) {
           return "";
         }
@@ -133,20 +133,20 @@
         return fa.substring(0,num);
       }
  else {
-        return LabelPatternUtil.getField(_entry,val);
+        return LabelPatternUtil.getField(entry,val);
       }
     }
  else     if (val.equals("firstpage")) {
-      return LabelPatternUtil.firstPage(_entry.getField("pages"));
+      return LabelPatternUtil.firstPage(entry.getField("pages"));
     }
  else     if (val.equals("lastpage")) {
-      return LabelPatternUtil.lastPage(_entry.getField("pages"));
+      return LabelPatternUtil.lastPage(entry.getField("pages"));
     }
  else     if (val.equals("shorttitle")) {
-      return LabelPatternUtil.getTitleWords(3,_entry);
+      return LabelPatternUtil.getTitleWords(3,entry);
     }
  else     if (val.equals("shortyear")) {
-      String ss=_entry.getFieldOrAlias("year");
+      String ss=entry.getFieldOrAlias("year");
       if (ss.startsWith("in") || ss.startsWith("sub")) {
         return "IP";
       }
@@ -158,12 +158,12 @@
       }
     }
  else     if (val.equals("veryshorttitle")) {
-      return LabelPatternUtil.getTitleWords(1,_entry);
+      return LabelPatternUtil.getTitleWords(1,entry);
     }
  else     if (val.matches("keyword\\d+")) {
       StringBuilder sb=new StringBuilder();
       int num=Integer.parseInt(val.substring(7));
-      String kw=LabelPatternUtil.getField(_entry,"keywords");
+      String kw=LabelPatternUtil.getField(entry,"keywords");
       if (kw != null) {
         String[] keywords=kw.split("[,;]\\s*");
         if (num > 0 && num < keywords.length) {
@@ -173,7 +173,7 @@
       return sb.toString();
     }
  else {
-      return LabelPatternUtil.getField(_entry,val);
+      return LabelPatternUtil.getField(entry,val);
     }
   }
  catch (  NullPointerException ex) {

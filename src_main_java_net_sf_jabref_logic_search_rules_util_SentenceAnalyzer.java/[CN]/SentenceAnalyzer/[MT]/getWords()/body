@@ -1,6 +1,6 @@
 {
-  List<String> result=new ArrayList<String>();
-  StringBuffer sb=new StringBuffer();
+  List<String> result=new ArrayList<>();
+  StringBuilder stringBuilder=new StringBuilder();
   boolean escaped=false;
   boolean quoted=false;
   for (  char c : query.toCharArray()) {
@@ -9,26 +9,26 @@
     }
  else {
       if (!escaped && !quoted && Character.isWhitespace(c)) {
-        if (sb.length() > 0) {
-          result.add(sb.toString());
-          sb=new StringBuffer();
+        if (stringBuilder.length() > 0) {
+          result.add(stringBuilder.toString());
+          stringBuilder=new StringBuilder();
         }
       }
  else       if (c == QUOTE_CHAR) {
-        if (sb.length() > 0) {
-          result.add(sb.toString());
-          sb=new StringBuffer();
+        if (stringBuilder.length() > 0) {
+          result.add(stringBuilder.toString());
+          stringBuilder=new StringBuilder();
         }
         quoted=!quoted;
       }
  else {
-        sb.append(c);
+        stringBuilder.append(c);
       }
       escaped=false;
     }
   }
-  if (sb.length() > 0) {
-    result.add(sb.toString());
+  if (stringBuilder.length() > 0) {
+    result.add(stringBuilder.toString());
   }
   return result;
 }

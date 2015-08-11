@@ -1,11 +1,11 @@
 {
-  String ss=new RemoveLatexCommands().format(_entry.getField("title"));
-  StringBuffer _sbvalue=new StringBuffer();
-  StringBuffer current;
+  String ss=new RemoveLatexCommands().format(entry.getField("title"));
+  StringBuilder stringBuilder=new StringBuilder();
+  StringBuilder current;
   int piv=0;
   int words=0;
   mainl:   while (piv < ss.length() && words < number) {
-    current=new StringBuffer();
+    current=new StringBuilder();
     while (piv < ss.length() && !Character.isWhitespace(ss.charAt(piv)) && ss.charAt(piv) != '-') {
       current.append(ss.charAt(piv));
       piv++;
@@ -20,11 +20,11 @@
         continue mainl;
       }
     }
-    if (_sbvalue.length() > 0) {
-      _sbvalue.append(" ");
+    if (stringBuilder.length() > 0) {
+      stringBuilder.append(" ");
     }
-    _sbvalue.append(word);
+    stringBuilder.append(word);
     words++;
   }
-  return LabelPatternUtil.keepLettersAndDigitsOnly(_sbvalue.toString());
+  return LabelPatternUtil.keepLettersAndDigitsOnly(stringBuilder.toString());
 }
