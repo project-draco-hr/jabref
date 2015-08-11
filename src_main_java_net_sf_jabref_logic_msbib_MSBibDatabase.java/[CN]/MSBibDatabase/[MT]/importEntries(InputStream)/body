@@ -1,25 +1,24 @@
 {
-  entries=new HashSet<MSBibEntry>();
-  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
-  Document docin=null;
+  entries=new HashSet<>();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
+  Document inputDocument=null;
   try {
-    DocumentBuilder dbuild=DocumentBuilderFactory.newInstance().newDocumentBuilder();
-    docin=dbuild.parse(stream);
+    DocumentBuilder documentBuilder=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    inputDocument=documentBuilder.parse(stream);
   }
- catch (  Exception e) {
-    System.out.println("Exception caught..." + e);
-    e.printStackTrace();
+ catch (  ParserConfigurationException|SAXException|IOException e) {
+    LOGGER.warn("Could not parse document",e);
   }
   String bcol="b:";
-  NodeList rootLst=docin.getElementsByTagName("b:Sources");
-  if (rootLst.getLength() == 0) {
-    rootLst=docin.getElementsByTagName("Sources");
+  NodeList rootList=inputDocument.getElementsByTagName("b:Sources");
+  if (rootList.getLength() == 0) {
+    rootList=inputDocument.getElementsByTagName("Sources");
     bcol="";
   }
-  if (rootLst.getLength() == 0) {
+  if (rootList.getLength() == 0) {
     return bibitems;
   }
-  NodeList sourceList=((Element)rootLst.item(0)).getElementsByTagName(bcol + "Source");
+  NodeList sourceList=((Element)rootList.item(0)).getElementsByTagName(bcol + "Source");
   for (int i=0; i < sourceList.getLength(); i++) {
     MSBibEntry entry=new MSBibEntry((Element)sourceList.item(i),bcol);
     entries.add(entry);
