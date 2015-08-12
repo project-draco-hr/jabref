@@ -2,14 +2,14 @@
   String[] fields={"note","url","ee"};
   if (bes.getField("doi") != null) {
     String doiFieldValue=bes.getField("doi");
-    if (DOIUtil.checkForDOIwithHTTPprefix(doiFieldValue)) {
-      String newValue=DOIUtil.getDOI(doiFieldValue);
+    if (DOIUtil.isDOIwithHttpPrefix(doiFieldValue)) {
+      String newValue=DOIUtil.getPlainDOI(doiFieldValue);
       ce.addEdit(new UndoableFieldChange(bes,"doi",doiFieldValue,newValue));
       bes.setField("doi",newValue);
     }
-    if (DOIUtil.checkForPlainDOI(doiFieldValue)) {
+    if (DOIUtil.isPlainDOI(doiFieldValue)) {
       for (      String field : fields) {
-        if (DOIUtil.checkForPlainDOI(bes.getField(field))) {
+        if (DOIUtil.isPlainDOI(bes.getField(field))) {
           DOIUtil.removeDOIfromBibtexEntryField(bes,field,ce);
         }
       }
@@ -17,9 +17,9 @@
   }
  else {
     for (    String field : fields) {
-      if (DOIUtil.checkForPlainDOI(bes.getField(field))) {
+      if (DOIUtil.isPlainDOI(bes.getField(field))) {
         String oldValue=bes.getField("doi");
-        String newValue=DOIUtil.getDOI(bes.getField(field));
+        String newValue=DOIUtil.getPlainDOI(bes.getField(field));
         ce.addEdit(new UndoableFieldChange(bes,"doi",oldValue,newValue));
         bes.setField("doi",newValue);
         DOIUtil.removeDOIfromBibtexEntryField(bes,field,ce);
