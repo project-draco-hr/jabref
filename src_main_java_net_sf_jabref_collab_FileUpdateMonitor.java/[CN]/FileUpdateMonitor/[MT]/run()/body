@@ -1,8 +1,6 @@
 {
   while (true) {
-    Iterator<String> i=entries.keySet().iterator();
-    for (; i.hasNext(); ) {
-      Entry e=entries.get(i.next());
+    for (    Entry e : entries.values()) {
       try {
         if (e.hasBeenUpdated()) {
           e.notifyListener();
@@ -16,7 +14,7 @@
       Thread.sleep(WAIT);
     }
  catch (    InterruptedException ex) {
-      LOGGER.info("FileUpdateMonitor has been interrupted. Terminating...",ex);
+      LOGGER.debug("FileUpdateMonitor has been interrupted. Terminating...");
       return;
     }
   }
