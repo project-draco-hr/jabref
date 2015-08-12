@@ -1,7 +1,6 @@
 def handleJavaCode(filename, lines, keyList, notTermList):
     reOnlyString = '"((\\\\"|[^"])*)"[^"]*'
     patt = re.compile(('Localization\\s*\\.\\s*lang\\s*\\(\\s*' + reOnlyString))
-    patta = re.compile(('LocalizationSupport.message\\(' + reOnlyString))
     pattOnlyString = re.compile(reOnlyString)
     patt2 = re.compile('Localization\\s*\\.\\s*lang\\s*\\(([^)])*$')
     pattPlus = re.compile('^\\s*\\+')
@@ -13,8 +12,6 @@ def handleJavaCode(filename, lines, keyList, notTermList):
             curline = re.sub('//.*', '', curline)
         while (curline != ''):
             result = patt.search(curline)
-            if (not result):
-                result = patta.search(curline)
             result2 = patt2.search(curline)
             found = ''
             if (result2 and (curline.find('",') < 0)):
