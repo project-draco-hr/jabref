@@ -6,10 +6,11 @@
   try {
     result=new RemoteListenerServerThread(messageHandler,port);
   }
- catch (  IOException e) {
-    if (!e.getMessage().startsWith("Address already in use")) {
-      LOGGER.warn("Port is blocked",e);
-    }
+ catch (  BindException e) {
+    LOGGER.warn("Port is blocked",e);
+    result=null;
+  }
+catch (  IOException e) {
     result=null;
   }
   remoteListenerServerThread=result;
