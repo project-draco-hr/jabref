@@ -1,12 +1,12 @@
 {
   if (selected.length != 2) {
-    JOptionPane.showMessageDialog(frame,Globals.lang("You have to choose exactly two entries to merge."),Globals.lang("Merge entries"),JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(frame,Localization.lang("You have to choose exactly two entries to merge."),Localization.lang("Merge entries"),JOptionPane.INFORMATION_MESSAGE);
     this.dispose();
     return;
   }
   one=selected[0];
   two=selected[1];
-  ce=new NamedCompound(Globals.lang("Merge entries"));
+  ce=new NamedCompound(Localization.lang("Merge entries"));
   joint=new TreeSet<String>(one.getAllFields());
   joint.addAll(two.getAllFields());
   Set<String> toberemoved=new TreeSet<String>();
@@ -40,7 +40,7 @@
   BibtexEntryType type1=one.getType();
   BibtexEntryType type2=two.getType();
   mergedEntry.setType(type1);
-  JLabel label=new JLabel(Globals.lang("Entry type"));
+  JLabel label=new JLabel(Localization.lang("Entry type"));
   Font font=label.getFont();
   label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
   this.add(label,cc.xy(1,3));
@@ -144,7 +144,7 @@
   }
   this.add(new JSeparator(),cc.xyw(1,row,11));
   row++;
-  label=new JLabel(Globals.lang("Merged entry"));
+  label=new JLabel(Localization.lang("Merged entry"));
   font=label.getFont();
   label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
   this.add(label,cc.xy(1,row));
@@ -161,7 +161,7 @@
     mergedEntry.write(sw,new LatexFieldFormatter(),false);
   }
  catch (  IOException ex) {
-    System.err.println(Globals.lang("Error in entry" + ": " + ex.getMessage()));
+    System.err.println(Localization.lang("Error in entry" + ": " + ex.getMessage()));
   }
   jta.setText(sw.getBuffer().toString());
   jta.setCaretPosition(0);
@@ -170,7 +170,7 @@
   row++;
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
-  JButton cancel=new JButton(Globals.lang("Cancel"));
+  JButton cancel=new JButton(Localization.lang("Cancel"));
   cancel.setActionCommand("cancel");
   cancel.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
@@ -178,7 +178,7 @@
     }
   }
 );
-  JButton newentry=new JButton(Globals.lang("Add new entry and keep both old entries"));
+  JButton newentry=new JButton(Localization.lang("Add new entry and keep both old entries"));
   newentry.setActionCommand("newentry");
   newentry.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
@@ -186,7 +186,7 @@
     }
   }
 );
-  JButton replaceentries=new JButton(Globals.lang("Replace old entries with new entry"));
+  JButton replaceentries=new JButton(Localization.lang("Replace old entries with new entry"));
   replaceentries.setActionCommand("replace");
   replaceentries.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){

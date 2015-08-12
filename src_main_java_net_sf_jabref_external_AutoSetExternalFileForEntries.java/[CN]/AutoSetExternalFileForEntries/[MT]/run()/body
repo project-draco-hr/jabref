@@ -1,6 +1,6 @@
 {
   if (!goOn) {
-    panel.output(Globals.lang("No entries selected."));
+    panel.output(Localization.lang("No entries selected."));
     return;
   }
   panel.frame().setProgressBarValue(0);
@@ -11,7 +11,7 @@
   int progress=0;
   entriesChanged=0;
   int brokenLinks=0;
-  NamedCompound ce=new NamedCompound(Globals.lang("Autoset %0 field",fieldName));
+  NamedCompound ce=new NamedCompound(Localization.lang("Autoset %0 field",fieldName));
   final OpenFileFilter off=Util.getFileFilterForField(fieldName);
   ExternalFilePanel extPan=new ExternalFilePanel(fieldName,panel.metaData(),null,null,off);
   FieldTextField editor=new FieldTextField(fieldName,"",false);
@@ -41,7 +41,7 @@
       if (old != null && !old.equals("")) {
         File file=FileUtil.expandFilename(old,dirs);
         if (file == null || !file.exists()) {
-          int answer=JOptionPane.showOptionDialog(panel.frame(),Globals.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{old,aSel.getCiteKey()}),Globals.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+          int answer=JOptionPane.showOptionDialog(panel.frame(),Localization.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{old,aSel.getCiteKey()}),Localization.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
 switch (answer) {
 case 1:
             AttachFileDialog afd=new AttachFileDialog(panel.frame(),panel.metaData(),aSel,fieldName);
@@ -67,7 +67,7 @@ brokenLinks++;
 }
 }
 if (brokenLinks > 0) {
-log.warn(Globals.lang("Found %0 broken links",brokenLinks + ""));
+log.warn(Localization.lang("Found %0 broken links",brokenLinks + ""));
 }
 if (entriesChanged > 0) {
 ce.end();

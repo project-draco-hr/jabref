@@ -1,5 +1,5 @@
 {
-  final String res=JOptionPane.showInputDialog(parent,Globals.lang("Enter URL to download"));
+  final String res=JOptionPane.showInputDialog(parent,Localization.lang("Enter URL to download"));
   if (res == null || res.trim().isEmpty()) {
     return;
   }
@@ -21,7 +21,7 @@
         plannedName=getKey() + suffix;
       }
  else {
-        plannedName=JOptionPane.showInputDialog(parent,Globals.lang("BibTeX key not set. Enter a name for the downloaded file"));
+        plannedName=JOptionPane.showInputDialog(parent,Localization.lang("BibTeX key not set. Enter a name for the downloaded file"));
         if (plannedName != null && !off.accept(plannedName)) {
           plannedName+=suffix;
         }
@@ -39,8 +39,8 @@
       fieldEditor.setEnabled(false);
       boolean updateEditor=true;
       try {
-        fieldEditor.setText(Globals.lang("Downloading..."));
-        output(Globals.lang("Downloading..."));
+        fieldEditor.setText(Localization.lang("Downloading..."));
+        output(Localization.lang("Downloading..."));
         String plannedName=getPlannedFileName(res);
         String[] dirs=metaData.getFileDirectory(fieldName);
         String directory=null;
@@ -52,10 +52,10 @@
         }
         if (directory == null) {
           if (dirs.length > 0) {
-            JOptionPane.showMessageDialog(parent,Globals.lang("Could not find directory for %0-files: %1",fieldName,dirs[0]),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent,Localization.lang("Could not find directory for %0-files: %1",fieldName,dirs[0]),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
           }
  else {
-            JOptionPane.showMessageDialog(parent,Globals.lang("No directory defined for %0-files",fieldName),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent,Localization.lang("No directory defined for %0-files",fieldName),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
           }
           return;
         }
@@ -65,11 +65,11 @@
           MonitoredURLDownload.buildMonitoredDownload(parent,url).downloadToFile(file);
         }
  catch (        IOException e2) {
-          JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL") + ": " + e2.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(parent,Localization.lang("Invalid URL") + ": " + e2.getMessage(),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
           LOGGER.info("Error while downloading " + url,e2);
           return;
         }
-        output(Globals.lang("Download completed"));
+        output(Localization.lang("Download completed"));
         String textToSet=file.getPath();
         if (textToSet.startsWith(directory)) {
           textToSet=textToSet.substring(directory.length(),textToSet.length());
@@ -96,7 +96,7 @@
         }
       }
  catch (      MalformedURLException e1) {
-        JOptionPane.showMessageDialog(parent,Globals.lang("Invalid URL"),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent,Localization.lang("Invalid URL"),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
       }
  finally {
         if (updateEditor) {
