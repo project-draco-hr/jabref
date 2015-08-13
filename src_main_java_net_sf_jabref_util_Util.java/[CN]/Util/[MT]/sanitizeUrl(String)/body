@@ -7,8 +7,9 @@
     link=link.replaceFirst("^doi:/*","");
     link=new DOI(link).getURL();
   }
-  if (DOI.isDOI(link) && !link.startsWith("http://")) {
-    link=new DOI(link).getURL();
+  Optional<DOI> doi=DOI.build(link);
+  if (doi.isPresent() && !link.startsWith("http://")) {
+    link=doi.get().getURL();
   }
   link=link.replaceAll("\\+","%2B");
   try {
