@@ -2,27 +2,27 @@
   String[] fields={"note","url","ee"};
   if (bes.getField("doi") != null) {
     String doiFieldValue=bes.getField("doi");
-    if (Doi.containsHttpDoi(doiFieldValue)) {
-      String newValue=new Doi(doiFieldValue).getDoi();
+    if (DOI.isHttpDOI(doiFieldValue)) {
+      String newValue=new DOI(doiFieldValue).getDOI();
       ce.addEdit(new UndoableFieldChange(bes,"doi",doiFieldValue,newValue));
       bes.setField("doi",newValue);
     }
-    if (Doi.containsDoi(doiFieldValue)) {
+    if (DOI.isDOI(doiFieldValue)) {
       for (      String field : fields) {
-        if (Doi.containsDoi(bes.getField(field))) {
-          Doi.removeDOIfromBibtexEntryField(bes,field,ce);
+        if (DOI.isDOI(bes.getField(field))) {
+          removeDOIfromBibtexEntryField(bes,field,ce);
         }
       }
     }
   }
  else {
     for (    String field : fields) {
-      if (Doi.containsDoi(bes.getField(field))) {
+      if (DOI.isDOI(bes.getField(field))) {
         String oldValue=bes.getField("doi");
-        String newValue=new Doi(bes.getField(field)).getDoi();
+        String newValue=new DOI(bes.getField(field)).getDOI();
         ce.addEdit(new UndoableFieldChange(bes,"doi",oldValue,newValue));
         bes.setField("doi",newValue);
-        Doi.removeDOIfromBibtexEntryField(bes,field,ce);
+        removeDOIfromBibtexEntryField(bes,field,ce);
       }
     }
   }
