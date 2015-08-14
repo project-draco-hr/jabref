@@ -1,28 +1,21 @@
 {
-  String urlText=entry.getField("url");
-  String doiText=entry.getField("doi");
-  if (doiText != null && !doiText.trim().isEmpty()) {
-    FindResult resDoi=lookForFullTextAtURL(new DOI(doiText).getURLAsASCIIString());
-    if (resDoi.status == FindFullText.FOUND_PDF) {
-      return resDoi;
-    }
- else     if (urlText != null && !urlText.trim().isEmpty()) {
-      FindResult resUrl=lookForFullTextAtURL(urlText);
-      if (resUrl.status == FindFullText.FOUND_PDF) {
-        return resUrl;
-      }
+  for (  FullTextFinder finder : finders) {
+    try {
+      Optional<URL> result=finder.findFullText(entry);
+      if (result.isPresent()) {
+        String mimeType=new URLDownload(result.get()).determineMimeType();
+        if (mimeType != null && mimeType.toLowerCase().equals("application/pdf")) {
+          return new FindResult(result.get(),result.get());
+        }
  else {
-        return resDoi;
+          return new FindResult(WRONG_MIME_TYPE,result.get());
+        }
       }
     }
- else {
-      return resDoi;
+ catch (    IOException ex) {
+      ex.printStackTrace();
+      return new FindResult(IO_EXCEPTION,null);
     }
   }
- else   if (urlText != null && !urlText.trim().isEmpty()) {
-    return lookForFullTextAtURL(urlText);
-  }
- else {
-    return new FindResult(FindFullText.NO_URLS_DEFINED,null);
-  }
+  return new FindResult(LINK_NOT_FOUND,null);
 }
