@@ -1,23 +1,23 @@
 {
-  BibtexParser bp=new BibtexParser(new java.io.StringReader(source.getText()));
+  BibtexParser bibtexParser=new BibtexParser(new java.io.StringReader(source.getText()));
   try {
-    ParserResult parserResult=bp.parse();
-    BibtexDatabase db=parserResult.getDatabase();
-    if (db.getEntryCount() > 1) {
-      throw new Exception("More than one entry found.");
+    ParserResult parserResult=bibtexParser.parse();
+    BibtexDatabase database=parserResult.getDatabase();
+    if (database.getEntryCount() > 1) {
+      throw new IllegalStateException("More than one entry found.");
     }
-    if (db.getEntryCount() < 1) {
+    if (database.getEntryCount() < 1) {
       if (parserResult.hasWarnings()) {
-        throw new Exception(parserResult.warnings()[0]);
+        throw new IllegalStateException(parserResult.warnings()[0]);
       }
  else {
-        throw new Exception("No entries found.");
+        throw new IllegalStateException("No entries found.");
       }
     }
     NamedCompound compound=new NamedCompound(Localization.lang("source edit"));
-    BibtexEntry nu=db.getEntryById(db.getKeySet().iterator().next());
+    BibtexEntry newEntry=database.getEntryById(database.getKeySet().iterator().next());
     String id=entry.getId();
-    String newKey=nu.getCiteKey();
+    String newKey=newEntry.getCiteKey();
     boolean anyChanged=false;
     boolean changedType=false;
     boolean duplicateWarning=false;
@@ -27,16 +27,16 @@
     }
     for (    String field : entry.getAllFields()) {
       if (BibtexFields.isDisplayableField(field)) {
-        if (nu.getField(field) == null) {
+        if (newEntry.getField(field) == null) {
           compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),null));
           entry.clearField(field);
           anyChanged=true;
         }
       }
     }
-    for (    String field : nu.getAllFields()) {
+    for (    String field : newEntry.getAllFields()) {
       String oldValue=entry.getField(field);
-      String newValue=nu.getField(field);
+      String newValue=newEntry.getField(field);
       if (oldValue == null || !oldValue.equals(newValue)) {
         new LatexFieldFormatter().format(newValue,field);
         compound.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
@@ -44,9 +44,9 @@
         anyChanged=true;
       }
     }
-    if (nu.getType() != entry.getType()) {
-      compound.addEdit(new UndoableChangeType(entry,entry.getType(),nu.getType()));
-      entry.setType(nu.getType());
+    if (newEntry.getType() != entry.getType()) {
+      compound.addEdit(new UndoableChangeType(entry,entry.getType(),newEntry.getType()));
+      entry.setType(newEntry.getType());
       anyChanged=true;
       changedType=true;
     }
@@ -85,7 +85,7 @@
 );
     return true;
   }
- catch (  Throwable ex) {
+ catch (  IllegalStateException|IOException ex) {
     updateSource=false;
     lastSourceAccepted=false;
     tabbed.setSelectedComponent(srcPanel);
