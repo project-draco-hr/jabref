@@ -1,0 +1,96 @@
+{
+  InputMap inputMap=panel.getInputMap(JComponent.WHEN_FOCUSED);
+  ActionMap actionMap=panel.getActionMap();
+  inputMap.put(Globals.prefs.getKey("Entry editor, previous entry"),"prev");
+  actionMap.put("prev",parent.prevEntryAction);
+  inputMap.put(Globals.prefs.getKey("Entry editor, next entry"),"next");
+  actionMap.put("next",parent.nextEntryAction);
+  inputMap.put(Globals.prefs.getKey("Entry editor, store field"),"store");
+  actionMap.put("store",parent.storeFieldAction);
+  inputMap.put(Globals.prefs.getKey("Entry editor, next panel"),"right");
+  inputMap.put(Globals.prefs.getKey("Entry editor, next panel 2"),"right");
+  actionMap.put("left",parent.switchLeftAction);
+  inputMap.put(Globals.prefs.getKey("Entry editor, previous panel"),"left");
+  inputMap.put(Globals.prefs.getKey("Entry editor, previous panel 2"),"left");
+  actionMap.put("right",parent.switchRightAction);
+  inputMap.put(Globals.prefs.getKey("Help"),"help");
+  actionMap.put("help",parent.helpAction);
+  inputMap.put(Globals.prefs.getKey("Save database"),"save");
+  actionMap.put("save",parent.saveDatabaseAction);
+  inputMap.put(Globals.prefs.getKey("Next tab"),"nexttab");
+  actionMap.put("nexttab",parent.frame.nextTab);
+  inputMap.put(Globals.prefs.getKey("Previous tab"),"prevtab");
+  actionMap.put("prevtab",parent.frame.prevTab);
+  panel.setName(title);
+  int fieldsPerRow=compressed ? 2 : 1;
+  String colSpec=compressed ? "fill:pref, 1dlu, fill:10dlu:grow, 1dlu, fill:pref, " + "8dlu, fill:pref, 1dlu, fill:10dlu:grow, 1dlu, fill:pref" : "fill:pref, 1dlu, fill:pref:grow, 1dlu, fill:pref";
+  StringBuilder stringBuilder=new StringBuilder();
+  int rows=(int)Math.ceil((double)fields.length / fieldsPerRow);
+  for (int i=0; i < rows; i++) {
+    stringBuilder.append("fill:pref:grow, ");
+  }
+  if (addKeyField) {
+    stringBuilder.append("4dlu, fill:pref");
+  }
+ else   if (stringBuilder.length() >= 2) {
+    stringBuilder.delete(stringBuilder.length() - 2,stringBuilder.length());
+  }
+  String rowSpec=stringBuilder.toString();
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout(colSpec,rowSpec),panel);
+  for (int i=0; i < fields.length; i++) {
+    int editorType=BibtexFields.getEditorType(fields[i]);
+    final FieldEditor fieldEditor;
+    int defaultHeight;
+    int wHeight=(int)(50.0 * BibtexFields.getFieldWeight(fields[i]));
+    if (editorType == GUIGlobals.FILE_LIST_EDITOR) {
+      fieldEditor=new FileListEditor(frame,bPanel.metaData(),fields[i],null,parent);
+      fileListEditor=(FileListEditor)fieldEditor;
+      defaultHeight=0;
+    }
+ else {
+      fieldEditor=new FieldTextArea(fields[i],null);
+      frame.getSearchManager().addSearchListener((FieldTextArea)fieldEditor);
+      defaultHeight=fieldEditor.getPane().getPreferredSize().height;
+    }
+    JComponent extra=parent.getExtra(fields[i],fieldEditor);
+    AutoCompleter autoCompleter=bPanel.getAutoCompleters().get(fields[i]);
+    AutoCompleteListener autoCompleteListener=null;
+    if (autoCompleter != null) {
+      autoCompleteListener=new AutoCompleteListener(autoCompleter);
+    }
+    setupJTextComponent(fieldEditor.getTextComponent(),autoCompleteListener);
+    fieldEditor.setAutoCompleteListener(autoCompleteListener);
+    editors.put(fields[i],fieldEditor);
+    if (i == 0) {
+      activeField=fieldEditor;
+    }
+    if (!compressed) {
+      fieldEditor.getPane().setPreferredSize(new Dimension(100,Math.max(defaultHeight,wHeight)));
+    }
+    builder.append(fieldEditor.getLabel());
+    if (extra == null) {
+      builder.append(fieldEditor.getPane(),3);
+    }
+ else {
+      builder.append(fieldEditor.getPane());
+      JPanel pan=new JPanel();
+      pan.setLayout(new BorderLayout());
+      pan.add(extra,BorderLayout.NORTH);
+      builder.append(pan);
+    }
+    if ((i + 1) % fieldsPerRow == 0) {
+      builder.nextLine();
+    }
+  }
+  if (addKeyField) {
+    final FieldTextField textField=new FieldTextField(BibtexFields.KEY_FIELD,parent.getEntry().getField(BibtexFields.KEY_FIELD),true);
+    setupJTextComponent(textField,null);
+    editors.put("bibtexkey",textField);
+    if (editors.size() == 1) {
+      activeField=textField;
+    }
+    builder.nextLine();
+    builder.append(textField.getLabel());
+    builder.append(textField,3);
+  }
+}

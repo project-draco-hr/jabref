@@ -1,0 +1,52 @@
+{
+  JPanel leftPan=new JPanel();
+  leftPan.setLayout(new BorderLayout());
+  JToolBar toolBar=new JToolBar(SwingConstants.VERTICAL);
+  toolBar.setBorder(null);
+  toolBar.setRollover(true);
+  toolBar.setMargin(new Insets(0,0,0,2));
+  ActionMap actionMap=toolBar.getActionMap();
+  InputMap inputMap=toolBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  inputMap.put(prefs.getKey("Close entry editor"),"close");
+  actionMap.put("close",closeAction);
+  inputMap.put(prefs.getKey("Entry editor, store field"),"store");
+  actionMap.put("store",storeFieldAction);
+  inputMap.put(prefs.getKey("Autogenerate BibTeX keys"),"generateKey");
+  actionMap.put("generateKey",generateKeyAction);
+  inputMap.put(prefs.getKey("Automatically link files"),"autoLink");
+  actionMap.put("autoLink",autoLinkAction);
+  inputMap.put(prefs.getKey("Entry editor, previous entry"),"prev");
+  actionMap.put("prev",prevEntryAction);
+  inputMap.put(prefs.getKey("Entry editor, next entry"),"next");
+  actionMap.put("next",nextEntryAction);
+  inputMap.put(prefs.getKey("Undo"),"undo");
+  actionMap.put("undo",undoAction);
+  inputMap.put(prefs.getKey("Redo"),"redo");
+  actionMap.put("redo",redoAction);
+  inputMap.put(prefs.getKey("Help"),"help");
+  actionMap.put("help",helpAction);
+  toolBar.setFloatable(false);
+  JButton closeBut=new JButton(closeAction);
+  closeBut.setText(null);
+  closeBut.setBorder(null);
+  closeBut.setMargin(new Insets(8,0,8,0));
+  leftPan.add(closeBut,BorderLayout.NORTH);
+  leftPan.add(new TypeLabel(entry.getType().getName()),BorderLayout.CENTER);
+  TypeButton typeButton=new TypeButton(entry.getType().getName());
+  toolBar.add(typeButton);
+  toolBar.add(generateKeyAction);
+  toolBar.add(autoLinkAction);
+  toolBar.add(writeXmp);
+  toolBar.addSeparator();
+  toolBar.add(deleteAction);
+  toolBar.add(prevEntryAction);
+  toolBar.add(nextEntryAction);
+  toolBar.addSeparator();
+  toolBar.add(helpAction);
+  Component[] comps=toolBar.getComponents();
+  for (  Component comp : comps) {
+    ((JComponent)comp).setOpaque(false);
+  }
+  leftPan.add(toolBar,BorderLayout.SOUTH);
+  add(leftPan,BorderLayout.WEST);
+}
