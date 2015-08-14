@@ -1,16 +1,16 @@
 {
 synchronized (this) {
-    if (c != null) {
-      c.getDocument().removeDocumentListener(d);
-      c=null;
-      d=null;
+    if (textComponent != null) {
+      textComponent.getDocument().removeDocumentListener(documentListener);
+      textComponent=null;
+      documentListener=null;
     }
-    if (e.getSource() instanceof JTextComponent) {
-      c=(JTextComponent)e.getSource();
-      d=new DocumentListener(){
+    if (event.getSource() instanceof JTextComponent) {
+      textComponent=(JTextComponent)event.getSource();
+      documentListener=new DocumentListener(){
         void fire(){
-          if (c.isFocusOwner()) {
-            entryEditorTab.markIfModified((FieldEditor)c);
+          if (textComponent.isFocusOwner()) {
+            entryEditorTab.markIfModified((FieldEditor)textComponent);
           }
         }
         @Override public void changedUpdate(        DocumentEvent e){
@@ -24,10 +24,10 @@ synchronized (this) {
         }
       }
 ;
-      c.getDocument().addDocumentListener(d);
-      Component cScrollPane=c.getParent().getParent();
-      if (cScrollPane instanceof JScrollPane) {
-        JScrollPane componentPane=(JScrollPane)cScrollPane;
+      textComponent.getDocument().addDocumentListener(documentListener);
+      Component scrollPane=textComponent.getParent().getParent();
+      if (scrollPane instanceof JScrollPane) {
+        JScrollPane componentPane=(JScrollPane)scrollPane;
         Component cPane=componentPane.getParent();
         if (cPane instanceof JPanel) {
           JPanel panel=(JPanel)cPane;
@@ -37,5 +37,5 @@ synchronized (this) {
       }
     }
   }
-  entryEditorTab.setActive((FieldEditor)e.getSource());
+  entryEditorTab.setActive((FieldEditor)event.getSource());
 }

@@ -1,15 +1,15 @@
 {
-  Transferable tsf=dtde.getTransferable();
-  dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
-  DataFlavor dtURL=null;
+  Transferable tsf=event.getTransferable();
+  event.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
+  DataFlavor dataFlavor=null;
   try {
-    dtURL=new DataFlavor("application/x-java-url; class=java.net.URL");
+    dataFlavor=new DataFlavor("application/x-java-url; class=java.net.URL");
   }
  catch (  ClassNotFoundException e) {
     LOGGER.warn("Could not find DropTargetDropEvent class",e);
   }
   try {
-    URL url=(URL)tsf.getTransferData(dtURL);
+    URL url=(URL)tsf.getTransferData(dataFlavor);
     editor.setText(url.toString());
     storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
   }
