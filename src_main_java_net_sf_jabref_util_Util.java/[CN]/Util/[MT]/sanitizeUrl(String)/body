@@ -5,10 +5,11 @@
   }
   if (link.matches("^doi:/*.*")) {
     link=link.replaceFirst("^doi:/*","");
-    link=new Doi(link).getUri();
+    link=new DOI(link).getURL();
   }
-  if (Doi.containsDoi(link) && !link.startsWith("http://")) {
-    link=new Doi(link).getUri();
+  Optional<DOI> doi=DOI.build(link);
+  if (doi.isPresent() && !link.matches("^https?://.*")) {
+    link=doi.get().getURL();
   }
   link=link.replaceAll("\\+","%2B");
   try {

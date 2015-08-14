@@ -1,0 +1,20 @@
+{
+  Objects.requireNonNull(doi);
+  doi=doi.trim();
+  if (doi.matches(HTTP_EXP)) {
+    try {
+      URI url=new URI(doi);
+      doi=url.getScheme() + "://" + url.getHost()+ url.getPath();
+    }
+ catch (    URISyntaxException e) {
+      throw new IllegalArgumentException(doi + " is not a valid HTTP DOI.");
+    }
+  }
+  Matcher matcher=DOI_PATT.matcher(doi);
+  if (matcher.find()) {
+    this.doi=matcher.group(1);
+  }
+ else {
+    throw new IllegalArgumentException(doi + " is not a valid DOI.");
+  }
+}
