@@ -5,17 +5,15 @@
       if (result.isPresent()) {
         String mimeType=new URLDownload(result.get()).determineMimeType();
         if (mimeType != null && mimeType.toLowerCase().equals("application/pdf")) {
-          return new FindResult(result.get(),result.get());
+          return Optional.of(result.get());
         }
  else {
-          return new FindResult(WRONG_MIME_TYPE,result.get());
         }
       }
     }
  catch (    IOException ex) {
-      ex.printStackTrace();
-      return new FindResult(IO_EXCEPTION,null);
+      continue;
     }
   }
-  return new FindResult(LINK_NOT_FOUND,null);
+  return Optional.empty();
 }
