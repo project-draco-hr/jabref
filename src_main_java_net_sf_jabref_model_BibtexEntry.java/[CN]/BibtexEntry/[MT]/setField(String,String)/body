@@ -1,0 +1,14 @@
+{
+  if (BibtexEntry.ID_FIELD.equals(name)) {
+    throw new IllegalArgumentException("The field name '" + name + "' is reserved");
+  }
+  String oldValue=fields.get(name);
+  try {
+    fields.put(name,value);
+    firePropertyChangedEvent(name,oldValue,value);
+  }
+ catch (  PropertyVetoException pve) {
+    fields.put(name,oldValue);
+    throw new IllegalArgumentException("Change rejected: " + pve);
+  }
+}

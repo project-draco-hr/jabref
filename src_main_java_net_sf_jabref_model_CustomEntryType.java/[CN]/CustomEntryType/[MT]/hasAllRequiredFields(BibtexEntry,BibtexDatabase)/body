@@ -1,0 +1,17 @@
+{
+  if (entry.getField(BibtexFields.KEY_FIELD) == null) {
+    return false;
+  }
+  boolean[] isSet=new boolean[required.length];
+  for (int i=0; i < required.length; i++) {
+    isSet[i]=BibtexDatabase.getResolvedField(required[i],entry,database) != null;
+  }
+  for (int i=0; i < required.length; i++) {
+    if (!isSet[i]) {
+      if (!isCoupledFieldSet(required[i],entry,database)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
