@@ -284,7 +284,7 @@ catch (          Throwable ex) {
       NamedCompound ce=new NamedCompound(Localization.lang("autogenerate keys"));
       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
         bes=i.next();
-        if (bes.getField(BibtexFields.KEY_FIELD) != null) {
+        if (bes.getField(BibtexEntry.KEY_FIELD) != null) {
           if (Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
             i.remove();
           }
@@ -306,14 +306,14 @@ catch (          Throwable ex) {
       if (!Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
         for (        BibtexEntry entry : entries) {
           bes=entry;
-          oldvals.put(bes,bes.getField(BibtexFields.KEY_FIELD));
+          oldvals.put(bes,bes.getField(BibtexEntry.KEY_FIELD));
           database.setCiteKeyForEntry(bes.getId(),null);
         }
       }
       for (      BibtexEntry entry : entries) {
         bes=entry;
         bes=LabelPatternUtil.makeLabel(metaData,database,bes);
-        ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),bes.getField(BibtexFields.KEY_FIELD)));
+        ce.addEdit(new UndoableKeyChange(database,bes.getId(),(String)oldvals.get(bes),bes.getField(BibtexEntry.KEY_FIELD)));
       }
       ce.end();
       undoManager.addEdit(ce);
@@ -383,8 +383,8 @@ catch (          Throwable ex) {
         storeCurrentEdit();
         Vector<Object> keys=new Vector<Object>();
         for (        BibtexEntry be : bes) {
-          if (be.getField(BibtexFields.KEY_FIELD) != null) {
-            keys.add(be.getField(BibtexFields.KEY_FIELD));
+          if (be.getField(BibtexEntry.KEY_FIELD) != null) {
+            keys.add(be.getField(BibtexEntry.KEY_FIELD));
           }
         }
         if (keys.isEmpty()) {
@@ -415,8 +415,8 @@ catch (          Throwable ex) {
         storeCurrentEdit();
         Vector<Object> keys=new Vector<Object>();
         for (        BibtexEntry be : bes) {
-          if (be.getField(BibtexFields.KEY_FIELD) != null) {
-            keys.add(be.getField(BibtexFields.KEY_FIELD));
+          if (be.getField(BibtexEntry.KEY_FIELD) != null) {
+            keys.add(be.getField(BibtexEntry.KEY_FIELD));
           }
         }
         if (keys.isEmpty()) {
@@ -457,7 +457,7 @@ catch (          Throwable ex) {
         StringBuilder sb=new StringBuilder();
         int copied=0;
         for (        BibtexEntry be : bes) {
-          if (be.getField(BibtexFields.KEY_FIELD) != null) {
+          if (be.getField(BibtexEntry.KEY_FIELD) != null) {
             copied++;
             sb.append(layout.doLayout(be,database));
           }
