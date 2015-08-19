@@ -1,11 +1,12 @@
 {
   auto.setEnabled(false);
   BibtexEntry entry=entryEditor.getEntry();
-  JDialog diag=new JDialog(frame,true);
+  JDialog dialog=new JDialog(frame,true);
   JabRefExecutorService.INSTANCE.execute(Util.autoSetLinks(entry,tableModel,metaData,new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       auto.setEnabled(true);
       if (e.getID() > 0) {
+        fileFound=true;
         entryEditor.updateField(FileListEditor.this);
         frame.output(Localization.lang("Finished autosetting external links."));
       }
@@ -14,5 +15,10 @@
       }
     }
   }
-,diag));
+,dialog));
+  if (!fileFound) {
+    frame.basePanel().runCommand("downloadFullText");
+  }
+  auto.setEnabled(true);
+  fileFound=false;
 }
