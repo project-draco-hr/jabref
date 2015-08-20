@@ -1,0 +1,26 @@
+{
+  if (count > 20) {
+    return null;
+  }
+  File f=new File(dir);
+  File[] all=f.listFiles();
+  if (all == null) {
+    return null;
+  }
+  int numFiles=all.length;
+  for (  File curFile : all) {
+    if (curFile.isFile()) {
+      String name=curFile.getName();
+      if (name.startsWith(key + '.') && off.accept(name)) {
+        return curFile.getPath();
+      }
+    }
+ else     if (curFile.isDirectory()) {
+      String found=FileFinder.findInDir(key,curFile.getPath(),off,count + 1);
+      if (found != null) {
+        return found;
+      }
+    }
+  }
+  return null;
+}
