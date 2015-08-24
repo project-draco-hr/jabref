@@ -8,13 +8,8 @@
   if (intoNew || tabbedPane.getTabCount() == 0) {
     BibtexDatabase database=new BibtexDatabase();
     for (    BibtexEntry entry : bibentries) {
-      try {
-        entry.setId(IdGenerator.next());
-        database.insertEntry(entry);
-      }
- catch (      KeyCollisionException ex) {
-        System.err.println("KeyCollisionException [ addBibEntries(...) ]");
-      }
+      entry.setId(IdGenerator.next());
+      database.insertEntry(entry);
     }
     BasePanel bp=new BasePanel(JabRefFrame.this,database,null,new MetaData(),Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING));
     addedEntries=database.getEntryCount();
@@ -52,15 +47,10 @@
         }
       }
       if (!dupli) {
-        try {
-          entry.setId(IdGenerator.next());
-          database.insertEntry(entry);
-          ce.addEdit(new UndoableInsertEntry(database,entry,basePanel));
-          addedEntries++;
-        }
- catch (        KeyCollisionException ex) {
-          System.err.println("KeyCollisionException [ addBibEntries(...) ]");
-        }
+        entry.setId(IdGenerator.next());
+        database.insertEntry(entry);
+        ce.addEdit(new UndoableInsertEntry(database,entry,basePanel));
+        addedEntries++;
       }
     }
     if (addedEntries > 0) {

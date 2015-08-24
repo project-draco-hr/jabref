@@ -124,19 +124,14 @@ catch (          Throwable ex) {
           NamedCompound ce=new NamedCompound(Localization.lang(bes.length > 1 ? "paste entries" : "paste entry"));
           BibtexEntry firstBE=null;
           for (          BibtexEntry be1 : bes) {
-            try {
-              BibtexEntry be=(BibtexEntry)be1.clone();
-              if (firstBE == null) {
-                firstBE=be;
-              }
-              Util.setAutomaticFields(be,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
-              be.setId(IdGenerator.next());
-              database.insertEntry(be);
-              ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
+            BibtexEntry be=(BibtexEntry)be1.clone();
+            if (firstBE == null) {
+              firstBE=be;
             }
- catch (            KeyCollisionException ex) {
-              LOGGER.info("KeyCollisionException... this shouldn't happen.",ex);
-            }
+            Util.setAutomaticFields(be,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
+            be.setId(IdGenerator.next());
+            database.insertEntry(be);
+            ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
           }
           ce.end();
           undoManager.addEdit(ce);
