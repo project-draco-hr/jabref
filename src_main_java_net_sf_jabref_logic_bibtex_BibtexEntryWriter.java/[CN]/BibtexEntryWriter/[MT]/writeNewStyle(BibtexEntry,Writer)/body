@@ -2,16 +2,16 @@
   out.write('@' + entry.getType().getName() + '{');
   String str=StringUtil.shaveString(entry.getField(BibtexEntry.KEY_FIELD));
   out.write((str == null ? "" : str) + ',' + Globals.NEWLINE);
-  HashMap<String,String> written=new HashMap<String,String>();
+  HashMap<String,String> written=new HashMap<>();
   written.put(BibtexEntry.KEY_FIELD,null);
-  boolean hasWritten=writeField(entry,out,"title",false,false);
+  boolean hasWritten=writeField(entry,out,"title",false);
   written.put("title",null);
   String[] s=entry.getRequiredFields();
   if (s != null) {
     Arrays.sort(s);
     for (    String value : s) {
       if (!written.containsKey(value)) {
-        hasWritten=hasWritten | writeField(entry,out,value,hasWritten,false);
+        hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
         written.put(value,null);
       }
     }
@@ -21,7 +21,7 @@
     Arrays.sort(s);
     for (    String value : s) {
       if (!written.containsKey(value)) {
-        hasWritten=hasWritten | writeField(entry,out,value,hasWritten,false);
+        hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
         written.put(value,null);
       }
     }
@@ -34,7 +34,7 @@
     }
   }
   for (  String field : remainingFields) {
-    hasWritten=hasWritten | writeField(entry,out,field,hasWritten,false);
+    hasWritten=hasWritten | writeField(entry,out,field,hasWritten);
   }
   out.write((hasWritten ? Globals.NEWLINE : "") + '}' + Globals.NEWLINE);
 }
