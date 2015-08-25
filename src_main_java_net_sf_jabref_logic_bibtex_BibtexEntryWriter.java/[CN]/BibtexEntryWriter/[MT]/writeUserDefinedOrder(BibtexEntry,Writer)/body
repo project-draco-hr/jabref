@@ -1,20 +1,19 @@
 {
   out.write('@' + entry.getType().getName() + '{');
-  String str=StringUtil.shaveString(entry.getField(BibtexEntry.KEY_FIELD));
-  out.write((str == null ? "" : str) + ',' + Globals.NEWLINE);
-  HashMap<String,String> written=new HashMap<String,String>();
+  writeKeyField(entry,out);
+  HashMap<String,String> written=new HashMap<>();
   written.put(BibtexEntry.KEY_FIELD,null);
   boolean hasWritten=false;
-  String[] s=entry.getUserDefinedFields();
-  if (s != null) {
-    for (    String value : s) {
+  String[] fields=entry.getUserDefinedFields();
+  if (fields != null) {
+    for (    String value : fields) {
       if (!written.containsKey(value)) {
         hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
         written.put(value,null);
       }
     }
   }
-  TreeSet<String> remainingFields=new TreeSet<String>();
+  TreeSet<String> remainingFields=new TreeSet<>();
   for (  String key : entry.getAllFields()) {
     boolean writeIt=write ? BibtexFields.isWriteableField(key) : BibtexFields.isDisplayableField(key);
     if (!written.containsKey(key) && writeIt) {

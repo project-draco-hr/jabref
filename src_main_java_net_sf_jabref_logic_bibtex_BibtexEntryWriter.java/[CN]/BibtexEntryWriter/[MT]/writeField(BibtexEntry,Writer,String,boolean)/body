@@ -1,14 +1,14 @@
 {
-  String o=entry.getField(name);
-  if (o != null || includeEmptyFields) {
-    if (isNotFirst) {
+  String field=entry.getField(name);
+  if (field != null || includeEmptyFields) {
+    if (prependWhiteSpace) {
       out.write(',' + Globals.NEWLINE);
     }
     out.write("  " + getFieldDisplayName(name) + " = ");
     try {
-      out.write(fieldFormatter.format(o,name));
+      out.write(fieldFormatter.format(field,name));
     }
- catch (    Throwable ex) {
+ catch (    IOException ex) {
       throw new IOException(Localization.lang("Error in field") + " '" + name+ "': "+ ex.getMessage());
     }
     return true;

@@ -1,30 +1,29 @@
 {
   out.write('@' + entry.getType().getName().toUpperCase(Locale.US) + '{');
-  String str=StringUtil.shaveString(entry.getField(BibtexEntry.KEY_FIELD));
-  out.write((str == null ? "" : str) + ',' + Globals.NEWLINE);
-  HashMap<String,String> written=new HashMap<String,String>();
-  written.put(BibtexEntry.KEY_FIELD,null);
+  writeKeyField(entry,out);
+  HashSet<String> written=new HashSet<>();
+  written.add(BibtexEntry.KEY_FIELD);
   boolean hasWritten=false;
-  String[] s=entry.getRequiredFields();
-  if (s != null) {
-    for (    String value : s) {
+  String[] fields=entry.getRequiredFields();
+  if (fields != null) {
+    for (    String value : fields) {
       hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
-      written.put(value,null);
+      written.add(value);
     }
   }
-  s=entry.getOptionalFields();
-  if (s != null) {
-    for (    String value : s) {
-      if (!written.containsKey(value)) {
+  fields=entry.getOptionalFields();
+  if (fields != null) {
+    for (    String value : fields) {
+      if (!written.contains(value)) {
         hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
-        written.put(value,null);
+        written.add(value);
       }
     }
   }
   TreeSet<String> remainingFields=new TreeSet<>();
   for (  String key : entry.getAllFields()) {
     boolean writeIt=write ? BibtexFields.isWriteableField(key) : BibtexFields.isDisplayableField(key);
-    if (!written.containsKey(key) && writeIt) {
+    if (!written.contains(key) && writeIt) {
       remainingFields.add(key);
     }
   }
