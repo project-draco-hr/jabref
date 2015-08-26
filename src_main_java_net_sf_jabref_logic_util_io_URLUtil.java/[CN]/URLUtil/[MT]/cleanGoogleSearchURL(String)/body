@@ -1,0 +1,28 @@
+{
+  Objects.requireNonNull(url);
+  final String searchExp="^https?://(?:www\\.)?google\\.[a-z]+?/url.*";
+  if (!url.matches(searchExp)) {
+    return url;
+  }
+  try {
+    URL searchURL=new URL(url);
+    String query=searchURL.getQuery();
+    if (query == null) {
+      return url;
+    }
+    String[] pairs=query.split("&");
+    for (    String pair : pairs) {
+      if (pair.startsWith("url=")) {
+        String value=pair.substring(pair.indexOf("=") + 1,pair.length());
+        String decode=URLDecoder.decode(value,"UTF-8");
+        if (decode.matches(URL_EXP)) {
+          return decode;
+        }
+      }
+    }
+    return url;
+  }
+ catch (  UnsupportedEncodingException|MalformedURLException e) {
+    return url;
+  }
+}
