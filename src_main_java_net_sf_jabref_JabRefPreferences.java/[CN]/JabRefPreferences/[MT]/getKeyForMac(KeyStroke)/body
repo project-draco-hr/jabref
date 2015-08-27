@@ -14,6 +14,13 @@
     if ((ks.getModifiers() & InputEvent.ALT_MASK) != 0) {
       modifiers=modifiers | InputEvent.ALT_MASK;
     }
-    return KeyStroke.getKeyStroke(keyCode,getShortcutMask() + modifiers);
+    if (SHORTCUT_MASK == -1) {
+      try {
+        SHORTCUT_MASK=Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+      }
+ catch (      Throwable ignored) {
+      }
+    }
+    return KeyStroke.getKeyStroke(keyCode,SHORTCUT_MASK + modifiers);
   }
 }
