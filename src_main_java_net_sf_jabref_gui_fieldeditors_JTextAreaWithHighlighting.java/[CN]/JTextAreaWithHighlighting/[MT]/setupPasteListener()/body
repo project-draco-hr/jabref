@@ -1,0 +1,17 @@
+{
+  getActionMap().put("Paste",new AbstractAction("Paste"){
+    @Override public void actionPerformed(    ActionEvent evt){
+      try {
+        String data=ClipBoardManager.clipBoard.getClipboardContents();
+        if (!data.isEmpty()) {
+          data=URLUtil.cleanGoogleSearchURL(data);
+          JTextAreaWithHighlighting.this.replaceSelection(data);
+        }
+      }
+ catch (      Exception ignored) {
+      }
+    }
+  }
+);
+  getInputMap().put(Globals.prefs.getKey(KeyBinds.PASTE),"Paste");
+}
