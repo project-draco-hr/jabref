@@ -46,7 +46,7 @@
     prefs.putInt("sizeY",JabRefFrame.this.getSize().height);
     prefs.putBoolean("windowMaximised",(getExtendedState() == Frame.MAXIMIZED_BOTH));
     prefs.putBoolean("toolbarVisible",tlb.isVisible());
-    prefs.putBoolean("searchPanelVisible",sidePaneManager.isComponentVisible("search"));
+    prefs.putBoolean("searchBarVisible",searchBar.isVisible());
     int width=contentPane.getDividerLocation();
     if (width > 0)     prefs.putInt("sidePaneWidth",width);
     if (prefs.getBoolean("openLastEdited")) {
@@ -66,9 +66,7 @@
     prefs.customImports.store();
     BibtexEntryType.saveCustomEntryTypes(prefs);
     if (Globals.autoSaveManager != null)     Globals.autoSaveManager.clearAutoSaves();
-    if (basePanel() != null) {
-      (searchManager).updatePrefs();
-    }
+    searchBar.updatePrefs();
     prefs.flush();
     return true;
   }

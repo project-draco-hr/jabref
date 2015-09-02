@@ -1,0 +1,24 @@
+{
+  TabbedPaneUI ui=tabbedPane.getUI();
+  if (ui instanceof BasicTabbedPaneUI) {
+    try {
+      Class<?> clazz=ui.getClass();
+      while (clazz != null) {
+        try {
+          Field fld=clazz.getDeclaredField("tabAreaInsets");
+          if (fld != null) {
+            fld.setAccessible(true);
+            fld.set(ui,tabAreaInsets);
+            return;
+          }
+        }
+ catch (        NoSuchFieldException nsfe) {
+        }
+        clazz=clazz.getSuperclass();
+      }
+    }
+ catch (    Throwable t) {
+    }
+  }
+  throw new UnsupportedOperationException();
+}

@@ -1,0 +1,28 @@
+{
+  ButtonGroup searchMethod=new ButtonGroup();
+  for (  SearchMode mode : SearchMode.values()) {
+switch (mode) {
+case Filter:
+      hideSearch=new JRadioButtonMenuItem(mode.getDisplayName(),true);
+    break;
+case Float:
+  floatSearch=new JRadioButtonMenuItem(mode.getDisplayName(),Globals.prefs.getBoolean("floatSearch"));
+break;
+case Global:
+searchAllBases=new JRadioButtonMenuItem(mode.getDisplayName(),Globals.prefs.getBoolean("searchAllBases"));
+break;
+case Incremental:
+increment=new JRadioButtonMenuItem(mode.getDisplayName(),Globals.prefs.getBoolean("incrementS"));
+break;
+case LiveFilter:
+liveFilterSearch=new JRadioButtonMenuItem(mode.getDisplayName(),Globals.prefs.getBoolean("searchModeLiveFilter"));
+break;
+case ResultsInDialog:
+showResultsInDialog=new JRadioButtonMenuItem(mode.getDisplayName(),Globals.prefs.getBoolean("showSearchInDialog"));
+break;
+}
+getSearchModeMenuItem(mode).setToolTipText(mode.getToolTipText());
+searchMethod.add(getSearchModeMenuItem(mode));
+getSearchModeMenuItem(mode).addItemListener(this);
+}
+}

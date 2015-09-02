@@ -1,0 +1,53 @@
+{
+  popup.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.LIGHT_GRAY));
+  popup.setPopupSize(textComp.getWidth(),200);
+  popup.setLayout(new BorderLayout());
+  popup.setFocusable(false);
+  popup.setRequestFocusEnabled(false);
+  popup.add(renderer.init());
+  textComp.getDocument().addDocumentListener(documentListener);
+  final Action upAction=new MoveAction(-1);
+  final Action downAction=new MoveAction(1);
+  final Action hidePopupAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      popup.setVisible(false);
+    }
+  }
+;
+  final Action acceptAction=new AbstractAction(){
+    public void actionPerformed(    ActionEvent e){
+      E itemToInsert=renderer.getSelectedItem();
+      if (itemToInsert == null)       return;
+      String toInsert=formater.formatItemToString(itemToInsert);
+      if (!autoCompleter.isSingleUnitField()) {
+        int piv=textComp.getText().length() - 1;
+        while ((piv >= 0) && !Character.isWhitespace(textComp.getText().charAt(piv)) && textComp.getText().charAt(piv) != ',') {
+          piv--;
+        }
+        textComp.setText(textComp.getText().substring(0,piv + 1) + toInsert);
+      }
+ else {
+        textComp.setText(toInsert);
+      }
+      textComp.setCaretPosition(textComp.getText().length());
+      popup.setVisible(false);
+    }
+  }
+;
+  renderer.registerAcceptAction(acceptAction);
+  textComp.registerKeyboardAction(downAction,KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,0),JComponent.WHEN_FOCUSED);
+  textComp.registerKeyboardAction(upAction,KeyStroke.getKeyStroke(KeyEvent.VK_UP,0),JComponent.WHEN_FOCUSED);
+  this.textComp.addFocusListener(selectTextOnFocusGainHandler);
+  textComp.registerKeyboardAction(hidePopupAction,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),JComponent.WHEN_IN_FOCUSED_WINDOW);
+  popup.addPopupMenuListener(new PopupMenuListener(){
+    public void popupMenuWillBecomeVisible(    PopupMenuEvent e){
+      textComp.registerKeyboardAction(acceptAction,KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),JComponent.WHEN_FOCUSED);
+    }
+    public void popupMenuWillBecomeInvisible(    PopupMenuEvent e){
+      textComp.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0));
+    }
+    public void popupMenuCanceled(    PopupMenuEvent e){
+    }
+  }
+);
+}
