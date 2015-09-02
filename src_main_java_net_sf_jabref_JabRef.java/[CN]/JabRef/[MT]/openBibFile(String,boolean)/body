@@ -1,5 +1,5 @@
 {
-  Globals.logger(Globals.lang("Opening") + ": " + name);
+  LOGGER.info(Globals.lang("Opening") + ": " + name);
   File file=new File(name);
   if (!file.exists()) {
     ParserResult pr=new ParserResult(null,null,null);
@@ -18,11 +18,11 @@
         return postp;
       }
     }
-    if (!Util.waitForFileLock(file,10)) {
+    if (!FileBasedLock.waitForFileLock(file,10)) {
       System.out.println(Globals.lang("Error opening file") + " '" + name+ "'. "+ "File is locked by another JabRef instance.");
       return ParserResult.FILE_LOCKED;
     }
-    String encoding=Globals.prefs.get("defaultEncoding");
+    String encoding=Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING);
     ParserResult pr=OpenDatabaseAction.loadDatabase(file,encoding);
     if (pr == null) {
       pr=new ParserResult(null,null,null);
@@ -33,7 +33,9 @@
     pr.setFile(file);
     if (pr.hasWarnings()) {
       String[] warn=pr.warnings();
-      for (      String aWarn : warn)       System.out.println(Globals.lang("Warning") + ": " + aWarn);
+      for (      String aWarn : warn) {
+        System.out.println(Globals.lang("Warning") + ": " + aWarn);
+      }
     }
     return pr;
   }

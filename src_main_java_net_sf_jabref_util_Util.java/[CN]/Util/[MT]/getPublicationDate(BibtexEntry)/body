@@ -1,0 +1,15 @@
+{
+  Object o=entry.getField("year");
+  if (o == null) {
+    return null;
+  }
+  String year=YearUtil.toFourDigitYear(o.toString());
+  o=entry.getField("month");
+  if (o != null) {
+    MonthUtil.Month month=MonthUtil.getMonth(o.toString());
+    if (month.isValid()) {
+      return year + "-" + month.twoDigitNumber;
+    }
+  }
+  return year;
+}

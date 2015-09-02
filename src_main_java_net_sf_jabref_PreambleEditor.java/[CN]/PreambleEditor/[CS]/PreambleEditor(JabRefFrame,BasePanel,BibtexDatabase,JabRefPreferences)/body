@@ -1,27 +1,30 @@
 {
   super(baseFrame);
-  this.baseFrame=baseFrame;
+  JabRefFrame baseFrame1=baseFrame;
   this.panel=panel;
   this.base=base;
   this.prefs=prefs;
   addWindowListener(new WindowAdapter(){
-    public void windowClosing(    WindowEvent e){
+    @Override public void windowClosing(    WindowEvent e){
       closeAction.actionPerformed(null);
     }
-    public void windowOpened(    WindowEvent e){
+    @Override public void windowOpened(    WindowEvent e){
       ed.requestFocus();
     }
   }
 );
   setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
-    protected boolean accept(    Component c){
+    @Override protected boolean accept(    Component c){
       return (super.accept(c) && (c instanceof FieldEditor));
     }
   }
 );
-  int prefHeight=(int)(GUIGlobals.PE_HEIGHT * GUIGlobals.FORM_HEIGHT[prefs.getInt("entryTypeFormHeightFactor")]);
-  setSize(GUIGlobals.FORM_WIDTH[prefs.getInt("entryTypeFormWidth")],prefHeight);
+  int prefHeight=(int)(GUIGlobals.PE_HEIGHT * GUIGlobals.FORM_HEIGHT[prefs.getInt(JabRefPreferences.ENTRY_TYPE_FORM_HEIGHT_FACTOR)]);
+  setSize(GUIGlobals.FORM_WIDTH[prefs.getInt(JabRefPreferences.ENTRY_TYPE_FORM_WIDTH)],prefHeight);
+  JPanel pan=new JPanel();
+  GridBagLayout gbl=new GridBagLayout();
   pan.setLayout(gbl);
+  GridBagConstraints con=new GridBagConstraints();
   con.fill=GridBagConstraints.BOTH;
   con.weighty=1;
   con.insets=new Insets(10,5,10,5);
@@ -33,6 +36,7 @@
   con.weightx=1;
   gbl.setConstraints(ed.getPane(),con);
   pan.add(ed.getPane());
+  Container conPane=getContentPane();
   conPane.add(pan,BorderLayout.CENTER);
   setTitle(Globals.lang("Edit preamble"));
 }

@@ -1,0 +1,11 @@
+{
+  SearchRuleSet searchRuleSet=SearchRuleSets.build(SearchRuleSets.RuleSetType.OR);
+  assertEquals(false,searchRuleSet.applyRule(DUMMY_QUERY,null));
+  assertEquals(true,searchRuleSet.validateSearchStrings(DUMMY_QUERY));
+  searchRuleSet.addRule(new MockSearchRule(true,true));
+  assertEquals(true,searchRuleSet.applyRule(DUMMY_QUERY,null));
+  assertEquals(true,searchRuleSet.validateSearchStrings(DUMMY_QUERY));
+  searchRuleSet.addRule(new MockSearchRule(false,false));
+  assertEquals(true,searchRuleSet.applyRule(DUMMY_QUERY,null));
+  assertEquals(false,searchRuleSet.validateSearchStrings(DUMMY_QUERY));
+}

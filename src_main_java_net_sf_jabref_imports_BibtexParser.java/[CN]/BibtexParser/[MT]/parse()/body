@@ -1,34 +1,38 @@
 {
-  if (_pr != null)   return _pr;
-  _db=new BibtexDatabase();
+  if (parserResult != null) {
+    return parserResult;
+  }
+  database=new BibtexDatabase();
   HashMap<String,String> meta=new HashMap<String,String>();
   entryTypes=new HashMap<String,BibtexEntryType>();
-  _pr=new ParserResult(_db,null,entryTypes);
+  parserResult=new ParserResult(database,null,entryTypes);
   String versionNum=readJabRefVersionNumber();
   if (versionNum != null) {
-    _pr.setJabrefVersion(versionNum);
+    parserResult.setJabrefVersion(versionNum);
     setMajorMinorVersions();
   }
   skipWhitespace();
   try {
-    while (!_eof) {
+    while (!eof) {
       boolean found=consumeUncritically('@');
-      if (!found)       break;
+      if (!found) {
+        break;
+      }
       skipWhitespace();
       String entryType=parseTextToken();
       BibtexEntryType tp=BibtexEntryType.getType(entryType);
       boolean isEntry=(tp != null);
       if (!isEntry) {
         if (entryType.toLowerCase().equals("preamble")) {
-          _db.setPreamble(parsePreamble());
+          database.setPreamble(parsePreamble());
         }
  else         if (entryType.toLowerCase().equals("string")) {
           BibtexString bs=parseString();
           try {
-            _db.addString(bs);
+            database.addString(bs);
           }
  catch (          KeyCollisionException ex) {
-            _pr.addWarning(Globals.lang("Duplicate string name") + ": " + bs.getName());
+            parserResult.addWarning(Globals.lang("Duplicate string name") + ": " + bs.getName());
           }
         }
  else         if (entryType.toLowerCase().equals("comment")) {
@@ -36,17 +40,23 @@
           String comment=commentBuf.toString().replaceAll("[\\x0d\\x0a]","");
           if (comment.substring(0,Math.min(comment.length(),GUIGlobals.META_FLAG.length())).equals(GUIGlobals.META_FLAG) || comment.substring(0,Math.min(comment.length(),GUIGlobals.META_FLAG_OLD.length())).equals(GUIGlobals.META_FLAG_OLD)) {
             String rest;
-            if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG))             rest=comment.substring(GUIGlobals.META_FLAG.length());
- else             rest=comment.substring(GUIGlobals.META_FLAG_OLD.length());
+            if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG)) {
+              rest=comment.substring(GUIGlobals.META_FLAG.length());
+            }
+ else {
+              rest=comment.substring(GUIGlobals.META_FLAG_OLD.length());
+            }
             int pos=rest.indexOf(':');
-            if (pos > 0)             meta.put(rest.substring(0,pos),rest.substring(pos + 1));
+            if (pos > 0) {
+              meta.put(rest.substring(0,pos),rest.substring(pos + 1));
+            }
           }
  else           if (comment.substring(0,Math.min(comment.length(),GUIGlobals.ENTRYTYPE_FLAG.length())).equals(GUIGlobals.ENTRYTYPE_FLAG)) {
             CustomEntryType typ=CustomEntryType.parseEntryType(comment);
             entryTypes.put(typ.getName().toLowerCase(),typ);
           }
  else {
-            Globals.logger(Globals.lang("Dropped comment from database") + ":" + comment);
+            LOGGER.info(Globals.lang("Dropped comment from database") + ":" + comment);
           }
         }
  else {
@@ -57,22 +67,24 @@
       if (isEntry) {
         try {
           BibtexEntry be=parseEntry(tp);
-          boolean duplicateKey=_db.insertEntry(be);
-          if (duplicateKey)           _pr.addDuplicateKey(be.getCiteKey());
- else           if (be.getCiteKey() == null || be.getCiteKey().equals("")) {
-            _pr.addWarning(Globals.lang("empty BibTeX key") + ": " + be.getAuthorTitleYear(40)+ " ("+ Globals.lang("grouping may not work for this entry")+ ")");
+          boolean duplicateKey=database.insertEntry(be);
+          if (duplicateKey) {
+            parserResult.addDuplicateKey(be.getCiteKey());
+          }
+ else           if ((be.getCiteKey() == null) || be.getCiteKey().equals("")) {
+            parserResult.addWarning(Globals.lang("empty BibTeX key") + ": " + be.getAuthorTitleYear(40)+ " ("+ Globals.lang("grouping may not work for this entry")+ ")");
           }
         }
  catch (        IOException ex) {
-          ex.printStackTrace();
-          _pr.addWarning(Globals.lang("Error occured when parsing entry") + ": '" + ex.getMessage()+ "'. "+ Globals.lang("Skipped entry."));
+          LOGGER.warn("Could not parse entry",ex);
+          parserResult.addWarning(Globals.lang("Error occured when parsing entry") + ": '" + ex.getMessage()+ "'. "+ Globals.lang("Skipped entry."));
         }
       }
       skipWhitespace();
     }
-    checkEntryTypes(_pr);
-    _pr.setMetaData(new MetaData(meta,_db));
-    return _pr;
+    checkEntryTypes(parserResult);
+    parserResult.setMetaData(new MetaData(meta,database));
+    return parserResult;
   }
  catch (  KeyCollisionException kce) {
     throw new IOException("Duplicate ID in bibtex file: " + kce.toString());

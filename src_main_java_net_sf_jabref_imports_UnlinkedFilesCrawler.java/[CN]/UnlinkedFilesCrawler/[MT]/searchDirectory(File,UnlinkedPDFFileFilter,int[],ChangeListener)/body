@@ -1,8 +1,8 @@
 {
-  if (state == null || state.length < 1 || state[0] != 1) {
+  if ((state == null) || (state.length < 1) || (state[0] != 1)) {
     return null;
   }
-  if (directory == null || !directory.exists() || !directory.isDirectory()) {
+  if ((directory == null) || !directory.exists() || !directory.isDirectory()) {
     return null;
   }
   File[] files=directory.listFiles(ff);
@@ -11,7 +11,7 @@
   File[] subDirectories=directory.listFiles(directoryFilter);
   for (  File subDirectory : subDirectories) {
     CheckableTreeNode subRoot=searchDirectory(subDirectory,ff,state,changeListener);
-    if (subRoot != null && subRoot.getChildCount() > 0) {
+    if ((subRoot != null) && (subRoot.getChildCount() > 0)) {
       filesCount+=((FileNodeWrapper)subRoot.getUserObject()).fileCount;
       root.add(subRoot);
     }
@@ -19,7 +19,9 @@
   root.setUserObject(new FileNodeWrapper(directory,files.length + filesCount));
   for (  File file : files) {
     root.add(new CheckableTreeNode(new FileNodeWrapper(file)));
-    if (changeListener != null)     changeListener.stateChanged(new ChangeEvent(this));
+    if (changeListener != null) {
+      changeListener.stateChanged(new ChangeEvent(this));
+    }
   }
   return root;
 }

@@ -1,13 +1,17 @@
 {
-  if (panel.getSelectedEntries().length != 1)   return;
-  entry=panel.getSelectedEntries()[0];
+  if (panel.getSelectedEntries().length != 1) {
+    return;
+  }
+  BibtexEntry entry=panel.getSelectedEntries()[0];
   FileListEntry flEntry=new FileListEntry("","",null);
   FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.metaData());
   editor.setVisible(true,true);
   if (editor.okPressed()) {
     FileListTableModel model=new FileListTableModel();
     String oldVal=entry.getField(GUIGlobals.FILE_FIELD);
-    if (oldVal != null)     model.setContent(oldVal);
+    if (oldVal != null) {
+      model.setContent(oldVal);
+    }
     model.addEntry(model.getRowCount(),flEntry);
     String newVal=model.getStringRepresentation();
     UndoableFieldChange ce=new UndoableFieldChange(entry,GUIGlobals.FILE_FIELD,oldVal,newVal);

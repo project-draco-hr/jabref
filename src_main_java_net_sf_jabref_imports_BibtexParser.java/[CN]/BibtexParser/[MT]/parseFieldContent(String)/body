@@ -1,9 +1,9 @@
 {
   skipWhitespace();
   StringBuilder value=new StringBuilder();
-  int c='.';
+  int c;
   while (((c=peek()) != ',') && (c != '}') && (c != ')')) {
-    if (_eof) {
+    if (eof) {
       throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
     }
     if (c == '"') {
@@ -23,7 +23,9 @@
     }
  else {
       String textToken=parseTextToken();
-      if (textToken.length() == 0)       throw new IOException("Error in line " + line + " or above: "+ "Empty text token.\nThis could be caused "+ "by a missing comma between two fields.");
+      if (textToken.length() == 0) {
+        throw new IOException("Error in line " + line + " or above: "+ "Empty text token.\nThis could be caused "+ "by a missing comma between two fields.");
+      }
       value.append("#").append(textToken).append("#");
     }
     skipWhitespace();

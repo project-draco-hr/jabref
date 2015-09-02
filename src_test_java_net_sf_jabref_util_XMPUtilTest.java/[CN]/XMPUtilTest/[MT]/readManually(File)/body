@@ -4,7 +4,6 @@
     document=PDDocument.load(tempFile.getAbsoluteFile());
     if (document.isEncrypted()) {
       System.err.println("Error: Cannot add metadata to encrypted document.");
-      System.exit(1);
     }
     PDDocumentCatalog catalog=document.getDocumentCatalog();
     PDMetadata meta=catalog.getMetadata();
@@ -13,10 +12,12 @@
     }
  else {
       InputStreamReader is=new InputStreamReader(meta.createInputStream(),"UTF8");
-      return slurp(is).trim();
+      return XMPUtilTest.slurp(is).trim();
     }
   }
   finally {
-    if (document != null)     document.close();
+    if (document != null) {
+      document.close();
+    }
   }
 }

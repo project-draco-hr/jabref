@@ -1,0 +1,16 @@
+{
+  String targetName=entry.getCiteKey() == null ? "default" : entry.getCiteKey();
+  StringReader sr=new StringReader(Globals.prefs.get(ImportSettingsTab.PREF_IMPORT_FILENAMEPATTERN));
+  Layout layout=null;
+  try {
+    layout=new LayoutHelper(sr).getLayoutFromText(Globals.FORMATTER_PACKAGE);
+  }
+ catch (  Exception e) {
+    LOGGER.info(Globals.lang("Wrong Format").concat(" ").concat(e.toString()),e);
+  }
+  if (layout != null) {
+    targetName=layout.doLayout(entry,database);
+  }
+  targetName=FileNameCleaner.cleanFileName(targetName);
+  return targetName;
+}

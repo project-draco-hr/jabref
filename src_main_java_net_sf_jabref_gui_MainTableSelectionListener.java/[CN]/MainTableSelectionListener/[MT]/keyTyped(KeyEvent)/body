@@ -1,30 +1,48 @@
 {
   if ((!e.isActionKey()) && Character.isLetterOrDigit(e.getKeyChar()) && (e.getModifiers() == 0)) {
     long time=System.currentTimeMillis();
-    if (time - lastPressedTime > QUICK_JUMP_TIMEOUT)     lastPressedCount=0;
+    long QUICK_JUMP_TIMEOUT=2000;
+    if ((time - lastPressedTime) > QUICK_JUMP_TIMEOUT) {
+      lastPressedCount=0;
+    }
     lastPressedTime=time;
     int c=e.getKeyChar();
-    if (lastPressedCount < lastPressed.length)     lastPressed[lastPressedCount++]=c;
+    if (lastPressedCount < lastPressed.length) {
+      lastPressed[lastPressedCount]=c;
+      lastPressedCount++;
+    }
     int sortingColumn=table.getSortingColumn(0);
-    if (sortingColumn == -1)     return;
+    if (sortingColumn == -1) {
+      return;
+    }
     int startRow=0;
     boolean done=false;
     while (!done) {
       for (int i=startRow; i < table.getRowCount(); i++) {
         Object o=table.getValueAt(i,sortingColumn);
-        if (o == null)         continue;
+        if (o == null) {
+          continue;
+        }
         String s=o.toString().toLowerCase();
-        if (s.length() >= lastPressedCount)         for (int j=0; j < lastPressedCount; j++) {
-          if (s.charAt(j) != lastPressed[j])           break;
- else           if (j == lastPressedCount - 1) {
-            table.setRowSelectionInterval(i,i);
-            table.ensureVisible(i);
-            return;
+        if (s.length() >= lastPressedCount) {
+          for (int j=0; j < lastPressedCount; j++) {
+            if (s.charAt(j) != lastPressed[j]) {
+              break;
+            }
+ else             if (j == (lastPressedCount - 1)) {
+              table.setRowSelectionInterval(i,i);
+              table.ensureVisible(i);
+              return;
+            }
           }
         }
       }
-      if (startRow > 0)       startRow=0;
- else       done=true;
+      if (startRow > 0) {
+        startRow=0;
+      }
+ else {
+        done=true;
+      }
     }
   }
  else   if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {

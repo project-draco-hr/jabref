@@ -5,7 +5,9 @@
     editSignalled(toShow);
   }
   final String[] iconType=table.getIconTypeForColumn(col);
-  if (Globals.ON_WIN && (iconType != null) && (e.getButton() != MouseEvent.BUTTON1))   return;
+  if (Globals.ON_WIN && (iconType != null) && (e.getButton() != MouseEvent.BUTTON1)) {
+    return;
+  }
   if (iconType != null) {
     SpecialField field=SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(iconType[0]);
     if ((e.getClickCount() == 1) && (field != null)) {
@@ -22,23 +24,31 @@
       return;
     }
     Object value=table.getValueAt(row,col);
-    if (value == null)     return;
+    if (value == null) {
+      return;
+    }
     final BibtexEntry entry=tableRows.get(row);
     int hasField=-1;
-    for (int i=iconType.length - 1; i >= 0; i--)     if (entry.getField(iconType[i]) != null)     hasField=i;
-    if (hasField == -1)     return;
+    for (int i=iconType.length - 1; i >= 0; i--) {
+      if (entry.getField(iconType[i]) != null) {
+        hasField=i;
+      }
+    }
+    if (hasField == -1) {
+      return;
+    }
     final String fieldName=iconType[hasField];
     String[] fileTypes={};
-    if (hasField == 0 && iconType[hasField].equals(GUIGlobals.FILE_FIELD) && iconType.length > 1) {
+    if ((hasField == 0) && iconType[hasField].equals(GUIGlobals.FILE_FIELD) && (iconType.length > 1)) {
       fileTypes=iconType;
     }
     final List<String> listOfFileTypes=Collections.unmodifiableList(Arrays.asList(fileTypes));
-    (new Thread(){
-      public void run(){
-        panel.output(Globals.lang("External viewer called") + ".");
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
+      @Override public void run(){
+        panel.output(Globals.lang("External viewer called") + '.');
         Object link=entry.getField(fieldName);
         if (link == null) {
-          Globals.logger("Error: no link to " + fieldName + ".");
+          LOGGER.info("Error: no link to " + fieldName + '.');
           return;
         }
 {
@@ -46,7 +56,7 @@
             FileListTableModel fileList=new FileListTableModel();
             fileList.setContent((String)link);
             FileListEntry flEntry=null;
-            if (listOfFileTypes.size() > 0) {
+            if (!listOfFileTypes.isEmpty()) {
               for (int i=0; i < fileList.getRowCount(); i++) {
                 flEntry=fileList.getEntry(i);
                 boolean correctType=false;
@@ -83,6 +93,6 @@
         }
       }
     }
-).start();
+);
   }
 }

@@ -4,11 +4,13 @@
   frame=frame_;
   JButton addFromFolderButton=new JButton(Globals.lang("Add from folder"));
   addFromFolderButton.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       String chosenFileStr=null;
       CustomImportList.Importer importer=prefs.customImports.new Importer();
-      importer.setBasePath(FileDialogs.getNewDir(frame,new File(prefs.get("workingDirectory")),"",Globals.lang("Select Classpath of New Importer"),JFileChooser.CUSTOM_DIALOG,false));
-      if (importer.getBasePath() != null)       chosenFileStr=FileDialogs.getNewFile(frame,importer.getFileFromBasePath(),".class",Globals.lang("Select new ImportFormat Subclass"),JFileChooser.CUSTOM_DIALOG,false);
+      importer.setBasePath(FileDialogs.getNewDir(frame,new File(prefs.get(JabRefPreferences.WORKING_DIRECTORY)),"",Globals.lang("Select Classpath of New Importer"),JFileChooser.CUSTOM_DIALOG,false));
+      if (importer.getBasePath() != null) {
+        chosenFileStr=FileDialogs.getNewFile(frame,importer.getFileFromBasePath(),".class",Globals.lang("Select new ImportFormat Subclass"),JFileChooser.CUSTOM_DIALOG,false);
+      }
       if (chosenFileStr != null) {
         try {
           importer.setClassName(pathToClass(importer.getFileFromBasePath(),new File(chosenFileStr)));
@@ -32,15 +34,15 @@ catch (        NoClassDefFoundError exc) {
   addFromFolderButton.setToolTipText(Globals.lang("Add a (compiled) custom ImportFormat class from a class path. \nThe path need not be on the classpath of JabRef."));
   JButton addFromJarButton=new JButton(Globals.lang("Add from jar"));
   addFromJarButton.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
-      String basePath=FileDialogs.getNewFile(frame,new File(prefs.get("workingDirectory")),".zip,.jar",Globals.lang("Select a Zip-archive"),JFileChooser.CUSTOM_DIALOG,false);
+    @Override public void actionPerformed(    ActionEvent e){
+      String basePath=FileDialogs.getNewFile(frame,new File(prefs.get(JabRefPreferences.WORKING_DIRECTORY)),".zip,.jar",Globals.lang("Select a Zip-archive"),JFileChooser.CUSTOM_DIALOG,false);
       ZipFile zipFile=null;
       if (basePath != null) {
         try {
           zipFile=new ZipFile(new File(basePath),ZipFile.OPEN_READ);
         }
  catch (        IOException exc) {
-          Globals.logger("Could not open Zip-archive: \n" + exc.getMessage());
+          LOGGER.info("Could not open Zip-archive: \n" + exc.getMessage(),exc);
           JOptionPane.showMessageDialog(frame,Globals.lang("Could not open %0",basePath) + "\n" + Globals.lang("Have you chosen the correct package path?"));
           return;
         }
@@ -62,7 +64,7 @@ catch (        NoClassDefFoundError exc) {
   addFromJarButton.setToolTipText(Globals.lang("Add a (compiled) custom ImportFormat class from a Zip-archive.\nThe Zip-archive need not be on the classpath of JabRef."));
   JButton showDescButton=new JButton(Globals.lang("Show description"));
   showDescButton.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       int row=customImporterTable.getSelectedRow();
       if (row != -1) {
         CustomImportList.Importer importer=((ImportTableModel)customImporterTable.getModel()).getImporter(row);
@@ -83,7 +85,7 @@ catch (        NoClassDefFoundError exc) {
 );
   JButton removeButton=new JButton(Globals.lang("Remove"));
   removeButton.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       int row=customImporterTable.getSelectedRow();
       if (row != -1) {
         customImporterTable.removeRowSelectionInterval(row,row);
@@ -100,7 +102,7 @@ catch (        NoClassDefFoundError exc) {
   }
 );
   AbstractAction closeAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }

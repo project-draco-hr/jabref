@@ -1,3 +1,28 @@
 {
-  init(frame,db,file,metaData,encoding);
+  assert(frame != null);
+  assert(db != null);
+  assert(encoding != null);
+  assert(metaData != null);
+  this.encoding=encoding;
+  this.metaData=metaData;
+  this.sidePaneManager=Globals.sidePaneManager;
+  this.frame=frame;
+  database=db;
+  setupActions();
+  setupMainPanel();
+  metaData.setFile(file);
+  db.addDatabaseChangeListener(new GroupTreeUpdater());
+  if (file == null) {
+    if (!database.getEntries().isEmpty()) {
+      this.baseChanged=true;
+    }
+  }
+ else {
+    try {
+      fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(this,file);
+    }
+ catch (    IOException ex) {
+      LOGGER.warn("Could not register FileUpdateMonitor",ex);
+    }
+  }
 }

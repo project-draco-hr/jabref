@@ -1,39 +1,23 @@
 {
-  _prefs.putBoolean("useDefaultLookAndFeel",!useDefault.isSelected());
-  _prefs.put("lookAndFeel",className.getSelectedItem().toString());
-  _prefs.putBoolean("useNativeFileDialogOnMac",useNativeFileDialogOnMac.isSelected());
-  _prefs.putBoolean("filechooserDisableRename",filechooserDisableRename.isSelected());
+  preferences.putBoolean(JabRefPreferences.USE_DEFAULT_LOOK_AND_FEEL,!useDefault.isSelected());
+  preferences.put(JabRefPreferences.WIN_LOOK_AND_FEEL,className.getSelectedItem().toString());
+  preferences.putBoolean(JabRefPreferences.USE_NATIVE_FILE_DIALOG_ON_MAC,useNativeFileDialogOnMac.isSelected());
+  preferences.putBoolean(JabRefPreferences.FILECHOOSER_DISABLE_RENAME,filechooserDisableRename.isSelected());
   UIManager.put("FileChooser.readOnly",filechooserDisableRename.isSelected());
-  _prefs.putBoolean("useIEEEAbrv",useIEEEAbrv.isSelected());
-  if (useIEEEAbrv.isSelected())   Globals.journalAbbrev=new JournalAbbreviations("/resource/IEEEJournalList.txt");
-  try {
-    int port=Integer.parseInt(remoteServerPort.getText());
-    if (port != oldPort) {
-      _prefs.putInt("remoteServerPort",port);
-    }
+  preferences.putBoolean(JabRefPreferences.USE_IEEE_ABRV,useIEEEAbrv.isSelected());
+  if (useIEEEAbrv.isSelected()) {
+    Globals.journalAbbrev=new JournalAbbreviationRepository();
+    Globals.journalAbbrev.readJournalListFromResource(Globals.JOURNALS_IEEE_INTERNAL_LIST);
   }
- catch (  NumberFormatException ex) {
-    ex.printStackTrace();
-  }
-  _prefs.putBoolean("useRemoteServer",useRemoteServer.isSelected());
-  if (useRemoteServer.isSelected() && (JabRef.remoteListener == null)) {
-    JabRef.remoteListener=RemoteListener.openRemoteListener(JabRef.singleton);
-    if (JabRef.remoteListener != null) {
-      JabRef.remoteListener.start();
-    }
-  }
- else   if (!useRemoteServer.isSelected() && (JabRef.remoteListener != null)) {
-    JabRef.remoteListener.disable();
-    JabRef.remoteListener=null;
-  }
-  _prefs.putBoolean("biblatexMode",biblatexMode.isSelected());
+  storeRemoteSettings();
+  preferences.putBoolean(JabRefPreferences.BIBLATEX_MODE,biblatexMode.isSelected());
   if ((useDefault.isSelected() == oldUseDef) || !oldLnf.equals(className.getSelectedItem().toString())) {
     JOptionPane.showMessageDialog(null,Globals.lang("You have changed the look and feel setting.").concat(" ").concat(Globals.lang("You must restart JabRef for this to come into effect.")),Globals.lang("Changed look and feel settings"),JOptionPane.WARNING_MESSAGE);
   }
   if (biblatexMode.isSelected() != oldBiblMode) {
     JOptionPane.showMessageDialog(null,Globals.lang("You have toggled the BibLaTeX mode.").concat(" ").concat("You must restart JabRef for this change to come into effect."),Globals.lang("BibLaTeX mode"),JOptionPane.WARNING_MESSAGE);
   }
-  _prefs.putBoolean("useConvertToEquation",useConvertToEquation.isSelected());
-  _prefs.putBoolean("useCaseKeeperOnSearch",useCaseKeeperOnSearch.isSelected());
-  _prefs.putBoolean("useUnitFormatterOnSearch",useUnitFormatterOnSearch.isSelected());
+  preferences.putBoolean(JabRefPreferences.USE_CONVERT_TO_EQUATION,useConvertToEquation.isSelected());
+  preferences.putBoolean(JabRefPreferences.USE_CASE_KEEPER_ON_SEARCH,useCaseKeeperOnSearch.isSelected());
+  preferences.putBoolean(JabRefPreferences.USE_UNIT_FORMATTER_ON_SEARCH,useUnitFormatterOnSearch.isSelected());
 }

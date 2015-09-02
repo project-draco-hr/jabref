@@ -10,23 +10,13 @@
       return;
     }
     fireSearchlistenerEvent(searchField.getText().toString());
-    Hashtable<String,String> searchOptions=new Hashtable<String,String>();
-    searchOptions.put("option",searchField.getText().toString());
-    SearchRuleSet searchRules=new SearchRuleSet();
-    SearchRule rule1;
-    rule1=new BasicSearch(Globals.prefs.getBoolean("caseSensitiveSearch"),Globals.prefs.getBoolean("regExpSearch"));
-    try {
-      rule1=new SearchExpression(Globals.prefs,searchOptions);
-    }
- catch (    Exception ex) {
-    }
-    searchRules.addRule(rule1);
-    if (!searchRules.validateSearchStrings(searchOptions)) {
+    SearchRule searchRule=SearchRules.getSearchRuleByQuery(searchField.getText(),Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH),Globals.prefs.getBoolean(JabRefPreferences.REG_EXP_SEARCH));
+    if (!searchRule.validateSearchStrings(searchField.getText())) {
       frame.basePanel().output(Globals.lang("Search failed: illegal search expression"));
       frame.basePanel().stopShowingSearchResults();
       return;
     }
-    SearchWorker worker=new SearchWorker(searchRules,searchOptions);
+    SearchWorker worker=new SearchWorker(searchRule,searchField.getText().toString());
     worker.getWorker().run();
     worker.getCallBack().update();
     if (worker.getHits() > 0)     frame.basePanel().mainTable.setSelected(0);

@@ -1,0 +1,22 @@
+{
+  String genFields=Globals.prefs.get(JabRefPreferences.GENERAL_FIELDS);
+  if (genFields.contains("abstract")) {
+    String newGen;
+    if (genFields.equals("abstract")) {
+      newGen="";
+    }
+ else     if (genFields.contains(";abstract;")) {
+      newGen=genFields.replaceAll(";abstract;",";");
+    }
+ else     if (genFields.indexOf("abstract;") == 0) {
+      newGen=genFields.replaceAll("abstract;","");
+    }
+ else     if (genFields.indexOf(";abstract") == (genFields.length() - 9)) {
+      newGen=genFields.replaceAll(";abstract","");
+    }
+ else {
+      newGen=genFields;
+    }
+    Globals.prefs.put(JabRefPreferences.GENERAL_FIELDS,newGen);
+  }
+}

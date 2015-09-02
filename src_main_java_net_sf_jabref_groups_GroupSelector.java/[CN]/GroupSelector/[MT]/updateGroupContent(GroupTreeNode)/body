@@ -7,16 +7,20 @@
   ArrayList<BibtexEntry> toAdd=new ArrayList<BibtexEntry>(entries.length);
   for (  BibtexEntry entry : entries) {
     if (group.contains(entry)) {
-      logger.fine("remove " + entry.toString());
+      LOGGER.info("Removing entry " + entry.toString());
       toRemove.add(entry);
     }
  else {
-      logger.fine("add " + entry.toString());
+      LOGGER.info("Adding entry " + entry.toString());
       toAdd.add(entry);
     }
   }
-  if (!toRemove.isEmpty())   undoRemove=node.removeFromGroup(toRemove.toArray(new BibtexEntry[toRemove.size()]));
-  if (!toAdd.isEmpty())   undoAdd=node.addToGroup(toAdd.toArray(new BibtexEntry[toAdd.size()]));
+  if (!toRemove.isEmpty()) {
+    undoRemove=node.removeFromGroup(toRemove.toArray(new BibtexEntry[toRemove.size()]));
+  }
+  if (!toAdd.isEmpty()) {
+    undoAdd=node.addToGroup(toAdd.toArray(new BibtexEntry[toAdd.size()]));
+  }
   if (undoRemove != null) {
     if (undoAdd != null) {
       undoRemove.addEdit(undoAdd);

@@ -1,10 +1,16 @@
 {
-  if (entry == null)   return null;
+  if (entry == null) {
+    return null;
+  }
   BibtexEntry e=(BibtexEntry)entry.clone();
   for (  String field : e.getAllFields()) {
-    if (field.equals(BibtexFields.KEY_FIELD))     continue;
+    if (field.equals(BibtexFields.KEY_FIELD)) {
+      continue;
+    }
     String value=e.getField(field);
-    if (!OpenOfficePanel.postLayoutSupported && (value != null))     e.setField(field,postformatter.format(value));
+    if (!OpenOfficePanel.postLayoutSupported && (value != null)) {
+      e.setField(field,OOUtil.postformatter.format(value));
+    }
   }
   return e;
 }

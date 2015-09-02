@@ -5,7 +5,7 @@
   this.fields=fields;
   this.undoName=undoName;
   this.newDatabase=newDatabase;
-  preview=new PreviewPanel(null,metaData,Globals.prefs.get("preview0"));
+  preview=new PreviewPanel(null,metaData,Globals.prefs.get(JabRefPreferences.PREVIEW_0));
   duplLabel.setToolTipText(Globals.lang("Possible duplicate of existing entry. Click to resolve."));
   sortedList=new SortedList<BibtexEntry>(entries);
   EventTableModel<BibtexEntry> tableModelGl=new EventTableModel<BibtexEntry>(sortedList,new EntryTableFormat());
@@ -19,7 +19,7 @@
   selectionModel=new EventSelectionModel<BibtexEntry>(sortedList);
   glTable.setSelectionModel(selectionModel);
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
-  comparatorChooser=TableComparatorChooser.install(glTable,sortedList,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  comparatorChooser=TableComparatorChooser.install(glTable,sortedList,AbstractTableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
   setupComparatorChooser();
   glTable.addMouseListener(new TableClickListener());
   setWidths();
@@ -35,6 +35,7 @@
   popup.addSeparator();
   if (!newDatabase) {
     GroupTreeNode node=metaData.getGroups();
+    JMenu groupsAdd=new JMenu(Globals.lang("Add to group"));
     groupsAdd.setEnabled(false);
     insertNodes(groupsAdd,node);
     popup.add(groupsAdd);
@@ -48,16 +49,21 @@
   bb.addGlue();
   bb.addButton(ok);
   bb.addButton(stop);
+  JButton cancel=new JButton(Globals.lang("Cancel"));
   bb.addButton(cancel);
   bb.addRelatedGap();
+  JButton help=new JButton(Globals.lang("Help"));
   bb.addButton(help);
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
   ButtonStackBuilder builder=new ButtonStackBuilder();
+  JButton selectAll=new JButton(Globals.lang("Select all"));
   builder.addButton(selectAll);
+  JButton deselectAll=new JButton(Globals.lang("Deselect all"));
   builder.addButton(deselectAll);
   builder.addButton(deselectAllDuplicates);
   builder.addRelatedGap();
+  JButton delete=new JButton(Globals.lang("Delete"));
   builder.addButton(delete);
   builder.addRelatedGap();
   builder.addFixed(autoGenerate);
@@ -77,19 +83,19 @@
   delete.addActionListener(deleteListener);
   help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.importInspectionHelp));
   getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
-  setSize(new Dimension(Globals.prefs.getInt("importInspectionDialogWidth"),Globals.prefs.getInt("importInspectionDialogHeight")));
+  setSize(new Dimension(Globals.prefs.getInt(JabRefPreferences.IMPORT_INSPECTION_DIALOG_WIDTH),Globals.prefs.getInt(JabRefPreferences.IMPORT_INSPECTION_DIALOG_HEIGHT)));
   addWindowListener(new WindowAdapter(){
-    public void windowOpened(    WindowEvent e){
+    @Override public void windowOpened(    WindowEvent e){
       contentPane.setDividerLocation(0.5f);
     }
-    public void windowClosed(    WindowEvent e){
-      Globals.prefs.putInt("importInspectionDialogWidth",getSize().width);
-      Globals.prefs.putInt("importInspectionDialogHeight",getSize().height);
+    @Override public void windowClosed(    WindowEvent e){
+      Globals.prefs.putInt(JabRefPreferences.IMPORT_INSPECTION_DIALOG_WIDTH,getSize().width);
+      Globals.prefs.putInt(JabRefPreferences.IMPORT_INSPECTION_DIALOG_HEIGHT,getSize().height);
     }
   }
 );
   AbstractAction closeAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }

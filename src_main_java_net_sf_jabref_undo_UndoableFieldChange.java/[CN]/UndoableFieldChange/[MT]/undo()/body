@@ -1,10 +1,14 @@
 {
   super.undo();
   try {
-    if (oldValue != null)     entry.setField(field,oldValue);
- else     entry.clearField(field);
+    if (oldValue != null) {
+      entry.setField(field,oldValue);
+    }
+ else {
+      entry.clearField(field);
+    }
   }
- catch (  Throwable ex) {
-    Util.pr(ex.getMessage());
+ catch (  IllegalArgumentException ex) {
+    LOGGER.info("Cannot perform undo",ex);
   }
 }

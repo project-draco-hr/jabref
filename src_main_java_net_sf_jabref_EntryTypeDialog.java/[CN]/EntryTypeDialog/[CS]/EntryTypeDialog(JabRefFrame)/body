@@ -2,7 +2,7 @@
   super(baseFrame_,true);
   setTitle(Globals.lang("Select entry type"));
   addWindowListener(new WindowAdapter(){
-    public void windowClosing(    WindowEvent e){
+    @Override public void windowClosing(    WindowEvent e){
       cancelAction.actionPerformed(null);
     }
   }
@@ -27,12 +27,12 @@
   con.fill=GridBagConstraints.HORIZONTAL;
   con.insets=new Insets(4,4,4,4);
   int col=0;
-  for (  BibtexEntryType tp : BibtexEntryType.ALL_TYPES.values()) {
+  for (  BibtexEntryType tp : BibtexEntryType.getAllValues()) {
     if (tp.isVisibleAtNewEntryDialog()) {
-      TypeButton b=new TypeButton(Util.nCase(tp.getName()),tp);
+      TypeButton b=new TypeButton(StringUtil.nCase(tp.getName()),tp);
       b.addActionListener(this);
       col++;
-      if (col == COLNUM) {
+      if (col == EntryTypeDialog.COLNUM) {
         col=0;
         con.gridwidth=GridBagConstraints.REMAINDER;
       }

@@ -3,14 +3,15 @@
   final String fn=fieldName.toUpperCase();
   this.fieldName=fieldName;
   ok.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       canceled=false;
       dispose();
     }
   }
 );
   Action closeAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    private static final long serialVersionUID=1L;
+    @Override public void actionPerformed(    ActionEvent e){
       dispose();
     }
   }
@@ -20,7 +21,6 @@
   ActionMap am=cancel.getActionMap();
   im.put(Globals.prefs.getKey("Close dialog"),"close");
   am.put("close",closeAction);
-  fieldName=fieldName.toUpperCase();
   autoSetUnset=new JRadioButton(Globals.lang("Autoset %0 links. Do not overwrite existing links.",fn),true);
   autoSetAll=new JRadioButton(Globals.lang("Autoset %0 links. Allow overwriting existing links.",fn),false);
   autoSetNone=new JRadioButton(Globals.lang("Do not autoset"),false);

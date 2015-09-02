@@ -1,7 +1,9 @@
 {
   final Point cursor=dtde.getLocation();
   final long currentTime=System.currentTimeMillis();
-  if (idlePoint == null)   idlePoint=cursor;
+  if (idlePoint == null) {
+    idlePoint=cursor;
+  }
   final TreePath path=getPathForLocation(cursor.x,cursor.y);
   final GroupTreeNode target=path == null ? null : (GroupTreeNode)path.getLastPathComponent();
   setHighlight1Cell(target);
@@ -24,8 +26,8 @@
  else {
     dtde.rejectDrag();
   }
-  if (Math.abs(cursor.x - idlePoint.x) < idleMargin && Math.abs(cursor.y - idlePoint.y) < idleMargin) {
-    if (currentTime - idleStartTime >= idleTimeToExpandNode) {
+  if ((Math.abs(cursor.x - idlePoint.x) < GroupsTree.idleMargin) && (Math.abs(cursor.y - idlePoint.y) < GroupsTree.idleMargin)) {
+    if ((currentTime - idleStartTime) >= GroupsTree.idleTimeToExpandNode) {
       if (path != null) {
         expandPath(path);
       }
@@ -35,16 +37,26 @@
     idlePoint=cursor;
     idleStartTime=currentTime;
   }
-  if (currentTime - lastDragAutoscroll < minAutoscrollInterval)   return;
+  if ((currentTime - GroupsTree.lastDragAutoscroll) < GroupsTree.minAutoscrollInterval) {
+    return;
+  }
   final Rectangle r=getVisibleRect();
-  final boolean scrollUp=cursor.y - r.y < dragScrollActivationMargin;
-  final boolean scrollDown=r.y + r.height - cursor.y < dragScrollActivationMargin;
-  final boolean scrollLeft=cursor.x - r.x < dragScrollActivationMargin;
-  final boolean scrollRight=r.x + r.width - cursor.x < dragScrollActivationMargin;
-  if (scrollUp)   r.translate(0,-dragScrollDistance);
- else   if (scrollDown)   r.translate(0,+dragScrollDistance);
-  if (scrollLeft)   r.translate(-dragScrollDistance,0);
- else   if (scrollRight)   r.translate(+dragScrollDistance,0);
+  final boolean scrollUp=(cursor.y - r.y) < GroupsTree.dragScrollActivationMargin;
+  final boolean scrollDown=((r.y + r.height) - cursor.y) < GroupsTree.dragScrollActivationMargin;
+  final boolean scrollLeft=(cursor.x - r.x) < GroupsTree.dragScrollActivationMargin;
+  final boolean scrollRight=((r.x + r.width) - cursor.x) < GroupsTree.dragScrollActivationMargin;
+  if (scrollUp) {
+    r.translate(0,-GroupsTree.dragScrollDistance);
+  }
+ else   if (scrollDown) {
+    r.translate(0,+GroupsTree.dragScrollDistance);
+  }
+  if (scrollLeft) {
+    r.translate(-GroupsTree.dragScrollDistance,0);
+  }
+ else   if (scrollRight) {
+    r.translate(+GroupsTree.dragScrollDistance,0);
+  }
   scrollRectToVisible(r);
-  lastDragAutoscroll=currentTime;
+  GroupsTree.lastDragAutoscroll=currentTime;
 }

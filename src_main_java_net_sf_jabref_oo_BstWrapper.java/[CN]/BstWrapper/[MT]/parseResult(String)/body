@@ -1,11 +1,13 @@
 {
   Map<String,String> map=new HashMap<String,String>();
-  Matcher m=bibitemTag.matcher(result);
+  Matcher m=BstWrapper.bibitemTag.matcher(result);
   ArrayList<Integer> indices=new ArrayList<Integer>();
   ArrayList<Integer> endIndices=new ArrayList<Integer>();
   ArrayList<String> keys=new ArrayList<String>();
   while (m.find()) {
-    if (indices.size() > 0)     endIndices.add(m.start());
+    if (indices.size() > 0) {
+      endIndices.add(m.start());
+    }
     System.out.println(m.start() + "  " + m.end());
     String tag=m.group();
     String key=tag.substring(9,tag.length() - 1);
@@ -13,7 +15,9 @@
     keys.add(key);
   }
   int lastI=result.lastIndexOf("\\end{thebibliography}");
-  if ((lastI > 0) && (lastI > indices.get(indices.size() - 1)))   endIndices.add(lastI);
+  if ((lastI > 0) && (lastI > indices.get(indices.size() - 1))) {
+    endIndices.add(lastI);
+  }
   for (int i=0; i < keys.size(); i++) {
     String key=keys.get(i);
     int index=indices.get(i);

@@ -1,0 +1,22 @@
+{
+  TreeSet<Object> owners=new TreeSet<Object>();
+  for (  BibtexEntry entry : database.getEntries()) {
+    Object o=entry.getField(BibtexFields.OWNER);
+    if (o != null) {
+      owners.add(o);
+    }
+  }
+  owners.remove(Globals.prefs.get(JabRefPreferences.DEFAULT_OWNER));
+  StringBuilder sb=new StringBuilder();
+  for (  Object owner : owners) {
+    sb.append('[');
+    sb.append(owner.toString());
+    sb.append(']');
+  }
+  String newVal=sb.toString();
+  if (newVal.length() == 0) {
+    newVal=null;
+  }
+  ce.addEdit(new UndoableFieldChange(be,BibtexFields.MARKED,be.getField(BibtexFields.MARKED),newVal));
+  be.setField(BibtexFields.MARKED,newVal);
+}

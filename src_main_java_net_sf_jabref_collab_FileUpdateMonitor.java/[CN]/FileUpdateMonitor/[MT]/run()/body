@@ -1,23 +1,21 @@
 {
-  running=true;
-  while (running) {
-    Iterator<String> i=entries.keySet().iterator();
-    for (; i.hasNext(); ) {
-      Entry e=entries.get(i.next());
+  while (true) {
+    for (    Entry e : entries.values()) {
       try {
-        if (e.hasBeenUpdated())         e.notifyListener();
+        if (e.hasBeenUpdated()) {
+          e.notifyListener();
+        }
       }
  catch (      IOException ex) {
         e.notifyFileRemoved();
       }
     }
     try {
-      sleep(WAIT);
+      Thread.sleep(WAIT);
     }
  catch (    InterruptedException ex) {
-      logger.finest("FileUpdateMonitor has been interrupted.");
-      Thread.currentThread().interrupt();
-      break;
+      LOGGER.debug("FileUpdateMonitor has been interrupted. Terminating...");
+      return;
     }
   }
 }

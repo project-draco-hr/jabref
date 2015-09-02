@@ -17,23 +17,31 @@
       visName=((EntryEditor)splitPane.getBottomComponent()).getVisiblePanelName();
     }
   }
-  if (getShowing() != null)   divLoc=splitPane.getDividerLocation();
+  if (getShowing() != null) {
+    divLoc=splitPane.getDividerLocation();
+  }
   if (entryEditors.containsKey(be.getType().getName())) {
     form=entryEditors.get((be.getType().getName()));
     form.switchTo(be);
-    if (visName != null)     form.setVisiblePanel(visName);
+    if (visName != null) {
+      form.setVisiblePanel(visName);
+    }
     splitPane.setBottomComponent(form);
   }
  else {
     form=new EntryEditor(frame,BasePanel.this,be);
-    if (visName != null)     form.setVisiblePanel(visName);
+    if (visName != null) {
+      form.setVisiblePanel(visName);
+    }
     splitPane.setBottomComponent(form);
     entryEditors.put(be.getType().getName(),form);
   }
   if (divLoc > 0) {
     splitPane.setDividerLocation(divLoc);
   }
- else   splitPane.setDividerLocation(splitPane.getHeight() - Globals.prefs.getInt("entryEditorHeight"));
+ else {
+    splitPane.setDividerLocation(splitPane.getHeight() - Globals.prefs.getInt(JabRefPreferences.ENTRY_EDITOR_HEIGHT));
+  }
   newEntryShowing(be);
   setEntryEditorEnabled(true);
 }

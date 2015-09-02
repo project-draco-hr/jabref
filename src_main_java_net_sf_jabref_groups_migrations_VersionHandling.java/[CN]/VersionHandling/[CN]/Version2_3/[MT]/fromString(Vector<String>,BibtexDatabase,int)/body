@@ -1,0 +1,35 @@
+{
+  GroupTreeNode cursor=null;
+  GroupTreeNode root=null;
+  GroupTreeNode newNode;
+  AbstractGroup group;
+  int spaceIndex;
+  int level;
+  String s;
+  for (int i=0; i < data.size(); ++i) {
+    s=data.elementAt(i);
+    s=s.trim();
+    if (s.length() == 0) {
+      continue;
+    }
+    spaceIndex=s.indexOf(' ');
+    if (spaceIndex <= 0) {
+      throw new Exception("bad format");
+    }
+    level=Integer.parseInt(s.substring(0,spaceIndex));
+    group=AbstractGroup.fromString(s.substring(spaceIndex + 1),db,version);
+    newNode=new GroupTreeNode(group);
+    if (cursor == null) {
+      cursor=newNode;
+      root=cursor;
+    }
+ else {
+      while (level <= cursor.getLevel()) {
+        cursor=(GroupTreeNode)cursor.getParent();
+      }
+      cursor.add(newNode);
+      cursor=newNode;
+    }
+  }
+  return root;
+}

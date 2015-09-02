@@ -1,23 +1,31 @@
 {
-  if (parts.length > offset)   for (int j=offset; j < parts.length; j++) {
-    String modifier=parts[j];
-    if (modifier.equals("lower")) {
-      label=label.toLowerCase();
-    }
- else     if (modifier.equals("upper")) {
-      label=label.toUpperCase();
-    }
- else     if (modifier.equals("abbr")) {
-      StringBuffer abbr=new StringBuffer();
-      String[] words=label.replaceAll("[\\{\\}']","").split("[\\(\\) \r\n\"]");
-      for (      String word1 : words)       if (word1.length() > 0)       abbr.append(word1.charAt(0));
-      label=abbr.toString();
-    }
- else     if (modifier.startsWith("(") && modifier.endsWith(")")) {
-      if (label.equals("") && (modifier.length() > 2))       return modifier.substring(1,modifier.length() - 1);
-    }
+  if (parts.length > offset) {
+    for (int j=offset; j < parts.length; j++) {
+      String modifier=parts[j];
+      if (modifier.equals("lower")) {
+        label=label.toLowerCase();
+      }
+ else       if (modifier.equals("upper")) {
+        label=label.toUpperCase();
+      }
+ else       if (modifier.equals("abbr")) {
+        StringBuilder abbr=new StringBuilder();
+        String[] words=label.replaceAll("[\\{\\}']","").split("[\\(\\) \r\n\"]");
+        for (        String word1 : words) {
+          if (word1.length() > 0) {
+            abbr.append(word1.charAt(0));
+          }
+        }
+        label=abbr.toString();
+      }
+ else       if (modifier.startsWith("(") && modifier.endsWith(")")) {
+        if (label.equals("") && (modifier.length() > 2)) {
+          return modifier.substring(1,modifier.length() - 1);
+        }
+      }
  else {
-      Globals.logger("Key generator warning: unknown modifier '" + modifier + "'.");
+        LOGGER.info("Key generator warning: unknown modifier '" + modifier + "'.");
+      }
     }
   }
   return label;

@@ -9,32 +9,34 @@
   }
  catch (  IOException ex) {
     JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + ex.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
-    Globals.logger("Error while downloading " + "'" + res + "'");
+    LOGGER.info("Error while downloading " + "'" + res + "'",ex);
     return;
   }
   final URL urlF=url;
   final URLDownload udlF=udl;
-  (new Thread(){
-    public void run(){
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
+    @Override public void run(){
       try {
         udlF.downloadToFile(tmp);
       }
  catch (      IOException e2) {
         dontShowDialog=true;
-        if ((editor != null) && (editor.isVisible()))         editor.setVisible(false,false);
+        if ((editor != null) && (editor.isVisible())) {
+          editor.setVisible(false,false);
+        }
         JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + e2.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
-        Globals.logger("Error while downloading " + "'" + urlF.toString() + "'");
+        LOGGER.info("Error while downloading " + "'" + urlF.toString() + "'",e2);
         return;
       }
       SwingUtilities.invokeLater(new Runnable(){
-        public void run(){
+        @Override public void run(){
           downloadFinished();
         }
       }
 );
     }
   }
-).start();
+);
   ExternalFileType suggestedType=null;
   if (mimeType != null) {
     System.out.println("mimetype:" + mimeType);
@@ -51,8 +53,12 @@
   String suggestedName=bibtexKey != null ? getSuggestedFileName(suffix) : "";
   String[] fDirectory=getFileDirectory(res);
   final String directory;
-  if (fDirectory.length == 0)   directory=null;
- else   directory=fDirectory[0];
+  if (fDirectory.length == 0) {
+    directory=null;
+  }
+ else {
+    directory=fDirectory[0];
+  }
   final String suggestDir=directory != null ? directory : System.getProperty("user.home");
   File file=new File(new File(suggestDir),suggestedName);
   FileListEntry entry=new FileListEntry("",bibtexKey != null ? file.getCanonicalPath() : "",suggestedType);
@@ -60,7 +66,7 @@
   editor.getProgressBar().setIndeterminate(true);
   editor.setOkEnabled(false);
   editor.setExternalConfirm(new ConfirmCloseFileListEntryEditor(){
-    public boolean confirmClose(    FileListEntry entry){
+    @Override public boolean confirmClose(    FileListEntry entry){
       File f=directory != null ? expandFilename(directory,entry.getLink()) : new File(entry.getLink());
       if (f.isDirectory()) {
         JOptionPane.showMessageDialog(frame,Globals.lang("Target file cannot be a directory."),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
@@ -69,22 +75,34 @@
       if (f.exists()) {
         return JOptionPane.showConfirmDialog(frame,"'" + f.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Download file"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
       }
- else       return true;
+ else {
+        return true;
+      }
     }
   }
 );
-  if (!dontShowDialog)   editor.setVisible(true,false);
- else   return;
+  if (!dontShowDialog) {
+    editor.setVisible(true,false);
+  }
+ else {
+    return;
+  }
   if (editor.okPressed()) {
     File toFile=directory != null ? expandFilename(directory,entry.getLink()) : new File(entry.getLink());
     String dirPrefix;
     if (directory != null) {
-      if (!directory.endsWith(System.getProperty("file.separator")))       dirPrefix=directory + System.getProperty("file.separator");
- else       dirPrefix=directory;
+      if (!directory.endsWith(System.getProperty("file.separator"))) {
+        dirPrefix=directory + System.getProperty("file.separator");
+      }
+ else {
+        dirPrefix=directory;
+      }
     }
- else     dirPrefix=null;
+ else {
+      dirPrefix=null;
+    }
     try {
-      boolean success=Util.copyFile(tmp,toFile,true);
+      boolean success=FileUtil.copyFile(tmp,toFile,true);
       if (!success) {
         System.out.println("File already exists! DownloadExternalFile.download()");
       }
@@ -99,6 +117,8 @@
     tmp.delete();
   }
  else {
-    if (downloadFinished)     tmp.delete();
+    if (downloadFinished) {
+      tmp.delete();
+    }
   }
 }

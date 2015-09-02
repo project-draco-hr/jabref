@@ -1,0 +1,34 @@
+{
+  List<String> result=new ArrayList<String>();
+  StringBuffer sb=new StringBuffer();
+  boolean escaped=false;
+  boolean quoted=false;
+  for (  char c : query.toCharArray()) {
+    if (!escaped && (c == ESCAPE_CHAR)) {
+      escaped=true;
+    }
+ else {
+      if (!escaped && !quoted && Character.isWhitespace(c)) {
+        if (sb.length() > 0) {
+          result.add(sb.toString());
+          sb=new StringBuffer();
+        }
+      }
+ else       if (c == QUOTE_CHAR) {
+        if (sb.length() > 0) {
+          result.add(sb.toString());
+          sb=new StringBuffer();
+        }
+        quoted=!quoted;
+      }
+ else {
+        sb.append(c);
+      }
+      escaped=false;
+    }
+  }
+  if (sb.length() > 0) {
+    result.add(sb.toString());
+  }
+  return result;
+}

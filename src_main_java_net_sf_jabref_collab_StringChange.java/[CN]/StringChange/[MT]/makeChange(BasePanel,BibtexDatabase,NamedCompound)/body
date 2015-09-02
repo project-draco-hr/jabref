@@ -4,21 +4,21 @@
     undoEdit.addEdit(new UndoableStringChange(panel,string,false,mem,disk));
   }
  else {
-    String newId=Util.createNeutralId();
+    String newId=IdGenerator.next();
     BibtexString bs=new BibtexString(newId,label,disk);
     try {
       panel.database().addString(bs);
       undoEdit.addEdit(new UndoableInsertString(panel,panel.database(),bs));
     }
  catch (    KeyCollisionException ex) {
-      Globals.logger("Error: could not add string '" + string.getName() + "': "+ ex.getMessage());
+      LOGGER.info("Error: could not add string '" + string.getName() + "': "+ ex.getMessage());
     }
   }
   if (tmpString != null) {
     tmpString.setContent(disk);
   }
  else {
-    BibtexString bs=new BibtexString(Util.createNeutralId(),label,disk);
+    BibtexString bs=new BibtexString(IdGenerator.next(),label,disk);
     secondary.addString(bs);
   }
   return true;

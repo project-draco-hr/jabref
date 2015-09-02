@@ -1,10 +1,14 @@
 {
   super.redo();
   try {
-    if (newValue != null)     entry.setField(field,newValue);
- else     entry.clearField(field);
+    if (newValue != null) {
+      entry.setField(field,newValue);
+    }
+ else {
+      entry.clearField(field);
+    }
   }
- catch (  Throwable ex) {
-    Util.pr(ex.getMessage());
+ catch (  IllegalArgumentException ex) {
+    LOGGER.info("Cannot perform redo",ex);
   }
 }

@@ -1,10 +1,12 @@
 {
-  String[] numFields=Globals.prefs.getStringArray("numericFields");
-  if (numFields == null)   return;
+  String[] numFields=Globals.prefs.getStringArray(JabRefPreferences.NUMERIC_FIELDS);
+  if (numFields == null) {
+    return;
+  }
   HashSet<String> nF=new HashSet<String>();
   Collections.addAll(nF,numFields);
-  for (  String fieldName : runtime.fieldSet.keySet()) {
-    BibtexSingleField field=runtime.fieldSet.get(fieldName);
+  for (  String fieldName : BibtexFields.runtime.fieldSet.keySet()) {
+    BibtexSingleField field=BibtexFields.runtime.fieldSet.get(fieldName);
     if (!field.isNumeric() && nF.contains(fieldName)) {
       field.setNumeric(nF.contains(fieldName));
     }
@@ -13,6 +15,6 @@
   for (  String fieldName : nF) {
     BibtexSingleField field=new BibtexSingleField(fieldName,false);
     field.setNumeric(true);
-    runtime.fieldSet.put(fieldName,field);
+    BibtexFields.runtime.fieldSet.put(fieldName,field);
   }
 }

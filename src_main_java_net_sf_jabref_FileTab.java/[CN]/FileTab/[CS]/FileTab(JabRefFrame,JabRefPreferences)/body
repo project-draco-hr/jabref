@@ -4,7 +4,7 @@
   HelpAction autosaveHelp=new HelpAction(frame.helpDiag,GUIGlobals.autosaveHelp,"Help",GUIGlobals.getIconUrl("helpSmall"));
   openLast=new JCheckBox(Globals.lang("Open last edited databases at startup"));
   backup=new JCheckBox(Globals.lang("Backup old file when saving"));
-  autoSave=new JCheckBox(Globals.lang("Autosave"));
+  autoSave=new JCheckBox(Globals.lang(JabRefPreferences.AUTO_SAVE));
   promptBeforeUsingAutoSave=new JCheckBox(Globals.lang("Prompt before recovering a database from an autosave file"));
   autoSaveInterval=new JSpinner(new SpinnerNumberModel(1,1,60,1));
   valueDelimiter=new JComboBox(new String[]{Globals.lang("Quotes") + ": \", \"",Globals.lang("Curly Brackets") + ": {, }"});
@@ -23,7 +23,7 @@
   doNotResolveStringsFor=new JTextField(30);
   autoDoubleBraces=new JCheckBox(Globals.lang("Remove double braces around BibTeX fields when loading."));
   autoSave.addChangeListener(new ChangeListener(){
-    public void stateChanged(    ChangeEvent changeEvent){
+    @Override public void stateChanged(    ChangeEvent changeEvent){
       autoSaveInterval.setEnabled(autoSave.isSelected());
       promptBeforeUsingAutoSave.setEnabled(autoSave.isSelected());
     }
@@ -84,7 +84,7 @@
   wrapFieldLine=new JCheckBox(Globals.lang("Wrap fields as ver 2.9.2"));
   builder.append(wrapFieldLine);
   builder.nextLine();
-  String[] _rbs0={"Sort fields in alphabeta order (as ver 2.10)","Sort fields in old fasion (as ver 2.9.2)","Save fields as user defined order"};
+  String[] _rbs0={"Save fields sorted in alphabetic order (as in versions 2.10+)","Save fields in unsorted order (as until version 2.9.2)","Save fields in user-defined order"};
   ArrayList<String> _rbs=new ArrayList<String>();
   for (  String _rb : _rbs0) {
     _rbs.add(Globals.lang(_rb));

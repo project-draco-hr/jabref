@@ -1,7 +1,7 @@
 {
   TreeSet<Substring> usedParts=new TreeSet<Substring>();
   text="  " + text + "  ";
-  String[] split=null;
+  String[] split;
   String year=null;
   String yearRx="(\\s|\\()\\d\\d\\d\\d(\\.|,|\\))";
   String[] cand=getMatches(text,yearRx);
@@ -9,13 +9,15 @@
     year=clean(cand[0]);
     int pos=text.indexOf(year);
     usedParts.add(new Substring("year",pos,pos + year.length()));
-    Util.pr("Guessing 'year': '" + year + "'");
+    LOGGER.info("Guessing 'year': '" + year + "'");
   }
  else   if (cand.length > 1) {
     int good=-1, yearFound=-1;
     for (int i=0; i < cand.length; i++) {
       int number=Integer.parseInt(cand[i].trim());
-      if (number == yearFound)       continue;
+      if (number == yearFound) {
+        continue;
+      }
       if (number < 2500) {
         if (good == -1) {
           good=i;
@@ -37,24 +39,24 @@
       year=clean(cand[good]);
       int pos=text.indexOf(year);
       usedParts.add(new Substring("year",pos,pos + year.length()));
-      Util.pr("Guessing 'year': '" + year + "'");
+      LOGGER.info("Guessing 'year': '" + year + "'");
     }
   }
-  String pages=null;
+  String pages;
   String pagesRx="\\s(\\d{1,4})( ??)-( ??)(\\d{1,4})(\\.|,|\\s)";
   cand=getMatches(text,pagesRx);
   if (cand.length == 1) {
     pages=clean(cand[0].replaceAll("-|( - )","--"));
     int pos=text.indexOf(cand[0]);
     usedParts.add(new Substring("pages",pos,pos + year.length()));
-    Util.pr("Guessing 'pages': '" + pages + "'");
+    LOGGER.info("Guessing 'pages': '" + pages + "'");
   }
  else   if (cand.length > 1) {
     int found=-1;
     for (int i=0; i < cand.length; i++) {
       split=clean(cand[i].replaceAll("\\s","")).split("-");
       int first=Integer.parseInt(split[0]), second=Integer.parseInt(split[1]);
-      if (second - first > 3) {
+      if ((second - first) > 3) {
         found=i;
         break;
       }
@@ -62,11 +64,11 @@
     if (found >= 0) {
       pages=clean(cand[found].replaceAll("-|( - )","--"));
       int pos=text.indexOf(cand[found]);
-      Util.pr("Guessing 'pages': '" + pages + "'");
+      LOGGER.info("Guessing 'pages': '" + pages + "'");
       usedParts.add(new Substring("pages",pos,pos + pages.length()));
     }
   }
-  String journal=null, volume=null;
+  String journal, volume;
   String journalRx="(,|\\.|\\n)\\s??([a-zA-Z\\. ]{8,30}+)((.){0,2})((vol\\.|Vol\\.|Volume|volume))??\\s??(\\d{1,3})(\\.|,|\\s|:)";
   cand=getMatches(text,journalRx);
   if (cand.length > 0) {
@@ -74,37 +76,38 @@
     int pos=cand[0].lastIndexOf(' ');
     if (pos > 0) {
       volume=clean(cand[0].substring(pos + 1));
-      Util.pr("Guessing 'volume': '" + volume + "'");
+      LOGGER.info("Guessing 'volume': '" + volume + "'");
       journal=clean(cand[0].substring(0,pos));
       pos=journal.lastIndexOf(' ');
       if (pos > 0) {
         String last=journal.substring(pos + 1).toLowerCase();
-        if (last.equals("volume") || last.equals("vol") || last.equals("v"))         journal=clean(journal.substring(0,pos));
+        if (last.equals("volume") || last.equals("vol") || last.equals("v")) {
+          journal=clean(journal.substring(0,pos));
+        }
       }
       pos=text.indexOf(journal);
       usedParts.add(new Substring("journal",pos,pos + journal.length()));
-      Util.pr("Guessing 'journal': '" + journal + "'");
+      LOGGER.info("Guessing 'journal': '" + journal + "'");
     }
   }
  else {
-    journalRx="(,|\\.|\\n)\\s??([a-zA-Z\\. ]{8,30}+)((.){0,2})\\s??(\\d{1,3})(\\.|,|\\s|:)";
   }
   Substring ss;
   Vector<String> free=new Vector<String>();
   int piv=0;
   for (  Substring usedPart : usedParts) {
     ss=usedPart;
-    if (ss.begin() - piv > 10) {
-      Util.pr("... " + text.substring(piv,ss.begin()));
+    if ((ss.begin() - piv) > 10) {
+      LOGGER.info("... " + text.substring(piv,ss.begin()));
       free.add(clean(text.substring(piv,ss.begin())));
     }
     piv=ss.end();
   }
-  if (text.length() - piv > 10) {
+  if ((text.length() - piv) > 10) {
     free.add(clean(text.substring(piv)));
   }
-  Util.pr("Free parts:");
+  LOGGER.info("Free parts:");
   for (  String s : free) {
-    Util.pr(": '" + s + "'");
+    LOGGER.info(": '" + s + "'");
   }
 }

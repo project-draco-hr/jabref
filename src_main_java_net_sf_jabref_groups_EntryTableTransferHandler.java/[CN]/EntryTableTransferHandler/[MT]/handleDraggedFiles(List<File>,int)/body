@@ -5,14 +5,14 @@
     fileNames[i]=file.getAbsolutePath();
     i++;
   }
-  new Thread(new Runnable(){
-    public void run(){
+  JabRefExecutorService.INSTANCE.execute(new Runnable(){
+    @Override public void run(){
       final ImportPdfFilesResult importRes=new PdfImporter(frame,panel,entryTable,dropRow).importPdfFiles(fileNames,frame);
       if (importRes.noPdfFiles.length > 0) {
         loadOrImportFiles(importRes.noPdfFiles,dropRow);
       }
     }
   }
-).start();
+);
   return true;
 }

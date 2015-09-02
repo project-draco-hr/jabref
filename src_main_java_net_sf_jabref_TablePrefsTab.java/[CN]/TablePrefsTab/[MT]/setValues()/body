@@ -1,26 +1,44 @@
 {
-  autoResizeMode.setSelected((_prefs.getInt("autoResizeMode") == JTable.AUTO_RESIZE_ALL_COLUMNS));
+  autoResizeMode.setSelected((_prefs.getInt(JabRefPreferences.AUTO_RESIZE_MODE) == JTable.AUTO_RESIZE_ALL_COLUMNS));
   priField.setText(_prefs.get(JabRefPreferences.PRIMARY_SORT_FIELD));
   secField.setText(_prefs.get(JabRefPreferences.SECONDARY_SORT_FIELD));
   terField.setText(_prefs.get(JabRefPreferences.TERTIARY_SORT_FIELD));
   priSort.setSelectedIndex(0);
   secSort.setSelectedIndex(0);
   terSort.setSelectedIndex(0);
-  if (_prefs.getBoolean("namesAsIs"))   namesAsIs.setSelected(true);
- else   if (_prefs.getBoolean("namesFf"))   namesFf.setSelected(true);
- else   if (_prefs.getBoolean("namesNatbib"))   namesNatbib.setSelected(true);
- else   namesFl.setSelected(true);
-  if (_prefs.getBoolean("abbrAuthorNames"))   abbrNames.setSelected(true);
- else   if (_prefs.getBoolean("namesLastOnly"))   lastNamesOnly.setSelected(true);
- else   noAbbrNames.setSelected(true);
+  if (_prefs.getBoolean(JabRefPreferences.NAMES_AS_IS)) {
+    namesAsIs.setSelected(true);
+  }
+ else   if (_prefs.getBoolean(JabRefPreferences.NAMES_FIRST_LAST)) {
+    namesFf.setSelected(true);
+  }
+ else   if (_prefs.getBoolean(JabRefPreferences.NAMES_NATBIB)) {
+    namesNatbib.setSelected(true);
+  }
+ else {
+    namesFl.setSelected(true);
+  }
+  if (_prefs.getBoolean(JabRefPreferences.ABBR_AUTHOR_NAMES)) {
+    abbrNames.setSelected(true);
+  }
+ else   if (_prefs.getBoolean(JabRefPreferences.NAMES_LAST_ONLY)) {
+    lastNamesOnly.setSelected(true);
+  }
+ else {
+    noAbbrNames.setSelected(true);
+  }
   priDesc.setSelected(_prefs.getBoolean(JabRefPreferences.PRIMARY_SORT_DESCENDING));
   secDesc.setSelected(_prefs.getBoolean(JabRefPreferences.SECONDARY_SORT_DESCENDING));
   terDesc.setSelected(_prefs.getBoolean(JabRefPreferences.TERTIARY_SORT_DESCENDING));
-  floatMarked.setSelected(_prefs.getBoolean("floatMarkedEntries"));
+  floatMarked.setSelected(_prefs.getBoolean(JabRefPreferences.FLOAT_MARKED_ENTRIES));
   abbrNames.setEnabled(!namesNatbib.isSelected());
   lastNamesOnly.setEnabled(!namesNatbib.isSelected());
   noAbbrNames.setEnabled(!namesNatbib.isSelected());
-  String numF=_prefs.get("numericFields");
-  if (numF == null)   numericFields.setText("");
- else   numericFields.setText(numF);
+  String numF=_prefs.get(JabRefPreferences.NUMERIC_FIELDS);
+  if (numF == null) {
+    numericFields.setText("");
+  }
+ else {
+    numericFields.setText(numF);
+  }
 }

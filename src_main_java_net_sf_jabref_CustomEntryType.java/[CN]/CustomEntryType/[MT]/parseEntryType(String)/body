@@ -6,14 +6,16 @@
     String name=rest.substring(0,nPos);
     rest=rest.substring(nPos + 2);
     int rPos=rest.indexOf(']');
-    if (rPos < 4)     throw new IndexOutOfBoundsException();
+    if (rPos < 4) {
+      throw new IndexOutOfBoundsException();
+    }
     String reqFields=rest.substring(4,rPos);
     int oPos=rest.indexOf(']',rPos + 1);
     String optFields=rest.substring(rPos + 6,oPos);
     return new CustomEntryType(name,reqFields,optFields);
   }
  catch (  IndexOutOfBoundsException ex) {
-    Globals.logger("Ill-formed entrytype comment in BibTeX file.");
+    LOGGER.info("Ill-formed entrytype comment in BibTeX file.",ex);
     return null;
   }
 }

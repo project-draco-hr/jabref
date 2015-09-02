@@ -7,7 +7,7 @@
     key.append(currentChar);
     lookahead_used++;
   }
- while ((currentChar != ',' && currentChar != '\n' && currentChar != '=') && (lookahead_used < LOOKAHEAD));
+ while (((currentChar != ',') && (currentChar != '\n') && (currentChar != '=')) && (lookahead_used < BibtexParser.LOOKAHEAD));
   unread(currentChar);
   key.deleteCharAt(key.length() - 1);
 switch (currentChar) {
@@ -16,12 +16,12 @@ case '=':
   boolean matchedAlpha=false;
 for (int i=0; i < key.length(); i++) {
   currentChar=key.charAt(i);
-  if (!matchedAlpha && currentChar == ' ') {
+  if (!matchedAlpha && (currentChar == ' ')) {
     continue;
   }
   matchedAlpha=true;
   unread(currentChar);
-  if (currentChar == ' ' || currentChar == '\n') {
+  if ((currentChar == ' ') || (currentChar == '\n')) {
     StringBuilder newKey=new StringBuilder();
     for (int j=i; j < key.length(); j++) {
       currentChar=key.charAt(j);
@@ -29,15 +29,15 @@ for (int i=0; i < key.length(); i++) {
         newKey.append(currentChar);
       }
     }
-    _pr.addWarning(Globals.lang("Line %0: Found corrupted BibTeX-key.",String.valueOf(line)));
+    parserResult.addWarning(Globals.lang("Line %0: Found corrupted BibTeX-key.",String.valueOf(line)));
     key=newKey.reverse();
   }
 }
 break;
 case ',':
-_pr.addWarning(Globals.lang("Line %0: Found corrupted BibTeX-key (contains whitespaces).",String.valueOf(line)));
+parserResult.addWarning(Globals.lang("Line %0: Found corrupted BibTeX-key (contains whitespaces).",String.valueOf(line)));
 case '\n':
-_pr.addWarning(Globals.lang("Line %0: Found corrupted BibTeX-key (comma missing).",String.valueOf(line)));
+parserResult.addWarning(Globals.lang("Line %0: Found corrupted BibTeX-key (comma missing).",String.valueOf(line)));
 break;
 default :
 unreadBuffer(key);

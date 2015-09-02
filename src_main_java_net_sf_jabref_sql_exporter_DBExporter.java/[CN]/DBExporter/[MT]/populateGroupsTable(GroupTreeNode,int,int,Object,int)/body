@@ -1,7 +1,7 @@
 {
   AbstractGroup group=cursor.getGroup();
   String searchField=null, searchExpr=null, caseSens=null, reg_exp=null;
-  int hierContext=group.getHierarchicalContext();
+  GroupHierarchyType hierContext=group.getHierarchicalContext();
   if (group instanceof KeywordGroup) {
     searchField=((KeywordGroup)group).getSearchField();
     searchExpr=((KeywordGroup)group).getSearchExpression();
@@ -13,9 +13,13 @@
     caseSens=((SearchGroup)group).isCaseSensitive() ? "1" : "0";
     reg_exp=((SearchGroup)group).isRegExp() ? "1" : "0";
   }
-  if (searchField != null)   searchField=Util.quote(searchField,"'",'\\');
-  if (searchExpr != null)   searchExpr=Util.quote(searchExpr,"'",'\\');
-  SQLUtil.processQuery(out,"INSERT INTO groups (label, parent_id, group_types_id, search_field, " + "search_expression, case_sensitive, reg_exp, hierarchical_context, database_id) " + "VALUES ('" + group.getName() + "', "+ parentID+ ", (SELECT group_types_id FROM group_types where label='"+ group.getTypeId()+ "')"+ ", "+ (searchField != null ? "'" + searchField + "'" : "NULL")+ ", "+ (searchExpr != null ? "'" + searchExpr + "'" : "NULL")+ ", "+ (caseSens != null ? "'" + caseSens + "'" : "NULL")+ ", "+ (reg_exp != null ? "'" + reg_exp + "'" : "NULL")+ ", "+ hierContext+ ", '"+ database_id+ "');");
+  if (searchField != null) {
+    searchField=StringUtil.quote(searchField,"'",'\\');
+  }
+  if (searchExpr != null) {
+    searchExpr=StringUtil.quote(searchExpr,"'",'\\');
+  }
+  SQLUtil.processQuery(out,"INSERT INTO groups (label, parent_id, group_types_id, search_field, " + "search_expression, case_sensitive, reg_exp, hierarchical_context, database_id) " + "VALUES ('" + group.getName() + "', "+ parentID+ ", (SELECT group_types_id FROM group_types where label='"+ group.getTypeId()+ "')"+ ", "+ (searchField != null ? '\'' + searchField + '\'' : "NULL")+ ", "+ (searchExpr != null ? '\'' + searchExpr + '\'' : "NULL")+ ", "+ (caseSens != null ? '\'' + caseSens + '\'' : "NULL")+ ", "+ (reg_exp != null ? '\'' + reg_exp + '\'' : "NULL")+ ", "+ hierContext.ordinal()+ ", '"+ database_id+ "');");
   Object response=SQLUtil.processQueryWithResults(out,"SELECT groups_id FROM groups WHERE label='" + cursor.getGroup().getName() + "' AND database_id='"+ database_id+ "' AND parent_id='"+ parentID+ "';");
   int myID=currentID;
   if (response instanceof Statement) {
@@ -23,6 +27,9 @@
     rs.next();
     myID=rs.getInt("groups_id");
   }
-  for (Enumeration<GroupTreeNode> e=cursor.children(); e.hasMoreElements(); )   currentID=populateGroupsTable(e.nextElement(),myID,++currentID,out,database_id);
+  for (Enumeration<GroupTreeNode> e=cursor.children(); e.hasMoreElements(); ) {
+    ++currentID;
+    currentID=populateGroupsTable(e.nextElement(),myID,currentID,out,database_id);
+  }
   return currentID;
 }

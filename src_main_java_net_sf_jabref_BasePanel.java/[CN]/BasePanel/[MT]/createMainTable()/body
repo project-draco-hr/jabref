@@ -14,16 +14,23 @@
   mainTable.addKeyListener(selectionListener);
   mainTable.addFocusListener(selectionListener);
   groupsHighlightListener=new ListEventListener<BibtexEntry>(){
-    public void listChanged(    ListEvent<BibtexEntry> listEvent){
-      if (Globals.prefs.getBoolean("highlightGroupsMatchingAny"))       getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),false);
- else       if (Globals.prefs.getBoolean("highlightGroupsMatchingAll"))       getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),true);
- else       getGroupSelector().showMatchingGroups(null,true);
+    @Override public void listChanged(    ListEvent<BibtexEntry> listEvent){
+      if (Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY)) {
+        getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),false);
+      }
+ else       if (Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL)) {
+        getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),true);
+      }
+ else {
+        getGroupSelector().showMatchingGroups(null,true);
+      }
     }
   }
 ;
   mainTable.addSelectionListener(groupsHighlightListener);
   mainTable.getActionMap().put("cut",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    private static final long serialVersionUID=1L;
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         runCommand("cut");
       }
@@ -34,7 +41,8 @@
   }
 );
   mainTable.getActionMap().put("copy",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    private static final long serialVersionUID=1L;
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         runCommand("copy");
       }
@@ -45,7 +53,8 @@
   }
 );
   mainTable.getActionMap().put("paste",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    private static final long serialVersionUID=1L;
+    @Override public void actionPerformed(    ActionEvent e){
       try {
         runCommand("paste");
       }
@@ -56,7 +65,7 @@
   }
 );
   mainTable.addKeyListener(new KeyAdapter(){
-    public void keyPressed(    KeyEvent e){
+    @Override public void keyPressed(    KeyEvent e){
       final int keyCode=e.getKeyCode();
       final TreePath path=frame.groupSelector.getSelectionPath();
       final GroupTreeNode node=path == null ? null : (GroupTreeNode)path.getLastPathComponent();
@@ -64,19 +73,27 @@
 switch (keyCode) {
 case KeyEvent.VK_UP:
           e.consume();
-        if (node != null)         frame.groupSelector.moveNodeUp(node,true);
+        if (node != null) {
+          frame.groupSelector.moveNodeUp(node,true);
+        }
       break;
 case KeyEvent.VK_DOWN:
     e.consume();
-  if (node != null)   frame.groupSelector.moveNodeDown(node,true);
+  if (node != null) {
+    frame.groupSelector.moveNodeDown(node,true);
+  }
 break;
 case KeyEvent.VK_LEFT:
 e.consume();
-if (node != null) frame.groupSelector.moveNodeLeft(node,true);
+if (node != null) {
+frame.groupSelector.moveNodeLeft(node,true);
+}
 break;
 case KeyEvent.VK_RIGHT:
 e.consume();
-if (node != null) frame.groupSelector.moveNodeRight(node,true);
+if (node != null) {
+frame.groupSelector.moveNodeRight(node,true);
+}
 break;
 case KeyEvent.VK_PAGE_DOWN:
 frame.nextTab.actionPerformed(null);

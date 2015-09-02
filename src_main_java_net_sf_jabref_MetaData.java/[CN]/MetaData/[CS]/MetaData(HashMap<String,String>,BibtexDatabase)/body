@@ -3,34 +3,40 @@
   Vector<String> flatGroupsData=null;
   Vector<String> treeGroupsData=null;
   int groupsVersionOnDisk=0;
-  if (inData != null)   for (  String key : inData.keySet()) {
-    data=new StringReader(inData.get(key));
-    String unit;
-    Vector<String> orderedData=new Vector<String>();
-    try {
-      while ((unit=getNextUnit(data)) != null) {
-        orderedData.add(unit);
+  if (inData != null) {
+    for (    String key : inData.keySet()) {
+      StringReader data=new StringReader(inData.get(key));
+      String unit;
+      Vector<String> orderedData=new Vector<String>();
+      try {
+        while ((unit=getNextUnit(data)) != null) {
+          orderedData.add(unit);
+        }
+      }
+ catch (      IOException ex) {
+        System.err.println("Weird error while parsing meta data.");
+      }
+      if (key.equals("groupsversion")) {
+        if (orderedData.size() >= 1) {
+          groupsVersionOnDisk=Integer.parseInt(orderedData.firstElement());
+        }
+      }
+ else       if (key.equals("groupstree")) {
+        groupsTreePresent=true;
+        treeGroupsData=orderedData;
+      }
+ else       if (key.equals("groups")) {
+        flatGroupsData=orderedData;
+      }
+ else {
+        putData(key,orderedData);
       }
     }
- catch (    IOException ex) {
-      System.err.println("Weird error while parsing meta data.");
-    }
-    if (key.equals("groupsversion")) {
-      if (orderedData.size() >= 1)       groupsVersionOnDisk=Integer.parseInt(orderedData.firstElement());
-    }
- else     if (key.equals("groupstree")) {
-      groupsTreePresent=true;
-      treeGroupsData=orderedData;
-    }
- else     if (key.equals("groups")) {
-      flatGroupsData=orderedData;
-    }
- else {
-      putData(key,orderedData);
-    }
   }
-  if (groupsTreePresent)   putGroups(treeGroupsData,db,groupsVersionOnDisk);
-  if (!groupsTreePresent && flatGroupsData != null) {
+  if (groupsTreePresent) {
+    putGroups(treeGroupsData,db,groupsVersionOnDisk);
+  }
+  if (!groupsTreePresent && (flatGroupsData != null)) {
     try {
       groupsRoot=VersionHandling.importFlatGroups(flatGroupsData);
       groupTreeValid=true;

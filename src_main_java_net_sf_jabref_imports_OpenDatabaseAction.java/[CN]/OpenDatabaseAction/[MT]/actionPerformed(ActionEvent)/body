@@ -1,15 +1,18 @@
 {
   List<File> filesToOpen=new ArrayList<File>();
   if (showDialog) {
-    String[] chosen=FileDialogs.getMultipleFiles(frame,new File(Globals.prefs.get("workingDirectory")),".bib",true);
-    if (chosen != null)     for (    String aChosen : chosen) {
-      if (aChosen != null)       filesToOpen.add(new File(aChosen));
+    String[] chosen=FileDialogs.getMultipleFiles(frame,new File(Globals.prefs.get(JabRefPreferences.WORKING_DIRECTORY)),".bib",true);
+    if (chosen != null) {
+      for (      String aChosen : chosen) {
+        if (aChosen != null) {
+          filesToOpen.add(new File(aChosen));
+        }
+      }
     }
   }
  else {
-    Util.pr(NAME);
-    Util.pr(e.getActionCommand());
-    filesToOpen.add(new File(Util.checkName(e.getActionCommand())));
+    LOGGER.info(Action.NAME + " " + e.getActionCommand());
+    filesToOpen.add(new File(StringUtil.makeBibtexExtension(e.getActionCommand())));
   }
   BasePanel toRaise=null;
   int initialCount=filesToOpen.size(), removed=0;
@@ -29,13 +32,17 @@
   }
   if (filesToOpen.size() > 0) {
     final List<File> theFiles=Collections.unmodifiableList(filesToOpen);
-    (new Thread(){
-      public void run(){
-        for (        File theFile : theFiles)         openIt(theFile,true);
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
+      @Override public void run(){
+        for (        File theFile : theFiles) {
+          openIt(theFile,true);
+        }
       }
     }
-).start();
-    for (    File theFile : theFiles)     frame.getFileHistory().newFile(theFile.getPath());
+);
+    for (    File theFile : theFiles) {
+      frame.getFileHistory().newFile(theFile.getPath());
+    }
   }
  else   if (toRaise != null) {
     frame.output(Globals.lang("File '%0' is already open.",toRaise.getFile().getPath()));

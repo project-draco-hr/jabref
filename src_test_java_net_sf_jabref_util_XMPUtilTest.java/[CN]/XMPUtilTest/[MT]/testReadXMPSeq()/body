@@ -1,12 +1,12 @@
 {
   String bibtex="<bibtex:author><rdf:Seq>\n" + "  <rdf:li>Kelly Clarkson</rdf:li>" + "  <rdf:li>Ozzy Osbourne</rdf:li>"+ "</rdf:Seq></bibtex:author>"+ "<bibtex:editor><rdf:Seq>"+ "  <rdf:li>Huey Duck</rdf:li>"+ "  <rdf:li>Dewey Duck</rdf:li>"+ "  <rdf:li>Louie Duck</rdf:li>"+ "</rdf:Seq></bibtex:editor>"+ "<bibtex:bibtexkey>Clarkson06</bibtex:bibtexkey>";
-  writeManually(pdfFile,bibtexXPacket(bibtexDescription(bibtex)));
+  writeManually(pdfFile,XMPUtilTest.bibtexXPacket(XMPUtilTest.bibtexDescription(bibtex)));
   List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
-  assertEquals(1,l.size());
+  Assert.assertEquals(1,l.size());
   BibtexEntry e=l.get(0);
-  assertNotNull(e);
-  assertEquals("Clarkson06",e.getCiteKey());
-  assertEquals("Kelly Clarkson and Ozzy Osbourne",e.getField("author"));
-  assertEquals("Huey Duck and Dewey Duck and Louie Duck",e.getField("editor"));
-  assertEquals(BibtexEntryType.OTHER,e.getType());
+  Assert.assertNotNull(e);
+  Assert.assertEquals("Clarkson06",e.getCiteKey());
+  Assert.assertEquals("Kelly Clarkson and Ozzy Osbourne",e.getField("author"));
+  Assert.assertEquals("Huey Duck and Dewey Duck and Louie Duck",e.getField("editor"));
+  Assert.assertEquals(BibtexEntryTypes.OTHER,e.getType());
 }

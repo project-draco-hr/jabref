@@ -1,16 +1,18 @@
 {
   StringBuilder result=new StringBuilder();
-  String citeKey="";
+  String citeKey;
   boolean first=true;
   for (  BibtexEntry bes : mainTable.getSelected()) {
     citeKey=bes.getField(BibtexFields.KEY_FIELD);
-    if (citeKey == null || citeKey.equals(""))     continue;
+    if ((citeKey == null) || citeKey.isEmpty()) {
+      continue;
+    }
     if (first) {
       result.append(citeKey);
       first=false;
     }
  else {
-      result.append(",").append(citeKey);
+      result.append(',').append(citeKey);
     }
   }
   return result.toString();

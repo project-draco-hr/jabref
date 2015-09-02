@@ -1,0 +1,25 @@
+{
+  link=link.trim();
+  if (link.startsWith("\\url{") && link.endsWith("}")) {
+    link=link.substring(5,link.length() - 1);
+  }
+  if (link.matches("^doi:/*.*")) {
+    link=link.replaceFirst("^doi:/*","");
+    link=Globals.DOI_LOOKUP_PREFIX + link;
+  }
+  if (DOIUtil.checkForPlainDOI(link) && !link.startsWith("http://")) {
+    link=Globals.DOI_LOOKUP_PREFIX + DOIUtil.getDOI(link);
+  }
+  link=link.replaceAll("\\+","%2B");
+  try {
+    link=URLDecoder.decode(link,"UTF-8");
+  }
+ catch (  UnsupportedEncodingException ignored) {
+  }
+  try {
+    return new URI(null,link,null).toASCIIString();
+  }
+ catch (  URISyntaxException e) {
+    return link;
+  }
+}

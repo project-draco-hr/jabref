@@ -4,15 +4,19 @@
     int unlimA=(unlimAuthors != null ? unlimAuthors[j] : -1);
     int maxAuthors=unlimA > 0 ? unlimA : maxA;
     BibtexEntry entry=entries[j];
-    if (entry == null)     continue;
-    if (j > 0)     sb.append(citationSeparator);
+    if (entry == null) {
+      continue;
+    }
+    if (j > 0) {
+      sb.append(citationSeparator);
+    }
     String author=getCitationMarkerField(entry,database,authorField);
     if (author != null) {
       AuthorList al=AuthorList.getAuthorList(author);
       sb.append(getAuthorLastName(al,0));
       if ((al.size() > 1) && ((al.size() <= maxAuthors) || (maxAuthors < 0))) {
         int i=1;
-        while (i < al.size() - 1) {
+        while (i < (al.size() - 1)) {
           sb.append(authorSep);
           sb.append(getAuthorLastName(al,i));
           i++;
@@ -26,8 +30,12 @@
       sb.append(yearSep);
     }
     String year=getCitationMarkerField(entry,database,yearField);
-    if (year != null)     sb.append(year);
-    if ((uniquifiers != null) && (uniquifiers[j] != null))     sb.append(uniquifiers[j]);
+    if (year != null) {
+      sb.append(year);
+    }
+    if ((uniquifiers != null) && (uniquifiers[j] != null)) {
+      sb.append(uniquifiers[j]);
+    }
   }
   sb.append(endBrace);
   return sb.toString();

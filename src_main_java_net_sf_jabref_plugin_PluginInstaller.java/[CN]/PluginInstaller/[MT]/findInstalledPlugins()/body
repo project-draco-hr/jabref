@@ -1,8 +1,10 @@
 {
   EventList<NameAndVersion> plugins=new BasicEventList<NameAndVersion>();
-  if (!PluginCore.userPluginDir.exists())   return plugins;
+  if (!PluginCore.userPluginDir.exists()) {
+    return plugins;
+  }
   String[] files=PluginCore.userPluginDir.list(new FilenameFilter(){
-    public boolean accept(    File dir,    String name){
+    @Override public boolean accept(    File dir,    String name){
       return name.endsWith(".jar");
     }
   }
@@ -16,7 +18,7 @@
   }
   for (  String file1 : files) {
     File file=new File(PluginCore.userPluginDir,file1);
-    String[] nav=getNameAndVersion(file);
+    String[] nav=PluginInstaller.getNameAndVersion(file);
     if (nav != null) {
       VersionNumber vn=nav[1] != null ? new VersionNumber(nav[1]) : null;
       NameAndVersion nameAndVersion=new NameAndVersion(nav[0],vn,true,file);
@@ -24,8 +26,12 @@
         String loc=it.next();
         if (loc.contains(nav[0])) {
           PluginDescriptor desc=urls.get(loc);
-          if (!PluginCore.getManager().isPluginEnabled(urls.get(loc)))           nameAndVersion.setStatus(BAD);
- else           nameAndVersion.setStatus(LOADED);
+          if (!PluginCore.getManager().isPluginEnabled(urls.get(loc))) {
+            nameAndVersion.setStatus(PluginInstaller.BAD);
+          }
+ else {
+            nameAndVersion.setStatus(PluginInstaller.LOADED);
+          }
           it.remove();
         }
       }
@@ -35,10 +41,16 @@
   for (  String url : urls.keySet()) {
     PluginDescriptor desc=urls.get(url);
     File location=new File(desc.getLocation().getFile());
-    if (location.getPath().contains(PluginCore.userPluginDir.getPath()))     continue;
+    if (location.getPath().contains(PluginCore.userPluginDir.getPath())) {
+      continue;
+    }
     NameAndVersion nameAndVersion=new NameAndVersion(desc.getId(),new VersionNumber(desc.getVersion().toString()),false,location);
-    if (!PluginCore.getManager().isPluginEnabled(urls.get(url)))     nameAndVersion.setStatus(BAD);
- else     nameAndVersion.setStatus(LOADED);
+    if (!PluginCore.getManager().isPluginEnabled(urls.get(url))) {
+      nameAndVersion.setStatus(PluginInstaller.BAD);
+    }
+ else {
+      nameAndVersion.setStatus(PluginInstaller.LOADED);
+    }
     plugins.add(nameAndVersion);
   }
   return plugins;

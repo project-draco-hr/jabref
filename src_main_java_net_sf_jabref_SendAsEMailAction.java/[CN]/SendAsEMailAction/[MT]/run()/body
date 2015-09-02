@@ -4,7 +4,9 @@
     return;
   }
   BasePanel panel=frame.basePanel();
-  if (panel == null)   return;
+  if (panel == null) {
+    return;
+  }
   if (panel.getSelectedEntries().length == 0) {
     message=Globals.lang("No entries selected.");
     return;
@@ -21,7 +23,7 @@
     }
   }
   ArrayList<String> attachments=new ArrayList<String>();
-  boolean openFolders=JabRefPreferences.getInstance().getBoolean("openFoldersOfAttachedFiles");
+  boolean openFolders=JabRefPreferences.getInstance().getBoolean(JabRefPreferences.OPEN_FOLDERS_OF_ATTACHED_FILES);
   List<File> fileList=Util.getListOfLinkedFiles(bes,frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD));
   for (  File f : fileList) {
     attachments.add(f.getPath());
@@ -30,7 +32,7 @@
         Util.openFolderAndSelectFile(f.getAbsolutePath());
       }
  catch (      IOException e) {
-        logger.fine(e.getMessage());
+        LOGGER.debug("Could not open file",e);
       }
     }
   }
@@ -41,7 +43,7 @@
     mailTo=mailTo.concat("&Attachment=\"").concat(path);
     mailTo=mailTo.concat("\"");
   }
-  URI uriMailTo=null;
+  URI uriMailTo;
   try {
     uriMailTo=new URI("mailto",mailTo,null);
   }

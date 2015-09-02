@@ -1,12 +1,14 @@
 {
   XBookmarksSupplier bSupp=UnoRuntime.queryInterface(XBookmarksSupplier.class,mxDoc);
-  if (bSupp.getBookmarks().hasByName(BIB_SECTION_NAME)) {
+  if (bSupp.getBookmarks().hasByName(OOBibBase.BIB_SECTION_NAME)) {
     System.out.println("Found existing JabRef bookmark");
     return true;
   }
   XTextCursor mxDocCursor=text.createTextCursor();
-  if (end)   mxDocCursor.gotoEnd(false);
+  if (end) {
+    mxDocCursor.gotoEnd(false);
+  }
   OOUtil.insertParagraphBreak(text,mxDocCursor);
-  insertBookMark(BIB_SECTION_NAME,mxDocCursor);
+  insertBookMark(OOBibBase.BIB_SECTION_NAME,mxDocCursor);
   return false;
 }

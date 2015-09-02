@@ -7,12 +7,12 @@
   NamedCompound ce=new NamedCompound(Globals.lang("Append database"));
   MetaData meta=pr.getMetaData();
   if (importEntries) {
-    boolean overwriteOwner=Globals.prefs.getBoolean("overwriteOwner");
-    boolean overwriteTimeStamp=Globals.prefs.getBoolean("overwriteTimeStamp");
+    boolean overwriteOwner=Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER);
+    boolean overwriteTimeStamp=Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP);
     for (    String key : fromDatabase.getKeySet()) {
       originalEntry=fromDatabase.getEntryById(key);
       BibtexEntry be=(BibtexEntry)(originalEntry.clone());
-      be.setId(Util.createNeutralId());
+      be.setId(IdGenerator.next());
       Util.setAutomaticFields(be,overwriteOwner,overwriteTimeStamp);
       database.insertEntry(be);
       appendedEntries.add(be);
@@ -32,9 +32,11 @@
     GroupTreeNode newGroups=meta.getGroups();
     if (newGroups != null) {
       if (newGroups.getGroup() instanceof AllEntriesGroup) {
-        ExplicitGroup group=new ExplicitGroup("Imported",AbstractGroup.INDEPENDENT);
+        ExplicitGroup group=new ExplicitGroup("Imported",GroupHierarchyType.INDEPENDENT);
         newGroups.setGroup(group);
-        for (        BibtexEntry appendedEntry : appendedEntries)         group.addEntry(appendedEntry);
+        for (        BibtexEntry appendedEntry : appendedEntries) {
+          group.addEntry(appendedEntry);
+        }
       }
       frame.groupSelector.addGroups(newGroups,ce);
       GroupTreeNode node;
@@ -42,7 +44,9 @@
       BibtexEntry entry;
       for (Enumeration<GroupTreeNode> e=newGroups.preorderEnumeration(); e.hasMoreElements(); ) {
         node=e.nextElement();
-        if (!(node.getGroup() instanceof ExplicitGroup))         continue;
+        if (!(node.getGroup() instanceof ExplicitGroup)) {
+          continue;
+        }
         group=(ExplicitGroup)node.getGroup();
         for (int i=0; i < originalEntries.size(); ++i) {
           entry=originalEntries.get(i);

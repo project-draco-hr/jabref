@@ -2,7 +2,7 @@
   super(type);
   setUI(new VerticalLabelUI(false));
   setForeground(GUIGlobals.entryEditorLabelColor);
-  setHorizontalAlignment(RIGHT);
+  setHorizontalAlignment(SwingConstants.RIGHT);
   setFont(GUIGlobals.typeNameFont);
   addMouseListener(new MouseAdapter(){
     @Override public void mouseReleased(    MouseEvent e){
@@ -17,7 +17,9 @@
     }
     private void handleTypeChange(){
       JPopupMenu typeMenu=new JPopupMenu();
-      for (      String s : BibtexEntryType.ALL_TYPES.keySet())       typeMenu.add(new ChangeTypeAction(BibtexEntryType.getType(s),panel));
+      for (      String s : BibtexEntryType.getAllTypes()) {
+        typeMenu.add(new ChangeTypeAction(BibtexEntryType.getType(s),panel));
+      }
       typeMenu.show(ths,0,0);
     }
   }

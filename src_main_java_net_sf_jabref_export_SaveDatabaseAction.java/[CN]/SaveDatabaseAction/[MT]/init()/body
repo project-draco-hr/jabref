@@ -2,7 +2,9 @@
   success=false;
   cancelled=false;
   fileLockedError=false;
-  if (panel.getFile() == null)   saveAs();
+  if (panel.getFile() == null) {
+    saveAs();
+  }
  else {
     if (panel.isUpdatedExternally() || Globals.fileUpdateMonitor.hasBeenModified(panel.getFileMonitorHandle())) {
       String[] opts=new String[]{Globals.lang("Review changes"),Globals.lang("Save"),Globals.lang("Cancel")};
@@ -13,29 +15,23 @@
       }
  else       if (answer == JOptionPane.YES_OPTION) {
         cancelled=true;
-        (new Thread(new Runnable(){
-          public void run(){
-            if (!Util.waitForFileLock(panel.getFile(),10)) {
+        JabRefExecutorService.INSTANCE.execute(new Runnable(){
+          @Override public void run(){
+            if (!FileBasedLock.waitForFileLock(panel.getFile(),10)) {
               System.err.println("File locked, this will be trouble.");
             }
-            ChangeScanner scanner=new ChangeScanner(panel.frame(),panel);
-            scanner.changeScan(panel.getFile());
-            try {
-              scanner.join();
-            }
- catch (            InterruptedException e) {
-              e.printStackTrace();
-            }
+            ChangeScanner scanner=new ChangeScanner(panel.frame(),panel,panel.getFile());
+            JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThreadAndWait(scanner);
             if (scanner.changesFound()) {
               scanner.displayResult(new ChangeScanner.DisplayResultCallback(){
-                public void scanResultsResolved(                boolean resolved){
+                @Override public void scanResultsResolved(                boolean resolved){
                   if (!resolved) {
                     cancelled=true;
                   }
  else {
                     panel.setUpdatedExternally(false);
                     SwingUtilities.invokeLater(new Runnable(){
-                      public void run(){
+                      @Override public void run(){
                         panel.getSidePaneManager().hide("fileUpdate");
                       }
                     }
@@ -47,7 +43,7 @@
             }
           }
         }
-)).start();
+);
         return;
       }
  else {

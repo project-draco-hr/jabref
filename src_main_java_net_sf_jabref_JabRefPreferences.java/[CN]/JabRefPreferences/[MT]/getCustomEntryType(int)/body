@@ -1,17 +1,15 @@
 {
   String nr="" + number;
-  String name=get(CUSTOM_TYPE_NAME + nr);
-  String[] req=getStringArray(CUSTOM_TYPE_REQ + nr), opt=getStringArray(CUSTOM_TYPE_OPT + nr), priOpt=getStringArray(CUSTOM_TYPE_PRIOPT + nr);
+  String name=get(JabRefPreferences.CUSTOM_TYPE_NAME + nr);
+  String[] req=getStringArray(JabRefPreferences.CUSTOM_TYPE_REQ + nr);
+  String[] opt=getStringArray(JabRefPreferences.CUSTOM_TYPE_OPT + nr);
+  String[] priOpt=getStringArray(JabRefPreferences.CUSTOM_TYPE_PRIOPT + nr);
   if (name == null) {
     return null;
   }
   if (priOpt == null) {
-    return new CustomEntryType(Util.nCase(name),req,opt);
+    return new CustomEntryType(StringUtil.nCase(name),req,opt);
   }
-  ArrayList<String> secOpt=new ArrayList<String>();
-  Collections.addAll(secOpt,opt);
-  for (  String aPriOpt : priOpt) {
-    secOpt.remove(aPriOpt);
-  }
-  return new CustomEntryType(Util.nCase(name),req,priOpt,secOpt.toArray(new String[secOpt.size()]));
+  String[] secOpt=Util.getRemainder(opt,priOpt);
+  return new CustomEntryType(StringUtil.nCase(name),req,priOpt,secOpt);
 }

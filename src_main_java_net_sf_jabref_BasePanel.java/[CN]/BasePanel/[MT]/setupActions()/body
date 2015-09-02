@@ -1,16 +1,16 @@
 {
   saveAction=new SaveDatabaseAction(this);
-  cleanUpAction=new CleanUpAction(this);
+  CleanUpAction cleanUpAction=new CleanUpAction(this);
   actions.put("undo",undoAction);
   actions.put("redo",redoAction);
   actions.put("focusTable",new BaseAction(){
-    public void action() throws Throwable {
+    @Override public void action() throws Throwable {
       new FocusRequester(mainTable);
     }
   }
 );
   actions.put("edit",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       selectionListener.editSignalled();
     }
   }
@@ -18,7 +18,7 @@
   actions.put("test",new FindFullTextAction(this));
   actions.put("save",saveAction);
   actions.put("saveAs",new BaseAction(){
-    public void action() throws Throwable {
+    @Override public void action() throws Throwable {
       saveAction.saveAs();
     }
   }
@@ -26,12 +26,12 @@
   actions.put("saveSelectedAs",new SaveSelectedAction(FileActions.DatabaseSaveType.DEFAULT));
   actions.put("saveSelectedAsPlain",new SaveSelectedAction(FileActions.DatabaseSaveType.PLAIN_BIBTEX));
   actions.put("copy",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,BasePanel.this);
-        output(Globals.lang("Copied") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry") + "."));
+        output(Globals.lang("Copied") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry") + '.'));
       }
  else {
         int[] rows=mainTable.getSelectedRows(), cols=mainTable.getSelectedColumns();
@@ -40,7 +40,7 @@
           if (o != null) {
             StringSelection ss=new StringSelection(o.toString());
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
-            output(Globals.lang("Copied cell contents") + ".");
+            output(Globals.lang("Copied cell contents") + '.');
           }
         }
       }
@@ -48,7 +48,7 @@
   }
 );
   actions.put("cut",new BaseAction(){
-    public void action() throws Throwable {
+    @Override public void action() throws Throwable {
       runCommand("copy");
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
@@ -58,7 +58,7 @@
           ensureNotShowing(be);
           ce.addEdit(new UndoableRemoveEntry(database,be,BasePanel.this));
         }
-        frame.output(Globals.lang("Cut_pr") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
+        frame.output(Globals.lang("Cut_pr") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ '.');
         ce.end();
         undoManager.addEdit(ce);
         markBaseChanged();
@@ -67,7 +67,7 @@
   }
 );
   actions.put("delete",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         boolean goOn=showDeleteConfirmationDialog(bes.length);
@@ -79,7 +79,7 @@
             ce.addEdit(new UndoableRemoveEntry(database,be,BasePanel.this));
           }
           markBaseChanged();
-          frame.output(Globals.lang("Deleted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ ".");
+          frame.output(Globals.lang("Deleted") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : Globals.lang("entry"))+ '.');
           ce.end();
           undoManager.addEdit(ce);
         }
@@ -88,7 +88,7 @@
   }
 );
   actions.put("paste",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       Transferable content=Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
       if (content != null) {
         BibtexEntry[] bes=null;
@@ -107,7 +107,7 @@ catch (          IOException ex) {
           try {
             BibtexParser bp=new BibtexParser(new java.io.StringReader((String)(content.getTransferData(DataFlavor.stringFlavor))));
             BibtexDatabase db=bp.parse().getDatabase();
-            Util.pr("Parsed " + db.getEntryCount() + " entries from clipboard text");
+            LOGGER.info("Parsed " + db.getEntryCount() + " entries from clipboard text");
             if (db.getEntryCount() > 0) {
               bes=db.getEntries().toArray(new BibtexEntry[db.getEntryCount()]);
             }
@@ -125,21 +125,23 @@ catch (          Throwable ex) {
           for (          BibtexEntry be1 : bes) {
             try {
               BibtexEntry be=(BibtexEntry)(be1.clone());
-              if (firstBE == null)               firstBE=be;
-              Util.setAutomaticFields(be,Globals.prefs.getBoolean("overwriteOwner"),Globals.prefs.getBoolean("overwriteTimeStamp"));
-              be.setId(Util.createNeutralId());
+              if (firstBE == null) {
+                firstBE=be;
+              }
+              Util.setAutomaticFields(be,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
+              be.setId(IdGenerator.next());
               database.insertEntry(be);
               ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
             }
  catch (            KeyCollisionException ex) {
-              Util.pr("KeyCollisionException... this shouldn't happen.");
+              LOGGER.info("KeyCollisionException... this shouldn't happen.",ex);
             }
           }
           ce.end();
           undoManager.addEdit(ce);
-          output(Globals.lang("Pasted") + " " + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry"))+ ".");
+          output(Globals.lang("Pasted") + ' ' + (bes.length > 1 ? bes.length + " " + Globals.lang("entries") : "1 " + Globals.lang("entry"))+ '.');
           markBaseChanged();
-          if (Globals.prefs.getBoolean("autoOpenForm")) {
+          if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_OPEN_FORM)) {
             selectionListener.editSignalled(firstBE);
           }
           highlightEntry(firstBE);
@@ -149,13 +151,13 @@ catch (          Throwable ex) {
   }
 );
   actions.put("selectAll",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       mainTable.selectAll();
     }
   }
 );
   actions.put("editPreamble",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       if (preambleEditor == null) {
         PreambleEditor form=new PreambleEditor(frame,BasePanel.this,database,Globals.prefs);
         Util.placeDialog(form,frame);
@@ -169,7 +171,7 @@ catch (          Throwable ex) {
   }
 );
   actions.put("editStrings",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       if (stringDialog == null) {
         StringDialog form=new StringDialog(frame,BasePanel.this,database,Globals.prefs);
         Util.placeDialog(form,frame);
@@ -183,14 +185,14 @@ catch (          Throwable ex) {
   }
 );
   actions.put("toggleGroups",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       sidePaneManager.toggle("groups");
       frame.groupToggle.setSelected(sidePaneManager.isComponentVisible("groups"));
     }
   }
 );
   actions.put("toggleToolbar",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       frame.tlb.setVisible(!frame.tlb.isVisible());
     }
   }
@@ -199,7 +201,7 @@ catch (          Throwable ex) {
   actions.put("dbExport",new AbstractWorker(){
     String errorMessage=null;
     boolean connectToDB=false;
-    public void init(){
+    @Override public void init(){
       DBStrings dbs=metaData.getDBStrings();
       if (!dbs.isConfigValid()) {
         if (!dbs.isInitialized()) {
@@ -219,7 +221,7 @@ catch (          Throwable ex) {
         connectToDB=true;
       }
     }
-    public void run(){
+    @Override public void run(){
       if (connectToDB) {
         DBStrings dbs=metaData.getDBStrings();
         try {
@@ -234,12 +236,12 @@ catch (          Throwable ex) {
           errorMessage=SQLUtil.getExceptionMessage(ex);
           ex.printStackTrace();
           dbs.isConfigValid(false);
-          JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + '\n' + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         }
         metaData.setDBStrings(dbs);
       }
     }
-    public void update(){
+    @Override public void update(){
       if (errorMessage == null) {
         if (connectToDB) {
           frame.output(Globals.lang("%0 export successful"));
@@ -248,7 +250,7 @@ catch (          Throwable ex) {
  else {
         String preamble="Could not export to SQL database for the following reason:";
         frame.output(Globals.lang(preamble) + "  " + errorMessage);
-        JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + '\n' + errorMessage,Globals.lang("Export to SQL database"),JOptionPane.ERROR_MESSAGE);
         errorMessage=null;
       }
     }
@@ -266,27 +268,31 @@ catch (          Throwable ex) {
     List<BibtexEntry> entries;
     int numSelected;
     boolean cancelled=false;
-    public void init(){
+    @Override public void init(){
       entries=new ArrayList<BibtexEntry>(Arrays.asList(getSelectedEntries()));
       numSelected=entries.size();
-      if (entries.size() == 0) {
+      if (entries.isEmpty()) {
         JOptionPane.showMessageDialog(frame,Globals.lang("First select the entries you want keys to be generated for."),Globals.lang("Autogenerate BibTeX key"),JOptionPane.INFORMATION_MESSAGE);
         return;
       }
       frame.block();
-      output(Globals.lang("Generating BibTeX key for") + " " + numSelected+ " "+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
+      output(Globals.lang("Generating BibTeX key for") + ' ' + numSelected+ ' '+ (numSelected > 1 ? Globals.lang("entries") : Globals.lang("entry"))+ "...");
     }
-    public void run(){
-      BibtexEntry bes=null;
+    @Override public void run(){
+      BibtexEntry bes;
       NamedCompound ce=new NamedCompound(Globals.lang("autogenerate keys"));
       for (Iterator<BibtexEntry> i=entries.iterator(); i.hasNext(); ) {
         bes=i.next();
         if (bes.getField(BibtexFields.KEY_FIELD) != null) {
-          if (Globals.prefs.getBoolean("avoidOverwritingKey"))           i.remove();
- else           if (Globals.prefs.getBoolean("warnBeforeOverwritingKey")) {
+          if (Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
+            i.remove();
+          }
+ else           if (Globals.prefs.getBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY)) {
             CheckBoxMessage cbm=new CheckBoxMessage(Globals.lang("One or more keys will be overwritten. Continue?"),Globals.lang("Disable this confirmation dialog"),false);
             int answer=JOptionPane.showConfirmDialog(frame,cbm,Globals.lang("Overwrite keys"),JOptionPane.YES_NO_OPTION);
-            if (cbm.isSelected())             Globals.prefs.putBoolean("warnBeforeOverwritingKey",false);
+            if (cbm.isSelected()) {
+              Globals.prefs.putBoolean(JabRefPreferences.WARN_BEFORE_OVERWRITING_KEY,false);
+            }
             if (answer == JOptionPane.NO_OPTION) {
               cancelled=true;
               return;
@@ -296,10 +302,12 @@ catch (          Throwable ex) {
         }
       }
       HashMap<BibtexEntry,Object> oldvals=new HashMap<BibtexEntry,Object>();
-      if (!Globals.prefs.getBoolean("avoidOverwritingKey"))       for (      BibtexEntry entry : entries) {
-        bes=entry;
-        oldvals.put(bes,bes.getField(BibtexFields.KEY_FIELD));
-        database.setCiteKeyForEntry(bes.getId(),null);
+      if (!Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
+        for (        BibtexEntry entry : entries) {
+          bes=entry;
+          oldvals.put(bes,bes.getField(BibtexFields.KEY_FIELD));
+          database.setCiteKeyForEntry(bes.getId(),null);
+        }
       }
       for (      BibtexEntry entry : entries) {
         bes=entry;
@@ -309,7 +317,7 @@ catch (          Throwable ex) {
       ce.end();
       undoManager.addEdit(ce);
     }
-    public void update(){
+    @Override public void update(){
       database.setFollowCrossrefs(true);
       if (cancelled) {
         frame.unblock();
@@ -319,34 +327,36 @@ catch (          Throwable ex) {
       numSelected=entries.size();
       for (      final BibtexEntry bibEntry : entries) {
         SwingUtilities.invokeLater(new Runnable(){
-          public void run(){
+          @Override public void run(){
             final int row=mainTable.findEntry(bibEntry);
-            if (row >= 0 && mainTable.getSelectedRowCount() < entries.size())             mainTable.addRowSelectionInterval(row,row);
+            if ((row >= 0) && (mainTable.getSelectedRowCount() < entries.size())) {
+              mainTable.addRowSelectionInterval(row,row);
+            }
           }
         }
 );
       }
-      output(Globals.lang("Generated BibTeX key for") + " " + numSelected+ " "+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
+      output(Globals.lang("Generated BibTeX key for") + ' ' + numSelected+ ' '+ (numSelected != 1 ? Globals.lang("entries") : Globals.lang("entry")));
       frame.unblock();
     }
   }
 );
   actions.put("Cleanup",cleanUpAction);
   actions.put("mergeEntries",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       new MergeEntriesDialog(BasePanel.this);
     }
   }
 );
   actions.put("search",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       frame.setSearchBarVisible(true);
       frame.getSearchBar().startSearch();
     }
   }
 );
   actions.put("toggleSearch",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       frame.setSearchBarVisible(!frame.searchBar.isVisible());
       boolean on=frame.searchBar.isVisible();
       if (on)       frame.getSearchBar().startSearch();
@@ -354,20 +364,24 @@ catch (          Throwable ex) {
   }
 );
   actions.put("incSearch",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       frame.setSearchBarVisible(true);
       frame.getSearchBar().startIncrementalSearch();
     }
   }
 );
   actions.put("copyKey",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
         Vector<Object> keys=new Vector<Object>();
-        for (        BibtexEntry be : bes)         if (be.getField(BibtexFields.KEY_FIELD) != null)         keys.add(be.getField(BibtexFields.KEY_FIELD));
-        if (keys.size() == 0) {
+        for (        BibtexEntry be : bes) {
+          if (be.getField(BibtexFields.KEY_FIELD) != null) {
+            keys.add(be.getField(BibtexFields.KEY_FIELD));
+          }
+        }
+        if (keys.isEmpty()) {
           output("None of the selected entries have BibTeX keys.");
           return;
         }
@@ -378,20 +392,28 @@ catch (          Throwable ex) {
         }
         StringSelection ss=new StringSelection(sb.toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
-        if (keys.size() == bes.length)         output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + ".");
- else         output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
+        if (keys.size() == bes.length) {
+          output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + '.');
+        }
+ else {
+          output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
+        }
       }
     }
   }
 );
   actions.put("copyCiteKey",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
         Vector<Object> keys=new Vector<Object>();
-        for (        BibtexEntry be : bes)         if (be.getField(BibtexFields.KEY_FIELD) != null)         keys.add(be.getField(BibtexFields.KEY_FIELD));
-        if (keys.size() == 0) {
+        for (        BibtexEntry be : bes) {
+          if (be.getField(BibtexFields.KEY_FIELD) != null) {
+            keys.add(be.getField(BibtexFields.KEY_FIELD));
+          }
+        }
+        if (keys.isEmpty()) {
           output("None of the selected entries have BibTeX keys.");
           return;
         }
@@ -400,16 +422,20 @@ catch (          Throwable ex) {
           sb.append(',');
           sb.append((String)keys.elementAt(i));
         }
-        StringSelection ss=new StringSelection("\\cite{" + sb.toString() + "}");
+        StringSelection ss=new StringSelection("\\cite{" + sb.toString() + '}');
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
-        if (keys.size() == bes.length)         output(bes.length > 1 ? Globals.lang("Copied keys") : Globals.lang("Copied key") + ".");
- else         output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
+        if (keys.size() == bes.length) {
+          output(bes.length > 1 ? Globals.lang("Copied keys") : Globals.lang("Copied key") + '.');
+        }
+ else {
+          output(Globals.lang("Warning") + ": " + (bes.length - keys.size())+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
+        }
       }
     }
   }
 );
   actions.put("copyKeyAndTitle",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length > 0)) {
         storeCurrentEdit();
@@ -424,9 +450,11 @@ catch (          Throwable ex) {
         }
         StringBuilder sb=new StringBuilder();
         int copied=0;
-        for (        BibtexEntry be : bes)         if (be.getField(BibtexFields.KEY_FIELD) != null) {
-          copied++;
-          sb.append(layout.doLayout(be,database));
+        for (        BibtexEntry be : bes) {
+          if (be.getField(BibtexFields.KEY_FIELD) != null) {
+            copied++;
+            sb.append(layout.doLayout(be,database));
+          }
         }
         if (copied == 0) {
           output("None of the selected entries have BibTeX keys.");
@@ -434,17 +462,21 @@ catch (          Throwable ex) {
         }
         StringSelection ss=new StringSelection(sb.toString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
-        if (copied == bes.length)         output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + ".");
- else         output(Globals.lang("Warning") + ": " + (copied)+ " "+ Globals.lang("out of")+ " "+ bes.length+ " "+ Globals.lang("entries have undefined BibTeX key")+ ".");
+        if (copied == bes.length) {
+          output(Globals.lang((bes.length > 1) ? "Copied keys" : "Copied key") + '.');
+        }
+ else {
+          output(Globals.lang("Warning") + ": " + (copied)+ ' '+ Globals.lang("out of")+ ' '+ bes.length+ ' '+ Globals.lang("entries have undefined BibTeX key")+ '.');
+        }
       }
     }
   }
 );
   actions.put("mergeDatabase",new AppendDatabaseAction(frame,this));
   actions.put("openFile",new BaseAction(){
-    public void action(){
-      (new Thread(){
-        public void run(){
+    @Override public void action(){
+      JabRefExecutorService.INSTANCE.execute(new Runnable(){
+        @Override public void run(){
           BibtexEntry[] bes=mainTable.getSelectedEntries();
           String field="ps";
           if ((bes != null) && (bes.length == 1)) {
@@ -461,7 +493,7 @@ catch (          Throwable ex) {
             if (entry != null) {
               try {
                 Util.openExternalFileAnyFormat(metaData,entry.getLink(),entry.getType());
-                output(Globals.lang("External viewer called") + ".");
+                output(Globals.lang("External viewer called") + '.');
               }
  catch (              IOException e) {
                 output(Globals.lang("Could not open link"));
@@ -479,7 +511,7 @@ catch (          Throwable ex) {
               filepath=link.toString();
             }
  else {
-              if (Globals.prefs.getBoolean("runAutomaticFileSearch")) {
+              if (Globals.prefs.getBoolean(JabRefPreferences.RUN_AUTOMATIC_FILE_SEARCH)) {
                 final Collection<BibtexEntry> entries=new ArrayList<BibtexEntry>();
                 entries.add(bes[0]);
                 ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
@@ -499,19 +531,21 @@ catch (          Throwable ex) {
                   String regExp=Globals.prefs.get(JabRefPreferences.REG_EXP_SEARCH_EXPRESSION_KEY);
                   result=RegExpFileSearch.findFilesForSet(entries,extensions,dirs,regExp);
                 }
- else                 result=Util.findAssociatedFiles(entries,extensions,dirs);
+ else {
+                  result=Util.findAssociatedFiles(entries,extensions,dirs);
+                }
                 if (result.get(bes[0]) != null) {
                   List<File> res=result.get(bes[0]);
-                  if (res.size() > 0) {
+                  if (!res.isEmpty()) {
                     filepath=res.get(0).getPath();
                     int index=filepath.lastIndexOf('.');
-                    if ((index >= 0) && (index < filepath.length() - 1)) {
+                    if ((index >= 0) && (index < (filepath.length() - 1))) {
                       String extension=filepath.substring(index + 1);
                       ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(extension);
                       if (type != null) {
                         try {
                           Util.openExternalFileAnyFormat(metaData,filepath,type);
-                          output(Globals.lang("External viewer called") + ".");
+                          output(Globals.lang("External viewer called") + '.');
                           return;
                         }
  catch (                        IOException ex) {
@@ -526,26 +560,30 @@ catch (          Throwable ex) {
             if (filepath != null) {
               try {
                 Util.openExternalViewer(metaData(),filepath,field);
-                output(Globals.lang("External viewer called") + ".");
+                output(Globals.lang("External viewer called") + '.');
               }
  catch (              IOException ex) {
                 output(Globals.lang("Error") + ": " + ex.getMessage());
               }
             }
- else             output(Globals.lang("No pdf or ps defined, and no file matching Bibtex key found") + ".");
+ else {
+              output(Globals.lang("No pdf or ps defined, and no file matching Bibtex key found") + '.');
+            }
           }
- else           output(Globals.lang("No entries or multiple entries selected."));
+ else {
+            output(Globals.lang("No entries or multiple entries selected."));
+          }
         }
       }
-).start();
+);
     }
   }
 );
   actions.put("addFileLink",new AttachFileAction(this));
   actions.put("openExternalFile",new BaseAction(){
-    public void action(){
-      (new Thread(){
-        public void run(){
+    @Override public void action(){
+      JabRefExecutorService.INSTANCE.execute(new Runnable(){
+        @Override public void run(){
           BibtexEntry[] bes=mainTable.getSelectedEntries();
           String field=GUIGlobals.FILE_FIELD;
           if ((bes != null) && (bes.length == 1)) {
@@ -564,17 +602,19 @@ catch (          Throwable ex) {
             ExternalFileMenuItem item=new ExternalFileMenuItem(frame(),bes[0],"",flEntry.getLink(),flEntry.getType().getIcon(),metaData(),flEntry.getType());
             item.openLink();
           }
- else           output(Globals.lang("No entries or multiple entries selected."));
+ else {
+            output(Globals.lang("No entries or multiple entries selected."));
+          }
         }
       }
-).start();
+);
     }
   }
 );
   actions.put("openFolder",new BaseAction(){
-    public void action(){
-      (new Thread(){
-        public void run(){
+    @Override public void action(){
+      JabRefExecutorService.INSTANCE.execute(new Runnable(){
+        @Override public void run(){
           BibtexEntry[] bes=mainTable.getSelectedEntries();
           List<File> files=Util.getListOfLinkedFiles(bes,metaData().getFileDirectory(GUIGlobals.FILE_FIELD));
           for (          File f : files) {
@@ -582,17 +622,17 @@ catch (          Throwable ex) {
               Util.openFolderAndSelectFile(f.getAbsolutePath());
             }
  catch (            IOException e) {
-              logger.fine(e.getMessage());
+              LOGGER.info("Could not open folder",e);
             }
           }
         }
       }
-).start();
+);
     }
   }
 );
   actions.put("openUrl",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       String field="doi";
       if ((bes != null) && (bes.length == 1)) {
@@ -604,7 +644,7 @@ catch (          Throwable ex) {
         if (link != null) {
           try {
             Util.openExternalViewer(metaData(),link.toString(),field);
-            output(Globals.lang("External viewer called") + ".");
+            output(Globals.lang("External viewer called") + '.');
           }
  catch (          IOException ex) {
             output(Globals.lang("Error") + ": " + ex.getMessage());
@@ -624,47 +664,61 @@ catch (          Throwable ex) {
           if (entry != null) {
             try {
               Util.openExternalFileAnyFormat(metaData,entry.getLink(),entry.getType());
-              output(Globals.lang("External viewer called") + ".");
+              output(Globals.lang("External viewer called") + '.');
             }
  catch (            IOException e) {
               output(Globals.lang("Could not open link"));
               e.printStackTrace();
             }
           }
- else           output(Globals.lang("No url defined") + ".");
+ else {
+            output(Globals.lang("No url defined") + '.');
+          }
         }
       }
- else       output(Globals.lang("No entries or multiple entries selected."));
+ else {
+        output(Globals.lang("No entries or multiple entries selected."));
+      }
     }
   }
 );
   actions.put("openSpires",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       BibtexEntry[] bes=mainTable.getSelectedEntries();
       if ((bes != null) && (bes.length == 1)) {
         Object link=null;
-        if (bes[0].getField("eprint") != null)         link=SPIRESFetcher.constructUrlFromEprint(bes[0].getField("eprint"));
- else         if (bes[0].getField("slaccitation") != null)         link=SPIRESFetcher.constructUrlFromSlaccitation(bes[0].getField("slaccitation"));
+        if (bes[0].getField("eprint") != null) {
+          link=SPIRESFetcher.constructUrlFromEprint(bes[0].getField("eprint"));
+        }
+ else         if (bes[0].getField("slaccitation") != null) {
+          link=SPIRESFetcher.constructUrlFromSlaccitation(bes[0].getField("slaccitation"));
+        }
         if (link != null) {
           try {
             Util.openExternalViewer(metaData(),link.toString(),"url");
-            output(Globals.lang("External viewer called") + ".");
+            output(Globals.lang("External viewer called") + '.');
           }
  catch (          IOException ex) {
             output(Globals.lang("Error") + ": " + ex.getMessage());
           }
         }
- else         output(Globals.lang("No url defined") + ".");
+ else {
+          output(Globals.lang("No url defined") + '.');
+        }
       }
- else       output(Globals.lang("No entries or multiple entries selected."));
+ else {
+        output(Globals.lang("No entries or multiple entries selected."));
+      }
     }
   }
 );
   actions.put("replaceAll",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       ReplaceStringDialog rsd=new ReplaceStringDialog(frame);
       rsd.setVisible(true);
-      if (!rsd.okPressed())       return;
+      if (!rsd.okPressed()) {
+        return;
+      }
       int counter=0;
       NamedCompound ce=new NamedCompound(Globals.lang("Replace string"));
       if (!rsd.selOnly()) {
@@ -674,9 +728,11 @@ catch (          Throwable ex) {
       }
  else {
         BibtexEntry[] bes=mainTable.getSelectedEntries();
-        for (        BibtexEntry be : bes)         counter+=rsd.replace(be,ce);
+        for (        BibtexEntry be : bes) {
+          counter+=rsd.replace(be,ce);
+        }
       }
-      output(Globals.lang("Replaced") + " " + counter+ " "+ Globals.lang(counter == 1 ? "occurence" : "occurences")+ ".");
+      output(Globals.lang("Replaced") + ' ' + counter+ ' '+ Globals.lang(counter == 1 ? "occurence" : "occurences")+ '.');
       if (counter > 0) {
         ce.end();
         undoManager.addEdit(ce);
@@ -686,26 +742,27 @@ catch (          Throwable ex) {
   }
 );
   actions.put("dupliCheck",new BaseAction(){
-    public void action(){
-      DuplicateSearch ds=new DuplicateSearch(BasePanel.this);
-      ds.start();
+    @Override public void action(){
+      JabRefExecutorService.INSTANCE.execute(new DuplicateSearch(BasePanel.this));
     }
   }
 );
   actions.put("plainTextImport",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       EntryTypeDialog etd=new EntryTypeDialog(frame);
       Util.placeDialog(etd,BasePanel.this);
       etd.setVisible(true);
       BibtexEntryType tp=etd.getChoice();
-      if (tp == null)       return;
-      String id=Util.createNeutralId();
+      if (tp == null) {
+        return;
+      }
+      String id=IdGenerator.next();
       BibtexEntry bibEntry=new BibtexEntry(id,tp);
       TextInputDialog tidialog=new TextInputDialog(frame,BasePanel.this,"import",true,bibEntry);
       Util.placeDialog(tidialog,BasePanel.this);
       tidialog.setVisible(true);
       if (tidialog.okPressed()) {
-        Util.setAutomaticFields(Arrays.asList(bibEntry),false,false,false);
+        Util.setAutomaticFields(Collections.singletonList(bibEntry),false,false,false);
         insertEntry(bibEntry);
       }
     }
@@ -713,7 +770,7 @@ catch (          Throwable ex) {
 );
   actions.put("markEntries",new MarkEntriesAction(frame,0));
   actions.put("unmarkEntries",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       try {
         BibtexEntry[] bes=mainTable.getSelectedEntries();
         if (bes.length == 0) {
@@ -722,7 +779,7 @@ catch (          Throwable ex) {
         }
         NamedCompound ce=new NamedCompound(Globals.lang("Unmark entries"));
         for (        BibtexEntry be : bes) {
-          Util.unmarkEntry(be,false,database,ce);
+          EntryMarker.unmarkEntry(be,false,database,ce);
         }
         ce.end();
         undoManager.addEdit(ce);
@@ -743,10 +800,10 @@ catch (          Throwable ex) {
   }
 );
   actions.put("unmarkAll",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       NamedCompound ce=new NamedCompound(Globals.lang("Unmark all"));
       for (      BibtexEntry be : database.getEntries()) {
-        Util.unmarkEntry(be,false,database,ce);
+        EntryMarker.unmarkEntry(be,false,database,ce);
       }
       ce.end();
       undoManager.addEdit(ce);
@@ -768,48 +825,48 @@ catch (          Throwable ex) {
     actions.put(status.getActionName(),status.getAction(this.frame));
   }
   actions.put("togglePreview",new BaseAction(){
-    public void action(){
-      boolean enabled=!Globals.prefs.getBoolean("previewEnabled");
-      Globals.prefs.putBoolean("previewEnabled",enabled);
+    @Override public void action(){
+      boolean enabled=!Globals.prefs.getBoolean(JabRefPreferences.PREVIEW_ENABLED);
+      Globals.prefs.putBoolean(JabRefPreferences.PREVIEW_ENABLED,enabled);
       frame.setPreviewActive(enabled);
       frame.previewToggle.setSelected(enabled);
     }
   }
 );
   actions.put("toggleHighlightGroupsMatchingAny",new BaseAction(){
-    public void action(){
-      boolean enabled=!Globals.prefs.getBoolean("highlightGroupsMatchingAny");
-      Globals.prefs.putBoolean("highlightGroupsMatchingAny",enabled);
+    @Override public void action(){
+      boolean enabled=!Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY);
+      Globals.prefs.putBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY,enabled);
       frame.highlightAny.setSelected(enabled);
       if (enabled) {
         frame.highlightAll.setSelected(false);
-        Globals.prefs.putBoolean("highlightGroupsMatchingAll",false);
+        Globals.prefs.putBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL,false);
       }
       groupsHighlightListener.listChanged(null);
     }
   }
 );
   actions.put("toggleHighlightGroupsMatchingAll",new BaseAction(){
-    public void action(){
-      boolean enabled=!Globals.prefs.getBoolean("highlightGroupsMatchingAll");
-      Globals.prefs.putBoolean("highlightGroupsMatchingAll",enabled);
+    @Override public void action(){
+      boolean enabled=!Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL);
+      Globals.prefs.putBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL,enabled);
       frame.highlightAll.setSelected(enabled);
       if (enabled) {
         frame.highlightAny.setSelected(false);
-        Globals.prefs.putBoolean("highlightGroupsMatchingAny",false);
+        Globals.prefs.putBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY,false);
       }
       groupsHighlightListener.listChanged(null);
     }
   }
 );
   actions.put("switchPreview",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       selectionListener.switchPreview();
     }
   }
 );
   actions.put("manageSelectors",new BaseAction(){
-    public void action(){
+    @Override public void action(){
       ContentSelectorDialog2 csd=new ContentSelectorDialog2(frame,frame,BasePanel.this,false,metaData,null);
       Util.placeDialog(csd,frame);
       csd.setVisible(true);
@@ -826,13 +883,13 @@ catch (          Throwable ex) {
   actions.put("autoSetPs",new AutoSetExternalFileForEntries(this,"ps"));
   actions.put("autoSetFile",new SynchronizeFileField(this));
   actions.put("back",new BaseAction(){
-    public void action() throws Throwable {
+    @Override public void action() throws Throwable {
       back();
     }
   }
 );
   actions.put("forward",new BaseAction(){
-    public void action() throws Throwable {
+    @Override public void action() throws Throwable {
       forward();
     }
   }

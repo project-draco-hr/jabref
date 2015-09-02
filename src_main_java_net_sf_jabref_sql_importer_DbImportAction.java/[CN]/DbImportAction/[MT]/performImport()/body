@@ -13,7 +13,7 @@
         v.add(rs.getString("database_name"));
         matrix.add(v);
       }
-      if (matrix.size() > 0) {
+      if (!matrix.isEmpty()) {
         DBImportExportDialog dialogo=new DBImportExportDialog(frame,matrix,DBImportExportDialog.DialogType.IMPORTER);
         if (dialogo.removeAction) {
           String dbName=dialogo.selectedDB;
@@ -41,9 +41,9 @@
     }
  catch (    Exception ex) {
       String preamble="Could not import from SQL database for the following reason:";
-      errorMessage=SQLUtil.getExceptionMessage(ex);
+      String errorMessage=SQLUtil.getExceptionMessage(ex);
       dbs.isConfigValid(false);
-      JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + "\n" + errorMessage,Globals.lang("Import from SQL database"),JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(frame,Globals.lang(preamble) + '\n' + errorMessage,Globals.lang("Import from SQL database"),JOptionPane.ERROR_MESSAGE);
       frame.output(Globals.lang("Error importing from database"));
       ex.printStackTrace();
     }

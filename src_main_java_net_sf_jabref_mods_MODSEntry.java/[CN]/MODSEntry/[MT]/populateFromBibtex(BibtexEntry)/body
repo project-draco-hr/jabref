@@ -1,30 +1,51 @@
 {
   LayoutFormatter chars=new XMLChars();
   if (bibtex.getField("title") != null) {
-    if (CHARFORMAT)     title=chars.format(bibtex.getField("title"));
- else     title=bibtex.getField("title");
+    if (CHARFORMAT) {
+      title=chars.format(bibtex.getField("title"));
+    }
+ else {
+      title=bibtex.getField("title");
+    }
   }
   if (bibtex.getField("publisher") != null) {
-    if (CHARFORMAT)     publisher=chars.format(bibtex.getField("publisher"));
- else     publisher=bibtex.getField("publisher");
+    if (CHARFORMAT) {
+      publisher=chars.format(bibtex.getField("publisher"));
+    }
+ else {
+      publisher=bibtex.getField("publisher");
+    }
   }
-  if (bibtex.getField("bibtexkey") != null)   id=bibtex.getField("bibtexkey");
+  if (bibtex.getField("bibtexkey") != null) {
+    id=bibtex.getField("bibtexkey");
+  }
   if (bibtex.getField("place") != null) {
-    if (CHARFORMAT)     place=chars.format(bibtex.getField("place"));
- else     place=bibtex.getField("place");
+    String place=null;
+    if (CHARFORMAT) {
+      place=chars.format(bibtex.getField("place"));
+    }
+ else {
+      place=bibtex.getField("place");
+    }
   }
   date=getDate(bibtex);
   genre=getMODSgenre(bibtex);
-  if (bibtex.getField("author") != null)   authors=getAuthors(bibtex.getField("author"));
-  if (bibtex.getType() == BibtexEntryType.ARTICLE || bibtex.getType() == BibtexEntryType.INPROCEEDINGS) {
+  if (bibtex.getField("author") != null) {
+    authors=getAuthors(bibtex.getField("author"));
+  }
+  if ((bibtex.getType() == BibtexEntryTypes.ARTICLE) || (bibtex.getType() == BibtexEntryTypes.INPROCEEDINGS)) {
     host=new MODSEntry();
     host.entryType="relatedItem";
     host.title=bibtex.getField("booktitle");
     host.publisher=bibtex.getField("publisher");
     host.number=bibtex.getField("number");
-    if (bibtex.getField("pages") != null)     host.volume=bibtex.getField("volume");
+    if (bibtex.getField("pages") != null) {
+      host.volume=bibtex.getField("volume");
+    }
     host.issuance="continuing";
-    if (bibtex.getField("pages") != null)     host.pages=new PageNumbers(bibtex.getField("pages"));
+    if (bibtex.getField("pages") != null) {
+      host.pages=new PageNumbers(bibtex.getField("pages"));
+    }
   }
   populateExtensionFields(bibtex);
 }

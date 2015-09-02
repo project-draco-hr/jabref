@@ -5,20 +5,24 @@
   for (int i=0; i < format.length(); i++) {
     char c=format.charAt(i);
     if (!escaped) {
-      if (c == '\\')       escaped=true;
- else       sb.append(c);
+      if (c == '\\') {
+        escaped=true;
+      }
+ else {
+        sb.append(c);
+      }
     }
  else {
       escaped=false;
       if (c == '\\') {
-        sb.append(c);
+        sb.append('\\');
       }
- else       if (ESCAPE_SEQ.containsKey(c)) {
+ else       if (WrapFileLinks.ESCAPE_SEQ.containsKey(c)) {
         if (sb.length() > 0) {
           l.add(new FormatEntry(sb.toString()));
           sb=new StringBuilder();
         }
-        l.add(new FormatEntry(ESCAPE_SEQ.get(c)));
+        l.add(new FormatEntry(WrapFileLinks.ESCAPE_SEQ.get(c)));
       }
  else {
         sb.append('\\');
