@@ -1,2 +1,28 @@
 {
+  Objects.requireNonNull(frame);
+  Objects.requireNonNull(db);
+  Objects.requireNonNull(encoding);
+  Objects.requireNonNull(metaData);
+  this.encoding=encoding;
+  this.metaData=metaData;
+  this.sidePaneManager=GUIGlobals.sidePaneManager;
+  this.frame=frame;
+  database=db;
+  setupMainPanel();
+  setupActions();
+  metaData.setFile(file);
+  db.addDatabaseChangeListener(new GroupTreeUpdater());
+  if (file == null) {
+    if (!database.getEntries().isEmpty()) {
+      this.baseChanged=true;
+    }
+  }
+ else {
+    try {
+      fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(this,file);
+    }
+ catch (    IOException ex) {
+      LOGGER.warn("Could not register FileUpdateMonitor",ex);
+    }
+  }
 }
