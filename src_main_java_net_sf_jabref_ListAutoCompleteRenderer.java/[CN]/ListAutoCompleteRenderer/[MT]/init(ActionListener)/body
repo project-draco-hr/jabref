@@ -1,0 +1,20 @@
+{
+  this.acceptAction=newAcceptAction;
+  list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  list.setFocusable(false);
+  list.setRequestFocusEnabled(false);
+  list.setBorder(BorderFactory.createEmptyBorder(3,5,3,5));
+  list.addListSelectionListener(new ListSelectionListener(){
+    @Override public void valueChanged(    ListSelectionEvent e){
+      if (interpretSelectionChangeAsAccept && acceptAction != null)       acceptAction.actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,null));
+    }
+  }
+);
+  JScrollPane scrollPane=new JScrollPane(list);
+  scrollPane.setFocusable(false);
+  scrollPane.setRequestFocusEnabled(false);
+  scrollPane.setBorder(BorderFactory.createEmptyBorder());
+  scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+  scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+  return scrollPane;
+}

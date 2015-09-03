@@ -1,11 +1,4 @@
 {
-  popup.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.LIGHT_GRAY));
-  popup.setPopupSize(textComp.getWidth(),200);
-  popup.setLayout(new BorderLayout());
-  popup.setFocusable(false);
-  popup.setRequestFocusEnabled(false);
-  popup.add(renderer.init());
-  textComp.getDocument().addDocumentListener(documentListener);
   final Action upAction=new MoveAction(-1);
   final Action downAction=new MoveAction(1);
   final Action hidePopupAction=new AbstractAction(){
@@ -18,7 +11,7 @@
     public void actionPerformed(    ActionEvent e){
       E itemToInsert=renderer.getSelectedItem();
       if (itemToInsert == null)       return;
-      String toInsert=formater.formatItemToString(itemToInsert);
+      String toInsert=autoCompleter.getAutoCompleteText(itemToInsert);
       if (!autoCompleter.isSingleUnitField()) {
         int piv=textComp.getText().length() - 1;
         while ((piv >= 0) && !Character.isWhitespace(textComp.getText().charAt(piv)) && textComp.getText().charAt(piv) != ',') {
@@ -34,7 +27,13 @@
     }
   }
 ;
-  renderer.registerAcceptAction(acceptAction);
+  popup.setBorder(BorderFactory.createMatteBorder(1,1,1,1,Color.LIGHT_GRAY));
+  popup.setPopupSize(textComp.getWidth(),200);
+  popup.setLayout(new BorderLayout());
+  popup.setFocusable(false);
+  popup.setRequestFocusEnabled(false);
+  popup.add(renderer.init(acceptAction));
+  textComp.getDocument().addDocumentListener(documentListener);
   textComp.registerKeyboardAction(downAction,KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,0),JComponent.WHEN_FOCUSED);
   textComp.registerKeyboardAction(upAction,KeyStroke.getKeyStroke(KeyEvent.VK_UP,0),JComponent.WHEN_FOCUSED);
   this.textComp.addFocusListener(selectTextOnFocusGainHandler);

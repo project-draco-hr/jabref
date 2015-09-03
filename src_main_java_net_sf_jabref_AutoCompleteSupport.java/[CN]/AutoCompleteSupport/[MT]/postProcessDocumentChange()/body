@@ -3,8 +3,10 @@
   popup.setVisible(false);
   popup.setPopupSize(textComp.getWidth(),200);
   if (autoCompleter == null)   return;
-  if (textComp.isEnabled() && renderer.updateListData(autoCompleter.complete(text))) {
-    renderer.selectAutoCompleteTerm(text);
+  E[] candidates=autoCompleter.complete(text);
+  renderer.update(candidates);
+  if (textComp.isEnabled() && candidates.length > 0) {
+    renderer.selectItem(0);
     popup.show(textComp,0,textComp.getHeight());
   }
  else   popup.setVisible(false);
