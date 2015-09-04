@@ -3,6 +3,13 @@
     return false;
   }
   FieldEditor fieldEditor=editors.get(field);
-  fieldEditor.setText(content);
+  if (fieldEditor.getTextComponent() instanceof JTextComponent) {
+    int initialCaretPosition=((JTextComponent)fieldEditor).getCaretPosition();
+    fieldEditor.setText(content);
+    ((JTextComponent)fieldEditor).setCaretPosition(initialCaretPosition);
+  }
+ else {
+    fieldEditor.setText(content);
+  }
   return true;
 }
