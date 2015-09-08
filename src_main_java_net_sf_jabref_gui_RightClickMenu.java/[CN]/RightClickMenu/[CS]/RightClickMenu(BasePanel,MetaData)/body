@@ -166,6 +166,11 @@
     addSeparator();
   }
   add(new AbstractAction(Localization.lang("Open folder"),GUIGlobals.getImage("openFolder")){
+{
+      if (!isFieldSetForSelectedEntry("file")) {
+        this.setEnabled(false);
+      }
+    }
     @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand(Actions.OPEN_FOLDER);
@@ -177,6 +182,11 @@
   }
 );
   add(new AbstractAction(Localization.lang("Open file"),GUIGlobals.getImage("openExternalFile")){
+{
+      if (!isFieldSetForSelectedEntry("file")) {
+        this.setEnabled(false);
+      }
+    }
     @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand(Actions.OPEN_EXTERNAL_FILE);
@@ -199,6 +209,11 @@
   }
 );
   add(new AbstractAction(Localization.lang("Open URL or DOI"),GUIGlobals.getImage("www")){
+{
+      if (!(isFieldSetForSelectedEntry("url") || isFieldSetForSelectedEntry("doi"))) {
+        this.setEnabled(false);
+      }
+    }
     @Override public void actionPerformed(    ActionEvent e){
       try {
         panel.runCommand(Actions.OPEN_URL);
