@@ -1,16 +1,4 @@
 {
-  if (KEY_TO_ICON.containsKey(name)) {
-    String path=KEY_TO_ICON.get(name);
-    URL url=IconTheme.class.getResource(path);
-    if (url == null) {
-      LOGGER.warn(Localization.lang("Could not find image file") + " '" + path+ '\'');
-      return DEFAULT_ICON_URL;
-    }
- else {
-      return url;
-    }
-  }
- else {
-    return DEFAULT_ICON_URL;
-  }
+  String path=KEY_TO_ICON.getOrDefault(Objects.requireNonNull(name,"icon name"),DEFAULT_ICON_PATH);
+  return Objects.requireNonNull(IconTheme.class.getResource(path),"url");
 }

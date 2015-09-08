@@ -1,21 +1,17 @@
 {
-  Objects.requireNonNull(file,"passed URL to file must be not null");
+  Objects.requireNonNull(url,"url");
+  Objects.requireNonNull(prefix,"prefix");
   Map<String,String> result=new HashMap<>();
-  try (InputStream in=file.openStream()){
-    StringBuilder buffer=new StringBuilder();
-    int c;
-    while ((c=in.read()) != -1) {
-      buffer.append((char)c);
-    }
-    String[] lines=buffer.toString().split("\n");
-    for (    String line1 : lines) {
-      String line=line1.trim();
-      int index=line.indexOf("=");
-      if (index >= 0) {
-        String key=line.substring(0,index).trim();
-        String value=prefix + line.substring(index + 1).trim();
-        result.put(key,value);
+  try (BufferedReader in=new BufferedReader(new InputStreamReader(url.openStream()))){
+    String line;
+    while ((line=in.readLine()) != null) {
+      if (!line.contains("=")) {
+        continue;
       }
+      int index=line.indexOf("=");
+      String key=line.substring(0,index).trim();
+      String value=prefix + line.substring(index + 1).trim();
+      result.put(key,value);
     }
   }
  catch (  IOException e) {
