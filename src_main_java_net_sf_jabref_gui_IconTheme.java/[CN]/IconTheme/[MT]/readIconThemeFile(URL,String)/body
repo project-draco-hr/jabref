@@ -1,5 +1,6 @@
 {
-  HashMap<String,String> map=new HashMap<>();
+  Objects.requireNonNull(file,"passed URL to file must be not null");
+  Map<String,String> result=new HashMap<>();
   try (InputStream in=file.openStream()){
     StringBuilder buffer=new StringBuilder();
     int c;
@@ -13,9 +14,12 @@
       if (index >= 0) {
         String key=line.substring(0,index).trim();
         String value=prefix + line.substring(index + 1).trim();
-        map.put(key,value);
+        result.put(key,value);
       }
     }
   }
-   return map;
+ catch (  IOException e) {
+    LOGGER.warn(Localization.lang("Unable to read default icon theme."),e);
+  }
+  return result;
 }
