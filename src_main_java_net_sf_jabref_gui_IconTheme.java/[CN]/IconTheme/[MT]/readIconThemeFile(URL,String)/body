@@ -1,0 +1,21 @@
+{
+  Objects.requireNonNull(url,"url");
+  Objects.requireNonNull(prefix,"prefix");
+  Map<String,String> result=new HashMap<>();
+  try (BufferedReader in=new BufferedReader(new InputStreamReader(url.openStream()))){
+    String line;
+    while ((line=in.readLine()) != null) {
+      if (!line.contains("=")) {
+        continue;
+      }
+      int index=line.indexOf("=");
+      String key=line.substring(0,index).trim();
+      String value=prefix + line.substring(index + 1).trim();
+      result.put(key,value);
+    }
+  }
+ catch (  IOException e) {
+    LOGGER.warn(Localization.lang("Unable to read default icon theme."),e);
+  }
+  return result;
+}
