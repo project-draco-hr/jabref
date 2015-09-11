@@ -1,0 +1,11 @@
+{
+  KeyBindingsDialog d=new KeyBindingsDialog(new HashMap<>(prefs.getKeyBindings()),prefs.getDefaultKeys());
+  d.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+  d.pack();
+  Util.placeDialog(d,JabRefFrame.this);
+  d.setVisible(true);
+  if (d.getAction()) {
+    prefs.setNewKeyBindings(d.getNewKeyBindings());
+    JOptionPane.showMessageDialog(JabRefFrame.this,Localization.lang("Your new key bindings have been stored.") + '\n' + Localization.lang("You must restart JabRef for the new key " + "bindings to work properly."),Localization.lang("Key bindings changed"),JOptionPane.INFORMATION_MESSAGE);
+  }
+}

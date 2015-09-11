@@ -1,0 +1,19 @@
+{
+  List<BibtexEntry> result=null;
+  InputStream stream=null;
+  try {
+    File file=new File(filename);
+    stream=new FileInputStream(file);
+    if (!importer.isRecognizedFormat(stream)) {
+      throw new IOException(Localization.lang("Wrong file format"));
+    }
+    stream=new FileInputStream(file);
+    result=importer.importEntries(stream,status);
+  }
+  finally {
+    if (stream != null) {
+      stream.close();
+    }
+  }
+  return result;
+}

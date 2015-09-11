@@ -1,0 +1,20 @@
+{
+  if (bibEntry != null) {
+    try {
+      database.insertEntry(bibEntry);
+      if (Globals.prefs.getBoolean(JabRefPreferences.USE_OWNER)) {
+        Util.setAutomaticFields(bibEntry,true,true);
+      }
+      undoManager.addEdit(new UndoableInsertEntry(database,bibEntry,BasePanel.this));
+      output(Localization.lang("Added new") + " '" + bibEntry.getType().getName().toLowerCase()+ "' "+ Localization.lang("entry")+ '.');
+      markBaseChanged();
+      if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_OPEN_FORM)) {
+        selectionListener.editSignalled(bibEntry);
+      }
+      highlightEntry(bibEntry);
+    }
+ catch (    KeyCollisionException ex) {
+      LOGGER.info("Collision for bibtex key" + bibEntry.getId(),ex);
+    }
+  }
+}

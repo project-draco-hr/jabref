@@ -1,0 +1,66 @@
+{
+  if (bibentries == null || bibentries.isEmpty()) {
+    JOptionPane.showMessageDialog(JabRefFrame.this,Localization.lang("No entries found. Please make sure you are " + "using the correct import filter."),Localization.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
+    return 0;
+  }
+  int addedEntries=0;
+  Util.setAutomaticFields(bibentries,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
+  if (intoNew || tabbedPane.getTabCount() == 0) {
+    BibtexDatabase database=new BibtexDatabase();
+    for (    BibtexEntry entry : bibentries) {
+      entry.setId(IdGenerator.next());
+      database.insertEntry(entry);
+    }
+    BasePanel bp=new BasePanel(JabRefFrame.this,database,null,new MetaData(),Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING));
+    addedEntries=database.getEntryCount();
+    tabbedPane.add(GUIGlobals.untitledTitle,bp);
+    bp.markBaseChanged();
+    tabbedPane.setSelectedComponent(bp);
+    if (filename != null) {
+      output(Localization.lang("Imported database") + " '" + filename+ "' "+ Localization.lang("with")+ ' '+ database.getEntryCount()+ ' '+ Localization.lang("entries into new database")+ '.');
+    }
+  }
+ else {
+    BasePanel basePanel=basePanel();
+    BibtexDatabase database=basePanel.database;
+    int oldCount=database.getEntryCount();
+    NamedCompound ce=new NamedCompound(Localization.lang("Import entries"));
+    mainLoop:     for (    BibtexEntry entry : bibentries) {
+      boolean dupli=false;
+      for (      String s : database.getKeySet()) {
+        BibtexEntry existingEntry=database.getEntryById(s);
+        if (DuplicateCheck.isDuplicate(entry,existingEntry)) {
+          DuplicateResolverDialog drd=new DuplicateResolverDialog(JabRefFrame.this,existingEntry,entry,DuplicateResolverDialog.IMPORT_CHECK);
+          drd.setVisible(true);
+          int res=drd.getSelected();
+          if (res == DuplicateResolverDialog.KEEP_LOWER) {
+            dupli=true;
+          }
+ else           if (res == DuplicateResolverDialog.KEEP_UPPER) {
+            database.removeEntry(existingEntry.getId());
+            ce.addEdit(new UndoableRemoveEntry(database,existingEntry,basePanel));
+          }
+ else           if (res == DuplicateResolverDialog.BREAK) {
+            break mainLoop;
+          }
+          break;
+        }
+      }
+      if (!dupli) {
+        entry.setId(IdGenerator.next());
+        database.insertEntry(entry);
+        ce.addEdit(new UndoableInsertEntry(database,entry,basePanel));
+        addedEntries++;
+      }
+    }
+    if (addedEntries > 0) {
+      ce.end();
+      basePanel.undoManager.addEdit(ce);
+      basePanel.markBaseChanged();
+      if (filename != null) {
+        output(Localization.lang("Imported database") + " '" + filename+ "' "+ Localization.lang("with")+ ' '+ (database.getEntryCount() - oldCount)+ ' '+ Localization.lang("entries into new database")+ '.');
+      }
+    }
+  }
+  return addedEntries;
+}

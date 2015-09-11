@@ -1,0 +1,49 @@
+{
+  if (toShave == null) {
+    return null;
+  }
+  char first;
+  char second;
+  int begin=0;
+  int end=toShave.length();
+  boolean beginOk=false;
+  boolean endOk=false;
+  while (!beginOk) {
+    if (begin < toShave.length()) {
+      first=toShave.charAt(begin);
+      if (Character.isWhitespace(first)) {
+        begin++;
+      }
+ else {
+        beginOk=true;
+      }
+    }
+ else {
+      beginOk=true;
+    }
+  }
+  while (!endOk) {
+    if (end > begin + 1) {
+      first=toShave.charAt(end - 1);
+      if (Character.isWhitespace(first)) {
+        end--;
+      }
+ else {
+        endOk=true;
+      }
+    }
+ else {
+      endOk=true;
+    }
+  }
+  if (end > begin + 1) {
+    first=toShave.charAt(begin);
+    second=toShave.charAt(end - 1);
+    if (first == '{' && second == '}' || first == '"' && second == '"') {
+      begin++;
+      end--;
+    }
+  }
+  toShave=toShave.substring(begin,end);
+  return toShave;
+}

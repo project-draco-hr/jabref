@@ -1,0 +1,11 @@
+{
+  boolean goOn=panel.showDeleteConfirmationDialog(1);
+  if (!goOn) {
+    return;
+  }
+  panel.entryEditorClosing(EntryEditor.this);
+  panel.database.removeEntry(entry.getId());
+  panel.markBaseChanged();
+  panel.undoManager.addEdit(new UndoableRemoveEntry(panel.database,entry,panel));
+  panel.output(Localization.lang("Deleted") + ' ' + Localization.lang("entry"));
+}

@@ -1,0 +1,32 @@
+{
+  StringBuffer value=new StringBuffer();
+  consume('{');
+  int brackets=0;
+  while (!(peek() == '}' && brackets == 0)) {
+    int j=read();
+    if (j == -1 || j == 65535) {
+      throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
+    }
+ else     if (j == '{') {
+      brackets++;
+    }
+ else     if (j == '}') {
+      brackets--;
+    }
+    if (Character.isWhitespace((char)j)) {
+      String whs=skipAndRecordWhitespace(j);
+      if (!whs.equals("") && !whs.equals("\n\t")) {
+        whs=whs.replaceAll("\t","");
+        value.append(whs);
+      }
+ else {
+        value.append(' ');
+      }
+    }
+ else {
+      value.append((char)j);
+    }
+  }
+  consume('}');
+  return value;
+}

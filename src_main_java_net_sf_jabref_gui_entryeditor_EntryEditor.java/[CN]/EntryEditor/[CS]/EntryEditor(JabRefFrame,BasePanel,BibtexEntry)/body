@@ -1,0 +1,25 @@
+{
+  this.frame=frame;
+  this.panel=panel;
+  this.entry=entry;
+  prefs=Globals.prefs;
+  type=this.entry.getType();
+  this.entry.addPropertyChangeListener(this);
+  this.entry.addPropertyChangeListener(SpecialFieldUpdateListener.getInstance());
+  helpAction=new HelpAction(this.frame.helpDiag,GUIGlobals.entryEditorHelp,"Help");
+  closeAction=new CloseAction();
+  generateKeyAction=new GenerateKeyAction(this.frame);
+  storeFieldAction=new StoreFieldAction();
+  writeXmp=new WriteXMPEntryEditorAction(panel,this);
+  BorderLayout borderLayout=new BorderLayout();
+  setLayout(borderLayout);
+  setupToolBar();
+  setupFieldPanels();
+  setupSourcePanel();
+  add(tabbed,BorderLayout.CENTER);
+  tabbed.addChangeListener(tabListener);
+  if (prefs.getBoolean(JabRefPreferences.SHOW_SOURCE) && prefs.getBoolean(JabRefPreferences.DEFAULT_SHOW_SOURCE)) {
+    tabbed.setSelectedIndex(sourceIndex);
+  }
+  updateAllFields();
+}

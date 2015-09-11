@@ -1,0 +1,48 @@
+{
+  try {
+    URL url=new URL(GoogleScholarFetcher.URL_START + link);
+    String s=new URLDownload(url).downloadToString();
+    BibtexParser bp=new BibtexParser(new StringReader(s));
+    ParserResult pr=bp.parse();
+    if (pr != null && pr.getDatabase() != null) {
+      Collection<BibtexEntry> entries=pr.getDatabase().getEntries();
+      if (entries.size() == 1) {
+        BibtexEntry entry=entries.iterator().next();
+        boolean clearKeys=true;
+        if (clearKeys) {
+          entry.setField(BibtexEntry.KEY_FIELD,null);
+        }
+        if (entry.getField("url") == null) {
+          String storedUrl=entryLinks.get(link);
+          if (storedUrl != null) {
+            entry.setField("url",storedUrl);
+          }
+        }
+        String title=entry.getField("title");
+        if (title != null) {
+          String newtitle=title.replaceAll("<.?i>([^<]*)</i>","$1");
+          if (!newtitle.equals(title)) {
+            entry.setField("title",newtitle);
+          }
+        }
+        return entry;
+      }
+ else       if (entries.isEmpty()) {
+        System.out.println("No entry found! (" + link + ")");
+        return null;
+      }
+ else {
+        System.out.println(entries.size() + " entries found! (" + link+ ")");
+        return null;
+      }
+    }
+ else {
+      System.out.println("Parser failed! (" + link + ")");
+      return null;
+    }
+  }
+ catch (  MalformedURLException ex) {
+    ex.printStackTrace();
+    return null;
+  }
+}

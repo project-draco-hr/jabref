@@ -1,0 +1,15 @@
+{
+  if (address == null) {
+    return;
+  }
+  Pattern pattern=Pattern.compile("\\b(\\w+)\\s*[,]?\\s*(\\w+)\\s*[,]?\\s*(\\w+)\\b");
+  Matcher matcher=pattern.matcher(address);
+  if (matcher.matches() && matcher.groupCount() > 3) {
+    addField(document,parent,"City",matcher.group(1));
+    addField(document,parent,"StateProvince",matcher.group(2));
+    addField(document,parent,"CountryRegion",matcher.group(3));
+  }
+ else {
+    addField(document,parent,"City",address);
+  }
+}

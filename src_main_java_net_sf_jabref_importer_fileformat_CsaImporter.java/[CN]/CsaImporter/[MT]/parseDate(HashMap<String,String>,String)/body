@@ -1,0 +1,81 @@
+{
+  int match=-1;
+  Matcher pm=CsaImporter.DATE_PATTERN.matcher(fstr);
+  while (pm.find()) {
+    match=pm.start();
+  }
+  if (match == -1) {
+    return fstr;
+  }
+  if (!pm.find(match)) {
+    return fstr;
+  }
+  StringBuilder date=new StringBuilder();
+  String day=pm.group(1);
+  if (day == null) {
+    day=pm.group(5);
+  }
+ else   if (pm.group(5) != null) {
+    return fstr;
+  }
+  if (day != null && !day.equals("0")) {
+    date.append(day);
+    date.append(" ");
+  }
+ else {
+    day=null;
+  }
+  String mon=pm.group(2);
+  if (mon == null) {
+    mon=pm.group(4);
+  }
+ else   if (pm.group(4) != null) {
+    return fstr;
+  }
+  int idx;
+  if (mon != null) {
+    String lmon=mon.toLowerCase();
+    idx=CsaImporter.MONS.indexOf(lmon);
+    if (idx == -1) {
+      return fstr;
+    }
+    date.append(mon);
+    date.append(" ");
+    idx=idx / 4;
+    hm.put("month",CsaImporter.MONTHS[idx]);
+  }
+ else   if (day != null) {
+    return fstr;
+  }
+  String year=pm.group(3);
+  date.append(year);
+  StringBuilder note=new StringBuilder();
+  if (day != null && !day.equals("0")) {
+    note.append("Source Date: ");
+    note.append(date);
+    note.append(".");
+    addNote(hm,note.toString());
+  }
+  if (hm.get("year") != null) {
+    String oyear=hm.get("year");
+    if (!year.equals(oyear)) {
+      note.setLength(0);
+      note.append("Source Year: ");
+      note.append(year);
+      note.append(".");
+      addNote(hm,note.toString());
+    }
+  }
+ else {
+    hm.put("year",year);
+  }
+  int len=fstr.length();
+  StringBuilder newf=new StringBuilder();
+  if (pm.start() > 0) {
+    newf.append(fstr.substring(0,pm.start()));
+  }
+  if (pm.end() < len) {
+    newf.append(fstr.substring(pm.end(),len));
+  }
+  return newf.toString();
+}

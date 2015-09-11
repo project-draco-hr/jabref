@@ -1,0 +1,51 @@
+{
+  undo=new UndoManager();
+  Document doc=getDocument();
+  doc.addUndoableEditListener(new UndoableEditListener(){
+    @Override public void undoableEditHappened(    UndoableEditEvent evt){
+      undo.addEdit(evt.getEdit());
+    }
+  }
+);
+  getActionMap().put("Undo",new AbstractAction("Undo"){
+    @Override public void actionPerformed(    ActionEvent evt){
+      try {
+        if (undo.canUndo()) {
+          undo.undo();
+        }
+      }
+ catch (      CannotUndoException ignored) {
+      }
+    }
+  }
+);
+  getInputMap().put(Globals.prefs.getKey(KeyBinds.UNDO),"Undo");
+  getActionMap().put("Redo",new AbstractAction("Redo"){
+    @Override public void actionPerformed(    ActionEvent evt){
+      try {
+        if (undo.canRedo()) {
+          undo.redo();
+        }
+      }
+ catch (      CannotRedoException ignored) {
+      }
+    }
+  }
+);
+  boolean bind=true;
+  KeyStroke redoKey=Globals.prefs.getKey(KeyBinds.REDO);
+  if (Globals.prefs.getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS)) {
+    Keymap keymap=getKeymap();
+    KeyStroke[] keys=keymap.getBoundKeyStrokes();
+    int i=0;
+    while (i < keys.length && !keys[i].equals(redoKey)) {
+      i++;
+    }
+    if (i < keys.length) {
+      bind=false;
+    }
+  }
+  if (bind) {
+    getInputMap().put(redoKey,"Redo");
+  }
+}

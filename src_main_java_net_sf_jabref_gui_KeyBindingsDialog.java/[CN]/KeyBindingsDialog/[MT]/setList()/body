@@ -1,0 +1,21 @@
+{
+  Iterator<String> it=bindHM.keySet().iterator();
+  String[][] tableData=new String[bindHM.size()][3];
+  int i=0;
+  while (it.hasNext()) {
+    String s=it.next();
+    tableData[i][2]=s;
+    tableData[i][1]=bindHM.get(s);
+    tableData[i][0]=Localization.lang(s);
+    i++;
+  }
+  TreeMap<String,String[]> sorted=new TreeMap<String,String[]>();
+  for (i=0; i < tableData.length; i++) {
+    sorted.put(tableData[i][0],tableData[i]);
+  }
+  KeystrokeTableModel tableModel=new KeystrokeTableModel(sorted);
+  table.setModel(tableModel);
+  TableColumnModel cm=table.getColumnModel();
+  cm.getColumn(0).setPreferredWidth(GUIGlobals.KEYBIND_COL_0);
+  cm.getColumn(1).setPreferredWidth(GUIGlobals.KEYBIND_COL_1);
+}

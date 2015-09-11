@@ -1,0 +1,19 @@
+{
+  String thisType=type;
+  if (thisType == null) {
+    EntryTypeDialog etd=new EntryTypeDialog(jabRefFrame);
+    Util.placeDialog(etd,jabRefFrame);
+    etd.setVisible(true);
+    BibtexEntryType tp=etd.getChoice();
+    if (tp == null) {
+      return;
+    }
+    thisType=tp.getName();
+  }
+  if (jabRefFrame.tabbedPane.getTabCount() > 0) {
+    ((BasePanel)jabRefFrame.tabbedPane.getSelectedComponent()).newEntry(BibtexEntryType.getType(thisType));
+  }
+ else {
+    LOGGER.info("Action 'New entry' must be disabled when no " + "database is open.");
+  }
+}

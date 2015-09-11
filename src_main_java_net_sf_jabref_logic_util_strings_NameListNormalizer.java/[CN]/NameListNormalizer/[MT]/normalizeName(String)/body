@@ -1,0 +1,123 @@
+{
+  Matcher matcher=NameListNormalizer.lastFF.matcher(name);
+  if (matcher.matches()) {
+    String initials=matcher.group(2);
+    StringBuilder stringBuilder=new StringBuilder(matcher.group(1));
+    stringBuilder.append(", ");
+    for (int i=0; i < initials.length(); i++) {
+      stringBuilder.append(initials.charAt(i));
+      stringBuilder.append('.');
+      if (i < initials.length() - 1) {
+        stringBuilder.append(' ');
+      }
+    }
+    return stringBuilder.toString();
+  }
+  matcher=NameListNormalizer.lastFdotF.matcher(name);
+  if (matcher.matches()) {
+    String initials=matcher.group(2).replaceAll("[\\. ]+","");
+    StringBuilder stringBuilder=new StringBuilder(matcher.group(1));
+    stringBuilder.append(", ");
+    for (int i=0; i < initials.length(); i++) {
+      stringBuilder.append(initials.charAt(i));
+      stringBuilder.append('.');
+      if (i < initials.length() - 1) {
+        stringBuilder.append(' ');
+      }
+    }
+    return stringBuilder.toString();
+  }
+  matcher=NameListNormalizer.FFlast.matcher(name);
+  if (matcher.matches()) {
+    String initials=matcher.group(1);
+    StringBuilder stringBuilder=new StringBuilder(matcher.group(2));
+    stringBuilder.append(", ");
+    for (int i=0; i < initials.length(); i++) {
+      stringBuilder.append(initials.charAt(i));
+      stringBuilder.append('.');
+      if (i < initials.length() - 1) {
+        stringBuilder.append(' ');
+      }
+    }
+    return stringBuilder.toString();
+  }
+  matcher=NameListNormalizer.FdotFlast.matcher(name);
+  if (matcher.matches()) {
+    String initials=matcher.group(1).replaceAll("[\\. ]+","");
+    StringBuilder stringBuilder=new StringBuilder(matcher.group(2));
+    stringBuilder.append(", ");
+    for (int i=0; i < initials.length(); i++) {
+      stringBuilder.append(initials.charAt(i));
+      stringBuilder.append('.');
+      if (i < initials.length() - 1) {
+        stringBuilder.append(' ');
+      }
+    }
+    return stringBuilder.toString();
+  }
+  if (name.indexOf(',') >= 0) {
+    int index=name.lastIndexOf(',');
+    if (index == name.length() - 1) {
+      name=name.substring(0,name.length() - 1);
+    }
+    StringBuilder stringBuilder=new StringBuilder(name.substring(0,index));
+    stringBuilder.append(", ");
+    String firstName=name.substring(index + 1).trim();
+    String[] firstNameParts=firstName.split(" ");
+    if (firstNameParts.length > 1) {
+      for (int i=0; i < firstNameParts.length; i++) {
+        if (firstNameParts[i].length() == 1) {
+          stringBuilder.append(firstNameParts[i]).append('.');
+        }
+ else {
+          stringBuilder.append(firstNameParts[i]);
+        }
+        if (i < firstNameParts.length - 1) {
+          stringBuilder.append(' ');
+        }
+      }
+    }
+ else {
+      Matcher nameMatcher=NameListNormalizer.SINGLE_NAME.matcher(firstNameParts[0]);
+      if (nameMatcher.matches()) {
+        stringBuilder.append(firstNameParts[0]);
+      }
+ else {
+        String initials=firstNameParts[0].replaceAll("[\\.]+","");
+        for (int i=0; i < initials.length(); i++) {
+          stringBuilder.append(initials.charAt(i));
+          stringBuilder.append('.');
+          if (i < initials.length() - 1) {
+            stringBuilder.append(' ');
+          }
+        }
+      }
+    }
+    return stringBuilder.toString();
+  }
+ else {
+    String[] parts=name.split(" +");
+    boolean allNames=true;
+    for (    String part : parts) {
+      matcher=NameListNormalizer.SINGLE_NAME.matcher(part);
+      if (!matcher.matches()) {
+        allNames=false;
+        break;
+      }
+    }
+    if (allNames) {
+      StringBuilder stringBuilder=new StringBuilder(parts[parts.length - 1]);
+      if (parts.length > 1) {
+        stringBuilder.append(',');
+        for (int i=0; i < parts.length - 1; i++) {
+          stringBuilder.append(' ').append(parts[i]);
+          if (parts[i].length() == 1) {
+            stringBuilder.append('.');
+          }
+        }
+      }
+      return stringBuilder.toString();
+    }
+  }
+  return name;
+}

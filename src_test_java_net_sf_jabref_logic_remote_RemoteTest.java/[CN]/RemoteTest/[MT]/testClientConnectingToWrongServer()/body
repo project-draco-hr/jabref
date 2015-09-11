@@ -1,0 +1,18 @@
+{
+  final int port=34567;
+  final String message="MYMESSAGE";
+  try (ServerSocket socket=new ServerSocket(port)){
+    new Thread(){
+      @Override public void run(){
+        try {
+          socket.accept().getOutputStream().write("whatever".getBytes());
+        }
+ catch (        IOException e) {
+        }
+      }
+    }
+.start();
+    Thread.sleep(100);
+    Assert.assertFalse(RemoteListenerClient.sendToActiveJabRefInstance(new String[]{message},port));
+  }
+ }

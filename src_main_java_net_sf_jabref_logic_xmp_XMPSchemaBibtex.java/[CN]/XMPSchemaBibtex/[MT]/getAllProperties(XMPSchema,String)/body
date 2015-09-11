@@ -1,0 +1,55 @@
+{
+  NodeList nodes=schema.getElement().getChildNodes();
+  Map<String,String> result=new HashMap<String,String>();
+  if (nodes == null) {
+    return result;
+  }
+  int n=nodes.getLength();
+  for (int i=0; i < n; i++) {
+    Node node=nodes.item(i);
+    if (node.getNodeType() != Node.ATTRIBUTE_NODE && node.getNodeType() != Node.ELEMENT_NODE) {
+      continue;
+    }
+    String nodeName=node.getNodeName();
+    String[] split=nodeName.split(":");
+    if (split.length == 2 && split[0].equals(namespaceName)) {
+      NodeList seqList=((Element)node).getElementsByTagName("rdf:Seq");
+      if (seqList.getLength() > 0) {
+        String seq=XMPSchemaBibtex.getContents(seqList);
+        if (seq != null) {
+          result.put(split[1],seq);
+        }
+      }
+ else {
+        NodeList bagList=((Element)node).getElementsByTagName("rdf:Bag");
+        if (bagList.getLength() > 0) {
+          String seq=XMPSchemaBibtex.getContents(bagList);
+          if (seq != null) {
+            result.put(split[1],seq);
+          }
+        }
+ else {
+          result.put(split[1],XMPSchemaBibtex.getTextContent(node));
+        }
+      }
+    }
+  }
+  NamedNodeMap attrs=schema.getElement().getAttributes();
+  int m=attrs.getLength();
+  for (int j=0; j < m; j++) {
+    Node attr=attrs.item(j);
+    String nodeName=attr.getNodeName();
+    String[] split=nodeName.split(":");
+    if (split.length == 2 && split[0].equals(namespaceName)) {
+      result.put(split[1],attr.getNodeValue());
+    }
+  }
+  for (  Map.Entry<String,String> entry : result.entrySet()) {
+    String key=entry.getKey();
+    if (XMPSchemaBibtex.preserveWhiteSpace.contains(key)) {
+      continue;
+    }
+    entry.setValue(entry.getValue().replaceAll("\\s+"," ").trim());
+  }
+  return result;
+}

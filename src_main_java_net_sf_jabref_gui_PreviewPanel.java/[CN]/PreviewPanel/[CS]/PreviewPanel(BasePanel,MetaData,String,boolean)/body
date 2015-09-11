@@ -1,0 +1,32 @@
+{
+  super(new BorderLayout(),true);
+  withPDFPreview=withPDFPreview && JabRefPreferences.getInstance().getBoolean(JabRefPreferences.PDF_PREVIEW);
+  this.panel=panel;
+  this.metaData=metaData;
+  this.layoutFile=layoutFile;
+  this.previewPane=createPreviewPane();
+  if (withPDFPreview) {
+    this.pdfPreviewPanel=new PdfPreviewPanel(metaData);
+  }
+ else {
+    this.pdfPreviewPanel=null;
+  }
+  if (panel != null) {
+    this.previewPane.setTransferHandler(new PreviewPanelTransferHandler(panel.frame(),this,this.previewPane.getTransferHandler()));
+  }
+  scrollPane=new JScrollPane(previewPane,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+  scrollPane.setBorder(null);
+  if (panel != null && JabRefPreferences.getInstance().getBoolean(JabRefPreferences.PREVIEW_PRINT_BUTTON)) {
+    add(createToolBar(),BorderLayout.LINE_START);
+  }
+  if (withPDFPreview) {
+    JSplitPane splitPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,scrollPane,pdfPreviewPanel);
+    splitPane.setOneTouchExpandable(true);
+    int oneThird=400;
+    splitPane.setDividerLocation(oneThird * 2);
+    add(splitPane);
+  }
+ else {
+    add(scrollPane,BorderLayout.CENTER);
+  }
+}

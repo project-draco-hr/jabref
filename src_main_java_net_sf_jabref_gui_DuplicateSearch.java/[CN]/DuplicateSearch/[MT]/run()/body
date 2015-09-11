@@ -1,0 +1,80 @@
+{
+  final NamedCompound ce=new NamedCompound(Localization.lang("duplicate removal"));
+  int duplicateCounter=0;
+  boolean autoRemoveExactDuplicates=false;
+  panel.output(Localization.lang("Searching for duplicates..."));
+  Object[] keys=panel.database.getKeySet().toArray();
+  if (keys.length < 2) {
+    return;
+  }
+  bes=new BibtexEntry[keys.length];
+  for (int i=0; i < keys.length; i++) {
+    bes[i]=panel.database.getEntryById((String)keys[i]);
+  }
+  SearcherRunnable st=new SearcherRunnable();
+  JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThread(st,"Searcher");
+  int current=0;
+  final ArrayList<BibtexEntry> toRemove=new ArrayList<BibtexEntry>();
+  while (!st.finished() || current < duplicates.size()) {
+    if (current >= duplicates.size()) {
+synchronized (duplicates) {
+        try {
+          duplicates.wait();
+        }
+ catch (        Exception ignored) {
+        }
+      }
+    }
+ else {
+      BibtexEntry[] be=duplicates.get(current);
+      current++;
+      if (!toRemove.contains(be[0]) && !toRemove.contains(be[1])) {
+        boolean askAboutExact=false;
+        if (DuplicateCheck.compareEntriesStrictly(be[0],be[1]) > 1) {
+          if (autoRemoveExactDuplicates) {
+            toRemove.add(be[1]);
+            duplicateCounter++;
+            continue;
+          }
+ else {
+            askAboutExact=true;
+          }
+        }
+        DuplicateCallBack cb=new DuplicateCallBack(panel.frame,be[0],be[1],askAboutExact ? DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT : DuplicateResolverDialog.DUPLICATE_SEARCH);
+        ((CallBack)Spin.over(cb)).update();
+        duplicateCounter++;
+        int answer=cb.getSelected();
+        if (answer == DuplicateResolverDialog.KEEP_UPPER || answer == DuplicateResolverDialog.AUTOREMOVE_EXACT) {
+          toRemove.add(be[1]);
+          if (answer == DuplicateResolverDialog.AUTOREMOVE_EXACT) {
+            autoRemoveExactDuplicates=true;
+          }
+        }
+ else         if (answer == DuplicateResolverDialog.KEEP_LOWER) {
+          toRemove.add(be[0]);
+        }
+ else         if (answer == DuplicateResolverDialog.BREAK) {
+          st.setFinished();
+          current=Integer.MAX_VALUE;
+          duplicateCounter--;
+        }
+      }
+    }
+  }
+  final int dupliC=duplicateCounter;
+  SwingUtilities.invokeLater(new Runnable(){
+    @Override public void run(){
+      if (!toRemove.isEmpty()) {
+        for (        BibtexEntry entry : toRemove) {
+          panel.database.removeEntry(entry.getId());
+          ce.addEdit(new UndoableRemoveEntry(panel.database,entry,panel));
+        }
+        panel.markBaseChanged();
+      }
+      panel.output(Localization.lang("Duplicate pairs found") + ": " + duplicates.size()+ ' '+ Localization.lang("pairs processed")+ ": "+ dupliC);
+      ce.end();
+      panel.undoManager.addEdit(ce);
+    }
+  }
+);
+}

@@ -1,0 +1,261 @@
+{
+  final ArrayList<BibtexEntry> res=new ArrayList<BibtexEntry>(1);
+  PDDocument document;
+  try {
+    document=PDDocument.load(in);
+  }
+ catch (  IOException e) {
+    LOGGER.error("Could not load document",e);
+    return res;
+  }
+  try {
+    if (document.isEncrypted()) {
+      LOGGER.error(Localization.lang("Encrypted documents are not supported"));
+    }
+    PDFTextStripper stripper=new PDFTextStripper();
+    stripper.setStartPage(1);
+    stripper.setEndPage(1);
+    stripper.setSortByPosition(true);
+    stripper.setParagraphEnd(System.lineSeparator());
+    StringWriter writer=new StringWriter();
+    stripper.writeText(document,writer);
+    String textResult=writer.toString();
+    String doi=new DOI(textResult).getDOI();
+    if (doi.length() < textResult.length()) {
+      ImportInspector i=new ImportInspector(){
+        @Override public void toFront(){
+        }
+        @Override public void setProgress(        int current,        int max){
+        }
+        @Override public void addEntry(        BibtexEntry entry){
+          res.add(entry);
+        }
+      }
+;
+      PdfContentImporter.doiToBibTeXFetcher.processQuery(doi,i,status);
+      if (!res.isEmpty()) {
+        return res;
+      }
+ else {
+      }
+    }
+    String author;
+    String editor=null;
+    String institution=null;
+    String abstractT=null;
+    String keywords=null;
+    String title;
+    String conference=null;
+    String DOI=null;
+    String series=null;
+    String volume=null;
+    String number=null;
+    String pages=null;
+    String publisher=null;
+    BibtexEntryType type=BibtexEntryTypes.INPROCEEDINGS;
+    final String lineBreak=System.lineSeparator();
+    split=textResult.split(lineBreak);
+    proceedToNextNonEmptyLine();
+    if (i >= split.length) {
+      return res;
+    }
+    curString=split[i];
+    i=i + 1;
+    if (curString.length() > 4) {
+      extractYear();
+      if (curString.contains("Conference")) {
+        fillCurStringWithNonEmptyLines();
+        conference=curString;
+        curString="";
+      }
+ else {
+        String lower=curString.toLowerCase();
+        if (lower.contains("copyright")) {
+          fillCurStringWithNonEmptyLines();
+          publisher=curString;
+          curString="";
+        }
+      }
+    }
+    fillCurStringWithNonEmptyLines();
+    title=streamlineTitle(curString);
+    curString="";
+    author=null;
+    while (i < split.length && !split[i].equals("")) {
+      curString=streamlineNames(split[i]);
+      if (author == null) {
+        author=curString;
+      }
+ else {
+        if (curString.equals("")) {
+        }
+ else {
+          author=author.concat(" and ").concat(curString);
+        }
+      }
+      i++;
+    }
+    curString="";
+    i++;
+    while (i < split.length) {
+      curString=split[i];
+      if (curString.length() >= "Abstract".length() && curString.substring(0,"Abstract".length()).equalsIgnoreCase("Abstract")) {
+        if (curString.length() == "Abstract".length()) {
+          curString="";
+        }
+ else {
+          curString=curString.substring("Abstract".length() + 1).trim().concat(lineBreak);
+        }
+        i++;
+        while (i < split.length && !split[i].equals("")) {
+          curString=curString.concat(split[i]).concat(lineBreak);
+          i++;
+        }
+        abstractT=curString;
+        i++;
+      }
+ else       if (curString.length() >= "Keywords".length() && curString.substring(0,"Keywords".length()).equalsIgnoreCase("Keywords")) {
+        if (curString.length() == "Keywords".length()) {
+          curString="";
+        }
+ else {
+          curString=curString.substring("Keywords".length() + 1).trim();
+        }
+        i++;
+        fillCurStringWithNonEmptyLines();
+        keywords=removeNonLettersAtEnd(curString);
+      }
+ else {
+        String lower=curString.toLowerCase();
+        int pos=lower.indexOf("technical");
+        if (pos >= 0) {
+          type=BibtexEntryTypes.TECHREPORT;
+          pos=curString.trim().lastIndexOf(' ');
+          if (pos >= 0) {
+            number=curString.substring(pos + 1);
+          }
+        }
+        i++;
+        proceedToNextNonEmptyLine();
+      }
+    }
+    i=split.length - 1;
+    while (i >= 0) {
+      readLastBlock();
+      extractYear();
+      int pos=curString.indexOf("(Eds.)");
+      if (pos >= 0 && publisher == null) {
+        publisher="Springer";
+        editor=streamlineNames(curString.substring(0,pos - 1));
+        curString=curString.substring(pos + "(Eds.)".length() + 2);
+        String[] springerSplit=curString.split(", ");
+        if (springerSplit.length >= 4) {
+          conference=springerSplit[0];
+          String seriesData=springerSplit[1];
+          int lastSpace=seriesData.lastIndexOf(' ');
+          series=seriesData.substring(0,lastSpace);
+          volume=seriesData.substring(lastSpace + 1);
+          pages=springerSplit[2].substring(4);
+          if (springerSplit[3].length() >= 4) {
+            year=springerSplit[3].substring(0,4);
+          }
+        }
+      }
+ else {
+        if (DOI == null) {
+          pos=curString.indexOf("DOI");
+          if (pos < 0) {
+            pos=curString.indexOf("doi");
+          }
+          if (pos >= 0) {
+            pos+=3;
+            char delimiter=curString.charAt(pos);
+            if (delimiter == ':' || delimiter == ' ') {
+              pos++;
+            }
+            int nextSpace=curString.indexOf(' ',pos);
+            if (nextSpace > 0) {
+              DOI=curString.substring(pos,nextSpace);
+            }
+ else {
+              DOI=curString.substring(pos);
+            }
+          }
+        }
+        if (publisher == null && curString.contains("IEEE")) {
+          publisher="IEEE";
+          if (conference == null) {
+            pos=curString.indexOf('$');
+            if (pos > 0) {
+              pos-=2;
+              while (pos >= 0 && curString.charAt(pos) != ' ') {
+                pos--;
+              }
+              if (pos > 0) {
+                conference=curString.substring(0,pos);
+              }
+            }
+          }
+        }
+      }
+    }
+    BibtexEntry entry=new BibtexEntry();
+    entry.setType(type);
+    if (author != null) {
+      entry.setField("author",author);
+    }
+    if (editor != null) {
+      entry.setField("editor",editor);
+    }
+    if (institution != null) {
+      entry.setField("institution",institution);
+    }
+    if (abstractT != null) {
+      entry.setField("abstract",abstractT);
+    }
+    if (keywords != null) {
+      entry.setField("keywords",keywords);
+    }
+    if (title != null) {
+      entry.setField("title",title);
+    }
+    if (conference != null) {
+      entry.setField("booktitle",conference);
+    }
+    if (DOI != null) {
+      entry.setField("doi",DOI);
+    }
+    if (series != null) {
+      entry.setField("series",series);
+    }
+    if (volume != null) {
+      entry.setField("volume",volume);
+    }
+    if (number != null) {
+      entry.setField("number",number);
+    }
+    if (pages != null) {
+      entry.setField("pages",pages);
+    }
+    if (year != null) {
+      entry.setField("year",year);
+    }
+    if (publisher != null) {
+      entry.setField("publisher",publisher);
+    }
+    entry.setField("review",textResult);
+    res.add(entry);
+  }
+ catch (  NoClassDefFoundError e) {
+    if (e.getMessage().equals("org/bouncycastle/jce/provider/BouncyCastleProvider")) {
+      status.showMessage(Localization.lang("Java Bouncy Castle library not found. Please download and install it. For more information see http://www.bouncycastle.org/."));
+    }
+ else {
+      LOGGER.error("Could not find class",e);
+    }
+  }
+ finally {
+    document.close();
+  }
+  return res;
+}

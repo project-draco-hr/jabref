@@ -1,0 +1,92 @@
+{
+  File outFile=new File(file);
+  SaveSession ss=null;
+  if (this.encoding != null) {
+    try {
+      ss=getSaveSession(this.encoding,outFile);
+    }
+ catch (    IOException ex) {
+      ex.printStackTrace();
+    }
+  }
+  if (ss == null) {
+    ss=getSaveSession(encoding,outFile);
+  }
+  VerifyingWriter ps=ss.getWriter();
+  Layout beginLayout=null;
+  Reader reader;
+  Globals.prefs.customExportNameFormatters=readFormatterFile(lfFileName);
+  ArrayList<String> missingFormatters=new ArrayList<String>(1);
+  try {
+    reader=getReader(lfFileName + ".begin.layout");
+    LayoutHelper layoutHelper=new LayoutHelper(reader);
+    beginLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+    reader.close();
+  }
+ catch (  IOException ex) {
+  }
+  if (beginLayout != null) {
+    ps.write(beginLayout.doLayout(database,encoding));
+    missingFormatters.addAll(beginLayout.getMissingFormatters());
+  }
+  List<BibtexEntry> sorted=FileActions.getSortedEntries(database,metaData,entryIds,false);
+  reader=getReader(lfFileName + ".layout");
+  LayoutHelper layoutHelper=new LayoutHelper(reader);
+  Layout defLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+  reader.close();
+  if (defLayout != null) {
+    missingFormatters.addAll(defLayout.getMissingFormatters());
+    System.out.println(defLayout.getMissingFormatters());
+  }
+  HashMap<String,Layout> layouts=new HashMap<String,Layout>();
+  Layout layout;
+  ExportFormats.entryNumber=0;
+  for (  BibtexEntry entry : sorted) {
+    ExportFormats.entryNumber++;
+    String type=entry.getType().getName().toLowerCase();
+    if (layouts.containsKey(type)) {
+      layout=layouts.get(type);
+    }
+ else {
+      try {
+        reader=getReader(lfFileName + '.' + type+ ".layout");
+        layoutHelper=new LayoutHelper(reader);
+        layout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+        layouts.put(type,layout);
+        reader.close();
+        if (layout != null) {
+          missingFormatters.addAll(layout.getMissingFormatters());
+        }
+      }
+ catch (      IOException ex) {
+        layout=defLayout;
+      }
+    }
+    ps.write(layout.doLayout(entry,database));
+  }
+  Layout endLayout=null;
+  try {
+    reader=getReader(lfFileName + ".end.layout");
+    layoutHelper=new LayoutHelper(reader);
+    endLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+    reader.close();
+  }
+ catch (  IOException ex) {
+  }
+  if (endLayout != null) {
+    ps.write(endLayout.doLayout(database,encoding));
+    missingFormatters.addAll(endLayout.getMissingFormatters());
+  }
+  Globals.prefs.customExportNameFormatters=null;
+  if (!missingFormatters.isEmpty()) {
+    StringBuilder sb=new StringBuilder("The following formatters could not be found").append(": ");
+    for (Iterator<String> i=missingFormatters.iterator(); i.hasNext(); ) {
+      sb.append(i.next());
+      if (i.hasNext()) {
+        sb.append(", ");
+      }
+    }
+    System.err.println(sb);
+  }
+  finalizeSaveSession(ss);
+}

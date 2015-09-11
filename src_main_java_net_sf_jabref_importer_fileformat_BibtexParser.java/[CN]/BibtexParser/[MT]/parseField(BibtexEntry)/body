@@ -1,0 +1,19 @@
+{
+  String key=parseTextToken().toLowerCase();
+  skipWhitespace();
+  consume('=');
+  String content=parseFieldContent(key);
+  if (Globals.prefs.putBracesAroundCapitals(key)) {
+    content=StringUtil.removeBracesAroundCapitals(content);
+  }
+  if (!content.isEmpty()) {
+    if (entry.getField(key) == null) {
+      entry.setField(key,content);
+    }
+ else {
+      if (key.equals("author") || key.equals("editor")) {
+        entry.setField(key,entry.getField(key) + " and " + content);
+      }
+    }
+  }
+}

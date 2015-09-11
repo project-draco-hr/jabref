@@ -1,0 +1,26 @@
+{
+  BibtexEntry[] entries=panel.getSelectedEntries();
+  if (entries == null) {
+    return;
+  }
+  UndoableUnabbreviator undoableAbbreviator=new UndoableUnabbreviator(Globals.journalAbbrev);
+  NamedCompound ce=new NamedCompound("Unabbreviate journal names");
+  int count=0;
+  for (  BibtexEntry entry : entries) {
+    if (undoableAbbreviator.unabbreviate(panel.database(),entry,"journal",ce)) {
+      count++;
+    }
+    if (undoableAbbreviator.unabbreviate(panel.database(),entry,"journaltitle",ce)) {
+      count++;
+    }
+  }
+  if (count > 0) {
+    ce.end();
+    panel.undoManager.addEdit(ce);
+    panel.markBaseChanged();
+    message=Localization.lang("Unabbreviated %0 journal names.",String.valueOf(count));
+  }
+ else {
+    message=Localization.lang("No journal names could be unabbreviated.");
+  }
+}

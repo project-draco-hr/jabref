@@ -1,8 +1,8 @@
 {
   ExternalFileType fileType=Globals.prefs.getExternalFileTypeByExt("pdf");
-  NamedCompound edits=new NamedCompound(Globals.lang("Drop %0",fileType.extension));
+  NamedCompound edits=new NamedCompound(Localization.lang("Drop %0",fileType.extension));
   boolean isSingle=xmpEntriesInFile.size() == 1;
-  BibtexEntry single=(isSingle ? xmpEntriesInFile.get(0) : null);
+  BibtexEntry single=isSingle ? xmpEntriesInFile.get(0) : null;
   boolean success=true;
   String destFilename;
   if (linkInPlace.isSelected()) {
@@ -24,14 +24,10 @@
   }
   if (success) {
     for (    BibtexEntry aXmpEntriesInFile : xmpEntriesInFile) {
-      try {
-        aXmpEntriesInFile.setId(IdGenerator.next());
-        edits.addEdit(new UndoableInsertEntry(panel.getDatabase(),aXmpEntriesInFile,panel));
-        panel.getDatabase().insertEntry(aXmpEntriesInFile);
-        doLink(aXmpEntriesInFile,fileType,destFilename,true,edits);
-      }
- catch (      KeyCollisionException ignored) {
-      }
+      aXmpEntriesInFile.setId(IdGenerator.next());
+      edits.addEdit(new UndoableInsertEntry(panel.getDatabase(),aXmpEntriesInFile,panel));
+      panel.getDatabase().insertEntry(aXmpEntriesInFile);
+      doLink(aXmpEntriesInFile,fileType,destFilename,true,edits);
     }
     panel.markBaseChanged();
     panel.updateEntryEditorIfShowing();

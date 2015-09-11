@@ -1,0 +1,35 @@
+{
+  StringBuilder headerText=new StringBuilder();
+  boolean keepon=true;
+  int piv=0;
+  int c;
+  while (keepon) {
+    c=peek();
+    headerText.append((char)c);
+    if (piv == 0 && (Character.isWhitespace((char)c) || c == '%')) {
+      read();
+    }
+ else     if (c == Globals.SIGNATURE.charAt(piv)) {
+      piv++;
+      read();
+    }
+ else {
+      return null;
+    }
+    if (piv == Globals.SIGNATURE.length()) {
+      keepon=false;
+      StringBuilder sb=new StringBuilder();
+      while ((c=read()) != '\n' && c != -1) {
+        sb.append((char)c);
+      }
+      String versionNum=sb.toString().trim();
+      if (Pattern.compile("[1-9]+\\.[1-9A-Za-z ]+\\.").matcher(versionNum).matches()) {
+        return versionNum.substring(0,versionNum.length() - 1);
+      }
+ else       if (Pattern.compile("[1-9]+\\.[1-9]\\.[1-9A-Za-z ]+\\.").matcher(versionNum).matches()) {
+        return versionNum.substring(0,versionNum.length() - 1);
+      }
+    }
+  }
+  return null;
+}

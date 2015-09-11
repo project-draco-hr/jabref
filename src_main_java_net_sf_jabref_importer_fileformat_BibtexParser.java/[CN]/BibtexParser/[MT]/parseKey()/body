@@ -1,0 +1,28 @@
+{
+  StringBuilder token=new StringBuilder(20);
+  while (true) {
+    int c=read();
+    if (c == -1) {
+      eof=true;
+      return token.toString();
+    }
+    if (!Character.isWhitespace((char)c) && (Character.isLetterOrDigit((char)c) || c == ':' || c != '#' && c != '{' && c != '}' && c != '\uFFFD' && c != '~' && c != '\uFFFD' && c != ',' && c != '=')) {
+      token.append((char)c);
+    }
+ else {
+      if (Character.isWhitespace((char)c)) {
+        return token + fixKey();
+      }
+ else       if (c == ',') {
+        unread(c);
+        return token.toString();
+      }
+ else       if (c == '=') {
+        return token.toString();
+      }
+ else {
+        throw new IOException("Error in line " + line + ":"+ "Character '"+ (char)c+ "' is not "+ "allowed in bibtex keys.");
+      }
+    }
+  }
+}

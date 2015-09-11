@@ -1,7 +1,8 @@
 {
   fieldAndFormat=StringUtil.stripBrackets(fieldAndFormat);
   int colon=fieldAndFormat.indexOf(':');
-  String beforeColon, afterColon;
+  String beforeColon;
+  String afterColon;
   if (colon == -1) {
     beforeColon=fieldAndFormat;
     afterColon=null;
@@ -11,7 +12,7 @@
     afterColon=fieldAndFormat.substring(colon + 1);
   }
   beforeColon=beforeColon.trim();
-  if (beforeColon.length() == 0) {
+  if (beforeColon.isEmpty()) {
     return null;
   }
   String fieldValue=BibtexDatabase.getResolvedField(beforeColon,entry,database);
@@ -21,7 +22,7 @@
   if (fieldValue == null) {
     return null;
   }
-  if ((afterColon == null) || (afterColon.length() == 0)) {
+  if (afterColon == null || afterColon.isEmpty()) {
     return fieldValue;
   }
   String[] parts=afterColon.split(":");

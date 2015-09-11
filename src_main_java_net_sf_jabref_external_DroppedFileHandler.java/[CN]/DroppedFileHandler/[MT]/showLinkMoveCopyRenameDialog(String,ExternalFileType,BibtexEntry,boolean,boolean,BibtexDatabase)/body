@@ -1,6 +1,6 @@
 {
   String citeKey=entry.getCiteKey();
-  String dialogTitle=Globals.lang("Link to file %0",linkFileName);
+  String dialogTitle=Localization.lang("Link to file %0",linkFileName);
   String[] dirs=panel.metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
   int found=-1;
   for (int i=0; i < dirs.length; i++) {
@@ -10,7 +10,7 @@
     }
   }
   if (found < 0) {
-    destDirLabel.setText(Globals.lang("File directory is not set or does not exist!"));
+    destDirLabel.setText(Localization.lang("File directory is not set or does not exist!"));
     copyRadioButton.setEnabled(false);
     moveRadioButton.setEnabled(false);
     renameToTextBox.setEnabled(false);
@@ -18,7 +18,7 @@
     linkInPlace.setSelected(true);
   }
  else {
-    destDirLabel.setText(Globals.lang("File directory is '%0':",dirs[found]));
+    destDirLabel.setText(Localization.lang("File directory is '%0':",dirs[found]));
     copyRadioButton.setEnabled(true);
     moveRadioButton.setEnabled(true);
     renameToTextBox.setEnabled(true);
@@ -26,8 +26,8 @@
   }
   ChangeListener cl=new ChangeListener(){
     @Override public void stateChanged(    ChangeEvent arg0){
-      renameCheckBox.setEnabled(!linkInPlace.isSelected() && (!multipleEntries));
-      renameToTextBox.setEnabled(!linkInPlace.isSelected() && (!multipleEntries));
+      renameCheckBox.setEnabled(!linkInPlace.isSelected() && !multipleEntries);
+      renameToTextBox.setEnabled(!linkInPlace.isSelected() && !multipleEntries);
       if (multipleEntries) {
         renameToTextBox.setText("Multiple entries");
       }
@@ -35,16 +35,16 @@
   }
 ;
   if (multipleEntries) {
-    linkInPlace.setText(Globals.lang("Leave files in their current directory."));
-    copyRadioButton.setText(Globals.lang("Copy files to file directory."));
-    moveRadioButton.setText(Globals.lang("Move files to file directory."));
+    linkInPlace.setText(Localization.lang("Leave files in their current directory."));
+    copyRadioButton.setText(Localization.lang("Copy files to file directory."));
+    moveRadioButton.setText(Localization.lang("Move files to file directory."));
   }
  else {
-    linkInPlace.setText(Globals.lang("Leave file in its current directory."));
-    copyRadioButton.setText(Globals.lang("Copy file to file directory."));
-    moveRadioButton.setText(Globals.lang("Move file to file directory."));
+    linkInPlace.setText(Localization.lang("Leave file in its current directory."));
+    copyRadioButton.setText(Localization.lang("Copy file to file directory."));
+    moveRadioButton.setText(Localization.lang("Move file to file directory."));
   }
-  renameCheckBox.setText(Globals.lang("Rename file to").concat(": "));
+  renameCheckBox.setText(Localization.lang("Rename file to").concat(": "));
   String targetName=Util.getLinkedFileName(database,entry);
   renameToTextBox.setText(targetName.concat(".").concat(fileType.extension));
   linkInPlace.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_LEAVE));
@@ -54,7 +54,7 @@
   linkInPlace.addChangeListener(cl);
   cl.stateChanged(new ChangeEvent(linkInPlace));
   try {
-    Object[] messages={Globals.lang("How would you like to link to '%0'?",linkFileName),optionsPanel};
+    Object[] messages={Localization.lang("How would you like to link to '%0'?",linkFileName),optionsPanel};
     int reply=JOptionPane.showConfirmDialog(frame,messages,dialogTitle,JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
     if (reply == JOptionPane.OK_OPTION) {
       frame.prefs().putBoolean(DroppedFileHandler.DFH_LEAVE,linkInPlace.isSelected());

@@ -1,0 +1,13 @@
+{
+  BasePanel panel=frame.basePanel();
+  BibtexEntry[] bes=panel.getSelectedEntries();
+  besLength=bes.length;
+  if (bes.length != 0) {
+    NamedCompound ce=new NamedCompound(Localization.lang("Mark entries"));
+    for (    BibtexEntry be : bes) {
+      EntryMarker.markEntry(be,level + 1,false,ce);
+    }
+    ce.end();
+    panel.undoManager.addEdit(ce);
+  }
+}

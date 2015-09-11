@@ -1,0 +1,34 @@
+{
+  super();
+  this.defBinds=defBinds;
+  setTitle(Localization.lang("Key bindings"));
+  setModal(true);
+  getContentPane().setLayout(new BorderLayout());
+  bindHM=name2binding;
+  setupTable();
+  setList();
+  JScrollPane listScroller=new JScrollPane(table);
+  listScroller.setPreferredSize(new Dimension(250,400));
+  getContentPane().add(listScroller,BorderLayout.CENTER);
+  Box buttonBox=new Box(BoxLayout.X_AXIS);
+  ok=new JButton(Localization.lang("Ok"));
+  cancel=new JButton(Localization.lang("Cancel"));
+  JButton grabB=new JButton(Localization.lang("Grab"));
+  defB=new JButton(Localization.lang("Default"));
+  grabB.addKeyListener(new JBM_CustomKeyBindingsListener());
+  buttonBox.add(grabB);
+  buttonBox.add(defB);
+  buttonBox.add(ok);
+  buttonBox.add(cancel);
+  getContentPane().add(buttonBox,BorderLayout.SOUTH);
+  setButtons();
+  keyTF.setEditable(false);
+  Util.bindCloseDialogKeyToCancelAction(getRootPane(),cancel.getAction());
+  addWindowListener(new WindowAdapter(){
+    @Override public void windowClosing(    WindowEvent e){
+      clickedSave=false;
+      dispose();
+    }
+  }
+);
+}

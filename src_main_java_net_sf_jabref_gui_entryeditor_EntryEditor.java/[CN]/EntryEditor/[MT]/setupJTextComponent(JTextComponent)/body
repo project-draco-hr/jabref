@@ -1,0 +1,29 @@
+{
+  InputMap inputMap=textComponent.getInputMap(JComponent.WHEN_FOCUSED);
+  ActionMap actionMap=textComponent.getActionMap();
+  inputMap.put(prefs.getKey("Entry editor, store field"),"store");
+  actionMap.put("store",storeFieldAction);
+  inputMap.put(prefs.getKey("Entry editor, next panel"),"right");
+  inputMap.put(prefs.getKey("Entry editor, next panel 2"),"right");
+  actionMap.put("right",switchRightAction);
+  inputMap.put(prefs.getKey("Entry editor, previous panel"),"left");
+  inputMap.put(prefs.getKey("Entry editor, previous panel 2"),"left");
+  actionMap.put("left",switchLeftAction);
+  inputMap.put(prefs.getKey("Help"),"help");
+  actionMap.put("help",helpAction);
+  inputMap.put(prefs.getKey("Save database"),"save");
+  actionMap.put("save",saveDatabaseAction);
+  inputMap.put(Globals.prefs.getKey("Next tab"),"nexttab");
+  actionMap.put("nexttab",frame.nextTab);
+  inputMap.put(Globals.prefs.getKey("Previous tab"),"prevtab");
+  actionMap.put("prevtab",frame.prevTab);
+  HashSet<AWTKeyStroke> keys=new HashSet<>(textComponent.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+  keys.clear();
+  keys.add(AWTKeyStroke.getAWTKeyStroke("pressed TAB"));
+  textComponent.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,keys);
+  keys=new HashSet<>(textComponent.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
+  keys.clear();
+  keys.add(KeyStroke.getKeyStroke("shift pressed TAB"));
+  textComponent.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,keys);
+  textComponent.addFocusListener(new FieldListener());
+}

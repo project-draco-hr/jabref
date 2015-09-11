@@ -1,0 +1,25 @@
+{
+  String urlQuery;
+  ArrayList<String> ids=new ArrayList<String>();
+  try {
+    urlQuery=JSTORFetcher2.SEARCH_URL + URLEncoder.encode(query,"UTF-8") + JSTORFetcher2.SEARCH_URL_END;
+    int count=1;
+    String[] numberOfRefs=new String[2];
+    int refsRequested;
+    int numberOfPagesRequested=JSTORFetcher2.MAX_PAGES_TO_LOAD;
+    String nextPage;
+    while (count <= Math.min(JSTORFetcher2.MAX_PAGES_TO_LOAD,numberOfPagesRequested) && (nextPage=getCitationsFromUrl(urlQuery,ids,count,numberOfRefs,dialog,status)) != null) {
+      if (count == 1 && nextPage.equals(JSTORFetcher2.CANCELLED)) {
+        return null;
+      }
+      refsRequested=Integer.valueOf(numberOfRefs[1]);
+      numberOfPagesRequested=(refsRequested - 1 - (refsRequested - 1) % JSTORFetcher2.REFS_PER_PAGE) / JSTORFetcher2.REFS_PER_PAGE + 1;
+      urlQuery=nextPage;
+      count++;
+    }
+    return ids;
+  }
+ catch (  UnsupportedEncodingException e) {
+    throw new RuntimeException(e);
+  }
+}

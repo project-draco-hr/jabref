@@ -1,0 +1,41 @@
+{
+  if (name == null) {
+    return null;
+  }
+  if (!name.contains("{")) {
+    return name;
+  }
+  String[] split=name.split(" ");
+  StringBuilder b=new StringBuilder();
+  for (  String s : split) {
+    if (s.length() > 2) {
+      if (s.startsWith("{") && s.endsWith("}")) {
+        String inner=s.substring(1,s.length() - 1);
+        if (inner.contains("}")) {
+          if (properBrackets(inner)) {
+            s=inner;
+          }
+        }
+ else {
+          s=inner;
+        }
+      }
+    }
+    b.append(s);
+    b.append(' ');
+  }
+  b.deleteCharAt(b.length() - 1);
+  name=b.toString();
+  if (name.startsWith("{") && name.endsWith("}")) {
+    String inner=name.substring(1,name.length() - 1);
+    if (properBrackets(inner)) {
+      return inner;
+    }
+ else {
+      return name;
+    }
+  }
+ else {
+    return name;
+  }
+}

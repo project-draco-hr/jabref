@@ -1,5 +1,5 @@
 {
-  super(jabrefFrame,Globals.lang("Edit group"),true);
+  super(jabrefFrame,Localization.lang("Edit group"),true);
   m_basePanel=basePanel;
   m_editedGroup=editedGroup;
   m_kgSearchField.setText(jabrefFrame.prefs().get(JabRefPreferences.GROUPS_DEFAULT_FIELD));
@@ -17,10 +17,10 @@
   m_optionsPanel.add(new JPanel(),"" + GroupDialog.INDEX_EXPLICITGROUP);
   FormLayout layoutKG=new FormLayout("right:pref, 4dlu, fill:1dlu:grow, 2dlu, left:pref");
   DefaultFormBuilder builderKG=new DefaultFormBuilder(layoutKG);
-  builderKG.append(Globals.lang("Field"));
+  builderKG.append(Localization.lang("Field"));
   builderKG.append(m_kgSearchField,3);
   builderKG.nextLine();
-  builderKG.append(Globals.lang("Keyword"));
+  builderKG.append(Localization.lang("Keyword"));
   builderKG.append(m_kgSearchTerm);
   builderKG.append(new FieldContentSelector(jabrefFrame,m_basePanel,this,m_kgSearchTerm,m_basePanel.metaData(),null,true,", "));
   builderKG.nextLine();
@@ -30,7 +30,7 @@
   m_optionsPanel.add(builderKG.getPanel(),"" + GroupDialog.INDEX_KEYWORDGROUP);
   FormLayout layoutSG=new FormLayout("right:pref, 4dlu, fill:1dlu:grow");
   DefaultFormBuilder builderSG=new DefaultFormBuilder(layoutSG);
-  builderSG.append(Globals.lang("Search expression"));
+  builderSG.append(Localization.lang("Search expression"));
   builderSG.append(m_sgSearchExpression);
   builderSG.nextLine();
   builderSG.append(m_sgCaseSensitive,3);
@@ -42,17 +42,17 @@
   ButtonBarBuilder builderBP=new ButtonBarBuilder();
   builderBP.addGlue();
   builderBP.addButton(m_ok);
-  JButton m_cancel=new JButton(Globals.lang("Cancel"));
+  JButton m_cancel=new JButton(Localization.lang("Cancel"));
   builderBP.addButton(m_cancel);
   builderBP.addGlue();
   builderBP.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   FormLayout layoutAll=new FormLayout("right:pref, 4dlu, fill:600px, 4dlu, fill:pref","p, 3dlu, p, 3dlu, p, 0dlu, p, 0dlu, p, 3dlu, p, 3dlu, p, " + "0dlu, p, 0dlu, p, 3dlu, p, 3dlu, " + "p, 3dlu, p, 3dlu, top:80dlu, 9dlu, p, 9dlu, p");
   DefaultFormBuilder builderAll=new DefaultFormBuilder(layoutAll);
   builderAll.border(Borders.DIALOG);
-  builderAll.appendSeparator(Globals.lang("General"));
+  builderAll.appendSeparator(Localization.lang("General"));
   builderAll.nextLine();
   builderAll.nextLine();
-  builderAll.append(Globals.lang("Name"));
+  builderAll.append(Localization.lang("Name"));
   builderAll.append(m_name);
   builderAll.nextLine();
   builderAll.nextLine();
@@ -65,7 +65,7 @@
   builderAll.append(m_searchRadioButton,5);
   builderAll.nextLine();
   builderAll.nextLine();
-  builderAll.appendSeparator(Globals.lang("Hierarchical context"));
+  builderAll.appendSeparator(Localization.lang("Hierarchical context"));
   builderAll.nextLine();
   builderAll.nextLine();
   builderAll.append(m_independentButton,5);
@@ -77,13 +77,13 @@
   builderAll.append(m_unionButton,5);
   builderAll.nextLine();
   builderAll.nextLine();
-  builderAll.appendSeparator(Globals.lang("Options"));
+  builderAll.appendSeparator(Localization.lang("Options"));
   builderAll.nextLine();
   builderAll.nextLine();
   builderAll.append(m_optionsPanel,5);
   builderAll.nextLine();
   builderAll.nextLine();
-  builderAll.appendSeparator(Globals.lang("Description"));
+  builderAll.appendSeparator(Localization.lang("Description"));
   builderAll.nextLine();
   builderAll.nextLine();
   JScrollPane sp=new JScrollPane(m_description,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED){
@@ -143,7 +143,7 @@
       }
  else       if (m_keywordsRadioButton.isSelected()) {
         m_resultingGroup=new KeywordGroup(m_name.getText().trim(),m_kgSearchField.getText().trim(),m_kgSearchTerm.getText().trim(),m_kgCaseSensitive.isSelected(),m_kgRegExp.isSelected(),getContext());
-        if (((m_editedGroup instanceof ExplicitGroup) || (m_editedGroup instanceof SearchGroup)) && m_resultingGroup.supportsAdd()) {
+        if ((m_editedGroup instanceof ExplicitGroup || m_editedGroup instanceof SearchGroup) && m_resultingGroup.supportsAdd()) {
           addPreviousEntries();
         }
       }

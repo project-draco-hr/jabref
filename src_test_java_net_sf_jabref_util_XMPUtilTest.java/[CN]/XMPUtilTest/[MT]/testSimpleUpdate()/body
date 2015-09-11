@@ -67,68 +67,66 @@
       }
     }
   }
-{
-    BibtexEntry toSet=t1BibtexEntry();
-    toSet.setField("author","Pokemon!");
-    XMPUtil.writeXMP(pdfFile,toSet,null);
-    List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
-    Assert.assertEquals(1,l.size());
-    BibtexEntry e=l.get(0);
-    assertEqualsBibtexEntry(toSet,e);
-    PDDocument document=null;
-    try {
-      document=PDDocument.load(pdfFile.getAbsoluteFile());
-      if (document.isEncrypted()) {
-        throw new IOException("Error: Cannot read metadata from encrypted document.");
-      }
-      PDDocumentCatalog catalog=document.getDocumentCatalog();
-      PDMetadata metaRaw=catalog.getMetadata();
-      XMPMetadata meta;
-      if (metaRaw != null) {
-        meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
-      }
- else {
-        meta=new XMPMetadata();
-      }
-      meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
-      List<XMPSchema> schemas=meta.getSchemas();
-      Assert.assertEquals(4,schemas.size());
-      schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
-      Assert.assertEquals(1,schemas.size());
-      schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
-      Assert.assertEquals(1,schemas.size());
-      XMPSchemaDublinCore dc=(XMPSchemaDublinCore)schemas.get(0);
-      Assert.assertEquals("application/pdf",dc.getFormat());
-      schemas=meta.getSchemasByNamespaceURI(XMPSchemaBasic.NAMESPACE);
-      Assert.assertEquals(1,schemas.size());
-      XMPSchemaBasic bs=(XMPSchemaBasic)schemas.get(0);
-      Assert.assertEquals("Acrobat PDFMaker 7.0.7",bs.getCreatorTool());
-      Calendar c=Calendar.getInstance();
-      c.clear();
-      c.set(Calendar.YEAR,2006);
-      c.set(Calendar.MONTH,7);
-      c.set(Calendar.DATE,7);
-      c.set(Calendar.HOUR,14);
-      c.set(Calendar.MINUTE,44);
-      c.set(Calendar.SECOND,24);
-      c.setTimeZone(TimeZone.getTimeZone("GMT+2"));
-      Calendar other=bs.getCreateDate();
-      Assert.assertEquals(c.get(Calendar.YEAR),other.get(Calendar.YEAR));
-      Assert.assertEquals(c.get(Calendar.MONTH),other.get(Calendar.MONTH));
-      Assert.assertEquals(c.get(Calendar.DATE),other.get(Calendar.DATE));
-      Assert.assertEquals(c.get(Calendar.HOUR),other.get(Calendar.HOUR));
-      Assert.assertEquals(c.get(Calendar.MINUTE),other.get(Calendar.MINUTE));
-      Assert.assertEquals(c.get(Calendar.SECOND),other.get(Calendar.SECOND));
-      Assert.assertTrue(c.getTimeZone().hasSameRules(other.getTimeZone()));
-      schemas=meta.getSchemasByNamespaceURI(XMPSchemaMediaManagement.NAMESPACE);
-      Assert.assertEquals(1,schemas.size());
-      XMPSchemaMediaManagement mm=(XMPSchemaMediaManagement)schemas.get(0);
-      Assert.assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
+  BibtexEntry toSet=t1BibtexEntry();
+  toSet.setField("author","Pokemon!");
+  XMPUtil.writeXMP(pdfFile,toSet,null);
+  List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+  Assert.assertEquals(1,l.size());
+  BibtexEntry e=l.get(0);
+  assertEqualsBibtexEntry(toSet,e);
+  PDDocument document=null;
+  try {
+    document=PDDocument.load(pdfFile.getAbsoluteFile());
+    if (document.isEncrypted()) {
+      throw new IOException("Error: Cannot read metadata from encrypted document.");
     }
+    PDDocumentCatalog catalog=document.getDocumentCatalog();
+    PDMetadata metaRaw=catalog.getMetadata();
+    XMPMetadata meta;
+    if (metaRaw != null) {
+      meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+    }
+ else {
+      meta=new XMPMetadata();
+    }
+    meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
+    List<XMPSchema> schemas=meta.getSchemas();
+    Assert.assertEquals(4,schemas.size());
+    schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
+    Assert.assertEquals(1,schemas.size());
+    schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
+    Assert.assertEquals(1,schemas.size());
+    XMPSchemaDublinCore dc=(XMPSchemaDublinCore)schemas.get(0);
+    Assert.assertEquals("application/pdf",dc.getFormat());
+    schemas=meta.getSchemasByNamespaceURI(XMPSchemaBasic.NAMESPACE);
+    Assert.assertEquals(1,schemas.size());
+    XMPSchemaBasic bs=(XMPSchemaBasic)schemas.get(0);
+    Assert.assertEquals("Acrobat PDFMaker 7.0.7",bs.getCreatorTool());
+    Calendar c=Calendar.getInstance();
+    c.clear();
+    c.set(Calendar.YEAR,2006);
+    c.set(Calendar.MONTH,7);
+    c.set(Calendar.DATE,7);
+    c.set(Calendar.HOUR,14);
+    c.set(Calendar.MINUTE,44);
+    c.set(Calendar.SECOND,24);
+    c.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+    Calendar other=bs.getCreateDate();
+    Assert.assertEquals(c.get(Calendar.YEAR),other.get(Calendar.YEAR));
+    Assert.assertEquals(c.get(Calendar.MONTH),other.get(Calendar.MONTH));
+    Assert.assertEquals(c.get(Calendar.DATE),other.get(Calendar.DATE));
+    Assert.assertEquals(c.get(Calendar.HOUR),other.get(Calendar.HOUR));
+    Assert.assertEquals(c.get(Calendar.MINUTE),other.get(Calendar.MINUTE));
+    Assert.assertEquals(c.get(Calendar.SECOND),other.get(Calendar.SECOND));
+    Assert.assertTrue(c.getTimeZone().hasSameRules(other.getTimeZone()));
+    schemas=meta.getSchemasByNamespaceURI(XMPSchemaMediaManagement.NAMESPACE);
+    Assert.assertEquals(1,schemas.size());
+    XMPSchemaMediaManagement mm=(XMPSchemaMediaManagement)schemas.get(0);
+    Assert.assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
+  }
   finally {
-      if (document != null) {
-        document.close();
-      }
+    if (document != null) {
+      document.close();
     }
   }
 }

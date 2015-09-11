@@ -1,0 +1,28 @@
+{
+  if (fileChooser == null) {
+    fileChooser=new JFileChooser();
+    fileChooser.setAutoscrolls(true);
+    fileChooser.setDialogTitle(Localization.lang("Select Directory"));
+    fileChooser.setApproveButtonText(Localization.lang("Choose Directory"));
+    fileChooser.setApproveButtonToolTipText(Localization.lang("Use the selected directory to start with the search."));
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+  }
+  String path=textfieldDirectoryPath.getText();
+  if (path == null || path.equals("")) {
+    fileChooser.setCurrentDirectory(lastSelectedDirectory);
+  }
+ else {
+    fileChooser.setCurrentDirectory(new File(path));
+  }
+  int result=fileChooser.showOpenDialog(frame);
+  if (result == JFileChooser.CANCEL_OPTION) {
+    return null;
+  }
+  File selectedDirectory=fileChooser.getSelectedFile();
+  String filepath="";
+  if (selectedDirectory != null) {
+    filepath=selectedDirectory.getAbsolutePath();
+  }
+  textfieldDirectoryPath.setText(filepath);
+  return selectedDirectory;
+}

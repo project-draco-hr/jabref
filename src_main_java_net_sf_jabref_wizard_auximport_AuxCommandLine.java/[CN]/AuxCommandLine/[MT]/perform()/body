@@ -1,19 +1,19 @@
 {
   BibtexDatabase back=null;
-  if ((auxName.length() > 0) && (bib != null)) {
+  if (!auxName.isEmpty() && bib != null) {
     AuxSubGenerator auxParser=new AuxSubGenerator(bib);
     Vector<String> returnValue=auxParser.generate(auxName,bib);
     back=auxParser.getGeneratedDatabase();
-    System.out.println(Globals.lang("keys_in_database") + " " + bib.getEntryCount());
-    System.out.println(Globals.lang("found_in_aux_file") + " " + auxParser.getFoundKeysInAux());
-    System.out.println(Globals.lang("resolved") + " " + auxParser.getResolvedKeysCount());
+    System.out.println(Localization.lang("keys_in_database") + " " + bib.getEntryCount());
+    System.out.println(Localization.lang("found_in_aux_file") + " " + auxParser.getFoundKeysInAux());
+    System.out.println(Localization.lang("resolved") + " " + auxParser.getResolvedKeysCount());
     if (auxParser.getNotResolvedKeysCount() > 0) {
-      System.out.println(Globals.lang("not_found") + " " + auxParser.getNotResolvedKeysCount());
+      System.out.println(Localization.lang("not_found") + " " + auxParser.getNotResolvedKeysCount());
       System.out.println(returnValue);
     }
     int nested=auxParser.getNestedAuxCounter();
     if (nested > 0) {
-      System.out.println(Globals.lang("nested_aux_files") + " " + nested);
+      System.out.println(Localization.lang("nested_aux_files") + " " + nested);
     }
   }
   return back;

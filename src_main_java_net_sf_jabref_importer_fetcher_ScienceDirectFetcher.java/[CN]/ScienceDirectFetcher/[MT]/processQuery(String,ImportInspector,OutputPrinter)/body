@@ -1,0 +1,30 @@
+{
+  stopFetching=false;
+  try {
+    List<String> citations=getCitations(query);
+    if (citations == null) {
+      return false;
+    }
+    if (citations.isEmpty()) {
+      status.showMessage(Localization.lang("No entries found for the search string '%0'",query),Localization.lang("Search ScienceDirect"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    int i=0;
+    for (    String cit : citations) {
+      if (stopFetching) {
+        break;
+      }
+      BibtexEntry entry=BibsonomyScraper.getEntry(cit);
+      if (entry != null) {
+        dialog.addEntry(entry);
+      }
+      dialog.setProgress(++i,citations.size());
+    }
+    return true;
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+    status.showMessage(Localization.lang("Error while fetching from ScienceDirect") + ": " + e.getMessage());
+  }
+  return false;
+}

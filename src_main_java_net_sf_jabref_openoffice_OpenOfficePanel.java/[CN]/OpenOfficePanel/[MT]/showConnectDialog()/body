@@ -1,0 +1,71 @@
+{
+  dialogOkPressed=false;
+  final JDialog diag=new JDialog(OpenOfficePanel.frame,Localization.lang("Set connection parameters"),true);
+  final JTextField ooPath=new JTextField(30);
+  JButton browseOOPath=new JButton(Localization.lang("Browse"));
+  ooPath.setText(Globals.prefs.get("ooPath"));
+  final JTextField ooExec=new JTextField(30);
+  JButton browseOOExec=new JButton(Localization.lang("Browse"));
+  browseOOExec.addActionListener(BrowseAction.buildForFile(ooExec));
+  final JTextField ooJars=new JTextField(30);
+  JButton browseOOJars=new JButton(Localization.lang("Browse"));
+  browseOOJars.addActionListener(BrowseAction.buildForDir(ooJars));
+  ooExec.setText(Globals.prefs.get("ooExecutablePath"));
+  ooJars.setText(Globals.prefs.get("ooJarsPath"));
+  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:pref:grow, 4dlu, fill:pref",""));
+  if (OS.WINDOWS || OS.OS_X) {
+    builder.append(Localization.lang("Path to OpenOffice directory"));
+    builder.append(ooPath);
+    builder.append(browseOOPath);
+    builder.nextLine();
+  }
+ else {
+    builder.append(Localization.lang("Path to OpenOffice executable"));
+    builder.append(ooExec);
+    builder.append(browseOOExec);
+    builder.nextLine();
+    builder.append(Localization.lang("Path to OpenOffice library dir"));
+    builder.append(ooJars);
+    builder.append(browseOOJars);
+    builder.nextLine();
+  }
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  JButton ok=new JButton(Localization.lang("Ok"));
+  JButton cancel=new JButton(Localization.lang("Cancel"));
+  ActionListener tfListener=new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent event){
+      updateConnectionParams(ooPath.getText(),ooExec.getText(),ooJars.getText(),true);
+      diag.dispose();
+    }
+  }
+;
+  ooPath.addActionListener(tfListener);
+  ooExec.addActionListener(tfListener);
+  ooJars.addActionListener(tfListener);
+  ok.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent event){
+      updateConnectionParams(ooPath.getText(),ooExec.getText(),ooJars.getText(),true);
+      dialogOkPressed=true;
+      diag.dispose();
+    }
+  }
+);
+  cancel.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent event){
+      diag.dispose();
+    }
+  }
+);
+  bb.addGlue();
+  bb.addRelatedGap();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+  diag.pack();
+  diag.setLocationRelativeTo(OpenOfficePanel.frame);
+  diag.setVisible(true);
+}

@@ -1,0 +1,39 @@
+{
+  out.write('@' + entry.getType().getName() + '{');
+  HashSet<String> writtenFields=new HashSet<>();
+  writeKeyField(entry,out);
+  writtenFields.add(BibtexEntry.KEY_FIELD);
+  boolean hasWritten=writeField(entry,out,"title",false);
+  writtenFields.add("title");
+  String[] requiredFields=entry.getRequiredFields();
+  if (requiredFields != null) {
+    Arrays.sort(requiredFields);
+    for (    String value : requiredFields) {
+      if (!writtenFields.contains(value)) {
+        hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
+        writtenFields.add(value);
+      }
+    }
+  }
+  String[] optionalFields=entry.getOptionalFields();
+  if (optionalFields != null) {
+    Arrays.sort(optionalFields);
+    for (    String value : optionalFields) {
+      if (!writtenFields.contains(value)) {
+        hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
+        writtenFields.add(value);
+      }
+    }
+  }
+  TreeSet<String> remainingFields=new TreeSet<>();
+  for (  String key : entry.getAllFields()) {
+    boolean writeIt=write ? BibtexFields.isWriteableField(key) : BibtexFields.isDisplayableField(key);
+    if (!writtenFields.contains(key) && writeIt) {
+      remainingFields.add(key);
+    }
+  }
+  for (  String field : remainingFields) {
+    hasWritten=hasWritten | writeField(entry,out,field,hasWritten);
+  }
+  out.write((hasWritten ? Globals.NEWLINE : "") + '}' + Globals.NEWLINE);
+}

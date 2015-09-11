@@ -1,0 +1,17 @@
+{
+  if (undoManager.hasChanged()) {
+    if (!baseChanged) {
+      markBaseChanged();
+    }
+  }
+ else   if (baseChanged && !nonUndoableChange) {
+    baseChanged=false;
+    if (getFile() != null) {
+      frame.setTabTitle(BasePanel.this,getFile().getName(),getFile().getAbsolutePath());
+    }
+ else {
+      frame.setTabTitle(BasePanel.this,Localization.lang("untitled"),null);
+    }
+  }
+  frame.setWindowTitle();
+}

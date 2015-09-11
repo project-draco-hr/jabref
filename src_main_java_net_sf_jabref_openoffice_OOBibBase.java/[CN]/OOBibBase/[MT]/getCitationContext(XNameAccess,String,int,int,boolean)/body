@@ -1,0 +1,40 @@
+{
+  Object o=nameAccess.getByName(refMarkName);
+  XTextContent bm=UnoRuntime.queryInterface(XTextContent.class,o);
+  XTextCursor cursor=bm.getAnchor().getText().createTextCursorByRange(bm.getAnchor());
+  String citPart=cursor.getString();
+  int flex=8;
+  for (int i=0; i < charBefore; i++) {
+    try {
+      cursor.goLeft((short)1,true);
+      if (i >= charBefore - flex && Character.isWhitespace(cursor.getString().charAt(0))) {
+        break;
+      }
+    }
+ catch (    Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+  int length=cursor.getString().length();
+  int added=length - citPart.length();
+  cursor.collapseToStart();
+  for (int i=0; i < charAfter + length; i++) {
+    try {
+      cursor.goRight((short)1,true);
+      if (i >= charAfter + length - flex) {
+        String strNow=cursor.getString();
+        if (Character.isWhitespace(strNow.charAt(strNow.length() - 1))) {
+          break;
+        }
+      }
+    }
+ catch (    Exception ex) {
+      ex.printStackTrace();
+    }
+  }
+  String result=cursor.getString();
+  if (htmlMarkup) {
+    result=result.substring(0,added) + "<b>" + citPart+ "</b>"+ result.substring(length);
+  }
+  return result.trim();
+}

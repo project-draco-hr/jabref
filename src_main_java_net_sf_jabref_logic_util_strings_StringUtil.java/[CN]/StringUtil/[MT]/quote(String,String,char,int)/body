@@ -1,0 +1,21 @@
+{
+  StringBuilder result=new StringBuilder();
+  char c;
+  int lineLength=0;
+  boolean isSpecial;
+  for (int i=0; i < toQuote.length(); ++i) {
+    c=toQuote.charAt(i);
+    isSpecial=specials.indexOf(c) >= 0 || c == quoteChar;
+    if (linewrap > 0 && (++lineLength >= linewrap || isSpecial && lineLength >= linewrap - 1)) {
+      result.append(quoteChar);
+      result.append('\n');
+      lineLength=0;
+    }
+    if (isSpecial) {
+      result.append(quoteChar);
+      ++lineLength;
+    }
+    result.append(c);
+  }
+  return result.toString();
+}

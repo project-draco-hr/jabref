@@ -1,0 +1,19 @@
+{
+  JournalAbbreviationRepository repository=new JournalAbbreviationRepository();
+  repository.addEntry(new Abbreviation("Long Name","L. N."));
+  assertEquals(1,repository.size());
+  assertFalse(repository.getAbbreviations().isEmpty());
+  assertEquals("L. N.",repository.getIsoAbbreviation("Long Name").orElse("WRONG"));
+  assertEquals("UNKNOWN",repository.getIsoAbbreviation("?").orElse("UNKNOWN"));
+  assertEquals("L N",repository.getMedlineAbbreviation("Long Name").orElse("WRONG"));
+  assertEquals("UNKNOWN",repository.getMedlineAbbreviation("?").orElse("UNKNOWN"));
+  assertEquals("L. N.",repository.getNextAbbreviation("Long Name").orElse("WRONG"));
+  assertEquals("L N",repository.getNextAbbreviation("L. N.").orElse("WRONG"));
+  assertEquals("Long Name",repository.getNextAbbreviation("L N").orElse("WRONG"));
+  assertEquals("UNKNOWN",repository.getNextAbbreviation("?").orElse("UNKNOWN"));
+  assertTrue(repository.isKnownName("Long Name"));
+  assertTrue(repository.isKnownName("L. N."));
+  assertTrue(repository.isKnownName("L N"));
+  assertFalse(repository.isKnownName("?"));
+  assertEquals(String.format("Long Name = L. N.%n"),repository.toPropertiesString());
+}

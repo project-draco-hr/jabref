@@ -1,0 +1,20 @@
+{
+  Document result=null;
+  try {
+    DocumentBuilder documentBuilder=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    result=documentBuilder.newDocument();
+    Element msbibCollection=result.createElement("b:Sources");
+    msbibCollection.setAttribute("SelectedStyle","");
+    msbibCollection.setAttribute("xmlns","http://schemas.openxmlformats.org/officeDocument/2006/bibliography");
+    msbibCollection.setAttribute("xmlns:b","http://schemas.openxmlformats.org/officeDocument/2006/bibliography");
+    for (    MSBibEntry entry : entries) {
+      Node node=entry.getDOMrepresentation(result);
+      msbibCollection.appendChild(node);
+    }
+    result.appendChild(msbibCollection);
+  }
+ catch (  ParserConfigurationException e) {
+    LOGGER.warn("Could not build document",e);
+  }
+  return result;
+}

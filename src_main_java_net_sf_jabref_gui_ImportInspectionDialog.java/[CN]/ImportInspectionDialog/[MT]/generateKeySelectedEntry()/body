@@ -14,13 +14,8 @@
     database=new BibtexDatabase();
     metaData=new MetaData();
   }
-  try {
-    entry.setId(IdGenerator.next());
-    database.insertEntry(entry);
-  }
- catch (  KeyCollisionException ex) {
-    ex.printStackTrace();
-  }
+  entry.setId(IdGenerator.next());
+  database.insertEntry(entry);
   LabelPatternUtil.makeLabel(metaData,database,entry);
   database.removeEntry(entry.getId());
   entries.getReadWriteLock().writeLock().lock();

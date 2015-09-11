@@ -10,19 +10,17 @@
     Set<String> expectedFields=new HashSet<String>(Arrays.asList("bibtexkey","booktitle","owner","timestamp","url","year"));
     Assert.assertEquals(expectedFields,x.getAllFields());
   }
-{
-    prefs.putBoolean("useXmpPrivacyFilter",true);
-    prefs.putStringArray(JabRefPreferences.XMP_PRIVACY_FILTERS,new String[]{"author;title;note;booktitle;year;owner;timestamp"});
-    BibtexEntry e=t1BibtexEntry();
-    XMPUtil.writeXMP(pdfFile,e,null);
-    List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
-    Assert.assertEquals(1,l.size());
-    BibtexEntry x=l.get(0);
-    Set<String> ts=x.getAllFields();
-    Assert.assertEquals(8,ts.size());
-    ts.contains("bibtextype");
-    ts.contains("bibtexkey");
-    ts.contains("year");
-    ts.contains("url");
-  }
+  prefs.putBoolean("useXmpPrivacyFilter",true);
+  prefs.putStringArray(JabRefPreferences.XMP_PRIVACY_FILTERS,new String[]{"author;title;note;booktitle;year;owner;timestamp"});
+  BibtexEntry e=t1BibtexEntry();
+  XMPUtil.writeXMP(pdfFile,e,null);
+  List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+  Assert.assertEquals(1,l.size());
+  BibtexEntry x=l.get(0);
+  Set<String> ts=x.getAllFields();
+  Assert.assertEquals(8,ts.size());
+  ts.contains("bibtextype");
+  ts.contains("bibtexkey");
+  ts.contains("year");
+  ts.contains("url");
 }

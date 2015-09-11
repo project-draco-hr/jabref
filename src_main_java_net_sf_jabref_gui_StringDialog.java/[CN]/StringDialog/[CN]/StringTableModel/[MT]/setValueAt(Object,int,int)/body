@@ -1,0 +1,39 @@
+{
+  if (col == 0) {
+    if (!value.equals(((BibtexString)strings[row]).getName())) {
+      if (base.hasStringLabel((String)value)) {
+        JOptionPane.showMessageDialog(parent,Localization.lang("A string with that label " + "already exists"),Localization.lang("Label"),JOptionPane.ERROR_MESSAGE);
+      }
+ else       if (((String)value).contains(" ")) {
+        JOptionPane.showMessageDialog(parent,Localization.lang("The label of the string can not contain spaces."),Localization.lang("Label"),JOptionPane.ERROR_MESSAGE);
+      }
+ else       if (((String)value).contains("#")) {
+        JOptionPane.showMessageDialog(parent,Localization.lang("The label of the string can not contain the '#' character."),Localization.lang("Label"),JOptionPane.ERROR_MESSAGE);
+      }
+ else       if (isNumber((String)value)) {
+        JOptionPane.showMessageDialog(parent,Localization.lang("The label of the string can not be a number."),Localization.lang("Label"),JOptionPane.ERROR_MESSAGE);
+      }
+ else {
+        BibtexString subject=(BibtexString)strings[row];
+        panel.undoManager.addEdit(new UndoableStringChange(panel,subject,true,subject.getName(),(String)value));
+        subject.setName((String)value);
+        panel.markBaseChanged();
+        refreshTable();
+      }
+    }
+  }
+ else {
+    BibtexString subject=(BibtexString)strings[row];
+    if (!value.equals(subject.getContent())) {
+      try {
+        new LatexFieldFormatter().format((String)value,"__dummy");
+      }
+ catch (      IllegalArgumentException ex) {
+        return;
+      }
+      panel.undoManager.addEdit(new UndoableStringChange(panel,subject,false,subject.getContent(),(String)value));
+      subject.setContent((String)value);
+      panel.markBaseChanged();
+    }
+  }
+}

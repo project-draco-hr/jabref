@@ -1,7 +1,7 @@
 {
   String oldValue=entry.getField("keywords");
   String newValue;
-  if (keywords.size() > 0) {
+  if (!keywords.isEmpty()) {
     StringBuilder sb=new StringBuilder();
     for (    String keyword : keywords) {
       sb.append(keyword);
@@ -13,10 +13,10 @@
  else {
     newValue=null;
   }
-  if ((oldValue == null) && (newValue == null)) {
+  if (oldValue == null && newValue == null) {
     return;
   }
-  if ((oldValue == null) || (!oldValue.equals(newValue))) {
+  if (oldValue == null || !oldValue.equals(newValue)) {
     entry.setField("keywords",newValue);
     if (ce != null) {
       ce.addEdit(new UndoableFieldChange(entry,"keywords",oldValue,newValue));

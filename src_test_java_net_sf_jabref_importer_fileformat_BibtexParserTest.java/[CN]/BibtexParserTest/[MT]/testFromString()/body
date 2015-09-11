@@ -1,0 +1,17 @@
+{
+{
+    Collection<BibtexEntry> c=BibtexParser.fromString("@article{test,author={Ed von Test}}");
+    Assert.assertEquals(1,c.size());
+    BibtexEntry e=c.iterator().next();
+    Assert.assertEquals("test",e.getCiteKey());
+    Assert.assertEquals(2,e.getAllFields().size());
+    Assert.assertTrue(e.getAllFields().contains("author"));
+    Assert.assertEquals("Ed von Test",e.getField("author"));
+  }
+{
+    Collection<BibtexEntry> c=BibtexParser.fromString("");
+    Assert.assertEquals(0,c.size());
+  }
+  Collection<BibtexEntry> c=BibtexParser.fromString("@@article@@{{{{{{}");
+  Assert.assertEquals(null,c);
+}

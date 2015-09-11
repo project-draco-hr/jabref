@@ -1,0 +1,25 @@
+{
+  char c;
+  StringBuilder stringBuilder=new StringBuilder();
+  while (index < contentLength) {
+    c=content.charAt(index);
+    if (c == quoteChar) {
+      ++index;
+      if (index < contentLength) {
+        stringBuilder.append(content.charAt(index));
+      }
+    }
+ else     if (isDelimiter(c)) {
+      do {
+        ++index;
+      }
+ while (index < contentLength && isDelimiter(content.charAt(index)));
+      return stringBuilder.toString();
+    }
+ else {
+      stringBuilder.append(c);
+    }
+    ++index;
+  }
+  return stringBuilder.toString();
+}

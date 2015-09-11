@@ -1,0 +1,46 @@
+{
+  boolean close=true;
+  Vector<String> filenames=new Vector<>();
+  if (tabbedPane.getTabCount() > 0) {
+    for (int i=0; i < tabbedPane.getTabCount(); i++) {
+      if (baseAt(i).isBaseChanged()) {
+        tabbedPane.setSelectedIndex(i);
+        int answer=JOptionPane.showConfirmDialog(JabRefFrame.this,Localization.lang("Database has changed. Do you " + "want to save before closing?"),Localization.lang("Save before closing"),JOptionPane.YES_NO_CANCEL_OPTION);
+        if (answer == JOptionPane.CANCEL_OPTION || answer == JOptionPane.CLOSED_OPTION) {
+          return false;
+        }
+        if (answer == JOptionPane.YES_OPTION) {
+          try {
+            SaveDatabaseAction saveAction=new SaveDatabaseAction(basePanel());
+            saveAction.runCommand();
+            if (saveAction.isCancelled() || !saveAction.isSuccess()) {
+              output(Localization.lang("Unable to save database"));
+              close=false;
+            }
+          }
+ catch (          Throwable ex) {
+            close=false;
+            break;
+          }
+        }
+      }
+      if (baseAt(i).getFile() != null) {
+        filenames.add(baseAt(i).getFile().getAbsolutePath());
+      }
+    }
+  }
+  if (close) {
+    for (int i=0; i < tabbedPane.getTabCount(); i++) {
+      if (baseAt(i).isSaving()) {
+        WaitForSaveOperation w=new WaitForSaveOperation(this);
+        w.show();
+        if (w.cancelled()) {
+          return false;
+        }
+      }
+    }
+    tearDownJabRef(filenames);
+    return true;
+  }
+  return false;
+}

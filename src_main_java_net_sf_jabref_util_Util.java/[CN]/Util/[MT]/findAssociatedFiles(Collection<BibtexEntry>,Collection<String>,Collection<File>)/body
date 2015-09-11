@@ -1,6 +1,6 @@
 {
   HashMap<BibtexEntry,List<File>> result=new HashMap<BibtexEntry,List<File>>();
-  Set<File> filesWithExtension=UtilFindFiles.findFiles(extensions,directories);
+  Set<File> filesWithExtension=FileFinder.findFiles(extensions,directories);
   for (  BibtexEntry entry : entries) {
     result.put(entry,new ArrayList<File>());
   }
@@ -10,7 +10,7 @@
     int dot=name.lastIndexOf('.');
     for (    BibtexEntry entry : entries) {
       String citeKey=entry.getCiteKey();
-      if ((citeKey != null) && (citeKey.length() > 0)) {
+      if (citeKey != null && !citeKey.isEmpty()) {
         if (dot > 0) {
           if (name.substring(0,dot).equals(citeKey)) {
             result.get(entry).add(file);
@@ -22,7 +22,7 @@
     if (!exactOnly) {
       for (      BibtexEntry entry : entries) {
         String citeKey=entry.getCiteKey();
-        if ((citeKey != null) && (citeKey.length() > 0)) {
+        if (citeKey != null && !citeKey.isEmpty()) {
           if (name.startsWith(citeKey)) {
             result.get(entry).add(file);
             continue nextFile;

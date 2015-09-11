@@ -21,14 +21,15 @@
     }
     boolean changesMade=true;
     if (defaulted.contains(stringListEntry.getKey())) {
-      String nm=StringUtil.nCase(stringListEntry.getKey());
+      String nm=StringUtil.capitalizeFirst(stringListEntry.getKey());
       BibtexEntryType.removeType(nm);
       updateTypesForEntries(nm);
       continue;
     }
     BibtexEntryType oldType=BibtexEntryType.getType(stringListEntry.getKey());
     if (oldType != null) {
-      String[] oldReq=oldType.getRequiredFields(), oldOpt=oldType.getOptionalFields();
+      String[] oldReq=oldType.getRequiredFields();
+      String[] oldOpt=oldType.getOptionalFields();
       if (biblatexMode) {
         String[] oldPriOpt=oldType.getPrimaryOptionalFields();
         String[] oldSecOpt=oldType.getSecondaryOptionalFields();
@@ -41,7 +42,7 @@
       }
     }
     if (changesMade) {
-      CustomEntryType typ=biblatexMode ? new CustomEntryType(StringUtil.nCase(stringListEntry.getKey()),reqStr,optStr,opt2Str) : new CustomEntryType(StringUtil.nCase(stringListEntry.getKey()),reqStr,optStr);
+      CustomEntryType typ=biblatexMode ? new CustomEntryType(StringUtil.capitalizeFirst(stringListEntry.getKey()),reqStr,optStr,opt2Str) : new CustomEntryType(StringUtil.capitalizeFirst(stringListEntry.getKey()),reqStr,optStr);
       BibtexEntryType.addOrModifyCustomEntryType(typ);
       updateTypesForEntries(typ.getName());
     }

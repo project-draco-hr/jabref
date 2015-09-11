@@ -1,26 +1,2 @@
 {
-  BasePanel bp=frame.basePanel();
-  BibtexEntry[] entries=bp.getSelectedEntries();
-  keywordListModel.clear();
-  sortedKeywordsOfAllEntriesBeforeUpdateByUser.clear();
-  if (mergeKeywords.isSelected()) {
-    for (    BibtexEntry entry : entries) {
-      ArrayList<String> separatedKeywords=Util.getSeparatedKeywords(entry);
-      sortedKeywordsOfAllEntriesBeforeUpdateByUser.addAll(separatedKeywords);
-    }
-  }
- else {
-    assert(intersectKeywords.isSelected());
-    BibtexEntry firstEntry=entries[0];
-    ArrayList<String> separatedKeywords=Util.getSeparatedKeywords(firstEntry);
-    sortedKeywordsOfAllEntriesBeforeUpdateByUser.addAll(separatedKeywords);
-    for (int i=1; i < entries.length; i++) {
-      BibtexEntry entry=entries[i];
-      separatedKeywords=Util.getSeparatedKeywords(entry);
-      sortedKeywordsOfAllEntriesBeforeUpdateByUser.retainAll(separatedKeywords);
-    }
-  }
-  for (  String s : sortedKeywordsOfAllEntriesBeforeUpdateByUser) {
-    keywordListModel.addElement(s);
-  }
 }

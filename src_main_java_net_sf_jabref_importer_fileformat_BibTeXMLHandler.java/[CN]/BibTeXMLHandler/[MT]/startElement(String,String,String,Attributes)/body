@@ -1,0 +1,17 @@
+{
+  if (raw.equals("bibtex:entry")) {
+    String articleID=null;
+    for (int i=0; i < atts.getLength(); i++) {
+      if (atts.getQName(i).equals("bibtex:id") || atts.getQName(i).equals("id")) {
+        articleID=atts.getValue(i);
+      }
+    }
+    b=new BibtexEntry(IdGenerator.next());
+    b.setField(BibtexEntry.KEY_FIELD,articleID);
+  }
+ else   if (raw.equals("bibtex:article") || raw.equals("bibtex:inbook") || raw.equals("bibtex:book")|| raw.equals("bibtex:booklet")|| raw.equals("bibtex:incollection")|| raw.equals("bibtex:inproceedings")|| raw.equals("bibtex:proceedings")|| raw.equals("bibtex:manual")|| raw.equals("bibtex:mastersthesis")|| raw.equals("bibtex:phdthesis")|| raw.equals("bibtex:techreport")|| raw.equals("bibtex:unpublished")|| raw.equals("bibtex:misc")|| raw.equals("bibtex:other")) {
+    BibtexEntryType tp=BibtexEntryType.getType(local);
+    b.setType(tp);
+  }
+  currentChars="";
+}

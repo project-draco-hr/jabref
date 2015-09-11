@@ -1,0 +1,26 @@
+{
+  int abbrInt=abbreviate ? 0 : 1;
+  abbrInt+=oxfordComma ? 0 : 2;
+  if (authorsLastFirst[abbrInt] != null) {
+    return authorsLastFirst[abbrInt];
+  }
+  StringBuilder result=new StringBuilder();
+  if (size() > 0) {
+    result.append(getAuthor(0).getLastFirst(abbreviate));
+    int i=1;
+    while (i < size() - 1) {
+      result.append(", ");
+      result.append(getAuthor(i).getLastFirst(abbreviate));
+      i++;
+    }
+    if (size() > 2 && oxfordComma) {
+      result.append(',');
+    }
+    if (size() > 1) {
+      result.append(" and ");
+      result.append(getAuthor(i).getLastFirst(abbreviate));
+    }
+  }
+  authorsLastFirst[abbrInt]=result.toString();
+  return authorsLastFirst[abbrInt];
+}

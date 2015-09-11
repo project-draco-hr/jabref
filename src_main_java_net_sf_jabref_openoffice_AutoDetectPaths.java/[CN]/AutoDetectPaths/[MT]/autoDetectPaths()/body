@@ -1,0 +1,152 @@
+{
+  if (OS.WINDOWS) {
+    List<File> progFiles=AutoDetectPaths.findProgramFilesDir();
+    File sOffice=null;
+    if (fileSearchCancelled) {
+      return false;
+    }
+    for (    File dir : progFiles) {
+      sOffice=findFileDir(dir,"soffice.exe");
+      if (sOffice != null) {
+        break;
+      }
+    }
+    if (sOffice == null) {
+      JOptionPane.showMessageDialog(parent,Localization.lang("Unable to autodetect OpenOffice installation. Please choose the installation directory manually."),Localization.lang("Could not find OpenOffice installation"),JOptionPane.INFORMATION_MESSAGE);
+      JFileChooser jfc=new JFileChooser(new File("C:\\"));
+      jfc.setDialogType(JFileChooser.OPEN_DIALOG);
+      jfc.setFileFilter(new javax.swing.filechooser.FileFilter(){
+        @Override public boolean accept(        File file){
+          return file.isDirectory();
+        }
+        @Override public String getDescription(){
+          return Localization.lang("Directories");
+        }
+      }
+);
+      jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      jfc.showOpenDialog(parent);
+      if (jfc.getSelectedFile() != null) {
+        sOffice=jfc.getSelectedFile();
+      }
+    }
+    if (sOffice == null) {
+      return false;
+    }
+    Globals.prefs.put("ooExecutablePath",new File(sOffice,"soffice.exe").getPath());
+    File unoil=findFileDir(sOffice.getParentFile(),"unoil.jar");
+    if (fileSearchCancelled) {
+      return false;
+    }
+    File jurt=findFileDir(sOffice.getParentFile(),"jurt.jar");
+    if (fileSearchCancelled) {
+      return false;
+    }
+    if (unoil != null && jurt != null) {
+      Globals.prefs.put("ooUnoilPath",unoil.getPath());
+      Globals.prefs.put("ooJurtPath",jurt.getPath());
+      return true;
+    }
+ else {
+      return false;
+    }
+  }
+ else   if (OS.OS_X) {
+    File rootDir=new File("/Applications");
+    File[] files=rootDir.listFiles();
+    for (    File file : files) {
+      if (file.isDirectory() && file.getName().equals("OpenOffice.org.app")) {
+        rootDir=file;
+        break;
+      }
+    }
+    File sOffice=findFileDir(rootDir,"soffice.bin");
+    if (fileSearchCancelled) {
+      return false;
+    }
+    if (sOffice != null) {
+      Globals.prefs.put("ooExecutablePath",new File(sOffice,"soffice.bin").getPath());
+      File unoil=findFileDir(rootDir,"unoil.jar");
+      if (fileSearchCancelled) {
+        return false;
+      }
+      File jurt=findFileDir(rootDir,"jurt.jar");
+      if (fileSearchCancelled) {
+        return false;
+      }
+      if (unoil != null && jurt != null) {
+        Globals.prefs.put("ooUnoilPath",unoil.getPath());
+        Globals.prefs.put("ooJurtPath",jurt.getPath());
+        return true;
+      }
+ else {
+        return false;
+      }
+    }
+ else {
+      return false;
+    }
+  }
+ else {
+    String usrRoot="/usr/lib";
+    File inUsr=findFileDir(new File("/usr/lib"),"soffice");
+    if (fileSearchCancelled) {
+      return false;
+    }
+    if (inUsr == null) {
+      inUsr=findFileDir(new File("/usr/lib64"),"soffice");
+      if (inUsr != null) {
+        usrRoot="/usr/lib64";
+      }
+    }
+    if (fileSearchCancelled) {
+      return false;
+    }
+    File inOpt=findFileDir(new File("/opt"),"soffice");
+    if (fileSearchCancelled) {
+      return false;
+    }
+    if (inUsr != null && inOpt == null) {
+      return setupPreferencesForOO(usrRoot,inUsr);
+    }
+ else     if (inOpt != null && inUsr == null) {
+      Globals.prefs.put("ooExecutablePath",new File(inOpt,"soffice.bin").getPath());
+      File unoil=findFileDir(new File("/opt"),"unoil.jar");
+      File jurt=findFileDir(new File("/opt"),"jurt.jar");
+      if (unoil != null && jurt != null) {
+        Globals.prefs.put("ooUnoilPath",unoil.getPath());
+        Globals.prefs.put("ooJurtPath",jurt.getPath());
+        return true;
+      }
+ else {
+        return false;
+      }
+    }
+ else     if (inOpt != null) {
+      JRadioButton optRB=new JRadioButton(inOpt.getPath(),true);
+      JRadioButton usrRB=new JRadioButton(inUsr.getPath(),false);
+      ButtonGroup bg=new ButtonGroup();
+      bg.add(optRB);
+      bg.add(usrRB);
+      DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("left:pref",""));
+      b.append(Localization.lang("Found more than one OpenOffice executable. Please choose which one to connect to:"));
+      b.append(optRB);
+      b.append(usrRB);
+      int answer=JOptionPane.showConfirmDialog(null,b.getPanel(),Localization.lang("Choose OpenOffice executable"),JOptionPane.OK_CANCEL_OPTION);
+      if (answer == JOptionPane.CANCEL_OPTION) {
+        return false;
+      }
+ else {
+        if (optRB.isSelected()) {
+          return setupPreferencesForOO("/opt",inOpt);
+        }
+ else {
+          return setupPreferencesForOO(usrRoot,inUsr);
+        }
+      }
+    }
+ else {
+      return false;
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  terms=query;
+  piv=0;
+  shouldContinue=true;
+  parsed=0;
+  unparseable=0;
+  int pageNumber=1;
+  searchUrl=makeUrl(pageNumber);
+  try {
+    URL url=new URL(searchUrl);
+    String page=getResults(url);
+    if (page.contains("You have entered an invalid search")) {
+      status.showMessage(Localization.lang("You have entered an invalid search '%0'.",terms),Localization.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    if (page.contains("Bad request")) {
+      status.showMessage(Localization.lang("Bad Request '%0'.",terms),Localization.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    if (page.contains("No results were found.")) {
+      status.showMessage(Localization.lang("No entries found for the search string '%0'",terms),Localization.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    if (page.contains("Error Page")) {
+      status.showMessage(Localization.lang("Intermittent errors on the IEEE Xplore server. Please try again in a while."),Localization.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    hits=getNumberOfHits(page,"display-status",hitsPattern);
+    includeAbstract=absCheckBox.isSelected();
+    importBibtex=bibButton.isSelected();
+    if (hits > IEEEXploreFetcher.MAX_FETCH) {
+      status.showMessage(Localization.lang("%0 entries found. To reduce server load, " + "only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)}),Localization.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
+      hits=IEEEXploreFetcher.MAX_FETCH;
+    }
+    parse(dialog,page,0,1);
+    int firstEntry=perPage;
+    while (shouldContinue && firstEntry < hits) {
+      pageNumber++;
+      searchUrl=makeUrl(pageNumber);
+      page=getResults(new URL(searchUrl));
+      if (!shouldContinue) {
+        break;
+      }
+      parse(dialog,page,0,firstEntry + 1);
+      firstEntry+=perPage;
+    }
+    return true;
+  }
+ catch (  MalformedURLException e) {
+    e.printStackTrace();
+  }
+catch (  ConnectException e) {
+    status.showMessage(Localization.lang("Connection to IEEEXplore failed"),Localization.lang("Search IEEEXplore"),JOptionPane.ERROR_MESSAGE);
+  }
+catch (  IOException e) {
+    status.showMessage(Localization.lang(e.getMessage()),Localization.lang("Search IEEEXplore"),JOptionPane.ERROR_MESSAGE);
+    e.printStackTrace();
+  }
+  return false;
+}

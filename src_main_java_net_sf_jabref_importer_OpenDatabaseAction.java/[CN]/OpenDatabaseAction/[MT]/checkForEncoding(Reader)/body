@@ -1,0 +1,48 @@
+{
+  String suppliedEncoding=null;
+  StringBuilder headerText=new StringBuilder();
+  try {
+    boolean keepon=true;
+    int piv=0;
+    int offset=0;
+    int c;
+    while (keepon) {
+      c=reader.read();
+      if (piv == 0 && (c == '%' || Character.isWhitespace((char)c))) {
+        offset++;
+      }
+ else {
+        headerText.append((char)c);
+        if (c == Globals.SIGNATURE.charAt(piv)) {
+          piv++;
+        }
+ else {
+          keepon=false;
+        }
+      }
+      found:       if (piv == Globals.SIGNATURE.length()) {
+        keepon=false;
+        while (reader.read() != '\n') {
+        }
+        while ((c=reader.read()) == '%' || Character.isWhitespace((char)c)) {
+        }
+        if ((char)c != Globals.encPrefix.charAt(0)) {
+          break found;
+        }
+        for (int i=1; i < Globals.encPrefix.length(); i++) {
+          if (reader.read() != Globals.encPrefix.charAt(i)) {
+            break found;
+          }
+        }
+        StringBuilder sb=new StringBuilder();
+        while ((c=reader.read()) != '\n') {
+          sb.append((char)c);
+        }
+        suppliedEncoding=sb.toString();
+      }
+    }
+  }
+ catch (  IOException ignored) {
+  }
+  return suppliedEncoding != null ? suppliedEncoding.trim() : null;
+}

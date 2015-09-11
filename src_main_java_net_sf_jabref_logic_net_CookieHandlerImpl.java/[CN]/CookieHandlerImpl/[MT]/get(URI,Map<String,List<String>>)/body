@@ -1,0 +1,21 @@
+{
+  StringBuilder cookies=new StringBuilder();
+  for (Iterator<Cookie> i=cache.iterator(); i.hasNext(); ) {
+    Cookie cookie=i.next();
+    if (cookie.hasExpired()) {
+      i.remove();
+    }
+ else     if (cookie.matches(uri)) {
+      if (cookies.length() > 0) {
+        cookies.append(", ");
+      }
+      cookies.append(cookie);
+    }
+  }
+  Map<String,List<String>> cookieMap=new HashMap<>(requestHeaders);
+  if (cookies.length() > 0) {
+    List<String> list=Collections.singletonList(cookies.toString());
+    cookieMap.put("Cookie",list);
+  }
+  return Collections.unmodifiableMap(cookieMap);
+}

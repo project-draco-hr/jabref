@@ -1,0 +1,40 @@
+{
+  if (autoCompleteListener != null) {
+    component.addKeyListener(autoCompleteListener);
+    component.addFocusListener(autoCompleteListener);
+    autoCompleteListener.setNextFocusListener(fieldListener);
+  }
+ else {
+    component.addFocusListener(fieldListener);
+  }
+  InputMap inputMap=component.getInputMap(JComponent.WHEN_FOCUSED);
+  ActionMap actionMap=component.getActionMap();
+  inputMap.put(Globals.prefs.getKey("Entry editor, previous entry"),"prev");
+  actionMap.put("prev",parent.prevEntryAction);
+  inputMap.put(Globals.prefs.getKey("Entry editor, next entry"),"next");
+  actionMap.put("next",parent.nextEntryAction);
+  inputMap.put(Globals.prefs.getKey("Entry editor, store field"),"store");
+  actionMap.put("store",parent.storeFieldAction);
+  inputMap.put(Globals.prefs.getKey("Entry editor, next panel"),"right");
+  inputMap.put(Globals.prefs.getKey("Entry editor, next panel 2"),"right");
+  actionMap.put("left",parent.switchLeftAction);
+  inputMap.put(Globals.prefs.getKey("Entry editor, previous panel"),"left");
+  inputMap.put(Globals.prefs.getKey("Entry editor, previous panel 2"),"left");
+  actionMap.put("right",parent.switchRightAction);
+  inputMap.put(Globals.prefs.getKey("Help"),"help");
+  actionMap.put("help",parent.helpAction);
+  inputMap.put(Globals.prefs.getKey("Save database"),"save");
+  actionMap.put("save",parent.saveDatabaseAction);
+  inputMap.put(Globals.prefs.getKey("Next tab"),"nexttab");
+  actionMap.put("nexttab",parent.frame.nextTab);
+  inputMap.put(Globals.prefs.getKey("Previous tab"),"prevtab");
+  actionMap.put("prevtab",parent.frame.prevTab);
+  HashSet<AWTKeyStroke> keys=new HashSet<>(component.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+  keys.clear();
+  keys.add(AWTKeyStroke.getAWTKeyStroke("pressed TAB"));
+  component.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,keys);
+  keys=new HashSet<>(component.getFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS));
+  keys.clear();
+  keys.add(KeyStroke.getKeyStroke("shift pressed TAB"));
+  component.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,keys);
+}

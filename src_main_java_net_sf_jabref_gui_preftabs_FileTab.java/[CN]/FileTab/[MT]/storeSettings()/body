@@ -1,0 +1,49 @@
+{
+  String newline;
+switch (newlineSeparator.getSelectedIndex()) {
+case 0:
+    newline="\r";
+  break;
+case 2:
+newline="\n";
+break;
+default :
+newline="\r\n";
+}
+prefs.put(net.sf.jabref.JabRefPreferences.NEWLINE,newline);
+Globals.NEWLINE=newline;
+prefs.putBoolean(JabRefPreferences.BACKUP,backup.isSelected());
+prefs.putBoolean(JabRefPreferences.OPEN_LAST_EDITED,openLast.isSelected());
+prefs.putBoolean(JabRefPreferences.AUTO_DOUBLE_BRACES,autoDoubleBraces.isSelected());
+prefs.putBoolean(JabRefPreferences.RESOLVE_STRINGS_ALL_FIELDS,resolveStringsAll.isSelected());
+prefs.put(JabRefPreferences.DO_NOT_RESOLVE_STRINGS_FOR,doNotResolveStringsFor.getText().trim());
+prefs.putBoolean(JabRefPreferences.AUTO_SAVE,autoSave.isSelected());
+prefs.putBoolean(JabRefPreferences.PROMPT_BEFORE_USING_AUTOSAVE,promptBeforeUsingAutoSave.isSelected());
+prefs.putInt(JabRefPreferences.AUTO_SAVE_INTERVAL,(Integer)autoSaveInterval.getValue());
+prefs.putInt(JabRefPreferences.VALUE_DELIMITERS2,valueDelimiter.getSelectedIndex());
+prefs.putBoolean(JabRefPreferences.INCLUDE_EMPTY_FIELDS,includeEmptyFields.isSelected());
+prefs.putBoolean(JabRefPreferences.WRITEFIELD_CAMELCASENAME,camelCase.isSelected());
+prefs.putBoolean(JabRefPreferences.WRITEFIELD_ADDSPACES,sameColumn.isSelected());
+doNotResolveStringsFor.setText(prefs.get(JabRefPreferences.DO_NOT_RESOLVE_STRINGS_FOR));
+prefs.putInt(JabRefPreferences.WRITEFIELD_SORTSTYLE,getBgValue(bgFieldOrderStyle));
+prefs.put(JabRefPreferences.WRITEFIELD_USERDEFINEDORDER,userDefinedFieldOrder.getText().trim());
+prefs.putBoolean(JabRefPreferences.WRITEFIELD_WRAPFIELD,wrapFieldLine.isSelected());
+boolean updateSpecialFields=false;
+if (!bracesAroundCapitalsFields.getText().trim().equals(prefs.get(JabRefPreferences.PUT_BRACES_AROUND_CAPITALS))) {
+prefs.put(JabRefPreferences.PUT_BRACES_AROUND_CAPITALS,bracesAroundCapitalsFields.getText());
+updateSpecialFields=true;
+}
+if (!nonWrappableFields.getText().trim().equals(prefs.get(JabRefPreferences.NON_WRAPPABLE_FIELDS))) {
+prefs.put(JabRefPreferences.NON_WRAPPABLE_FIELDS,nonWrappableFields.getText());
+updateSpecialFields=true;
+}
+if (updateSpecialFields) {
+prefs.updateSpecialFieldHandling();
+}
+if (!origAutoSaveSetting && autoSave.isSelected()) {
+Globals.startAutoSaveManager(frame);
+}
+ else if (origAutoSaveSetting && !autoSave.isSelected()) {
+Globals.stopAutoSaveManager();
+}
+}

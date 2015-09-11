@@ -1,0 +1,58 @@
+{
+  String cancelMessage=Localization.lang("Unable to open file.");
+  String[] options=new String[]{Localization.lang("Define '%0'",fileType.getName()),Localization.lang("Change file type"),Localization.lang("Cancel")};
+  String defOption=options[0];
+  int answer=JOptionPane.showOptionDialog(frame,Localization.lang("This external link is of the type '%0', which is undefined. What do you want to do?",fileType.getName()),Localization.lang("Undefined file type"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,defOption);
+  if (answer == JOptionPane.CANCEL_OPTION) {
+    frame.output(cancelMessage);
+    return false;
+  }
+ else   if (answer == JOptionPane.YES_OPTION) {
+    ExternalFileType newType=new ExternalFileType(fileType.getName(),"","","","new");
+    ExternalFileTypeEntryEditor editor=new ExternalFileTypeEntryEditor(frame,newType);
+    editor.setVisible(true);
+    if (editor.okPressed()) {
+      List<ExternalFileType> fileTypes=new ArrayList<ExternalFileType>();
+      ExternalFileType[] oldTypes=Globals.prefs.getExternalFileTypeSelection();
+      Collections.addAll(fileTypes,oldTypes);
+      fileTypes.add(newType);
+      Collections.sort(fileTypes);
+      Globals.prefs.setExternalFileTypes(fileTypes);
+      return openExternalFileAnyFormat(metaData,link,newType);
+    }
+ else {
+      frame.output(cancelMessage);
+      return false;
+    }
+  }
+ else {
+    FileListTableModel tModel=new FileListTableModel();
+    String oldValue=entry.getField(GUIGlobals.FILE_FIELD);
+    tModel.setContent(oldValue);
+    FileListEntry flEntry=null;
+    for (int i=0; i < tModel.getRowCount(); i++) {
+      FileListEntry iEntry=tModel.getEntry(i);
+      if (iEntry.getLink().equals(link)) {
+        flEntry=iEntry;
+        break;
+      }
+    }
+    if (flEntry == null) {
+      throw new RuntimeException("Could not find the file list entry " + link + " in "+ entry);
+    }
+    FileListEntryEditor editor=new FileListEntryEditor(frame,flEntry,false,true,metaData);
+    editor.setVisible(true,false);
+    if (editor.okPressed()) {
+      String newValue=tModel.getStringRepresentation();
+      UndoableFieldChange ce=new UndoableFieldChange(entry,GUIGlobals.FILE_FIELD,oldValue,newValue);
+      entry.setField(GUIGlobals.FILE_FIELD,newValue);
+      frame.basePanel().undoManager.addEdit(ce);
+      frame.basePanel().markBaseChanged();
+      return openExternalFileAnyFormat(metaData,flEntry.getLink(),flEntry.getType());
+    }
+ else {
+      frame.output(cancelMessage);
+      return false;
+    }
+  }
+}

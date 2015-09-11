@@ -1,0 +1,18 @@
+{
+  auto.setEnabled(false);
+  BibtexEntry entry=entryEditor.getEntry();
+  JDialog diag=new JDialog(frame,true);
+  JabRefExecutorService.INSTANCE.execute(Util.autoSetLinks(entry,tableModel,metaData,new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      auto.setEnabled(true);
+      if (e.getID() > 0) {
+        entryEditor.updateField(FileListEditor.this);
+        frame.output(Localization.lang("Finished autosetting external links."));
+      }
+ else {
+        frame.output(Localization.lang("Finished autosetting external links.") + " " + Localization.lang("No files found."));
+      }
+    }
+  }
+,diag));
+}

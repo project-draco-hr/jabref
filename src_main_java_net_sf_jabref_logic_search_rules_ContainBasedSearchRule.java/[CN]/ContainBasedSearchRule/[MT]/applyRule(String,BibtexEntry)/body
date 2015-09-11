@@ -1,0 +1,28 @@
+{
+  String searchString=query;
+  if (!caseSensitive) {
+    searchString=searchString.toLowerCase();
+  }
+  List<String> words=new SentenceAnalyzer(searchString).getWords();
+  boolean[] matchFound=new boolean[words.size()];
+  for (  String field : bibtexEntry.getAllFields()) {
+    Object fieldContentAsObject=bibtexEntry.getField(field);
+    if (fieldContentAsObject != null) {
+      String fieldContent=ContainBasedSearchRule.REMOVE_LATEX_COMMANDS.format(fieldContentAsObject.toString());
+      if (!caseSensitive) {
+        fieldContent=fieldContent.toLowerCase();
+      }
+      int index=0;
+      for (      String word : words) {
+        matchFound[index]=matchFound[index] || fieldContent.contains(word);
+        index++;
+      }
+    }
+  }
+  for (  boolean aMatchFound : matchFound) {
+    if (!aMatchFound) {
+      return false;
+    }
+  }
+  return true;
+}

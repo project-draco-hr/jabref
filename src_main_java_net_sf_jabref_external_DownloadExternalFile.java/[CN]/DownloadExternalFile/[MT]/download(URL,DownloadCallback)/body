@@ -3,12 +3,12 @@
   String mimeType;
   final File tmp=File.createTempFile("jabref_download","tmp");
   tmp.deleteOnExit();
-  URLDownload udl=URLDownload.buildMonitoredDownload(frame,url);
+  URLDownload udl=MonitoredURLDownload.buildMonitoredDownload(frame,url);
   try {
     mimeType=udl.determineMimeType();
   }
  catch (  IOException ex) {
-    JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + ex.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(frame,Localization.lang("Invalid URL") + ": " + ex.getMessage(),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
     LOGGER.info("Error while downloading " + "'" + res + "'",ex);
     return;
   }
@@ -21,11 +21,11 @@
       }
  catch (      IOException e2) {
         dontShowDialog=true;
-        if ((editor != null) && (editor.isVisible())) {
+        if (editor != null && editor.isVisible()) {
           editor.setVisible(false,false);
         }
-        JOptionPane.showMessageDialog(frame,Globals.lang("Invalid URL") + ": " + e2.getMessage(),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
-        LOGGER.info("Error while downloading " + "'" + urlF.toString() + "'",e2);
+        JOptionPane.showMessageDialog(frame,Localization.lang("Invalid URL") + ": " + e2.getMessage(),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+        LOGGER.info("Error while downloading " + "'" + urlF + "'",e2);
         return;
       }
       SwingUtilities.invokeLater(new Runnable(){
@@ -69,11 +69,11 @@
     @Override public boolean confirmClose(    FileListEntry entry){
       File f=directory != null ? expandFilename(directory,entry.getLink()) : new File(entry.getLink());
       if (f.isDirectory()) {
-        JOptionPane.showMessageDialog(frame,Globals.lang("Target file cannot be a directory."),Globals.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame,Localization.lang("Target file cannot be a directory."),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
         return false;
       }
       if (f.exists()) {
-        return JOptionPane.showConfirmDialog(frame,"'" + f.getName() + "' "+ Globals.lang("exists. Overwrite file?"),Globals.lang("Download file"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+        return JOptionPane.showConfirmDialog(frame,"'" + f.getName() + "' "+ Localization.lang("exists. Overwrite file?"),Localization.lang("Download file"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
       }
  else {
         return true;
@@ -106,7 +106,7 @@
       if (!success) {
         System.out.println("File already exists! DownloadExternalFile.download()");
       }
-      if ((directory != null) && entry.getLink().startsWith(directory) && (entry.getLink().length() > dirPrefix.length())) {
+      if (directory != null && entry.getLink().startsWith(directory) && entry.getLink().length() > dirPrefix.length()) {
         entry.setLink(entry.getLink().substring(dirPrefix.length()));
       }
       callback.downloadComplete(entry);

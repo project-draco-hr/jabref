@@ -1,0 +1,21 @@
+{
+  boolean httpLink=false;
+  if (Util.REMOTE_LINK_PATTERN.matcher(link.toLowerCase()).matches()) {
+    httpLink=true;
+  }
+  File file=new File(link);
+  if (!httpLink) {
+    File tmp=FileUtil.expandFilename(metaData,link);
+    if (tmp != null) {
+      file=tmp;
+    }
+  }
+  if ((httpLink || file.exists()) && fileType != null) {
+    String filePath=httpLink ? link : file.getPath();
+    openExternalFilePlatformIndependent(fileType,filePath);
+    return true;
+  }
+ else {
+    return false;
+  }
+}

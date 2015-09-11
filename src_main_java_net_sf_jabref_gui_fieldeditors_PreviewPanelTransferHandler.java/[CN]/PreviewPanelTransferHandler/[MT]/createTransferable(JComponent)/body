@@ -1,0 +1,19 @@
+{
+  if (component instanceof JEditorPane) {
+    JEditorPane editorPane=(JEditorPane)component;
+    StringWriter stringWriter=new StringWriter();
+    try {
+      editorPane.getEditorKit().write(stringWriter,editorPane.getDocument(),editorPane.getSelectionStart(),editorPane.getSelectionEnd());
+    }
+ catch (    IOException e) {
+      LOGGER.warn("Cannot write preview",e);
+    }
+catch (    BadLocationException e) {
+      LOGGER.warn("Cannot write preview",e);
+    }
+    return new HtmlTransferable(stringWriter.toString(),editorPane.getSelectedText());
+  }
+ else {
+    return new StringSelection(Localization.lang("Operation not supported"));
+  }
+}

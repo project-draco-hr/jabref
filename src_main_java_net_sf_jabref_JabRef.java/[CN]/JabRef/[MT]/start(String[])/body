@@ -1,10 +1,5 @@
 {
   JabRefPreferences prefs=JabRefPreferences.getInstance();
-  if (prefs.hasKey(JabRefPreferences.DELETE_PLUGINS) && (prefs.get(JabRefPreferences.DELETE_PLUGINS).length() > 0)) {
-    String[] toDelete=prefs.getStringArray(JabRefPreferences.DELETE_PLUGINS);
-    PluginInstaller.deletePluginsOnStartup(toDelete);
-    prefs.put(JabRefPreferences.DELETE_PLUGINS,"");
-  }
   if (prefs.getBoolean(JabRefPreferences.USE_PROXY)) {
     System.setProperty("http.proxyHost",prefs.get(JabRefPreferences.PROXY_HOSTNAME));
     System.setProperty("http.proxyPort",prefs.get(JabRefPreferences.PROXY_PORT));
@@ -35,29 +30,28 @@
     }
  else {
       if (RemoteListenerClient.sendToActiveJabRefInstance(args,remotePreferences.getPort())) {
-        System.out.println(Globals.lang("Arguments passed on to running JabRef instance. Shutting down."));
+        System.out.println(Localization.lang("Arguments passed on to running JabRef instance. Shutting down."));
         JabRefExecutorService.INSTANCE.shutdownEverything();
         return;
       }
     }
   }
   String personalJournalList=prefs.get(JabRefPreferences.PERSONAL_JOURNAL_LIST);
-  if ((personalJournalList != null) && !personalJournalList.isEmpty()) {
+  if (personalJournalList != null && !personalJournalList.isEmpty()) {
     try {
       Globals.journalAbbrev.readJournalListFromFile(new File(personalJournalList));
     }
  catch (    FileNotFoundException e) {
-      JOptionPane.showMessageDialog(null,Globals.lang("Journal file not found") + ": " + e.getMessage(),Globals.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null,Localization.lang("Journal file not found") + ": " + e.getMessage(),Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
       Globals.prefs.put(JabRefPreferences.PERSONAL_JOURNAL_LIST,"");
     }
   }
   Globals.NEWLINE=Globals.prefs.get(JabRefPreferences.NEWLINE);
-  Globals.NEWLINE_LENGTH=Globals.NEWLINE.length();
-  if (Globals.ON_WIN) {
+  if (OS.WINDOWS) {
     JabRef.setCurrentProcessExplicitAppUserModelID("JabRef." + Globals.BUILD_INFO.getVersion());
   }
   Vector<ParserResult> loaded=processArguments(args,true);
-  if (loaded == null || graphicFailure || cli.isDisableGui() || cli.isShowVersion()) {
+  if (loaded == null || cli.isDisableGui() || cli.isShowVersion()) {
     JabRefExecutorService.INSTANCE.shutdownEverything();
     return;
   }

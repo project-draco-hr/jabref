@@ -1,13 +1,12 @@
 {
   String urlText=entry.getField("url");
   String doiText=entry.getField("doi");
-  if ((doiText != null) && (doiText.trim().length() > 0)) {
-    doiText=DOIUtil.getDOI(doiText);
-    FindResult resDoi=lookForFullTextAtURL(Globals.DOI_LOOKUP_PREFIX + doiText);
+  if (doiText != null && !doiText.trim().isEmpty()) {
+    FindResult resDoi=lookForFullTextAtURL(new DOI(doiText).getURL());
     if (resDoi.status == FindFullText.FOUND_PDF) {
       return resDoi;
     }
- else     if ((urlText != null) && (urlText.trim().length() > 0)) {
+ else     if (urlText != null && !urlText.trim().isEmpty()) {
       FindResult resUrl=lookForFullTextAtURL(urlText);
       if (resUrl.status == FindFullText.FOUND_PDF) {
         return resUrl;
@@ -20,7 +19,7 @@
       return resDoi;
     }
   }
- else   if ((urlText != null) && (urlText.trim().length() > 0)) {
+ else   if (urlText != null && !urlText.trim().isEmpty()) {
     return lookForFullTextAtURL(urlText);
   }
  else {

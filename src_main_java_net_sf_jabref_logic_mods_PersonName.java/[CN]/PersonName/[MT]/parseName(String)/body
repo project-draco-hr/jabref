@@ -1,0 +1,26 @@
+{
+  Vector<String> names=new Vector<>();
+  String authorMod=AuthorList.fixAuthor_lastNameFirst(author,false);
+  int endOfLastName=authorMod.indexOf(",");
+  WSITools.tokenize(names,authorMod.substring(endOfLastName + 1).trim()," \n\r");
+  if (endOfLastName >= 0) {
+    names.add(authorMod.substring(0,endOfLastName));
+  }
+  int amountOfNames=names.size();
+  if (amountOfNames == 1) {
+    surname=names.get(0);
+  }
+ else   if (amountOfNames == 2) {
+    givenName=names.get(0);
+    surname=names.get(1);
+  }
+ else {
+    givenName=names.get(0);
+    middleName="";
+    for (int i=1; i < amountOfNames - 1; i++) {
+      middleName+=' ' + names.get(i);
+    }
+    middleName=middleName.trim();
+    surname=names.get(amountOfNames - 1);
+  }
+}

@@ -1,0 +1,27 @@
+{
+  super(type);
+  setUI(new VerticalLabelUI(false));
+  setForeground(GUIGlobals.entryEditorLabelColor);
+  setHorizontalAlignment(SwingConstants.RIGHT);
+  setFont(GUIGlobals.typeNameFont);
+  addMouseListener(new MouseAdapter(){
+    @Override public void mouseReleased(    MouseEvent e){
+      if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
+        handleTypeChange();
+      }
+    }
+    @Override public void mouseClicked(    MouseEvent e){
+      if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON3) {
+        handleTypeChange();
+      }
+    }
+    private void handleTypeChange(){
+      JPopupMenu typeMenu=new JPopupMenu();
+      for (      String s : BibtexEntryType.getAllTypes()) {
+        typeMenu.add(new ChangeTypeAction(BibtexEntryType.getType(s),panel));
+      }
+      typeMenu.show(ths,0,0);
+    }
+  }
+);
+}

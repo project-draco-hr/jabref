@@ -1,0 +1,27 @@
+{
+  prefs.putBoolean(JabRefPreferences.TABLE_COLOR_CODES_ON,colorCodes.isSelected());
+  prefs.put(JabRefPreferences.FONT_FAMILY,font.getFamily());
+  prefs.putInt(JabRefPreferences.FONT_STYLE,font.getStyle());
+  prefs.putInt(JabRefPreferences.FONT_SIZE,font.getSize());
+  prefs.putBoolean(JabRefPreferences.OVERRIDE_DEFAULT_FONTS,overrideFonts.isSelected());
+  GUIGlobals.CURRENTFONT=font;
+  colorPanel.storeSettings();
+  prefs.putBoolean(JabRefPreferences.TABLE_SHOW_GRID,showGrid.isSelected());
+  try {
+    int size=Integer.parseInt(fontSize.getText());
+    if (overrideFonts.isSelected() != oldOverrideFontSize || size != oldMenuFontSize) {
+      prefs.putInt(JabRefPreferences.MENU_FONT_SIZE,size);
+      JOptionPane.showMessageDialog(null,Localization.lang("You have changed the menu and label font size.").concat(" ").concat(Localization.lang("You must restart JabRef for this to come into effect.")),Localization.lang("Changed font settings"),JOptionPane.WARNING_MESSAGE);
+    }
+  }
+ catch (  NumberFormatException ex) {
+    ex.printStackTrace();
+  }
+  try {
+    int padding=Integer.parseInt(rowPadding.getText());
+    prefs.putInt(JabRefPreferences.TABLE_ROW_PADDING,padding);
+  }
+ catch (  NumberFormatException ex) {
+    ex.printStackTrace();
+  }
+}

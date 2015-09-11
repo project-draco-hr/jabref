@@ -1,0 +1,40 @@
+{
+  ImageIcon connectImage=GUIGlobals.getImage("connect_no");
+  OpenOfficePanel.connect=new JButton(connectImage);
+  OpenOfficePanel.manualConnect=new JButton(connectImage);
+  OpenOfficePanel.connect.setToolTipText(Localization.lang("Connect"));
+  OpenOfficePanel.manualConnect.setToolTipText(Localization.lang("Manual connect"));
+  OpenOfficePanel.selectDocument=new JButton(GUIGlobals.getImage("open"));
+  OpenOfficePanel.selectDocument.setToolTipText(Localization.lang("Select Writer document"));
+  OpenOfficePanel.update=new JButton(GUIGlobals.getImage("refresh"));
+  OpenOfficePanel.update.setToolTipText(Localization.lang("Sync OO bibliography"));
+  String defExecutable;
+  String defJarsDir;
+  if (OS.WINDOWS) {
+    Globals.prefs.putDefaultValue("ooPath","C:\\Program Files\\OpenOffice.org 3");
+    Globals.prefs.putDefaultValue("ooExecutablePath","C:\\Program Files\\OpenOffice.org 2.3\\program\\soffice.exe");
+    Globals.prefs.putDefaultValue("ooJarsPath","C:\\Program Files\\OpenOffice.org 2.3\\program\\classes");
+  }
+ else   if (OS.OS_X) {
+    Globals.prefs.putDefaultValue("ooExecutablePath","/Applications/OpenOffice.org.app/Contents/MacOS/soffice.bin");
+    Globals.prefs.putDefaultValue("ooPath","/Applications/OpenOffice.org.app");
+    Globals.prefs.putDefaultValue("ooJarsPath","/Applications/OpenOffice.org.app/Contents/basis-link");
+  }
+ else {
+    Globals.prefs.putDefaultValue("ooPath","/opt/openoffice.org3");
+    Globals.prefs.putDefaultValue("ooExecutablePath","/usr/lib/openoffice/program/soffice");
+    Globals.prefs.putDefaultValue("ooJarsPath","/opt/openoffice.org/basis3.0");
+  }
+  Globals.prefs.putDefaultValue("connectToOO3",Boolean.TRUE);
+  Globals.prefs.putDefaultValue("ooStyleFileLastDir",System.getProperty("user.home"));
+  Globals.prefs.putDefaultValue("ooInParCitation",true);
+  Globals.prefs.putDefaultValue("syncOOWhenCiting",false);
+  Globals.prefs.putDefaultValue("showOOPanel",false);
+  Globals.prefs.putDefaultValue("useAllOpenBases",true);
+  Globals.prefs.putDefaultValue("ooUseDefaultAuthoryearStyle",true);
+  Globals.prefs.putDefaultValue("ooUseDefaultNumericalStyle",false);
+  Globals.prefs.putDefaultValue("ooChooseStyleDirectly",false);
+  Globals.prefs.putDefaultValue("ooDirectFile","");
+  Globals.prefs.putDefaultValue("ooStyleDirectory","");
+  OpenOfficePanel.styleFile=Globals.prefs.get("ooBibliographyStyleFile");
+}

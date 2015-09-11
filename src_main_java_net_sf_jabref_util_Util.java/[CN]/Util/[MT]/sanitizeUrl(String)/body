@@ -5,10 +5,11 @@
   }
   if (link.matches("^doi:/*.*")) {
     link=link.replaceFirst("^doi:/*","");
-    link=Globals.DOI_LOOKUP_PREFIX + link;
+    link=new DOI(link).getURL();
   }
-  if (DOIUtil.checkForPlainDOI(link) && !link.startsWith("http://")) {
-    link=Globals.DOI_LOOKUP_PREFIX + DOIUtil.getDOI(link);
+  Optional<DOI> doi=DOI.build(link);
+  if (doi.isPresent() && !link.matches("^https?://.*")) {
+    link=doi.get().getURL();
   }
   link=link.replaceAll("\\+","%2B");
   try {

@@ -1,22 +1,23 @@
 {
-  if (content.length() == 0) {
+  if (content.isEmpty()) {
     return content;
   }
   String[] strings=content.split("#");
   StringBuilder result=new StringBuilder();
   for (  String string : strings) {
     String s=string.trim();
-    if (s.length() > 0) {
+    if (!s.isEmpty()) {
       char c=s.charAt(0);
-      if ((c == '{') || (c == '"')) {
+      if (c == '{' || c == '"') {
         result.append(StringUtil.shaveString(string));
       }
  else {
         String s2=StringUtil.shaveString(s);
-        if (isInteger(s2)) {
+        try {
+          Integer.parseInt(s2);
           result.append(s2);
         }
- else {
+ catch (        NumberFormatException e) {
           result.append('#').append(s2).append('#');
         }
       }

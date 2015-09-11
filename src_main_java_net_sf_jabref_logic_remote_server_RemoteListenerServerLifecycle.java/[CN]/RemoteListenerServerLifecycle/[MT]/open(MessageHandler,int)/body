@@ -1,0 +1,17 @@
+{
+  if (isOpen()) {
+    return;
+  }
+  RemoteListenerServerThread result;
+  try {
+    result=new RemoteListenerServerThread(messageHandler,port);
+  }
+ catch (  BindException e) {
+    LOGGER.warn("Port is blocked",e);
+    result=null;
+  }
+catch (  IOException e) {
+    result=null;
+  }
+  remoteListenerServerThread=result;
+}

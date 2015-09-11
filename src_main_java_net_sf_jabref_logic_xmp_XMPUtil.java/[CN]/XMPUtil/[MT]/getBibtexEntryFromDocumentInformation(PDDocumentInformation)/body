@@ -1,0 +1,37 @@
+{
+  BibtexEntry entry=new BibtexEntry();
+  String s=di.getAuthor();
+  if (s != null) {
+    entry.setField("author",s);
+  }
+  s=di.getTitle();
+  if (s != null) {
+    entry.setField("title",s);
+  }
+  s=di.getKeywords();
+  if (s != null) {
+    entry.setField("keywords",s);
+  }
+  s=di.getSubject();
+  if (s != null) {
+    entry.setField("abstract",s);
+  }
+  COSDictionary dict=di.getDictionary();
+  for (  Map.Entry<COSName,COSBase> o : dict.entrySet()) {
+    String key=o.getKey().getName();
+    if (key.startsWith("bibtex/")) {
+      String value=dict.getString(key);
+      key=key.substring("bibtex/".length());
+      if (key.equals("entrytype")) {
+        BibtexEntryType type=BibtexEntryType.getStandardType(value);
+        if (type != null) {
+          entry.setType(type);
+        }
+      }
+ else {
+        entry.setField(key,value);
+      }
+    }
+  }
+  return !entry.getAllFields().isEmpty() ? entry : null;
+}

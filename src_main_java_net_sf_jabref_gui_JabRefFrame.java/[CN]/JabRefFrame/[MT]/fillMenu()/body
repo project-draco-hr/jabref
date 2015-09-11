@@ -1,0 +1,187 @@
+{
+  mb.setBorder(null);
+  JMenu file=JabRefFrame.subMenu("File");
+  JMenu sessions=JabRefFrame.subMenu("Sessions");
+  JMenu edit=JabRefFrame.subMenu("Edit");
+  JMenu search=JabRefFrame.subMenu("Search");
+  JMenu bibtex=JabRefFrame.subMenu("BibTeX");
+  JMenu view=JabRefFrame.subMenu("View");
+  JMenu tools=JabRefFrame.subMenu("Tools");
+  JMenu options=JabRefFrame.subMenu("Options");
+  JMenu newSpec=JabRefFrame.subMenu("New entry...");
+  JMenu helpMenu=JabRefFrame.subMenu("Help");
+  setUpImportMenus();
+  newDatabaseMenu.add(newDatabaseAction);
+  newDatabaseMenu.add(newSubDatabaseAction);
+  file.add(newDatabaseAction);
+  file.add(open);
+  file.add(mergeDatabaseAction);
+  file.add(save);
+  file.add(saveAs);
+  file.add(saveAll);
+  file.add(saveSelectedAs);
+  file.add(saveSelectedAsPlain);
+  file.addSeparator();
+  file.add(importNew);
+  file.add(importCurrent);
+  file.add(exportAll);
+  file.add(exportSelected);
+  file.add(dbConnect);
+  file.add(dbImport);
+  file.add(dbExport);
+  file.addSeparator();
+  file.add(databaseProperties);
+  file.addSeparator();
+  sessions.add(loadSessionAction);
+  sessions.add(saveSessionAction);
+  file.add(sessions);
+  file.add(fileHistory);
+  file.addSeparator();
+  file.add(close);
+  file.add(new MinimizeToSysTrayAction());
+  file.add(quit);
+  mb.add(file);
+  edit.add(undo);
+  edit.add(redo);
+  edit.addSeparator();
+  edit.add(cut);
+  edit.add(copy);
+  edit.add(paste);
+  edit.add(delete);
+  edit.add(copyKey);
+  edit.add(copyCiteKey);
+  edit.add(copyKeyAndTitle);
+  edit.addSeparator();
+  edit.add(mark);
+  JMenu markSpecific=JabRefFrame.subMenu("Mark specific color");
+  for (int i=0; i < EntryMarker.MAX_MARKING_LEVEL; i++) {
+    markSpecific.add(new MarkEntriesAction(this,i).getMenuItem());
+  }
+  edit.add(markSpecific);
+  edit.add(unmark);
+  edit.add(unmarkAll);
+  edit.addSeparator();
+  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
+    JMenu m;
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+      m=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(m,Rank.getInstance(),this);
+      edit.add(m);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+      edit.add(toggleRelevance);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+      edit.add(toggleQualityAssured);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+      m=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(m,Priority.getInstance(),this);
+      edit.add(m);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED)) {
+      edit.add(togglePrinted);
+    }
+    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ)) {
+      m=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(m,ReadStatus.getInstance(),this);
+      edit.add(m);
+    }
+  }
+  edit.addSeparator();
+  edit.add(manageKeywords);
+  edit.add(selectAll);
+  mb.add(edit);
+  search.add(normalSearch);
+  search.add(incrementalSearch);
+  search.add(replaceAll);
+  search.add(massSetField);
+  search.addSeparator();
+  search.add(dupliCheck);
+  search.add(resolveDuplicateKeys);
+  search.add(autoSetFile);
+  search.addSeparator();
+  GeneralFetcher generalFetcher=new GeneralFetcher(sidePaneManager,this);
+  search.add(generalFetcher.getAction());
+  if (prefs.getBoolean(JabRefPreferences.WEB_SEARCH_VISIBLE)) {
+    sidePaneManager.register(generalFetcher.getTitle(),generalFetcher);
+    sidePaneManager.show(generalFetcher.getTitle());
+  }
+  mb.add(search);
+  view.add(back);
+  view.add(forward);
+  view.add(focusTable);
+  view.add(nextTab);
+  view.add(prevTab);
+  view.add(sortTabs);
+  view.addSeparator();
+  view.add(increaseFontSize);
+  view.add(decreseFontSize);
+  view.addSeparator();
+  view.add(toggleToolbar);
+  view.add(toggleGroups);
+  view.add(togglePreview);
+  view.add(switchPreview);
+  view.addSeparator();
+  view.add(toggleHighlightAny);
+  view.add(toggleHighlightAll);
+  mb.add(view);
+  bibtex.add(newEntryAction);
+  for (  NewEntryAction aNewSpecificEntryAction : newSpecificEntryAction) {
+    newSpec.add(aNewSpecificEntryAction);
+  }
+  bibtex.add(newSpec);
+  bibtex.add(plainTextImport);
+  bibtex.addSeparator();
+  bibtex.add(editEntry);
+  bibtex.add(editPreamble);
+  bibtex.add(editStrings);
+  mb.add(bibtex);
+  tools.add(makeKeyAction);
+  tools.add(Cleanup);
+  tools.add(mergeEntries);
+  tools.add(newSubDatabaseAction);
+  tools.add(writeXmpAction);
+  OpenOfficePanel otp=OpenOfficePanel.getInstance();
+  otp.init(this,sidePaneManager);
+  tools.add(otp.getMenuItem());
+  tools.add(pushExternalButton.getMenuAction());
+  tools.addSeparator();
+  tools.add(manageSelectors);
+  tools.addSeparator();
+  tools.add(openFolder);
+  tools.add(openFile);
+  tools.add(openPdf);
+  tools.add(openUrl);
+  tools.add(findUnlinkedFiles);
+  tools.add(autoLinkFile);
+  tools.addSeparator();
+  tools.add(abbreviateIso);
+  tools.add(abbreviateMedline);
+  tools.add(unabbreviate);
+  tools.addSeparator();
+  checkAndFix.add(autoSetPdf);
+  checkAndFix.add(autoSetPs);
+  checkAndFix.add(integrityCheckAction);
+  tools.add(checkAndFix);
+  mb.add(tools);
+  options.add(showPrefs);
+  AbstractAction customizeAction=new CustomizeEntryTypeAction();
+  AbstractAction genFieldsCustomization=new GenFieldsCustomizationAction();
+  options.add(customizeAction);
+  options.add(genFieldsCustomization);
+  options.add(customExpAction);
+  options.add(customImpAction);
+  options.add(customFileTypesAction);
+  options.add(manageJournals);
+  options.add(selectKeys);
+  mb.add(options);
+  helpMenu.add(help);
+  helpMenu.add(contents);
+  helpMenu.addSeparator();
+  helpMenu.add(errorConsole);
+  helpMenu.add(forkMeOnGitHubAction);
+  helpMenu.addSeparator();
+  helpMenu.add(about);
+  mb.add(helpMenu);
+}

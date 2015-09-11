@@ -1,0 +1,28 @@
+{
+  if (n <= 0) {
+    return "";
+  }
+  authorField=AuthorList.fixAuthorForAlphabetization(authorField);
+  StringBuilder author=new StringBuilder();
+  String[] tokens=authorField.split("\\band\\b");
+  int i=0;
+  int charsAll=n / tokens.length;
+  if (tokens.length == 0) {
+    return author.toString();
+  }
+  while (tokens.length > i) {
+    if (i < n % tokens.length) {
+      author.append(LabelPatternUtil.authN_M(authorField,charsAll + 1,i));
+    }
+ else {
+      author.append(LabelPatternUtil.authN_M(authorField,charsAll,i));
+    }
+    i++;
+  }
+  if (author.length() <= n) {
+    return author.toString();
+  }
+ else {
+    return author.toString().substring(0,n);
+  }
+}

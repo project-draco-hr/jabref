@@ -1,0 +1,23 @@
+{
+  XTextRangeCompare compare=UnoRuntime.queryInterface(XTextRangeCompare.class,text);
+  XTextRange range=getBookmarkRange(OOBibBase.BIB_SECTION_NAME);
+  if (range == null) {
+    createBibTextSection(atEnd);
+  }
+  XTextRange rangeEnd=getBookmarkRange(OOBibBase.BIB_SECTION_END_NAME);
+  if (rangeEnd == null) {
+    return;
+  }
+  XTextCursor mxDocCursor=text.createTextCursorByRange(range.getEnd());
+  mxDocCursor.goRight((short)1,true);
+  boolean couldExpand=true;
+  while (couldExpand && compare.compareRegionEnds(mxDocCursor,rangeEnd) > 0) {
+    couldExpand=mxDocCursor.goRight((short)1,true);
+  }
+  mxDocCursor.setString("");
+  mxDocCursor.collapseToStart();
+  removeBookMark(OOBibBase.BIB_SECTION_END_NAME);
+  if (getBookmarkRange(OOBibBase.BIB_SECTION_NAME) == null) {
+    insertBookMark(OOBibBase.BIB_SECTION_NAME,mxDocCursor);
+  }
+}

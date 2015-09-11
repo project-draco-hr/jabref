@@ -1,0 +1,14 @@
+{
+  StringWriter result=new StringWriter();
+  try {
+    DOMSource source=new DOMSource(getDOMrepresentation());
+    StreamResult streamResult=new StreamResult(result);
+    Transformer trans=TransformerFactory.newInstance().newTransformer();
+    trans.setOutputProperty(OutputKeys.INDENT,"yes");
+    trans.transform(source,streamResult);
+  }
+ catch (  TransformerException e) {
+    LOGGER.warn("Could not build XML representation",e);
+  }
+  return result.toString();
+}

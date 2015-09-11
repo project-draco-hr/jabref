@@ -1,10 +1,11 @@
 {
-  int piv1, piv2=0;
+  int piv1;
+  int piv2=0;
   HashSet<String> used=new HashSet<String>(disk.getEntryCount());
   HashSet<Integer> notMatched=new HashSet<Integer>(tmp.getEntryCount());
   mainLoop:   for (piv1=0; piv1 < tmp.getEntryCount(); piv1++) {
     double comp=-1;
-    if (!used.contains("" + piv2) && (piv2 < disk.getEntryCount())) {
+    if (!used.contains("" + piv2) && piv2 < disk.getEntryCount()) {
       comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(piv2));
     }
     if (comp > 1) {
@@ -12,7 +13,7 @@
       piv2++;
       continue;
     }
-    if (piv2 < (disk.getEntryCount() - 1)) {
+    if (piv2 < disk.getEntryCount() - 1) {
       for (int i=piv2 + 1; i < disk.getEntryCount(); i++) {
         if (!used.contains("" + i)) {
           comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
@@ -34,7 +35,7 @@
       int bestMatchI=-1;
       double bestMatch=0;
       double comp;
-      if (piv2 < (disk.getEntryCount() - 1)) {
+      if (piv2 < disk.getEntryCount() - 1) {
         for (int i=piv2; i < disk.getEntryCount(); i++) {
           if (!used.contains("" + i)) {
             comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));

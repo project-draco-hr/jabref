@@ -1,0 +1,29 @@
+{
+  fieldListModel.clear();
+  SortedSet<String> contents=new TreeSet<String>();
+  for (  String s : metaData) {
+    if (s.startsWith(Globals.SELECTOR_META_PREFIX)) {
+      contents.add(s.substring(Globals.SELECTOR_META_PREFIX.length()));
+    }
+  }
+  if (contents.isEmpty()) {
+    fieldListModel.addElement("author");
+    fieldListModel.addElement("journal");
+    fieldListModel.addElement("keywords");
+    fieldListModel.addElement("publisher");
+  }
+ else {
+    for (    String s : contents) {
+      fieldListModel.addElement(s);
+    }
+  }
+  if (currentField == null) {
+    fieldList.setSelectedIndex(0);
+  }
+ else {
+    int i=fieldListModel.indexOf(currentField);
+    if (i != -1) {
+      fieldList.setSelectedIndex(i);
+    }
+  }
+}

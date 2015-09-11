@@ -9,11 +9,11 @@
  catch (  Exception e) {
     return false;
   }
-  if ((xmpEntriesInFile == null) || (xmpEntriesInFile.size() == 0)) {
+  if (xmpEntriesInFile == null || xmpEntriesInFile.isEmpty()) {
     return false;
   }
-  JLabel confirmationMessage=new JLabel(Globals.lang("The PDF contains one or several bibtex-records.\nDo you want to import these as new entries into the current database?"));
-  int reply=JOptionPane.showConfirmDialog(frame,confirmationMessage,Globals.lang("XMP metadata found in PDF: %0",fileName),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+  JLabel confirmationMessage=new JLabel(Localization.lang("The PDF contains one or several bibtex-records.\nDo you want to import these as new entries into the current database?"));
+  int reply=JOptionPane.showConfirmDialog(frame,confirmationMessage,Localization.lang("XMP metadata found in PDF: %0",fileName),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
   if (reply == JOptionPane.CANCEL_OPTION) {
     return true;
   }
@@ -21,7 +21,7 @@
     return false;
   }
   boolean isSingle=xmpEntriesInFile.size() == 1;
-  BibtexEntry single=(isSingle ? xmpEntriesInFile.get(0) : null);
+  BibtexEntry single=isSingle ? xmpEntriesInFile.get(0) : null;
   boolean success=true;
   String destFilename;
   if (linkInPlace.isSelected()) {
@@ -43,14 +43,10 @@
   }
   if (success) {
     for (    BibtexEntry aXmpEntriesInFile : xmpEntriesInFile) {
-      try {
-        aXmpEntriesInFile.setId(IdGenerator.next());
-        edits.addEdit(new UndoableInsertEntry(panel.getDatabase(),aXmpEntriesInFile,panel));
-        panel.getDatabase().insertEntry(aXmpEntriesInFile);
-        doLink(aXmpEntriesInFile,fileType,destFilename,true,edits);
-      }
- catch (      KeyCollisionException ignored) {
-      }
+      aXmpEntriesInFile.setId(IdGenerator.next());
+      edits.addEdit(new UndoableInsertEntry(panel.getDatabase(),aXmpEntriesInFile,panel));
+      panel.getDatabase().insertEntry(aXmpEntriesInFile);
+      doLink(aXmpEntriesInFile,fileType,destFilename,true,edits);
     }
     panel.markBaseChanged();
     panel.updateEntryEditorIfShowing();

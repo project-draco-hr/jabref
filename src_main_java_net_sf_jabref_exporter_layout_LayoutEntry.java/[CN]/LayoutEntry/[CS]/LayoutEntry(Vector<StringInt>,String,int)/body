@@ -1,0 +1,61 @@
+{
+  classPrefix=classPrefix_;
+  String blockStart;
+  String blockEnd;
+  StringInt si;
+  Vector<StringInt> blockEntries=null;
+  Vector<LayoutEntry> tmpEntries=new Vector<LayoutEntry>();
+  LayoutEntry le;
+  si=parsedEntries.get(0);
+  blockStart=si.s;
+  si=parsedEntries.get(parsedEntries.size() - 1);
+  blockEnd=si.s;
+  if (!blockStart.equals(blockEnd)) {
+    System.err.println("Field start and end entry must be equal.");
+  }
+  type=layoutType;
+  text=si.s;
+  for (int i=1; i < parsedEntries.size() - 1; i++) {
+    si=parsedEntries.get(i);
+    if (si.i == LayoutHelper.IS_LAYOUT_TEXT || si.i == LayoutHelper.IS_SIMPLE_FIELD) {
+    }
+ else     if (si.i == LayoutHelper.IS_FIELD_START || si.i == LayoutHelper.IS_GROUP_START) {
+      blockEntries=new Vector<StringInt>();
+      blockStart=si.s;
+    }
+ else     if (si.i == LayoutHelper.IS_FIELD_END || si.i == LayoutHelper.IS_GROUP_END) {
+      if (blockStart.equals(si.s)) {
+        blockEntries.add(si);
+        if (si.i == LayoutHelper.IS_GROUP_END) {
+          le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_GROUP_START);
+        }
+ else {
+          le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_FIELD_START);
+        }
+        tmpEntries.add(le);
+        blockEntries=null;
+      }
+ else {
+        System.out.println("Nested field entries are not implemented !!!");
+      }
+    }
+ else     if (si.i == LayoutHelper.IS_OPTION_FIELD) {
+    }
+    if (blockEntries == null) {
+      tmpEntries.add(new LayoutEntry(si,classPrefix));
+    }
+ else {
+      blockEntries.add(si);
+    }
+  }
+  layoutEntries=new LayoutEntry[tmpEntries.size()];
+  for (int i=0; i < tmpEntries.size(); i++) {
+    layoutEntries[i]=tmpEntries.get(i);
+    if (layoutEntries[i].isInvalidFormatter()) {
+      if (invalidFormatter == null) {
+        invalidFormatter=new ArrayList<String>(1);
+      }
+      invalidFormatter.addAll(layoutEntries[i].getInvalidFormatters());
+    }
+  }
+}
