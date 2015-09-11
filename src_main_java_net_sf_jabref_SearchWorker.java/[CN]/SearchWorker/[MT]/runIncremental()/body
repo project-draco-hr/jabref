@@ -1,0 +1,21 @@
+{
+  int entryCount=frame.basePanel().getDatabase().getEntryCount();
+  if (incSearchPos < 0) {
+    incSearchPos=0;
+  }
+  if (incSearchPos >= entryCount) {
+    incSearchPos=-1;
+    return;
+  }
+  for (int i=incSearchPos; i < entryCount; i++) {
+    BibtexEntry entry=frame.basePanel().mainTable.getEntryAt(i);
+    boolean hit=rule.applyRule(query,entry);
+    entry.setSearchHit(hit);
+    if (hit) {
+      incSearchPos=i;
+      return;
+    }
+  }
+  incSearchPos=-1;
+  return;
+}

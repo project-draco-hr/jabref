@@ -1,0 +1,18 @@
+{
+  if ((wordsToHighlight2 == null) || (wordsToHighlight2.isEmpty()) || (wordsToHighlight2.get(0).isEmpty())) {
+    return Pattern.compile("");
+  }
+  boolean regExSearch=Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REG_EXP);
+  String searchPattern="(".concat(regExSearch ? wordsToHighlight2.get(0) : Pattern.quote(wordsToHighlight2.get(0))).concat(")");
+  for (int i=1; i < wordsToHighlight2.size(); i++) {
+    searchPattern=searchPattern.concat("|(").concat(regExSearch ? wordsToHighlight2.get(i) : Pattern.quote(wordsToHighlight2.get(i))).concat(")");
+  }
+  Pattern pattern;
+  if (Globals.prefs.getBoolean(JabRefPreferences.SEARCH_CASE_SENSITIVE)) {
+    pattern=Pattern.compile(searchPattern);
+  }
+ else {
+    pattern=Pattern.compile(searchPattern,Pattern.CASE_INSENSITIVE);
+  }
+  return pattern;
+}

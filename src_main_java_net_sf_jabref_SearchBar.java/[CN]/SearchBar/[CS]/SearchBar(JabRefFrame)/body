@@ -1,6 +1,7 @@
 {
   super();
   this.frame=frame;
+  worker=new SearchWorker(frame);
   setLayout(new GridBagLayout());
   GridBagConstraints c=new GridBagConstraints();
   c.fill=GridBagConstraints.BOTH;
@@ -15,39 +16,4 @@
   c.anchor=GridBagConstraints.EAST;
   c.gridx=GridBagConstraints.RELATIVE;
   this.add(searchButton,c);
-  autoCompleteSupport=new AutoCompleteSupport<String>(searchField);
-  autoCompleteSupport.install();
-  incSearcher=new IncrementalSearcher(Globals.prefs);
-  searchField.addFocusListener(Globals.focusListener);
-  searchField.setTextWhenNotFocused(Globals.lang("Search..."));
-  searchField.addActionListener(this);
-  searchField.addFocusListener(new FocusAdapter(){
-    public void focusGained(    FocusEvent e){
-    }
-    public void focusLost(    FocusEvent e){
-      incSearch=false;
-      incSearchPos=-1;
-      if (increment.isSelected()) {
-      }
-    }
-  }
-);
-  searchAutoComplete.addActionListener(new ActionListener(){
-    public void actionPerformed(    ActionEvent actionEvent){
-      Globals.prefs.putBoolean("searchAutoComplete",searchAutoComplete.isSelected());
-      if (SearchBar.this.frame.basePanel() != null) {
-        SearchBar.this.frame.basePanel().updateSearchManager();
-      }
-    }
-  }
-);
-  searchField.getInputMap().put(Globals.prefs.getKey("Repeat incremental search"),"repeat");
-  searchField.getActionMap().put("repeat",new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
-      if (increment.isSelected())       repeatIncremental();
-    }
-  }
-);
-  searchField.getInputMap().put(Globals.prefs.getKey("Clear search"),"escape");
-  updateSearchButtonText();
 }

@@ -1,0 +1,20 @@
+{
+  String searchText=searchField.getText();
+  fireSearchlistenerEvent(searchText);
+  if (searchText.isEmpty()) {
+    clearSearch();
+    return;
+  }
+  if (frame.basePanel() == null) {
+    return;
+  }
+  SearchRule searchRule=SearchRules.getSearchRuleByQuery(searchText,Globals.prefs.getBoolean(JabRefPreferences.SEARCH_CASE_SENSITIVE),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REG_EXP));
+  if (!searchRule.validateSearchStrings(searchText)) {
+    frame.basePanel().output(Globals.lang("Search failed: illegal search expression"));
+    clearSearch();
+    return;
+  }
+  worker.initSearch(searchRule,searchText,getSearchMode());
+  worker.getWorker().run();
+  worker.getCallBack().update();
+}
