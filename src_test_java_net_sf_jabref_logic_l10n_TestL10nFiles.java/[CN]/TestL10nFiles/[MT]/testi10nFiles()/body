@@ -1,0 +1,14 @@
+{
+  for (  Path p : Files.list(Paths.get("src/main/resources/l10n")).collect(Collectors.toList())) {
+    String[] parts=p.getFileName().toString().split("\\.")[0].split("_");
+    String prefix="l10n/" + parts[0];
+    Locale locale;
+    if (parts.length == 3) {
+      locale=new Locale(parts[1],parts[2]);
+    }
+ else {
+      locale=new Locale(parts[1]);
+    }
+    checkPropertiesFile(locale,prefix);
+  }
+}

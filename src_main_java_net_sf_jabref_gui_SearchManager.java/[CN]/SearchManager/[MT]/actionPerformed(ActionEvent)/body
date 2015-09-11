@@ -1,0 +1,25 @@
+{
+  if (e.getSource() == escape) {
+    incSearch=false;
+    clearSearchLater();
+  }
+ else   if ((e.getSource() == searchField || e.getSource() == search) && !increment.isSelected() && panel != null) {
+    updatePrefs();
+    if (searchField.getText().isEmpty()) {
+      clearSearchLater();
+      return;
+    }
+    fireSearchlistenerEvent(searchField.getText());
+    SearchRule searchRule=SearchRules.getSearchRuleByQuery(searchField.getText(),Globals.prefs.getBoolean(JabRefPreferences.CASE_SENSITIVE_SEARCH),Globals.prefs.getBoolean(JabRefPreferences.REG_EXP_SEARCH));
+    if (!searchRule.validateSearchStrings(searchField.getText())) {
+      panel.output(Localization.lang("Search failed: illegal search expression"));
+      panel.stopShowingSearchResults();
+      return;
+    }
+    SearchWorker worker=new SearchWorker(searchRule,searchField.getText());
+    worker.getWorker().run();
+    worker.getCallBack().update();
+    escape.setEnabled(true);
+    frame.basePanel().mainTable.setSelected(0);
+  }
+}
