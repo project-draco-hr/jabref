@@ -3,14 +3,14 @@
   String[] completed=findCompletions(currentword.toString(),comp);
   String prefix=completer.getPrefix();
   String cWord=(prefix != null) && (!prefix.isEmpty()) ? currentword.toString().substring(prefix.length()) : currentword.toString();
-  LOGGER.debug("StartCompletion currentword: >" + currentword + "'<' prefix: >"+ prefix+ "'<' cword: >"+ cWord+ '<');
+  AutoCompleteListener.LOGGER.debug("StartCompletion currentword: >" + currentword + "'<' prefix: >"+ prefix+ "'<' cword: >"+ cWord+ '<');
   int no=0;
   if ((completed != null) && (completed.length > 0)) {
     lastShownCompletion=0;
     lastCompletions=completed;
     String sno=completed[no];
     toSetIn=sno.substring(cWord.length() - 1);
-    LOGGER.debug("toSetIn: >" + toSetIn + '<');
+    AutoCompleteListener.LOGGER.debug("toSetIn: >" + toSetIn + '<');
     StringBuilder alltext=new StringBuilder(comp.getText());
     int cp=comp.getCaretPosition();
     alltext.insert(cp,toSetIn);
@@ -20,7 +20,7 @@
     e.consume();
     lastCaretPosition=comp.getCaretPosition();
     char ch=e.getKeyChar();
-    LOGGER.debug("Appending >" + ch + '<');
+    AutoCompleteListener.LOGGER.debug("Appending >" + ch + '<');
     if (cWord.length() <= 1) {
       lastBeginning=Character.toString(ch);
     }

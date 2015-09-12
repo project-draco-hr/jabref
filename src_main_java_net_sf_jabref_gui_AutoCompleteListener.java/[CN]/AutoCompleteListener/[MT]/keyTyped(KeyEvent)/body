@@ -1,5 +1,5 @@
 {
-  LOGGER.debug("key typed event caught " + e.getKeyCode());
+  AutoCompleteListener.LOGGER.debug("key typed event caught " + e.getKeyCode());
   char ch=e.getKeyChar();
   if (ch == '\n') {
     return;
@@ -8,13 +8,13 @@
     if (Character.isLetter(ch) || Character.isDigit(ch) || (Character.isWhitespace(ch) && completer.isSingleUnitField())) {
       JTextComponent comp=(JTextComponent)e.getSource();
       if (toSetIn == null) {
-        LOGGER.debug("toSetIn is null");
+        AutoCompleteListener.LOGGER.debug("toSetIn is null");
       }
  else {
-        LOGGER.debug("toSetIn: >" + toSetIn + '<');
+        AutoCompleteListener.LOGGER.debug("toSetIn: >" + toSetIn + '<');
       }
       if ((toSetIn != null) && (toSetIn.length() > 1) && (ch == toSetIn.charAt(1))) {
-        LOGGER.debug("cont");
+        AutoCompleteListener.LOGGER.debug("cont");
         toSetIn=toSetIn.substring(1);
         if (!toSetIn.isEmpty()) {
           int cp=comp.getCaretPosition();
@@ -41,7 +41,7 @@
       }
       if ((toSetIn != null) && ((toSetIn.length() <= 1) || (ch != toSetIn.charAt(1)))) {
         lastBeginning=lastBeginning + ch;
-        LOGGER.debug("discont toSetIn: >" + toSetIn + "'<' lastBeginning: >"+ lastBeginning+ '<');
+        AutoCompleteListener.LOGGER.debug("discont toSetIn: >" + toSetIn + "'<' lastBeginning: >"+ lastBeginning+ '<');
         String[] completed=findCompletions(lastBeginning,comp);
         if ((completed != null) && (completed.length > 0)) {
           lastShownCompletion=0;
@@ -65,7 +65,7 @@
           return;
         }
       }
-      LOGGER.debug("case else");
+      AutoCompleteListener.LOGGER.debug("case else");
       comp.replaceSelection("");
       StringBuffer currentword=getCurrentWord(comp);
       if (currentword == null) {
@@ -79,12 +79,12 @@
  else {
       if (Character.isWhitespace(ch)) {
         assert(!completer.isSingleUnitField());
-        LOGGER.debug("whitespace && !singleUnitField");
+        AutoCompleteListener.LOGGER.debug("whitespace && !singleUnitField");
         setUnmodifiedTypedLetters((JTextComponent)e.getSource(),false,true);
         resetAutoCompletion();
         return;
       }
-      LOGGER.debug("No letter/digit/whitespace or CHAR_UNDEFINED");
+      AutoCompleteListener.LOGGER.debug("No letter/digit/whitespace or CHAR_UNDEFINED");
       setUnmodifiedTypedLetters((JTextComponent)e.getSource(),false,!Character.isISOControl(ch));
       resetAutoCompletion();
       return;
