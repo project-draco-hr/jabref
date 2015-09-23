@@ -5,34 +5,21 @@
   defaulted.add(lastSelected);
   BibtexEntryType type=BibtexEntryType.getStandardType(lastSelected);
   if (type != null) {
-    String[] rf=type.getRequiredFieldsForCustomization();
-    String[] of=type.getOptionalFields();
-    List<String> req;
-    List<String> opt1;
-    List<String> opt2;
-    if (rf != null) {
-      req=java.util.Arrays.asList(rf);
-    }
- else {
-      req=new ArrayList<String>();
-    }
-    opt1=new ArrayList<String>();
-    opt2=new ArrayList<String>();
+    List<String> of=type.getOptionalFields();
+    List<String> req=type.getRequiredFieldsForCustomization();
+    ;
+    List<String> opt1=new ArrayList<>();
+    List<String> opt2=new ArrayList<>();
+    ;
     if (biblatexMode) {
-      if (of != null) {
-        String[] priOptArray=type.getPrimaryOptionalFields();
-        String[] secOptArray=type.getSecondaryOptionalFields();
-        if (priOptArray != null) {
-          opt1=java.util.Arrays.asList(priOptArray);
-        }
-        if (secOptArray != null) {
-          opt2=java.util.Arrays.asList(secOptArray);
-        }
+      if (of.size() != 0) {
+        opt1=type.getPrimaryOptionalFields();
+        opt2=type.getSecondaryOptionalFields();
       }
     }
  else {
-      if (of != null) {
-        opt1=java.util.Arrays.asList(of);
+      if (of.size() != 0) {
+        opt1=of;
       }
     }
     reqComp.setFields(req);
