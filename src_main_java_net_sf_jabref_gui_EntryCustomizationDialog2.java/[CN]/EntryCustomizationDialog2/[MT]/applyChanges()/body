@@ -5,19 +5,11 @@
     if (!types.contains(stringListEntry.getKey())) {
       continue;
     }
-    List<String> reqFields=stringListEntry.getValue();
-    List<String> optFields=optLists.get(stringListEntry.getKey());
-    List<String> opt2Fields=opt2Lists.get(stringListEntry.getKey());
-    String[] reqStr=new String[reqFields.size()];
-    reqStr=reqFields.toArray(reqStr);
-    String[] optStr=new String[optFields.size()];
-    optStr=optFields.toArray(optStr);
-    String[] opt2Str;
-    if (opt2Fields != null) {
-      opt2Str=opt2Fields.toArray(new String[opt2Fields.size()]);
-    }
- else {
-      opt2Str=new String[0];
+    List<String> reqStr=stringListEntry.getValue();
+    List<String> optStr=optLists.get(stringListEntry.getKey());
+    List<String> opt2Str=opt2Lists.get(stringListEntry.getKey());
+    if (opt2Str != null) {
+      opt2Str=new ArrayList<>(0);
     }
     boolean changesMade=true;
     if (defaulted.contains(stringListEntry.getKey())) {
@@ -28,16 +20,16 @@
     }
     BibtexEntryType oldType=BibtexEntryType.getType(stringListEntry.getKey());
     if (oldType != null) {
-      String[] oldReq=oldType.getRequiredFields().toArray(new String[0]);
-      String[] oldOpt=oldType.getOptionalFields().toArray(new String[0]);
+      List<String> oldReq=oldType.getRequiredFields();
+      List<String> oldOpt=oldType.getOptionalFields();
       if (biblatexMode) {
-        String[] oldPriOpt=oldType.getPrimaryOptionalFields().toArray(new String[0]);
-        String[] oldSecOpt=oldType.getSecondaryOptionalFields().toArray(new String[0]);
-        if (equalArrays(oldReq,reqStr) && equalArrays(oldPriOpt,optStr) && equalArrays(oldSecOpt,opt2Str)) {
+        List<String> oldPriOpt=oldType.getPrimaryOptionalFields();
+        List<String> oldSecOpt=oldType.getSecondaryOptionalFields();
+        if (equalLists(oldReq,reqStr) && equalLists(oldPriOpt,optStr) && equalLists(oldSecOpt,opt2Str)) {
           changesMade=false;
         }
       }
- else       if (equalArrays(oldReq,reqStr) && equalArrays(oldOpt,optStr)) {
+ else       if (equalLists(oldReq,reqStr) && equalLists(oldOpt,optStr)) {
         changesMade=false;
       }
     }
