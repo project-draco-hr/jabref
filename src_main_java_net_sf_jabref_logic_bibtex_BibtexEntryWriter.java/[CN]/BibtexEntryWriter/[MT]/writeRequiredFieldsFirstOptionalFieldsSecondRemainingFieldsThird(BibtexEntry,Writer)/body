@@ -5,9 +5,8 @@
   writtenFields.add(BibtexEntry.KEY_FIELD);
   boolean hasWritten=writeField(entry,out,"title",false);
   writtenFields.add("title");
-  String[] requiredFields=entry.getRequiredFields();
-  if (requiredFields != null) {
-    Arrays.sort(requiredFields);
+  if (entry.getRequiredFields() != null) {
+    List<String> requiredFields=getRequiredFieldsSorted(entry);
     for (    String value : requiredFields) {
       if (!writtenFields.contains(value)) {
         hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
@@ -15,9 +14,8 @@
       }
     }
   }
-  String[] optionalFields=entry.getOptionalFields();
-  if (optionalFields != null) {
-    Arrays.sort(optionalFields);
+  if (entry.getOptionalFields() != null) {
+    List<String> optionalFields=getOptionalFieldsSorted(entry);
     for (    String value : optionalFields) {
       if (!writtenFields.contains(value)) {
         hasWritten=hasWritten | writeField(entry,out,value,hasWritten);
