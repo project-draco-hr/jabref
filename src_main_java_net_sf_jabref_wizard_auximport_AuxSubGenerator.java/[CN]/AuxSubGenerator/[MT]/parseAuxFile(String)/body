@@ -4,7 +4,7 @@
   boolean weiter;
   boolean back=true;
   boolean loopFileOpen;
-  pattern=Pattern.compile("\\\\citation\\{.+\\}");
+  pattern=Pattern.compile("\\\\(citation|abx@aux@cite)\\{(.+)\\}");
   BufferedReader br=null;
   Vector<String> fileList=new Vector<String>(5);
   fileList.add(filename);
@@ -45,7 +45,7 @@
         while (matcher.find()) {
           int len=matcher.end() - matcher.start();
           if (len > 11) {
-            String str=matcher.group().substring(matcher.start() + 10,matcher.end() - 1);
+            String str=matcher.group(2);
             String[] keys=str.split(",");
             if (keys != null) {
               int keyCount=keys.length;
