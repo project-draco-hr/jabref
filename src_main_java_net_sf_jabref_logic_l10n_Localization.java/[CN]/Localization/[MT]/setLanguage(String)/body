@@ -1,0 +1,22 @@
+{
+  Locale locale=new Locale(language);
+  try {
+    messages=ResourceBundle.getBundle(RESOURCE_PREFIX,locale,new EncodingControl("UTF-8"));
+    menuTitles=ResourceBundle.getBundle(MENU_RESOURCE_PREFIX,locale,new EncodingControl("UTF-8"));
+    intMessages=ResourceBundle.getBundle(INTEGRITY_RESOURCE_PREFIX,locale,new EncodingControl("UTF-8"));
+    if (!messages.getLocale().equals(locale)) {
+      LOGGER.warn("Bundle for locale <" + locale + "> not found. Falling back to system locale <"+ defaultLocale+ ">");
+    }
+  }
+ catch (  MissingResourceException e) {
+    LOGGER.warn("Bundle for locale <" + locale + "> not found. Fallback to system locale <"+ defaultLocale+ "> failed, using locale <en> instead");
+    locale=new Locale("en");
+    messages=ResourceBundle.getBundle(RESOURCE_PREFIX,locale,new EncodingControl("UTF-8"));
+    menuTitles=ResourceBundle.getBundle(MENU_RESOURCE_PREFIX,locale,new EncodingControl("UTF-8"));
+    intMessages=ResourceBundle.getBundle(INTEGRITY_RESOURCE_PREFIX,locale,new EncodingControl("UTF-8"));
+  }
+ finally {
+    Locale.setDefault(locale);
+    javax.swing.JComponent.setDefaultLocale(locale);
+  }
+}
