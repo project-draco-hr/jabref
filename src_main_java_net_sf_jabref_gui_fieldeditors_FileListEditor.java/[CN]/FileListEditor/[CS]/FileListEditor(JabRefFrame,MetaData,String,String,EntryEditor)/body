@@ -136,4 +136,27 @@
   JMenuItem moveToFileDir=new JMenuItem(Localization.lang("Move to file directory"));
   menu.add(moveToFileDir);
   moveToFileDir.addActionListener(new MoveFileAction(frame,entryEditor,this,true));
+  JMenuItem deleteFile=new JMenuItem(Localization.lang("Delete local file"));
+  menu.add(deleteFile);
+  deleteFile.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      int row=getSelectedRow();
+      if (row == -1) {
+        return;
+      }
+      FileListEntry entry=tableModel.getEntry(row);
+      File file=FileUtil.expandFilename(metaData,entry.getLink());
+      try {
+        if (file != null) {
+          Files.delete(file.toPath());
+        }
+        removeEntries();
+      }
+ catch (      IOException ex) {
+        JOptionPane.showMessageDialog(frame,Localization.lang("File permission error"),Localization.lang("Cannot delete file"),JOptionPane.ERROR_MESSAGE);
+        LOGGER.warn("File permission error while deleting: " + file.toPath());
+      }
+    }
+  }
+);
 }
