@@ -1,0 +1,28 @@
+{
+  journalAbbrev=new JournalAbbreviationRepository();
+  journalAbbrev.readJournalListFromResource(JOURNALS_FILE_BUILTIN);
+  if (jabRefPreferences.getBoolean(JabRefPreferences.USE_IEEE_ABRV)) {
+    journalAbbrev.readJournalListFromResource(JOURNALS_IEEE_INTERNAL_LIST);
+  }
+  String[] lists=jabRefPreferences.getStringArray(JabRefPreferences.EXTERNAL_JOURNAL_LISTS);
+  if (lists != null && lists.length > 0) {
+    for (int i=lists.length - 1; i >= 0; i--) {
+      String filename=lists[i];
+      try {
+        journalAbbrev.readJournalListFromFile(new File(filename));
+      }
+ catch (      FileNotFoundException e) {
+        LOGGER.info("Cannot find external journal list file " + filename,e);
+      }
+    }
+  }
+  String personalJournalList=jabRefPreferences.get(JabRefPreferences.PERSONAL_JOURNAL_LIST);
+  if (personalJournalList != null) {
+    try {
+      journalAbbrev.readJournalListFromFile(new File(personalJournalList));
+    }
+ catch (    FileNotFoundException e) {
+      LOGGER.info("Personal journal list file '" + personalJournalList + "' not found.",e);
+    }
+  }
+}

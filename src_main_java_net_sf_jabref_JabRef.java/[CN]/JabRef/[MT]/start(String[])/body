@@ -21,7 +21,7 @@
   Globals.importFormatReader.resetImportFormats();
   BibtexEntryType.loadCustomEntryTypes(prefs);
   ExportFormats.initAllExports();
-  Globals.initializeJournalNames();
+  Abbreviations.initializeJournalNames(Globals.prefs);
   RemotePreferences remotePreferences=new RemotePreferences(Globals.prefs);
   if (remotePreferences.useRemoteServer()) {
     Globals.remoteListener.open(new JabRefMessageHandler(this),remotePreferences.getPort());
@@ -34,16 +34,6 @@
         JabRefExecutorService.INSTANCE.shutdownEverything();
         return;
       }
-    }
-  }
-  String personalJournalList=prefs.get(JabRefPreferences.PERSONAL_JOURNAL_LIST);
-  if (personalJournalList != null && !personalJournalList.isEmpty()) {
-    try {
-      Globals.journalAbbrev.readJournalListFromFile(new File(personalJournalList));
-    }
- catch (    FileNotFoundException e) {
-      JOptionPane.showMessageDialog(null,Localization.lang("Journal file not found") + ": " + e.getMessage(),Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
-      Globals.prefs.put(JabRefPreferences.PERSONAL_JOURNAL_LIST,"");
     }
   }
   Globals.NEWLINE=Globals.prefs.get(JabRefPreferences.NEWLINE);
