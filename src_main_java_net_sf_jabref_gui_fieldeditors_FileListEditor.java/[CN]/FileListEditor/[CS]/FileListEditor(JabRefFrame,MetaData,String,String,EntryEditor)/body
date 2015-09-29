@@ -145,9 +145,19 @@
         return;
       }
       FileListEntry entry=tableModel.getEntry(row);
-      removeEntries();
-      File expandedPath=FileUtil.expandFilename(metaData,entry.getLink());
-      FileUtil.deleteFile(expandedPath.getAbsolutePath());
+      Path filePath=FileUtil.expandFilename(metaData,entry.getLink()).toPath();
+      try {
+        if (Files.exists(filePath)) {
+          Files.delete(filePath);
+          removeEntries();
+        }
+ else {
+          removeEntries();
+        }
+      }
+ catch (      IOException ex) {
+        LOGGER.warn("File permission error while deleting: " + filePath);
+      }
     }
   }
 );
