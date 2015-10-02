@@ -1,0 +1,16 @@
+{
+  couldNotCall=false;
+  notDefined=false;
+  String texMaker=Globals.prefs.get(JabRefPreferences.TEXMAKER_PATH);
+  if ((texMaker == null) || texMaker.trim().isEmpty()) {
+    notDefined=true;
+    return;
+  }
+  try {
+    Runtime.getRuntime().exec(texMaker + " " + "-insert "+ Globals.prefs.get(JabRefPreferences.CITE_COMMAND_TEXMAKER)+ "{"+ keyString+ "}");
+  }
+ catch (  IOException excep) {
+    couldNotCall=true;
+    excep.printStackTrace();
+  }
+}
