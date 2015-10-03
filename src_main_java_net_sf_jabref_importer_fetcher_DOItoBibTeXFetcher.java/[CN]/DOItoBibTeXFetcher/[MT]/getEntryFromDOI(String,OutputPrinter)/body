@@ -1,16 +1,8 @@
 {
-  String q;
-  try {
-    q=URLEncoder.encode(doi,"UTF-8");
-  }
- catch (  UnsupportedEncodingException e) {
-    e.printStackTrace();
-    return null;
-  }
-  String urlString=String.format(DOItoBibTeXFetcher.URL_PATTERN,q);
+  DOI doi=new DOI(doiStr);
   URL url;
   try {
-    url=new URL(urlString);
+    url=doi.getURI().toURL();
   }
  catch (  MalformedURLException e) {
     e.printStackTrace();
@@ -31,7 +23,7 @@
   }
  catch (  FileNotFoundException e) {
     if (status != null) {
-      status.showMessage(Localization.lang("Unknown DOI: '%0'.",doi),Localization.lang("Get BibTeX entry from DOI"),JOptionPane.INFORMATION_MESSAGE);
+      status.showMessage(Localization.lang("Unknown DOI: '%0'.",doi.getDOI()),Localization.lang("Get BibTeX entry from DOI"),JOptionPane.INFORMATION_MESSAGE);
     }
     return null;
   }
