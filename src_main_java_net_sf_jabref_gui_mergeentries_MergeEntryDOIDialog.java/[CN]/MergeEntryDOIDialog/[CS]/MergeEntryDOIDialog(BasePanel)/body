@@ -1,0 +1,16 @@
+{
+  super(panel.frame(),Localization.lang("Merge entry with DOI information"),true);
+  this.panel=panel;
+  this.frame=panel.frame();
+  if (panel.getSelectedEntries().length != 1) {
+    JOptionPane.showMessageDialog(frame,Localization.lang("Select one entry."),Localization.lang("Merge entry from DOI"),JOptionPane.INFORMATION_MESSAGE);
+    this.dispose();
+    return;
+  }
+  this.originalEntry=panel.getSelectedEntries()[0];
+  panel.output(Localization.lang("Fetching info based on DOI"));
+  this.doiEntry=doiFetcher.getEntryFromDOI(this.originalEntry.getField("doi"),null);
+  panel.output(Localization.lang("Opening dialog"));
+  init();
+  Util.placeDialog(this,this.frame);
+}
