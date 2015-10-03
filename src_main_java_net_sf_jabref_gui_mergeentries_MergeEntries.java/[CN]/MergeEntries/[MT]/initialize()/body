@@ -1,12 +1,4 @@
 {
-  if (selected.length != 2) {
-    JOptionPane.showMessageDialog(frame,Localization.lang("You have to choose exactly two entries to merge."),Localization.lang("Merge entries"),JOptionPane.INFORMATION_MESSAGE);
-    this.dispose();
-    return;
-  }
-  one=selected[0];
-  two=selected[1];
-  ce=new NamedCompound(Localization.lang("Merge entries"));
   joint=new TreeSet<String>(one.getAllFields());
   joint.addAll(two.getAllFields());
   Set<String> toberemoved=new TreeSet<String>();
@@ -22,38 +14,38 @@
   ButtonGroup[] rbg=new ButtonGroup[joint.size() + 1];
   identical=new Boolean[joint.size() + 1];
   jointStrings=new String[joint.size()];
-  String colSpec="left:pref, 5px, fill:4cm:grow, 5px, right:pref, 3px, center:pref, 3px, left:pref, 5px, fill:4cm:grow";
+  String colSpec="left:pref, 5px, fill:3cm:grow, 5px, right:pref, 3px, center:pref, 3px, left:pref, 5px, fill:3cm:grow";
   StringBuilder rowBuilder=new StringBuilder("pref, 10px, pref, ");
   for (int i=0; i < joint.size(); i++) {
     rowBuilder.append("pref, ");
   }
-  rowBuilder.append("10px, top:4cm:grow, 10px, pref");
+  rowBuilder.append("10px, top:4cm:grow");
   FormLayout layout=new FormLayout(colSpec,rowBuilder.toString());
-  this.setLayout(layout);
+  mergePanel.setLayout(layout);
   for (int i=0; i < 6; i++) {
     JLabel label=new JLabel(columnHeadings[i]);
     Font font=label.getFont();
     label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
-    this.add(label,cc.xy(1 + (i * 2),1));
+    mergePanel.add(label,cc.xy(1 + (i * 2),1));
   }
-  this.add(new JSeparator(),cc.xyw(1,2,11));
+  mergePanel.add(new JSeparator(),cc.xyw(1,2,11));
   BibtexEntryType type1=one.getType();
   BibtexEntryType type2=two.getType();
   mergedEntry.setType(type1);
   JLabel label=new JLabel(Localization.lang("Entry type"));
   Font font=label.getFont();
   label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
-  this.add(label,cc.xy(1,3));
+  mergePanel.add(label,cc.xy(1,3));
   JTextArea type1ta=new JTextArea(type1.getName());
   type1ta.setEditable(false);
-  this.add(type1ta,cc.xy(3,3));
+  mergePanel.add(type1ta,cc.xy(3,3));
   if (type1.compareTo(type2) != 0) {
     identical[0]=false;
     rbg[0]=new ButtonGroup();
     for (int k=0; k < 3; k+=2) {
       rb[k][0]=new JRadioButton();
       rbg[0].add(rb[k][0]);
-      this.add(rb[k][0],cc.xy(5 + (k * 2),3));
+      mergePanel.add(rb[k][0],cc.xy(5 + (k * 2),3));
       rb[k][0].addChangeListener(new ChangeListener(){
         @Override public void stateChanged(        ChangeEvent e){
           updateAll();
@@ -68,14 +60,14 @@
   }
   JTextArea type2ta=new JTextArea(type2.getName());
   type2ta.setEditable(false);
-  this.add(type2ta,cc.xy(11,3));
+  mergePanel.add(type2ta,cc.xy(11,3));
   int row=4;
   for (  String field : joint) {
     jointStrings[row - 4]=field;
     label=new JLabel(StringUtil.toUpperFirstLetter(field));
     font=label.getFont();
     label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
-    this.add(label,cc.xy(1,row));
+    mergePanel.add(label,cc.xy(1,row));
     String string1=one.getField(field);
     String string2=two.getField(field);
     identical[row - 3]=false;
@@ -90,13 +82,13 @@
       tf.setEditable(false);
       JScrollPane jsptf=new JScrollPane(tf);
       layout.setRowSpec(row,RowSpec.decode("center:2cm:grow"));
-      this.add(jsptf,cc.xy(3,row,"f, f"));
+      mergePanel.add(jsptf,cc.xy(3,row,"f, f"));
       tf.setText(string1);
       tf.setCaretPosition(0);
     }
  else {
       JTextArea tf=new JTextArea(string1);
-      this.add(tf,cc.xy(3,row));
+      mergePanel.add(tf,cc.xy(3,row));
       tf.setCaretPosition(0);
       tf.setEditable(false);
     }
@@ -105,7 +97,7 @@
       for (int k=0; k < 3; k++) {
         rb[k][row - 3]=new JRadioButton();
         rbg[row - 3].add(rb[k][row - 3]);
-        this.add(rb[k][row - 3],cc.xy(5 + (k * 2),row));
+        mergePanel.add(rb[k][row - 3],cc.xy(5 + (k * 2),row));
         rb[k][row - 3].addChangeListener(new ChangeListener(){
           @Override public void stateChanged(          ChangeEvent e){
             updateAll();
@@ -130,31 +122,31 @@
       tf.setLineWrap(true);
       tf.setEditable(false);
       JScrollPane jsptf=new JScrollPane(tf);
-      this.add(jsptf,cc.xy(11,row,"f, f"));
+      mergePanel.add(jsptf,cc.xy(11,row,"f, f"));
       tf.setText(string2);
       tf.setCaretPosition(0);
     }
  else {
       JTextArea tf=new JTextArea(string2);
-      this.add(tf,cc.xy(11,row));
+      mergePanel.add(tf,cc.xy(11,row));
       tf.setCaretPosition(0);
       tf.setEditable(false);
     }
     row++;
   }
-  this.add(new JSeparator(),cc.xyw(1,row,11));
+  mergePanel.add(new JSeparator(),cc.xyw(1,row,11));
   row++;
   label=new JLabel(Localization.lang("Merged entry"));
   font=label.getFont();
   label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
-  this.add(label,cc.xy(1,row));
+  mergePanel.add(label,cc.xy(1,row));
   String layoutString=Globals.prefs.get(JabRefPreferences.PREVIEW_0);
   pp=new PreviewPanel(null,mergedEntry,null,new MetaData(),layoutString);
-  this.add(pp,cc.xyw(3,row,3));
+  mergePanel.add(pp,cc.xyw(3,row,3));
   jta=new JTextArea();
   jta.setLineWrap(true);
   JScrollPane jspta=new JScrollPane(jta);
-  this.add(jspta,cc.xyw(9,row,3));
+  mergePanel.add(jspta,cc.xyw(9,row,3));
   jta.setEditable(false);
   StringWriter sw=new StringWriter();
   try {
@@ -165,48 +157,16 @@
   }
   jta.setText(sw.getBuffer().toString());
   jta.setCaretPosition(0);
-  row++;
-  this.add(new JSeparator(),cc.xyw(1,row,11));
-  row++;
-  ButtonBarBuilder bb=new ButtonBarBuilder();
-  bb.addGlue();
-  JButton cancel=new JButton(Localization.lang("Cancel"));
-  cancel.setActionCommand("cancel");
-  cancel.addActionListener(new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent e){
-      buttonPressed(e.getActionCommand());
-    }
-  }
-);
-  JButton newentry=new JButton(Localization.lang("Add new entry and keep both old entries"));
-  newentry.setActionCommand("newentry");
-  newentry.addActionListener(new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent e){
-      buttonPressed(e.getActionCommand());
-    }
-  }
-);
-  JButton replaceentries=new JButton(Localization.lang("Replace old entries with new entry"));
-  replaceentries.setActionCommand("replace");
-  replaceentries.addActionListener(new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent e){
-      buttonPressed(e.getActionCommand());
-    }
-  }
-);
-  bb.addButton(new JButton[]{replaceentries,newentry,cancel});
-  this.add(bb.getPanel(),cc.xyw(1,row,11));
   layout.appendRow(RowSpec.decode("10px"));
   layout.appendColumn(ColumnSpec.decode("10px"));
   layout.insertRow(1,RowSpec.decode("10px"));
   layout.insertColumn(1,ColumnSpec.decode("10px"));
-  pack();
-  if (getHeight() > DIM.height) {
-    setSize(new Dimension(getWidth(),DIM.height));
+  if (mergePanel.getHeight() > DIM.height) {
+    mergePanel.setSize(new Dimension(mergePanel.getWidth(),DIM.height));
   }
-  if (getWidth() > DIM.width) {
-    setSize(new Dimension(DIM.width,getHeight()));
+  if (mergePanel.getWidth() > DIM.width) {
+    mergePanel.setSize(new Dimension(DIM.width,mergePanel.getHeight()));
   }
   doneBuilding=true;
-  setVisible(true);
+  mergePanel.setVisible(true);
 }

@@ -1,0 +1,30 @@
+{
+  BibtexEntry mergedEntry=mergeEntries.getMergeEntry();
+  if (button.equals("cancel")) {
+    panel.output(Localization.lang("Cancelled merging entries"));
+    dispose();
+  }
+ else   if (button.equals("done")) {
+    TreeSet<String> joint=new TreeSet<String>(mergedEntry.getAllFields());
+    Boolean edited=false;
+    for (    String field : joint) {
+      String originalString=originalEntry.getField(field);
+      String mergedString=mergedEntry.getField(field);
+      if ((originalString == null) || !originalString.equals(mergedEntry.getField(field))) {
+        originalEntry.setField(field,mergedString);
+        ce.addEdit(new UndoableFieldChange(originalEntry,field,originalString,mergedString));
+        edited=true;
+      }
+    }
+    if (edited) {
+      ce.end();
+      panel.undoManager.addEdit(ce);
+      panel.output(Localization.lang("Updated entry with info from DOI"));
+      panel.markBaseChanged();
+    }
+ else {
+      panel.output(Localization.lang("No information added"));
+    }
+    dispose();
+  }
+}
