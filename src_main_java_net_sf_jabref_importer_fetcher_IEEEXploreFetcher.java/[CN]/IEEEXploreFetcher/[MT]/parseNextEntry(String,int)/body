@@ -36,9 +36,8 @@
     if (type == null) {
       type=BibtexEntryType.getType("misc");
       sourceField="note";
-      System.err.println("Type detection failed. Use MISC instead.");
+      LOGGER.warn("Type detection failed. Use MISC instead. Type string: " + text);
       unparseable++;
-      System.err.println(text);
     }
     entry=new BibtexEntry(IdGenerator.next(),type);
     if (typeName.equalsIgnoreCase("IEEE Standards")) {
@@ -83,9 +82,12 @@
       authorNames.append(htmlConverter.format(authorMatcher.group(1)));
       authorCount++;
     }
-    entry.setField("author",authorNames.toString());
-    if (entry.getField("author") == null || entry.getField("author").startsWith("a href") || entry.getField("author").startsWith("Topic(s)")) {
+    String authorString=authorNames.toString();
+    if (authorString == null || authorString.startsWith("a href") || authorString.startsWith("Topic(s)")) {
       entry.setField("author","");
+    }
+ else {
+      entry.setField("author",authorString);
     }
     if (entry.getType() == BibtexEntryType.getStandardType("inproceedings") && entry.getField("author").equals("")) {
       entry.setType(BibtexEntryType.getStandardType("proceedings"));

@@ -100,7 +100,8 @@
       if (parts.length == 3) {
         fullName+=parts[2];
       }
-      if (entry.getField("note").equals("Early Access")) {
+      String note=entry.getField("note");
+      if (note != null && note.equals("Early Access")) {
         entry.setField("year","to be published");
         entry.clearField("month");
         entry.clearField("pages");
@@ -173,7 +174,9 @@
       fullName=fullName.trim();
       fullName=fullName.replaceAll("^[tT]he ","").replaceAll("^\\d{4} ","").replaceAll("[,.]$","");
       String year=entry.getField("year");
-      fullName=fullName.replaceAll(", " + year + "\\.?","");
+      if (year != null) {
+        fullName=fullName.replaceAll(", " + year + "\\.?","");
+      }
       if (!fullName.contains("Abstract") && !fullName.contains("Summaries") && !fullName.contains("Conference Record")) {
         fullName="Proc. " + fullName;
       }
