@@ -43,21 +43,21 @@
     if (!ok) {
       throw new IllegalArgumentException("Curly braces { and } must be balanced.");
     }
-    stringBuffer=new StringBuffer(valueDelimiterStartOfValue + "");
+    stringBuilder=new StringBuilder(valueDelimiterStartOfValue + "");
     boolean isAbstract="abstract".equals(fieldName);
     boolean isReview="review".equals(fieldName);
     boolean doWrap=!isAbstract || !isReview;
     boolean strangePrefSettings=writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName);
     if (strangePrefSettings && doWrap) {
-      stringBuffer.append(StringUtil.wrap(text,GUIGlobals.LINE_LENGTH));
+      stringBuilder.append(StringUtil.wrap(text,GUIGlobals.LINE_LENGTH));
     }
  else {
-      stringBuffer.append(text);
+      stringBuilder.append(text);
     }
-    stringBuffer.append(valueDelimiterEndOfValue);
-    return stringBuffer.toString();
+    stringBuilder.append(valueDelimiterEndOfValue);
+    return stringBuilder.toString();
   }
-  stringBuffer=new StringBuffer();
+  stringBuilder=new StringBuilder();
   int pivot=0;
   int pos1;
   int pos2;
@@ -104,9 +104,9 @@
     }
   }
   if (writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName)) {
-    return StringUtil.wrap(stringBuffer.toString(),GUIGlobals.LINE_LENGTH);
+    return StringUtil.wrap(stringBuilder.toString(),GUIGlobals.LINE_LENGTH);
   }
  else {
-    return stringBuffer.toString();
+    return stringBuilder.toString();
   }
 }
