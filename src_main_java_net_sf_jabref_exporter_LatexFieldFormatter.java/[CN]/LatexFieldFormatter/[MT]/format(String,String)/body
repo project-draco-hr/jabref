@@ -22,38 +22,42 @@
     resolveStrings=BibtexFields.isStandardField(fieldName) || BIBTEX_STRING.equals(fieldName);
   }
   if (!resolveStrings) {
-    int brc=0;
+    int numberOfBrackets=0;
     boolean ok=true;
     for (int i=0; i < text.length(); i++) {
       char c=text.charAt(i);
       if (c == '{') {
-        brc++;
+        numberOfBrackets++;
       }
       if (c == '}') {
-        brc--;
+        numberOfBrackets--;
       }
-      if (brc < 0) {
+      if (numberOfBrackets < 0) {
         ok=false;
         break;
       }
     }
-    if (brc > 0) {
+    if (numberOfBrackets > 0) {
       ok=false;
     }
     if (!ok) {
       throw new IllegalArgumentException("Curly braces { and } must be balanced.");
     }
-    sb=new StringBuffer(valueDelimiterStartOfValue + "");
-    if (writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName)) {
-      sb.append(StringUtil.wrap(text,GUIGlobals.LINE_LENGTH));
+    stringBuilder=new StringBuilder(valueDelimiterStartOfValue + "");
+    boolean isAbstract="abstract".equals(fieldName);
+    boolean isReview="review".equals(fieldName);
+    boolean doWrap=!isAbstract || !isReview;
+    boolean strangePrefSettings=writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName);
+    if (strangePrefSettings && doWrap) {
+      stringBuilder.append(StringUtil.wrap(text,GUIGlobals.LINE_LENGTH));
     }
  else {
-      sb.append(text);
+      stringBuilder.append(text);
     }
-    sb.append(valueDelimiterEndOfValue);
-    return sb.toString();
+    stringBuilder.append(valueDelimiterEndOfValue);
+    return stringBuilder.toString();
   }
-  sb=new StringBuffer();
+  stringBuilder=new StringBuilder();
   int pivot=0;
   int pos1;
   int pos2;
@@ -100,9 +104,9 @@
     }
   }
   if (writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName)) {
-    return StringUtil.wrap(sb.toString(),GUIGlobals.LINE_LENGTH);
+    return StringUtil.wrap(stringBuilder.toString(),GUIGlobals.LINE_LENGTH);
   }
  else {
-    return sb.toString();
+    return stringBuilder.toString();
   }
 }
