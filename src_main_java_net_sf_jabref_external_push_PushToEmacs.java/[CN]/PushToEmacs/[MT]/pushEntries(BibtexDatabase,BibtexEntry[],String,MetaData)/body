@@ -1,11 +1,12 @@
 {
   couldNotConnect=false;
-  couldNotRunClient=false;
-  String command=Globals.prefs.get(JabRefPreferences.EMACS_PATH);
+  couldNotCall=false;
+  initParameters();
+  commandPath=Globals.prefs.get(commandPathPreferenceKey);
   String[] addParams=Globals.prefs.get(JabRefPreferences.EMACS_ADDITIONAL_PARAMETERS).split(" ");
   try {
     String[] com=new String[addParams.length + 2];
-    com[0]=command;
+    com[0]=commandPath;
     System.arraycopy(addParams,0,com,1,addParams.length);
     String prefix;
     String suffix;
@@ -17,7 +18,7 @@
       prefix="(insert ";
       suffix=")";
     }
-    com[com.length - 1]=OS.WINDOWS ? prefix.concat("\\\"\\" + Globals.prefs.get(JabRefPreferences.CITE_COMMAND_EMACS).replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\\\"").concat(suffix) : prefix.concat("\"" + Globals.prefs.get(JabRefPreferences.CITE_COMMAND_EMACS).replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\"").concat(suffix);
+    com[com.length - 1]=OS.WINDOWS ? prefix.concat("\\\"\\" + citeCommand.replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\\\"").concat(suffix) : prefix.concat("\"" + citeCommand.replaceAll("\\\\","\\\\\\\\") + "{"+ keys+ "}\"").concat(suffix);
     final Process p=Runtime.getRuntime().exec(com);
     Runnable errorListener=new Runnable(){
       @Override public void run(){
@@ -42,6 +43,6 @@
     JabRefExecutorService.INSTANCE.executeAndWait(errorListener);
   }
  catch (  IOException excep) {
-    couldNotRunClient=true;
+    couldNotCall=true;
   }
 }

@@ -1,8 +1,8 @@
 {
   couldNotConnect=false;
-  couldNotRunClient=false;
+  couldNotCall=false;
   try {
-    String[] com=new String[]{Globals.prefs.get(JabRefPreferences.VIM),"--servername",Globals.prefs.get(JabRefPreferences.VIM_SERVER),"--remote-send","<C-\\><C-N>a" + Globals.prefs.get(JabRefPreferences.CITE_COMMAND_VIM) + "{"+ keys+ "}"};
+    String[] com=new String[]{Globals.prefs.get(JabRefPreferences.VIM),"--servername",Globals.prefs.get(JabRefPreferences.VIM_SERVER),"--remote-send","<C-\\><C-N>a" + citeCommand + "{"+ keys+ "}"};
     final Process p=Runtime.getRuntime().exec(com);
     Runnable errorListener=new Runnable(){
       @Override public void run(){
@@ -27,6 +27,6 @@
     JabRefExecutorService.INSTANCE.executeAndWait(errorListener);
   }
  catch (  IOException excep) {
-    couldNotRunClient=true;
+    couldNotCall=true;
   }
 }
