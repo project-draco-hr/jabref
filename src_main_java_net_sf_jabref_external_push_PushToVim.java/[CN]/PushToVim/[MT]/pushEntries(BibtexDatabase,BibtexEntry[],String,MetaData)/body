@@ -1,8 +1,15 @@
 {
   couldNotConnect=false;
   couldNotCall=false;
+  notDefined=false;
+  initParameters();
+  commandPath=Globals.prefs.get(commandPathPreferenceKey);
+  if ((commandPath == null) || commandPath.trim().isEmpty()) {
+    notDefined=true;
+    return;
+  }
   try {
-    String[] com=new String[]{Globals.prefs.get(JabRefPreferences.VIM),"--servername",Globals.prefs.get(JabRefPreferences.VIM_SERVER),"--remote-send","<C-\\><C-N>a" + citeCommand + "{"+ keys+ "}"};
+    String[] com=new String[]{commandPath,"--servername",Globals.prefs.get(JabRefPreferences.VIM_SERVER),"--remote-send","<C-\\><C-N>a" + citeCommand + "{"+ keys+ "}"};
     final Process p=Runtime.getRuntime().exec(com);
     Runnable errorListener=new Runnable(){
       @Override public void run(){

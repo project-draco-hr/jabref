@@ -1,15 +1,21 @@
 {
-  couldNotFindPipe=false;
+  couldNotConnect=false;
   couldNotCall=false;
-  String lyxpipeSetting=Globals.prefs.get(JabRefPreferences.LYXPIPE);
-  if (!lyxpipeSetting.endsWith(".in")) {
-    lyxpipeSetting=lyxpipeSetting + ".in";
+  notDefined=false;
+  initParameters();
+  commandPath=Globals.prefs.get(commandPathPreferenceKey);
+  if ((commandPath == null) || commandPath.trim().isEmpty()) {
+    notDefined=true;
+    return;
   }
-  File lp=new File(lyxpipeSetting);
+  if (!commandPath.endsWith(".in")) {
+    commandPath=commandPath + ".in";
+  }
+  File lp=new File(commandPath);
   if (!lp.exists() || !lp.canWrite()) {
-    lp=new File(lyxpipeSetting + ".in");
+    lp=new File(commandPath + ".in");
     if (!lp.exists() || !lp.canWrite()) {
-      couldNotFindPipe=true;
+      couldNotConnect=true;
       return;
     }
   }
