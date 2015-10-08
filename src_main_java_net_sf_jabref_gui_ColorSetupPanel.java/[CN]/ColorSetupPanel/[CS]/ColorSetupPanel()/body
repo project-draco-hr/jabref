@@ -1,6 +1,6 @@
 {
-  FormLayout layout=new FormLayout("30dlu, 4dlu, fill:pref, 4dlu, fill:pref, 8dlu, 30dlu, 4dlu, fill:pref, 4dlu, fill:pref","");
-  DefaultFormBuilder builder=new DefaultFormBuilder(layout);
+  FormLayout layout=new FormLayout("30dlu, 4dlu, fill:pref, 4dlu, fill:pref, 8dlu, 30dlu, 4dlu, fill:pref, 4dlu, fill:pref","pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref");
+  FormBuilder builder=FormBuilder.create().layout(layout);
   buttons.add(new ColorButton("tableText",Localization.lang("Table text color")));
   buttons.add(new ColorButton("markedEntryBackground0",Localization.lang("Marking color %0","1")));
   buttons.add(new ColorButton("tableBackground",Localization.lang("Table background color")));
@@ -17,11 +17,17 @@
   buttons.add(new ColorButton("validFieldBackgroundColor",Localization.lang("Entry editor background color")));
   buttons.add(new ColorButton("activeFieldEditorBackgroundColor",Localization.lang("Entry editor active background color")));
   buttons.add(new ColorButton("invalidFieldBackgroundColor",Localization.lang("Entry editor invalid field color")));
+  int rowcnt=0;
+  int col=0;
+  int row;
   for (  ColorButton but : buttons) {
-    builder.append(but);
-    builder.append(but.getDefaultButton());
-    builder.append(but.getName());
+    row=(2 * (rowcnt / 2)) + 1;
+    builder.add((JButton)but).xy((6 * col) + 1,row);
+    builder.add(but.getDefaultButton()).xy((6 * col) + 3,row);
+    builder.add(but.getName()).xy((6 * col) + 5,row);
     but.addActionListener(new ColorButtonListener(but));
+    col=1 - col;
+    rowcnt++;
   }
   setLayout(new BorderLayout());
   add(builder.getPanel(),BorderLayout.CENTER);

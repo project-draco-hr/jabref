@@ -21,7 +21,7 @@
       progress+=weightAutoSet;
       panel.frame().setProgressBarValue(progress);
       final String old=aSel.getField(fieldName);
-      if (old != null && !old.equals("") && !overWriteAllowed) {
+      if ((old != null) && !old.equals("") && !overWriteAllowed) {
         continue;
       }
       extPan.setEntry(aSel,panel.getDatabase());
@@ -38,9 +38,9 @@
     mainLoop:     for (    BibtexEntry aSel : sel) {
       panel.frame().setProgressBarValue(progress++);
       final String old=aSel.getField(fieldName);
-      if (old != null && !old.equals("")) {
+      if ((old != null) && !old.equals("")) {
         File file=FileUtil.expandFilename(old,dirs);
-        if (file == null || !file.exists()) {
+        if ((file == null) || !file.exists()) {
           int answer=JOptionPane.showOptionDialog(panel.frame(),Localization.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",new String[]{old,aSel.getCiteKey()}),Localization.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
 switch (answer) {
 case 1:
@@ -67,7 +67,7 @@ brokenLinks++;
 }
 }
 if (brokenLinks > 0) {
-log.warn(Localization.lang("Found %0 broken links",brokenLinks + ""));
+AutoSetExternalFileForEntries.log.warn(Localization.lang("Found %0 broken links",brokenLinks + ""));
 }
 if (entriesChanged > 0) {
 ce.end();

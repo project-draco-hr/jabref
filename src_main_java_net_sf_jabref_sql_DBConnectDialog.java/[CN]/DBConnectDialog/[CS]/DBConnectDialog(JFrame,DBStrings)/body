@@ -42,23 +42,18 @@
   txtDatabase.setText(dbStrings.getDatabase());
   txtUsername.setText(dbStrings.getUsername());
   pwdPassword.setText(dbStrings.getPassword());
-  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("right:pref, 4dlu, fill:pref",""));
+  FormBuilder builder=FormBuilder.create().layout(new FormLayout("right:pref, 4dlu, fill:pref","pref, 4dlu, pref, 4dlu, pref, 4dlu, pref, 4dlu, pref"));
   builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-  builder.append(lblServerType);
-  builder.append(cmbServerType);
-  builder.nextLine();
-  builder.append(lblServerHostname);
-  builder.append(txtServerHostname);
-  builder.nextLine();
-  builder.append(lblDatabase);
-  builder.append(txtDatabase);
-  builder.nextLine();
-  builder.append(lblUsername);
-  builder.append(txtUsername);
-  builder.nextLine();
-  builder.append(lblPassword);
-  builder.append(pwdPassword);
-  builder.nextLine();
+  builder.add(lblServerType).xy(1,1);
+  builder.add(cmbServerType).xy(3,1);
+  builder.add(lblServerHostname).xy(1,3);
+  builder.add(txtServerHostname).xy(3,3);
+  builder.add(lblDatabase).xy(1,5);
+  builder.add(txtDatabase).xy(3,5);
+  builder.add(lblUsername).xy(1,7);
+  builder.add(txtUsername).xy(3,7);
+  builder.add(lblPassword).xy(1,9);
+  builder.add(pwdPassword).xy(3,9);
   getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
@@ -87,6 +82,7 @@
   txtUsername.addActionListener(connectAction);
   pwdPassword.addActionListener(connectAction);
   AbstractAction cancelAction=new AbstractAction(){
+    private static final long serialVersionUID=812282483921018251L;
     @Override public void actionPerformed(    ActionEvent e){
       setVisible(false);
       dispose();
