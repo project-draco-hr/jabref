@@ -1,0 +1,22 @@
+{
+  Objects.requireNonNull(entry);
+  Optional<URL> pdfLink=Optional.empty();
+  String entryTitle=entry.getField("title");
+  if (entryTitle == null) {
+    return pdfLink;
+  }
+  String url=String.format(SEARCH_URL,URLEncoder.encode(entryTitle,"UTF-8"));
+  Document doc=Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0").get();
+  for (int i=0; i < NUM_RESULTS; i++) {
+    Elements link=doc.select(String.format("#gs_ggsW%s a",i));
+    if (link.first() != null) {
+      String s=link.first().attr("href");
+      if (!s.equals("")) {
+        LOGGER.info("Fulltext PDF found @ Google: " + s);
+        pdfLink=Optional.of(new URL(s));
+        break;
+      }
+    }
+  }
+  return pdfLink;
+}

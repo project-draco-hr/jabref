@@ -49,10 +49,10 @@
     boolean doWrap=!isAbstract || !isReview;
     boolean strangePrefSettings=writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName);
     if (strangePrefSettings && doWrap) {
-      stringBuilder.append(StringUtil.wrap(text,GUIGlobals.LINE_LENGTH));
+      stringBuilder.append(parser.format(StringUtil.wrap(text,GUIGlobals.LINE_LENGTH),fieldName));
     }
  else {
-      stringBuilder.append(text);
+      stringBuilder.append(parser.format(text,fieldName));
     }
     stringBuilder.append(valueDelimiterEndOfValue);
     return stringBuilder.toString();
@@ -104,9 +104,9 @@
     }
   }
   if (writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName)) {
-    return StringUtil.wrap(stringBuilder.toString(),GUIGlobals.LINE_LENGTH);
+    return parser.format(StringUtil.wrap(stringBuilder.toString(),GUIGlobals.LINE_LENGTH),fieldName);
   }
  else {
-    return stringBuilder.toString();
+    return parser.format(stringBuilder.toString(),fieldName);
   }
 }
