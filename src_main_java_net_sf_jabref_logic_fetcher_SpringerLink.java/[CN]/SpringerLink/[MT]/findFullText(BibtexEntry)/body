@@ -1,0 +1,20 @@
+{
+  Objects.requireNonNull(entry);
+  Optional<URL> pdfLink=Optional.empty();
+  Optional<DOI> doi=DOI.build(entry.getField("doi"));
+  if (doi.isPresent()) {
+    try {
+      HttpResponse<JsonNode> jsonResponse=Unirest.get(API_URL).queryString("api_key",API_KEY).queryString("q",String.format("doi:%s",doi.get().getDOI())).asJson();
+      JSONObject json=jsonResponse.getBody().getObject();
+      int results=json.getJSONArray("result").getJSONObject(0).getInt("total");
+      if (results > 0) {
+        LOGGER.info("Fulltext PDF found @ Springer.");
+        pdfLink=Optional.of(new URL("http",CONTENT_HOST,String.format("/content/pdf/%s.pdf",doi.get().getDOI())));
+      }
+    }
+ catch (    UnirestException e) {
+      LOGGER.warn("SpringerLink API request failed: " + e.getMessage());
+    }
+  }
+  return pdfLink;
+}
