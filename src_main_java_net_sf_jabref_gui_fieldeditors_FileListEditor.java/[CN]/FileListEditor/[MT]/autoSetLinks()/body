@@ -6,19 +6,15 @@
     @Override public void actionPerformed(    ActionEvent e){
       auto.setEnabled(true);
       if (e.getID() > 0) {
-        fileFound=true;
         entryEditor.updateField(FileListEditor.this);
         frame.output(Localization.lang("Finished autosetting external links."));
       }
  else {
         frame.output(Localization.lang("Finished autosetting external links.") + " " + Localization.lang("No files found."));
+        frame.basePanel().runCommand("downloadFullText");
       }
+      auto.setEnabled(true);
     }
   }
 ,dialog));
-  if (!fileFound) {
-    frame.basePanel().runCommand("downloadFullText");
-  }
-  auto.setEnabled(true);
-  fileFound=false;
 }
