@@ -1,0 +1,35 @@
+{
+  Objects.requireNonNull(entry);
+  Optional<URL> pdfLink=Optional.empty();
+  Optional<DOI> doi=DOI.build(entry.getField("doi"));
+  if (doi.isPresent()) {
+    String doiString=doi.get().getDOI();
+    try {
+      HttpResponse<InputStream> response=Unirest.get(API_URL).queryString("search_query",doiString).queryString("max_results",1).asBinary();
+      DocumentBuilderFactory factory=DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder=factory.newDocumentBuilder();
+      Document doc=builder.parse(response.getBody());
+      NodeList nodes=doc.getElementsByTagName("arxiv:doi");
+      Node doiTag=nodes.item(0);
+      if (doiTag != null) {
+        if (doiTag.getTextContent().equals(doiString)) {
+          NodeList links=doc.getElementsByTagName("link");
+          for (int i=0; i < links.getLength(); i++) {
+            Node link=links.item(i);
+            NamedNodeMap attr=link.getAttributes();
+            String rel=attr.getNamedItem("rel").getNodeValue();
+            String href=attr.getNamedItem("href").getNodeValue();
+            if (rel.equals("related") && attr.getNamedItem("title").getNodeValue().equals("pdf")) {
+              pdfLink=Optional.of(new URL(href));
+              LOGGER.info("Fulltext PDF found @ arXiv.");
+            }
+          }
+        }
+      }
+    }
+ catch (    UnirestException|ParserConfigurationException|SAXException e) {
+      LOGGER.warn("arXiv API request failed: " + e.getMessage());
+    }
+  }
+  return pdfLink;
+}

@@ -39,7 +39,7 @@
 );
   ExternalFileType suggestedType=null;
   if (mimeType != null) {
-    System.out.println("mimetype:" + mimeType);
+    LOGGER.debug("MIME Type suggested: " + mimeType);
     suggestedType=Globals.prefs.getExternalFileTypeByMimeType(mimeType);
   }
   String suffix;
@@ -50,7 +50,7 @@
     suffix=getSuffix(res);
     suggestedType=Globals.prefs.getExternalFileTypeByExt(suffix);
   }
-  String suggestedName=bibtexKey != null ? getSuggestedFileName(suffix) : "";
+  String suggestedName=getSuggestedFileName(suffix);
   String[] fDirectory=getFileDirectory(res);
   final String directory;
   if (fDirectory.length == 0) {
@@ -61,7 +61,7 @@
   }
   final String suggestDir=directory != null ? directory : System.getProperty("user.home");
   File file=new File(new File(suggestDir),suggestedName);
-  FileListEntry entry=new FileListEntry("",bibtexKey != null ? file.getCanonicalPath() : "",suggestedType);
+  FileListEntry entry=new FileListEntry("",file.getCanonicalPath(),suggestedType);
   editor=new FileListEntryEditor(frame,entry,true,false,metaData);
   editor.getProgressBar().setIndeterminate(true);
   editor.setOkEnabled(false);
