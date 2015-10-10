@@ -15,6 +15,7 @@
   JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThread(st,"Searcher");
   int current=0;
   final ArrayList<BibtexEntry> toRemove=new ArrayList<BibtexEntry>();
+  final ArrayList<BibtexEntry> toAdd=new ArrayList<BibtexEntry>();
   while (!st.finished() || current < duplicates.size()) {
     if (current >= duplicates.size()) {
 synchronized (duplicates) {
@@ -58,6 +59,11 @@ synchronized (duplicates) {
           current=Integer.MAX_VALUE;
           duplicateCounter--;
         }
+ else         if (answer == DuplicateResolverDialog.KEEP_MERGE) {
+          toRemove.add(be[0]);
+          toRemove.add(be[0]);
+          toAdd.add(cb.getMergedEntry());
+        }
       }
     }
   }
@@ -68,6 +74,13 @@ synchronized (duplicates) {
         for (        BibtexEntry entry : toRemove) {
           panel.database.removeEntry(entry.getId());
           ce.addEdit(new UndoableRemoveEntry(panel.database,entry,panel));
+        }
+        panel.markBaseChanged();
+      }
+      if (!toAdd.isEmpty()) {
+        for (        BibtexEntry entry : toAdd) {
+          panel.database.insertEntry(entry);
+          ce.addEdit(new UndoableInsertEntry(panel.database,entry,panel));
         }
         panel.markBaseChanged();
       }
