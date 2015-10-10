@@ -1,7 +1,7 @@
 {
   keyword=new JTextField();
-  keywordListModel=new DefaultListModel();
-  keywordList=new JList(keywordListModel);
+  keywordListModel=new DefaultListModel<String>();
+  keywordList=new JList<String>(keywordListModel);
   keywordList.setVisibleRowCount(8);
   JScrollPane kPane=new JScrollPane(keywordList);
   diag=new JDialog(frame,Localization.lang("Manage keywords"),true);
@@ -24,18 +24,14 @@
   intersectKeywords.addActionListener(stateChanged);
   mergeKeywords.addActionListener(stateChanged);
   intersectKeywords.setSelected(true);
-  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:200dlu, 4dlu, left:pref, 4dlu, left:pref",""));
-  builder.appendSeparator(Localization.lang("Keywords of selected entries"));
-  builder.append(intersectKeywords,5);
-  builder.nextLine();
-  builder.append(mergeKeywords,5);
-  builder.nextLine();
-  builder.append(kPane,3);
-  builder.add(remove);
-  builder.nextLine();
-  builder.append(keyword,3);
-  builder.append(add);
-  builder.nextLine();
+  FormBuilder builder=FormBuilder.create().layout(new FormLayout("fill:200dlu:grow, 4dlu, fill:pref","pref, 2dlu, pref, 1dlu, pref, 2dlu, fill:100dlu:grow, 4dlu, pref, 4dlu, pref, "));
+  builder.addSeparator(Localization.lang("Keywords of selected entries")).xyw(1,1,3);
+  builder.add(intersectKeywords).xyw(1,3,3);
+  builder.add(mergeKeywords).xyw(1,5,3);
+  builder.add(kPane).xywh(1,7,1,3);
+  builder.add(remove).xy(3,9);
+  builder.add(keyword).xy(1,11);
+  builder.add(add).xy(3,11);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
   bb.addButton(ok);
@@ -51,6 +47,7 @@
   }
 );
   AbstractAction cancelAction=new AbstractAction(){
+    private static final long serialVersionUID=-4623988526737916508L;
     @Override public void actionPerformed(    ActionEvent e){
       cancelled=true;
       diag.dispose();
@@ -69,8 +66,8 @@
       }
  else {
         int idx=0;
-        String element=(String)keywordListModel.getElementAt(idx);
-        while (idx < keywordListModel.size() && element.compareTo(text) < 0) {
+        String element=keywordListModel.getElementAt(idx);
+        while ((idx < keywordListModel.size()) && (element.compareTo(text) < 0)) {
           idx++;
         }
         if (idx == keywordListModel.size()) {
@@ -90,7 +87,7 @@
   add.addActionListener(addActionListener);
   final ActionListener removeActionListenter=new ActionListener(){
     @Override public void actionPerformed(    ActionEvent arg0){
-      String[] values=(String[])keywordList.getSelectedValues();
+      String[] values=(String[])keywordList.getSelectedValuesList().toArray();
       for (      String val : values) {
         keywordListModel.removeElement(val);
       }
