@@ -7,10 +7,12 @@
  catch (  BackingStoreException ex) {
     LOGGER.info("BackingStoreException in JabRefPreferences.putKeyPattern",ex);
   }
-  for (  Map.Entry<String,ArrayList<String>> stringArrayListEntry : pattern.entrySet()) {
-    ArrayList<String> value=stringArrayListEntry.getValue();
-    if (value != null) {
-      pre.put(stringArrayListEntry.getKey(),value.get(0));
+  Enumeration<String> allKeys=pattern.getAllKeys();
+  while (allKeys.hasMoreElements()) {
+    String key=allKeys.nextElement();
+    if (!pattern.isDefaultValue(key)) {
+      ArrayList<String> value=pattern.getValue(key);
+      pre.put(key,value.get(0));
     }
   }
 }
