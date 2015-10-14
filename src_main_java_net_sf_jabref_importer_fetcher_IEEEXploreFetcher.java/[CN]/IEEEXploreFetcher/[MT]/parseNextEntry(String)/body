@@ -2,7 +2,7 @@
   BibtexEntry entry=null;
   int index=allText.indexOf("<div class=\"detail",piv);
   int endIndex=allText.indexOf("</div>",index);
-  if (index >= 0 && endIndex > 0) {
+  if ((index >= 0) && (endIndex > 0)) {
     endIndex+=6;
     piv=endIndex;
     String text=allText.substring(index,endIndex);
@@ -36,7 +36,7 @@
     if (type == null) {
       type=BibtexEntryType.getType("misc");
       sourceField="note";
-      LOGGER.warn("Type detection failed. Use MISC instead. Type string: " + text);
+      IEEEXploreFetcher.LOGGER.warn("Type detection failed. Use MISC instead. Type string: " + text);
       unparseable++;
     }
     entry=new BibtexEntry(IdGenerator.next(),type);
@@ -67,7 +67,7 @@
           }
           entry.setField(sourceField,sec_title);
         }
-        if (field.equals("pages") && fieldMatcher.groupCount() == 2) {
+        if (field.equals("pages") && (fieldMatcher.groupCount() == 2)) {
           entry.setField(field,fieldMatcher.group(1) + "-" + fieldMatcher.group(2));
         }
       }
@@ -83,13 +83,13 @@
       authorCount++;
     }
     String authorString=authorNames.toString();
-    if (authorString == null || authorString.startsWith("a href") || authorString.startsWith("Topic(s)")) {
+    if ((authorString == null) || authorString.startsWith("a href") || authorString.startsWith("Topic(s)")) {
       entry.setField("author","");
     }
  else {
       entry.setField("author",authorString);
     }
-    if (entry.getType() == BibtexEntryType.getStandardType("inproceedings") && entry.getField("author").equals("")) {
+    if ((entry.getType() == BibtexEntryType.getStandardType("inproceedings")) && entry.getField("author").equals("")) {
       entry.setType(BibtexEntryType.getStandardType("proceedings"));
     }
     if (includeAbstract) {
@@ -109,7 +109,5 @@
   if (entry == null) {
     return null;
   }
- else {
-    return cleanup(entry);
-  }
+  return cleanup(entry);
 }

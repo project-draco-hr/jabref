@@ -27,23 +27,10 @@
     }
     hits=getNumberOfHits(page,"display-status",hitsPattern);
     includeAbstract=absCheckBox.isSelected();
-    importBibtex=bibButton.isSelected();
     if (hits > IEEEXploreFetcher.MAX_FETCH) {
       status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)}),Localization.lang("Search IEEEXplore"),JOptionPane.INFORMATION_MESSAGE);
-      hits=IEEEXploreFetcher.MAX_FETCH;
     }
-    parse(dialog,page,0,1);
-    int firstEntry=perPage;
-    while (shouldContinue && firstEntry < hits) {
-      pageNumber++;
-      searchUrl=makeUrl(pageNumber);
-      page=getResults(new URL(searchUrl));
-      if (!shouldContinue) {
-        break;
-      }
-      parse(dialog,page,0,firstEntry + 1);
-      firstEntry+=perPage;
-    }
+    parse(dialog,page,0);
     return true;
   }
  catch (  MalformedURLException e) {
