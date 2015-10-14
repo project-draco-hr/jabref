@@ -1,0 +1,18 @@
+{
+  couldNotConnect=false;
+  couldNotCall=false;
+  notDefined=false;
+  initParameters();
+  commandPath=Globals.prefs.get(commandPathPreferenceKey);
+  if ((commandPath == null) || commandPath.trim().isEmpty()) {
+    notDefined=true;
+    return;
+  }
+  try {
+    Runtime.getRuntime().exec(getCommandLine(keyString));
+  }
+ catch (  IOException excep) {
+    couldNotCall=true;
+    LOGGER.warn(getCouldNotCall());
+  }
+}
