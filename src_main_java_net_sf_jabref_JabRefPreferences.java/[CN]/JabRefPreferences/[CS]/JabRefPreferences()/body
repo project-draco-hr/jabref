@@ -8,6 +8,10 @@
     LOGGER.info("Could not import preferences from jabref.xml:" + e.getLocalizedMessage(),e);
   }
   prefs=Preferences.userNodeForPackage(JabRef.class);
+  defaults.put(TEXMAKER_PATH,OS.guessProgramPath("texmaker","Texmaker"));
+  defaults.put(WIN_EDT_PATH,OS.guessProgramPath("WinEdt","WinEdt Team\\WinEdt"));
+  defaults.put(LATEX_EDITOR_PATH,OS.guessProgramPath("LEd","LEd"));
+  defaults.put(TEXSTUDIO_PATH,OS.guessProgramPath("texstudio","TeXstudio"));
   if (OS.OS_X) {
     defaults.put(EMACS_PATH,"emacsclient");
     defaults.put(EMACS_23,true);
@@ -16,9 +20,6 @@
   }
  else   if (OS.WINDOWS) {
     defaults.put(WIN_LOOK_AND_FEEL,"com.jgoodies.looks.windows.WindowsLookAndFeel");
-    defaults.put(WIN_EDT_PATH,"C:\\Program Files\\WinEdt Team\\WinEdt\\WinEdt.exe");
-    defaults.put(LATEX_EDITOR_PATH,"C:\\Program Files\\LEd\\LEd.exe");
-    defaults.put(TEXMAKER_PATH,"C:\\Program Files\\Texmaker\\texmaker.exe");
     defaults.put(EMACS_PATH,"emacsclient.exe");
     defaults.put(EMACS_23,true);
     defaults.put(EMACS_ADDITIONAL_PARAMETERS,"-n -e");
@@ -30,7 +31,6 @@
     defaults.put(EMACS_PATH,"gnuclient");
     defaults.put(EMACS_23,false);
     defaults.put(EMACS_ADDITIONAL_PARAMETERS,"-batch -eval");
-    defaults.put(TEXMAKER_PATH,"texmaker");
   }
   defaults.put(USE_PROXY,Boolean.FALSE);
   defaults.put(PROXY_HOSTNAME,"my proxy host");
@@ -146,7 +146,7 @@
   defaults.put(HIGHLIGHT_GROUPS_MATCHING_ALL,Boolean.FALSE);
   defaults.put(TOOLBAR_VISIBLE,Boolean.TRUE);
   defaults.put(SEARCH_PANEL_VISIBLE,Boolean.FALSE);
-  defaults.put(DEFAULT_ENCODING,System.getProperty("file.encoding"));
+  defaults.put(DEFAULT_ENCODING,"UTF-8");
   defaults.put(GROUPS_VISIBLE_ROWS,8);
   defaults.put(DEFAULT_OWNER,System.getProperty("user.name"));
   defaults.put(PRESERVE_FIELD_FORMATTING,Boolean.FALSE);
@@ -196,7 +196,6 @@
   defaults.put(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY,SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY_DEFAULT);
   defaults.put(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY,SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY_DEFAULT);
   defaults.put(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING,SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING_DEFAULT);
-  defaults.put(SpecialFieldsUtils.PREF_RANKING_COMPACT,SpecialFieldsUtils.PREF_RANKING_COMPACT_DEFAULT);
   defaults.put(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE,SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE_DEFAULT);
   defaults.put(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED,SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED_DEFAULT);
   defaults.put(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ,SpecialFieldsUtils.PREF_SHOWCOLUMN_READ_DEFAULT);
@@ -248,13 +247,7 @@
   defaults.put(RemotePreferences.REMOTE_SERVER_PORT,6050);
   defaults.put(PERSONAL_JOURNAL_LIST,null);
   defaults.put(EXTERNAL_JOURNAL_LISTS,null);
-  defaults.put(CITE_COMMAND,"cite");
-  defaults.put(CITE_COMMAND_VIM,"\\cite");
-  defaults.put(CITE_COMMAND_EMACS,"\\cite");
-  defaults.put(CITE_COMMAND_WIN_EDT,"\\cite");
-  defaults.put(CITE_COMMAND_TEXSTUDIO,"\\cite");
-  defaults.put(CITE_COMMAND_LED,"\\cite");
-  defaults.put(CITE_COMMAND_TEXMAKER,"\\cite");
+  defaults.put(CITE_COMMAND,"\\cite");
   defaults.put(FLOAT_MARKED_ENTRIES,Boolean.TRUE);
   defaults.put(USE_NATIVE_FILE_DIALOG_ON_MAC,Boolean.FALSE);
   defaults.put(FILECHOOSER_DISABLE_RENAME,Boolean.TRUE);
@@ -311,14 +304,14 @@
   defaults.put(USE_CONVERT_TO_EQUATION,Boolean.FALSE);
   defaults.put(USE_CASE_KEEPER_ON_SEARCH,Boolean.TRUE);
   defaults.put(USE_UNIT_FORMATTER_ON_SEARCH,Boolean.TRUE);
-  defaults.put(USER_FILE_DIR,GUIGlobals.FILE_FIELD + "Directory");
+  defaults.put(USER_FILE_DIR,Globals.FILE_FIELD + "Directory");
   try {
-    defaults.put(USER_FILE_DIR_IND_LEGACY,GUIGlobals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER)+ '@'+ InetAddress.getLocalHost().getHostName());
-    defaults.put(USER_FILE_DIR_INDIVIDUAL,GUIGlobals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER)+ '-'+ InetAddress.getLocalHost().getHostName());
+    defaults.put(USER_FILE_DIR_IND_LEGACY,Globals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER)+ '@'+ InetAddress.getLocalHost().getHostName());
+    defaults.put(USER_FILE_DIR_INDIVIDUAL,Globals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER)+ '-'+ InetAddress.getLocalHost().getHostName());
   }
  catch (  UnknownHostException ex) {
     LOGGER.info("Hostname not found.",ex);
-    defaults.put(USER_FILE_DIR_IND_LEGACY,GUIGlobals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER));
-    defaults.put(USER_FILE_DIR_INDIVIDUAL,GUIGlobals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER));
+    defaults.put(USER_FILE_DIR_IND_LEGACY,Globals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER));
+    defaults.put(USER_FILE_DIR_INDIVIDUAL,Globals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER));
   }
 }
