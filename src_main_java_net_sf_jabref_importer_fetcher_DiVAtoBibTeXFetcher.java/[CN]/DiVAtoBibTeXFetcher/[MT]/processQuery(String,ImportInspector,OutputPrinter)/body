@@ -17,17 +17,9 @@
     e.printStackTrace();
     return false;
   }
-  URLConnection conn;
-  try {
-    conn=url.openConnection();
-  }
- catch (  IOException e) {
-    e.printStackTrace();
-    return false;
-  }
   String bibtexString;
   try {
-    bibtexString=Util.getResultsWithEncoding(conn,"UTF-8");
+    bibtexString=Util.getResultsWithEncoding(url,"UTF-8");
   }
  catch (  FileNotFoundException e) {
     status.showMessage(Localization.lang("Unknown DiVA entry: '%0'.",query),Localization.lang("Get BibTeX entry from DiVA"),JOptionPane.INFORMATION_MESSAGE);
@@ -57,7 +49,5 @@ catch (  IOException e) {
     inspector.addEntry(entry);
     return true;
   }
- else {
-    return false;
-  }
+  return false;
 }
