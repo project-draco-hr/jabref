@@ -1,4 +1,7 @@
 {
+  if (OS.isWindows7OrLater()) {
+    PinToTaskbar.enablePinToTaskbar();
+  }
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   if (prefs.getBoolean(JabRefPreferences.USE_PROXY)) {
     System.setProperty("http.proxyHost",prefs.get(JabRefPreferences.PROXY_HOSTNAME));
@@ -37,9 +40,6 @@
     }
   }
   Globals.NEWLINE=Globals.prefs.get(JabRefPreferences.NEWLINE);
-  if (OS.WINDOWS) {
-    WindowsExtensions.enablePinToTaskbar();
-  }
   Vector<ParserResult> loaded=processArguments(args,true);
   if (loaded == null || cli.isDisableGui() || cli.isShowVersion()) {
     JabRefExecutorService.INSTANCE.shutdownEverything();
