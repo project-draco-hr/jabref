@@ -14,7 +14,7 @@
 );
   setFocusTraversalPolicy(new LayoutFocusTraversalPolicy(){
     @Override protected boolean accept(    Component c){
-      return super.accept(c) && c instanceof StringTable;
+      return super.accept(c) && (c instanceof StringTable);
     }
   }
 );
@@ -43,6 +43,8 @@
   im.put(prefs.getKey("String dialog, remove string"),"remove");
   RemoveStringAction removeStringAction=new RemoveStringAction(this);
   am.put("remove",removeStringAction);
+  im.put(prefs.getKey("Save database"),"save");
+  am.put("save",saveAction);
   im.put(prefs.getKey("Close dialog"),"close");
   am.put("close",closeAction);
   im.put(prefs.getKey("Help"),"help");
@@ -55,7 +57,6 @@
   am.put("redo",redoAction);
   tlb.add(newStringAction);
   tlb.add(removeStringAction);
-  tlb.addSeparator();
   tlb.addSeparator();
   tlb.add(helpAction);
   Container conPane=getContentPane();
