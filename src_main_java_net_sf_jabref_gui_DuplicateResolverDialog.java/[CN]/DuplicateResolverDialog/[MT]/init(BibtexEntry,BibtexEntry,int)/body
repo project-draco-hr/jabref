@@ -4,10 +4,10 @@
   JButton first;
 switch (type) {
 case DUPLICATE_SEARCH:
-    first=new JButton(Localization.lang("Keep entry 1"));
-  second=new JButton(Localization.lang("Keep entry 2"));
+    first=new JButton(Localization.lang("Keep left"));
+  second=new JButton(Localization.lang("Keep right"));
 both=new JButton(Localization.lang("Keep both"));
-me=new MergeEntries(one,two,Localization.lang("Entry 1"),Localization.lang("Entry 2"));
+me=new MergeEntries(one,two);
 break;
 case INSPECTION:
 first=new JButton(Localization.lang("Remove old entry"));
@@ -16,11 +16,11 @@ both=new JButton(Localization.lang("Keep both"));
 me=new MergeEntries(one,two,Localization.lang("Old entry"),Localization.lang("From import"));
 break;
 case DUPLICATE_SEARCH_WITH_EXACT:
-first=new JButton(Localization.lang("Keep entry 1"));
-second=new JButton(Localization.lang("Keep entry 2"));
+first=new JButton(Localization.lang("Keep left"));
+second=new JButton(Localization.lang("Keep right"));
 both=new JButton(Localization.lang("Keep both"));
 removeExact=new JButton(Localization.lang("Automatically remove exact duplicates"));
-me=new MergeEntries(one,two,Localization.lang("Entry 1"),Localization.lang("Entry 2"));
+me=new MergeEntries(one,two);
 break;
 default :
 first=new JButton(Localization.lang("Import and remove old entry"));
@@ -28,73 +28,6 @@ second=new JButton(Localization.lang("Do not import entry"));
 both=new JButton(Localization.lang("Import and keep old entry"));
 me=new MergeEntries(one,two,Localization.lang("Old entry"),Localization.lang("From import"));
 }
-String layout=Globals.prefs.get(JabRefPreferences.PREVIEW_0);
-p1=new PreviewPanel(null,one,null,new MetaData(),layout);
-p2=new PreviewPanel(null,two,null,new MetaData(),layout);
-p3=new PreviewPanel(null,me.getMergeEntry(),null,new MetaData(),layout);
-ta1=new JTextArea();
-ta2=new JTextArea();
-ta3=new JTextArea();
-ta1.setEditable(false);
-ta2.setEditable(false);
-ta3.setEditable(false);
-setSourceView(one,two,me.getMergeEntry());
-main.setLayout(gbl);
-source.setLayout(gbl);
-con.insets=new Insets(10,10,0,10);
-con.fill=GridBagConstraints.BOTH;
-con.gridwidth=GridBagConstraints.REMAINDER;
-con.weightx=1;
-con.weighty=0;
-TitleLabel lab=new TitleLabel((type == DuplicateResolverDialog.DUPLICATE_SEARCH) || (type == DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT) ? Localization.lang("Entry 1") : Localization.lang("Entry in current database"));
-gbl.setConstraints(lab,con);
-main.add(lab);
-lab=new TitleLabel((type == DuplicateResolverDialog.DUPLICATE_SEARCH) || (type == DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT) ? Localization.lang("Entry 1") : Localization.lang("Entry in current database"));
-gbl.setConstraints(lab,con);
-source.add(lab);
-con.weighty=1;
-con.insets=new Insets(5,10,10,10);
-JScrollPane sp=new JScrollPane(p1);
-gbl.setConstraints(sp,con);
-main.add(sp);
-sp=new JScrollPane(ta1);
-gbl.setConstraints(sp,con);
-source.add(sp);
-con.weighty=0;
-con.insets=new Insets(10,10,0,10);
-lab=new TitleLabel((type == DuplicateResolverDialog.DUPLICATE_SEARCH) || (type == DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT) ? Localization.lang("Entry 2") : Localization.lang("Entry in import"));
-gbl.setConstraints(lab,con);
-main.add(lab);
-lab=new TitleLabel((type == DuplicateResolverDialog.DUPLICATE_SEARCH) || (type == DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT) ? Localization.lang("Entry 2") : Localization.lang("Entry in import"));
-gbl.setConstraints(lab,con);
-source.add(lab);
-con.weighty=1;
-con.insets=new Insets(5,10,10,10);
-sp=new JScrollPane(p2);
-gbl.setConstraints(sp,con);
-main.add(sp);
-sp=new JScrollPane(ta2);
-gbl.setConstraints(sp,con);
-source.add(sp);
-con.weighty=0;
-con.insets=new Insets(10,10,0,10);
-lab=new TitleLabel(Localization.lang("Merged entry"));
-gbl.setConstraints(lab,con);
-main.add(lab);
-lab=new TitleLabel(Localization.lang("Merged entry"));
-gbl.setConstraints(lab,con);
-source.add(lab);
-con.weighty=1;
-con.insets=new Insets(5,10,10,10);
-sp=new JScrollPane(p3);
-gbl.setConstraints(sp,con);
-main.add(sp);
-sp=new JScrollPane(ta3);
-gbl.setConstraints(sp,con);
-source.add(sp);
-tabbed.add(Localization.lang("Short form"),main);
-tabbed.add(Localization.lang("Complete record"),source);
-tabbed.add(Localization.lang("Merged entry"),me.getMergeEntryPanel());
 if (removeExact != null) {
 options.add(removeExact);
 }
@@ -154,23 +87,7 @@ dispose();
 }
 }
 );
-ChangeListener changeListener=new ChangeListener(){
-@Override public void stateChanged(ChangeEvent changeEvent){
-if (((JTabbedPane)changeEvent.getSource()).getSelectedIndex() == 1) {
-StringWriter sw=new StringWriter();
-try {
-new BibtexEntryWriter(new LatexFieldFormatter(),false).write(me.getMergeEntry(),sw);
-}
- catch (IOException ignored) {
-}
-ta3.setText(sw.getBuffer().toString());
-ta3.setCaretPosition(0);
-}
-}
-}
-;
-tabbed.addChangeListener(changeListener);
-getContentPane().add(tabbed,BorderLayout.CENTER);
+getContentPane().add(me.getMergeEntryPanel());
 getContentPane().add(options,BorderLayout.SOUTH);
 pack();
 if (getHeight() > DIM.height) {
