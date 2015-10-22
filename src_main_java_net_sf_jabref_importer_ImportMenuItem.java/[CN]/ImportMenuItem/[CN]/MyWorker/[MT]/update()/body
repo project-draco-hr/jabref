@@ -5,91 +5,12 @@
   if (bibtexResult != null) {
     if (!openInNew) {
       final BasePanel panel=(BasePanel)frame.getTabbedPane().getSelectedComponent();
-      BibtexDatabase toAddTo=panel.database();
-      if (Globals.prefs.getBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG) && (Globals.prefs.getBoolean(JabRefPreferences.USE_IMPORT_INSPECTION_DIALOG_FOR_SINGLE) || (bibtexResult.getDatabase().getEntryCount() > 1))) {
-        ImportInspectionDialog diag=new ImportInspectionDialog(frame,panel,BibtexFields.DEFAULT_INSPECTION_FIELDS,Localization.lang("Import"),openInNew);
-        diag.addEntries(bibtexResult.getDatabase().getEntries());
-        diag.entryListComplete();
-        Util.placeDialog(diag,frame);
-        diag.setVisible(true);
-        diag.toFront();
-      }
- else {
-        Integer addCount=0;
-        Integer replaceCount=0;
-        Integer mergeCount=0;
-        String preString=null;
-        boolean generateKeys=Globals.prefs.getBoolean(JabRefPreferences.GENERATE_KEYS_AFTER_INSPECTION);
-        NamedCompound ce=new NamedCompound(Localization.lang("Import entries"));
-        if (Globals.prefs.getBoolean(JabRefPreferences.UNMARK_ALL_ENTRIES_BEFORE_IMPORTING)) {
-          for (          BibtexEntry entry : toAddTo.getEntries()) {
-            EntryMarker.unmarkEntry(entry,true,toAddTo,ce);
-          }
-        }
-        mainLoop:         for (        BibtexEntry entry : bibtexResult.getDatabase().getEntries()) {
-          try {
-            boolean keepEntry=true;
-            boolean remove=false;
-            BibtexEntry mergedEntry=null;
-            BibtexEntry duplicate=DuplicateCheck.containsDuplicate(toAddTo,entry);
-            if (duplicate != null) {
-              DuplicateResolverDialog drd=new DuplicateResolverDialog(frame,duplicate,entry,DuplicateResolverDialog.IMPORT_CHECK);
-              drd.setVisible(true);
-              int answer=drd.getSelected();
-              if (answer == DuplicateResolverDialog.DO_NOT_IMPORT) {
-                keepEntry=false;
-              }
- else               if (answer == DuplicateResolverDialog.IMPORT_AND_DELETE_OLD) {
-                remove=true;
-                replaceCount++;
-              }
- else               if (answer == DuplicateResolverDialog.KEEP_MERGE) {
-                keepEntry=false;
-                remove=true;
-                mergedEntry=drd.getMergedEntry();
-                mergeCount++;
-              }
- else               if (answer == DuplicateResolverDialog.BREAK) {
-                preString=Localization.lang("Import cancelled.");
-                break mainLoop;
-              }
-            }
-            if (remove) {
-              toAddTo.removeEntry(duplicate.getId());
-              ce.addEdit(new UndoableRemoveEntry(toAddTo,duplicate,panel));
-            }
-            if (keepEntry) {
-              toAddTo.insertEntry(entry);
-              if (generateKeys) {
-                LabelPatternUtil.makeLabel(panel.metaData(),toAddTo,entry);
-              }
-              ce.addEdit(new UndoableInsertEntry(toAddTo,entry,panel));
-              addCount++;
-            }
-            if (mergedEntry != null) {
-              toAddTo.insertEntry(mergedEntry);
-              if (generateKeys) {
-                LabelPatternUtil.makeLabel(panel.metaData(),toAddTo,mergedEntry);
-              }
-              ce.addEdit(new UndoableInsertEntry(toAddTo,mergedEntry,panel));
-            }
-          }
- catch (          KeyCollisionException e) {
-            e.printStackTrace();
-          }
-        }
-        ce.end();
-        if (ce.hasEdits()) {
-          panel.undoManager.addEdit(ce);
-          panel.markBaseChanged();
-        }
-        if (preString != null) {
-          frame.output(preString + " " + Localization.lang("Added %0 entries. Replaced %1 entries. Added information to %2 entries.",addCount.toString(),replaceCount.toString(),mergeCount.toString()));
-        }
- else {
-          frame.output(Localization.lang("Added %0 entries. Replaced %1 entries. Added information to %2 entries.",addCount.toString(),replaceCount.toString(),mergeCount.toString()));
-        }
-      }
+      ImportInspectionDialog diag=new ImportInspectionDialog(frame,panel,BibtexFields.DEFAULT_INSPECTION_FIELDS,Localization.lang("Import"),openInNew);
+      diag.addEntries(bibtexResult.getDatabase().getEntries());
+      diag.entryListComplete();
+      Util.placeDialog(diag,frame);
+      diag.setVisible(true);
+      diag.toFront();
     }
  else {
       frame.addTab(bibtexResult.getDatabase(),bibtexResult.getFile(),bibtexResult.getMetaData(),Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING),true);
