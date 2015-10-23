@@ -41,6 +41,7 @@ first.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
 status=DuplicateResolverDialog.KEEP_UPPER;
 block=false;
+savePosition();
 dispose();
 }
 }
@@ -49,6 +50,7 @@ second.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
 status=DuplicateResolverDialog.KEEP_LOWER;
 block=false;
+savePosition();
 dispose();
 }
 }
@@ -57,6 +59,7 @@ both.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
 status=DuplicateResolverDialog.KEEP_BOTH;
 block=false;
+savePosition();
 dispose();
 }
 }
@@ -65,6 +68,7 @@ merge.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
 status=DuplicateResolverDialog.KEEP_MERGE;
 block=false;
+savePosition();
 dispose();
 }
 }
@@ -74,6 +78,7 @@ removeExact.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
 status=DuplicateResolverDialog.AUTOREMOVE_EXACT;
 block=false;
+savePosition();
 dispose();
 }
 }
@@ -83,6 +88,7 @@ cancel.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
 status=DuplicateResolverDialog.BREAK;
 block=false;
+savePosition();
 dispose();
 }
 }
@@ -90,11 +96,7 @@ dispose();
 getContentPane().add(me.getMergeEntryPanel());
 getContentPane().add(options,BorderLayout.SOUTH);
 pack();
-if (getHeight() > DIM.height) {
-setSize(new Dimension(getWidth(),DIM.height));
-}
-if (getWidth() > DIM.width) {
-setSize(new Dimension(DIM.width,getHeight()));
-}
+setLocation(Globals.prefs.getInt(JabRefPreferences.DUPLICATES_POS_X),Globals.prefs.getInt(JabRefPreferences.DUPLICATES_POS_Y));
+setSize(Globals.prefs.getInt(JabRefPreferences.DUPLICATES_SIZE_X),Globals.prefs.getInt(JabRefPreferences.DUPLICATES_SIZE_Y));
 both.requestFocus();
 }
