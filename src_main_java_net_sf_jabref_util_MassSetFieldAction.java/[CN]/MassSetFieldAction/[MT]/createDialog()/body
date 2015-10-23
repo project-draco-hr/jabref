@@ -1,6 +1,7 @@
 {
   diag=new JDialog(frame,Localization.lang("Set/clear/rename fields"),true);
-  field=new JTextField();
+  field=new JComboBox<>();
+  field.setEditable(true);
   text=new JTextField();
   text.setEnabled(false);
   renameTo=new JTextField();
@@ -13,6 +14,16 @@
   set=new JRadioButton(Localization.lang("Set fields"));
   rename=new JRadioButton(Localization.lang("Rename field to") + ":");
   rename.setToolTipText(Localization.lang("Move contents of a field into a field with a different name"));
+  Collection<BibtexEntry> be=frame.basePanel().database().getEntries();
+  allFields=new TreeSet<String>();
+  for (  BibtexEntry e : be) {
+    allFields.addAll(e.getAllFields());
+  }
+  for (  String f : allFields) {
+    if (!f.startsWith("__")) {
+      field.addItem(f);
+    }
+  }
   set.addChangeListener(new ChangeListener(){
     @Override public void stateChanged(    ChangeEvent e){
       text.setEnabled(set.isSelected());
@@ -66,7 +77,7 @@
   ok.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       if (rename.isSelected()) {
-        String[] fields=getFieldNames(field.getText());
+        String[] fields=getFieldNames((String)field.getSelectedItem());
         if (fields.length > 1) {
           JOptionPane.showMessageDialog(diag,Localization.lang("You can only rename one field at a time"),"",JOptionPane.ERROR_MESSAGE);
           return;
@@ -78,7 +89,6 @@
   }
 );
   AbstractAction cancelAction=new AbstractAction(){
-    private static final long serialVersionUID=5590008814009727518L;
     @Override public void actionPerformed(    ActionEvent e){
       cancelled=true;
       diag.dispose();
