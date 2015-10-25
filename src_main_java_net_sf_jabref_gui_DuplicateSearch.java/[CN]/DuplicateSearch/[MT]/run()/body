@@ -14,9 +14,9 @@
   SearcherRunnable st=new SearcherRunnable();
   JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThread(st,"Searcher");
   int current=0;
-  final ArrayList<BibtexEntry> toRemove=new ArrayList<BibtexEntry>();
-  final ArrayList<BibtexEntry> toAdd=new ArrayList<BibtexEntry>();
-  while (!st.finished() || current < duplicates.size()) {
+  final ArrayList<BibtexEntry> toRemove=new ArrayList<>();
+  final ArrayList<BibtexEntry> toAdd=new ArrayList<>();
+  while (!st.finished() || (current < duplicates.size())) {
     if (current >= duplicates.size()) {
 synchronized (duplicates) {
         try {
@@ -37,15 +37,13 @@ synchronized (duplicates) {
             duplicateCounter++;
             continue;
           }
- else {
-            askAboutExact=true;
-          }
+          askAboutExact=true;
         }
         DuplicateCallBack cb=new DuplicateCallBack(panel.frame,be[0],be[1],askAboutExact ? DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT : DuplicateResolverDialog.DUPLICATE_SEARCH);
         ((CallBack)Spin.over(cb)).update();
         duplicateCounter++;
         int answer=cb.getSelected();
-        if (answer == DuplicateResolverDialog.KEEP_UPPER || answer == DuplicateResolverDialog.AUTOREMOVE_EXACT) {
+        if ((answer == DuplicateResolverDialog.KEEP_UPPER) || (answer == DuplicateResolverDialog.AUTOREMOVE_EXACT)) {
           toRemove.add(be[1]);
           if (answer == DuplicateResolverDialog.AUTOREMOVE_EXACT) {
             autoRemoveExactDuplicates=true;

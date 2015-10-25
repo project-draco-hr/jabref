@@ -4,7 +4,7 @@
     String s=new URLDownload(url).downloadToString();
     BibtexParser bp=new BibtexParser(new StringReader(s));
     ParserResult pr=bp.parse();
-    if (pr != null && pr.getDatabase() != null) {
+    if ((pr != null) && (pr.getDatabase() != null)) {
       Collection<BibtexEntry> entries=pr.getDatabase().getEntries();
       if (entries.size() == 1) {
         BibtexEntry entry=entries.iterator().next();
@@ -28,21 +28,19 @@
         return entry;
       }
  else       if (entries.isEmpty()) {
-        System.out.println("No entry found! (" + link + ")");
+        LOGGER.warn("No entry found! (" + link + ")");
         return null;
       }
  else {
-        System.out.println(entries.size() + " entries found! (" + link+ ")");
+        LOGGER.debug(entries.size() + " entries found! (" + link+ ")");
         return null;
       }
     }
- else {
-      System.out.println("Parser failed! (" + link + ")");
-      return null;
-    }
+    LOGGER.warn("Parser failed! (" + link + ")");
+    return null;
   }
  catch (  MalformedURLException ex) {
-    ex.printStackTrace();
+    LOGGER.error("Malformed URL.",ex);
     return null;
   }
 }
