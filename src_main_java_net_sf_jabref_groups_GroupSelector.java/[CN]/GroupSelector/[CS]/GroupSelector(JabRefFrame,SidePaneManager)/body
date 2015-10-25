@@ -1,5 +1,5 @@
 {
-  super(manager,IconTheme.getImage("toggleGroups"),Localization.lang("Groups"));
+  super(manager,IconTheme.JabRefIcon.TOGGLE_GROUPS.getIcon(),Localization.lang("Groups"));
   this.groupsRoot=new GroupTreeNode(new AllEntriesGroup());
   this.frame=frame;
   hideNonHits=new JRadioButtonMenuItem(Localization.lang("Hide non-hits"),!Globals.prefs.getBoolean(JabRefPreferences.GRAY_OUT_NON_HITS));
@@ -118,7 +118,7 @@
     }
   }
 );
-  JButton expand=new JButton(IconTheme.getImage("down"));
+  JButton expand=new JButton(IconTheme.JabRefIcon.ADD_ROW.getSmallIcon());
   expand.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int i=Globals.prefs.getInt(JabRefPreferences.GROUPS_VISIBLE_ROWS) + 1;
@@ -132,7 +132,7 @@
     }
   }
 );
-  JButton reduce=new JButton(IconTheme.getImage("up"));
+  JButton reduce=new JButton(IconTheme.JabRefIcon.REMOVE_ROW.getSmallIcon());
   reduce.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int i=Globals.prefs.getInt(JabRefPreferences.GROUPS_VISIBLE_ROWS) - 1;
@@ -162,7 +162,7 @@
   newButton.setMinimumSize(butDim);
   refresh.setPreferredSize(butDim);
   refresh.setMinimumSize(butDim);
-  JButton helpButton=new JButton(IconTheme.getImage("help"));
+  JButton helpButton=new HelpAction(frame.helpDiag,GUIGlobals.groupsHelp,Localization.lang("Help on groups")).getIconButton();
   helpButton.setPreferredSize(butDim);
   helpButton.setMinimumSize(butDim);
   autoGroup.setPreferredSize(butDim);
@@ -228,9 +228,6 @@
   main.add(autoGroup);
   con.gridx=3;
   con.gridwidth=GridBagConstraints.REMAINDER;
-  HelpAction helpAction=new HelpAction(frame.helpDiag,GUIGlobals.groupsHelp,Localization.lang("Help on groups"));
-  helpButton.addActionListener(helpAction);
-  helpButton.setToolTipText(Localization.lang("Help on groups"));
   gbl.setConstraints(helpButton,con);
   main.add(helpButton);
   groupsTree=new GroupsTree(this);

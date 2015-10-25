@@ -1,5 +1,5 @@
 {
-  super(p0,IconTheme.getImage("www"),Localization.lang("Web search"));
+  super(p0,IconTheme.JabRefIcon.WWW.getSmallIcon(),Localization.lang("Web search"));
   this.sidePaneManager=p0;
   this.frame=frame;
   List<EntryFetcher> fetchers=EntryFetchers.INSTANCE.getEntryFetchers();
@@ -19,6 +19,8 @@
   if (this.activeFetcher.getOptionsPanel() != null) {
     optPanel.add(this.activeFetcher.getOptionsPanel(),BorderLayout.CENTER);
   }
+  help=new HelpAction(GUIGlobals.helpDiag,activeFetcher.getHelpPage());
+  helpBut=help.getIconButton();
   helpBut.setEnabled(activeFetcher.getHelpPage() != null);
   fetcherChoice.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent actionEvent){
@@ -41,8 +43,6 @@
   }
 );
   action=new FetcherAction();
-  help=new HelpAction(GUIGlobals.helpDiag,activeFetcher.getHelpPage(),Localization.lang("Help"));
-  helpBut.addActionListener(help);
   helpBut.setMargin(new Insets(0,0,0,0));
   tf.setPreferredSize(new Dimension(1,tf.getPreferredSize().height));
   tf.setName("tf");
