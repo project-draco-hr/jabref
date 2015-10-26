@@ -2,10 +2,12 @@
   if (content == null) {
     return valueDelimiterStartOfValue + "" + valueDelimiterEndOfValue;
   }
-  if (Globals.prefs.putBracesAroundCapitals(fieldName) && !BIBTEX_STRING.equals(fieldName)) {
+  boolean shouldWrapWithBraces=Globals.prefs.putBracesAroundCapitals(fieldName) && !BIBTEX_STRING.equals(fieldName);
+  if (shouldWrapWithBraces) {
     content=StringUtil.putBracesAroundCapitals(content);
   }
-  if (!content.contains(Globals.NEWLINE) && content.contains("\n")) {
+  boolean shouldNormalizeNewlines=!content.contains(Globals.NEWLINE) && content.contains("\n");
+  if (shouldNormalizeNewlines) {
     content=content.replaceAll("\n",Globals.NEWLINE);
   }
   boolean resolveStrings=shouldResolveStrings(fieldName);
