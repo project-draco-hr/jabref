@@ -1,14 +1,14 @@
 {
-  final HashMap<String,Boolean> bibentryKnown=new HashMap<String,Boolean>();
+  final HashMap<String,Boolean> bibentryKnown=new HashMap<>();
   boolean res=false;
-  this.query=query;
+  this.query=newQuery;
   shouldContinue=true;
   try {
     String address=makeSearchURL();
     URL url=new URL(address);
-    String page=readFromURL(url);
+    String page=Util.getResults(url);
     String[] lines=page.split("\n");
-    List<String> bibtexUrlList=new ArrayList<String>();
+    List<String> bibtexUrlList=new ArrayList<>();
     for (    final String line : lines) {
       if (line.startsWith("\"url\"")) {
         String addr=line.replace("\"url\":\"","");
@@ -24,7 +24,7 @@
         break;
       }
       final URL bibUrl=new URL(urlStr);
-      final String bibtexHTMLPage=readFromURL(bibUrl);
+      final String bibtexHTMLPage=Util.getResults(bibUrl);
       final String[] htmlLines=bibtexHTMLPage.split("\n");
       for (      final String line : htmlLines) {
         if (line.contains("biburl")) {
@@ -33,7 +33,7 @@
           String bibtexUrl=line.substring(sidx + 1,eidx);
           bibtexUrl=bibtexUrl.replace("dblp.uni-trier.de","www.dblp.org");
           final URL bibFileURL=new URL(bibtexUrl);
-          final String bibtexPage=readFromURL(bibFileURL);
+          final String bibtexPage=Util.getResults(bibFileURL);
           Collection<BibtexEntry> bibtexEntries=BibtexParser.fromString(bibtexPage);
           for (          BibtexEntry be : bibtexEntries) {
             if (!bibentryKnown.containsKey(be.getCiteKey())) {

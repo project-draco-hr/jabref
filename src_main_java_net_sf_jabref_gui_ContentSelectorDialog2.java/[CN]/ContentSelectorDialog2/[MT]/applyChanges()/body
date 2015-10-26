@@ -5,31 +5,31 @@
     changedFieldSet=true;
   }
   for (  String fieldName : wordListModels.keySet()) {
-    if (fieldName == null || FIELD_FIRST_LINE.equals(fieldName)) {
+    if ((fieldName == null) || FIELD_FIRST_LINE.equals(fieldName)) {
       continue;
     }
-    DefaultListModel lm=wordListModels.get(fieldName);
+    DefaultListModel<String> lm=wordListModels.get(fieldName);
     int start=0;
     if (!lm.isEmpty()) {
-      while (start < lm.size() && lm.get(start).equals(WORD_FIRSTLINE_TEXT)) {
+      while ((start < lm.size()) && lm.get(start).equals(WORD_FIRSTLINE_TEXT)) {
         start++;
       }
     }
     Vector<String> data=metaData.getData(Globals.SELECTOR_META_PREFIX + fieldName);
-    boolean newField=false;
+    boolean bNewField=false;
     if (data == null) {
-      newField=true;
-      data=new Vector<String>();
+      bNewField=true;
+      data=new Vector<>();
       changedFieldSet=true;
     }
  else {
       data.clear();
     }
     for (int wrd=start; wrd < lm.size(); wrd++) {
-      String word=(String)lm.get(wrd);
+      String word=lm.get(wrd);
       data.add(word);
     }
-    if (newField) {
+    if (bNewField) {
       metaData.putData(Globals.SELECTOR_META_PREFIX + fieldName,data);
     }
   }

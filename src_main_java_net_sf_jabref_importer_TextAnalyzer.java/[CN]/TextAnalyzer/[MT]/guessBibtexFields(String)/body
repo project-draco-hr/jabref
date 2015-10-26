@@ -1,5 +1,5 @@
 {
-  TreeSet<Substring> usedParts=new TreeSet<Substring>();
+  TreeSet<Substring> usedParts=new TreeSet<>();
   text="  " + text + "  ";
   String[] split;
   String year=null;
@@ -25,11 +25,11 @@
           yearFound=number;
         }
  else {
-          if (yearFound < FUTURE_YEAR && number < FUTURE_YEAR) {
+          if ((yearFound < FUTURE_YEAR) && (number < FUTURE_YEAR)) {
             good=-1;
             break;
           }
- else           if (yearFound >= FUTURE_YEAR && number < FUTURE_YEAR) {
+ else           if ((yearFound >= FUTURE_YEAR) && (number < FUTURE_YEAR)) {
             good=i;
             yearFound=number;
           }
@@ -58,7 +58,7 @@
       split=clean(cand[i].replaceAll("\\s","")).split("-");
       int first=Integer.parseInt(split[0]);
       int second=Integer.parseInt(split[1]);
-      if (second - first > 3) {
+      if ((second - first) > 3) {
         found=i;
         break;
       }
@@ -96,17 +96,17 @@
  else {
   }
   Substring ss;
-  Vector<String> free=new Vector<String>();
+  Vector<String> free=new Vector<>();
   int piv=0;
   for (  Substring usedPart : usedParts) {
     ss=usedPart;
-    if (ss.begin() - piv > 10) {
+    if ((ss.begin() - piv) > 10) {
       LOGGER.info("... " + text.substring(piv,ss.begin()));
       free.add(clean(text.substring(piv,ss.begin())));
     }
     piv=ss.end();
   }
-  if (text.length() - piv > 10) {
+  if ((text.length() - piv) > 10) {
     free.add(clean(text.substring(piv)));
   }
   LOGGER.info("Free parts:");

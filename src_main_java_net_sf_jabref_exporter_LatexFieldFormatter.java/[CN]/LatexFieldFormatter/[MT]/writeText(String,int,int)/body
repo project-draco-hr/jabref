@@ -21,10 +21,10 @@
       if (c == '[') {
         inCommandOption=true;
       }
- else       if (inCommandOption && c == ']') {
+ else       if (inCommandOption && (c == ']')) {
         inCommandOption=false;
       }
- else       if (!inCommandOption && c == '{') {
+ else       if (!inCommandOption && (c == '{')) {
         inCommandName=false;
         inCommand=true;
       }
@@ -33,17 +33,17 @@
         inCommandName=false;
       }
     }
-    if (inCommand && c == '}') {
+    if (inCommand && (c == '}')) {
       if (commandName.toString().equals("begin")) {
         nestedEnvironments++;
       }
-      if (nestedEnvironments > 0 && commandName.toString().equals("end")) {
+      if ((nestedEnvironments > 0) && commandName.toString().equals("end")) {
         nestedEnvironments--;
       }
       commandName.delete(0,commandName.length());
       inCommand=false;
     }
-    if (c == '&' && !escape && !(inCommand && commandName.toString().equals("url")) && nestedEnvironments == 0) {
+    if ((c == '&') && !escape && !(inCommand && commandName.toString().equals("url"))&& (nestedEnvironments == 0)) {
       stringBuilder.append("\\&");
     }
  else {

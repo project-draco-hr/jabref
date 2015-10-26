@@ -4,10 +4,11 @@
     HttpURLConnection conn=(HttpURLConnection)new URL(url).openConnection();
     conn.setRequestProperty("User-Agent","Jabref");
     InputStream inputStream=conn.getInputStream();
-    SPIRESBibtexFilterReader reader=new SPIRESBibtexFilterReader(new InputStreamReader(inputStream));
-    ParserResult pr=BibtexParser.parse(reader);
-    return pr.getDatabase();
-  }
+    try (SPIRESBibtexFilterReader reader=new SPIRESBibtexFilterReader(new InputStreamReader(inputStream))){
+      ParserResult pr=BibtexParser.parse(reader);
+      return pr.getDatabase();
+    }
+   }
  catch (  IOException e) {
     frame.showMessage(Localization.lang("An Exception ocurred while accessing '%0'",url) + "\n\n" + e,Localization.lang(getKeyName()),JOptionPane.ERROR_MESSAGE);
   }

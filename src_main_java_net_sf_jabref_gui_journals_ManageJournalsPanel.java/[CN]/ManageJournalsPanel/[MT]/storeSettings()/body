@@ -12,9 +12,7 @@
     if (!f.exists()) {
       throw new FileNotFoundException(f.getAbsolutePath());
     }
-    FileWriter fw=null;
-    try {
-      fw=new FileWriter(f,false);
+    try (FileWriter fw=new FileWriter(f,false)){
       for (      JournalEntry entry : tableModel.getJournals()) {
         fw.write(entry.name);
         fw.write(" = ");
@@ -24,16 +22,6 @@
     }
  catch (    IOException e) {
       e.printStackTrace();
-    }
- finally {
-      if (fw != null) {
-        try {
-          fw.close();
-        }
- catch (        IOException e) {
-          e.printStackTrace();
-        }
-      }
     }
     String filename=f.getPath();
     if (filename.equals("")) {

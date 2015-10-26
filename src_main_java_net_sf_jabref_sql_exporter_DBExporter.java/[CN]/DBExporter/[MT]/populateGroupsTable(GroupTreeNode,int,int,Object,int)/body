@@ -26,10 +26,11 @@
   Object response=SQLUtil.processQueryWithResults(out,"SELECT groups_id FROM groups WHERE label='" + cursor.getGroup().getName() + "' AND database_id='"+ database_id+ "' AND parent_id='"+ parentID+ "';");
   int myID=currentID;
   if (response instanceof Statement) {
-    ResultSet rs=((Statement)response).getResultSet();
-    rs.next();
-    myID=rs.getInt("groups_id");
-  }
+    try (ResultSet rs=((Statement)response).getResultSet()){
+      rs.next();
+      myID=rs.getInt("groups_id");
+    }
+   }
   for (Enumeration<GroupTreeNode> e=cursor.children(); e.hasMoreElements(); ) {
     ++currentID;
     currentID=populateGroupsTable(e.nextElement(),myID,currentID,out,database_id);

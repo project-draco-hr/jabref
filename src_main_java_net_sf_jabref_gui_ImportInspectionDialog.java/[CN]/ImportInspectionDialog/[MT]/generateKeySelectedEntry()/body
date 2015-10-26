@@ -5,18 +5,18 @@
   BibtexEntry entry=selectionModel.getSelected().get(0);
   entries.getReadWriteLock().writeLock().lock();
   BibtexDatabase database;
-  MetaData metaData;
+  MetaData localMetaData;
   if (panel != null) {
     database=panel.database();
-    metaData=panel.metaData();
+    localMetaData=panel.metaData();
   }
  else {
     database=new BibtexDatabase();
-    metaData=new MetaData();
+    localMetaData=new MetaData();
   }
   entry.setId(IdGenerator.next());
   database.insertEntry(entry);
-  LabelPatternUtil.makeLabel(metaData,database,entry);
+  LabelPatternUtil.makeLabel(localMetaData,database,entry);
   database.removeEntry(entry.getId());
   entries.getReadWriteLock().writeLock().lock();
   glTable.repaint();
