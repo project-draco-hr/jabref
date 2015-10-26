@@ -1,5 +1,5 @@
 {
-  TreeMap<String,BibtexEntryType> types=new TreeMap<String,BibtexEntryType>();
+  TreeMap<String,BibtexEntryType> types=new TreeMap<>();
   boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
   if (suppressBackup) {
     backup=false;
@@ -16,8 +16,7 @@
     e.printStackTrace();
     throw new SaveException(e.getMessage());
   }
-  try {
-    VerifyingWriter fw=session.getWriter();
+  try (VerifyingWriter fw=session.getWriter()){
     FileActions.writeBibFileHeader(fw,encoding);
     FileActions.writePreamble(fw,database.getPreamble());
     FileActions.writeStrings(fw,database);
@@ -54,7 +53,6 @@
         }
       }
     }
-    fw.close();
   }
  catch (  Throwable ex) {
     ex.printStackTrace();

@@ -13,20 +13,24 @@
     final Process p=Runtime.getRuntime().exec(com);
     Runnable errorListener=new Runnable(){
       @Override public void run(){
-        InputStream out=p.getErrorStream();
-        int c;
-        StringBuilder sb=new StringBuilder();
-        try {
-          while ((c=out.read()) != -1) {
-            sb.append((char)c);
+        try (InputStream out=p.getErrorStream()){
+          int c;
+          StringBuilder sb=new StringBuilder();
+          try {
+            while ((c=out.read()) != -1) {
+              sb.append((char)c);
+            }
+          }
+ catch (          IOException e) {
+            LOGGER.warn("Could not read from stderr.");
+          }
+          if (!sb.toString().trim().isEmpty()) {
+            LOGGER.warn("Push to Vim error: " + sb);
+            couldNotConnect=true;
           }
         }
  catch (        IOException e) {
-          LOGGER.warn("Could not read from stderr.");
-        }
-        if (!sb.toString().trim().isEmpty()) {
-          LOGGER.warn("Push to Emacs error: " + sb);
-          couldNotConnect=true;
+          LOGGER.warn("File problem.",e);
         }
       }
     }
