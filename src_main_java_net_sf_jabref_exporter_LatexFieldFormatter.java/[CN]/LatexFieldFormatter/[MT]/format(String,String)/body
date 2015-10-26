@@ -1,12 +1,12 @@
 {
-  if (text == null) {
+  if (content == null) {
     return valueDelimiterStartOfValue + "" + valueDelimiterEndOfValue;
   }
   if (Globals.prefs.putBracesAroundCapitals(fieldName) && !BIBTEX_STRING.equals(fieldName)) {
-    text=StringUtil.putBracesAroundCapitals(text);
+    content=StringUtil.putBracesAroundCapitals(content);
   }
-  if (!text.contains(Globals.NEWLINE) && text.contains("\n")) {
-    text=text.replaceAll("\n",Globals.NEWLINE);
+  if (!content.contains(Globals.NEWLINE) && content.contains("\n")) {
+    content=content.replaceAll("\n",Globals.NEWLINE);
   }
   boolean resolveStrings=true;
   if (resolveStringsAllFields) {
@@ -24,8 +24,8 @@
   if (!resolveStrings) {
     int numberOfBrackets=0;
     boolean ok=true;
-    for (int i=0; i < text.length(); i++) {
-      char c=text.charAt(i);
+    for (int i=0; i < content.length(); i++) {
+      char c=content.charAt(i);
       if (c == '{') {
         numberOfBrackets++;
       }
@@ -49,10 +49,10 @@
     boolean doWrap=!isAbstract || !isReview;
     boolean strangePrefSettings=writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName);
     if (strangePrefSettings && doWrap) {
-      stringBuilder.append(parser.format(StringUtil.wrap(text,GUIGlobals.LINE_LENGTH),fieldName));
+      stringBuilder.append(parser.format(StringUtil.wrap(content,GUIGlobals.LINE_LENGTH),fieldName));
     }
  else {
-      stringBuilder.append(parser.format(text,fieldName));
+      stringBuilder.append(parser.format(content,fieldName));
     }
     stringBuilder.append(valueDelimiterEndOfValue);
     return stringBuilder.toString();
@@ -61,13 +61,13 @@
   int pivot=0;
   int pos1;
   int pos2;
-  checkBraces(text);
-  while (pivot < text.length()) {
+  checkBraces(content);
+  while (pivot < content.length()) {
     int goFrom=pivot;
     pos1=pivot;
     while (goFrom == pos1) {
-      pos1=text.indexOf('#',goFrom);
-      if (pos1 > 0 && text.charAt(pos1 - 1) == '\\') {
+      pos1=content.indexOf('#',goFrom);
+      if (pos1 > 0 && content.charAt(pos1 - 1) == '\\') {
         goFrom=pos1 + 1;
         pos1++;
       }
@@ -76,25 +76,25 @@
       }
     }
     if (pos1 == -1) {
-      pos1=text.length();
+      pos1=content.length();
       pos2=-1;
     }
  else {
-      pos2=text.indexOf('#',pos1 + 1);
+      pos2=content.indexOf('#',pos1 + 1);
       if (pos2 == -1) {
         if (!neverFailOnHashes) {
           throw new IllegalArgumentException(Localization.lang("The # character is not allowed in BibTeX strings unless escaped as in '\\#'.") + '\n' + Localization.lang("In JabRef, use pairs of # characters to indicate a string.")+ '\n'+ Localization.lang("Note that the entry causing the problem has been selected."));
         }
  else {
-          pos1=text.length();
+          pos1=content.length();
         }
       }
     }
     if (pos1 > pivot) {
-      writeText(text,pivot,pos1);
+      writeText(content,pivot,pos1);
     }
-    if (pos1 < text.length() && pos2 - 1 > pos1) {
-      writeStringLabel(text,pos1 + 1,pos2,pos1 == pivot,pos2 + 1 == text.length());
+    if (pos1 < content.length() && pos2 - 1 > pos1) {
+      writeStringLabel(content,pos1 + 1,pos2,pos1 == pivot,pos2 + 1 == content.length());
     }
     if (pos2 > -1) {
       pivot=pos2 + 1;
