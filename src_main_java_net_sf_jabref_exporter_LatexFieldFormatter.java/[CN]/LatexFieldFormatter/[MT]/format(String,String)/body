@@ -8,19 +8,7 @@
   if (!content.contains(Globals.NEWLINE) && content.contains("\n")) {
     content=content.replaceAll("\n",Globals.NEWLINE);
   }
-  boolean resolveStrings=true;
-  if (resolveStringsAllFields) {
-    String[] exceptions=doNotResolveStringsFors;
-    for (    String exception : exceptions) {
-      if (exception.equals(fieldName)) {
-        resolveStrings=false;
-        break;
-      }
-    }
-  }
- else {
-    resolveStrings=BibtexFields.isStandardField(fieldName) || BIBTEX_STRING.equals(fieldName);
-  }
+  boolean resolveStrings=shouldResolveStrings(fieldName);
   if (!resolveStrings) {
     return formatWithoutResolvingStrings(content,fieldName);
   }
