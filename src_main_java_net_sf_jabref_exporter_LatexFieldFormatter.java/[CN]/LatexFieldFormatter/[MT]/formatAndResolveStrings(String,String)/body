@@ -1,0 +1,54 @@
+{
+  stringBuilder=new StringBuilder();
+  int pivot=0;
+  int pos1;
+  int pos2;
+  checkBraces(content);
+  while (pivot < content.length()) {
+    int goFrom=pivot;
+    pos1=pivot;
+    while (goFrom == pos1) {
+      pos1=content.indexOf('#',goFrom);
+      if (pos1 > 0 && content.charAt(pos1 - 1) == '\\') {
+        goFrom=pos1 + 1;
+        pos1++;
+      }
+ else {
+        goFrom=pos1 - 1;
+      }
+    }
+    if (pos1 == -1) {
+      pos1=content.length();
+      pos2=-1;
+    }
+ else {
+      pos2=content.indexOf('#',pos1 + 1);
+      if (pos2 == -1) {
+        if (!neverFailOnHashes) {
+          throw new IllegalArgumentException(Localization.lang("The # character is not allowed in BibTeX strings unless escaped as in '\\#'.") + '\n' + Localization.lang("In JabRef, use pairs of # characters to indicate a string.")+ '\n'+ Localization.lang("Note that the entry causing the problem has been selected."));
+        }
+ else {
+          pos1=content.length();
+        }
+      }
+    }
+    if (pos1 > pivot) {
+      writeText(content,pivot,pos1);
+    }
+    if (pos1 < content.length() && pos2 - 1 > pos1) {
+      writeStringLabel(content,pos1 + 1,pos2,pos1 == pivot,pos2 + 1 == content.length());
+    }
+    if (pos2 > -1) {
+      pivot=pos2 + 1;
+    }
+ else {
+      pivot=pos1 + 1;
+    }
+  }
+  if (writefieldWrapfield && !Globals.prefs.isNonWrappableField(fieldName)) {
+    return parser.format(StringUtil.wrap(stringBuilder.toString(),GUIGlobals.LINE_LENGTH),fieldName);
+  }
+ else {
+    return parser.format(stringBuilder.toString(),fieldName);
+  }
+}
