@@ -1,0 +1,12 @@
+{
+  final String field="pages";
+  final Pattern pattern=Pattern.compile("\\A\\s*(\\d+)\\s*-{1,2}\\s*(\\d+)\\s*\\Z");
+  final String replace="$1--$2";
+  String value=entry.getField(field);
+  if (value == null || value.isEmpty()) {
+    return;
+  }
+  Matcher matcher=pattern.matcher(value);
+  String newValue=matcher.replaceFirst(replace);
+  entry.setField(field,newValue);
+}
