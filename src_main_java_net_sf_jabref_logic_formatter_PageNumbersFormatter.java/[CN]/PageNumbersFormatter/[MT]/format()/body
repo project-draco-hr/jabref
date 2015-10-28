@@ -1,0 +1,16 @@
+{
+  final String field="pages";
+  final String rejectLiterals="[^0-9,-]";
+  final Pattern pagesPattern=Pattern.compile("\\A(\\d+)-{1,2}(\\d+)\\Z");
+  final String replace="$1--$2";
+  String value=entry.getField(field);
+  if (value == null || value.isEmpty()) {
+    return;
+  }
+  String cleanValue=value.replaceAll(rejectLiterals,"");
+  Matcher matcher=pagesPattern.matcher(cleanValue);
+  String newValue=matcher.replaceFirst(replace);
+  if (!newValue.equals(cleanValue)) {
+    entry.setField(field,newValue);
+  }
+}

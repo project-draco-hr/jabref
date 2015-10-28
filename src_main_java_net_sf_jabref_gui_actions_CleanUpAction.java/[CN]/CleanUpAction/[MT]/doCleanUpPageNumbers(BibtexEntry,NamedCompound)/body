@@ -1,11 +1,6 @@
 {
   String oldValue=entry.getField("pages");
-  if (oldValue == null) {
-    return;
-  }
-  String newValue=oldValue.replaceAll(" *(\\d+) *- *(\\d+) *","$1--$2");
-  if (!oldValue.equals(newValue)) {
-    entry.setField("pages",newValue);
-    ce.addEdit(new UndoableFieldChange(entry,"pages",oldValue,newValue));
-  }
+  new PageNumbersFormatter(entry).format();
+  String newValue=entry.getField("pages");
+  ce.addEdit(new UndoableFieldChange(entry,"pages",oldValue,newValue));
 }
