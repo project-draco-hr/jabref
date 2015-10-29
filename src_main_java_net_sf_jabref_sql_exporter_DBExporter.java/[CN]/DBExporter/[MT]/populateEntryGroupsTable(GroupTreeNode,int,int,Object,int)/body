@@ -9,10 +9,11 @@
   ++currentID;
   int myID=currentID;
   if (response instanceof Statement) {
-    ResultSet rs=((Statement)response).getResultSet();
-    rs.next();
-    myID=rs.getInt("groups_id");
-  }
+    try (ResultSet rs=((Statement)response).getResultSet()){
+      rs.next();
+      myID=rs.getInt("groups_id");
+    }
+   }
   for (Enumeration<GroupTreeNode> e=cursor.children(); e.hasMoreElements(); ) {
     currentID=populateEntryGroupsTable(e.nextElement(),myID,currentID,out,database_id);
   }

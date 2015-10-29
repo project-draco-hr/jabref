@@ -5,7 +5,7 @@
   setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   CheckableTreeNode root=(CheckableTreeNode)treeModel.getRoot();
   final List<File> fileList=getFileListFromNode(root);
-  if (fileList == null || fileList.isEmpty()) {
+  if ((fileList == null) || fileList.isEmpty()) {
     return;
   }
   progressBarImporting.setVisible(true);
@@ -22,7 +22,7 @@
   threadState=new int[]{1};
   JabRefExecutorService.INSTANCE.execute(new Runnable(){
     @Override public void run(){
-      List<String> errors=new LinkedList<String>();
+      List<String> errors=new LinkedList<>();
       int count=creatorManager.addEntriesFromFiles(fileList,database,frame.basePanel(),entryType,checkBoxWhyIsThereNoGetSelectedStupidSwing,new ChangeListener(){
         int counter;
         @Override public void stateChanged(        ChangeEvent e){

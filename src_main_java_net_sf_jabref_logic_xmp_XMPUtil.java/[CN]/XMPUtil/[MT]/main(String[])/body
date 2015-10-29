@@ -17,15 +17,17 @@ if (args[0].endsWith(".pdf")) {
   }
 }
  else if (args[0].endsWith(".bib")) {
-  ParserResult result=BibtexParser.parse(new FileReader(args[0]));
-  Collection<BibtexEntry> entries=result.getDatabase().getEntries();
-  if (entries.isEmpty()) {
-    System.err.println("Could not find BibtexEntry in " + args[0]);
-  }
+  try (FileReader fr=new FileReader(args[0])){
+    ParserResult result=BibtexParser.parse(fr);
+    Collection<BibtexEntry> entries=result.getDatabase().getEntries();
+    if (entries.isEmpty()) {
+      System.err.println("Could not find BibtexEntry in " + args[0]);
+    }
  else {
-    System.out.println(XMPUtil.toXMP(entries,result.getDatabase()));
+      System.out.println(XMPUtil.toXMP(entries,result.getDatabase()));
+    }
   }
-}
+ }
  else {
   XMPUtil.usage();
 }

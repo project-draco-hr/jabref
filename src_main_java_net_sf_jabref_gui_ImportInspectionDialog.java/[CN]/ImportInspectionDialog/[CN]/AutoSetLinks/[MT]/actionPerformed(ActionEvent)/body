@@ -14,17 +14,17 @@
       return;
     }
   }
-  final FileListTableModel model=new FileListTableModel();
+  final FileListTableModel localModel=new FileListTableModel();
   String oldVal=entry.getField(Globals.FILE_FIELD);
   if (oldVal != null) {
-    model.setContent(oldVal);
+    localModel.setContent(oldVal);
   }
   JDialog diag=new JDialog(ImportInspectionDialog.this,true);
-  JabRefExecutorService.INSTANCE.execute(Util.autoSetLinks(entry,model,metaData,new ActionListener(){
+  JabRefExecutorService.INSTANCE.execute(Util.autoSetLinks(entry,localModel,metaData,new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       if (e.getID() > 0) {
         entries.getReadWriteLock().writeLock().lock();
-        entry.setField(Globals.FILE_FIELD,model.getStringRepresentation());
+        entry.setField(Globals.FILE_FIELD,localModel.getStringRepresentation());
         entries.getReadWriteLock().writeLock().unlock();
         glTable.repaint();
       }

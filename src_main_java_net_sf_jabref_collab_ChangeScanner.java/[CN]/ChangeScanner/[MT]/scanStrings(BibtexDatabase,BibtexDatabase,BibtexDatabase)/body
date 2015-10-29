@@ -14,12 +14,12 @@
         BibtexString disk=onDisk.getString(diskId);
         if (disk.getName().equals(tmp.getName())) {
           if ((tmp.getContent() != null) && !tmp.getContent().equals(disk.getContent())) {
-            BibtexString mem=findString(inMem,tmp.getName(),usedInMem);
+            BibtexString mem=findString(inMem1,tmp.getName(),usedInMem);
             if (mem != null) {
-              changes.add(new StringChange(mem,tmp,tmp.getName(),mem.getContent(),tmp.getContent(),disk.getContent()));
+              changes.add(new StringChange(mem,tmp,tmp.getName(),mem.getContent(),disk.getContent()));
             }
  else {
-              changes.add(new StringChange(null,tmp,tmp.getName(),null,tmp.getContent(),disk.getContent()));
+              changes.add(new StringChange(null,tmp,tmp.getName(),null,disk.getContent()));
             }
           }
           used.add(diskId);
@@ -37,8 +37,8 @@
           BibtexString disk=onDisk.getString(diskId);
           if (disk.getContent().equals(tmp.getContent())) {
             BibtexString bsMem=null;
-            for (            String memId : inMem.getStringKeySet()) {
-              BibtexString bsMem_cand=inMem.getString(memId);
+            for (            String memId : inMem1.getStringKeySet()) {
+              BibtexString bsMem_cand=inMem1.getString(memId);
               if (bsMem_cand.getContent().equals(disk.getContent()) && !usedInMem.contains(memId)) {
                 usedInMem.add(memId);
                 bsMem=bsMem_cand;
@@ -56,7 +56,7 @@
   if (!notMatched.isEmpty()) {
     for (    String nmId : notMatched) {
       BibtexString tmp=onTmp.getString(nmId);
-      BibtexString mem=findString(inMem,tmp.getName(),usedInMem);
+      BibtexString mem=findString(inMem1,tmp.getName(),usedInMem);
       if (mem != null) {
         changes.add(new StringRemoveChange(tmp,tmp,mem));
       }

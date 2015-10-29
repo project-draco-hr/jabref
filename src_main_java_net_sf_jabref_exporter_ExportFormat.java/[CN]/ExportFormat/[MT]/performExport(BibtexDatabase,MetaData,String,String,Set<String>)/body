@@ -6,17 +6,17 @@
       ss=getSaveSession(this.encoding,outFile);
     }
  catch (    IOException ex) {
-      ex.printStackTrace();
+      LOGGER.warn("Can not get save session.",ex);
     }
   }
   if (ss == null) {
-    ss=getSaveSession(encoding,outFile);
+    ss=getSaveSession(enc,outFile);
   }
   VerifyingWriter ps=ss.getWriter();
   Layout beginLayout=null;
   Reader reader;
   Globals.prefs.customExportNameFormatters=readFormatterFile(lfFileName);
-  ArrayList<String> missingFormatters=new ArrayList<String>(1);
+  ArrayList<String> missingFormatters=new ArrayList<>(1);
   try {
     reader=getReader(lfFileName + ".begin.layout");
     LayoutHelper layoutHelper=new LayoutHelper(reader);
@@ -26,7 +26,7 @@
  catch (  IOException ex) {
   }
   if (beginLayout != null) {
-    ps.write(beginLayout.doLayout(database,encoding));
+    ps.write(beginLayout.doLayout(database,enc));
     missingFormatters.addAll(beginLayout.getMissingFormatters());
   }
   List<BibtexEntry> sorted=FileActions.getSortedEntries(database,metaData,entryIds,false);
@@ -36,9 +36,9 @@
   reader.close();
   if (defLayout != null) {
     missingFormatters.addAll(defLayout.getMissingFormatters());
-    System.out.println(defLayout.getMissingFormatters());
+    LOGGER.warn(defLayout.getMissingFormatters());
   }
-  HashMap<String,Layout> layouts=new HashMap<String,Layout>();
+  HashMap<String,Layout> layouts=new HashMap<>();
   Layout layout;
   ExportFormats.entryNumber=0;
   for (  BibtexEntry entry : sorted) {
@@ -69,7 +69,6 @@
     reader=getReader(lfFileName + ".end.layout");
     layoutHelper=new LayoutHelper(reader);
     endLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
-    reader.close();
   }
  catch (  IOException ex) {
   }
@@ -86,7 +85,7 @@
         sb.append(", ");
       }
     }
-    System.err.println(sb);
+    LOGGER.warn(sb);
   }
   finalizeSaveSession(ss);
 }

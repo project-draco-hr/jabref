@@ -1,7 +1,7 @@
 {
   wordList.addListSelectionListener(new ListSelectionListener(){
-    @Override public void valueChanged(    ListSelectionEvent e){
-      wordEditField.setText((String)wordList.getSelectedValue());
+    @SuppressWarnings("unused") @Override public void valueChanged(    ListSelectionEvent e){
+      wordEditField.setText(wordList.getSelectedValue());
       wordEditField.selectAll();
       new FocusRequester(wordEditField);
     }
@@ -16,7 +16,7 @@
   wordEditFieldListener=new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int index=wordList.getSelectedIndex();
-      String old=(String)wordList.getSelectedValue();
+      String old=wordList.getSelectedValue();
       String newVal=wordEditField.getText();
       if (newVal.equals("") || newVal.equals(old)) {
         return;
@@ -56,14 +56,14 @@
 );
   fieldList.addListSelectionListener(new ListSelectionListener(){
     @Override public void valueChanged(    ListSelectionEvent e){
-      currentField=(String)fieldList.getSelectedValue();
+      currentField=fieldList.getSelectedValue();
       fieldNameField.setText("");
       setupWordSelector();
     }
   }
 );
   newField.addActionListener(new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent e){
+    @SuppressWarnings("unused") @Override public void actionPerformed(    ActionEvent e){
       if (!fieldListModel.get(0).equals(FIELD_FIRST_LINE)) {
         fieldListModel.add(0,FIELD_FIRST_LINE);
       }
@@ -115,7 +115,7 @@
       if (index == -1) {
         return;
       }
-      String fieldName=(String)fieldListModel.get(index);
+      String fieldName=fieldListModel.get(index);
       removedFields.add(fieldName);
       fieldListModel.remove(index);
       wordListModels.remove(fieldName);
