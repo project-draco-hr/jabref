@@ -1,0 +1,24 @@
+{
+  List<IntegrityMessage> result=new ArrayList<>();
+  if (entry == null) {
+    return result;
+  }
+  Object data=entry.getField("author");
+  if (data != null) {
+    AUTHOR_NAME_CHECKER.check(data.toString(),"author",entry,result);
+  }
+  data=entry.getField("editor");
+  if (data != null) {
+    AUTHOR_NAME_CHECKER.check(data.toString(),"editor",entry,result);
+  }
+  data=entry.getField("title");
+  if (data != null) {
+    TITLE_CHECKER.check(data.toString(),"title",entry,result);
+    BRACKET_CHECKER.check(data.toString(),"title",entry,result);
+  }
+  data=entry.getField("year");
+  if (data != null) {
+    YEAR_CHECKER.check(data.toString(),"year",entry,result);
+  }
+  return result;
+}
