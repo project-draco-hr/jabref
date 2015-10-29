@@ -25,7 +25,7 @@
     if (panel.database.setCiteKeyForEntry(id,newKey)) {
       duplicateWarning=true;
     }
-    for (    String field : entry.getAllFields()) {
+    for (    String field : entry.getFieldNames()) {
       if (BibtexFields.isDisplayableField(field)) {
         if (newEntry.getField(field) == null) {
           compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),null));
@@ -34,7 +34,7 @@
         }
       }
     }
-    for (    String field : newEntry.getAllFields()) {
+    for (    String field : newEntry.getFieldNames()) {
       String oldValue=entry.getField(field);
       String newValue=newEntry.getField(field);
       if (oldValue == null || !oldValue.equals(newValue)) {
