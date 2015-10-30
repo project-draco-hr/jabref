@@ -1,4 +1,11 @@
 {
+  for (  String name : entry.getFieldNames()) {
+    String oldValue=entry.getField(name);
+    String newValue=BibtexFieldFormatters.SUPERSCRIPTS.format(oldValue);
+    if (!oldValue.equals(newValue)) {
+      ce.addEdit(new UndoableFieldChange(entry,name,oldValue,newValue));
+    }
+  }
   final String field="booktitle";
   String oldValue=entry.getField(field);
   if (oldValue == null) {
