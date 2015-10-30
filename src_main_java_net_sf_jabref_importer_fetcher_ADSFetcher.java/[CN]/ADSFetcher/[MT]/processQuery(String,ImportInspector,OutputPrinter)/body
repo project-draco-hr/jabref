@@ -4,12 +4,14 @@
     String key=query;
     status.setStatus(Localization.lang("Processing ") + key);
     BibtexDatabase bd=importADSEntries(key,status);
-    status.setStatus("Adding fetched entries");
-    if (bd.getEntryCount() > 0) {
+    if (bd != null && bd.getEntryCount() > 0) {
       for (      BibtexEntry entry : bd.getEntries()) {
         importADSAbstract(key,entry,status);
         dialog.addEntry(entry);
       }
+    }
+ else {
+      return false;
     }
   }
  catch (  Exception e) {
