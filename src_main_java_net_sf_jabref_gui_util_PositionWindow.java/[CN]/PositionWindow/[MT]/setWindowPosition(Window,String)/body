@@ -1,0 +1,42 @@
+{
+  String prefSizeX=name + "SizeX";
+  String prefSizeY=name + "SizeY";
+  String prefPosX=name + "PosX";
+  String prefPosY=name + "PosY";
+  int sizeX=Globals.prefs.getInt(prefSizeX);
+  int sizeY=Globals.prefs.getInt(prefSizeY);
+  int posX=Globals.prefs.getInt(prefPosX);
+  int posY=Globals.prefs.getInt(prefPosY);
+  if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length >= 1) {
+    Rectangle bounds=GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration().getBounds();
+    Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
+    if (posX < bounds.x) {
+      posX=bounds.x;
+    }
+    if (posY < bounds.y) {
+      posY=bounds.y;
+    }
+    int height=(int)dim.getHeight();
+    int width=(int)dim.getWidth();
+    if ((posX + sizeX) > width) {
+      if (sizeX <= width) {
+        posX=width - sizeX;
+      }
+ else {
+        posX=Globals.prefs.getIntDefault(prefPosX);
+        sizeX=Globals.prefs.getIntDefault(prefSizeX);
+      }
+    }
+    if ((posY + sizeY) > height) {
+      if (sizeY <= height) {
+        posY=height - sizeY;
+      }
+ else {
+        posY=Globals.prefs.getIntDefault(prefPosY);
+        sizeY=Globals.prefs.getIntDefault(prefSizeY);
+      }
+    }
+  }
+  window.setLocation(posX,posY);
+  window.setSize(sizeX,sizeY);
+}
