@@ -2,7 +2,7 @@
   tokenStart=tokenEnd;
   while (tokenStart < original.length()) {
     char c=original.charAt(tokenStart);
-    if (!(c == '~' || c == '-' || Character.isWhitespace(c))) {
+    if (!((c == '~') || (c == '-') || Character.isWhitespace(c))) {
       break;
     }
     tokenStart++;
@@ -31,10 +31,10 @@
         braces_level--;
       }
     }
-    if (first_letter_is_found && tokenAbbr < 0 && braces_level == 0) {
+    if (first_letter_is_found && (tokenAbbr < 0) && (braces_level == 0)) {
       tokenAbbr=tokenEnd;
     }
-    if (!first_letter_is_found && current_backslash < 0 && Character.isLetter(c)) {
+    if (!first_letter_is_found && (current_backslash < 0) && Character.isLetter(c)) {
       if (braces_level == 0) {
         tokenCase=Character.isUpperCase(c);
       }
@@ -43,7 +43,7 @@
       }
       first_letter_is_found=true;
     }
-    if (current_backslash >= 0 && !Character.isLetter(c)) {
+    if ((current_backslash >= 0) && !Character.isLetter(c)) {
       if (!first_letter_is_found) {
         String tex_cmd_name=original.substring(current_backslash + 1,tokenEnd);
         if (AuthorList.TEX_NAMES.contains(tex_cmd_name)) {
@@ -57,7 +57,7 @@
       current_backslash=tokenEnd;
     }
     if (braces_level == 0) {
-      if (c == ',' || c == '~' || c == '-' || Character.isWhitespace(c)) {
+      if ((c == ',') || (c == '~') || (c == '-')|| Character.isWhitespace(c)) {
         break;
       }
     }
@@ -66,7 +66,7 @@
   if (tokenAbbr < 0) {
     tokenAbbr=tokenEnd;
   }
-  if (tokenEnd < original.length() && original.charAt(tokenEnd) == '-') {
+  if ((tokenEnd < original.length()) && (original.charAt(tokenEnd) == '-')) {
     tokenTerm='-';
   }
   if (original.substring(tokenStart,tokenEnd).equalsIgnoreCase("and")) {
