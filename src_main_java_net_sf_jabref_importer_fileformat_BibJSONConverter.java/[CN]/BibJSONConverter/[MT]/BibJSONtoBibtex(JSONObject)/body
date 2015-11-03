@@ -1,0 +1,65 @@
+{
+  BibtexEntry entry=new BibtexEntry();
+  entry.setType(BibtexEntryType.getType("article"));
+  JSONArray authors=bibJsonEntry.getJSONArray("author");
+  StringBuffer sb=new StringBuffer();
+  for (int i=0; i < authors.length(); i++) {
+    sb.append(authors.getJSONObject(i).getString("name"));
+    if (i < (authors.length() - 1)) {
+      sb.append(" and ");
+    }
+  }
+  entry.setField("author",sb.toString());
+  for (  String field : singleFieldStrings) {
+    if (bibJsonEntry.has(field)) {
+      entry.setField(field,bibJsonEntry.getString(field));
+    }
+  }
+  if (bibJsonEntry.has("start_page")) {
+    if (bibJsonEntry.has("end_page")) {
+      entry.setField("pages",bibJsonEntry.getString("start_page") + "--" + bibJsonEntry.getString("end_page"));
+    }
+ else {
+      entry.setField("pages",bibJsonEntry.getString("start_page"));
+    }
+  }
+  JSONObject journal=bibJsonEntry.getJSONObject("journal");
+  entry.setField("journal",journal.getString("title"));
+  for (  String field : journalSingleFieldStrings) {
+    if (journal.has(field)) {
+      entry.setField(field,journal.getString(field));
+    }
+  }
+  if (bibJsonEntry.has("keywords")) {
+    JSONArray keywords=bibJsonEntry.getJSONArray("keywords");
+    sb=new StringBuffer();
+    for (int i=0; i < keywords.length(); i++) {
+      if (!keywords.isNull(i)) {
+        sb.append(keywords.getString(i));
+        if (i < (keywords.length() - 1)) {
+          sb.append(", ");
+        }
+      }
+    }
+    entry.setField("keywords",sb.toString());
+  }
+  if (bibJsonEntry.has("identifier")) {
+    JSONArray identifiers=bibJsonEntry.getJSONArray("identifier");
+    for (int i=0; i < identifiers.length(); i++) {
+      String type=identifiers.getJSONObject(i).getString("type");
+      if (type.equals("doi")) {
+        entry.setField("doi",identifiers.getJSONObject(i).getString("id"));
+      }
+    }
+  }
+  if (bibJsonEntry.has("link")) {
+    JSONArray links=bibJsonEntry.getJSONArray("link");
+    for (int i=0; i < links.length(); i++) {
+      String type=links.getJSONObject(i).getString("type");
+      if (type.equals("fulltext")) {
+        entry.setField("url",links.getJSONObject(i).getString("url"));
+      }
+    }
+  }
+  return entry;
+}

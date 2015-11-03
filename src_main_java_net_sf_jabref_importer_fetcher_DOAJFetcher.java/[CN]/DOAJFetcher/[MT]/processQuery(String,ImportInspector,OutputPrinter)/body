@@ -1,0 +1,19 @@
+{
+  HttpResponse<JsonNode> jsonResponse;
+  try {
+    jsonResponse=Unirest.get(searchURL + query + "?pageSize=100").header("accept","application/json").asJson();
+    JSONObject jo=jsonResponse.getBody().getObject();
+    int pagesize=jo.getInt("pageSize");
+    int hits=jo.getInt("total");
+    for (int i=0; i < (pagesize > hits ? hits : pagesize); i++) {
+      JSONObject bibJsonEntry=jo.getJSONArray("results").getJSONObject(i).getJSONObject("bibjson");
+      BibtexEntry entry=BibJSONConverter.BibJSONtoBibtex(bibJsonEntry);
+      inspector.addEntry(entry);
+    }
+    return true;
+  }
+ catch (  UnirestException e) {
+    LOGGER.warn("Problem searching DOAJ",e);
+    return false;
+  }
+}
