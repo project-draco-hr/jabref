@@ -37,10 +37,13 @@
     JSONObject journal=bibJsonEntry.getJSONObject("journal");
     if (journal.has("title")) {
       entry.setField("journal",journal.getString("title"));
-      for (      String field : journalSingleFieldStrings) {
-        if (journal.has(field)) {
-          entry.setField(field,journal.getString(field));
-        }
+    }
+ else {
+      LOGGER.info("No journal title found.");
+    }
+    for (    String field : journalSingleFieldStrings) {
+      if (journal.has(field)) {
+        entry.setField(field,journal.getString(field));
       }
     }
   }
@@ -78,9 +81,13 @@
   if (bibJsonEntry.has("link")) {
     JSONArray links=bibJsonEntry.getJSONArray("link");
     for (int i=0; i < links.length(); i++) {
-      String type=links.getJSONObject(i).getString("type");
-      if (type.equals("fulltext")) {
-        entry.setField("url",links.getJSONObject(i).getString("url"));
+      if (links.getJSONObject(i).has("type")) {
+        String type=links.getJSONObject(i).getString("type");
+        if (type.equals("fulltext")) {
+          if (links.getJSONObject(i).has("url")) {
+            entry.setField("url",links.getJSONObject(i).getString("url"));
+          }
+        }
       }
     }
   }
