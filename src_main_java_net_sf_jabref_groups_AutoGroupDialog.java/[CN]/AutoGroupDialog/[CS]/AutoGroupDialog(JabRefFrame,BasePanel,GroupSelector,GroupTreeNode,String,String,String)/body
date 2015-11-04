@@ -10,33 +10,32 @@
   nd.setSelected(true);
   ActionListener okListener=new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
-      ok_pressed=true;
       dispose();
       GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Localization.lang("Automatically created groups"),GroupHierarchyType.INCLUDING));
       Set<String> hs=null;
-      String field1=field();
+      String fieldText=field.getText();
       if (keywords.isSelected()) {
         if (nd.isSelected()) {
-          hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field().toLowerCase().trim(),deliminator.getText());
+          hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field.getText().toLowerCase().trim(),deliminator.getText());
         }
  else {
-          hs=Util.findAllWordsInField(panel.getDatabase(),field().toLowerCase().trim(),remove());
+          hs=Util.findAllWordsInField(panel.getDatabase(),field.getText().toLowerCase().trim(),remove.getText());
         }
       }
  else       if (authors.isSelected()) {
         List<String> fields=new ArrayList<>(2);
         fields.add("author");
         hs=Util.findAuthorLastNames(panel.getDatabase(),fields);
-        field1="author";
+        fieldText="author";
       }
  else       if (editors.isSelected()) {
         List<String> fields=new ArrayList<>(2);
         fields.add("editor");
         hs=Util.findAuthorLastNames(panel.getDatabase(),fields);
-        field1="editor";
+        fieldText="editor";
       }
       for (      String keyword : hs) {
-        KeywordGroup group=new KeywordGroup(keyword,field1,keyword,false,false,GroupHierarchyType.INDEPENDENT);
+        KeywordGroup group=new KeywordGroup(keyword,fieldText,keyword,false,false,GroupHierarchyType.INDEPENDENT);
         autoGroupsRoot.add(new GroupTreeNode(group));
       }
       m_groupsRoot.add(autoGroupsRoot);
