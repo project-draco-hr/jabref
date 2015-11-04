@@ -1,21 +1,21 @@
 {
   ArrayList<BibtexEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
-  while ((str=in.readLine()) != null) {
-    if (str.length() < 2) {
-      continue;
-    }
-    if (str.indexOf("Record") == 0) {
-      sb.append("__::__").append(str);
-    }
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    while ((str=in.readLine()) != null) {
+      if (str.length() < 2) {
+        continue;
+      }
+      if (str.indexOf("Record") == 0) {
+        sb.append("__::__").append(str);
+      }
  else {
-      sb.append("__NEWFIELD__").append(str);
+        sb.append("__NEWFIELD__").append(str);
+      }
     }
   }
-  in.close();
-  String[] entries=sb.toString().split("__::__");
+   String[] entries=sb.toString().split("__::__");
   String Type="";
   HashMap<String,String> h=new HashMap<>();
   for (  String entry : entries) {
