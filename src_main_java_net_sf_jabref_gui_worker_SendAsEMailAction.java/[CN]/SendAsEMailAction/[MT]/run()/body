@@ -19,7 +19,7 @@
       bibtexEntryWriter.write(entry,sw);
     }
  catch (    IOException e) {
-      LOGGER.warn("Problem creating Bibtex file for mailing.");
+      LOGGER.warn("Problem creating Bibtex file for mailing.",e);
     }
   }
   ArrayList<String> attachments=new ArrayList<>();
@@ -49,7 +49,7 @@
   }
  catch (  URISyntaxException e1) {
     message=Localization.lang("Error creating email");
-    LOGGER.warn(message);
+    LOGGER.warn(message,e1);
     return;
   }
   Desktop desktop=Desktop.getDesktop();
@@ -58,7 +58,7 @@
   }
  catch (  IOException e) {
     message=Localization.lang("Error creating email");
-    LOGGER.warn(message);
+    LOGGER.warn(message,e);
     return;
   }
   message=String.format("%s: %d",Localization.lang("Entries added to an email"),bes.length);
