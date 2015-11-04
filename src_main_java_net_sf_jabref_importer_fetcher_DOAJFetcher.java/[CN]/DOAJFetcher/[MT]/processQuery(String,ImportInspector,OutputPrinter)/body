@@ -27,6 +27,7 @@
  else {
         numberToFetch=hits;
       }
+      int fetched=0;
       for (int page=1; ((page - 1) * maxPerPage) <= numberToFetch; page++) {
         if (!shouldContinue) {
           break;
@@ -40,6 +41,8 @@
             JSONObject bibJsonEntry=results.getJSONObject(i).getJSONObject("bibjson");
             BibtexEntry entry=BibJSONConverter.BibJSONtoBibtex(bibJsonEntry);
             inspector.addEntry(entry);
+            fetched++;
+            inspector.setProgress(fetched,numberToFetch);
           }
         }
       }
