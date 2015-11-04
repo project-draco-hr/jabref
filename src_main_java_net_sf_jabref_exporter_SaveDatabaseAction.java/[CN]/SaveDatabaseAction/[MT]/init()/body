@@ -18,7 +18,7 @@
         JabRefExecutorService.INSTANCE.execute(new Runnable(){
           @Override public void run(){
             if (!FileBasedLock.waitForFileLock(panel.getFile(),10)) {
-              System.err.println("File locked, this will be trouble.");
+              LOGGER.error("File locked, this will be trouble.");
             }
             ChangeScanner scanner=new ChangeScanner(panel.frame(),panel,panel.getFile());
             JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThreadAndWait(scanner);

@@ -35,26 +35,22 @@ catch (        NoClassDefFoundError exc) {
   addFromJarButton.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       String basePath=FileDialogs.getNewFile(frame,new File(prefs.get(JabRefPreferences.WORKING_DIRECTORY)),".zip,.jar",Localization.lang("Select a Zip-archive"),JFileChooser.CUSTOM_DIALOG,false);
-      ZipFile zipFile=null;
       if (basePath != null) {
-        try {
-          zipFile=new ZipFile(new File(basePath),ZipFile.OPEN_READ);
+        try (ZipFile zipFile=new ZipFile(new File(basePath),ZipFile.OPEN_READ)){
+          ZipFileChooser zipFileChooser=new ZipFileChooser(importCustomizationDialog,zipFile);
+          zipFileChooser.setVisible(true);
+          customImporterTable.revalidate();
+          customImporterTable.repaint(10);
         }
  catch (        IOException exc) {
-          LOGGER.info("Could not open Zip-archive: \n" + exc.getMessage(),exc);
+          LOGGER.info("Could not open Zip-archive.",exc);
           JOptionPane.showMessageDialog(frame,Localization.lang("Could not open %0",basePath) + "\n" + Localization.lang("Have you chosen the correct package path?"));
           return;
         }
 catch (        NoClassDefFoundError exc) {
-          exc.printStackTrace();
+          LOGGER.info("Could not instantiate Zip-archive reader.",exc);
           JOptionPane.showMessageDialog(frame,Localization.lang("Could not instantiate %0",basePath) + "\n" + Localization.lang("Have you chosen the correct package path?"));
         }
-      }
-      if (zipFile != null) {
-        ZipFileChooser zipFileChooser=new ZipFileChooser(importCustomizationDialog,zipFile);
-        zipFileChooser.setVisible(true);
-        customImporterTable.revalidate();
-        customImporterTable.repaint(10);
       }
     }
   }

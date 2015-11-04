@@ -21,7 +21,7 @@
       }
  catch (      IOException e2) {
         dontShowDialog=true;
-        if (editor != null && editor.isVisible()) {
+        if ((editor != null) && editor.isVisible()) {
           editor.setVisible(false,false);
         }
         JOptionPane.showMessageDialog(frame,Localization.lang("Invalid URL") + ": " + e2.getMessage(),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
@@ -104,9 +104,9 @@
     try {
       boolean success=FileUtil.copyFile(tmp,toFile,true);
       if (!success) {
-        System.out.println("File already exists! DownloadExternalFile.download()");
+        LOGGER.error("File already exists! DownloadExternalFile.download()");
       }
-      if (directory != null && entry.getLink().startsWith(directory) && entry.getLink().length() > dirPrefix.length()) {
+      if ((directory != null) && entry.getLink().startsWith(directory) && (entry.getLink().length() > dirPrefix.length())) {
         entry.setLink(entry.getLink().substring(dirPrefix.length()));
       }
       callback.downloadComplete(entry);

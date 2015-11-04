@@ -18,13 +18,13 @@
       resource=resourceOwner.getResource(GUIGlobals.helpPre + file);
     }
     if (resource == null) {
-      HelpContent.log.error("Could not find html-help for file '" + file + "'.");
+      HelpContent.LOGGER.error("Could not find html-help for file '" + file + "'.");
       return;
     }
     setPageOnly(new URL(resource.toString() + '#' + reference));
   }
  catch (  IOException ex) {
-    ex.printStackTrace();
+    LOGGER.warn("Problem when finding help files.",ex);
   }
   forw.removeAllElements();
   if (old != null) {
