@@ -1,0 +1,66 @@
+{
+  BibtexEntry entry=new BibtexEntry();
+  String nametype;
+  String isbn=springerJsonEntry.optString("isbn");
+  if ((isbn == null) || (isbn.length() == 0)) {
+    entry.setType(BibtexEntryType.getType("article"));
+    nametype="journal";
+  }
+ else {
+    entry.setType(BibtexEntryType.getType("incollection"));
+    nametype="booktitle";
+    entry.setField("isbn",isbn);
+  }
+  if (springerJsonEntry.has("creators")) {
+    JSONArray authors=springerJsonEntry.getJSONArray("creators");
+    StringBuffer sb=new StringBuffer();
+    for (int i=0; i < authors.length(); i++) {
+      if (authors.getJSONObject(i).has("creator")) {
+        sb.append(authors.getJSONObject(i).getString("creator"));
+        if (i < (authors.length() - 1)) {
+          sb.append(" and ");
+        }
+      }
+ else {
+        LOGGER.info("Empty author name.");
+      }
+    }
+    entry.setField("author",sb.toString());
+  }
+ else {
+    LOGGER.info("No author found.");
+  }
+  for (  String field : singleFieldStrings) {
+    if (springerJsonEntry.has(field)) {
+      String text=springerJsonEntry.getString(field);
+      if (text.length() > 0) {
+        entry.setField(field,text);
+      }
+    }
+  }
+  if (springerJsonEntry.has("startingPage") && (springerJsonEntry.getString("startingPage").length() > 0)) {
+    if (springerJsonEntry.has("endPage") && (springerJsonEntry.getString("endPage").length() > 0)) {
+      entry.setField("pages",springerJsonEntry.getString("startingPage") + "--" + springerJsonEntry.getString("endPage"));
+    }
+ else {
+      entry.setField("pages",springerJsonEntry.getString("startingPage"));
+    }
+  }
+  if (springerJsonEntry.has("publicationName")) {
+    entry.setField(nametype,springerJsonEntry.getString("publicationName"));
+  }
+  if (springerJsonEntry.has("url")) {
+    entry.setField("url",springerJsonEntry.getJSONArray("url").getJSONObject(0).optString("value"));
+  }
+  if (springerJsonEntry.has("publicationDate")) {
+    String date=springerJsonEntry.getString("publicationDate");
+    String dateparts[]=date.split("-");
+    entry.setField("year",dateparts[0]);
+    entry.setField("month",dateparts[1]);
+  }
+  String abstr=entry.getField("abstract");
+  if ((abstr != null) && abstr.startsWith("Abstract")) {
+    entry.setField("abstract",abstr.substring(8));
+  }
+  return entry;
+}
