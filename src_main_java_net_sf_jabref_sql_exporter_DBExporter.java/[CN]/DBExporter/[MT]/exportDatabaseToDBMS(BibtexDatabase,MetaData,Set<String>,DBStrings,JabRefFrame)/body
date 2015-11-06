@@ -3,17 +3,17 @@
   Connection conn=null;
   boolean redisplay=false;
   try {
-    conn=this.connectToDB(dbStrings);
+    conn=this.connectToDB(databaseStrings);
     createTables(conn);
-    Vector<Vector<String>> matrix=createExistentDBNamesMatrix(dbStrings);
+    Vector<Vector<String>> matrix=createExistentDBNamesMatrix(databaseStrings);
     DBImportExportDialog dialogo=new DBImportExportDialog(frame,matrix,DBImportExportDialog.DialogType.EXPORTER);
     if (dialogo.removeAction) {
-      dbName=getDBName(matrix,dbStrings,frame,dialogo);
+      dbName=getDBName(matrix,databaseStrings,frame,dialogo);
       removeDB(dialogo,dbName,conn,metaData);
       redisplay=true;
     }
  else     if (dialogo.hasDBSelected) {
-      dbName=getDBName(matrix,dbStrings,frame,dialogo);
+      dbName=getDBName(matrix,databaseStrings,frame,dialogo);
       performExport(database,metaData,keySet,conn,dbName);
     }
     if (!conn.getAutoCommit()) {
@@ -22,7 +22,7 @@
     }
     conn.close();
     if (redisplay) {
-      exportDatabaseToDBMS(database,metaData,keySet,dbStrings,frame);
+      exportDatabaseToDBMS(database,metaData,keySet,databaseStrings,frame);
     }
   }
  catch (  SQLException ex) {

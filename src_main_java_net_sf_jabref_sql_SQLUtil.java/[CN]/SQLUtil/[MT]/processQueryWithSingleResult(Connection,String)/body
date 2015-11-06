@@ -1,7 +1,8 @@
 {
-  ResultSet rs=SQLUtil.executeQueryWithResults(conn,query).getResultSet();
-  rs.next();
-  String result=rs.getString(1);
-  rs.getStatement().close();
-  return result;
-}
+  try (ResultSet rs=SQLUtil.executeQueryWithResults(conn,query).getResultSet()){
+    rs.next();
+    String result=rs.getString(1);
+    rs.getStatement().close();
+    return result;
+  }
+ }

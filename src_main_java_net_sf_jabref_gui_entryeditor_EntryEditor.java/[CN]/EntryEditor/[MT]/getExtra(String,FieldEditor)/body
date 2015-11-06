@@ -1,7 +1,7 @@
 {
   final String fieldName=editor.getFieldName();
   String fieldExtras=BibtexFields.getFieldExtras(string);
-  if (fieldName.equals(Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD)) || fieldExtras != null && fieldExtras.equals("datepicker")) {
+  if (fieldName.equals(Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD)) || ((fieldExtras != null) && fieldExtras.equals("datepicker"))) {
     ((JTextArea)editor).addMouseListener(new MouseAdapter(){
       @Override public void mouseClicked(      MouseEvent e){
         if (e.getClickCount() == 2) {
@@ -11,16 +11,16 @@
       }
     }
 );
-    if (fieldExtras != null && fieldExtras.equals("datepicker")) {
+    if ((fieldExtras != null) && fieldExtras.equals("datepicker")) {
       DatePickerButton datePicker=new DatePickerButton(editor);
       return datePicker.getDatePicker();
     }
   }
-  if (fieldExtras != null && fieldExtras.equals("external")) {
+  if ((fieldExtras != null) && fieldExtras.equals("external")) {
     ((JComponent)editor).addMouseListener(new ExternalViewerListener());
     return null;
   }
- else   if (fieldExtras != null && fieldExtras.equals("journalNames")) {
+ else   if ((fieldExtras != null) && fieldExtras.equals("journalNames")) {
     JPanel controls=new JPanel();
     controls.setLayout(new BorderLayout());
     if (panel.metaData.getData(Globals.SELECTOR_META_PREFIX + editor.getFieldName()) != null) {
@@ -38,7 +38,7 @@
       return ws;
     }
  else {
-      if (fieldExtras != null && fieldExtras.equals("browse")) {
+      if ((fieldExtras != null) && fieldExtras.equals("browse")) {
         JButton but=new JButton(Localization.lang("Browse"));
         ((JComponent)editor).addMouseListener(new ExternalViewerListener());
         but.addActionListener(new ActionListener(){
@@ -59,7 +59,7 @@
 );
         return but;
       }
- else       if (fieldExtras != null && (fieldExtras.equals("browseDoc") || fieldExtras.equals("browseDocZip"))) {
+ else       if ((fieldExtras != null) && (fieldExtras.equals("browseDoc") || fieldExtras.equals("browseDocZip"))) {
         final String ext='.' + fieldName.toLowerCase();
         final OpenFileFilter off;
         if (fieldExtras.equals("browseDocZip")) {
@@ -70,11 +70,11 @@
         }
         return new ExternalFilePanel(frame,panel.metaData(),this,fieldName,off,editor);
       }
- else       if (fieldExtras != null && fieldExtras.equals("url")) {
+ else       if ((fieldExtras != null) && fieldExtras.equals("url")) {
         ((JComponent)editor).setDropTarget(new DropTarget((Component)editor,DnDConstants.ACTION_NONE,new SimpleUrlDragDrop(editor,storeFieldAction)));
         return null;
       }
- else       if (fieldExtras != null && fieldExtras.equals("setOwner")) {
+ else       if ((fieldExtras != null) && fieldExtras.equals("setOwner")) {
         JButton button=new JButton(Localization.lang("Auto"));
         button.addActionListener(new ActionListener(){
           @Override public void actionPerformed(          ActionEvent actionEvent){

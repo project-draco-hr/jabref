@@ -1,7 +1,8 @@
 {
   File tmpFile=File.createTempFile("oocalc",null);
   OpenOfficeDocumentCreator.exportOpenOfficeCalcXML(tmpFile,database,keySet);
-  BufferedInputStream in=new BufferedInputStream(new FileInputStream(tmpFile));
-  OpenOfficeDocumentCreator.storeOpenOfficeFile(file,in);
-  tmpFile.delete();
+  try (BufferedInputStream in=new BufferedInputStream(new FileInputStream(tmpFile))){
+    OpenOfficeDocumentCreator.storeOpenOfficeFile(file,in);
+  }
+   tmpFile.delete();
 }

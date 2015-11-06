@@ -1,7 +1,8 @@
 {
   File tmpFile=File.createTempFile("opendocument",null);
   OpenDocumentSpreadsheetCreator.exportOpenDocumentSpreadsheetXML(tmpFile,database,keySet);
-  BufferedInputStream in=new BufferedInputStream(new FileInputStream(tmpFile));
-  OpenDocumentSpreadsheetCreator.storeOpenDocumentSpreadsheetFile(file,in);
-  tmpFile.delete();
+  try (BufferedInputStream in=new BufferedInputStream(new FileInputStream(tmpFile))){
+    OpenDocumentSpreadsheetCreator.storeOpenDocumentSpreadsheetFile(file,in);
+  }
+   tmpFile.delete();
 }

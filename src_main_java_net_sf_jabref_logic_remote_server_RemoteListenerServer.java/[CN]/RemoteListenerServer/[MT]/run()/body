@@ -1,22 +1,16 @@
 {
   try {
     while (!Thread.interrupted()) {
-      try {
-        Socket socket=serverSocket.accept();
+      try (Socket socket=serverSocket.accept()){
         socket.setSoTimeout(ONE_SECOND_TIMEOUT);
         Protocol protocol=new Protocol(socket);
-        try {
-          protocol.sendMessage(Protocol.IDENTIFIER);
-          String message=protocol.receiveMessage();
-          if (message.isEmpty()) {
-            continue;
-          }
-          messageHandler.handleMessage(message);
+        protocol.sendMessage(Protocol.IDENTIFIER);
+        String message=protocol.receiveMessage();
+        protocol.close();
+        if (message.isEmpty()) {
+          continue;
         }
-  finally {
-          protocol.close();
-          socket.close();
-        }
+        messageHandler.handleMessage(message);
       }
  catch (      SocketException ex) {
         return;
