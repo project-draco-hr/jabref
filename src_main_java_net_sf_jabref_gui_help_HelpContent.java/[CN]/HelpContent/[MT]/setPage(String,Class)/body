@@ -1,31 +1,25 @@
 {
   int indexOf=filename.indexOf('#');
   String file;
-  String reference;
+  String anchorName=null;
   if (indexOf != -1) {
     file=filename.substring(0,indexOf);
-    reference=filename.substring(indexOf + 1);
+    anchorName=filename.substring(indexOf + 1);
   }
  else {
     file=filename;
-    reference="";
   }
   String middle=prefs.get(JabRefPreferences.LANGUAGE) + '/';
   URL old=getPage();
-  try {
-    URL resource=resourceOwner.getResource(GUIGlobals.helpPre + middle + file);
-    if (resource == null) {
-      resource=resourceOwner.getResource(GUIGlobals.helpPre + file);
-    }
-    if (resource == null) {
-      HelpContent.LOGGER.error("Could not find html-help for file '" + file + "'.");
-      return;
-    }
-    setPageOnly(new URL(resource.toString() + '#' + reference));
+  URL resource=resourceOwner.getResource(GUIGlobals.helpPre + middle + file);
+  if (resource == null) {
+    resource=resourceOwner.getResource(GUIGlobals.helpPre + file);
   }
- catch (  IOException ex) {
-    LOGGER.warn("Problem when finding help files.",ex);
+  if (resource == null) {
+    HelpContent.LOGGER.error("Could not find html-help for file '" + file + "'.");
+    return;
   }
+  setPageOnly(resource,anchorName);
   forw.removeAllElements();
   if (old != null) {
     history.push(old);
