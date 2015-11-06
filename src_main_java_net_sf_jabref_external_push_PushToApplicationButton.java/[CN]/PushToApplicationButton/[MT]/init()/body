@@ -7,14 +7,11 @@
   menuButton.addActionListener(new MenuButtonActionListener());
   menuButton.setToolTipText(Localization.lang("Select external application"));
   pushButton=new JButton();
-  if (Globals.prefs.hasKey("pushToApplication")) {
-    String appSelected=Globals.prefs.get("pushToApplication");
-    for (int i=0; i < pushActions.size(); i++) {
-      PushToApplication toApp=pushActions.get(i);
-      if (toApp.getName().equals(appSelected)) {
-        selected=i;
-        break;
-      }
+  String appSelected=Globals.prefs.get(Globals.prefs.PUSH_TO_APPLICATION);
+  for (int i=0; i < pushActions.size(); i++) {
+    if (pushActions.get(i).getApplicationName().equals(appSelected)) {
+      selected=i;
+      break;
     }
   }
   setSelected(selected);
