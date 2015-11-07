@@ -1,12 +1,11 @@
 {
 class ExportAction extends MnemonicAwareAction {
-    private static final long serialVersionUID=639463604530580554L;
     private final JabRefFrame frame;
     private final boolean selectedOnly;
     public ExportAction(    JabRefFrame frame,    boolean selectedOnly){
       this.frame=frame;
       this.selectedOnly=selectedOnly;
-      putValue(Action.NAME,selectedOnly ? "Export selected entries" : "Export");
+      putValue(Action.NAME,selectedOnly ? Localization.menuTitle("Export selected entries") : Localization.menuTitle("Export"));
     }
     @Override public void actionPerformed(    ActionEvent e){
       ExportFormats.initAllExports();
@@ -33,12 +32,12 @@ class ExportAction extends MnemonicAwareAction {
         Set<String> entryIds=null;
         if (selectedOnly) {
           BibtexEntry[] selected=frame.basePanel().getSelectedEntries();
-          entryIds=new HashSet<String>();
+          entryIds=new HashSet<>();
           for (          BibtexEntry bibtexEntry : selected) {
             entryIds.add(bibtexEntry.getId());
           }
         }
-        Globals.prefs.fileDirForDatabase=frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+        Globals.prefs.fileDirForDatabase=frame.basePanel().metaData().getFileDirectory(Globals.FILE_FIELD);
         Globals.prefs.databaseFile=frame.basePanel().metaData().getFile();
         Globals.prefs.put(JabRefPreferences.LAST_USED_EXPORT,format.getConsoleName());
         Globals.prefs.put(JabRefPreferences.EXPORT_WORKING_DIRECTORY,file.getParent());

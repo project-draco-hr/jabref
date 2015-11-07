@@ -4,26 +4,26 @@
   String blockEnd;
   StringInt si;
   Vector<StringInt> blockEntries=null;
-  Vector<LayoutEntry> tmpEntries=new Vector<LayoutEntry>();
+  Vector<LayoutEntry> tmpEntries=new Vector<>();
   LayoutEntry le;
   si=parsedEntries.get(0);
   blockStart=si.s;
   si=parsedEntries.get(parsedEntries.size() - 1);
   blockEnd=si.s;
   if (!blockStart.equals(blockEnd)) {
-    System.err.println("Field start and end entry must be equal.");
+    LOGGER.warn("Field start and end entry must be equal.");
   }
   type=layoutType;
   text=si.s;
-  for (int i=1; i < parsedEntries.size() - 1; i++) {
+  for (int i=1; i < (parsedEntries.size() - 1); i++) {
     si=parsedEntries.get(i);
-    if (si.i == LayoutHelper.IS_LAYOUT_TEXT || si.i == LayoutHelper.IS_SIMPLE_FIELD) {
+    if ((si.i == LayoutHelper.IS_LAYOUT_TEXT) || (si.i == LayoutHelper.IS_SIMPLE_FIELD)) {
     }
- else     if (si.i == LayoutHelper.IS_FIELD_START || si.i == LayoutHelper.IS_GROUP_START) {
-      blockEntries=new Vector<StringInt>();
+ else     if ((si.i == LayoutHelper.IS_FIELD_START) || (si.i == LayoutHelper.IS_GROUP_START)) {
+      blockEntries=new Vector<>();
       blockStart=si.s;
     }
- else     if (si.i == LayoutHelper.IS_FIELD_END || si.i == LayoutHelper.IS_GROUP_END) {
+ else     if ((si.i == LayoutHelper.IS_FIELD_END) || (si.i == LayoutHelper.IS_GROUP_END)) {
       if (blockStart.equals(si.s)) {
         blockEntries.add(si);
         if (si.i == LayoutHelper.IS_GROUP_END) {
@@ -36,7 +36,7 @@
         blockEntries=null;
       }
  else {
-        System.out.println("Nested field entries are not implemented !!!");
+        LOGGER.warn("Nested field entries are not implemented !!!");
       }
     }
  else     if (si.i == LayoutHelper.IS_OPTION_FIELD) {
@@ -53,7 +53,7 @@
     layoutEntries[i]=tmpEntries.get(i);
     if (layoutEntries[i].isInvalidFormatter()) {
       if (invalidFormatter == null) {
-        invalidFormatter=new ArrayList<String>(1);
+        invalidFormatter=new ArrayList<>(1);
       }
       invalidFormatter.addAll(layoutEntries[i].getInvalidFormatters());
     }

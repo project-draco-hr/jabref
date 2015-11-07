@@ -4,6 +4,7 @@
     return;
   }
   if (bp.getSelectedEntries().length == 0) {
+    bp.output(Localization.lang("Select at least one entry to manage keywords."));
     return;
   }
   if (diag == null) {
@@ -17,19 +18,19 @@
   if (cancelled) {
     return;
   }
-  HashSet<String> keywordsToAdd=new HashSet<String>();
-  HashSet<String> userSelectedKeywords=new HashSet<String>();
-  for (Enumeration keywords=keywordListModel.elements(); keywords.hasMoreElements(); ) {
-    String keyword=(String)keywords.nextElement();
-    userSelectedKeywords.add(keyword);
-    if (!sortedKeywordsOfAllEntriesBeforeUpdateByUser.contains(keyword)) {
-      keywordsToAdd.add(keyword);
+  HashSet<String> keywordsToAdd=new HashSet<>();
+  HashSet<String> userSelectedKeywords=new HashSet<>();
+  for (Enumeration<String> keywords=keywordListModel.elements(); keywords.hasMoreElements(); ) {
+    String kword=keywords.nextElement();
+    userSelectedKeywords.add(kword);
+    if (!sortedKeywordsOfAllEntriesBeforeUpdateByUser.contains(kword)) {
+      keywordsToAdd.add(kword);
     }
   }
-  HashSet<String> keywordsToRemove=new HashSet<String>();
-  for (  String keyword : sortedKeywordsOfAllEntriesBeforeUpdateByUser) {
-    if (!userSelectedKeywords.contains(keyword)) {
-      keywordsToRemove.add(keyword);
+  HashSet<String> keywordsToRemove=new HashSet<>();
+  for (  String kword : sortedKeywordsOfAllEntriesBeforeUpdateByUser) {
+    if (!userSelectedKeywords.contains(kword)) {
+      keywordsToRemove.add(kword);
     }
   }
   if (keywordsToAdd.isEmpty() && keywordsToRemove.isEmpty()) {
@@ -74,7 +75,7 @@
   NamedCompound ce=new NamedCompound(Localization.lang("Update keywords"));
   for (  BibtexEntry entry : entries) {
     ArrayList<String> separatedKeywords=Util.getSeparatedKeywords(entry);
-    TreeSet<String> keywords=new TreeSet<String>();
+    TreeSet<String> keywords=new TreeSet<>();
     keywords.addAll(separatedKeywords);
     keywords.removeAll(keywordsToRemove);
     keywords.addAll(keywordsToAdd);

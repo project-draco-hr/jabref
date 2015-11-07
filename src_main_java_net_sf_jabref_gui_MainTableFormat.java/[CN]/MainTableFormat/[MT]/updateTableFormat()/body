@@ -6,7 +6,6 @@
     columns[i]=new String[fields.length];
     System.arraycopy(fields,0,columns[i],0,fields.length);
   }
-  boolean showShort=Globals.prefs.getBoolean(JabRefPreferences.SHOW_SHORT);
   namesNatbib=Globals.prefs.getBoolean(JabRefPreferences.NAMES_NATBIB);
   namesLastOnly=Globals.prefs.getBoolean(JabRefPreferences.NAMES_LAST_ONLY);
   namesAsIs=Globals.prefs.getBoolean(JabRefPreferences.NAMES_AS_IS);
@@ -66,12 +65,12 @@
   if (Globals.prefs.getBoolean(JabRefPreferences.EXTRA_FILE_COLUMNS)) {
     String[] desiredColumns=Globals.prefs.getStringArray(JabRefPreferences.LIST_OF_FILE_COLUMNS);
     for (    String desiredColumn : desiredColumns) {
-      iconCols.put(coln,new String[]{GUIGlobals.FILE_FIELD,desiredColumn});
+      iconCols.put(coln,new String[]{Globals.FILE_FIELD,desiredColumn});
       coln++;
     }
   }
   padleft=1 + iconCols.size();
-  Vector<int[]> tmp=new Vector<int[]>(2,1);
+  Vector<int[]> tmp=new Vector<>(2,1);
   for (int i=0; i < columns.length; i++) {
     for (int j=0; j < columns[i].length; j++) {
       if (columns[i][j].equals("author") || columns[i][j].equals("editor")) {

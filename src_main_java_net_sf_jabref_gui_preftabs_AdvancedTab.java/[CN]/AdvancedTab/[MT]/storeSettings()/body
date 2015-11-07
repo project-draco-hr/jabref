@@ -2,16 +2,13 @@
   preferences.putBoolean(JabRefPreferences.USE_DEFAULT_LOOK_AND_FEEL,!useDefault.isSelected());
   preferences.put(JabRefPreferences.WIN_LOOK_AND_FEEL,className.getSelectedItem().toString());
   preferences.putBoolean(JabRefPreferences.USE_NATIVE_FILE_DIALOG_ON_MAC,useNativeFileDialogOnMac.isSelected());
-  preferences.putBoolean(JabRefPreferences.FILECHOOSER_DISABLE_RENAME,filechooserDisableRename.isSelected());
-  UIManager.put("FileChooser.readOnly",filechooserDisableRename.isSelected());
-  preferences.putBoolean(JabRefPreferences.USE_IEEE_ABRV,useIEEEAbrv.isSelected());
-  if (useIEEEAbrv.isSelected()) {
-    Globals.journalAbbrev=new JournalAbbreviationRepository();
-    Globals.journalAbbrev.readJournalListFromResource(Globals.JOURNALS_IEEE_INTERNAL_LIST);
+  if (preferences.getBoolean(JabRefPreferences.USE_IEEE_ABRV) != useIEEEAbrv.isSelected()) {
+    preferences.putBoolean(JabRefPreferences.USE_IEEE_ABRV,useIEEEAbrv.isSelected());
+    Abbreviations.initializeJournalNames(preferences);
   }
   storeRemoteSettings();
   preferences.putBoolean(JabRefPreferences.BIBLATEX_MODE,biblatexMode.isSelected());
-  if (useDefault.isSelected() == oldUseDef || !oldLnf.equals(className.getSelectedItem().toString())) {
+  if ((useDefault.isSelected() == oldUseDef) || !oldLnf.equals(className.getSelectedItem().toString())) {
     JOptionPane.showMessageDialog(null,Localization.lang("You have changed the look and feel setting.").concat(" ").concat(Localization.lang("You must restart JabRef for this to come into effect.")),Localization.lang("Changed look and feel settings"),JOptionPane.WARNING_MESSAGE);
   }
   if (biblatexMode.isSelected() != oldBiblMode) {

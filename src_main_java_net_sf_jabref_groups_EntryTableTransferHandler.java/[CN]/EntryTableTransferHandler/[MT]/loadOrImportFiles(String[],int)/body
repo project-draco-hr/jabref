@@ -1,12 +1,12 @@
 {
   OpenDatabaseAction openAction=new OpenDatabaseAction(frame,false);
-  ArrayList<String> notBibFiles=new ArrayList<String>();
+  ArrayList<String> notBibFiles=new ArrayList<>();
   String encoding=Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING);
   for (  String fileName : fileNames) {
     String extension="";
     ExternalFileType fileType=null;
     int index=fileName.lastIndexOf('.');
-    if (index >= 0 && index < fileName.length()) {
+    if ((index >= 0) && (index < fileName.length())) {
       extension=fileName.substring(index + 1).toLowerCase();
       fileType=Globals.prefs.getExternalFileTypeByExt(extension);
     }
@@ -14,7 +14,7 @@
       File f=new File(fileName);
       try {
         ParserResult pr=OpenDatabaseAction.loadDatabase(f,encoding);
-        if (pr == null || pr == ParserResult.INVALID_FORMAT) {
+        if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
           notBibFiles.add(fileName);
         }
  else {
@@ -27,7 +27,7 @@
       }
       continue;
     }
-    if (fileType != null && dropRow >= 0) {
+    if ((fileType != null) && (dropRow >= 0)) {
       boolean local=true;
       DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
       dfh.handleDroppedfile(fileName,fileType,local,entryTable,dropRow);

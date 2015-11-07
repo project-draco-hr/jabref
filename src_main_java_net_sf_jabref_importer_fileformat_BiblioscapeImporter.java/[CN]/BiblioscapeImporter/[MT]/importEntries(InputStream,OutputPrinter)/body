@@ -1,9 +1,9 @@
 {
-  ArrayList<BibtexEntry> bibItems=new ArrayList<BibtexEntry>();
+  ArrayList<BibtexEntry> bibItems=new ArrayList<>();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String line;
-  HashMap<String,String> hm=new HashMap<String,String>();
-  HashMap<String,StringBuffer> lines=new HashMap<String,StringBuffer>();
+  HashMap<String,String> hm=new HashMap<>();
+  HashMap<String,StringBuffer> lines=new HashMap<>();
   StringBuffer previousLine=null;
   while ((line=in.readLine()) != null) {
     if (line.isEmpty()) {
@@ -16,7 +16,7 @@
       String address=null;
       String titleST=null;
       String titleTI=null;
-      Vector<String> comments=new Vector<String>();
+      Vector<String> comments=new Vector<>();
       for (      Map.Entry<String,StringBuffer> entry : lines.entrySet()) {
         if (entry.getKey().equals("AU")) {
           hm.put("author",entry.getValue().toString());
@@ -129,7 +129,7 @@
         }
       }
       String bibtexType="misc";
-      for (int i=1; i >= 0 && bibtexType.equals("misc"); --i) {
+      for (int i=1; (i >= 0) && bibtexType.equals("misc"); --i) {
         if (type[i] == null) {
           continue;
         }
@@ -186,7 +186,7 @@
           hm.put("title",titleTI);
         }
       }
-      if (pages[0] != null || pages[1] != null) {
+      if ((pages[0] != null) || (pages[1] != null)) {
         hm.put("pages",(pages[0] != null ? pages[0] : "") + (pages[1] != null ? "--" + pages[1] : ""));
       }
       if (address != null) {
@@ -199,7 +199,7 @@
         }
         hm.put("comment",s.toString());
       }
-      BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,BibtexEntryTypes.getEntryType(bibtexType));
+      BibtexEntry b=new BibtexEntry(DEFAULT_BIBTEXENTRY_ID,BibtexEntryTypes.getEntryType(bibtexType));
       b.setField(hm);
       bibItems.add(b);
       hm.clear();
@@ -207,7 +207,7 @@
       previousLine=null;
       continue;
     }
-    if (line.startsWith("--") && line.length() >= 7 && line.substring(4,7).equals("-- ")) {
+    if (line.startsWith("--") && (line.length() >= 7) && line.substring(4,7).equals("-- ")) {
       lines.put(line.substring(2,4),previousLine=new StringBuffer(line.substring(7)));
       continue;
     }

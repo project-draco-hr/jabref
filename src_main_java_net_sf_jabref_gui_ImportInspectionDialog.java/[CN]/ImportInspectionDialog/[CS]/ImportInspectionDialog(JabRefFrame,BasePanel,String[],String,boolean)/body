@@ -7,8 +7,8 @@
   this.newDatabase=newDatabase;
   preview=new PreviewPanel(null,metaData,Globals.prefs.get(JabRefPreferences.PREVIEW_0));
   duplLabel.setToolTipText(Localization.lang("Possible duplicate of existing entry. Click to resolve."));
-  sortedList=new SortedList<BibtexEntry>(entries);
-  EventTableModel<BibtexEntry> tableModelGl=new EventTableModel<BibtexEntry>(sortedList,new EntryTableFormat());
+  sortedList=new SortedList<>(entries);
+  EventTableModel<BibtexEntry> tableModelGl=new EventTableModel<>(sortedList,new EntryTableFormat());
   glTable=new EntryTable(tableModelGl);
   GeneralRenderer renderer=new GeneralRenderer(Color.white);
   glTable.setDefaultRenderer(JLabel.class,renderer);
@@ -16,7 +16,7 @@
   glTable.getInputMap().put(Globals.prefs.getKey("Delete"),"delete");
   DeleteListener deleteListener=new DeleteListener();
   glTable.getActionMap().put("delete",deleteListener);
-  selectionModel=new EventSelectionModel<BibtexEntry>(sortedList);
+  selectionModel=new EventSelectionModel<>(sortedList);
   glTable.setSelectionModel(selectionModel);
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
   comparatorChooser=TableComparatorChooser.install(glTable,sortedList,AbstractTableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
@@ -52,7 +52,7 @@
   JButton cancel=new JButton(Localization.lang("Cancel"));
   bb.addButton(cancel);
   bb.addRelatedGap();
-  JButton help=new JButton(Localization.lang("Help"));
+  JButton help=new HelpAction(frame.helpDiag,GUIGlobals.importInspectionHelp).getIconButton();
   bb.addButton(help);
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
@@ -81,7 +81,6 @@
   deselectAllDuplicates.addActionListener(new DeselectDuplicatesButtonListener());
   deselectAllDuplicates.setEnabled(false);
   delete.addActionListener(deleteListener);
-  help.addActionListener(new HelpAction(frame.helpDiag,GUIGlobals.importInspectionHelp));
   getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
   setSize(new Dimension(Globals.prefs.getInt(JabRefPreferences.IMPORT_INSPECTION_DIALOG_WIDTH),Globals.prefs.getInt(JabRefPreferences.IMPORT_INSPECTION_DIALOG_HEIGHT)));
   addWindowListener(new WindowAdapter(){

@@ -2,22 +2,22 @@
   shouldContinue=true;
   query=query.trim().replace(';',',');
   if (query.matches("\\d+[,\\d+]*")) {
-    frame.setStatus(Localization.lang("Fetching Medline by id..."));
-    List<BibtexEntry> bibs=MedlineImporter.fetchMedline(query,frame);
+    frameOP.setStatus(Localization.lang("Fetching Medline by id..."));
+    List<BibtexEntry> bibs=MedlineImporter.fetchMedline(query,frameOP);
     if (bibs.isEmpty()) {
-      frame.showMessage(Localization.lang("No references found"));
+      frameOP.showMessage(Localization.lang("No references found"));
     }
     for (    BibtexEntry entry : bibs) {
-      dialog.addEntry(entry);
+      iIDialog.addEntry(entry);
     }
     return true;
   }
   if (!query.isEmpty()) {
-    frame.setStatus(Localization.lang("Fetching Medline by term..."));
+    frameOP.setStatus(Localization.lang("Fetching Medline by term..."));
     String searchTerm=toSearchTerm(query);
     SearchResult result=getIds(searchTerm,0,1);
     if (result.count == 0) {
-      frame.showMessage(Localization.lang("No references found"));
+      frameOP.showMessage(Localization.lang("No references found"));
       return false;
     }
     int numberToFetch=result.count;
@@ -25,7 +25,7 @@
       while (true) {
         String strCount=JOptionPane.showInputDialog(Localization.lang("References found") + ": " + numberToFetch+ "  "+ Localization.lang("Number of references to fetch?"),Integer.toString(numberToFetch));
         if (strCount == null) {
-          frame.setStatus(Localization.lang("Medline import canceled"));
+          frameOP.setStatus(Localization.lang("Medline import canceled"));
           return false;
         }
         try {
@@ -33,7 +33,7 @@
           break;
         }
  catch (        RuntimeException ex) {
-          frame.showMessage(Localization.lang("Please enter a valid number"));
+          frameOP.showMessage(Localization.lang("Please enter a valid number"));
         }
       }
     }
@@ -43,14 +43,14 @@
       }
       int noToFetch=Math.min(MedlineFetcher.PACING,numberToFetch - i);
       result=getIds(searchTerm,i,noToFetch);
-      List<BibtexEntry> bibs=MedlineImporter.fetchMedline(result.ids,frame);
+      List<BibtexEntry> bibs=MedlineImporter.fetchMedline(result.ids,frameOP);
       for (      BibtexEntry entry : bibs) {
-        dialog.addEntry(entry);
+        iIDialog.addEntry(entry);
       }
-      dialog.setProgress(i + noToFetch,numberToFetch);
+      iIDialog.setProgress(i + noToFetch,numberToFetch);
     }
     return true;
   }
-  frame.showMessage(Localization.lang("Please enter a comma separated list of Medline IDs (numbers) or search terms."),Localization.lang("Input error"),JOptionPane.ERROR_MESSAGE);
+  frameOP.showMessage(Localization.lang("Please enter a comma separated list of Medline IDs (numbers) or search terms."),Localization.lang("Input error"),JOptionPane.ERROR_MESSAGE);
   return false;
 }

@@ -1,5 +1,5 @@
 {
-  TreeMap<String,BibtexEntryType> types=new TreeMap<String,BibtexEntryType>();
+  TreeMap<String,BibtexEntryType> types=new TreeMap<>();
   BibtexEntry be=null;
   boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
   SaveSession session;
@@ -9,17 +9,16 @@
  catch (  IOException e) {
     throw new SaveException(e.getMessage());
   }
-  try {
-    VerifyingWriter fw=session.getWriter();
+  try (VerifyingWriter fw=session.getWriter()){
     if (saveType != DatabaseSaveType.PLAIN_BIBTEX) {
       FileActions.writeBibFileHeader(fw,encoding);
     }
     FileActions.writePreamble(fw,database.getPreamble());
     FileActions.writeStrings(fw,database);
     List<Comparator<BibtexEntry>> comparators=FileActions.getSaveComparators(true,metaData);
-    List<BibtexEntry> sorter=new ArrayList<BibtexEntry>(bes.length);
+    List<BibtexEntry> sorter=new ArrayList<>(bes.length);
     Collections.addAll(sorter,bes);
-    Collections.sort(sorter,new FieldComparatorStack<BibtexEntry>(comparators));
+    Collections.sort(sorter,new FieldComparatorStack<>(comparators));
     BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
     for (    BibtexEntry aSorter : sorter) {
       be=aSorter;
@@ -30,7 +29,7 @@
       bibtexEntryWriter.write(be,fw);
       fw.write(Globals.NEWLINE);
     }
-    if (saveType != DatabaseSaveType.PLAIN_BIBTEX && metaData != null) {
+    if ((saveType != DatabaseSaveType.PLAIN_BIBTEX) && (metaData != null)) {
       metaData.writeMetaData(fw);
     }
     if (!types.isEmpty()) {
@@ -40,7 +39,6 @@
         fw.write(Globals.NEWLINE);
       }
     }
-    fw.close();
   }
  catch (  Throwable ex) {
     session.cancel();

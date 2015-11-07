@@ -1,12 +1,12 @@
 {
   Pattern pattern;
   Matcher matcher;
-  boolean weiter;
+  boolean cont;
   boolean back=true;
   boolean loopFileOpen;
-  pattern=Pattern.compile("\\\\citation\\{.+\\}");
+  pattern=Pattern.compile("\\\\(citation|abx@aux@cite)\\{(.+)\\}");
   BufferedReader br=null;
-  Vector<String> fileList=new Vector<String>(5);
+  Vector<String> fileList=new Vector<>(5);
   fileList.add(filename);
   File dummy=new File(filename);
   String path=dummy.getParent();
@@ -22,33 +22,32 @@
     String fName=fileList.elementAt(fileIndex);
     try {
       br=new BufferedReader(new FileReader(fName));
-      weiter=true;
+      cont=true;
       loopFileOpen=true;
     }
  catch (    FileNotFoundException fnfe) {
       System.out.println("Cannot locate input file! " + fnfe.getMessage());
       back=false;
-      weiter=false;
+      cont=false;
       loopFileOpen=false;
     }
-    while (weiter) {
+    while (cont) {
       String line;
       try {
         line=br.readLine();
       }
  catch (      IOException ioe) {
         line=null;
-        weiter=false;
+        cont=false;
       }
       if (line != null) {
         matcher=pattern.matcher(line);
         while (matcher.find()) {
           int len=matcher.end() - matcher.start();
           if (len > 11) {
-            String str=matcher.group().substring(matcher.start() + 10,matcher.end() - 1);
+            String str=matcher.group(2);
             String[] keys=str.split(",");
             if (keys != null) {
-              int keyCount=keys.length;
               for (              String dummyStr : keys) {
                 if (dummyStr != null) {
                   mySet.add(dummyStr.trim());
@@ -70,7 +69,7 @@
         }
       }
  else {
-        weiter=false;
+        cont=false;
       }
     }
     if (loopFileOpen) {

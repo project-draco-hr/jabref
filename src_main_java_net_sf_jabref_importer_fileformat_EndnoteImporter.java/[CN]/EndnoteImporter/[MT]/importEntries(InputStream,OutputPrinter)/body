@@ -1,5 +1,5 @@
 {
-  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String ENDOFRECORD="__EOREOR__";
@@ -22,7 +22,7 @@
     sb.append("\n");
   }
   String[] entries=sb.toString().split(ENDOFRECORD);
-  HashMap<String,String> hm=new HashMap<String,String>();
+  HashMap<String,String> hm=new HashMap<>();
   String author;
   String Type;
   String editor;
@@ -182,12 +182,12 @@
     if (!editor.equals("")) {
       hm.put("editor",fixAuthor(editor));
     }
-    if ((hm.get("pages") == null || hm.get("pages").equals("-")) && !artnum.equals("")) {
+    if (((hm.get("pages") == null) || hm.get("pages").equals("-")) && !artnum.equals("")) {
       hm.put("pages",artnum);
     }
-    BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,BibtexEntryTypes.getEntryType(Type));
+    BibtexEntry b=new BibtexEntry(DEFAULT_BIBTEXENTRY_ID,BibtexEntryTypes.getEntryType(Type));
     b.setField(hm);
-    if (!b.getAllFields().isEmpty()) {
+    if (!b.getFieldNames().isEmpty()) {
       bibitems.add(b);
     }
   }

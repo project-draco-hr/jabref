@@ -2,7 +2,7 @@
   super(parent,Localization.lang("JabRef preferences"),false);
   final JabRefPreferences prefs=JabRefPreferences.getInstance();
   frame=parent;
-  final JList chooser;
+  final JList<String> chooser;
   JButton importPrefs=new JButton(Localization.lang("Import preferences"));
   JButton exportPrefs=new JButton(Localization.lang("Export preferences"));
   main=new JPanel();
@@ -13,7 +13,7 @@
   getContentPane().add(lower,BorderLayout.SOUTH);
   final CardLayout cardLayout=new CardLayout();
   main.setLayout(cardLayout);
-  ArrayList<PrefsTab> tabs=new ArrayList<PrefsTab>();
+  List<PrefsTab> tabs=new ArrayList<>();
   tabs.add(new GeneralTab(frame,prefs));
   tabs.add(new NetworkTab(prefs));
   tabs.add(new FileTab(frame,prefs));
@@ -40,7 +40,7 @@
     main.add((Component)tab,tab.getTabName());
   }
   upper.setBorder(BorderFactory.createEtchedBorder());
-  chooser=new JList(names);
+  chooser=new JList<>(names);
   chooser.setBorder(BorderFactory.createEtchedBorder());
   chooser.setPrototypeCellValue("This should be wide enough");
   chooser.setSelectedIndex(0);
@@ -50,7 +50,7 @@
       if (e.getValueIsAdjusting()) {
         return;
       }
-      String o=(String)chooser.getSelectedValue();
+      String o=chooser.getSelectedValue();
       cardLayout.show(main,o);
     }
   }
@@ -87,7 +87,7 @@
         return;
       }
       File file=new File(filename);
-      if (!file.exists() || JOptionPane.showConfirmDialog(PreferencesDialog.this,'\'' + file.getName() + "' "+ Localization.lang("exists. Overwrite file?"),Localization.lang("Export preferences"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+      if (!file.exists() || (JOptionPane.showConfirmDialog(PreferencesDialog.this,'\'' + file.getName() + "' "+ Localization.lang("exists. Overwrite file?"),Localization.lang("Export preferences"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
         try {
           prefs.exportPreferences(filename);
         }

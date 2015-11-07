@@ -17,7 +17,7 @@
     array[piv]=format.getDisplayName();
     piv++;
   }
-  JList list=new JList(array);
+  JList<String> list=new JList<>(array);
   list.setBorder(BorderFactory.createEtchedBorder());
   list.setSelectionInterval(0,0);
   list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -26,7 +26,7 @@
     return;
   }
   IExportFormat format=formats[list.getSelectedIndex()];
-  Globals.prefs.fileDirForDatabase=frame.basePanel().metaData().getFileDirectory(GUIGlobals.FILE_FIELD);
+  Globals.prefs.fileDirForDatabase=frame.basePanel().metaData().getFileDirectory(Globals.FILE_FIELD);
   Globals.prefs.databaseFile=frame.basePanel().metaData().getFile();
   File tmp=null;
   Reader reader=null;
@@ -34,7 +34,7 @@
     tmp=File.createTempFile("jabrefCb",".tmp");
     tmp.deleteOnExit();
     BibtexEntry[] bes=panel.getSelectedEntries();
-    HashSet<String> entries=new HashSet<String>(bes.length);
+    HashSet<String> entries=new HashSet<>(bes.length);
     for (    BibtexEntry be : bes) {
       entries.add(be.getId());
     }

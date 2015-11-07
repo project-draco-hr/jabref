@@ -1,0 +1,17 @@
+{
+  HashSet<String> allFields=new HashSet<>();
+  allFields.addAll(one.getFieldNames());
+  allFields.addAll(two.getFieldNames());
+  int score=0;
+  for (  String field : allFields) {
+    Object en=one.getField(field);
+    Object to=two.getField(field);
+    if (((en != null) && (to != null) && en.equals(to)) || ((en == null) && (to == null))) {
+      score++;
+    }
+  }
+  if (score == allFields.size()) {
+    return 1.01;
+  }
+  return (double)score / allFields.size();
+}

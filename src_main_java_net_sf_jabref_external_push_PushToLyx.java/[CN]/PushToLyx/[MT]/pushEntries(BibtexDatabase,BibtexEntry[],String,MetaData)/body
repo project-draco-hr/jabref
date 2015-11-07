@@ -1,0 +1,39 @@
+{
+  couldNotConnect=false;
+  couldNotCall=false;
+  notDefined=false;
+  initParameters();
+  commandPath=Globals.prefs.get(commandPathPreferenceKey);
+  if ((commandPath == null) || commandPath.trim().isEmpty()) {
+    notDefined=true;
+    return;
+  }
+  if (!commandPath.endsWith(".in")) {
+    commandPath=commandPath + ".in";
+  }
+  File lp=new File(commandPath);
+  if (!lp.exists() || !lp.canWrite()) {
+    lp=new File(commandPath + ".in");
+    if (!lp.exists() || !lp.canWrite()) {
+      couldNotConnect=true;
+      return;
+    }
+  }
+  final File lyxpipe=lp;
+  JabRefExecutorService.INSTANCE.executeAndWait(new Runnable(){
+    @Override public void run(){
+      try {
+        FileWriter fw=new FileWriter(lyxpipe);
+        BufferedWriter lyx_out=new BufferedWriter(fw);
+        String citeStr;
+        citeStr="LYXCMD:sampleclient:citation-insert:" + keyString;
+        lyx_out.write(citeStr + "\n");
+        lyx_out.close();
+      }
+ catch (      IOException excep) {
+        couldNotCall=true;
+      }
+    }
+  }
+);
+}

@@ -1,0 +1,29 @@
+{
+  Iterator<String> iterator=this.iterator();
+  while (iterator.hasNext()) {
+    String key=iterator.next();
+    if (key.startsWith(MetaData.PREFIX_KEYPATTERN)) {
+      iterator.remove();
+    }
+  }
+  Enumeration<String> allKeys=labelPattern.getAllKeys();
+  while (allKeys.hasMoreElements()) {
+    String key=allKeys.nextElement();
+    String metaDataKey=MetaData.PREFIX_KEYPATTERN + key;
+    if (!labelPattern.isDefaultValue(key)) {
+      ArrayList<String> value=labelPattern.getValue(key);
+      Vector<String> data=new Vector<>();
+      data.add(value.get(0));
+      this.putData(metaDataKey,data);
+    }
+  }
+  if (labelPattern.getDefaultValue() == null) {
+    this.remove(MetaData.KEYPATTERNDEFAULT);
+  }
+ else {
+    Vector<String> data=new Vector<>();
+    data.add(labelPattern.getDefaultValue().get(0));
+    this.putData(MetaData.KEYPATTERNDEFAULT,data);
+  }
+  this.labelPattern=labelPattern;
+}

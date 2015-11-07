@@ -2,13 +2,11 @@
   if (database != null) {
     bibtexEntries=database.resolveForStrings(bibtexEntries,false);
   }
-  PDDocument document=null;
-  try {
-    document=PDDocument.load(file.getAbsoluteFile());
+  try (PDDocument document=PDDocument.load(file.getAbsoluteFile())){
     if (document.isEncrypted()) {
       throw new EncryptionNotSupportedException("Error: Cannot add metadata to encrypted document.");
     }
-    if (writePDFInfo && bibtexEntries.size() == 1) {
+    if (writePDFInfo && (bibtexEntries.size() == 1)) {
       XMPUtil.writeDocumentInformation(document,bibtexEntries.iterator().next(),null);
       XMPUtil.writeDublinCore(document,bibtexEntries,null);
     }
@@ -44,9 +42,4 @@
       throw new TransformerException("Could not write XMP-metadata: " + e.getLocalizedMessage());
     }
   }
-  finally {
-    if (document != null) {
-      document.close();
-    }
-  }
-}
+ }

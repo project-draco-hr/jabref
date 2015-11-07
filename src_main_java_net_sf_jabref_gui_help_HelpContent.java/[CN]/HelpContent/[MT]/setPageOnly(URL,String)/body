@@ -1,0 +1,24 @@
+{
+  try {
+    URL url;
+    if (anchorName != null) {
+      url=new URL(baseUrl.toString() + "#" + anchorName);
+    }
+ else {
+      url=baseUrl;
+    }
+    super.setPage(url);
+    String stringUrl=url.toString();
+    if (stringUrl.contains("#")) {
+      scrollToReference(stringUrl.substring(stringUrl.indexOf("#")));
+    }
+  }
+ catch (  IOException ex) {
+    if (baseUrl == null) {
+      LOGGER.error("Error: Help file not set");
+    }
+ else {
+      LOGGER.error("Error: Help file not found '" + baseUrl.getFile() + '\'');
+    }
+  }
+}

@@ -1,5 +1,7 @@
 {
-  PreferencesMigrations.performCompatibilityUpdate();
+  PreferencesMigrations.replaceAbstractField();
+  PreferencesMigrations.upgradeSortOrder();
+  PreferencesMigrations.upgradeFaultyEncodingStrings();
   Globals.prefs.updateExternalFileTypes();
   System.setProperty("apple.laf.useScreenMenuBar","true");
   System.setProperty("swing.aatext","true");
@@ -10,13 +12,13 @@
  catch (  Throwable e) {
     e.printStackTrace();
   }
-  if (!cli.isBlank() && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED) && Globals.prefs.get(JabRefPreferences.LAST_EDITED) != null) {
+  if (!cli.isBlank() && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED) && (Globals.prefs.get(JabRefPreferences.LAST_EDITED) != null)) {
     String[] names=Globals.prefs.getStringArray(JabRefPreferences.LAST_EDITED);
     lastEdLoop:     for (    String name : names) {
       File fileToOpen=new File(name);
       for (int j=0; j < loaded.size(); j++) {
         ParserResult pr=loaded.elementAt(j);
-        if (pr.getFile() != null && pr.getFile().equals(fileToOpen)) {
+        if ((pr.getFile() != null) && pr.getFile().equals(fileToOpen)) {
           continue lastEdLoop;
         }
       }
@@ -37,9 +39,9 @@
   GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get(JabRefPreferences.FONT_FAMILY),Globals.prefs.getInt(JabRefPreferences.FONT_STYLE),Globals.prefs.getInt(JabRefPreferences.FONT_SIZE));
   JabRef.jrf=new JabRefFrame(this);
   boolean first=true;
-  List<File> postponed=new ArrayList<File>();
-  List<ParserResult> failed=new ArrayList<ParserResult>();
-  List<ParserResult> toOpenTab=new ArrayList<ParserResult>();
+  List<File> postponed=new ArrayList<>();
+  List<ParserResult> failed=new ArrayList<>();
+  List<ParserResult> toOpenTab=new ArrayList<>();
   if (!loaded.isEmpty()) {
     for (Iterator<ParserResult> i=loaded.iterator(); i.hasNext(); ) {
       ParserResult pr=i.next();
@@ -102,7 +104,7 @@
       JOptionPane.showMessageDialog(JabRef.jrf,wrn.toString(),Localization.lang("Warnings") + " (" + pr.getFile().getName()+ ")",JOptionPane.WARNING_MESSAGE);
     }
   }
-  for (int i=0; i < loaded.size() && i < JabRef.jrf.baseCount(); i++) {
+  for (int i=0; (i < loaded.size()) && (i < JabRef.jrf.baseCount()); i++) {
     ParserResult pr=loaded.elementAt(i);
     BasePanel panel=JabRef.jrf.baseAt(i);
     OpenDatabaseAction.performPostOpenActions(panel,pr,true);

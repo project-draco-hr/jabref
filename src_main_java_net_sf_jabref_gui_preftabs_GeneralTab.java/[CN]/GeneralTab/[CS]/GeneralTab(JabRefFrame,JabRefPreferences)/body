@@ -22,37 +22,17 @@
   keyEmptyWarningDialog=new JCheckBox(Localization.lang("Show warning dialog when an empty BibTeX key is entered"));
   enforceLegalKeys=new JCheckBox(Localization.lang("Enforce legal characters in BibTeX keys"));
   confirmDelete=new JCheckBox(Localization.lang("Show confirmation dialog when deleting entries"));
-  useImportInspector=new JCheckBox(Localization.lang("Display imported entries in an inspection window before they are added."));
-  useImportInspectorForSingle=new JCheckBox(Localization.lang("Use inspection window also when a single entry is imported."));
   markImportedEntries=new JCheckBox(Localization.lang("Mark entries imported into an existing database"));
   unmarkAllEntriesBeforeImporting=new JCheckBox(Localization.lang("Unmark all entries before importing new entries into an existing database"));
   defOwnerField=new JTextField();
   timeStampFormat=new JTextField();
   timeStampField=new JTextField();
-  HelpAction ownerHelp=new HelpAction(frame.helpDiag,GUIGlobals.ownerHelp,"Help",IconTheme.getImage("helpSmall"));
-  HelpAction timeStampHelp=new HelpAction(frame.helpDiag,GUIGlobals.timeStampHelp,"Help",IconTheme.getImage("helpSmall"));
   inspectionWarnDupli=new JCheckBox(Localization.lang("Warn about unresolved duplicates when closing inspection window"));
-  Insets marg=new Insets(0,12,3,0);
-  useImportInspectorForSingle.setMargin(marg);
-  inspectionWarnDupli.setMargin(marg);
-  useImportInspector.addChangeListener(new ChangeListener(){
-    @Override public void stateChanged(    ChangeEvent event){
-      useImportInspectorForSingle.setEnabled(useImportInspector.isSelected());
-      inspectionWarnDupli.setEnabled(useImportInspector.isSelected());
-    }
-  }
-);
   FormLayout layout=new FormLayout("8dlu, 1dlu, left:170dlu, 4dlu, fill:pref, 4dlu, fill:pref, 4dlu, left:pref, 4dlu, left:pref, 4dlu, left:pref","");
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
   builder.appendSeparator(Localization.lang("General"));
   builder.nextLine();
-  builder.append(useImportInspector,13);
-  builder.nextLine();
-  builder.append(new JPanel());
-  builder.append(useImportInspectorForSingle,11);
-  builder.nextLine();
-  builder.append(new JPanel());
-  builder.append(inspectionWarnDupli,11);
+  builder.append(inspectionWarnDupli,13);
   builder.nextLine();
   builder.append(ctrlClick,13);
   builder.nextLine();
@@ -69,9 +49,7 @@
   builder.append(defOwnerField);
   builder.append(overwriteOwner);
   builder.append(new JPanel(),3);
-  JButton help=new JButton(ownerHelp);
-  help.setText(null);
-  help.setPreferredSize(new Dimension(24,24));
+  JButton help=new HelpAction(frame.helpDiag,GUIGlobals.ownerHelp).getIconButton();
   builder.append(help);
   builder.nextLine();
   builder.append(useTimeStamp,3);
@@ -79,9 +57,7 @@
   builder.append(overwriteTimeStamp);
   builder.append(Localization.lang("Field name") + ':');
   builder.append(timeStampField);
-  help=new JButton(timeStampHelp);
-  help.setText(null);
-  help.setPreferredSize(new Dimension(24,24));
+  help=new HelpAction(frame.helpDiag,GUIGlobals.timeStampHelp).getIconButton();
   builder.append(help);
   builder.nextLine();
   builder.append(new JPanel());

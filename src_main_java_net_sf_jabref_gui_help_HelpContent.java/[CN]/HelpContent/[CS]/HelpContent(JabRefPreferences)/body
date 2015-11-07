@@ -3,19 +3,27 @@
   pane=new JScrollPane(this,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   pane.setDoubleBuffered(true);
   prefs=prefs_;
-  history=new Stack<URL>();
-  forw=new Stack<URL>();
+  history=new Stack<>();
+  forw=new Stack<>();
   setEditorKitForContentType("text/html",new MyEditorKit());
   setContentType("text/html");
   setText("");
   setEditable(false);
-  final HyperlinkListener hyperLinkListener=new HyperlinkListener(){
-    @Override public void hyperlinkUpdate(    final HyperlinkEvent e){
-      if (e.getDescription().startsWith("#")) {
-        scrollToReference(e.getDescription().substring(1));
+  addHyperlinkListener(new HyperlinkListener(){
+    private boolean lastStatusUpdateWasALink=false;
+    @Override public void hyperlinkUpdate(    HyperlinkEvent e){
+      String link=e.getDescription();
+      if (e.getEventType() == HyperlinkEvent.EventType.ENTERED) {
+        JabRef.jrf.setStatus(link);
+        lastStatusUpdateWasALink=true;
+      }
+ else {
+        if (lastStatusUpdateWasALink) {
+          JabRef.jrf.setStatus("");
+          lastStatusUpdateWasALink=false;
+        }
       }
     }
   }
-;
-  addHyperlinkListener(hyperLinkListener);
+);
 }

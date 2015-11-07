@@ -1,0 +1,25 @@
+{
+  double res=0;
+  double totWeights=0.;
+  for (  String field : fields) {
+    double weight;
+    if (DuplicateCheck.fieldWeights.containsKey(field)) {
+      weight=DuplicateCheck.fieldWeights.get(field);
+    }
+ else {
+      weight=1.0;
+    }
+    totWeights+=weight;
+    int result=DuplicateCheck.compareSingleField(field,one,two);
+    if (result == EQUAL) {
+      res+=weight;
+    }
+ else     if (result == EMPTY_IN_BOTH) {
+      totWeights-=weight;
+    }
+  }
+  if (totWeights > 0) {
+    return new double[]{res / totWeights,totWeights};
+  }
+  return new double[]{0.5,0.0};
+}

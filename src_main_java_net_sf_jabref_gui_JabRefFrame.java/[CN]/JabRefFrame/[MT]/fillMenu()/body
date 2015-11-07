@@ -4,15 +4,13 @@
   JMenu sessions=JabRefFrame.subMenu("Sessions");
   JMenu edit=JabRefFrame.subMenu("Edit");
   JMenu search=JabRefFrame.subMenu("Search");
+  JMenu groups=JabRefFrame.subMenu("Groups");
   JMenu bibtex=JabRefFrame.subMenu("BibTeX");
   JMenu view=JabRefFrame.subMenu("View");
   JMenu tools=JabRefFrame.subMenu("Tools");
   JMenu options=JabRefFrame.subMenu("Options");
   JMenu newSpec=JabRefFrame.subMenu("New entry...");
   JMenu helpMenu=JabRefFrame.subMenu("Help");
-  setUpImportMenus();
-  newDatabaseMenu.add(newDatabaseAction);
-  newDatabaseMenu.add(newSubDatabaseAction);
   file.add(newDatabaseAction);
   file.add(open);
   file.add(mergeDatabaseAction);
@@ -26,6 +24,7 @@
   file.add(importCurrent);
   file.add(exportAll);
   file.add(exportSelected);
+  file.addSeparator();
   file.add(dbConnect);
   file.add(dbImport);
   file.add(dbExport);
@@ -38,7 +37,6 @@
   file.add(fileHistory);
   file.addSeparator();
   file.add(close);
-  file.add(new MinimizeToSysTrayAction());
   file.add(quit);
   mb.add(file);
   edit.add(undo);
@@ -48,9 +46,12 @@
   edit.add(copy);
   edit.add(paste);
   edit.add(delete);
+  edit.addSeparator();
   edit.add(copyKey);
   edit.add(copyCiteKey);
   edit.add(copyKeyAndTitle);
+  edit.add(exportToClipboard);
+  edit.add(sendAsEmail);
   edit.addSeparator();
   edit.add(mark);
   JMenu markSpecific=JabRefFrame.subMenu("Mark specific color");
@@ -87,9 +88,10 @@
       RightClickMenu.populateSpecialFieldMenu(m,ReadStatus.getInstance(),this);
       edit.add(m);
     }
+    edit.addSeparator();
   }
-  edit.addSeparator();
   edit.add(manageKeywords);
+  edit.addSeparator();
   edit.add(selectAll);
   mb.add(edit);
   search.add(normalSearch);
@@ -101,13 +103,21 @@
   search.add(resolveDuplicateKeys);
   search.add(autoSetFile);
   search.addSeparator();
-  GeneralFetcher generalFetcher=new GeneralFetcher(sidePaneManager,this);
   search.add(generalFetcher.getAction());
   if (prefs.getBoolean(JabRefPreferences.WEB_SEARCH_VISIBLE)) {
     sidePaneManager.register(generalFetcher.getTitle(),generalFetcher);
     sidePaneManager.show(generalFetcher.getTitle());
   }
   mb.add(search);
+  groups.add(toggleGroups);
+  groups.addSeparator();
+  groups.add(addToGroup);
+  groups.add(removeFromGroup);
+  groups.add(moveToGroup);
+  groups.addSeparator();
+  groups.add(toggleHighlightAny);
+  groups.add(toggleHighlightAll);
+  mb.add(groups);
   view.add(back);
   view.add(forward);
   view.add(focusTable);
@@ -119,12 +129,11 @@
   view.add(decreseFontSize);
   view.addSeparator();
   view.add(toggleToolbar);
+  view.add(toggleSearch);
+  view.add(generalFetcher.getAction());
   view.add(toggleGroups);
   view.add(togglePreview);
   view.add(switchPreview);
-  view.addSeparator();
-  view.add(toggleHighlightAny);
-  view.add(toggleHighlightAll);
   mb.add(view);
   bibtex.add(newEntryAction);
   for (  NewEntryAction aNewSpecificEntryAction : newSpecificEntryAction) {
@@ -138,8 +147,9 @@
   bibtex.add(editStrings);
   mb.add(bibtex);
   tools.add(makeKeyAction);
-  tools.add(Cleanup);
+  tools.add(cleanupEntries);
   tools.add(mergeEntries);
+  tools.add(downloadFullText);
   tools.add(newSubDatabaseAction);
   tools.add(writeXmpAction);
   OpenOfficePanel otp=OpenOfficePanel.getInstance();
@@ -160,10 +170,7 @@
   tools.add(abbreviateMedline);
   tools.add(unabbreviate);
   tools.addSeparator();
-  checkAndFix.add(autoSetPdf);
-  checkAndFix.add(autoSetPs);
-  checkAndFix.add(integrityCheckAction);
-  tools.add(checkAndFix);
+  tools.add(checkIntegrity);
   mb.add(tools);
   options.add(showPrefs);
   AbstractAction customizeAction=new CustomizeEntryTypeAction();
@@ -180,8 +187,11 @@
   helpMenu.add(contents);
   helpMenu.addSeparator();
   helpMenu.add(errorConsole);
+  helpMenu.addSeparator();
   helpMenu.add(forkMeOnGitHubAction);
+  helpMenu.add(donationAction);
   helpMenu.addSeparator();
   helpMenu.add(about);
   mb.add(helpMenu);
+  createDisabledIconsForMenuEntries(mb);
 }

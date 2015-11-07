@@ -29,10 +29,24 @@
         first.setGroupHit(false);
         entries.getReadWriteLock().writeLock().unlock();
       }
+ else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_MERGE) {
+        entriesToDelete.add(other);
+        entries.getReadWriteLock().writeLock().lock();
+        diag.getMergedEntry().setGroupHit(false);
+        diag.getMergedEntry().setSearchHit(true);
+        entries.add(diag.getMergedEntry());
+        entries.remove(first);
+        first=new BibtexEntry();
+        entries.getReadWriteLock().writeLock().unlock();
+      }
     }
     other=internalDuplicate(entries,first);
     if (other != null) {
-      int answer=DuplicateResolverDialog.resolveDuplicate(ImportInspectionDialog.this,first,other);
+      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,first,other,DuplicateResolverDialog.DUPLICATE_SEARCH);
+      Util.placeDialog(diag,ImportInspectionDialog.this);
+      diag.setVisible(true);
+      ImportInspectionDialog.this.toFront();
+      int answer=diag.getSelected();
       if (answer == DuplicateResolverDialog.KEEP_UPPER) {
         entries.remove(other);
         first.setGroupHit(false);
@@ -42,6 +56,13 @@
       }
  else       if (answer == DuplicateResolverDialog.KEEP_BOTH) {
         first.setGroupHit(false);
+      }
+ else       if (answer == DuplicateResolverDialog.KEEP_MERGE) {
+        diag.getMergedEntry().setGroupHit(false);
+        diag.getMergedEntry().setSearchHit(true);
+        entries.add(diag.getMergedEntry());
+        entries.remove(first);
+        entries.remove(other);
       }
     }
   }

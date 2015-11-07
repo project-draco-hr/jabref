@@ -7,14 +7,14 @@
   FileListEntryEditor editor=new FileListEntryEditor(frame,flEntry,false,true,metaData);
   editor.setVisible(true,true);
   if (editor.okPressed()) {
-    FileListTableModel model=new FileListTableModel();
-    String oldVal=entry.getField(GUIGlobals.FILE_FIELD);
+    FileListTableModel localModel=new FileListTableModel();
+    String oldVal=entry.getField(Globals.FILE_FIELD);
     if (oldVal != null) {
-      model.setContent(oldVal);
+      localModel.setContent(oldVal);
     }
-    model.addEntry(model.getRowCount(),flEntry);
+    localModel.addEntry(localModel.getRowCount(),flEntry);
     entries.getReadWriteLock().writeLock().lock();
-    entry.setField(GUIGlobals.FILE_FIELD,model.getStringRepresentation());
+    entry.setField(Globals.FILE_FIELD,localModel.getStringRepresentation());
     entries.getReadWriteLock().writeLock().unlock();
     glTable.repaint();
   }

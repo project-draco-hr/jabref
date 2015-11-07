@@ -1,10 +1,8 @@
 {
-  HashMap<String,String> formatters=new HashMap<String,String>();
+  HashMap<String,String> formatters=new HashMap<>();
   File formatterFile=new File(lfFileName + ".formatters");
   if (formatterFile.exists()) {
-    Reader in=null;
-    try {
-      in=new FileReader(formatterFile);
+    try (Reader in=new FileReader(formatterFile)){
       StringBuilder sb=new StringBuilder();
       int c;
       while ((c=in.read()) != -1) {
@@ -17,7 +15,7 @@
           continue;
         }
         int index=line.indexOf(":");
-        if (index > 0 && index + 1 < line.length()) {
+        if ((index > 0) && ((index + 1) < line.length())) {
           String formatterName=line.substring(0,index);
           String contents=line.substring(index + 1);
           formatters.put(formatterName,contents);
@@ -25,17 +23,7 @@
       }
     }
  catch (    IOException ex) {
-      ex.printStackTrace();
-    }
- finally {
-      if (in != null) {
-        try {
-          in.close();
-        }
- catch (        IOException ex) {
-          ex.printStackTrace();
-        }
-      }
+      LOGGER.warn("Problem opening formatter file.",ex);
     }
   }
   return formatters;

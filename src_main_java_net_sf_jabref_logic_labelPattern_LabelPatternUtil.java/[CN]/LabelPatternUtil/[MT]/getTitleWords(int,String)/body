@@ -1,0 +1,30 @@
+{
+  String ss=new RemoveLatexCommands().format(title);
+  StringBuilder stringBuilder=new StringBuilder();
+  StringBuilder current;
+  int piv=0;
+  int words=0;
+  mainl:   while ((piv < ss.length()) && (words < number)) {
+    current=new StringBuilder();
+    while ((piv < ss.length()) && !Character.isWhitespace(ss.charAt(piv)) && (ss.charAt(piv) != '-')) {
+      current.append(ss.charAt(piv));
+      piv++;
+    }
+    piv++;
+    String word=current.toString().trim();
+    if (word.isEmpty()) {
+      continue;
+    }
+    for (    String smallWord : Word.SMALLER_WORDS) {
+      if (word.equalsIgnoreCase(smallWord)) {
+        continue mainl;
+      }
+    }
+    if (stringBuilder.length() > 0) {
+      stringBuilder.append(" ");
+    }
+    stringBuilder.append(word);
+    words++;
+  }
+  return LabelPatternUtil.keepLettersAndDigitsOnly(stringBuilder.toString());
+}

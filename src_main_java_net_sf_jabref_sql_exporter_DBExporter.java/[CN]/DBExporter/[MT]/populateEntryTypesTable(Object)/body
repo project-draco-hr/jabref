@@ -1,20 +1,21 @@
 {
   String query;
-  ArrayList<String> fieldRequirement=new ArrayList<String>();
-  ArrayList<String> existentTypes=new ArrayList<String>();
+  ArrayList<String> fieldRequirement=new ArrayList<>();
+  ArrayList<String> existentTypes=new ArrayList<>();
   if (out instanceof Connection) {
-    ResultSet rs=((Statement)SQLUtil.processQueryWithResults(out,"SELECT label FROM entry_types")).getResultSet();
-    while (rs.next()) {
-      existentTypes.add(rs.getString(1));
+    try (ResultSet rs=((Statement)SQLUtil.processQueryWithResults(out,"SELECT label FROM entry_types")).getResultSet()){
+      while (rs.next()) {
+        existentTypes.add(rs.getString(1));
+      }
     }
-  }
+   }
   for (  BibtexEntryType val : BibtexEntryType.getAllValues()) {
     fieldRequirement.clear();
     for (int i=0; i < SQLUtil.getAllFields().size(); i++) {
       fieldRequirement.add(i,"gen");
     }
-    List<String> reqFields=Arrays.asList(val.getRequiredFields() != null ? val.getRequiredFields() : new String[0]);
-    List<String> optFields=Arrays.asList(val.getOptionalFields() != null ? val.getOptionalFields() : new String[0]);
+    List<String> reqFields=val.getRequiredFields();
+    List<String> optFields=val.getOptionalFields();
     List<String> utiFields=Arrays.asList(val.getUtilityFields() != null ? val.getUtilityFields() : new String[0]);
     fieldRequirement=SQLUtil.setFieldRequirement(SQLUtil.getAllFields(),reqFields,optFields,utiFields,fieldRequirement);
     if (!existentTypes.contains(val.getName().toLowerCase())) {

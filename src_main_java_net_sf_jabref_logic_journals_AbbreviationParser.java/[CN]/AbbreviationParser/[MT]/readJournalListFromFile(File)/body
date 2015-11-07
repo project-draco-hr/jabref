@@ -1,3 +1,11 @@
 {
-  readJournalList(new FileReader(Objects.requireNonNull(file)));
+  try (FileReader reader=new FileReader(Objects.requireNonNull(file))){
+    readJournalList(reader);
+  }
+ catch (  FileNotFoundException e) {
+    throw e;
+  }
+catch (  IOException e) {
+    LOGGER.warn("Could not read journal list from file " + file.getAbsolutePath(),e);
+  }
 }

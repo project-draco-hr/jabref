@@ -1,0 +1,39 @@
+{
+  if (!prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
+    int sizeX=prefs.getInt(JabRefPreferences.SIZE_X);
+    int sizeY=prefs.getInt(JabRefPreferences.SIZE_Y);
+    int posX=prefs.getInt(JabRefPreferences.POS_X);
+    int posY=prefs.getInt(JabRefPreferences.POS_Y);
+    if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length >= 1) {
+      Rectangle bounds=GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration().getBounds();
+      Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
+      if (posX < bounds.x) {
+        posX=bounds.x;
+      }
+      if (posY < bounds.y) {
+        posY=bounds.y;
+      }
+      int height=(int)dim.getHeight();
+      int width=(int)dim.getWidth();
+      if ((posX + sizeX) > width) {
+        if (sizeX <= width) {
+          posX=width - sizeX;
+        }
+ else {
+          posX=prefs.getIntDefault(JabRefPreferences.POS_X);
+          sizeX=prefs.getIntDefault(JabRefPreferences.SIZE_X);
+        }
+      }
+      if ((posY + sizeY) > height) {
+        if (sizeY <= height) {
+          posY=height - sizeY;
+        }
+ else {
+          posY=prefs.getIntDefault(JabRefPreferences.POS_Y);
+          sizeY=prefs.getIntDefault(JabRefPreferences.SIZE_Y);
+        }
+      }
+    }
+    setBounds(posX,posY,sizeX,sizeY);
+  }
+}

@@ -1,0 +1,19 @@
+{
+  BibtexEntry mergedEntry=mergeEntries.getMergeEntry();
+  if (button.equals("cancel")) {
+    panel.output(Localization.lang("Cancelled merging entries"));
+    dispose();
+  }
+ else   if (button.equals("replace")) {
+    panel.insertEntry(mergedEntry);
+    ce.addEdit(new UndoableInsertEntry(panel.database(),mergedEntry,panel));
+    ce.addEdit(new UndoableRemoveEntry(panel.database(),one,panel));
+    panel.database().removeEntry(one.getId());
+    ce.addEdit(new UndoableRemoveEntry(panel.database(),two,panel));
+    panel.database().removeEntry(two.getId());
+    ce.end();
+    panel.undoManager.addEdit(ce);
+    panel.output(Localization.lang("Merged entries"));
+    dispose();
+  }
+}

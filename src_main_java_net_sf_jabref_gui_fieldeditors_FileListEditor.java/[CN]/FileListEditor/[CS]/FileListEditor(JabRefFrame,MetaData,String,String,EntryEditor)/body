@@ -10,12 +10,12 @@
   JScrollPane sPane=new JScrollPane(this);
   setTableHeader(null);
   addMouseListener(new TableClickListener());
-  JButton add=new JButton(IconTheme.getImage("add"));
+  JButton add=new JButton(IconTheme.JabRefIcon.ADD_NOBOX.getSmallIcon());
   add.setToolTipText(Localization.lang("New file link (INSERT)"));
-  JButton remove=new JButton(IconTheme.getImage("remove"));
+  JButton remove=new JButton(IconTheme.JabRefIcon.REMOVE_NOBOX.getSmallIcon());
   remove.setToolTipText(Localization.lang("Remove file link (DELETE)"));
-  JButton up=new JButton(IconTheme.getImage("up"));
-  JButton down=new JButton(IconTheme.getImage("down"));
+  JButton up=new JButton(IconTheme.JabRefIcon.UP.getSmallIcon());
+  JButton down=new JButton(IconTheme.JabRefIcon.DOWN.getSmallIcon());
   auto=new JButton(Localization.lang("Auto"));
   JButton download=new JButton(Localization.lang("Download"));
   add.setMargin(new Insets(0,0,0,0));
@@ -58,13 +58,13 @@
     }
   }
 );
-  DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("fill:pref,1dlu,fill:pref,1dlu,fill:pref","fill:pref,fill:pref"));
-  builder.append(up);
-  builder.append(add);
-  builder.append(auto);
-  builder.append(down);
-  builder.append(remove);
-  builder.append(download);
+  FormBuilder builder=FormBuilder.create().layout(new FormLayout("fill:pref,1dlu,fill:pref,1dlu,fill:pref","fill:pref,fill:pref"));
+  builder.add(up).xy(1,1);
+  builder.add(add).xy(3,1);
+  builder.add(auto).xy(5,1);
+  builder.add(down).xy(1,2);
+  builder.add(remove).xy(3,2);
+  builder.add(download).xy(5,2);
   panel=new JPanel();
   panel.setLayout(new BorderLayout());
   panel.add(sPane,BorderLayout.CENTER);
@@ -136,4 +136,27 @@
   JMenuItem moveToFileDir=new JMenuItem(Localization.lang("Move to file directory"));
   menu.add(moveToFileDir);
   moveToFileDir.addActionListener(new MoveFileAction(frame,entryEditor,this,true));
+  JMenuItem deleteFile=new JMenuItem(Localization.lang("Delete local file"));
+  menu.add(deleteFile);
+  deleteFile.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      int row=getSelectedRow();
+      if (row == -1) {
+        return;
+      }
+      FileListEntry entry=tableModel.getEntry(row);
+      File file=FileUtil.expandFilename(metaData,entry.getLink());
+      try {
+        if (file != null) {
+          Files.delete(file.toPath());
+        }
+        removeEntries();
+      }
+ catch (      IOException ex) {
+        JOptionPane.showMessageDialog(frame,Localization.lang("File permission error"),Localization.lang("Cannot delete file"),JOptionPane.ERROR_MESSAGE);
+        LOGGER.warn("File permission error while deleting: " + file.toPath(),ex);
+      }
+    }
+  }
+);
 }

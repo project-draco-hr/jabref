@@ -7,7 +7,7 @@
     String text=allText.substring(index,endIndex);
     Matcher fullCitation=ACMPortalFetcher.fullCitationPattern.matcher(text);
     if (fullCitation.find()) {
-      String link=getEntryBibTeXURL(fullCitation.group(1),fetchAbstract);
+      String link=getEntryBibTeXURL(fullCitation.group(1));
       String part;
       int endOfRecord=text.indexOf("<div class=\"abstract2\">");
       if (endOfRecord > 0) {
@@ -45,11 +45,8 @@
       entries.put(link,preview);
       return true;
     }
- else {
-      System.out.printf("Citation Unmatched %d%n",entryNumber);
-      System.out.printf(text);
-      return false;
-    }
+    LOGGER.warn("Citation unmatched " + Integer.toString(entryNumber));
+    return false;
   }
   return false;
 }

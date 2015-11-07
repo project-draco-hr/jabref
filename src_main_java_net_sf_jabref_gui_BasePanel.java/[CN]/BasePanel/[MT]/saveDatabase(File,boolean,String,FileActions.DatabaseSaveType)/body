@@ -3,14 +3,14 @@
   frame.block();
   try {
     if (!selectedOnly) {
-      session=FileActions.saveDatabase(database,metaData,file,Globals.prefs,false,false,encoding,false);
+      session=FileActions.saveDatabase(database,metaData,file,Globals.prefs,false,false,enc,false);
     }
  else {
-      session=FileActions.savePartOfDatabase(database,metaData,file,Globals.prefs,mainTable.getSelectedEntries(),encoding,saveType);
+      session=FileActions.savePartOfDatabase(database,metaData,file,Globals.prefs,mainTable.getSelectedEntries(),enc,saveType);
     }
   }
  catch (  UnsupportedCharsetException ex2) {
-    JOptionPane.showMessageDialog(frame,Localization.lang("Could not save file. " + "Character encoding '%0' is not supported.",encoding),Localization.lang("Save database"),JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(frame,Localization.lang("Could not save file. " + "Character encoding '%0' is not supported.",enc),Localization.lang("Save database"),JOptionPane.ERROR_MESSAGE);
     throw new SaveException("rt");
   }
 catch (  SaveException ex) {
@@ -32,16 +32,16 @@ catch (  SaveException ex) {
   }
   boolean commit=true;
   if (!session.getWriter().couldEncodeAll()) {
-    DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, fill:pref",""));
+    FormBuilder builder=FormBuilder.create().layout(new FormLayout("left:pref, 4dlu, fill:pref","pref, 4dlu, pref"));
     JTextArea ta=new JTextArea(session.getWriter().getProblemCharacters());
     ta.setEditable(false);
-    builder.append(Localization.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding()));
-    builder.append(ta);
-    builder.append(Localization.lang("What do you want to do?"));
+    builder.add(Localization.lang("The chosen encoding '%0' could not encode the following characters: ",session.getEncoding())).xy(1,1);
+    builder.add(ta).xy(3,1);
+    builder.add(Localization.lang("What do you want to do?")).xy(1,3);
     String tryDiff=Localization.lang("Try different encoding");
     int answer=JOptionPane.showOptionDialog(frame,builder.getPanel(),Localization.lang("Save database"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE,null,new String[]{Localization.lang("Save"),tryDiff,Localization.lang("Cancel")},tryDiff);
     if (answer == JOptionPane.NO_OPTION) {
-      Object choice=JOptionPane.showInputDialog(frame,Localization.lang("Select encoding"),Localization.lang("Save database"),JOptionPane.QUESTION_MESSAGE,null,Encodings.ENCODINGS,encoding);
+      Object choice=JOptionPane.showInputDialog(frame,Localization.lang("Select encoding"),Localization.lang("Save database"),JOptionPane.QUESTION_MESSAGE,null,Encodings.ENCODINGS,enc);
       if (choice != null) {
         String newEncoding=(String)choice;
         return saveDatabase(file,selectedOnly,newEncoding,saveType);
@@ -56,7 +56,7 @@ catch (  SaveException ex) {
   }
   if (commit) {
     session.commit();
-    this.encoding=encoding;
+    this.encoding=enc;
   }
  else {
     session.cancel();

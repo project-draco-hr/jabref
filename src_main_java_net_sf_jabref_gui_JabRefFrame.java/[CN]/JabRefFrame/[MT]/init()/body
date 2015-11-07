@@ -1,10 +1,9 @@
 {
   tabbedPane=new DragDropPopupPane(manageSelectors,databaseProperties,bibtexKeyPattern);
-  UIManager.put("FileChooser.readOnly",Globals.prefs.getBoolean(JabRefPreferences.FILECHOOSER_DISABLE_RENAME));
   MyGlassPane glassPane=new MyGlassPane();
   setGlassPane(glassPane);
   setTitle(GUIGlobals.frameTitle);
-  setIconImage(IconTheme.getImage("jabrefIcon48").getImage());
+  setIconImage(new ImageIcon(IconTheme.getIconUrl("jabrefIcon48")).getImage());
   setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   addWindowListener(new WindowAdapter(){
     @Override public void windowClosing(    WindowEvent e){
@@ -22,43 +21,7 @@
   initActions();
   tlb.setVisible(Globals.prefs.getBoolean(JabRefPreferences.TOOLBAR_VISIBLE));
   setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
-  if (!prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
-    int sizeX=prefs.getInt(JabRefPreferences.SIZE_X);
-    int sizeY=prefs.getInt(JabRefPreferences.SIZE_Y);
-    int posX=prefs.getInt(JabRefPreferences.POS_X);
-    int posY=prefs.getInt(JabRefPreferences.POS_Y);
-    if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length == 1) {
-      Rectangle bounds=GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration().getBounds();
-      Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
-      if (posX < bounds.x) {
-        posX=bounds.x;
-      }
-      if (posY < bounds.y) {
-        posY=bounds.y;
-      }
-      int height=(int)dim.getHeight();
-      int width=(int)dim.getWidth();
-      if (posX + sizeX > width) {
-        if (sizeX <= width) {
-          posX=width - sizeX;
-        }
- else {
-          posX=prefs.getIntDefault(JabRefPreferences.POS_X);
-          sizeX=prefs.getIntDefault(JabRefPreferences.SIZE_X);
-        }
-      }
-      if (posY + sizeY > height) {
-        if (sizeY <= height) {
-          posY=height - sizeY;
-        }
- else {
-          posY=prefs.getIntDefault(JabRefPreferences.POS_Y);
-          sizeY=prefs.getIntDefault(JabRefPreferences.SIZE_Y);
-        }
-      }
-    }
-    setBounds(posX,posY,sizeX,sizeY);
-  }
+  positionWindowOnScreen();
   tabbedPane.setBorder(null);
   tabbedPane.setForeground(GUIGlobals.inActiveTabbed);
   tabbedPane.addChangeListener(new ChangeListener(){
@@ -67,10 +30,9 @@
       BasePanel bp=basePanel();
       if (bp != null) {
         groupToggle.setSelected(sidePaneManager.isComponentVisible("groups"));
-        searchToggle.setSelected(searchBar.isVisible());
+        searchToggle.setSelected(sidePaneManager.isComponentVisible("search"));
         previewToggle.setSelected(Globals.prefs.getBoolean(JabRefPreferences.PREVIEW_ENABLED));
-        highlightAny.setSelected(Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY));
-        highlightAll.setSelected(Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL));
+        fetcherToggle.setSelected(sidePaneManager.isComponentVisible(generalFetcher.getTitle()));
         Globals.focusListener.setFocused(bp.mainTable);
         setWindowTitle();
         bp.updateSearchManager();
@@ -85,7 +47,7 @@
       new MacAdapter().registerMacEvents(this);
     }
  catch (    Exception e) {
-      LOGGER.fatal("could not interface with Mac OS X methods",e);
+      LOGGER.fatal("Could not interface with Mac OS X methods.",e);
     }
   }
 }

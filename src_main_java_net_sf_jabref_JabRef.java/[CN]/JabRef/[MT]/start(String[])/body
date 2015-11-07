@@ -1,4 +1,7 @@
 {
+  if (OS.isWindows7OrLater()) {
+    PinToTaskbar.enablePinToTaskbar();
+  }
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   if (prefs.getBoolean(JabRefPreferences.USE_PROXY)) {
     System.setProperty("http.proxyHost",prefs.get(JabRefPreferences.PROXY_HOSTNAME));
@@ -15,13 +18,13 @@
   Globals.startBackgroundTasks();
   setupLogHandlerForErrorConsole();
   Globals.prefs=prefs;
-  setLanguage(prefs);
+  Localization.setLanguage(prefs.get(JabRefPreferences.LANGUAGE));
   Globals.prefs.setLanguageDependentDefaultValues();
   BibtexFields.setNumericFieldsFromPrefs();
   Globals.importFormatReader.resetImportFormats();
   BibtexEntryType.loadCustomEntryTypes(prefs);
   ExportFormats.initAllExports();
-  Globals.initializeJournalNames();
+  Abbreviations.initializeJournalNames(Globals.prefs);
   RemotePreferences remotePreferences=new RemotePreferences(Globals.prefs);
   if (remotePreferences.useRemoteServer()) {
     Globals.remoteListener.open(new JabRefMessageHandler(this),remotePreferences.getPort());
@@ -36,22 +39,9 @@
       }
     }
   }
-  String personalJournalList=prefs.get(JabRefPreferences.PERSONAL_JOURNAL_LIST);
-  if (personalJournalList != null && !personalJournalList.isEmpty()) {
-    try {
-      Globals.journalAbbrev.readJournalListFromFile(new File(personalJournalList));
-    }
- catch (    FileNotFoundException e) {
-      JOptionPane.showMessageDialog(null,Localization.lang("Journal file not found") + ": " + e.getMessage(),Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
-      Globals.prefs.put(JabRefPreferences.PERSONAL_JOURNAL_LIST,"");
-    }
-  }
   Globals.NEWLINE=Globals.prefs.get(JabRefPreferences.NEWLINE);
-  if (OS.WINDOWS) {
-    JabRef.setCurrentProcessExplicitAppUserModelID("JabRef." + Globals.BUILD_INFO.getVersion());
-  }
   Vector<ParserResult> loaded=processArguments(args,true);
-  if (loaded == null || cli.isDisableGui() || cli.isShowVersion()) {
+  if ((loaded == null) || cli.isDisableGui() || cli.isShowVersion()) {
     JabRefExecutorService.INSTANCE.shutdownEverything();
     return;
   }

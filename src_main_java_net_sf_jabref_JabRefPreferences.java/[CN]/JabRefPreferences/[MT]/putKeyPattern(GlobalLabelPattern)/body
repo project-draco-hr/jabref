@@ -1,0 +1,18 @@
+{
+  JabRefPreferences.keyPattern=pattern;
+  Preferences pre=Preferences.userNodeForPackage(GlobalLabelPattern.class);
+  try {
+    pre.clear();
+  }
+ catch (  BackingStoreException ex) {
+    LOGGER.info("BackingStoreException in JabRefPreferences.putKeyPattern",ex);
+  }
+  Enumeration<String> allKeys=pattern.getAllKeys();
+  while (allKeys.hasMoreElements()) {
+    String key=allKeys.nextElement();
+    if (!pattern.isDefaultValue(key)) {
+      ArrayList<String> value=pattern.getValue(key);
+      pre.put(key,value.get(0));
+    }
+  }
+}

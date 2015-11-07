@@ -1,21 +1,19 @@
 {
-  int hits=0;
-  System.out.println("search term: " + searchTerm);
+  LOGGER.debug("Search term: " + searchTerm);
   if (specifiedYears()) {
     searchTerm=fieldYear();
   }
   SearchRule searchRule=SearchRules.getSearchRuleByQuery(searchTerm,Globals.prefs.getBoolean(JabRefPreferences.SEARCH_CASE_SENSITIVE),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REG_EXP));
   if (!searchRule.validateSearchStrings(searchTerm)) {
-    System.out.println(Localization.lang("Search failed: illegal search expression"));
+    LOGGER.warn(Localization.lang("Search failed: illegal search expression"));
     return base;
   }
   Collection<BibtexEntry> entries=database.getEntries();
-  Vector<BibtexEntry> matchEntries=new Vector<BibtexEntry>();
+  Vector<BibtexEntry> matchEntries=new Vector<>();
   for (  BibtexEntry entry : entries) {
     boolean hit=searchRule.applyRule(searchTerm,entry);
     entry.setSearchHit(hit);
     if (hit) {
-      hits++;
       matchEntries.add(entry);
     }
   }

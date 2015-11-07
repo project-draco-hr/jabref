@@ -1,0 +1,216 @@
+{
+  joint=new TreeSet<>(one.getFieldNames());
+  joint.addAll(two.getFieldNames());
+  TreeSet<String> toberemoved=new TreeSet<>();
+  for (  String field : joint) {
+    if (field.startsWith("__")) {
+      toberemoved.add(field);
+    }
+  }
+  for (  String field : toberemoved) {
+    joint.remove(field);
+  }
+  rb=new JRadioButton[3][joint.size() + 1];
+  ButtonGroup[] rbg=new ButtonGroup[joint.size() + 1];
+  identical=new Boolean[joint.size() + 1];
+  jointStrings=new String[joint.size()];
+  String colSpecMain="left:pref, 5px, center:3cm:grow, 5px, center:pref, 3px, center:pref, 3px, center:pref, 5px, center:3cm:grow";
+  String colSpecMerge="left:pref, 5px, fill:3cm:grow, 5px, center:pref, 3px, center:pref, 3px, center:pref, 5px, fill:3cm:grow";
+  String rowSpec="pref, pref, 10px, fill:5cm:grow, 10px, pref, 10px, fill:3cm:grow";
+  StringBuilder rowBuilder=new StringBuilder("");
+  for (int i=0; i < joint.size(); i++) {
+    rowBuilder.append("pref, ");
+  }
+  rowBuilder.append("pref");
+  FormLayout mainLayout=new FormLayout(colSpecMain,rowSpec);
+  FormLayout mergeLayout=new FormLayout(colSpecMerge,rowBuilder.toString());
+  mainPanel.setLayout(mainLayout);
+  mergePanel.setLayout(mergeLayout);
+  JLabel label=new JLabel(Localization.lang("Use"));
+  Font font=label.getFont();
+  label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
+  mainPanel.add(label,cc.xyw(4,1,7,"center, bottom"));
+  JLabel headingLabels[]=new JLabel[6];
+  for (int i=0; i < 6; i++) {
+    headingLabels[i]=new JLabel(columnHeadings[i]);
+    font=headingLabels[i].getFont();
+    headingLabels[i].setFont(font.deriveFont(font.getStyle() | Font.BOLD));
+    mainPanel.add(headingLabels[i],cc.xy(1 + (i * 2),2));
+  }
+  mainPanel.add(new JSeparator(),cc.xyw(1,3,11));
+  BibtexEntryType type1=one.getType();
+  BibtexEntryType type2=two.getType();
+  mergedEntry.setType(type1);
+  label=new JLabel(Localization.lang("Entry type"));
+  font=label.getFont();
+  label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
+  mergePanel.add(label,cc.xy(1,1));
+  JTextArea type1ta=new JTextArea(type1.getName());
+  type1ta.setEditable(false);
+  mergePanel.add(type1ta,cc.xy(3,1));
+  if (type1.compareTo(type2) != 0) {
+    identical[0]=false;
+    rbg[0]=new ButtonGroup();
+    for (int k=0; k < 3; k+=2) {
+      rb[k][0]=new JRadioButton();
+      rbg[0].add(rb[k][0]);
+      mergePanel.add(rb[k][0],cc.xy(5 + (k * 2),1));
+      rb[k][0].addChangeListener(new ChangeListener(){
+        @Override public void stateChanged(        ChangeEvent e){
+          updateAll();
+        }
+      }
+);
+    }
+    rb[0][0].setSelected(true);
+  }
+ else {
+    identical[0]=true;
+  }
+  JTextArea type2ta=new JTextArea(type2.getName());
+  type2ta.setEditable(false);
+  mergePanel.add(type2ta,cc.xy(11,1));
+  int row=2;
+  int maxLabelWidth=-1;
+  int tmpLabelWidth=0;
+  for (  String field : joint) {
+    jointStrings[row - 2]=field;
+    label=new JLabel(StringUtil.toUpperFirstLetter(field));
+    font=label.getFont();
+    label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
+    mergePanel.add(label,cc.xy(1,row));
+    String string1=one.getField(field);
+    String string2=two.getField(field);
+    identical[row - 1]=false;
+    if ((string1 != null) && (string2 != null)) {
+      if (string1.equals(string2)) {
+        identical[row - 1]=true;
+      }
+    }
+    tmpLabelWidth=label.getPreferredSize().width;
+    if (tmpLabelWidth > maxLabelWidth) {
+      maxLabelWidth=tmpLabelWidth;
+    }
+    if (field.equals("abstract") || field.equals("review")) {
+      JTextArea tf=new JTextArea();
+      tf.setLineWrap(true);
+      tf.setEditable(false);
+      JScrollPane jsptf=new JScrollPane(tf);
+      mergeLayout.setRowSpec(row,RowSpec.decode("center:2cm:grow"));
+      mergePanel.add(jsptf,cc.xy(3,row,"f, f"));
+      tf.setText(string1);
+      tf.setCaretPosition(0);
+    }
+ else {
+      JTextArea tf=new JTextArea(string1);
+      mergePanel.add(tf,cc.xy(3,row));
+      tf.setCaretPosition(0);
+      tf.setEditable(false);
+    }
+    if (!identical[row - 1]) {
+      rbg[row - 1]=new ButtonGroup();
+      for (int k=0; k < 3; k++) {
+        rb[k][row - 1]=new JRadioButton();
+        rbg[row - 1].add(rb[k][row - 1]);
+        mergePanel.add(rb[k][row - 1],cc.xy(5 + (k * 2),row));
+        rb[k][row - 1].addChangeListener(new ChangeListener(){
+          @Override public void stateChanged(          ChangeEvent e){
+            updateAll();
+          }
+        }
+);
+      }
+      if (string1 != null) {
+        mergedEntry.setField(field,string1);
+        rb[0][row - 1].setSelected(true);
+        if (string2 == null) {
+          rb[2][row - 1].setEnabled(false);
+        }
+      }
+ else {
+        rb[0][row - 1].setEnabled(false);
+        mergedEntry.setField(field,string2);
+        rb[2][row - 1].setSelected(true);
+      }
+    }
+ else {
+      mergedEntry.setField(field,string1);
+    }
+    if (field.equals("abstract") || field.equals("review")) {
+      JTextArea tf=new JTextArea();
+      tf.setLineWrap(true);
+      tf.setEditable(false);
+      JScrollPane jsptf=new JScrollPane(tf);
+      mergePanel.add(jsptf,cc.xy(11,row,"f, f"));
+      tf.setText(string2);
+      tf.setCaretPosition(0);
+    }
+ else {
+      JTextArea tf=new JTextArea(string2);
+      mergePanel.add(tf,cc.xy(11,row));
+      tf.setCaretPosition(0);
+      tf.setEditable(false);
+    }
+    row++;
+  }
+  JScrollPane scrollPane=new JScrollPane(mergePanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+  scrollPane.setBorder(BorderFactory.createEmptyBorder());
+  mainPanel.add(scrollPane,cc.xyw(1,4,11));
+  mainPanel.add(new JSeparator(),cc.xyw(1,5,11));
+  String rbAlign[]={"right","center","left"};
+  mainLayout.setColumnSpec(1,ColumnSpec.decode(Integer.toString(maxLabelWidth) + "px"));
+  Integer maxRBWidth=-1;
+  Integer tmpRBWidth;
+  for (int k=0; k < 3; k++) {
+    tmpRBWidth=headingLabels[k + 2].getPreferredSize().width;
+    if (tmpRBWidth > maxRBWidth) {
+      maxRBWidth=tmpRBWidth;
+    }
+  }
+  for (int k=0; k < 3; k++) {
+    mergeLayout.setColumnSpec(5 + (k * 2),ColumnSpec.decode(rbAlign[k] + ":" + maxRBWidth.toString()+ "px"));
+  }
+  label=new JLabel(Localization.lang("Merged entry"));
+  font=label.getFont();
+  label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
+  mainPanel.add(label,cc.xyw(1,6,6));
+  String layoutString=Globals.prefs.get(JabRefPreferences.PREVIEW_0);
+  pp=new PreviewPanel(null,mergedEntry,null,new MetaData(),layoutString);
+  mainPanel.add(pp,cc.xyw(1,8,6));
+  label=new JLabel(Localization.lang("Merged BibTeX source code"));
+  font=label.getFont();
+  label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
+  mainPanel.add(label,cc.xyw(8,6,4));
+  jta=new JTextArea();
+  jta.setLineWrap(true);
+  JScrollPane jspta=new JScrollPane(jta);
+  mainPanel.add(jspta,cc.xyw(8,8,4));
+  jta.setEditable(false);
+  StringWriter sw=new StringWriter();
+  try {
+    new BibtexEntryWriter(new LatexFieldFormatter(),false).write(mergedEntry,sw);
+  }
+ catch (  IOException ex) {
+    LOGGER.error("Error in entry" + ": " + ex.getMessage(),ex);
+  }
+  jta.setText(sw.getBuffer().toString());
+  jta.setCaretPosition(0);
+  mainLayout.appendRow(RowSpec.decode("10px"));
+  mainLayout.appendColumn(ColumnSpec.decode("10px"));
+  mainLayout.insertRow(1,RowSpec.decode("10px"));
+  mainLayout.insertColumn(1,ColumnSpec.decode("10px"));
+  if (mainPanel.getHeight() > DIM.height) {
+    mainPanel.setSize(new Dimension(mergePanel.getWidth(),DIM.height));
+  }
+  if (mainPanel.getWidth() > DIM.width) {
+    mainPanel.setSize(new Dimension(DIM.width,mergePanel.getHeight()));
+  }
+  doneBuilding=true;
+  mainPanel.setVisible(true);
+  javax.swing.SwingUtilities.invokeLater(new Runnable(){
+    @Override public void run(){
+      scrollPane.getVerticalScrollBar().setValue(0);
+    }
+  }
+);
+}

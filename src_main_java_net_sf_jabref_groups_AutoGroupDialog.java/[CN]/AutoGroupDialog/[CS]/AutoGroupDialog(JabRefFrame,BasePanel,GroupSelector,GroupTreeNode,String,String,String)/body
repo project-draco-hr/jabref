@@ -10,33 +10,32 @@
   nd.setSelected(true);
   ActionListener okListener=new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
-      ok_pressed=true;
       dispose();
       GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Localization.lang("Automatically created groups"),GroupHierarchyType.INCLUDING));
       Set<String> hs=null;
-      String field=field();
+      String fieldText=field.getText();
       if (keywords.isSelected()) {
         if (nd.isSelected()) {
-          hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field().toLowerCase().trim(),deliminator.getText());
+          hs=Util.findDeliminatedWordsInField(panel.getDatabase(),field.getText().toLowerCase().trim(),deliminator.getText());
         }
  else {
-          hs=Util.findAllWordsInField(panel.getDatabase(),field().toLowerCase().trim(),remove());
+          hs=Util.findAllWordsInField(panel.getDatabase(),field.getText().toLowerCase().trim(),remove.getText());
         }
       }
  else       if (authors.isSelected()) {
-        List<String> fields=new ArrayList<String>(2);
+        List<String> fields=new ArrayList<>(2);
         fields.add("author");
         hs=Util.findAuthorLastNames(panel.getDatabase(),fields);
-        field="author";
+        fieldText="author";
       }
  else       if (editors.isSelected()) {
-        List<String> fields=new ArrayList<String>(2);
+        List<String> fields=new ArrayList<>(2);
         fields.add("editor");
         hs=Util.findAuthorLastNames(panel.getDatabase(),fields);
-        field="editor";
+        fieldText="editor";
       }
       for (      String keyword : hs) {
-        KeywordGroup group=new KeywordGroup(keyword,field,keyword,false,false,GroupHierarchyType.INDEPENDENT);
+        KeywordGroup group=new KeywordGroup(keyword,fieldText,keyword,false,false,GroupHierarchyType.INDEPENDENT);
         autoGroupsRoot.add(new GroupTreeNode(group));
       }
       m_groupsRoot.add(autoGroupsRoot);
@@ -74,25 +73,19 @@
   bg.add(authors);
   bg.add(editors);
   keywords.setSelected(true);
-  DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("left:20dlu, 4dlu, left:pref, 4dlu, fill:60dlu, 4dlu, fill:0dlu",""),main);
-  b.append(keywords,5);
-  b.nextLine();
-  b.append(new JPanel());
-  b.append(Localization.lang("Field to group by") + ":");
-  b.append(field);
-  b.nextLine();
-  b.append(new JPanel());
-  b.append(Localization.lang("Characters to ignore") + ":");
-  b.append(remove);
-  b.nextLine();
-  b.append(new JPanel());
-  b.append(nd);
-  b.append(deliminator);
-  b.nextLine();
-  b.append(authors,5);
-  b.nextLine();
-  b.append(editors,5);
-  b.nextLine();
+  FormBuilder b=FormBuilder.create();
+  b.layout(new FormLayout("left:20dlu, 4dlu, left:pref, 4dlu, fill:60dlu","p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p"));
+  b.add(keywords).xyw(1,1,5);
+  b.add(Localization.lang("Field to group by") + ":").xy(3,3);
+  b.add(field).xy(5,3);
+  b.add(Localization.lang("Characters to ignore") + ":").xy(3,5);
+  b.add(remove).xy(5,5);
+  b.add(nd).xy(3,7);
+  b.add(deliminator).xy(5,7);
+  b.add(authors).xyw(1,9,5);
+  b.add(editors).xyw(1,11,5);
+  b.build();
+  b.border(BorderFactory.createEmptyBorder(5,5,5,5));
   JPanel opt=new JPanel();
   ButtonBarBuilder bb=new ButtonBarBuilder(opt);
   bb.addGlue();
@@ -102,6 +95,7 @@
   main.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   opt.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   getContentPane().add(main,BorderLayout.CENTER);
+  getContentPane().add(b.getPanel(),BorderLayout.CENTER);
   getContentPane().add(opt,BorderLayout.SOUTH);
   updateComponents();
   pack();

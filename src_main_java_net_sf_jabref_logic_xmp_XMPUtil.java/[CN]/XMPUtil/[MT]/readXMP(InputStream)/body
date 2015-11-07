@@ -1,8 +1,6 @@
 {
-  List<BibtexEntry> result=new LinkedList<BibtexEntry>();
-  PDDocument document=null;
-  try {
-    document=PDDocument.load(inputStream);
+  List<BibtexEntry> result=new LinkedList<>();
+  try (PDDocument document=PDDocument.load(inputStream)){
     if (document.isEncrypted()) {
       throw new EncryptionNotSupportedException("Error: Cannot read metadata from encrypted document.");
     }
@@ -31,12 +29,7 @@
       }
     }
   }
-  finally {
-    if (document != null) {
-      document.close();
-    }
-  }
-  if (result.isEmpty()) {
+   if (result.isEmpty()) {
     return null;
   }
   return result;

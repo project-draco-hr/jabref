@@ -3,10 +3,9 @@
   if (outfile.exists()) {
     outfile.delete();
   }
-  BufferedOutputStream writer;
-  writer=new BufferedOutputStream(new FileOutputStream(outfile));
-  PrintStream fout;
-  fout=new PrintStream(writer);
-  performExport(database,metaData,keySet,fout,"file");
-  fout.close();
-}
+  try (BufferedOutputStream writer=new BufferedOutputStream(new FileOutputStream(outfile))){
+    try (PrintStream fout=new PrintStream(writer)){
+      performExport(database,metaData,keySet,fout,"file");
+    }
+   }
+ }

@@ -1,23 +1,23 @@
 {
-  ArrayList<BibtexEntry> bibitems=new ArrayList<BibtexEntry>();
+  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
-  while ((str=in.readLine()) != null) {
-    if (str.length() < 2) {
-      continue;
-    }
-    if (str.indexOf("Record") == 0) {
-      sb.append("__::__").append(str);
-    }
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    while ((str=in.readLine()) != null) {
+      if (str.length() < 2) {
+        continue;
+      }
+      if (str.indexOf("Record") == 0) {
+        sb.append("__::__").append(str);
+      }
  else {
-      sb.append("__NEWFIELD__").append(str);
+        sb.append("__NEWFIELD__").append(str);
+      }
     }
   }
-  in.close();
-  String[] entries=sb.toString().split("__::__");
+   String[] entries=sb.toString().split("__::__");
   String Type="";
-  HashMap<String,String> h=new HashMap<String,String>();
+  HashMap<String,String> h=new HashMap<>();
   for (  String entry : entries) {
     if (entry.indexOf("Record") != 0) {
       continue;
@@ -75,7 +75,7 @@
         }
       }
     }
-    BibtexEntry b=new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID,BibtexEntryTypes.getEntryType(Type));
+    BibtexEntry b=new BibtexEntry(DEFAULT_BIBTEXENTRY_ID,BibtexEntryTypes.getEntryType(Type));
     b.setField(h);
     bibitems.add(b);
   }

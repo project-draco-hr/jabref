@@ -1,18 +1,23 @@
 {
   try {
     URL url=new URL(ACMPortalFetcher.startUrl + ACMPortalFetcher.bibtexUrl + ID+ ACMPortalFetcher.bibtexUrlEnd);
-    BufferedReader in=new BufferedReader(new InputStreamReader(url.openStream()));
-    ParserResult result=BibtexParser.parse(in);
-    in.close();
-    Collection<BibtexEntry> item=result.getDatabase().getEntries();
-    if (item.isEmpty()) {
+    URLConnection connection=url.openConnection();
+    connection.addRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0");
+    Collection<BibtexEntry> items=null;
+    try (BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()))){
+      items=BibtexParser.parse(in).getDatabase().getEntries();
+    }
+ catch (    IOException e) {
+      LOGGER.info("Download of BibTeX information from ACM Portal failed.",e);
+    }
+    if ((items == null) || items.isEmpty()) {
       return null;
     }
-    BibtexEntry entry=item.iterator().next();
+    BibtexEntry entry=items.iterator().next();
     Thread.sleep(ACMPortalFetcher.WAIT_TIME);
-    if (abs) {
+    if (downloadAbstract) {
       url=new URL(ACMPortalFetcher.startUrl + ACMPortalFetcher.abstractUrl + ID);
-      String page=getResults(url);
+      String page=Util.getResults(url);
       Matcher absM=ACMPortalFetcher.absPattern.matcher(page);
       if (absM.find()) {
         entry.setField("abstract",absM.group(1).trim());
@@ -22,20 +27,19 @@
     return entry;
   }
  catch (  NoSuchElementException e) {
-    System.out.println("Bad Bibtex record read at: " + ACMPortalFetcher.bibtexUrl + ID+ ACMPortalFetcher.bibtexUrlEnd);
-    e.printStackTrace();
+    LOGGER.info("Bad Bibtex record read at: " + ACMPortalFetcher.bibtexUrl + ID+ ACMPortalFetcher.bibtexUrlEnd,e);
     return null;
   }
 catch (  MalformedURLException e) {
-    e.printStackTrace();
+    LOGGER.info("Malformed URL.",e);
     return null;
   }
 catch (  ConnectException e) {
-    e.printStackTrace();
+    LOGGER.info("Cannot connect.",e);
     return null;
   }
 catch (  IOException e) {
-    e.printStackTrace();
+    LOGGER.info("Cannot connect.",e);
     return null;
   }
 catch (  InterruptedException ignored) {

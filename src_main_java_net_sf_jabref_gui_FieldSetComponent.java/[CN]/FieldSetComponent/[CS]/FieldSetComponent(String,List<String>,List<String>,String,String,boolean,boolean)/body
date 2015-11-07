@@ -2,7 +2,7 @@
   this.forceLowerCase=forceLowerCase;
   add=new JButton(Localization.lang(addText));
   remove=new JButton(Localization.lang(removeText));
-  listModel=new DefaultListModel();
+  listModel=new DefaultListModel<>();
   JLabel title1=null;
   if (title != null) {
     title1=new JLabel(title);
@@ -10,7 +10,7 @@
   for (  String field : fields) {
     listModel.addElement(field);
   }
-  list=new JList(listModel);
+  list=new JList<>(listModel);
   list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
   add.addActionListener(this);
   remove.addActionListener(this);
@@ -31,8 +31,8 @@
   con.gridwidth=1;
   if (arrows) {
     con.weightx=0;
-    up=new JButton(IconTheme.getImage("up"));
-    down=new JButton(IconTheme.getImage("down"));
+    up=new JButton(IconTheme.JabRefIcon.UP.getSmallIcon());
+    down=new JButton(IconTheme.JabRefIcon.DOWN.getSmallIcon());
     up.addActionListener(this);
     down.addActionListener(this);
     up.setToolTipText(Localization.lang("Move up"));
@@ -54,7 +54,7 @@
   con.gridwidth=3;
   con.weightx=1;
   if (preset != null) {
-    sel=new JComboBox(preset.toArray(new String[preset.size()]));
+    sel=new JComboBox<>(preset.toArray(new String[preset.size()]));
     sel.setEditable(true);
     gbl.setConstraints(sel,con);
     add(sel);
