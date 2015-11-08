@@ -1,4 +1,5 @@
 {
+  String[] singleFieldStrings=new String[]{"issn","volume","abstract","doi","title","number","publisher"};
   BibtexEntry entry=new BibtexEntry();
   String nametype;
   String isbn=springerJsonEntry.optString("isbn");
@@ -54,9 +55,10 @@
   }
   if (springerJsonEntry.has("publicationDate")) {
     String date=springerJsonEntry.getString("publicationDate");
+    entry.setField("date",date);
     String dateparts[]=date.split("-");
     entry.setField("year",dateparts[0]);
-    entry.setField("month",dateparts[1]);
+    entry.setField("month",MonthUtil.getMonthByNumber(Integer.parseInt(dateparts[1])).bibtexFormat);
   }
   String abstr=entry.getField("abstract");
   if ((abstr != null) && abstr.startsWith("Abstract")) {
