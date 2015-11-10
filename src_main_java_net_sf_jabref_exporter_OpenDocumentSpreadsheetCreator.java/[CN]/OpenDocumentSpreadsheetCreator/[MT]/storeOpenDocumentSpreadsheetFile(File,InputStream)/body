@@ -1,6 +1,5 @@
 {
-  ZipOutputStream out=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
-  try {
+  try (ZipOutputStream out=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)))){
     ZipEntry ze=new ZipEntry("mimetype");
     String mime="application/vnd.oasis.opendocument.spreadsheet";
     ze.setMethod(ZipEntry.STORED);
@@ -23,7 +22,4 @@
     OpenDocumentSpreadsheetCreator.addResourceFile("meta.xml","/resource/ods/meta.xml",out);
     OpenDocumentSpreadsheetCreator.addResourceFile("META-INF/manifest.xml","/resource/ods/manifest.xml",out);
   }
-  finally {
-    out.close();
-  }
-}
+ }

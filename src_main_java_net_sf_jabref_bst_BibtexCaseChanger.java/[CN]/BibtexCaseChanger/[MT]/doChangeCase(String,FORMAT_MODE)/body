@@ -25,7 +25,12 @@
     if (c[i] == '}') {
       sb.append(c[i]);
       i++;
-      braceLevel=decrBraceLevel(s,braceLevel);
+      if (braceLevel == 0) {
+        LOGGER.warn("Too many closing braces in string: " + s);
+      }
+ else {
+        braceLevel--;
+      }
       prevColon=false;
       continue;
     }
@@ -36,6 +41,8 @@
     sb.append(c[i]);
     i++;
   }
-  BibtexCaseChanger.checkBrace(s,braceLevel);
+  if (braceLevel > 0) {
+    LOGGER.warn("No enough closing braces in string: " + s);
+  }
   return sb.toString();
 }

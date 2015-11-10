@@ -2,21 +2,21 @@
   this._entry=entry;
   title=new JLabel(entry.context);
   pageInfo.setText(entry.pageInfo);
-  diag=new JDialog(CitationManager.this.diag,Localization.lang("Citation"),true);
+  singleCiteDialog=new JDialog(CitationManager.this.diag,Localization.lang("Citation"),true);
   DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, left:150dlu",""));
   b.append(title,3);
   b.nextLine();
   b.append(Localization.lang("Extra information (e.g. page number)"));
   b.append(pageInfo);
   b.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-  diag.getContentPane().add(b.getPanel(),BorderLayout.CENTER);
+  singleCiteDialog.getContentPane().add(b.getPanel(),BorderLayout.CENTER);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
-  bb.addButton(ok);
-  bb.addButton(cancel);
+  bb.addButton(okButton);
+  bb.addButton(cancelButton);
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-  diag.add(bb.getPanel(),BorderLayout.SOUTH);
+  singleCiteDialog.add(bb.getPanel(),BorderLayout.SOUTH);
   Action okAction=new AbstractAction(){
     @Override public void actionPerformed(    ActionEvent actionEvent){
       if (!pageInfo.getText().trim().isEmpty()) {
@@ -26,18 +26,18 @@
         _entry.pageInfo=null;
       }
       tableModel.fireTableDataChanged();
-      diag.dispose();
+      singleCiteDialog.dispose();
     }
   }
 ;
-  ok.addActionListener(okAction);
+  okButton.addActionListener(okAction);
   Action cancelAction=new AbstractAction(){
     @Override public void actionPerformed(    ActionEvent actionEvent){
-      diag.dispose();
+      singleCiteDialog.dispose();
     }
   }
 ;
-  cancel.addActionListener(cancelAction);
+  cancelButton.addActionListener(cancelAction);
   b.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(Globals.prefs.getKey(KeyBinds.CLOSE_DIALOG),"close");
   b.getPanel().getActionMap().put("close",cancelAction);
 }

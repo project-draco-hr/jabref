@@ -47,12 +47,14 @@
         braceLevel--;
       }
  else {
-        BibtexCaseChanger.complain(toMeasure);
+        LOGGER.warn("Too many closing braces in string: " + toMeasure);
       }
     }
     result+=BibtexWidth.getCharWidth(c[i]);
     i++;
   }
-  BibtexCaseChanger.checkBrace(toMeasure,braceLevel);
+  if (braceLevel > 0) {
+    LOGGER.warn("No enough closing braces in string: " + toMeasure);
+  }
   return result;
 }

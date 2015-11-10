@@ -1,13 +1,16 @@
 {
   Reader reader;
-  Reader utf8Reader=ImportFormatReader.getUTF8Reader(fileToOpen);
-  String suppliedEncoding=OpenDatabaseAction.checkForEncoding(utf8Reader);
-  utf8Reader.close();
-  if (suppliedEncoding == null) {
-    Reader utf16Reader=ImportFormatReader.getUTF16Reader(fileToOpen);
-    suppliedEncoding=OpenDatabaseAction.checkForEncoding(utf16Reader);
-    utf16Reader.close();
+  String suppliedEncoding=null;
+  try (Reader utf8Reader=ImportFormatReader.getUTF8Reader(fileToOpen)){
+    suppliedEncoding=OpenDatabaseAction.checkForEncoding(utf8Reader);
+    utf8Reader.close();
   }
+   if (suppliedEncoding == null) {
+    try (Reader utf16Reader=ImportFormatReader.getUTF16Reader(fileToOpen)){
+      suppliedEncoding=OpenDatabaseAction.checkForEncoding(utf16Reader);
+      utf16Reader.close();
+    }
+   }
   if (suppliedEncoding != null) {
     try {
       reader=ImportFormatReader.getReader(fileToOpen,suppliedEncoding);

@@ -1,15 +1,9 @@
 {
   File f=new File(filename);
-  OutputStream os=new FileOutputStream(f);
-  try {
+  try (OutputStream os=new FileOutputStream(f)){
     prefs.exportSubtree(os);
   }
  catch (  BackingStoreException ex) {
     throw new IOException(ex);
-  }
- finally {
-    if (os != null) {
-      os.close();
-    }
   }
 }
