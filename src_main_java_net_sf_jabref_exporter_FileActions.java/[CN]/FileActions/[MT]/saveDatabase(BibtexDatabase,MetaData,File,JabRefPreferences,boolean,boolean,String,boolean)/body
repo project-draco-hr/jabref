@@ -13,7 +13,7 @@
     if (encoding != null) {
       LOGGER.error("Error from encoding: '" + encoding + "' Len: "+ encoding.length(),e);
     }
-    throw new SaveException(e.getMessage());
+    throw new SaveException(e.getMessage(),e.getLocalizedMessage());
   }
   try (VerifyingWriter fw=session.getWriter()){
     FileActions.writeBibFileHeader(fw,encoding);
@@ -56,7 +56,7 @@
  catch (  Throwable ex) {
     ex.printStackTrace();
     session.cancel();
-    throw new SaveException(ex.getMessage(),exceptionCause);
+    throw new SaveException(ex.getMessage(),ex.getLocalizedMessage(),exceptionCause);
   }
   return session;
 }

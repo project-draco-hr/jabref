@@ -7,7 +7,7 @@
     session=new SaveSession(file,encoding,backup);
   }
  catch (  IOException e) {
-    throw new SaveException(e.getMessage());
+    throw new SaveException(e.getMessage(),e.getLocalizedMessage());
   }
   try (VerifyingWriter fw=session.getWriter()){
     if (saveType != DatabaseSaveType.PLAIN_BIBTEX) {
@@ -42,7 +42,7 @@
   }
  catch (  Throwable ex) {
     session.cancel();
-    throw new SaveException(ex.getMessage(),be);
+    throw new SaveException(ex.getMessage(),ex.getLocalizedMessage(),be);
   }
   return session;
 }
