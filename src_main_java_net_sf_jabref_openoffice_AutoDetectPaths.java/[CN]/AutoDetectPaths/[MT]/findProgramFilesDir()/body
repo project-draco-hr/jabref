@@ -1,14 +1,23 @@
 {
+  List<String> sourceList=new ArrayList<>();
   List<File> dirList=new ArrayList<>();
-  File root=new File("C:\\");
-  File[] dirs=root.listFiles(new FileFilter(){
-    @Override public boolean accept(    File file){
-      return file.isDirectory();
-    }
+  String progFiles=System.getenv("ProgramFiles");
+  if (progFiles != null) {
+    sourceList.add(progFiles);
   }
+  progFiles=System.getenv("ProgramFiles(x86)");
+  if (progFiles != null) {
+    sourceList.add(progFiles);
+  }
+  for (  String rootPath : sourceList) {
+    File root=new File(rootPath);
+    File[] dirs=root.listFiles(new FileFilter(){
+      @Override public boolean accept(      File file){
+        return file.isDirectory();
+      }
+    }
 );
-  for (  File dir : dirs) {
-    if (dir.getName().toLowerCase().equals("program files") || dir.getName().toLowerCase().equals("program files (x86)")) {
+    for (    File dir : dirs) {
       dirList.add(dir);
     }
   }
