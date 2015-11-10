@@ -1,0 +1,60 @@
+{
+  shouldContinue=true;
+  try {
+    status.setStatus(Localization.lang("Searching DOAJ..."));
+    HttpResponse<JsonNode> jsonResponse;
+    jsonResponse=Unirest.get(searchURL + query + "?pageSize=1").header("accept","application/json").asJson();
+    JSONObject jo=jsonResponse.getBody().getObject();
+    int hits=jo.getInt("total");
+    int numberToFetch=0;
+    if (hits > 0) {
+      if (hits > maxPerPage) {
+        while (true) {
+          String strCount=JOptionPane.showInputDialog(Localization.lang("References found") + ": " + hits+ "  "+ Localization.lang("Number of references to fetch?"),Integer.toString(hits));
+          if (strCount == null) {
+            status.setStatus(Localization.lang("DOAJ search canceled"));
+            return false;
+          }
+          try {
+            numberToFetch=Integer.parseInt(strCount.trim());
+            break;
+          }
+ catch (          RuntimeException ex) {
+            status.showMessage(Localization.lang("Please enter a valid number"));
+          }
+        }
+      }
+ else {
+        numberToFetch=hits;
+      }
+      int fetched=0;
+      for (int page=1; ((page - 1) * maxPerPage) <= numberToFetch; page++) {
+        if (!shouldContinue) {
+          break;
+        }
+        int noToFetch=Math.min(maxPerPage,numberToFetch - ((page - 1) * maxPerPage));
+        jsonResponse=Unirest.get(searchURL + query + "?page="+ page+ "&pageSize="+ noToFetch).header("accept","application/json").asJson();
+        jo=jsonResponse.getBody().getObject();
+        if (jo.has("results")) {
+          JSONArray results=jo.getJSONArray("results");
+          for (int i=0; i < results.length(); i++) {
+            JSONObject bibJsonEntry=results.getJSONObject(i).getJSONObject("bibjson");
+            BibtexEntry entry=jsonConverter.BibJSONtoBibtex(bibJsonEntry);
+            inspector.addEntry(entry);
+            fetched++;
+            inspector.setProgress(fetched,numberToFetch);
+          }
+        }
+      }
+      return true;
+    }
+ else {
+      status.showMessage(Localization.lang("No entries found for the search string '%0'",query),Localization.lang("Search DOAJ"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+  }
+ catch (  UnirestException e) {
+    LOGGER.warn("Problem searching DOAJ",e);
+    return false;
+  }
+}
