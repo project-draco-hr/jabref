@@ -1,15 +1,17 @@
 {
   RisImporter importer=new RisImporter();
-  List<BibtexEntry> entries=importer.importEntries(RISImporterTest.class.getResourceAsStream("RisImporterTest1.ris"),new OutputPrinterToNull());
-  Assert.assertEquals(1,entries.size());
-  BibtexEntry entry=entries.get(0);
-  Assert.assertEquals("Editorial: Open Source and Empirical Software Engineering",entry.getField("title"));
-  Assert.assertEquals("Harrison, Warren",entry.getField("author"));
-  Assert.assertEquals(BibtexEntryTypes.ARTICLE,entry.getType());
-  Assert.assertEquals("Empirical Software Engineering",entry.getField("journal"));
-  Assert.assertEquals("2001",entry.getField("year"));
-  Assert.assertEquals("6",entry.getField("volume"));
-  Assert.assertEquals("3",entry.getField("number"));
-  Assert.assertEquals("193--194",entry.getField("pages"));
-  Assert.assertEquals("#sep#",entry.getField("month"));
-}
+  try (InputStream stream=RISImporterTest.class.getResourceAsStream("RisImporterTest1.ris")){
+    List<BibtexEntry> entries=importer.importEntries(stream,new OutputPrinterToNull());
+    Assert.assertEquals(1,entries.size());
+    BibtexEntry entry=entries.get(0);
+    Assert.assertEquals("Editorial: Open Source and Empirical Software Engineering",entry.getField("title"));
+    Assert.assertEquals("Harrison, Warren",entry.getField("author"));
+    Assert.assertEquals(BibtexEntryTypes.ARTICLE,entry.getType());
+    Assert.assertEquals("Empirical Software Engineering",entry.getField("journal"));
+    Assert.assertEquals("2001",entry.getField("year"));
+    Assert.assertEquals("6",entry.getField("volume"));
+    Assert.assertEquals("3",entry.getField("number"));
+    Assert.assertEquals("193--194",entry.getField("pages"));
+    Assert.assertEquals("#sep#",entry.getField("month"));
+  }
+ }
