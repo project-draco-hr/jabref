@@ -11,9 +11,10 @@
       return null;
     }
  else {
-      InputStreamReader is=new InputStreamReader(meta.createInputStream(),"UTF8");
-      return XMPUtilTest.slurp(is).trim();
-    }
+      try (InputStreamReader is=new InputStreamReader(meta.createInputStream(),"UTF8")){
+        return XMPUtilTest.slurp(is).trim();
+      }
+     }
   }
   finally {
     if (document != null) {
