@@ -24,7 +24,7 @@
     for (    BibtexEntry be : sorter) {
       exceptionCause=be;
       BibtexEntryType tp=be.getType();
-      if (BibtexEntryType.getStandardType(tp.getName()) == null) {
+      if (EntryTypes.getStandardType(tp.getName()) == null) {
         types.put(tp.getName(),tp);
       }
       boolean write=true;
@@ -47,7 +47,7 @@
         BibtexEntryType type=stringBibtexEntryTypeEntry.getValue();
         if (type instanceof CustomEntryType) {
           CustomEntryType tp=(CustomEntryType)type;
-          tp.save(fw);
+          CustomEntryTypesManager.save(tp,fw);
           fw.write(Globals.NEWLINE);
         }
       }
