@@ -6,7 +6,13 @@
     BasePanel bp=(BasePanel)frame.getTabbedPane().getComponentAt(i);
     bp.entryEditors.remove(typeName);
     for (    BibtexEntry entry : bp.database().getEntries()) {
-      entry.updateType();
+      BibtexEntryType newType=BibtexEntryType.getType(entry.getType().getName());
+      if (newType != null) {
+        entry.setType(newType);
+      }
+ else {
+        entry.setType(BibtexEntryTypes.TYPELESS);
+      }
     }
   }
 }
