@@ -3,6 +3,7 @@
   try {
     status.setStatus(Localization.lang("Searching Springer..."));
     HttpResponse<JsonNode> jsonResponse;
+    query=URLEncoder.encode(query,"UTF-8");
     jsonResponse=Unirest.get(API_URL + query + "&api_key="+ API_KEY+ "&p=1").header("accept","application/json").asJson();
     JSONObject jo=jsonResponse.getBody().getObject();
     int hits=jo.getJSONArray("result").getJSONObject(0).getInt("total");
@@ -55,6 +56,9 @@
   }
  catch (  UnirestException e) {
     LOGGER.warn("Problem searching Springer",e);
-    return false;
   }
+catch (  UnsupportedEncodingException e) {
+    LOGGER.warn("Cannot encode query",e);
+  }
+  return false;
 }
