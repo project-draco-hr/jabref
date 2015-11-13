@@ -2,7 +2,7 @@
   if (!SpecialFieldsUtils.keywordSyncEnabled()) {
     return;
   }
-  ArrayList<String> keywordList=Util.getSeparatedKeywords(be);
+  ArrayList<String> keywordList=be.getSeparatedKeywords();
   List<String> values=e.getKeyWords();
   int foundPos=-1;
   for (  Object value : values) {
@@ -20,5 +20,12 @@
       keywordList.add(foundPos,newValue);
     }
   }
-  Util.putKeywords(be,keywordList,ce);
+  String oldValue=be.getField("keywords");
+  be.putKeywords(keywordList);
+  String updatedValue=be.getField("keywords");
+  if ((oldValue == null) || !oldValue.equals(updatedValue)) {
+    if (ce != null) {
+      ce.addEdit(new UndoableFieldChange(be,"keywords",oldValue,updatedValue));
+    }
+  }
 }
