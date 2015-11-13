@@ -80,5 +80,14 @@ getContentPane().add(options,BorderLayout.SOUTH);
 pack();
 pw=new PositionWindow(this,JabRefPreferences.DUPLICATES_POS_X,JabRefPreferences.DUPLICATES_POS_Y,JabRefPreferences.DUPLICATES_SIZE_X,JabRefPreferences.DUPLICATES_SIZE_Y);
 pw.setWindowPosition();
+addComponentListener(new ComponentAdapter(){
+@Override public void componentResized(ComponentEvent e){
+pw.storeWindowPosition();
+}
+@Override public void componentMoved(ComponentEvent e){
+pw.storeWindowPosition();
+}
+}
+);
 both.requestFocus();
 }
