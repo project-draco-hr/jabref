@@ -13,32 +13,32 @@
     if (typeMatcher.find()) {
       typeName=typeMatcher.group(1);
       if (typeName.equalsIgnoreCase("IEEE Journals &amp; Magazines") || typeName.equalsIgnoreCase("IEEE Early Access Articles") || typeName.equalsIgnoreCase("IET Journals &amp; Magazines")|| typeName.equalsIgnoreCase("AIP Journals &amp; Magazines")|| typeName.equalsIgnoreCase("AVS Journals &amp; Magazines")|| typeName.equalsIgnoreCase("IBM Journals &amp; Magazines")|| typeName.equalsIgnoreCase("TUP Journals &amp; Magazines")|| typeName.equalsIgnoreCase("BIAI Journals &amp; Magazines")|| typeName.equalsIgnoreCase("MIT Press Journals")|| typeName.equalsIgnoreCase("Alcatel-Lucent Journal")) {
-        type=BibtexEntryType.getType("article");
+        type=EntryTypes.getType("article");
         sourceField="journal";
       }
  else       if (typeName.equalsIgnoreCase("IEEE Conference Publications") || typeName.equalsIgnoreCase("IET Conference Publications") || typeName.equalsIgnoreCase("VDE Conference Publications")) {
-        type=BibtexEntryType.getType("inproceedings");
+        type=EntryTypes.getType("inproceedings");
         sourceField="booktitle";
       }
  else       if (typeName.equalsIgnoreCase("IEEE Standards") || typeName.equalsIgnoreCase("Standards")) {
-        type=BibtexEntryType.getType("standard");
+        type=EntryTypes.getType("standard");
         sourceField="number";
       }
  else       if (typeName.equalsIgnoreCase("IEEE eLearning Library Courses")) {
-        type=BibtexEntryType.getType("electronic");
+        type=EntryTypes.getType("electronic");
         sourceField="note";
       }
  else       if (typeName.equalsIgnoreCase("Wiley-IEEE Press eBook Chapters") || typeName.equalsIgnoreCase("MIT Press eBook Chapters") || typeName.equalsIgnoreCase("IEEE USA Books &amp; eBooks")) {
-        type=BibtexEntryType.getType("incollection");
+        type=EntryTypes.getType("incollection");
         sourceField="booktitle";
       }
  else       if (typeName.equalsIgnoreCase("Morgan and Claypool eBooks")) {
-        type=BibtexEntryType.getType("book");
+        type=EntryTypes.getType("book");
         sourceField="note";
       }
     }
     if (type == null) {
-      type=BibtexEntryType.getType("misc");
+      type=EntryTypes.getType("misc");
       sourceField="note";
       IEEEXploreFetcher.LOGGER.warn("Type detection failed. Use MISC instead. Type string: " + text);
       unparseable++;
@@ -69,7 +69,7 @@
         entry.setField(field,htmlConverter.format(fieldMatcher.group(1)));
         if (field.equals("title") && fieldMatcher.find()) {
           String sec_title=htmlConverter.format(fieldMatcher.group(1));
-          if (entry.getType() == BibtexEntryType.getStandardType("standard")) {
+          if (entry.getType() == EntryTypes.getStandardType("standard")) {
             sec_title=sec_title.replaceAll("IEEE Std ","");
           }
           entry.setField(sourceField,sec_title);
@@ -96,8 +96,8 @@
  else {
       entry.setField("author",authorString);
     }
-    if ((entry.getType() == BibtexEntryType.getStandardType("inproceedings")) && entry.getField("author").equals("")) {
-      entry.setType(BibtexEntryType.getStandardType("proceedings"));
+    if ((entry.getType() == EntryTypes.getStandardType("inproceedings")) && entry.getField("author").equals("")) {
+      entry.setType(EntryTypes.getStandardType("proceedings"));
     }
     if (includeAbstract) {
       index=text.indexOf("id=\"abstract");

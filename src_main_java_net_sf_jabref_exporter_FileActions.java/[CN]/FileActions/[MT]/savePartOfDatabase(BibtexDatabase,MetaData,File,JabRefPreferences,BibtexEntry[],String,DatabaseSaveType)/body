@@ -23,7 +23,7 @@
     for (    BibtexEntry aSorter : sorter) {
       be=aSorter;
       BibtexEntryType tp=be.getType();
-      if (BibtexEntryType.getStandardType(tp.getName()) == null) {
+      if (EntryTypes.getStandardType(tp.getName()) == null) {
         types.put(tp.getName(),tp);
       }
       bibtexEntryWriter.write(be,fw);
@@ -35,7 +35,7 @@
     if (!types.isEmpty()) {
       for (      Map.Entry<String,BibtexEntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
         CustomEntryType tp=(CustomEntryType)stringBibtexEntryTypeEntry.getValue();
-        tp.save(fw);
+        CustomEntryTypesManager.save(tp,fw);
         fw.write(Globals.NEWLINE);
       }
     }
