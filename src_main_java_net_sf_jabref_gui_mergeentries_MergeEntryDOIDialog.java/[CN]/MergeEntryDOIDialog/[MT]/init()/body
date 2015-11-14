@@ -29,13 +29,16 @@
   layout.appendColumn(ColumnSpec.decode("5px"));
   layout.insertRow(1,RowSpec.decode("5px"));
   layout.insertColumn(1,ColumnSpec.decode("5px"));
-  pack();
-  if (getHeight() > DIM.height) {
-    setSize(new Dimension(getWidth(),DIM.height));
+  pw=new PositionWindow(this,JabRefPreferences.MERGEENTRIES_POS_X,JabRefPreferences.MERGEENTRIES_POS_Y,JabRefPreferences.MERGEENTRIES_SIZE_X,JabRefPreferences.MERGEENTRIES_SIZE_Y);
+  pw.setWindowPosition();
+  addComponentListener(new ComponentAdapter(){
+    @Override public void componentResized(    ComponentEvent e){
+      pw.storeWindowPosition();
+    }
+    @Override public void componentMoved(    ComponentEvent e){
+      pw.storeWindowPosition();
+    }
   }
-  if (getWidth() > DIM.width) {
-    setSize(new Dimension(DIM.width,getHeight()));
-  }
+);
   setVisible(true);
-  pack();
 }

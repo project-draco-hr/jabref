@@ -39,64 +39,55 @@ options.add(Box.createHorizontalStrut(5));
 options.add(cancel);
 first.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
-status=DuplicateResolverDialog.KEEP_UPPER;
-block=false;
-savePosition();
-dispose();
+buttonPressed(KEEP_UPPER);
 }
 }
 );
 second.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
-status=DuplicateResolverDialog.KEEP_LOWER;
-block=false;
-savePosition();
-dispose();
+buttonPressed(KEEP_LOWER);
 }
 }
 );
 both.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
-status=DuplicateResolverDialog.KEEP_BOTH;
-block=false;
-savePosition();
-dispose();
+buttonPressed(KEEP_BOTH);
 }
 }
 );
 merge.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
-status=DuplicateResolverDialog.KEEP_MERGE;
-block=false;
-savePosition();
-dispose();
+buttonPressed(KEEP_MERGE);
 }
 }
 );
 if (removeExact != null) {
 removeExact.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
-status=DuplicateResolverDialog.AUTOREMOVE_EXACT;
-block=false;
-savePosition();
-dispose();
+buttonPressed(AUTOREMOVE_EXACT);
 }
 }
 );
 }
 cancel.addActionListener(new ActionListener(){
 @Override public void actionPerformed(ActionEvent e){
-status=DuplicateResolverDialog.BREAK;
-block=false;
-savePosition();
-dispose();
+buttonPressed(BREAK);
 }
 }
 );
 getContentPane().add(me.getMergeEntryPanel());
 getContentPane().add(options,BorderLayout.SOUTH);
 pack();
-setLocation(Globals.prefs.getInt(JabRefPreferences.DUPLICATES_POS_X),Globals.prefs.getInt(JabRefPreferences.DUPLICATES_POS_Y));
-setSize(Globals.prefs.getInt(JabRefPreferences.DUPLICATES_SIZE_X),Globals.prefs.getInt(JabRefPreferences.DUPLICATES_SIZE_Y));
+pw=new PositionWindow(this,JabRefPreferences.DUPLICATES_POS_X,JabRefPreferences.DUPLICATES_POS_Y,JabRefPreferences.DUPLICATES_SIZE_X,JabRefPreferences.DUPLICATES_SIZE_Y);
+pw.setWindowPosition();
+addComponentListener(new ComponentAdapter(){
+@Override public void componentResized(ComponentEvent e){
+pw.storeWindowPosition();
+}
+@Override public void componentMoved(ComponentEvent e){
+pw.storeWindowPosition();
+}
+}
+);
 both.requestFocus();
 }

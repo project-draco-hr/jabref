@@ -21,7 +21,17 @@
   initActions();
   tlb.setVisible(Globals.prefs.getBoolean(JabRefPreferences.TOOLBAR_VISIBLE));
   setBounds(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds());
+  pw=new PositionWindow(this,JabRefPreferences.POS_X,JabRefPreferences.POS_Y,JabRefPreferences.SIZE_X,JabRefPreferences.SIZE_Y);
   positionWindowOnScreen();
+  this.addComponentListener(new ComponentAdapter(){
+    @Override public void componentResized(    ComponentEvent e){
+      pw.storeWindowPosition();
+    }
+    @Override public void componentMoved(    ComponentEvent e){
+      pw.storeWindowPosition();
+    }
+  }
+);
   tabbedPane.setBorder(null);
   tabbedPane.setForeground(GUIGlobals.inActiveTabbed);
   tabbedPane.addChangeListener(new ChangeListener(){

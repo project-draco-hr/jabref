@@ -3,7 +3,6 @@
   this.frame=frame;
   this.panel=panel;
   this.base=base;
-  this.prefs=prefs;
   sortStrings();
   helpAction=new HelpAction(frame.helpDiag,GUIGlobals.stringEditorHelp,Localization.lang("Help"));
   addWindowListener(new WindowAdapter(){
@@ -18,8 +17,6 @@
     }
   }
 );
-  setLocation(prefs.getInt(JabRefPreferences.STRINGS_POS_X),prefs.getInt(JabRefPreferences.STRINGS_POS_Y));
-  setSize(prefs.getInt(JabRefPreferences.STRINGS_SIZE_X),prefs.getInt(JabRefPreferences.STRINGS_SIZE_Y));
   JPanel pan=new JPanel();
   GridBagLayout gbl=new GridBagLayout();
   pan.setLayout(gbl);
@@ -68,4 +65,15 @@
  else {
     setTitle(GUIGlobals.stringsTitle + ": " + GUIGlobals.untitledTitle);
   }
+  pw=new PositionWindow(this,JabRefPreferences.STRINGS_POS_X,JabRefPreferences.STRINGS_POS_Y,JabRefPreferences.STRINGS_SIZE_X,JabRefPreferences.STRINGS_SIZE_Y);
+  pw.setWindowPosition();
+  addComponentListener(new ComponentAdapter(){
+    @Override public void componentResized(    ComponentEvent e){
+      pw.storeWindowPosition();
+    }
+    @Override public void componentMoved(    ComponentEvent e){
+      pw.storeWindowPosition();
+    }
+  }
+);
 }
