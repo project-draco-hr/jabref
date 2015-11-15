@@ -8,7 +8,7 @@
   preview=new PreviewPanel(null,metaData,Globals.prefs.get(JabRefPreferences.PREVIEW_0));
   duplLabel.setToolTipText(Localization.lang("Possible duplicate of existing entry. Click to resolve."));
   sortedList=new SortedList<>(entries);
-  EventTableModel<BibtexEntry> tableModelGl=new EventTableModel<>(sortedList,new EntryTableFormat());
+  DefaultEventTableModel<BibtexEntry> tableModelGl=(DefaultEventTableModel<BibtexEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList,new EntryTableFormat());
   glTable=new EntryTable(tableModelGl);
   GeneralRenderer renderer=new GeneralRenderer(Color.white);
   glTable.setDefaultRenderer(JLabel.class,renderer);
@@ -16,7 +16,7 @@
   glTable.getInputMap().put(Globals.prefs.getKey(KeyBinds.DELETE_ENTRY),"delete");
   DeleteListener deleteListener=new DeleteListener();
   glTable.getActionMap().put("delete",deleteListener);
-  selectionModel=new EventSelectionModel<>(sortedList);
+  selectionModel=(DefaultEventSelectionModel<BibtexEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(sortedList);
   glTable.setSelectionModel(selectionModel);
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
   comparatorChooser=TableComparatorChooser.install(glTable,sortedList,AbstractTableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
