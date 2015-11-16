@@ -1,23 +1,17 @@
 {
 switch (mode) {
-case Incremental:
-    updateIncremental();
+case FLOAT:
+    updateFloat();
   break;
-case Float:
-updateFloat();
-break;
-case Filter:
-case LiveFilter:
+case FILTER:
 updateFilter();
 break;
-case ResultsInDialog:
-updateResultsInDialog();
-break;
-case Global:
+case GLOBAL:
 updateGlobal();
 break;
 }
-if (mode != SearchMode.Incremental) {
 frame.basePanel().output(Localization.lang("Searched database. Number of hits") + ": " + hits);
-}
+frame.getSearchBar().updateResults(hits);
+String description=SearchDescribers.getSearchDescriberFor(this.rule,frame.getSearchBar().getSearchQuery().query).getDescription();
+frame.getSearchBar().updateSearchDescription(description);
 }
