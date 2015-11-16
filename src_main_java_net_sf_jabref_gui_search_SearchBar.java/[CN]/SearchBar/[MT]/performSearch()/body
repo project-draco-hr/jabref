@@ -5,16 +5,16 @@
     clearSearch();
     return;
   }
-  if (frame.basePanel() == null) {
+  if (basePanel == null) {
     return;
   }
-  SearchRule searchRule=SearchRules.getSearchRuleByQuery(searchText,Globals.prefs.getBoolean(JabRefPreferences.SEARCH_CASE_SENSITIVE),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REG_EXP));
-  if (!searchRule.validateSearchStrings(searchText)) {
-    frame.basePanel().output(Localization.lang("Search failed: illegal search expression"));
+  SearchQuery searchQuery=getSearchQuery();
+  if (!searchQuery.rule.validateSearchStrings(searchText)) {
+    basePanel.output(Localization.lang("Search failed: illegal search expression"));
     clearSearch();
     return;
   }
-  worker.initSearch(getSearchQuery(),getSearchMode());
+  worker.initSearch(searchQuery,getSearchMode());
   worker.getWorker().run();
   worker.getCallBack().update();
 }
