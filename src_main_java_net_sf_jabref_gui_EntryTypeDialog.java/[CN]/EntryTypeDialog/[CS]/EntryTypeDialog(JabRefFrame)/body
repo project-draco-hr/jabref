@@ -1,5 +1,5 @@
 {
-  super(_baseFrame,true);
+  super(frame,true);
   biblatexMode=Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE);
   setTitle(Localization.lang("Select entry type"));
   addWindowListener(new WindowAdapter(){
@@ -9,25 +9,8 @@
   }
 );
   getContentPane().setLayout(new BorderLayout());
-  JPanel panel=new JPanel();
-  getContentPane().add(panel,BorderLayout.CENTER);
-  JButton cancel=new JButton(Localization.lang("Cancel"));
-  cancel.addActionListener(this);
-  cancel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(_baseFrame.prefs.getKey(KeyBinds.CLOSE_DIALOG),"close");
-  cancel.getActionMap().put("close",cancelAction);
-  JPanel buttons=new JPanel();
-  ButtonBarBuilder bb=new ButtonBarBuilder(buttons);
-  bb.addGlue();
-  bb.addButton(cancel);
-  bb.addGlue();
-  getContentPane().add(buttons,BorderLayout.SOUTH);
-  if (biblatexMode) {
-    addEntryTypeGroup(panel,"BibLateX",EntryTypes.getAllValues());
-  }
- else {
-    addEntryTypeGroup(panel,"BibTeX",BibtexEntryTypes.ALL);
-    addEntryTypeGroup(panel,"IEEETran",IEEETranEntryTypes.ALL);
-  }
+  getContentPane().add(createCancelButtonBarPanel(),BorderLayout.SOUTH);
+  getContentPane().add(createEntryGroupsPanel(),BorderLayout.CENTER);
   pack();
   setResizable(false);
 }
