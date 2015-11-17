@@ -1,5 +1,6 @@
 {
   super(_baseFrame,true);
+  biblatexMode=Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE);
   setTitle(Localization.lang("Select entry type"));
   addWindowListener(new WindowAdapter(){
     @Override public void windowClosing(    WindowEvent e){
@@ -20,7 +21,13 @@
   bb.addButton(cancel);
   bb.addGlue();
   getContentPane().add(buttons,BorderLayout.SOUTH);
-  addEntryTypeGroup(panel,EntryTypes.getAllValues());
+  if (biblatexMode) {
+    addEntryTypeGroup(panel,EntryTypes.getAllValues());
+  }
+ else {
+    addEntryTypeGroup(panel,BibtexEntryTypes.ALL);
+    addEntryTypeGroup(panel,IEEETranEntryTypes.ALL);
+  }
   pack();
   setResizable(false);
 }
