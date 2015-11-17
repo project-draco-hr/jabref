@@ -1,5 +1,5 @@
 {
-  TreeMap<String,BibtexEntryType> types=new TreeMap<>();
+  TreeMap<String,EntryType> types=new TreeMap<>();
   boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
   if (suppressBackup) {
     backup=false;
@@ -23,7 +23,7 @@
     BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
     for (    BibtexEntry be : sorter) {
       exceptionCause=be;
-      BibtexEntryType tp=be.getType();
+      EntryType tp=be.getType();
       if (EntryTypes.getStandardType(tp.getName()) == null) {
         types.put(tp.getName(),tp);
       }
@@ -43,8 +43,8 @@
       metaData.writeMetaData(fw);
     }
     if (!types.isEmpty()) {
-      for (      Map.Entry<String,BibtexEntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
-        BibtexEntryType type=stringBibtexEntryTypeEntry.getValue();
+      for (      Map.Entry<String,EntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
+        EntryType type=stringBibtexEntryTypeEntry.getValue();
         if (type instanceof CustomEntryType) {
           CustomEntryType tp=(CustomEntryType)type;
           CustomEntryTypesManager.save(tp,fw);
