@@ -5,20 +5,20 @@
     while ((line=br.readLine()) != null) {
       line=line.trim();
       if (!line.startsWith("%")) {
-        return null;
+        return Optional.empty();
       }
       line=line.substring(1).trim();
       if (line.startsWith(Globals.SIGNATURE)) {
       }
  else       if (line.startsWith(Globals.encPrefix)) {
-        return line.substring(Globals.encPrefix.length()).trim();
+        return Optional.of(line.substring(Globals.encPrefix.length()).trim());
       }
  else {
-        return null;
+        return Optional.empty();
       }
     }
   }
  catch (  IOException ignored) {
   }
-  return null;
+  return Optional.empty();
 }
