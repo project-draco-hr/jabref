@@ -1,16 +1,16 @@
 {
-  if (cancelled || (panel.getFile() == null)) {
+  if (cancelled || (panel.getDatabaseFile() == null)) {
     return;
   }
   try {
     panel.storeCurrentEdit();
     panel.autoGenerateKeysBeforeSaving();
-    if (!FileBasedLock.waitForFileLock(panel.getFile(),10)) {
+    if (!FileBasedLock.waitForFileLock(panel.getDatabaseFile(),10)) {
       success=false;
       fileLockedError=true;
     }
  else {
-      success=saveDatabase(panel.getFile(),false,panel.getEncoding());
+      success=saveDatabase(panel.getDatabaseFile(),false,panel.getEncoding());
       try {
         Globals.fileUpdateMonitor.updateTimeStamp(panel.getFileMonitorHandle());
       }
