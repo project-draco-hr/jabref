@@ -2,7 +2,7 @@
   success=false;
   cancelled=false;
   fileLockedError=false;
-  if (panel.getFile() == null) {
+  if (panel.getDatabaseFile() == null) {
     saveAs();
   }
  else {
@@ -17,10 +17,10 @@
         cancelled=true;
         JabRefExecutorService.INSTANCE.execute(new Runnable(){
           @Override public void run(){
-            if (!FileBasedLock.waitForFileLock(panel.getFile(),10)) {
+            if (!FileBasedLock.waitForFileLock(panel.getDatabaseFile(),10)) {
               LOGGER.error("File locked, this will be trouble.");
             }
-            ChangeScanner scanner=new ChangeScanner(panel.frame(),panel,panel.getFile());
+            ChangeScanner scanner=new ChangeScanner(panel.frame(),panel,panel.getDatabaseFile());
             JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThreadAndWait(scanner);
             if (scanner.changesFound()) {
               scanner.displayResult(new ChangeScanner.DisplayResultCallback(){
