@@ -1,0 +1,18 @@
+{
+  try {
+    List<Stack<String>> paths=new ArrayList<>();
+    for (int i=0; i < getBasePanelCount(); i++) {
+      String path=getBasePanelAt(i).getDatabaseFile().getCanonicalFile().getParent();
+      List<String> directories=Arrays.asList(path.split(Pattern.quote(File.separator)));
+      Stack<String> stack=new Stack<>();
+      stack.addAll(directories);
+      paths.add(stack);
+    }
+    List<String> uniquePaths=FileUtil.uniquePathSubstrings(paths);
+    return uniquePaths.get(panelId);
+  }
+ catch (  IOException ex) {
+    LOGGER.error("Invalid database file path: " + ex.getMessage());
+    return "";
+  }
+}
