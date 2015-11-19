@@ -10,7 +10,7 @@
     try (ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs)){
       while (rsDatabase.next()) {
         BibtexDatabase database=new BibtexDatabase();
-        HashMap<String,BibtexEntryType> types=new HashMap<>();
+        HashMap<String,EntryType> types=new HashMap<>();
         try (ResultSet rsEntryType=SQLUtil.queryAllFromTable(conn,"entry_types")){
           while (rsEntryType.next()) {
             types.put(rsEntryType.getString("entry_types_id"),EntryTypes.getType(rsEntryType.getString("label")));

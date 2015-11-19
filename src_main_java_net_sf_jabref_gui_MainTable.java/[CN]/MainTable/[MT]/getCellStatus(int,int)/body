@@ -1,12 +1,12 @@
 {
   try {
     BibtexEntry be=sortedForGrouping.get(row);
-    BibtexEntryType type=be.getType();
+    EntryType type=be.getType();
     String columnName=getColumnName(col).toLowerCase();
-    if (columnName.equals(BibtexEntry.KEY_FIELD) || type.isRequired(columnName)) {
+    if (columnName.equals(BibtexEntry.KEY_FIELD) || type.getRequiredFieldsFlat().contains(columnName)) {
       return MainTable.REQUIRED;
     }
-    if (type.isOptional(columnName)) {
+    if (type.getOptionalFields().contains(columnName)) {
       return MainTable.OPTIONAL;
     }
     return MainTable.OTHER;
