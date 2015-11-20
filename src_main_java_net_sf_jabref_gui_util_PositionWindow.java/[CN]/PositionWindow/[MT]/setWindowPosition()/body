@@ -1,0 +1,38 @@
+{
+  int sizeX=Globals.prefs.getInt(sizeXKey);
+  int sizeY=Globals.prefs.getInt(sizeYKey);
+  int posX=Globals.prefs.getInt(posXKey);
+  int posY=Globals.prefs.getInt(posYKey);
+  if (GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length >= 1) {
+    Rectangle bounds=GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDefaultConfiguration().getBounds();
+    Dimension dim=Toolkit.getDefaultToolkit().getScreenSize();
+    if (posX < bounds.x) {
+      posX=bounds.x;
+    }
+    if (posY < bounds.y) {
+      posY=bounds.y;
+    }
+    int height=(int)dim.getHeight();
+    int width=(int)dim.getWidth();
+    if ((posX + sizeX) > width) {
+      if (sizeX <= width) {
+        posX=width - sizeX;
+      }
+ else {
+        posX=Globals.prefs.getIntDefault(posXKey);
+        sizeX=Globals.prefs.getIntDefault(sizeXKey);
+      }
+    }
+    if ((posY + sizeY) > height) {
+      if (sizeY <= height) {
+        posY=height - sizeY;
+      }
+ else {
+        posY=Globals.prefs.getIntDefault(posYKey);
+        sizeY=Globals.prefs.getIntDefault(sizeYKey);
+      }
+    }
+  }
+  window.setLocation(posX,posY);
+  window.setSize(sizeX,sizeY);
+}

@@ -62,7 +62,7 @@
   JButton close=new JButton(Localization.lang("Close"));
   close.addActionListener(closeAction);
   JButton help=new HelpAction(frame.helpDiag,GUIGlobals.exportCustomizationHelp).getIconButton();
-  EventTableModel<String[]> tableModel=new EventTableModel<String[]>(Globals.prefs.customExports.getSortedList(),new ExportTableFormat());
+  EventTableModel<String[]> tableModel=new EventTableModel<>(Globals.prefs.customExports.getSortedList(),new ExportTableFormat());
   table=new JTable(tableModel);
   TableColumnModel cm=table.getColumnModel();
   cm.getColumn(0).setPreferredWidth(GUIGlobals.EXPORT_DIALOG_COL_0_WIDTH);
@@ -77,7 +77,7 @@
   JPanel main=new JPanel();
   ActionMap am=main.getActionMap();
   InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  im.put(frame.prefs().getKey("Close dialog"),"close");
+  im.put(frame.prefs().getKey(KeyBinds.CLOSE_DIALOG),"close");
   am.put("close",closeAction);
   main.setLayout(new BorderLayout());
   main.add(sp,BorderLayout.CENTER);
@@ -95,6 +95,6 @@
   getContentPane().add(main,BorderLayout.CENTER);
   getContentPane().add(buttons,BorderLayout.SOUTH);
   pack();
-  Util.placeDialog(this,frame);
+  PositionWindow.placeDialog(this,frame);
   new FocusRequester(table);
 }

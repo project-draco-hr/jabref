@@ -1,5 +1,6 @@
 {
   String query="SELECT * FROM " + tableName + ';';
-  Statement res=(Statement)SQLUtil.processQueryWithResults(conn,query);
-  return res.getResultSet();
-}
+  try (Statement res=(Statement)SQLUtil.processQueryWithResults(conn,query)){
+    return res.getResultSet();
+  }
+ }

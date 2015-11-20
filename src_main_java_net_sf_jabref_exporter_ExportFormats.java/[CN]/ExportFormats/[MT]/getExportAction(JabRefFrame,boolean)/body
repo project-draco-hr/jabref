@@ -24,21 +24,21 @@ class ExportAction extends MnemonicAwareAction {
         }
         file=new File(path);
         if (file.exists()) {
-          if (JOptionPane.showConfirmDialog(frame,'\'' + file.getName() + "' "+ Localization.lang("exists. Overwrite file?"),Localization.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION) {
+          if (JOptionPane.showConfirmDialog(frame,Localization.lang("'%0' exists. Overwrite file?",file.getName()),Localization.lang("Export"),JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION) {
             return;
           }
         }
         final IExportFormat format=eff.getExportFormat();
         Set<String> entryIds=null;
         if (selectedOnly) {
-          BibtexEntry[] selected=frame.basePanel().getSelectedEntries();
+          BibtexEntry[] selected=frame.getCurrentBasePanel().getSelectedEntries();
           entryIds=new HashSet<>();
           for (          BibtexEntry bibtexEntry : selected) {
             entryIds.add(bibtexEntry.getId());
           }
         }
-        Globals.prefs.fileDirForDatabase=frame.basePanel().metaData().getFileDirectory(Globals.FILE_FIELD);
-        Globals.prefs.databaseFile=frame.basePanel().metaData().getFile();
+        Globals.prefs.fileDirForDatabase=frame.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD);
+        Globals.prefs.databaseFile=frame.getCurrentBasePanel().metaData().getFile();
         Globals.prefs.put(JabRefPreferences.LAST_USED_EXPORT,format.getConsoleName());
         Globals.prefs.put(JabRefPreferences.EXPORT_WORKING_DIRECTORY,file.getParent());
         final File finFile=file;
@@ -47,7 +47,7 @@ class ExportAction extends MnemonicAwareAction {
           String errorMessage;
           @Override public void run(){
             try {
-              format.performExport(frame.basePanel().database(),frame.basePanel().metaData(),finFile.getPath(),frame.basePanel().getEncoding(),finEntryIDs);
+              format.performExport(frame.getCurrentBasePanel().database(),frame.getCurrentBasePanel().metaData(),finFile.getPath(),frame.getCurrentBasePanel().getEncoding(),finEntryIDs);
             }
  catch (            Exception ex) {
               ex.printStackTrace();

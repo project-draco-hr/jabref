@@ -1,5 +1,5 @@
 {
-  TreeMap<String,BibtexEntryType> types=new TreeMap<>();
+  TreeMap<String,EntryType> types=new TreeMap<>();
   boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
   if (suppressBackup) {
     backup=false;
@@ -13,42 +13,42 @@
     if (encoding != null) {
       LOGGER.error("Error from encoding: '" + encoding + "' Len: "+ encoding.length(),e);
     }
-    throw new SaveException(e.getMessage());
+    throw new SaveException(e.getMessage(),e.getLocalizedMessage());
   }
-  try (VerifyingWriter fw=session.getWriter()){
-    FileActions.writeBibFileHeader(fw,encoding);
-    FileActions.writePreamble(fw,database.getPreamble());
-    FileActions.writeStrings(fw,database);
+  try (VerifyingWriter writer=session.getWriter()){
+    FileActions.writeBibFileHeader(writer,encoding);
+    FileActions.writePreamble(writer,database.getPreamble());
+    FileActions.writeStrings(writer,database);
     List<BibtexEntry> sorter=FileActions.getSortedEntries(database,metaData,null,true);
     BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
-    for (    BibtexEntry be : sorter) {
-      exceptionCause=be;
-      BibtexEntryType tp=be.getType();
-      if (BibtexEntryType.getStandardType(tp.getName()) == null) {
-        types.put(tp.getName(),tp);
+    for (    BibtexEntry entry : sorter) {
+      exceptionCause=entry;
+      EntryType entryType=entry.getType();
+      if (EntryTypes.getStandardType(entryType.getName()) == null) {
+        types.put(entryType.getName(),entryType);
       }
       boolean write=true;
-      if (checkSearch && !FileActions.nonZeroField(be,BibtexFields.SEARCH)) {
+      if (checkSearch && !FileActions.nonZeroField(entry,BibtexFields.SEARCH)) {
         write=false;
       }
-      if (checkGroup && !FileActions.nonZeroField(be,BibtexFields.GROUPSEARCH)) {
+      if (checkGroup && !FileActions.nonZeroField(entry,BibtexFields.GROUPSEARCH)) {
         write=false;
       }
       if (write) {
-        bibtexEntryWriter.write(be,fw);
-        fw.write(Globals.NEWLINE);
+        bibtexEntryWriter.write(entry,writer);
+        writer.write(Globals.NEWLINE);
       }
     }
     if (metaData != null) {
-      metaData.writeMetaData(fw);
+      metaData.writeMetaData(writer);
     }
     if (!types.isEmpty()) {
-      for (      Map.Entry<String,BibtexEntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
-        BibtexEntryType type=stringBibtexEntryTypeEntry.getValue();
+      for (      Map.Entry<String,EntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
+        EntryType type=stringBibtexEntryTypeEntry.getValue();
         if (type instanceof CustomEntryType) {
           CustomEntryType tp=(CustomEntryType)type;
-          tp.save(fw);
-          fw.write(Globals.NEWLINE);
+          CustomEntryTypesManager.save(tp,writer);
+          writer.write(Globals.NEWLINE);
         }
       }
     }
@@ -56,7 +56,7 @@
  catch (  Throwable ex) {
     ex.printStackTrace();
     session.cancel();
-    throw new SaveException(ex.getMessage(),exceptionCause);
+    throw new SaveException(ex.getMessage(),ex.getLocalizedMessage(),exceptionCause);
   }
   return session;
 }

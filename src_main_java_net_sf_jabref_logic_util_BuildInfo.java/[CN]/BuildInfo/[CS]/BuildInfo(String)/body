@@ -1,9 +1,11 @@
 {
   Properties properties=new Properties();
-  try {
-    properties.load(getClass().getResourceAsStream(path));
+  String versionFromProps=UNKOWN_VERSION;
+  try (InputStream stream=getClass().getResourceAsStream(path)){
+    properties.load(stream);
+    versionFromProps=properties.getProperty("version",UNKOWN_VERSION);
   }
  catch (  IOException|NullPointerException ignored) {
   }
-  version=properties.getProperty("version","dev");
+  version=versionFromProps;
 }

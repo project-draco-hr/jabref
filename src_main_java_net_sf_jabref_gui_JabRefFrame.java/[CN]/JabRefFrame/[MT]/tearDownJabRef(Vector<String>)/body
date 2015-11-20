@@ -1,13 +1,9 @@
 {
   JabRefExecutorService.INSTANCE.shutdownEverything();
   dispose();
-  if (basePanel() != null) {
-    basePanel().saveDividerLocation();
+  if (getCurrentBasePanel() != null) {
+    getCurrentBasePanel().saveDividerLocation();
   }
-  prefs.putInt(JabRefPreferences.POS_X,JabRefFrame.this.getLocation().x);
-  prefs.putInt(JabRefPreferences.POS_Y,JabRefFrame.this.getLocation().y);
-  prefs.putInt(JabRefPreferences.SIZE_X,JabRefFrame.this.getSize().width);
-  prefs.putInt(JabRefPreferences.SIZE_Y,JabRefFrame.this.getSize().height);
   prefs.putBoolean(JabRefPreferences.WINDOW_MAXIMISED,getExtendedState() == Frame.MAXIMIZED_BOTH);
   prefs.putBoolean(JabRefPreferences.TOOLBAR_VISIBLE,tlb.isVisible());
   int width=contentPane.getDividerLocation();
@@ -29,7 +25,7 @@
   fileHistory.storeHistory();
   prefs.customExports.store();
   prefs.customImports.store();
-  BibtexEntryType.saveCustomEntryTypes(prefs);
+  CustomEntryTypesManager.saveCustomEntryTypes(prefs);
   if (Globals.autoSaveManager != null) {
     Globals.autoSaveManager.clearAutoSaves();
   }

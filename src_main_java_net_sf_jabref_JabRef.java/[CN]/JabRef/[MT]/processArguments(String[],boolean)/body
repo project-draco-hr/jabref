@@ -35,7 +35,7 @@
   if (cli.isPreferencesImport()) {
     try {
       Globals.prefs.importPreferences(cli.getPreferencesImport());
-      BibtexEntryType.loadCustomEntryTypes(Globals.prefs);
+      CustomEntryTypesManager.loadCustomEntryTypes(Globals.prefs);
       ExportFormats.initAllExports();
     }
  catch (    IOException ex) {
@@ -151,7 +151,7 @@ try {
   session.commit();
 }
  catch (SaveException ex) {
-  System.err.println(Localization.lang("Could not save file") + " '" + data[0]+ "': "+ ex.getMessage());
+  System.err.println(Localization.lang("Could not save file") + " '" + data[0]+ "': "+ ex.getLocalizedMessage());
 }
 }
 }
@@ -188,6 +188,7 @@ System.err.println(Localization.lang("Unknown export format") + ": " + data[1]);
 System.err.println(Localization.lang("The output option depends on a valid import option."));
 }
 }
+LOGGER.debug("Finished export");
 if (cli.isPreferencesExport()) {
 try {
 Globals.prefs.exportPreferences(cli.getPreferencesExport());
@@ -217,7 +218,7 @@ try {
   session.commit();
 }
  catch (SaveException ex) {
-  System.err.println(Localization.lang("Could not save file") + " '" + subName+ "': "+ ex.getMessage());
+  System.err.println(Localization.lang("Could not save file") + " '" + subName+ "': "+ ex.getLocalizedMessage());
 }
 notSavedMsg=true;
 }

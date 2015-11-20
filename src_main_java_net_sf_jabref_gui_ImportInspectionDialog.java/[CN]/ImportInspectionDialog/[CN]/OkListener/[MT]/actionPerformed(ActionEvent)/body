@@ -35,7 +35,7 @@
       panel=new BasePanel(frame,base,null,new MetaData(),Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING));
     }
     boolean groupingCanceled=false;
-    Util.setAutomaticFields(selected,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
+    net.sf.jabref.util.Util.setAutomaticFields(selected,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
     if (Globals.prefs.getBoolean(JabRefPreferences.UNMARK_ALL_ENTRIES_BEFORE_IMPORTING)) {
       for (      BibtexEntry entry : panel.database().getEntries()) {
         EntryMarker.unmarkEntry(entry,true,panel.database(),ce);
@@ -46,7 +46,7 @@
       entry.setGroupHit(false);
       Set<GroupTreeNode> groups=groupAdditions.get(entry);
       if (!groupingCanceled && (groups != null)) {
-        if (entry.getField(BibtexEntry.KEY_FIELD) == null) {
+        if (entry.getCiteKey() == null) {
           int answer=JOptionPane.showConfirmDialog(ImportInspectionDialog.this,Localization.lang("Cannot add entries to group without generating keys. Generate keys now?"),Localization.lang("Add to group"),JOptionPane.YES_NO_OPTION);
           if (answer == JOptionPane.YES_OPTION) {
             generateKeys();
@@ -55,7 +55,7 @@
             groupingCanceled=true;
           }
         }
-        if (entry.getField(BibtexEntry.KEY_FIELD) != null) {
+        if (entry.getCiteKey() != null) {
           for (          GroupTreeNode node : groups) {
             if (node.getGroup().supportsAdd()) {
               AbstractUndoableEdit undo=node.getGroup().add(new BibtexEntry[]{entry});

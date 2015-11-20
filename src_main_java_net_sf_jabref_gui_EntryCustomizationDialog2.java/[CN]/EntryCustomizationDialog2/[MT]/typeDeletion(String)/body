@@ -1,14 +1,14 @@
 {
-  BibtexEntryType type=BibtexEntryType.getType(name);
+  EntryType type=EntryTypes.getType(name);
   if (type instanceof CustomEntryType) {
-    if (BibtexEntryType.getStandardType(name) == null) {
-      int reply=JOptionPane.showConfirmDialog(frame,Localization.lang("All entries of this " + "type will be declared " + "typeless. Continue?"),Localization.lang("Delete custom format") + " '" + StringUtil.capitalizeFirst(name)+ '\'',JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+    if (EntryTypes.getStandardType(name) == null) {
+      int reply=JOptionPane.showConfirmDialog(frame,Localization.lang("All entries of this " + "type will be declared " + "typeless. Continue?"),Localization.lang("Delete custom format") + " '" + EntryUtil.capitalizeFirst(name)+ '\'',JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
       if (reply != JOptionPane.YES_OPTION) {
         return;
       }
     }
-    BibtexEntryType.removeType(name);
-    updateTypesForEntries(StringUtil.capitalizeFirst(name));
+    EntryTypes.removeType(name);
+    updateTypesForEntries(EntryUtil.capitalizeFirst(name));
     changed.remove(name);
     reqLists.remove(name);
     optLists.remove(name);

@@ -3,7 +3,7 @@
     String[] dir=metaData.getFileDirectory(fieldName);
     File file=FileUtil.expandFilename(link,dir);
     if ((file == null) || !file.exists()) {
-      throw new IOException(Localization.lang("File not found") + " (" + fieldName+ "): '"+ link+ "'.");
+      throw new IOException("File not found (" + fieldName + "): '"+ link+ "'.");
     }
     link=file.getCanonicalPath();
     String[] split=file.getName().split("\\.");
@@ -21,7 +21,7 @@
   }
  else   if (fieldName.equals("eprint")) {
     fieldName="url";
-    link=Util.sanitizeUrl(link);
+    link=URLUtil.sanitizeUrl(link);
     if (!link.startsWith("http://")) {
       link=Util.ARXIV_LOOKUP_PREFIX + link;
     }

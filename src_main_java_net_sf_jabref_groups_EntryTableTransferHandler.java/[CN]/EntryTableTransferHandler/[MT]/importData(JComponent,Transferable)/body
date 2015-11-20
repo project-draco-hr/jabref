@@ -8,20 +8,21 @@
       @SuppressWarnings("unchecked") List<File> l=(List<File>)t.getTransferData(DataFlavor.javaFileListFlavor);
       return handleDraggedFiles(l,dropRow);
     }
-    if (t.isDataFlavorSupported(urlFlavor)) {
+ else     if (t.isDataFlavorSupported(urlFlavor)) {
       URL dropLink=(URL)t.getTransferData(urlFlavor);
-      return handleDropTransfer(dropLink,dropRow);
+      return handleDropTransfer(dropLink);
     }
-    if (t.isDataFlavorSupported(stringFlavor)) {
+ else     if (t.isDataFlavorSupported(stringFlavor)) {
       String dropStr=(String)t.getTransferData(stringFlavor);
+      LOGGER.debug("Received stringFlavor: " + dropStr);
       return handleDropTransfer(dropStr,dropRow);
     }
   }
  catch (  IOException ioe) {
-    LOGGER.error("Failed to read dropped data: " + ioe);
+    LOGGER.error("Failed to read dropped data",ioe);
   }
 catch (  UnsupportedFlavorException ufe) {
-    LOGGER.error("Drop type error: " + ufe);
+    LOGGER.error("Drop type error",ufe);
   }
   LOGGER.info("Can't transfer input: ");
   DataFlavor[] inflavs=t.getTransferDataFlavors();

@@ -1,38 +1,27 @@
 {
-  Reader reader;
-  Reader utf8Reader=ImportFormatReader.getUTF8Reader(fileToOpen);
-  String suppliedEncoding=OpenDatabaseAction.checkForEncoding(utf8Reader);
-  utf8Reader.close();
-  if (suppliedEncoding == null) {
-    Reader utf16Reader=ImportFormatReader.getUTF16Reader(fileToOpen);
-    suppliedEncoding=OpenDatabaseAction.checkForEncoding(utf16Reader);
-    utf16Reader.close();
+  Optional<String> suppliedEncoding=Optional.empty();
+  try (Reader utf8Reader=ImportFormatReader.getUTF8Reader(fileToOpen)){
+    suppliedEncoding=OpenDatabaseAction.getSuppliedEncoding(utf8Reader);
   }
-  if (suppliedEncoding != null) {
-    try {
-      reader=ImportFormatReader.getReader(fileToOpen,suppliedEncoding);
-      encoding=suppliedEncoding;
+   if (!suppliedEncoding.isPresent()) {
+    try (Reader utf16Reader=ImportFormatReader.getUTF16Reader(fileToOpen)){
+      suppliedEncoding=OpenDatabaseAction.getSuppliedEncoding(utf16Reader);
     }
- catch (    Exception ex) {
-      ex.printStackTrace();
-      reader=ImportFormatReader.getReader(fileToOpen,encoding);
+   }
+  try (InputStreamReader reader=openFile(fileToOpen,suppliedEncoding,fallbackEncoding)){
+    BibtexParser bp=new BibtexParser(reader);
+    ParserResult pr=bp.parse();
+    pr.setEncoding(reader.getEncoding());
+    pr.setFile(fileToOpen);
+    if (SpecialFieldsUtils.keywordSyncEnabled()) {
+      for (      BibtexEntry entry : pr.getDatabase().getEntries()) {
+        SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,null);
+      }
+      LOGGER.info("Synchronized special fields based on keywords");
     }
-  }
- else {
-    reader=ImportFormatReader.getReader(fileToOpen,encoding);
-  }
-  BibtexParser bp=new BibtexParser(reader);
-  ParserResult pr=bp.parse();
-  pr.setEncoding(encoding);
-  pr.setFile(fileToOpen);
-  if (SpecialFieldsUtils.keywordSyncEnabled()) {
-    for (    BibtexEntry entry : pr.getDatabase().getEntries()) {
-      SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,null);
+    if (!pr.getMetaData().isGroupTreeValid()) {
+      pr.addWarning(Localization.lang("Group tree could not be parsed. If you save the BibTeX database, all groups will be lost."));
     }
-    LOGGER.info(Localization.lang("Synchronized special fields based on keywords"));
+    return pr;
   }
-  if (!pr.getMetaData().isGroupTreeValid()) {
-    pr.addWarning(Localization.lang("Group tree could not be parsed. If you save the BibTeX database, all groups will be lost."));
-  }
-  return pr;
-}
+ }
