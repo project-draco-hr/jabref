@@ -29,7 +29,8 @@
       deprecatedFields.add("year");
       deprecatedFields.add("month");
       List<String> secondaryOptionalFields=entry.getType().getSecondaryOptionalFields();
-      String[] optionalFieldsNotPrimaryOrDeprecated=EntryUtil.getRemainder((secondaryOptionalFields.toArray(new String[0])),deprecatedFields.toArray(new String[deprecatedFields.size()]));
+      List<String> temp=EntryUtil.getRemainder((secondaryOptionalFields),new ArrayList<>(deprecatedFields));
+      String[] optionalFieldsNotPrimaryOrDeprecated=temp.toArray(new String[temp.size()]);
       Set<String> optionalFieldsAndAliases=new HashSet<>();
       for (      String field : entry.getOptionalFields()) {
         optionalFieldsAndAliases.add(field);

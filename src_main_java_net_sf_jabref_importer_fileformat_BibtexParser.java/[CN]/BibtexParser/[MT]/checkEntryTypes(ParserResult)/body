@@ -1,14 +1,13 @@
 {
   for (  BibtexEntry be : database.getEntries()) {
     if (be.getType() instanceof UnknownEntryType) {
-      Object o=entryTypes.get(be.getType().getName().toLowerCase());
-      if (o != null) {
-        EntryType type=(EntryType)o;
+      String name=be.getType().getName();
+      EntryType type=entryTypes.get(name);
+      if (type != null) {
         be.setType(type);
       }
  else {
-        _pr.addWarning(Localization.lang("unknown entry type") + ": " + be.getType().getName()+ ":"+ be.getCiteKey()+ " . "+ Localization.lang("Type set to 'other'")+ ".");
-        be.setType(BibtexEntryTypes.OTHER);
+        _pr.addWarning(Localization.lang("Unknown entry type") + ": " + name+ "; key: "+ be.getCiteKey());
       }
     }
   }

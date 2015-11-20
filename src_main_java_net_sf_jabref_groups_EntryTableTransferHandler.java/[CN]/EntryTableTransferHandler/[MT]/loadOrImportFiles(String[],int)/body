@@ -1,32 +1,19 @@
 {
   OpenDatabaseAction openAction=new OpenDatabaseAction(frame,false);
-  ArrayList<String> notBibFiles=new ArrayList<>();
-  String encoding=Globals.prefs.get(JabRefPreferences.DEFAULT_ENCODING);
+  List<String> notBibFiles=new ArrayList<>();
+  List<String> bibFiles=new ArrayList<>();
   for (  String fileName : fileNames) {
     String extension="";
     ExternalFileType fileType=null;
     int index=fileName.lastIndexOf('.');
     if ((index >= 0) && (index < fileName.length())) {
       extension=fileName.substring(index + 1).toLowerCase();
-      fileType=Globals.prefs.getExternalFileTypeByExt(extension);
     }
     if (extension.equals("bib")) {
-      File f=new File(fileName);
-      try {
-        ParserResult pr=OpenDatabaseAction.loadDatabase(f,encoding);
-        if ((pr == null) || (pr == ParserResult.INVALID_FORMAT)) {
-          notBibFiles.add(fileName);
-        }
- else {
-          openAction.addNewDatabase(pr,f,true);
-          frame.getFileHistory().newFile(fileName);
-        }
-      }
- catch (      IOException e) {
-        notBibFiles.add(fileName);
-      }
+      bibFiles.add(fileName);
       continue;
     }
+    fileType=Globals.prefs.getExternalFileTypeByExt(extension);
     if ((fileType != null) && (dropRow >= 0)) {
       boolean local=true;
       DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
@@ -35,6 +22,7 @@
     }
     notBibFiles.add(fileName);
   }
+  openAction.openFilesAsStringList(bibFiles,true);
   if (!notBibFiles.isEmpty()) {
     String[] toImport=new String[notBibFiles.size()];
     notBibFiles.toArray(toImport);
