@@ -1,7 +1,5 @@
 {
-  String searchText=searchField.getText();
-  searchObservable.fireSearchlistenerEvent(searchText);
-  if (searchText.isEmpty()) {
+  if (searchField.getText().isEmpty()) {
     clearSearch();
     return;
   }
@@ -9,6 +7,7 @@
     return;
   }
   SearchQuery searchQuery=getSearchQuery();
+  searchObservable.fireSearchlistenerEvent(getSearchQuery());
   if (!searchQuery.isValidQuery()) {
     basePanel.output(Localization.lang("Search failed: illegal search expression"));
     clearSearch();
