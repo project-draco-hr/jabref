@@ -1,6 +1,5 @@
 {
   String gvkQuery="";
-  boolean shouldContinue=true;
   query=query.trim();
   String[] qterms=query.split("\\s");
   if (qterms.length == 0) {
@@ -11,9 +10,8 @@
       qterms[x]=URLEncoder.encode(qterms[x],"UTF-8");
     }
  catch (    UnsupportedEncodingException e) {
-      System.out.println("Unsupported encoding");
+      LOGGER.error("Unsupported encoding",e);
     }
-    ;
   }
   if (searchKeys.containsKey(qterms[0])) {
     gvkQuery=processComplexQuery(qterms);
@@ -31,7 +29,7 @@
     dialog.addEntry(entry);
   }
   if (bibs.size() == 0) {
-    frame.showMessage(Globals.lang("No references found"));
+    frame.showMessage(Localization.lang("No references found"));
   }
   return true;
 }

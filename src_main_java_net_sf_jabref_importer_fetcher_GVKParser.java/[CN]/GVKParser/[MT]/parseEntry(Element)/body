@@ -98,11 +98,9 @@
       if (isbn_10 != null) {
         isbn=isbn_10;
       }
-      ;
       if (isbn_13 != null) {
         isbn=isbn_13;
       }
-      ;
     }
     if (datafield.getAttribute("tag").equals("037C")) {
       if (address == null) {
@@ -114,7 +112,6 @@
         if (st.contains("Diss")) {
           entryType="phdthesis";
         }
-        ;
       }
     }
     if (datafield.getAttribute("tag").equals("027D")) {
@@ -143,7 +140,7 @@
       quelle=getSubfield("8",datafield);
     }
     if (datafield.getAttribute("tag").equals("046R")) {
-      if (quelle.equals("") || quelle == null) {
+      if (quelle.equals("") || (quelle == null)) {
         quelle=getSubfield("a",datafield);
       }
     }
@@ -161,19 +158,15 @@
   if (!(author == null)) {
     author=removeSortCharacters(author);
   }
-  ;
   if (!(editor == null)) {
     editor=removeSortCharacters(editor);
   }
-  ;
   if (!(title == null)) {
     title=removeSortCharacters(title);
   }
-  ;
   if (!(subtitle == null)) {
     subtitle=removeSortCharacters(subtitle);
   }
-  ;
   if (mak.startsWith("As")) {
     entryType="misc";
     if (quelle.contains("ISBN")) {
@@ -189,7 +182,7 @@
   if (mak.startsWith("O")) {
     entryType="online";
   }
-  BibtexEntry result=new BibtexEntry(Util.createNeutralId(),Globals.getEntryType(entryType));
+  BibtexEntry result=new BibtexEntry(IdGenerator.next(),EntryTypes.getType(entryType));
   if (!(author == null)) {
     result.setField("author",ImportFormatReader.expandAuthorInitials(author));
   }
