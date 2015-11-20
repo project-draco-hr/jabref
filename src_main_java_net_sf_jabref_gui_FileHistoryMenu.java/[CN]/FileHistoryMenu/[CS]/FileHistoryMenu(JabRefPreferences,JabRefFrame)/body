@@ -1,0 +1,20 @@
+{
+  String name=Localization.menuTitle("Recent files");
+  int i=name.indexOf('&');
+  if (i >= 0) {
+    setText(name.substring(0,i) + name.substring(i + 1));
+    char mnemonic=Character.toUpperCase(name.charAt(i + 1));
+    setMnemonic((int)mnemonic);
+  }
+ else {
+    setText(name);
+  }
+  this.frame=frame;
+  history=new FileHistory(prefs);
+  if (history.size() > 0) {
+    setItems();
+  }
+ else {
+    setEnabled(false);
+  }
+}
