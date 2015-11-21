@@ -91,10 +91,28 @@
         yesno.addActionListener(new ActionListener(){
           @Override public void actionPerformed(          ActionEvent actionEvent){
             editor.setText(((String)yesno.getSelectedItem()).toLowerCase());
+            updateField(editor);
           }
         }
 );
         return yesno;
+      }
+ else       if (BibtexFields.EXTRA_MONTH.equals(fieldExtras)) {
+        final String[] options=new String[13];
+        options[0]=Localization.lang("Select");
+        for (int i=1; i <= 12; i++) {
+          options[i]=MonthUtil.getMonthByNumber(i).fullName;
+        }
+        JComboBox<String> month=new JComboBox<>(options);
+        month.addActionListener(new ActionListener(){
+          @Override public void actionPerformed(          ActionEvent actionEvent){
+            editor.setText((MonthUtil.getMonthByNumber(month.getSelectedIndex()).bibtexFormat));
+            updateField(editor);
+            month.setSelectedIndex(0);
+          }
+        }
+);
+        return month;
       }
  else {
         return null;
