@@ -26,13 +26,15 @@
   Iterator<Element> iter=datafields.iterator();
   while (iter.hasNext()) {
     Element datafield=iter.next();
-    if (datafield.getAttribute("tag").equals("002@")) {
+    String tag=datafield.getAttribute("tag");
+    LOGGER.debug("tag: " + tag);
+    if (tag.equals("002@")) {
       mak=getSubfield("0",datafield);
     }
-    if (datafield.getAttribute("tag").equals("003@")) {
+    if (tag.equals("003@")) {
       ppn=getSubfield("0",datafield);
     }
-    if (datafield.getAttribute("tag").equals("028A")) {
+    if (tag.equals("028A")) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
       if (author != null) {
@@ -43,7 +45,7 @@
       }
       author=author.concat(vorname + " " + nachname);
     }
-    if (datafield.getAttribute("tag").equals("028B")) {
+    if (tag.equals("028B")) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
       if (author != null) {
@@ -54,7 +56,7 @@
       }
       author=author.concat(vorname + " " + nachname);
     }
-    if (datafield.getAttribute("tag").equals("028C")) {
+    if (tag.equals("028C")) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
       if (editor != null) {
@@ -65,24 +67,24 @@
       }
       editor=editor.concat(vorname + " " + nachname);
     }
-    if (datafield.getAttribute("tag").equals("021A")) {
+    if (tag.equals("021A")) {
       title=getSubfield("a",datafield);
       subtitle=getSubfield("d",datafield);
     }
-    if (datafield.getAttribute("tag").equals("033A")) {
+    if (tag.equals("033A")) {
       publisher=getSubfield("n",datafield);
       address=getSubfield("p",datafield);
     }
-    if (datafield.getAttribute("tag").equals("011@")) {
+    if (tag.equals("011@")) {
       date=getSubfield("a",datafield);
     }
-    if (datafield.getAttribute("tag").equals("031A")) {
+    if (tag.equals("031A")) {
       date=getSubfield("j",datafield);
       volume=getSubfield("e",datafield);
       number=getSubfield("a",datafield);
       pages=getSubfield("h",datafield);
     }
-    if (datafield.getAttribute("tag").equals("036D")) {
+    if (tag.equals("036D")) {
       if (title != null) {
         if (title.startsWith("@")) {
           title=title.substring(1);
@@ -95,7 +97,7 @@
       subtitle=getSubfield("d",datafield);
       volume=getSubfield("l",datafield);
     }
-    if (datafield.getAttribute("tag").equals("036E")) {
+    if (tag.equals("036E")) {
       series=getSubfield("a",datafield);
       number=getSubfield("l",datafield);
       String kor=getSubfield("b",datafield);
@@ -103,13 +105,13 @@
         series=series + " / " + kor;
       }
     }
-    if (datafield.getAttribute("tag").equals("037A")) {
+    if (tag.equals("037A")) {
       note=getSubfield("a",datafield);
     }
-    if (datafield.getAttribute("tag").equals("032@")) {
+    if (tag.equals("032@")) {
       edition=getSubfield("a",datafield);
     }
-    if (datafield.getAttribute("tag").equals("004A")) {
+    if (tag.equals("004A")) {
       String isbn_10=getSubfield("0",datafield);
       String isbn_13=getSubfield("A",datafield);
       if (isbn_10 != null) {
@@ -119,7 +121,7 @@
         isbn=isbn_13;
       }
     }
-    if (datafield.getAttribute("tag").equals("037C")) {
+    if (tag.equals("037C")) {
       if (address == null) {
         address=getSubfield("b",datafield);
         address=removeSortCharacters(address);
@@ -131,17 +133,17 @@
         }
       }
     }
-    if (datafield.getAttribute("tag").equals("027D")) {
+    if (tag.equals("027D")) {
       journal=getSubfield("a",datafield);
       booktitle=getSubfield("a",datafield);
       address=getSubfield("p",datafield);
       publisher=getSubfield("n",datafield);
     }
-    if (datafield.getAttribute("tag").equals("034D")) {
+    if (tag.equals("034D")) {
       pagetotal=getSubfield("a",datafield);
       pagetotal=pagetotal.replaceAll(" S\\.?$","");
     }
-    if (datafield.getAttribute("tag").equals("030F")) {
+    if (tag.equals("030F")) {
       address=getSubfield("k",datafield);
       if (!entryType.equals("proceedings")) {
         subtitle=getSubfield("a",datafield);
@@ -153,15 +155,15 @@
         entryType="book";
       }
     }
-    if (datafield.getAttribute("tag").equals("039B")) {
+    if (tag.equals("039B")) {
       quelle=getSubfield("8",datafield);
     }
-    if (datafield.getAttribute("tag").equals("046R")) {
+    if (tag.equals("046R")) {
       if (quelle.equals("") || (quelle == null)) {
         quelle=getSubfield("a",datafield);
       }
     }
-    if (datafield.getAttribute("tag").equals("009P")) {
+    if (tag.equals("009P")) {
       if (datafield.getAttribute("occurrence").equals("03") || datafield.getAttribute("occurrence").equals("05")) {
         if (url == null) {
           url=getSubfield("a",datafield);
@@ -209,8 +211,12 @@
   if (title != null) {
     result.setField("title",title);
   }
-  if (subtitle != null) {
-    result.setField("subtitle",subtitle);
+  if (!Strings.isNullOrEmpty(subtitle)) {
+    String newSubtitle=Character.toString(Character.toUpperCase(subtitle.charAt(0)));
+    if (subtitle.length() > 1) {
+      newSubtitle+=subtitle.substring(1);
+    }
+    result.setField("subtitle",newSubtitle);
   }
   if (publisher != null) {
     result.setField("publisher",publisher);
