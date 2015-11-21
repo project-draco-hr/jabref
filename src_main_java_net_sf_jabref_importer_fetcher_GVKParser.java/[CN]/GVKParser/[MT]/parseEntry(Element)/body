@@ -17,6 +17,7 @@
   String ppn=null;
   String booktitle=null;
   String url=null;
+  String note=null;
   String quelle="";
   String mak="";
   String subtitle="";
@@ -34,7 +35,7 @@
     if (datafield.getAttribute("tag").equals("028A")) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
-      if (!(author == null)) {
+      if (author != null) {
         author=author.concat(" and ");
       }
  else {
@@ -45,7 +46,7 @@
     if (datafield.getAttribute("tag").equals("028B")) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
-      if (!(author == null)) {
+      if (author != null) {
         author=author.concat(" and ");
       }
  else {
@@ -56,7 +57,7 @@
     if (datafield.getAttribute("tag").equals("028C")) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
-      if (!(editor == null)) {
+      if (editor != null) {
         editor=editor.concat(" and ");
       }
  else {
@@ -81,6 +82,19 @@
       number=getSubfield("a",datafield);
       pages=getSubfield("h",datafield);
     }
+    if (datafield.getAttribute("tag").equals("036D")) {
+      if (title != null) {
+        if (title.startsWith("@")) {
+          title=title.substring(1);
+        }
+ else {
+        }
+        number=title;
+      }
+      title=getSubfield("a",datafield);
+      subtitle=getSubfield("d",datafield);
+      volume=getSubfield("l",datafield);
+    }
     if (datafield.getAttribute("tag").equals("036E")) {
       series=getSubfield("a",datafield);
       number=getSubfield("l",datafield);
@@ -88,6 +102,9 @@
       if (kor != null) {
         series=series + " / " + kor;
       }
+    }
+    if (datafield.getAttribute("tag").equals("037A")) {
+      note=getSubfield("a",datafield);
     }
     if (datafield.getAttribute("tag").equals("032@")) {
       edition=getSubfield("a",datafield);
@@ -155,16 +172,16 @@
   if (quelle == null) {
     quelle="";
   }
-  if (!(author == null)) {
+  if (author != null) {
     author=removeSortCharacters(author);
   }
-  if (!(editor == null)) {
+  if (editor != null) {
     editor=removeSortCharacters(editor);
   }
-  if (!(title == null)) {
+  if (title != null) {
     title=removeSortCharacters(title);
   }
-  if (!(subtitle == null)) {
+  if (subtitle != null) {
     subtitle=removeSortCharacters(subtitle);
   }
   if (mak.startsWith("As")) {
@@ -176,74 +193,77 @@
       entryType="article";
     }
   }
-  if (mak.equals("")) {
+ else   if (mak.equals("")) {
     entryType="misc";
   }
-  if (mak.startsWith("O")) {
+ else   if (mak.startsWith("O")) {
     entryType="online";
   }
   BibtexEntry result=new BibtexEntry(IdGenerator.next(),EntryTypes.getType(entryType));
-  if (!(author == null)) {
+  if (author != null) {
     result.setField("author",ImportFormatReader.expandAuthorInitials(author));
   }
-  if (!(editor == null)) {
+  if (editor != null) {
     result.setField("editor",ImportFormatReader.expandAuthorInitials(editor));
   }
-  if (!(title == null)) {
+  if (title != null) {
     result.setField("title",title);
   }
-  if (!(subtitle == null)) {
+  if (subtitle != null) {
     result.setField("subtitle",subtitle);
   }
-  if (!(publisher == null)) {
+  if (publisher != null) {
     result.setField("publisher",publisher);
   }
-  if (!(year == null)) {
+  if (year != null) {
     result.setField("year",year);
   }
-  if (!(address == null)) {
+  if (address != null) {
     result.setField("address",address);
   }
-  if (!(series == null)) {
+  if (series != null) {
     result.setField("series",series);
   }
-  if (!(edition == null)) {
+  if (edition != null) {
     result.setField("edition",edition);
   }
-  if (!(isbn == null)) {
+  if (isbn != null) {
     result.setField("isbn",isbn);
   }
-  if (!(issn == null)) {
+  if (issn != null) {
     result.setField("issn",issn);
   }
-  if (!(number == null)) {
+  if (number != null) {
     result.setField("number",number);
   }
-  if (!(pagetotal == null)) {
+  if (pagetotal != null) {
     result.setField("pagetotal",pagetotal);
   }
-  if (!(pages == null)) {
+  if (pages != null) {
     result.setField("pages",pages);
   }
-  if (!(volume == null)) {
+  if (volume != null) {
     result.setField("volume",volume);
   }
-  if (!(journal == null)) {
+  if (journal != null) {
     result.setField("journal",journal);
   }
-  if (!(ppn == null)) {
+  if (ppn != null) {
     result.setField("ppn_GVK",ppn);
   }
-  if (!(url == null)) {
+  if (url != null) {
     result.setField("url",url);
   }
+  if (note != null) {
+    result.setField("note",note);
+  }
   if (entryType.equals("article")) {
-    if (!(journal == null)) {
+    if (journal != null) {
       result.setField("journal",journal);
     }
   }
-  if (entryType.equals("incollection")) {
-    if (!(booktitle == null)) {
+ else   if (entryType.equals("incollection")) {
+    if (booktitle != null) {
       result.setField("booktitle",booktitle);
     }
   }

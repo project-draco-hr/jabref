@@ -1,5 +1,5 @@
 {
-  List<BibtexEntry> result=null;
+  List<BibtexEntry> result;
   String urlPrefix="http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=";
   String urlQuery=query;
   String urlSuffix="&maximumRecords=50&recordSchema=picaxml&sortKeys=Year%2C%2C1";
@@ -16,9 +16,7 @@
     }
     URL url=uri.toURL();
     try (InputStream is=url.openStream()){
-      DocumentBuilder dbuild=DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document content=dbuild.parse(is);
-      result=(new GVKParser()).parseEntries(content);
+      result=(new GVKParser()).parseEntries(is);
     }
    }
  catch (  IOException e) {
