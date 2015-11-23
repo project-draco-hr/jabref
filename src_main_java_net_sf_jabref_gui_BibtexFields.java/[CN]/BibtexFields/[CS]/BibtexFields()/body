@@ -12,13 +12,15 @@
   add(new BibtexSingleField("howpublished",true,GUIGlobals.MEDIUM_W));
   add(new BibtexSingleField("institution",true,GUIGlobals.MEDIUM_W));
   dummy=new BibtexSingleField("journal",true,GUIGlobals.SMALL_W);
-  dummy.setExtras("journalNames");
+  dummy.setExtras(EXTRA_JOURNAL_NAMES);
   add(dummy);
   dummy=new BibtexSingleField("journaltitle",true,GUIGlobals.SMALL_W);
-  dummy.setExtras("journalNames");
+  dummy.setExtras(EXTRA_JOURNAL_NAMES);
   add(dummy);
   add(new BibtexSingleField("key",true));
-  add(new BibtexSingleField("month",true,GUIGlobals.SMALL_W));
+  dummy=new BibtexSingleField("month",true,GUIGlobals.SMALL_W);
+  dummy.setExtras(EXTRA_MONTH);
+  add(dummy);
   add(new BibtexSingleField("note",true,GUIGlobals.MEDIUM_W));
   add(new BibtexSingleField("number",true,GUIGlobals.SMALL_W,60).setNumeric(true));
   add(new BibtexSingleField("organization",true,GUIGlobals.MEDIUM_W));
@@ -77,7 +79,7 @@
   dummy.setPrivate();
   add(dummy);
   dummy=new BibtexSingleField("doi",true,GUIGlobals.SMALL_W);
-  dummy.setExtras("external");
+  dummy.setExtras(EXTRA_EXTERNAL);
   add(dummy);
   add(new BibtexSingleField("eid",true,GUIGlobals.SMALL_W));
   dummy=new BibtexSingleField("date",true);
@@ -87,13 +89,13 @@
   add(new BibtexSingleField("location",false));
   add(new BibtexSingleField("abstract",false,GUIGlobals.LARGE_W,400));
   dummy=new BibtexSingleField("url",false,GUIGlobals.SMALL_W);
-  dummy.setExtras("external");
+  dummy.setExtras(EXTRA_EXTERNAL);
   add(dummy);
   dummy=new BibtexSingleField("pdf",false,GUIGlobals.SMALL_W);
-  dummy.setExtras("browseDoc");
+  dummy.setExtras(EXTRA_BROWSE_DOC);
   add(dummy);
   dummy=new BibtexSingleField("ps",false,GUIGlobals.SMALL_W);
-  dummy.setExtras("browseDocZip");
+  dummy.setExtras(EXTRA_BROWSE_DOC_ZIP);
   add(dummy);
   add(new BibtexSingleField("comment",false,GUIGlobals.MEDIUM_W));
   add(new BibtexSingleField("keywords",false,GUIGlobals.SMALL_W));
@@ -107,11 +109,11 @@
   dummy.setDisplayable(false);
   add(dummy);
   dummy=new BibtexSingleField(BibtexFields.OWNER,false,GUIGlobals.SMALL_W);
-  dummy.setExtras("setOwner");
+  dummy.setExtras(EXTRA_SET_OWNER);
   dummy.setPrivate();
   add(dummy);
   dummy=new BibtexSingleField(BibtexFields.TIMESTAMP,false,GUIGlobals.SMALL_W);
-  dummy.setExtras("datepicker");
+  dummy.setExtras(EXTRA_DATEPICKER);
   dummy.setPrivate();
   add(dummy);
   dummy=new BibtexSingleField(BibtexFields.ENTRYTYPE,false,75);
@@ -132,9 +134,17 @@
   dummy.setWriteable(true);
   dummy.setDisplayable(false);
   add(dummy);
+  for (  String yesNoField : IEEETranEntryTypes.IEEETRANBSTCTL_YES_NO_FIELDS) {
+    dummy=new BibtexSingleField(yesNoField,false);
+    dummy.setExtras(EXTRA_YES_NO);
+    add(dummy);
+  }
+  for (  String numericField : IEEETranEntryTypes.IEEETRANBSTCTL_NUMERIC_FIELDS) {
+    add(new BibtexSingleField(numericField,false).setNumeric(true));
+  }
   Vector<String> pFields=new Vector<>(fieldSet.size());
   for (  BibtexSingleField sField : fieldSet.values()) {
-    if (sField.isPublic()) {
+    if (!sField.isPrivate()) {
       pFields.add(sField.getFieldName());
     }
   }
