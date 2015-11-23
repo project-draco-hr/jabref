@@ -1,3 +1,24 @@
 {
-  return getType().getName() + ':' + getCiteKey();
+  StringBuilder sb=new StringBuilder();
+  try (Formatter formatter=new Formatter(sb,Locale.US)){
+    String citeKey=Strings.nullToEmpty(this.getCiteKey());
+    formatter.format("@%s{%s,\n",this.getType().getName().toLowerCase(Locale.US),citeKey);
+    Map<String,String> mapFieldToValue=new HashMap<>();
+    SortedSet<String> sortedFields=new TreeSet<>();
+    for (    String fieldName : this.getFieldNames()) {
+      if (!fieldName.equals(KEY_FIELD)) {
+        String lowerCaseFieldName=fieldName.toLowerCase(Locale.US);
+        sortedFields.add(lowerCaseFieldName);
+        mapFieldToValue.put(lowerCaseFieldName,this.getField(fieldName));
+      }
+    }
+    for (    String fieldName : sortedFields) {
+      formatter.format("  %s = {%s},\n",fieldName,mapFieldToValue.get(fieldName));
+    }
+    if (!sortedFields.isEmpty()) {
+      sb.deleteCharAt(sb.length() - 2);
+    }
+    sb.append("}");
+  }
+   return sb.toString();
 }
