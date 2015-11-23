@@ -1,7 +1,7 @@
 {
   final String fieldName=editor.getFieldName();
   String fieldExtras=BibtexFields.getFieldExtras(string);
-  if (fieldName.equals(Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD)) || ((fieldExtras != null) && fieldExtras.equals("datepicker"))) {
+  if (Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD).equals(fieldName) || BibtexFields.EXTRA_DATEPICKER.equals(fieldExtras)) {
     ((JTextArea)editor).addMouseListener(new MouseAdapter(){
       @Override public void mouseClicked(      MouseEvent e){
         if (e.getClickCount() == 2) {
@@ -11,16 +11,16 @@
       }
     }
 );
-    if ((fieldExtras != null) && fieldExtras.equals("datepicker")) {
+    if (BibtexFields.EXTRA_DATEPICKER.equals(fieldExtras)) {
       DatePickerButton datePicker=new DatePickerButton(editor);
       return datePicker.getDatePicker();
     }
   }
-  if ((fieldExtras != null) && fieldExtras.equals("external")) {
+  if (BibtexFields.EXTRA_EXTERNAL.equals(fieldExtras)) {
     ((JComponent)editor).addMouseListener(new ExternalViewerListener());
     return null;
   }
- else   if ((fieldExtras != null) && fieldExtras.equals("journalNames")) {
+ else   if (BibtexFields.EXTRA_JOURNAL_NAMES.equals(fieldExtras)) {
     JPanel controls=new JPanel();
     controls.setLayout(new BorderLayout());
     if (panel.metaData.getData(Globals.SELECTOR_META_PREFIX + editor.getFieldName()) != null) {
@@ -28,7 +28,23 @@
       contentSelectors.add(ws);
       controls.add(ws,BorderLayout.NORTH);
     }
-    controls.add(JournalAbbreviationsUtil.getNameSwitcher(this,editor,panel.undoManager),BorderLayout.SOUTH);
+    JButton button=new JButton(Localization.lang("Toggle abbreviation"));
+    button.setToolTipText(ABBREVIATION_TOOLTIP_TEXT);
+    button.addActionListener(new ActionListener(){
+      @Override public void actionPerformed(      ActionEvent actionEvent){
+        String text=editor.getText();
+        if (Abbreviations.journalAbbrev.isKnownName(text)) {
+          String s=Abbreviations.toggleAbbreviation(text);
+          if (s != null) {
+            editor.setText(s);
+            storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
+            panel.undoManager.addEdit(new UndoableFieldChange(getEntry(),editor.getFieldName(),text,s));
+          }
+        }
+      }
+    }
+);
+    controls.add(button,BorderLayout.SOUTH);
     return controls;
   }
  else {
@@ -38,7 +54,7 @@
       return ws;
     }
  else {
-      if ((fieldExtras != null) && fieldExtras.equals("browse")) {
+      if (BibtexFields.EXTRA_BROWSE.equals(fieldExtras)) {
         JButton but=new JButton(Localization.lang("Browse"));
         ((JComponent)editor).addMouseListener(new ExternalViewerListener());
         but.addActionListener(new ActionListener(){
@@ -59,10 +75,10 @@
 );
         return but;
       }
- else       if ((fieldExtras != null) && (fieldExtras.equals("browseDoc") || fieldExtras.equals("browseDocZip"))) {
+ else       if (BibtexFields.EXTRA_BROWSE_DOC.equals(fieldExtras) || BibtexFields.EXTRA_BROWSE_DOC_ZIP.equals(fieldExtras)) {
         final String ext='.' + fieldName.toLowerCase();
         final OpenFileFilter off;
-        if (fieldExtras.equals("browseDocZip")) {
+        if (BibtexFields.EXTRA_BROWSE_DOC_ZIP.equals(fieldExtras)) {
           off=new OpenFileFilter(new String[]{ext,ext + ".gz",ext + ".bz2"});
         }
  else {
@@ -70,11 +86,11 @@
         }
         return new ExternalFilePanel(frame,panel.metaData(),this,fieldName,off,editor);
       }
- else       if ((fieldExtras != null) && fieldExtras.equals("url")) {
+ else       if (BibtexFields.EXTRA_URL.equals(fieldExtras)) {
         ((JComponent)editor).setDropTarget(new DropTarget((Component)editor,DnDConstants.ACTION_NONE,new SimpleUrlDragDrop(editor,storeFieldAction)));
         return null;
       }
- else       if ((fieldExtras != null) && fieldExtras.equals("setOwner")) {
+ else       if (BibtexFields.EXTRA_SET_OWNER.equals(fieldExtras)) {
         JButton button=new JButton(Localization.lang("Auto"));
         button.addActionListener(new ActionListener(){
           @Override public void actionPerformed(          ActionEvent actionEvent){
@@ -84,6 +100,46 @@
         }
 );
         return button;
+      }
+ else       if (BibtexFields.EXTRA_YES_NO.equals(fieldExtras)) {
+        final String[] options={"","Yes","No"};
+        JComboBox<String> yesno=new JComboBox<>(options);
+        yesno.addActionListener(new ActionListener(){
+          @Override public void actionPerformed(          ActionEvent actionEvent){
+            editor.setText(((String)yesno.getSelectedItem()).toLowerCase());
+            updateField(editor);
+          }
+        }
+);
+        return yesno;
+      }
+ else       if (BibtexFields.EXTRA_MONTH.equals(fieldExtras)) {
+        final String[] options=new String[13];
+        options[0]=Localization.lang("Select");
+        for (int i=1; i <= 12; i++) {
+          options[i]=MonthUtil.getMonthByNumber(i).fullName;
+        }
+        JComboBox<String> month=new JComboBox<>(options);
+        month.addActionListener(new ActionListener(){
+          @Override public void actionPerformed(          ActionEvent actionEvent){
+            int monthnumber=month.getSelectedIndex();
+            if (monthnumber >= 1) {
+              if (prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE)) {
+                editor.setText(String.valueOf(monthnumber));
+              }
+ else {
+                editor.setText((MonthUtil.getMonthByNumber(monthnumber).bibtexFormat));
+              }
+            }
+ else {
+              editor.setText("");
+            }
+            updateField(editor);
+            month.setSelectedIndex(0);
+          }
+        }
+);
+        return month;
       }
  else {
         return null;

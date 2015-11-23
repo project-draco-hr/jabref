@@ -1,0 +1,48 @@
+{
+  if (!Globals.prefs.getBoolean(JabRefPreferences.RUN_AUTOMATIC_FILE_SEARCH)) {
+    return Optional.empty();
+  }
+  final Collection<BibtexEntry> entries=Collections.singleton(entry);
+  ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
+  ArrayList<File> dirs=new ArrayList<>();
+  if (basePanel.metaData.getFileDirectory(Globals.FILE_FIELD).length > 0) {
+    String[] mdDirs=basePanel.metaData.getFileDirectory(Globals.FILE_FIELD);
+    for (    String mdDir : mdDirs) {
+      dirs.add(new File(mdDir));
+    }
+  }
+  Collection<String> extensions=new ArrayList<>();
+  for (  final ExternalFileType type : types) {
+    extensions.add(type.getExtension());
+  }
+  Map<BibtexEntry,List<File>> result;
+  if (Globals.prefs.getBoolean(JabRefPreferences.AUTOLINK_USE_REG_EXP_SEARCH_KEY)) {
+    String regExp=Globals.prefs.get(JabRefPreferences.REG_EXP_SEARCH_EXPRESSION_KEY);
+    result=RegExpFileSearch.findFilesForSet(entries,extensions,dirs,regExp);
+  }
+ else {
+    result=Util.findAssociatedFiles(entries,extensions,dirs);
+  }
+  if (result.get(entry) != null) {
+    List<File> res=result.get(entry);
+    if (!res.isEmpty()) {
+      String filepath=res.get(0).getPath();
+      int index=filepath.lastIndexOf('.');
+      if ((index >= 0) && (index < (filepath.length() - 1))) {
+        String extension=filepath.substring(index + 1);
+        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(extension);
+        if (type != null) {
+          try {
+            JabRefDesktop.openExternalFileAnyFormat(basePanel.metaData,filepath,type);
+            basePanel.output(Localization.lang("External viewer called") + '.');
+            return Optional.of(filepath);
+          }
+ catch (          IOException ex) {
+            basePanel.output(Localization.lang("Error") + ": " + ex.getMessage());
+          }
+        }
+      }
+    }
+  }
+  return Optional.empty();
+}
