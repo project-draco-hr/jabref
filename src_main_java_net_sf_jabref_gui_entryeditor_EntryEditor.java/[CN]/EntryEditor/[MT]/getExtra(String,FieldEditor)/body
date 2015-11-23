@@ -28,7 +28,23 @@
       contentSelectors.add(ws);
       controls.add(ws,BorderLayout.NORTH);
     }
-    controls.add(JournalAbbreviationsUtil.getNameSwitcher(this,editor,panel.undoManager),BorderLayout.SOUTH);
+    JButton button=new JButton(Localization.lang("Toggle abbreviation"));
+    button.setToolTipText(ABBREVIATION_TOOLTIP_TEXT);
+    button.addActionListener(new ActionListener(){
+      @Override public void actionPerformed(      ActionEvent actionEvent){
+        String text=editor.getText();
+        if (Abbreviations.journalAbbrev.isKnownName(text)) {
+          String s=Abbreviations.toggleAbbreviation(text);
+          if (s != null) {
+            editor.setText(s);
+            storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
+            panel.undoManager.addEdit(new UndoableFieldChange(getEntry(),editor.getFieldName(),text,s));
+          }
+        }
+      }
+    }
+);
+    controls.add(button,BorderLayout.SOUTH);
     return controls;
   }
  else {
