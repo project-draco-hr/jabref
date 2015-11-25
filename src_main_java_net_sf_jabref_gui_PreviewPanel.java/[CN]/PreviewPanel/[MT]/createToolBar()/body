@@ -1,22 +1,19 @@
 {
-  JToolBar tlb=new JToolBar(SwingConstants.VERTICAL);
-  JabRefPreferences prefs=JabRefPreferences.getInstance();
-  Action printAction=getPrintAction();
-  Action closeAction=getCloseAction();
-  tlb.setMargin(new Insets(0,0,0,2));
-  ActionMap am=tlb.getActionMap();
-  InputMap im=tlb.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  im.put(prefs.getKey(KeyBinds.CLOSE_DIALOG),"close");
-  am.put("close",closeAction);
-  im.put(prefs.getKey(KeyBinds.PRINT_ENTRY_PREVIEW),"print");
-  am.put("print",printAction);
-  tlb.setFloatable(false);
-  tlb.add(closeAction);
-  tlb.addSeparator();
-  tlb.add(printAction);
-  Component[] comps=tlb.getComponents();
+  JToolBar toolBar=new JToolBar(SwingConstants.VERTICAL);
+  toolBar.setMargin(new Insets(0,0,0,2));
+  ActionMap actionMap=toolBar.getActionMap();
+  InputMap inputMap=toolBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  inputMap.put(Globals.prefs.getKey(KeyBinds.CLOSE_DIALOG),"close");
+  actionMap.put("close",this.closeAction);
+  inputMap.put(Globals.prefs.getKey(KeyBinds.PRINT_ENTRY_PREVIEW),"print");
+  actionMap.put("print",this.printAction);
+  toolBar.setFloatable(false);
+  toolBar.add(this.closeAction);
+  toolBar.addSeparator();
+  toolBar.add(this.printAction);
+  Component[] comps=toolBar.getComponents();
   for (  Component comp : comps) {
     ((JComponent)comp).setOpaque(false);
   }
-  return tlb;
+  return toolBar;
 }
