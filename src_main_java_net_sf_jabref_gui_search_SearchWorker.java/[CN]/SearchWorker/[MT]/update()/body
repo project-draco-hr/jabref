@@ -5,21 +5,19 @@
   for (  BibtexEntry entry : basePanel.getDatabase().getEntries()) {
     entry.setSearchHit(false);
   }
-  for (  BibtexEntry entry : matchedEntries) {
+  for (  BibtexEntry entry : this.matchedEntries) {
     entry.setSearchHit(true);
   }
-  if (basePanel.isShowingFloatSearch()) {
-    basePanel.mainTable.stopShowingFloatSearch();
-  }
-  basePanel.stopShowingFilterSearch();
+  basePanel.stopShowingFloatSearch();
+  basePanel.getFilterSearchToggle().stop();
 switch (mode) {
 case FLOAT:
-    basePanel.stopShowingFilterSearch();
+    basePanel.getFilterSearchToggle().stop();
   basePanel.startShowingFloatSearch();
 break;
 case FILTER:
 basePanel.stopShowingFloatSearch();
-basePanel.startShowingFilterSearch();
+basePanel.getFilterSearchToggle().start();
 break;
 }
 if (hits > 0) {
