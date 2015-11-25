@@ -1,4 +1,10 @@
 {
   StringReader sr=new StringReader(layoutFile.replaceAll("__NEWLINE__","\n"));
-  layout=new LayoutHelper(sr).getLayoutFromText(Globals.FORMATTER_PACKAGE);
+  try {
+    layout=Optional.of(new LayoutHelper(sr).getLayoutFromText(Globals.FORMATTER_PACKAGE));
+  }
+ catch (  IOException e) {
+    layout=Optional.empty();
+    LOGGER.debug("no layout could be set",e);
+  }
 }
