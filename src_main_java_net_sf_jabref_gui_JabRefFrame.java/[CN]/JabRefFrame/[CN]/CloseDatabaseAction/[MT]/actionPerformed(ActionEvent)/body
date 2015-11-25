@@ -4,7 +4,14 @@
     return;
   }
   if (getCurrentBasePanel().isBaseChanged()) {
-    int answer=JOptionPane.showConfirmDialog(JabRefFrame.this,Localization.lang("Database has changed. Do you want to save before closing?"),Localization.lang("Save before closing"),JOptionPane.YES_NO_CANCEL_OPTION);
+    String filename;
+    if (getCurrentBasePanel().getDatabaseFile() != null) {
+      filename=getCurrentBasePanel().getDatabaseFile().getAbsolutePath();
+    }
+ else {
+      filename=GUIGlobals.untitledTitle;
+    }
+    int answer=showSaveDialog(filename);
     if ((answer == JOptionPane.CANCEL_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {
       close=false;
     }
