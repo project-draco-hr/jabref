@@ -1,17 +1,9 @@
 {
   String key=entry.getCiteKey();
-  StringBuilder fileRepresenation=new StringBuilder();
-  boolean currentLineBelongsToEntry=false;
-  for (  String line : fileContent) {
-    if (line.contains(key)) {
-      currentLineBelongsToEntry=true;
-    }
- else     if (line.contains("@")) {
-      currentLineBelongsToEntry=false;
-    }
-    if (currentLineBelongsToEntry) {
-      fileRepresenation.append(line + System.lineSeparator());
+  for (  String item : fileContent) {
+    if (item.contains(key)) {
+      entry.setSerialization(item);
+      return;
     }
   }
-  entry.setSerialization(fileRepresenation.toString());
 }
