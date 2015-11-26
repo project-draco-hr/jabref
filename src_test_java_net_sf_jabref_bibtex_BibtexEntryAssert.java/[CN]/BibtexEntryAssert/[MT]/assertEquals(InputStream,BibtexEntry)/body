@@ -1,0 +1,14 @@
+{
+  Assert.assertNotNull(shouldBeIs);
+  Assert.assertNotNull(entry);
+  ParserResult result;
+  try (Reader reader=new InputStreamReader(shouldBeIs,"UTF-8")){
+    BibtexParser parser=new BibtexParser(reader);
+    result=parser.parse();
+  }
+   Assert.assertNotNull(result);
+  Assert.assertNotEquals(ParserResult.INVALID_FORMAT,result);
+  Assert.assertEquals(1,result.getDatabase().getEntryCount());
+  BibtexEntry shouldBeEntry=result.getDatabase().getEntries().iterator().next();
+  assertEquals(shouldBeEntry,entry);
+}
