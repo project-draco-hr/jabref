@@ -3,5 +3,15 @@
   while (!pureTextFromFile.isEmpty()) {
     entry.append(pureTextFromFile.pollFirst());
   }
-  return entry.toString();
+  String result=entry.toString();
+  int indexOfAt=entry.indexOf("@");
+  int runningIndex=indexOfAt - 1;
+  while (runningIndex > 0) {
+    if (!Character.isWhitespace(result.charAt(runningIndex))) {
+      break;
+    }
+    runningIndex--;
+  }
+  result=result.substring(indexOfAt);
+  return result;
 }
