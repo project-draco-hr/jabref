@@ -11,9 +11,7 @@
     Assert.assertEquals(1,l.size());
     BibtexEntry e=l.get(0);
     assertEqualsBibtexEntry(t1BibtexEntry(),e);
-    PDDocument document=null;
-    try {
-      document=PDDocument.load(pdfFile.getAbsoluteFile());
+    try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
       if (document.isEncrypted()) {
         throw new IOException("Error: Cannot read metadata from encrypted document.");
       }
@@ -61,12 +59,7 @@
       XMPSchemaMediaManagement mm=(XMPSchemaMediaManagement)schemas.get(0);
       Assert.assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
     }
-  finally {
-      if (document != null) {
-        document.close();
-      }
-    }
-  }
+   }
   BibtexEntry toSet=t1BibtexEntry();
   toSet.setField("author","Pokemon!");
   XMPUtil.writeXMP(pdfFile,toSet,null);
@@ -74,9 +67,7 @@
   Assert.assertEquals(1,l.size());
   BibtexEntry e=l.get(0);
   assertEqualsBibtexEntry(toSet,e);
-  PDDocument document=null;
-  try {
-    document=PDDocument.load(pdfFile.getAbsoluteFile());
+  try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
     if (document.isEncrypted()) {
       throw new IOException("Error: Cannot read metadata from encrypted document.");
     }
@@ -124,9 +115,4 @@
     XMPSchemaMediaManagement mm=(XMPSchemaMediaManagement)schemas.get(0);
     Assert.assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
   }
-  finally {
-    if (document != null) {
-      document.close();
-    }
-  }
-}
+ }
