@@ -1,6 +1,6 @@
-def compare_property_files_to_main_property_file(properties_file, files, change_files):
-    keys_in_properties_file = get_keys_from_lines(read_all_lines(properties_file))
-    for other_properties_file in files:
+def compare_property_files_to_main_property_file(main_properties_file, other_properties_files, append_missing_keys_to_other_properties_files):
+    keys_in_properties_file = get_keys_from_lines(read_all_lines(main_properties_file))
+    for other_properties_file in other_properties_files:
         keys_in_other_properties_file = get_keys_from_lines(read_all_lines(other_properties_file))
         keys_missing = find_missing_keys(keys_in_properties_file, keys_in_other_properties_file)
         keys_obsolete = find_missing_keys(keys_in_other_properties_file, keys_in_properties_file)
@@ -11,7 +11,7 @@ def compare_property_files_to_main_property_file(properties_file, files, change_
             print '----> Missing keys:'
             for key in keys_missing:
                 print key
-            if change_files:
+            if append_missing_keys_to_other_properties_files:
                 print 'Update file?',
                 if (raw_input() in ['y', 'Y']):
                     append_keys_to_file(other_properties_file, keys_missing)

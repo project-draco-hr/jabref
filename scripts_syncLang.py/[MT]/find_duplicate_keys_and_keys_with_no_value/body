@@ -22,16 +22,12 @@ def find_duplicate_keys_and_keys_with_no_value(current_file, display_keys):
                     empty_values_count += 1
                     if display_keys:
                         print ((('Empty value: ' + current_file) + ': ') + key)
-    if (duplication_count > 0):
-        dupstring = (str(duplication_count) + ' duplicates. ')
-    else:
-        dupstring = ''
-    if (empty_values_count > 0):
-        emptStr = (str(empty_values_count) + ' empty values. ')
-    else:
-        emptStr = ''
-    if ((duplication_count + empty_values_count) > 0):
-        okString = ''
-    else:
-        okString = 'ok'
-    print ((((current_file + ': ') + dupstring) + emptStr) + okString)
+    issues_count = (duplication_count + empty_values_count)
+    message = ''
+    if (issues_count == 0):
+        message = 'ok'
+    elif (duplication_count > 0):
+        message += (str(duplication_count) + ' duplicates. ')
+    elif (empty_values_count > 0):
+        message += (str(empty_values_count) + ' empty values. ')
+    print ((current_file + ': ') + message)

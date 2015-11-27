@@ -1,37 +1,37 @@
 def handleJavaCode(filename, lines, keyList):
-    reOnlyString = '"((\\\\"|[^"])*)"[^"]*'
-    patt = re.compile(('Localization\\s*\\.\\s*lang\\s*\\(\\s*' + reOnlyString))
-    pattOnlyString = re.compile(reOnlyString)
-    patt2 = re.compile('Localization\\s*\\.\\s*lang\\s*\\(([^)])*$')
-    pattPlus = re.compile('^\\s*\\+')
+    regex_only_key = '"((\\\\"|[^"])*)"[^"]*'
+    pattern_single_line = re.compile(('Localization\\s*\\.\\s*lang\\s*\\(\\s*' + regex_only_key))
+    pattern_only_key = re.compile(regex_only_key)
+    pattern_multi_line = re.compile('Localization\\s*\\.\\s*lang\\s*\\(([^)])*$')
+    pattern_plus_symbol = re.compile('^\\s*\\+')
     lines_with_line_number = list(enumerate(lines))
-    i = 0
-    while (i < len(lines_with_line_number)):
-        (line_number, line) = lines_with_line_number[i]
+    line_index = 0
+    while (line_index < len(lines_with_line_number)):
+        (line_number, line) = lines_with_line_number[line_index]
         if (line.find('http://') < 0):
             line = re.sub('//.*', '', line)
         while (line != ''):
-            result = patt.search(line)
-            result2 = patt2.search(line)
+            result_single_line = pattern_single_line.search(line)
+            result_multi_line = pattern_multi_line.search(line)
             found = ''
-            if (result2 and (line.find('",') < 0)):
-                if result:
-                    curText = result.group(1)
+            if (result_multi_line and (line.find('",') < 0)):
+                if result_single_line:
+                    curText = result_single_line.group(1)
                     searchForPlus = True
                 else:
                     curText = ''
                     searchForPlus = False
-                origI = i
-                while ((i + 1) < len(lines_with_line_number)):
-                    (linenum2, curline2) = lines_with_line_number[(i + 1)]
-                    if ((not searchForPlus) or pattPlus.search(curline2)):
+                origI = line_index
+                while ((line_index + 1) < len(lines_with_line_number)):
+                    (linenum2, curline2) = lines_with_line_number[(line_index + 1)]
+                    if ((not searchForPlus) or pattern_plus_symbol.search(curline2)):
                         searchForPlus = True
-                        i += 1
+                        line_index += 1
                         line_number = linenum2
                         line = curline2
-                        result = pattOnlyString.search(curline2)
-                        if result:
-                            curText = (curText + result.group(1))
+                        result_single_line = pattern_only_key.search(curline2)
+                        if result_single_line:
+                            curText = (curText + result_single_line.group(1))
                             if (curline2.count('"') > 2):
                                 break
                             if (curline2.find('",') > 0):
@@ -42,21 +42,21 @@ def handleJavaCode(filename, lines, keyList):
                             break
                     else:
                         break
-                if (origI == i):
+                if (origI == line_index):
                     print ('%s:%d: Not terminated: %s' % (filename, (line_number + 1), line))
                 else:
                     found = curText
-            if (result or (found != '')):
+            if (result_single_line or (found != '')):
                 if (found == ''):
-                    found = result.group(1)
+                    found = result_single_line.group(1)
                 found = found.replace(' ', '_')
                 found = found.replace('=', '\\=').replace(':', '\\:')
                 found = found.replace('\\"', '"')
                 if ((found != '') and (found not in keyList)):
                     keyList.append(found)
                     keyFiles[found] = (filename, line_number)
-            if result:
-                lastPos = result.span()[1]
+            if result_single_line:
+                lastPos = result_single_line.span()[1]
                 lastPos -= 14
                 if (len(line) <= lastPos):
                     line = ''
@@ -64,4 +64,4 @@ def handleJavaCode(filename, lines, keyList):
                     line = line[lastPos:]
             else:
                 line = ''
-        i += 1
+        line_index += 1
