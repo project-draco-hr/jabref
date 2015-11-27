@@ -23,10 +23,10 @@
       EntryType tp=EntryTypes.getType(entryType);
       boolean isEntry=tp != null;
       if (!isEntry) {
-        if (entryType.toLowerCase().equals("preamble")) {
+        if ("preamble".equals(entryType.toLowerCase())) {
           database.setPreamble(parsePreamble());
         }
- else         if (entryType.toLowerCase().equals("string")) {
+ else         if ("string".equals(entryType.toLowerCase())) {
           BibtexString bs=parseString();
           try {
             database.addString(bs);
@@ -35,7 +35,7 @@
             parserResult.addWarning(Localization.lang("Duplicate string name") + ": " + bs.getName());
           }
         }
- else         if (entryType.toLowerCase().equals("comment")) {
+ else         if ("comment".equals(entryType.toLowerCase())) {
           StringBuffer commentBuf=parseBracketedTextExactly();
           String comment=commentBuf.toString().replaceAll("[\\x0d\\x0a]","");
           if (comment.substring(0,Math.min(comment.length(),GUIGlobals.META_FLAG.length())).equals(GUIGlobals.META_FLAG) || comment.substring(0,Math.min(comment.length(),GUIGlobals.META_FLAG_OLD.length())).equals(GUIGlobals.META_FLAG_OLD)) {
@@ -71,7 +71,7 @@
           if (duplicateKey) {
             parserResult.addDuplicateKey(be.getCiteKey());
           }
- else           if ((be.getCiteKey() == null) || be.getCiteKey().equals("")) {
+ else           if ((be.getCiteKey() == null) || "".equals(be.getCiteKey())) {
             parserResult.addWarning(Localization.lang("Empty BibTeX key") + ": " + be.getAuthorTitleYear(40)+ " ("+ Localization.lang("grouping may not work for this entry")+ ")");
           }
         }

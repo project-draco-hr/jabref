@@ -1,11 +1,11 @@
 {
-  if ((this.lastLine != null) && this.lastLine.trim().equals("")) {
+  if ((this.lastLine != null) && "".equals(this.lastLine.trim())) {
     readLine();
   }
-  while ((this.lastLine != null) && !isStartOfWorkingPaper() && (startsWithKeyword(RepecNepImporter.recognizedFields) || this.lastLine.equals(""))) {
-    String keyword=this.lastLine.equals("") ? "" : this.lastLine.substring(0,this.lastLine.indexOf(':')).trim();
-    this.lastLine=this.lastLine.equals("") ? "" : this.lastLine.substring(this.lastLine.indexOf(':') + 1,this.lastLine.length()).trim();
-    if (keyword.equals("Keywords")) {
+  while ((this.lastLine != null) && !isStartOfWorkingPaper() && (startsWithKeyword(RepecNepImporter.recognizedFields) || "".equals(this.lastLine))) {
+    String keyword="".equals(this.lastLine) ? "" : this.lastLine.substring(0,this.lastLine.indexOf(':')).trim();
+    this.lastLine="".equals(this.lastLine) ? "" : this.lastLine.substring(this.lastLine.indexOf(':') + 1,this.lastLine.length()).trim();
+    if ("Keywords".equals(keyword)) {
       String content=readMultipleLines();
       String[] keywords=content.split("[,;]");
       String keywordStr="";
@@ -14,7 +14,7 @@
       }
       be.setField("keywords",keywordStr.trim());
     }
- else     if (keyword.equals("JEL")) {
+ else     if ("JEL".equals(keyword)) {
       be.setField("jel",readMultipleLines());
     }
  else     if (keyword.startsWith("Date")) {
