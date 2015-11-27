@@ -27,7 +27,9 @@
         types.put(tp.getName(),tp);
       }
       bibtexEntryWriter.write(be,fw);
-      fw.write(Globals.NEWLINE);
+      if (!be.shouldUseCustomSerialization()) {
+        fw.write(Globals.NEWLINE);
+      }
     }
     if ((saveType != DatabaseSaveType.PLAIN_BIBTEX) && (metaData != null)) {
       metaData.writeMetaData(fw);
