@@ -1,7 +1,7 @@
 {
   int quantity=0;
   if (out instanceof Connection) {
-    try (ResultSet res=((Statement)SQLUtil.processQueryWithResults(out,"SELECT COUNT(*) AS amount FROM group_types")).getResultSet()){
+    try (Statement sm=(Statement)SQLUtil.processQueryWithResults(out,"SELECT COUNT(*) AS amount FROM group_types");ResultSet res=sm.getResultSet()){
       res.next();
       quantity=res.getInt("amount");
       res.getStatement().close();

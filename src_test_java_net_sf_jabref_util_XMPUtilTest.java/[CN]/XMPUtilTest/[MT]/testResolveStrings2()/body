@@ -1,38 +1,36 @@
 {
-  ParserResult result=BibtexParser.parse(new FileReader("src/test/resources/net/sf/jabref/util/twente.bib"));
-  Assert.assertEquals("Arvind",result.getDatabase().resolveForStrings("#Arvind#"));
-  AuthorList originalAuthors=AuthorList.getAuthorList("Patterson, David and Arvind and Asanov\\'\\i{}c, Krste and Chiou, Derek and Hoe, James and Kozyrakis, Christos and Lu, S{hih-Lien} and Oskin, Mark and Rabaey, Jan and Wawrzynek, John");
-  try {
-    XMPUtil.writeXMP(pdfFile,result.getDatabase().getEntryByKey("Patterson06"),result.getDatabase());
-    BibtexEntry b=XMPUtil.readXMP(pdfFile).get(0);
-    Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
-    PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile());
+  try (FileReader fr=new FileReader("src/test/resources/net/sf/jabref/util/twente.bib")){
+    ParserResult result=BibtexParser.parse(fr);
+    Assert.assertEquals("Arvind",result.getDatabase().resolveForStrings("#Arvind#"));
+    AuthorList originalAuthors=AuthorList.getAuthorList("Patterson, David and Arvind and Asanov\\'\\i{}c, Krste and Chiou, Derek and Hoe, James and Kozyrakis, Christos and Lu, S{hih-Lien} and Oskin, Mark and Rabaey, Jan and Wawrzynek, John");
     try {
-      Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(document.getDocumentInformation().getAuthor()));
-      b=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
+      XMPUtil.writeXMP(pdfFile,result.getDatabase().getEntryByKey("Patterson06"),result.getDatabase());
+      BibtexEntry b=XMPUtil.readXMP(pdfFile).get(0);
       Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
-      PDDocumentCatalog catalog=document.getDocumentCatalog();
-      PDMetadata metaRaw=catalog.getMetadata();
-      if (metaRaw == null) {
-        Assert.fail();
+      try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
+        Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(document.getDocumentInformation().getAuthor()));
+        b=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
+        Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
+        PDDocumentCatalog catalog=document.getDocumentCatalog();
+        PDMetadata metaRaw=catalog.getMetadata();
+        if (metaRaw == null) {
+          Assert.fail();
+        }
+        XMPMetadata meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+        meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
+        List<XMPSchema> schemas=meta.getSchemasByNamespaceURI("http://purl.org/dc/elements/1.1/");
+        Assert.assertEquals(1,schemas.size());
+        XMPSchemaDublinCore dcSchema=(XMPSchemaDublinCore)schemas.iterator().next();
+        Assert.assertNotNull(dcSchema);
+        Assert.assertEquals("David Patterson",dcSchema.getCreators().get(0));
+        Assert.assertEquals("Arvind",dcSchema.getCreators().get(1));
+        Assert.assertEquals("Krste Asanov\\'\\i{}c",dcSchema.getCreators().get(2));
+        b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema);
+        Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
       }
-      XMPMetadata meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
-      meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
-      List<XMPSchema> schemas=meta.getSchemasByNamespaceURI("http://purl.org/dc/elements/1.1/");
-      Assert.assertEquals(1,schemas.size());
-      XMPSchemaDublinCore dcSchema=(XMPSchemaDublinCore)schemas.iterator().next();
-      Assert.assertNotNull(dcSchema);
-      Assert.assertEquals("David Patterson",dcSchema.getCreators().get(0));
-      Assert.assertEquals("Arvind",dcSchema.getCreators().get(1));
-      Assert.assertEquals("Krste Asanov\\'\\i{}c",dcSchema.getCreators().get(2));
-      b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema);
-      Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
-    }
+     }
   finally {
-      document.close();
+      pdfFile.delete();
     }
   }
-  finally {
-    pdfFile.delete();
-  }
-}
+ }

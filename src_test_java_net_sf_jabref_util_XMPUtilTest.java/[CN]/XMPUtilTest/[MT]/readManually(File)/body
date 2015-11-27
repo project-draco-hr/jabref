@@ -1,7 +1,5 @@
 {
-  PDDocument document=null;
-  try {
-    document=PDDocument.load(tempFile.getAbsoluteFile());
+  try (PDDocument document=PDDocument.load(tempFile.getAbsoluteFile())){
     if (document.isEncrypted()) {
       System.err.println("Error: Cannot add metadata to encrypted document.");
     }
@@ -16,9 +14,4 @@
       }
      }
   }
-  finally {
-    if (document != null) {
-      document.close();
-    }
-  }
-}
+ }

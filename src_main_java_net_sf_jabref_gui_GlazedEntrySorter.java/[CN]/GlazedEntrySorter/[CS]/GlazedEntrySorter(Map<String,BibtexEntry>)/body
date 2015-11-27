@@ -1,9 +1,8 @@
 {
   list=new BasicEventList<>();
   list.getReadWriteLock().writeLock().lock();
-  Set<String> keySet=entries.keySet();
-  for (  String aKeySet : keySet) {
-    list.add(entries.get(aKeySet));
+  for (  Map.Entry<String,BibtexEntry> entry : entries.entrySet()) {
+    list.add(entry.getValue());
   }
   Collections.sort(list,new IdComparator());
   list.getReadWriteLock().writeLock().unlock();

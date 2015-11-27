@@ -1,17 +1,10 @@
 {
   pdfFile=File.createTempFile("JabRef",".pdf");
-  PDDocument pdf=null;
-  try {
-    pdf=new PDDocument();
+  try (PDDocument pdf=new PDDocument()){
     pdf.addPage(new PDPage());
     pdf.save(pdfFile.getAbsolutePath());
   }
-  finally {
-    if (pdf != null) {
-      pdf.close();
-    }
-  }
-  if (Globals.prefs == null) {
+   if (Globals.prefs == null) {
     Globals.prefs=JabRefPreferences.getInstance();
   }
   prefs=JabRefPreferences.getInstance();
