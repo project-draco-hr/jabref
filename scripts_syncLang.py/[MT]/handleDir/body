@@ -1,8 +1,7 @@
-def handleDir(lists, dirname, fnames):
+def handleDir(lists, directory_path, filenames):
     (keyList, notTermList) = lists
-    for file in fnames:
-        if ((len(file) > 6) and (file[(len(file) - 5):len(file)] == '.java')):
-            fl = open(((dirname + os.sep) + file))
-            lines = fl.read()
-            fl.close()
-            handleJavaCode(((dirname + os.sep) + file), lines, keyList, notTermList)
+    for filename in filenames:
+        if is_java_file(filename):
+            file_path = ((directory_path + os.sep) + filename)
+            lines = read_all_lines(file_path)
+            handleJavaCode(file_path, lines, keyList)

@@ -1,20 +1,20 @@
-def handleJavaCode(filename, lines, keyList, notTermList):
+def handleJavaCode(filename, lines, keyList):
     reOnlyString = '"((\\\\"|[^"])*)"[^"]*'
     patt = re.compile(('Localization\\s*\\.\\s*lang\\s*\\(\\s*' + reOnlyString))
     pattOnlyString = re.compile(reOnlyString)
     patt2 = re.compile('Localization\\s*\\.\\s*lang\\s*\\(([^)])*$')
     pattPlus = re.compile('^\\s*\\+')
-    eList = list(enumerate(lines.split('\n')))
+    lines_with_line_number = list(enumerate(lines))
     i = 0
-    while (i < len(eList)):
-        (linenum, curline) = eList[i]
-        if (curline.find('http://') < 0):
-            curline = re.sub('//.*', '', curline)
-        while (curline != ''):
-            result = patt.search(curline)
-            result2 = patt2.search(curline)
+    while (i < len(lines_with_line_number)):
+        (line_number, line) = lines_with_line_number[i]
+        if (line.find('http://') < 0):
+            line = re.sub('//.*', '', line)
+        while (line != ''):
+            result = patt.search(line)
+            result2 = patt2.search(line)
             found = ''
-            if (result2 and (curline.find('",') < 0)):
+            if (result2 and (line.find('",') < 0)):
                 if result:
                     curText = result.group(1)
                     searchForPlus = True
@@ -22,13 +22,13 @@ def handleJavaCode(filename, lines, keyList, notTermList):
                     curText = ''
                     searchForPlus = False
                 origI = i
-                while ((i + 1) < len(eList)):
-                    (linenum2, curline2) = eList[(i + 1)]
+                while ((i + 1) < len(lines_with_line_number)):
+                    (linenum2, curline2) = lines_with_line_number[(i + 1)]
                     if ((not searchForPlus) or pattPlus.search(curline2)):
                         searchForPlus = True
-                        i = (i + 1)
-                        linenum = linenum2
-                        curline = curline2
+                        i += 1
+                        line_number = linenum2
+                        line = curline2
                         result = pattOnlyString.search(curline2)
                         if result:
                             curText = (curText + result.group(1))
@@ -43,7 +43,7 @@ def handleJavaCode(filename, lines, keyList, notTermList):
                     else:
                         break
                 if (origI == i):
-                    print ('%s:%d: Not terminated: %s' % (filename, (linenum + 1), curline))
+                    print ('%s:%d: Not terminated: %s' % (filename, (line_number + 1), line))
                 else:
                     found = curText
             if (result or (found != '')):
@@ -54,14 +54,14 @@ def handleJavaCode(filename, lines, keyList, notTermList):
                 found = found.replace('\\"', '"')
                 if ((found != '') and (found not in keyList)):
                     keyList.append(found)
-                    keyFiles[found] = (filename, linenum)
+                    keyFiles[found] = (filename, line_number)
             if result:
                 lastPos = result.span()[1]
-                lastPos = (lastPos - 14)
-                if (len(curline) <= lastPos):
-                    curline = ''
+                lastPos -= 14
+                if (len(line) <= lastPos):
+                    line = ''
                 else:
-                    curline = curline[lastPos:]
+                    line = line[lastPos:]
             else:
-                curline = ''
-        i = (i + 1)
+                line = ''
+        i += 1

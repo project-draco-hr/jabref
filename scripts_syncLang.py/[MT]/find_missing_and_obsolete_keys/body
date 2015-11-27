@@ -1,0 +1,18 @@
+def find_missing_and_obsolete_keys(properties_file, source_code_directory, append_missing_keys_to_properties_file):
+    '\n    Searches out all translation calls in the Java source files, and reports which\n    are not present in the given resource file.\n\n    :param properties_file: the properties file with the keys to sync with\n    :param source_code_directory: the directory containing the source code to be checked\n    :param append_missing_keys_to_properties_file: boolean whether the missing keys are appended to the properties_file\n    '
+    keys_in_property_file = get_keys_from_lines(read_all_lines(properties_file))
+    keys_used_in_code = traverseFileTree(source_code_directory)
+    keys_obsolete = find_missing_keys(keys_in_property_file, keys_used_in_code)
+    keys_missing = find_missing_keys(keys_used_in_code, keys_in_property_file)
+    if append_missing_keys_to_properties_file:
+        f1 = open(properties_file, 'a')
+        f1.write('\n')
+        f1.close()
+    for key in keys_missing:
+        value = key.replace('\\:', ':').replace('\\=', '=')
+        (file_name, line_number) = keyFiles[key]
+        print ('%s:%i:Missing key: %s' % (file_name, (line_number + 1), value))
+        if append_missing_keys_to_properties_file:
+            append_property(properties_file, key, value)
+    for key in keys_obsolete:
+        print ('Possible obsolete key: ' + key)
