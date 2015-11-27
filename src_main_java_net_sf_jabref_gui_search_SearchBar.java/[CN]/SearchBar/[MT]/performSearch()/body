@@ -1,0 +1,16 @@
+{
+  if (searchField.getText().isEmpty()) {
+    clearSearch();
+    return;
+  }
+  SearchQuery searchQuery=getSearchQuery();
+  LOGGER.debug("Searching " + searchQuery.toString() + " in "+ basePanel.getTabTitle());
+  if (!searchQuery.isValidQuery()) {
+    basePanel.output(Localization.lang("Search failed: illegal search expression"));
+    clearSearch();
+    return;
+  }
+  SearchWorker worker=new SearchWorker(basePanel,searchQuery,searchMode);
+  worker.getWorker().run();
+  worker.getCallBack().update();
+}

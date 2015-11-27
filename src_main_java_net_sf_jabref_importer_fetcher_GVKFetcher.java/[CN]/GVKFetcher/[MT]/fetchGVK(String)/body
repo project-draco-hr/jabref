@@ -1,0 +1,35 @@
+{
+  List<BibtexEntry> result;
+  String urlPrefix="http://sru.gbv.de/gvk?version=1.1&operation=searchRetrieve&query=";
+  String urlQuery=query;
+  String urlSuffix="&maximumRecords=50&recordSchema=picaxml&sortKeys=Year%2C%2C1";
+  String searchstring=(urlPrefix + urlQuery + urlSuffix);
+  LOGGER.debug(searchstring);
+  try {
+    URI uri=null;
+    try {
+      uri=new URI(searchstring);
+    }
+ catch (    URISyntaxException e) {
+      LOGGER.error("URI malformed error",e);
+      return Collections.EMPTY_LIST;
+    }
+    URL url=uri.toURL();
+    try (InputStream is=url.openStream()){
+      result=(new GVKParser()).parseEntries(is);
+    }
+   }
+ catch (  IOException e) {
+    LOGGER.error("GVK plugin: An I/O exception occurred",e);
+    return Collections.EMPTY_LIST;
+  }
+catch (  ParserConfigurationException e) {
+    LOGGER.error("GVK plugin: An internal parser error occurred",e);
+    return Collections.EMPTY_LIST;
+  }
+catch (  SAXException e) {
+    LOGGER.error("An internal parser error occurred",e);
+    return Collections.EMPTY_LIST;
+  }
+  return result;
+}

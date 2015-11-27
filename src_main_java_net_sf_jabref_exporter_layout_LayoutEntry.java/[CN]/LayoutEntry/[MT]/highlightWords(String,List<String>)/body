@@ -1,0 +1,23 @@
+{
+  if (wordsToHighlight == null) {
+    return text;
+  }
+  Matcher matcher=Util.getPatternForWords(wordsToHighlight).matcher(text);
+  if (Character.isLetterOrDigit(text.charAt(0))) {
+    String hlColor=HIGHLIGHT_COLOR;
+    StringBuffer sb=new StringBuffer();
+    boolean foundSomething=false;
+    String found;
+    while (matcher.find()) {
+      matcher.end();
+      found=matcher.group();
+      matcher.appendReplacement(sb,"<span style=\"background-color:" + hlColor + ";\">"+ found+ "</span>");
+      foundSomething=true;
+    }
+    if (foundSomething) {
+      matcher.appendTail(sb);
+      text=sb.toString();
+    }
+  }
+  return text;
+}

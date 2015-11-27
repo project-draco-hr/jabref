@@ -8,7 +8,9 @@
   this.sidePaneManager=GUIGlobals.sidePaneManager;
   this.frame=frame;
   database=db;
+  searchBar=new SearchBar(this);
   setupMainPanel();
+  this.add(searchBar,BorderLayout.NORTH);
   setupActions();
   metaData.setFile(file);
   db.addDatabaseChangeListener(new GroupTreeUpdater());
@@ -25,4 +27,6 @@
       LOGGER.warn("Could not register FileUpdateMonitor",ex);
     }
   }
+  filterSearchToggle=new StartStopListAction<>(searchFilterList,SearchMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+  filterGroupToggle=new StartStopListAction<>(groupFilterList,GroupMatcher.INSTANCE,EverythingMatcher.INSTANCE);
 }

@@ -1,16 +1,28 @@
 {
   sortedForMarking.getReadWriteLock().writeLock().lock();
-  if (Globals.prefs.getBoolean(JabRefPreferences.FLOAT_MARKED_ENTRIES)) {
-    sortedForMarking.setComparator(markingComparator);
-  }
+  try {
+    if (Globals.prefs.getBoolean(JabRefPreferences.FLOAT_MARKED_ENTRIES)) {
+      sortedForMarking.setComparator(markingComparator);
+    }
  else {
-    sortedForMarking.setComparator(null);
+      sortedForMarking.setComparator(null);
+    }
   }
-  sortedForMarking.getReadWriteLock().writeLock().unlock();
+  finally {
+    sortedForMarking.getReadWriteLock().writeLock().unlock();
+  }
   sortedForSearch.getReadWriteLock().writeLock().lock();
-  sortedForSearch.setComparator(searchComparator);
-  sortedForSearch.getReadWriteLock().writeLock().unlock();
+  try {
+    sortedForSearch.setComparator(searchComparator);
+  }
+  finally {
+    sortedForSearch.getReadWriteLock().writeLock().unlock();
+  }
   sortedForGrouping.getReadWriteLock().writeLock().lock();
-  sortedForGrouping.setComparator(groupComparator);
-  sortedForGrouping.getReadWriteLock().writeLock().unlock();
+  try {
+    sortedForGrouping.setComparator(groupComparator);
+  }
+  finally {
+    sortedForGrouping.getReadWriteLock().writeLock().unlock();
+  }
 }

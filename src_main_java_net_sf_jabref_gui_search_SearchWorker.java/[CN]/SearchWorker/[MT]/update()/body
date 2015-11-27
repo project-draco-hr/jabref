@@ -1,0 +1,30 @@
+{
+  if (!basePanel.getSearchBar().isStillValidQuery(searchQuery)) {
+    return;
+  }
+  for (  BibtexEntry entry : basePanel.getDatabase().getEntries()) {
+    entry.setSearchHit(false);
+  }
+  for (  BibtexEntry entry : this.matchedEntries) {
+    entry.setSearchHit(true);
+  }
+  basePanel.stopShowingFloatSearch();
+  basePanel.getFilterSearchToggle().stop();
+switch (mode) {
+case FLOAT:
+    basePanel.getFilterSearchToggle().stop();
+  basePanel.startShowingFloatSearch();
+break;
+case FILTER:
+basePanel.stopShowingFloatSearch();
+basePanel.getFilterSearchToggle().start();
+break;
+}
+if (hits > 0) {
+if (basePanel.mainTable.getRowCount() > 0) {
+basePanel.mainTable.setSelected(0);
+}
+}
+basePanel.getSearchBar().updateResults(hits,searchQuery.description,searchQuery.isGrammarBasedSearch());
+basePanel.getSearchBar().getSearchTextObservable().fireSearchlistenerEvent(searchQuery);
+}

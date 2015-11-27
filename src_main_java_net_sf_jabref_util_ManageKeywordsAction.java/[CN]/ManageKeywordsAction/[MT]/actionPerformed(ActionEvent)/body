@@ -74,14 +74,19 @@
   BibtexEntry[] entries=bp.getSelectedEntries();
   NamedCompound ce=new NamedCompound(Localization.lang("Update keywords"));
   for (  BibtexEntry entry : entries) {
-    ArrayList<String> separatedKeywords=Util.getSeparatedKeywords(entry);
+    List<String> separatedKeywords=entry.getSeparatedKeywords();
     TreeSet<String> keywords=new TreeSet<>();
     keywords.addAll(separatedKeywords);
     keywords.removeAll(keywordsToRemove);
     keywords.addAll(keywordsToAdd);
     separatedKeywords.clear();
     separatedKeywords.addAll(keywords);
-    Util.putKeywords(entry,separatedKeywords,ce);
+    String oldValue=entry.getField("keywords");
+    entry.putKeywords(separatedKeywords);
+    String updatedValue=entry.getField("keywords");
+    if ((oldValue == null) || !oldValue.equals(updatedValue)) {
+      ce.addEdit(new UndoableFieldChange(entry,"keywords",oldValue,updatedValue));
+    }
     if (SpecialFieldsUtils.keywordSyncEnabled()) {
       SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,ce);
     }
