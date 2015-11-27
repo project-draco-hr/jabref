@@ -1,16 +1,12 @@
 {
   StringBuilder file=new StringBuilder();
   Scanner scanner=new Scanner(pushbackReader).useDelimiter("@");
-  boolean isStart=true;
   while (scanner.hasNextLine()) {
     String next=scanner.next();
-    if (!isStart) {
+    if (looksLikeEntry(next)) {
       String item="@" + next;
       file.append(item);
       fileContent.add(item);
-    }
- else {
-      isStart=false;
     }
   }
   pushbackReader=new PushbackReader(new StringReader(file.toString()),BibtexParser.LOOKAHEAD);
