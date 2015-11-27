@@ -1,11 +1,11 @@
 {
-  for (  String id : selection.keySet()) {
+  for (  Map.Entry<String,Boolean> selentry : selection.entrySet()) {
     if (!shouldContinue) {
       break;
     }
-    boolean sel=selection.get(id);
+    boolean sel=selentry.getValue();
     if (sel) {
-      BibtexEntry entry=downloadEntryBibTeX(id,fetchAbstract);
+      BibtexEntry entry=downloadEntryBibTeX(selentry.getKey(),fetchAbstract);
       if (entry != null) {
         String title=entry.getField("title");
         if (title != null) {
