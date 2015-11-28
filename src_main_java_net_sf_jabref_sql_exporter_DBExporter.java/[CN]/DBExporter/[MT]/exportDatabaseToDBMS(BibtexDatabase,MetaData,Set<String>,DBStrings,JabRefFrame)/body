@@ -20,7 +20,6 @@
       conn.commit();
       conn.setAutoCommit(true);
     }
-    conn.close();
     if (redisplay) {
       exportDatabaseToDBMS(database,metaData,keySet,databaseStrings,frame);
     }
@@ -32,5 +31,10 @@
       }
     }
     throw ex;
+  }
+ finally {
+    if (conn != null) {
+      conn.close();
+    }
   }
 }

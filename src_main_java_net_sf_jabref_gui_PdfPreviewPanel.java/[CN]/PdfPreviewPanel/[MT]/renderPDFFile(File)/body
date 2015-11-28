@@ -1,44 +1,27 @@
 {
-  InputStream input;
-  try {
-    input=new FileInputStream(file);
-  }
- catch (  FileNotFoundException e) {
-    e.printStackTrace();
-    return;
-  }
-  PDDocument document;
-  try {
-    document=PDDocument.load(input);
-  }
- catch (  IOException e) {
-    e.printStackTrace();
-    return;
-  }
-  List<PDPage> pages=document.getDocumentCatalog().getAllPages();
-  PDPage page=pages.get(0);
-  BufferedImage image;
-  try {
-    image=page.convertToImage();
-  }
- catch (  Exception e1) {
-    image=null;
-  }
-  if (image != null) {
-    int width=this.getParent().getWidth();
-    int height=this.getParent().getHeight();
-    BufferedImage resImage=resizeImage(image,width,height,BufferedImage.TYPE_INT_RGB);
-    ImageIcon icon=new ImageIcon(resImage);
-    picLabel.setText(null);
-    picLabel.setIcon(icon);
-  }
+  try (InputStream input=new FileInputStream(file);PDDocument document=PDDocument.load(input)){
+    List<PDPage> pages=document.getDocumentCatalog().getAllPages();
+    PDPage page=pages.get(0);
+    BufferedImage image;
+    try {
+      image=page.convertToImage();
+    }
+ catch (    Exception e1) {
+      image=null;
+    }
+    if (image != null) {
+      int width=this.getParent().getWidth();
+      int height=this.getParent().getHeight();
+      BufferedImage resImage=resizeImage(image,width,height,BufferedImage.TYPE_INT_RGB);
+      ImageIcon icon=new ImageIcon(resImage);
+      picLabel.setText(null);
+      picLabel.setIcon(icon);
+    }
  else {
-    clearPreview();
-  }
-  try {
-    document.close();
+      clearPreview();
+    }
   }
  catch (  IOException e) {
-    e.printStackTrace();
+    LOGGER.warn("Cannor open file/PDF document",e);
   }
 }
