@@ -1,0 +1,64 @@
+{
+  shouldContinue=true;
+  try {
+    status.setStatus(Localization.lang("Searching Springer..."));
+    HttpResponse<JsonNode> jsonResponse;
+    query=URLEncoder.encode(query,"UTF-8");
+    jsonResponse=Unirest.get(API_URL + query + "&api_key="+ API_KEY+ "&p=1").header("accept","application/json").asJson();
+    JSONObject jo=jsonResponse.getBody().getObject();
+    int hits=jo.getJSONArray("result").getJSONObject(0).getInt("total");
+    int numberToFetch=0;
+    if (hits > 0) {
+      if (hits > maxPerPage) {
+        while (true) {
+          String strCount=JOptionPane.showInputDialog(Localization.lang("References found") + ": " + hits+ "  "+ Localization.lang("Number of references to fetch?"),Integer.toString(hits));
+          if (strCount == null) {
+            status.setStatus(Localization.lang("Springer search canceled"));
+            return false;
+          }
+          try {
+            numberToFetch=Integer.parseInt(strCount.trim());
+            break;
+          }
+ catch (          RuntimeException ex) {
+            status.showMessage(Localization.lang("Please enter a valid number"));
+          }
+        }
+      }
+ else {
+        numberToFetch=hits;
+      }
+      int fetched=0;
+      for (int startItem=1; startItem <= numberToFetch; startItem+=maxPerPage) {
+        if (!shouldContinue) {
+          break;
+        }
+        int noToFetch=Math.min(maxPerPage,numberToFetch - startItem);
+        jsonResponse=Unirest.get(API_URL + query + "&api_key="+ API_KEY+ "&p="+ noToFetch+ "&s="+ startItem).header("accept","application/json").asJson();
+        jo=jsonResponse.getBody().getObject();
+        if (jo.has("records")) {
+          JSONArray results=jo.getJSONArray("records");
+          for (int i=0; i < results.length(); i++) {
+            JSONObject springerJsonEntry=results.getJSONObject(i);
+            BibtexEntry entry=jep.SpringerJSONtoBibtex(springerJsonEntry);
+            inspector.addEntry(entry);
+            fetched++;
+            inspector.setProgress(fetched,numberToFetch);
+          }
+        }
+      }
+      return true;
+    }
+ else {
+      status.showMessage(Localization.lang("No entries found for the search string '%0'",query),Localization.lang("Search Springer"),JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+  }
+ catch (  UnirestException e) {
+    LOGGER.warn("Problem searching Springer",e);
+  }
+catch (  UnsupportedEncodingException e) {
+    LOGGER.warn("Cannot encode query",e);
+  }
+  return false;
+}

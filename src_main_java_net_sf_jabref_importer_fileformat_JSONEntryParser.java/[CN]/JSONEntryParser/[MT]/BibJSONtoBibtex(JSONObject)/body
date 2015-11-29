@@ -2,22 +2,19 @@
   String[] singleFieldStrings={"year","title","abstract","month"};
   String[] journalSingleFieldStrings={"publisher","number","volume"};
   BibtexEntry entry=new BibtexEntry();
-  entry.setType(BibtexEntryTypes.ARTICLE);
+  entry.setType(EntryTypes.getType("article"));
   if (bibJsonEntry.has("author")) {
     JSONArray authors=bibJsonEntry.getJSONArray("author");
-    StringBuffer sb=new StringBuffer();
+    List<String> authorList=new ArrayList<>();
     for (int i=0; i < authors.length(); i++) {
       if (authors.getJSONObject(i).has("name")) {
-        sb.append(authors.getJSONObject(i).getString("name"));
-        if (i < (authors.length() - 1)) {
-          sb.append(" and ");
-        }
+        authorList.add(authors.getJSONObject(i).getString("name"));
       }
  else {
         LOGGER.info("Empty author name.");
       }
     }
-    entry.setField("author",sb.toString());
+    entry.setField("author",String.join(" and ",authorList));
   }
  else {
     LOGGER.info("No author found.");
@@ -54,16 +51,13 @@
   }
   if (bibJsonEntry.has("keywords")) {
     JSONArray keywords=bibJsonEntry.getJSONArray("keywords");
-    StringBuffer sb=new StringBuffer();
+    List<String> keywordList=new ArrayList<>();
     for (int i=0; i < keywords.length(); i++) {
       if (!keywords.isNull(i)) {
-        sb.append(keywords.getString(i));
-        if (i < (keywords.length() - 1)) {
-          sb.append(", ");
-        }
+        keywordList.add(keywords.getString(i));
       }
     }
-    entry.setField("keywords",sb.toString());
+    entry.putKeywords(keywordList);
   }
   if (bibJsonEntry.has("identifier")) {
     JSONArray identifiers=bibJsonEntry.getJSONArray("identifier");
