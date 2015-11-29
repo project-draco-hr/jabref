@@ -3,7 +3,13 @@
   database.addDatabaseChangeListener(eventList);
   database.addDatabaseChangeListener(SpecialFieldDatabaseChangeListener.getInstance());
   groupFilterList=new FilterList<>(eventList.getTheList(),EverythingMatcher.INSTANCE);
+  if (filterGroupToggle != null) {
+    filterGroupToggle.updateFilterList(groupFilterList);
+  }
   searchFilterList=new FilterList<>(groupFilterList,EverythingMatcher.INSTANCE);
+  if (filterSearchToggle != null) {
+    filterSearchToggle.updateFilterList(searchFilterList);
+  }
   tableFormat=new MainTableFormat(this);
   tableFormat.updateTableFormat();
   mainTable=new MainTable(tableFormat,searchFilterList,frame,this);
