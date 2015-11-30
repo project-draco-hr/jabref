@@ -1,7 +1,7 @@
 {
   String authors="";
   String institutions="";
-  while ((this.lastLine != null) && !this.lastLine.equals("") && !startsWithKeyword(RepecNepImporter.recognizedFields)) {
+  while ((this.lastLine != null) && !"".equals(this.lastLine) && !startsWithKeyword(RepecNepImporter.recognizedFields)) {
     String author;
     String institution=null;
     boolean institutionDone;
@@ -21,16 +21,16 @@
       readLine();
     }
     if (author != null) {
-      authors+=!authors.equals("") ? " and " + author : "" + author;
+      authors+=!"".equals(authors) ? " and " + author : author;
     }
     if (institution != null) {
-      institutions+=!institutions.equals("") ? " and " + institution : "" + institution;
+      institutions+=!"".equals(institutions) ? " and " + institution : institution;
     }
   }
-  if (!authors.equals("")) {
+  if (!"".equals(authors)) {
     be.setField("author",authors);
   }
-  if (!institutions.equals("")) {
+  if (!"".equals(institutions)) {
     be.setField("institution",institutions);
   }
 }

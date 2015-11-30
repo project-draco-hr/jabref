@@ -1,11 +1,12 @@
 {
   File outfile=new File(file);
   if (outfile.exists()) {
-    outfile.delete();
-  }
-  try (BufferedOutputStream writer=new BufferedOutputStream(new FileOutputStream(outfile))){
-    try (PrintStream fout=new PrintStream(writer)){
-      performExport(database,metaData,keySet,fout,"file");
+    if (!outfile.delete()) {
+      LOGGER.warn("Cannot delete/overwrite file.");
+      return;
     }
-   }
+  }
+  try (BufferedOutputStream writer=new BufferedOutputStream(new FileOutputStream(outfile));PrintStream fout=new PrintStream(writer)){
+    performExport(database,metaData,keySet,fout,"file");
+  }
  }

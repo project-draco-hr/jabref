@@ -4,8 +4,8 @@
   Vector<String> treeGroupsData=null;
   int groupsVersionOnDisk=0;
   if (inData != null) {
-    for (    String key : inData.keySet()) {
-      StringReader data=new StringReader(inData.get(key));
+    for (    Map.Entry<String,String> entry : inData.entrySet()) {
+      StringReader data=new StringReader(entry.getValue());
       String unit;
       Vector<String> orderedData=new Vector<>();
       try {
@@ -16,20 +16,20 @@
  catch (      IOException ex) {
         System.err.println("Weird error while parsing meta data.");
       }
-      if (key.equals("groupsversion")) {
+      if ("groupsversion".equals(entry.getKey())) {
         if (orderedData.size() >= 1) {
           groupsVersionOnDisk=Integer.parseInt(orderedData.firstElement());
         }
       }
- else       if (key.equals("groupstree")) {
+ else       if ("groupstree".equals(entry.getKey())) {
         groupsTreePresent=true;
         treeGroupsData=orderedData;
       }
- else       if (key.equals("groups")) {
+ else       if ("groups".equals(entry.getKey())) {
         flatGroupsData=orderedData;
       }
  else {
-        putData(key,orderedData);
+        putData(entry.getKey(),orderedData);
       }
     }
   }

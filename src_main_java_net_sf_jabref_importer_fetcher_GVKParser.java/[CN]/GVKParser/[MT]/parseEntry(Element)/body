@@ -28,13 +28,13 @@
     Element datafield=iter.next();
     String tag=datafield.getAttribute("tag");
     LOGGER.debug("tag: " + tag);
-    if (tag.equals("002@")) {
+    if ("002@".equals(tag)) {
       mak=getSubfield("0",datafield);
     }
-    if (tag.equals("003@")) {
+    if ("003@".equals(tag)) {
       ppn=getSubfield("0",datafield);
     }
-    if (tag.equals("028A")) {
+    if ("028A".equals(tag)) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
       if (author != null) {
@@ -45,7 +45,7 @@
       }
       author=author.concat(vorname + " " + nachname);
     }
-    if (tag.equals("028B")) {
+    if ("028B".equals(tag)) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
       if (author != null) {
@@ -56,7 +56,7 @@
       }
       author=author.concat(vorname + " " + nachname);
     }
-    if (tag.equals("028C")) {
+    if ("028C".equals(tag)) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
       if (editor != null) {
@@ -67,24 +67,24 @@
       }
       editor=editor.concat(vorname + " " + nachname);
     }
-    if (tag.equals("021A")) {
+    if ("021A".equals(tag)) {
       title=getSubfield("a",datafield);
       subtitle=getSubfield("d",datafield);
     }
-    if (tag.equals("033A")) {
+    if ("033A".equals(tag)) {
       publisher=getSubfield("n",datafield);
       address=getSubfield("p",datafield);
     }
-    if (tag.equals("011@")) {
+    if ("011@".equals(tag)) {
       date=getSubfield("a",datafield);
     }
-    if (tag.equals("031A")) {
+    if ("031A".equals(tag)) {
       date=getSubfield("j",datafield);
       volume=getSubfield("e",datafield);
       number=getSubfield("a",datafield);
       pages=getSubfield("h",datafield);
     }
-    if (tag.equals("036D")) {
+    if ("036D".equals(tag)) {
       if (title != null) {
         if (title.startsWith("@")) {
           title=title.substring(1);
@@ -97,7 +97,7 @@
       subtitle=getSubfield("d",datafield);
       volume=getSubfield("l",datafield);
     }
-    if (tag.equals("036E")) {
+    if ("036E".equals(tag)) {
       series=getSubfield("a",datafield);
       number=getSubfield("l",datafield);
       String kor=getSubfield("b",datafield);
@@ -105,13 +105,13 @@
         series=series + " / " + kor;
       }
     }
-    if (tag.equals("037A")) {
+    if ("037A".equals(tag)) {
       note=getSubfield("a",datafield);
     }
-    if (tag.equals("032@")) {
+    if ("032@".equals(tag)) {
       edition=getSubfield("a",datafield);
     }
-    if (tag.equals("004A")) {
+    if ("004A".equals(tag)) {
       String isbn_10=getSubfield("0",datafield);
       String isbn_13=getSubfield("A",datafield);
       if (isbn_10 != null) {
@@ -121,7 +121,7 @@
         isbn=isbn_13;
       }
     }
-    if (tag.equals("037C")) {
+    if ("037C".equals(tag)) {
       if (address == null) {
         address=getSubfield("b",datafield);
         address=removeSortCharacters(address);
@@ -133,38 +133,38 @@
         }
       }
     }
-    if (tag.equals("027D")) {
+    if ("027D".equals(tag)) {
       journal=getSubfield("a",datafield);
       booktitle=getSubfield("a",datafield);
       address=getSubfield("p",datafield);
       publisher=getSubfield("n",datafield);
     }
-    if (tag.equals("034D")) {
+    if ("034D".equals(tag)) {
       pagetotal=getSubfield("a",datafield);
       pagetotal=pagetotal.replaceAll(" S\\.?$","");
     }
-    if (tag.equals("030F")) {
+    if ("030F".equals(tag)) {
       address=getSubfield("k",datafield);
-      if (!entryType.equals("proceedings")) {
+      if (!"proceedings".equals(entryType)) {
         subtitle=getSubfield("a",datafield);
       }
       entryType="proceedings";
     }
-    if (entryType.equals("phdthesis")) {
+    if ("phdthesis".equals(entryType)) {
       if (isbn != null) {
         entryType="book";
       }
     }
-    if (tag.equals("039B")) {
+    if ("039B".equals(tag)) {
       quelle=getSubfield("8",datafield);
     }
-    if (tag.equals("046R")) {
-      if (quelle.equals("") || (quelle == null)) {
+    if ("046R".equals(tag)) {
+      if ("".equals(quelle) || (quelle == null)) {
         quelle=getSubfield("a",datafield);
       }
     }
-    if (tag.equals("009P")) {
-      if (datafield.getAttribute("occurrence").equals("03") || datafield.getAttribute("occurrence").equals("05")) {
+    if ("009P".equals(tag)) {
+      if ("03".equals(datafield.getAttribute("occurrence")) || "05".equals(datafield.getAttribute("occurrence"))) {
         if (url == null) {
           url=getSubfield("a",datafield);
         }
@@ -195,7 +195,7 @@
       entryType="article";
     }
   }
- else   if (mak.equals("")) {
+ else   if ("".equals(mak)) {
     entryType="misc";
   }
  else   if (mak.startsWith("O")) {
@@ -263,12 +263,12 @@
   if (note != null) {
     result.setField("note",note);
   }
-  if (entryType.equals("article")) {
+  if ("article".equals(entryType)) {
     if (journal != null) {
       result.setField("journal",journal);
     }
   }
- else   if (entryType.equals("incollection")) {
+ else   if ("incollection".equals(entryType)) {
     if (booktitle != null) {
       result.setField("booktitle",booktitle);
     }

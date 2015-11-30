@@ -3,13 +3,14 @@
     return GUIGlobals.NUMBER_COL;
   }
  else   if (getIconTypeForColumn(col) != null) {
-    if (Globals.prefs.getBoolean(JabRefPreferences.SHOW_ONE_LETTER_HEADING_FOR_ICON_COLUMNS)) {
-      return getIconTypeForColumn(col)[0].substring(0,1).toUpperCase();
+    String iconTypeForColumnZero=getIconTypeForColumn(col)[0];
+    if ("ranking".equals(iconTypeForColumnZero)) {
+      return EntryUtil.capitalizeFirst(iconTypeForColumnZero);
+    }
+ else     if (Globals.prefs.getBoolean(JabRefPreferences.SHOW_ONE_LETTER_HEADING_FOR_ICON_COLUMNS)) {
+      return iconTypeForColumnZero.substring(0,1).toUpperCase();
     }
  else {
-      if (getIconTypeForColumn(col)[0].equals("ranking")) {
-        return EntryUtil.capitalizeFirst(getIconTypeForColumn(col)[0]);
-      }
       return null;
     }
   }

@@ -81,13 +81,13 @@
     title=streamlineTitle(curString);
     curString="";
     author=null;
-    while ((i < split.length) && !split[i].equals("")) {
+    while ((i < split.length) && !"".equals(split[i])) {
       curString=streamlineNames(split[i]);
       if (author == null) {
         author=curString;
       }
  else {
-        if (curString.equals("")) {
+        if ("".equals(curString)) {
         }
  else {
           author=author.concat(" and ").concat(curString);
@@ -99,7 +99,7 @@
     i++;
     while (i < split.length) {
       curString=split[i];
-      if ((curString.length() >= "Abstract".length()) && curString.substring(0,"Abstract".length()).equalsIgnoreCase("Abstract")) {
+      if ((curString.length() >= "Abstract".length()) && "Abstract".equalsIgnoreCase(curString.substring(0,"Abstract".length()))) {
         if (curString.length() == "Abstract".length()) {
           curString="";
         }
@@ -107,14 +107,14 @@
           curString=curString.substring("Abstract".length() + 1).trim().concat(lineBreak);
         }
         i++;
-        while ((i < split.length) && !split[i].equals("")) {
+        while ((i < split.length) && !"".equals(split[i])) {
           curString=curString.concat(split[i]).concat(lineBreak);
           i++;
         }
         abstractT=curString;
         i++;
       }
- else       if ((curString.length() >= "Keywords".length()) && curString.substring(0,"Keywords".length()).equalsIgnoreCase("Keywords")) {
+ else       if ((curString.length() >= "Keywords".length()) && "Keywords".equalsIgnoreCase(curString.substring(0,"Keywords".length()))) {
         if (curString.length() == "Keywords".length()) {
           curString="";
         }
@@ -247,7 +247,7 @@
     res.add(entry);
   }
  catch (  NoClassDefFoundError e) {
-    if (e.getMessage().equals("org/bouncycastle/jce/provider/BouncyCastleProvider")) {
+    if ("org/bouncycastle/jce/provider/BouncyCastleProvider".equals(e.getMessage())) {
       status.showMessage(Localization.lang("Java Bouncy Castle library not found. Please download and install it. For more information see http://www.bouncycastle.org/."));
     }
  else {

@@ -1,6 +1,7 @@
 {
   splitPane=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
   splitPane.setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);
+  boolean floatSearchActive=(mainTable != null) && isShowingFloatSearch();
   createMainTable();
   for (  EntryEditor ee : entryEditors.values()) {
     ee.validateAllFields();
@@ -23,6 +24,7 @@
   }
   setLayout(new BorderLayout());
   removeAll();
+  add(searchBar,BorderLayout.NORTH);
   add(splitPane,BorderLayout.CENTER);
   instantiateSearchAutoCompleter();
   this.getDatabase().addDatabaseChangeListener(new SearchAutoCompleterUpdater());
@@ -32,6 +34,9 @@
   }
  else {
     autoCompleters=new ContentAutoCompleters();
+  }
+  if (floatSearchActive) {
+    startShowingFloatSearch();
   }
   splitPane.revalidate();
   revalidate();

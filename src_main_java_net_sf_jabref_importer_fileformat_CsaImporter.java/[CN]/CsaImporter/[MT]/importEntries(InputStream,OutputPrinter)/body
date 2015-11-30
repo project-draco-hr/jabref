@@ -16,7 +16,7 @@
           addNote(hm,"[PERHAPS NOT FULL FORMAT]");
           Type="article";
         }
-        if (Type.equals("article") && (hm.get("booktitle") != null)) {
+        if ("article".equals(Type) && (hm.get("booktitle") != null)) {
           String booktitle=hm.get("booktitle");
           hm.remove("booktitle");
           hm.put("journal",booktitle);
@@ -57,7 +57,7 @@
       if (fm.find()) {
         fstr=fm.replaceAll("<");
       }
-      if (fabbr.equals("DN") && fname.equalsIgnoreCase("Database Name")) {
+      if ("DN".equals(fabbr) && "Database Name".equalsIgnoreCase(fname)) {
         if (!first) {
           throw new IOException("format error at line " + fline + ": DN out of order");
         }
@@ -66,7 +66,7 @@
  else       if (first) {
         throw new IOException("format error at line " + fline + ": missing DN");
       }
-      if (fabbr.equals("PT")) {
+      if ("PT".equals(fabbr)) {
         Type=null;
         String flow=fstr.toLowerCase();
         String[] types=flow.split("; ");
@@ -75,19 +75,19 @@
             Type="article";
             break;
           }
- else           if (type.equals("dissertation")) {
+ else           if ("dissertation".equals(type)) {
             Type="phdthesis";
             break;
           }
- else           if (type.equals("conference")) {
+ else           if ("conference".equals(type)) {
             Type="inproceedings";
             break;
           }
- else           if (type.equals("book monograph") && (Type == null)) {
+ else           if ("book monograph".equals(type) && (Type == null)) {
             Type="book";
             break;
           }
- else           if (type.equals("report") && (Type == null)) {
+ else           if ("report".equals(type) && (Type == null)) {
             Type="techreport";
             break;
           }
@@ -97,46 +97,46 @@
         }
       }
       String ftype=null;
-      if (fabbr.equals("AB")) {
+      if ("AB".equals(fabbr)) {
         ftype="abstract";
       }
- else       if (fabbr.equals("AF")) {
+ else       if ("AF".equals(fabbr)) {
         ftype="affiliation";
       }
- else       if (fabbr.equals("AU")) {
+ else       if ("AU".equals(fabbr)) {
         ftype="author";
         if (fstr.contains(";")) {
           fstr=fstr.replaceAll("; "," and ");
         }
       }
- else       if (fabbr.equals("CA")) {
+ else       if ("CA".equals(fabbr)) {
         ftype="organization";
       }
- else       if (fabbr.equals("DE")) {
+ else       if ("DE".equals(fabbr)) {
         ftype="keywords";
       }
- else       if (fabbr.equals("DO")) {
+ else       if ("DO".equals(fabbr)) {
         ftype="doi";
       }
- else       if (fabbr.equals("ED")) {
+ else       if ("ED".equals(fabbr)) {
         ftype="editor";
       }
- else       if (fabbr.equals("IB")) {
+ else       if ("IB".equals(fabbr)) {
         ftype="ISBN";
       }
- else       if (fabbr.equals("IS")) {
+ else       if ("IS".equals(fabbr)) {
         ftype="ISSN";
       }
- else       if (fabbr.equals("JN")) {
+ else       if ("JN".equals(fabbr)) {
         ftype="journal";
       }
- else       if (fabbr.equals("LA")) {
+ else       if ("LA".equals(fabbr)) {
         ftype="language";
       }
- else       if (fabbr.equals("PB")) {
+ else       if ("PB".equals(fabbr)) {
         ftype="publisher";
       }
- else       if (fabbr.equals("PY")) {
+ else       if ("PY".equals(fabbr)) {
         ftype="year";
         if (hm.get("year") != null) {
           String oyear=hm.get("year");
@@ -145,7 +145,7 @@
           }
         }
       }
- else       if (fabbr.equals("RL")) {
+ else       if ("RL".equals(fabbr)) {
         ftype="url";
         String[] lines=fstr.split(" ");
         StringBuilder urls=new StringBuilder();
@@ -166,7 +166,7 @@
         }
         fstr=urls.toString();
       }
- else       if (fabbr.equals("SO")) {
+ else       if ("SO".equals(fabbr)) {
         ftype="booktitle";
         Matcher pm=CsaImporter.VOLNOPP_PATTERN.matcher(fstr);
         if (pm.find()) {
@@ -211,14 +211,14 @@
         if (pm.find()) {
           fstr=pm.replaceFirst("");
         }
-        if (fstr.equals("")) {
+        if ("".equals(fstr)) {
           continue;
         }
       }
- else       if (fabbr.equals("TI")) {
+ else       if ("TI".equals(fabbr)) {
         ftype="title";
       }
- else       if (fabbr.equals("RE")) {
+ else       if ("RE".equals(fabbr)) {
         continue;
       }
       if (ftype != null) {

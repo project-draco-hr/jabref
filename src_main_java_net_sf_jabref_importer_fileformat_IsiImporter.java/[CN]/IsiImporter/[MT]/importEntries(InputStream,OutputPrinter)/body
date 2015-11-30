@@ -10,7 +10,7 @@
     if (str.length() < 3) {
       continue;
     }
-    if (str.substring(0,3).equals("PT ")) {
+    if ("PT ".equals(str.substring(0,3))) {
       sb.append("::").append(str);
     }
  else {
@@ -46,7 +46,7 @@
         value=value.substring(3);
       }
       value=value.trim();
-      if (beg.equals("PT")) {
+      if ("PT".equals(beg)) {
         if (value.startsWith("J")) {
           PT="article";
         }
@@ -55,7 +55,7 @@
         }
         Type="article";
       }
- else       if (beg.equals("TY")) {
+ else       if ("TY".equals(beg)) {
         if ("JOUR".equals(value)) {
           Type="article";
         }
@@ -63,23 +63,23 @@
           Type="inproceedings";
         }
       }
- else       if (beg.equals("JO")) {
+ else       if ("JO".equals(beg)) {
         hm.put("booktitle",value);
       }
- else       if (beg.equals("AU")) {
+ else       if ("AU".equals(beg)) {
         String author=IsiImporter.isiAuthorsConvert(value.replaceAll("EOLEOL"," and "));
         if (hm.get("author") != null) {
           author=hm.get("author") + " and " + author;
         }
         hm.put("author",author);
       }
- else       if (beg.equals("TI")) {
+ else       if ("TI".equals(beg)) {
         hm.put("title",value.replaceAll("EOLEOL"," "));
       }
- else       if (beg.equals("SO") || beg.equals("JA")) {
+ else       if ("SO".equals(beg) || "JA".equals(beg)) {
         hm.put("journal",value.replaceAll("EOLEOL"," "));
       }
- else       if (beg.equals("ID") || beg.equals("KW")) {
+ else       if ("ID".equals(beg) || "KW".equals(beg)) {
         value=value.replaceAll("EOLEOL"," ");
         String existingKeywords=hm.get("keywords");
         if ((existingKeywords != null) && !existingKeywords.contains(value)) {
@@ -90,63 +90,63 @@
         }
         hm.put("keywords",existingKeywords);
       }
- else       if (beg.equals("AB")) {
+ else       if ("AB".equals(beg)) {
         hm.put("abstract",value.replaceAll("EOLEOL"," "));
       }
- else       if (beg.equals("BP") || beg.equals("BR") || beg.equals("SP")) {
+ else       if ("BP".equals(beg) || "BR".equals(beg) || "SP".equals(beg)) {
         pages=value;
       }
- else       if (beg.equals("EP")) {
+ else       if ("EP".equals(beg)) {
         int detpos=value.indexOf(' ');
         if ((detpos != -1) && !value.substring(0,detpos).trim().isEmpty()) {
           value=value.substring(0,detpos);
         }
         pages=pages + "--" + value;
       }
- else       if (beg.equals("PS")) {
+ else       if ("PS".equals(beg)) {
         pages=IsiImporter.parsePages(value);
       }
- else       if (beg.equals("AR")) {
+ else       if ("AR".equals(beg)) {
         pages=value;
       }
- else       if (beg.equals("IS")) {
+ else       if ("IS".equals(beg)) {
         hm.put("number",value);
       }
- else       if (beg.equals("PY")) {
+ else       if ("PY".equals(beg)) {
         hm.put("year",value);
       }
- else       if (beg.equals("VL")) {
+ else       if ("VL".equals(beg)) {
         hm.put("volume",value);
       }
- else       if (beg.equals("PU")) {
+ else       if ("PU".equals(beg)) {
         hm.put("publisher",value);
       }
- else       if (beg.equals("DI")) {
+ else       if ("DI".equals(beg)) {
         hm.put("doi",value);
       }
- else       if (beg.equals("PD")) {
+ else       if ("PD".equals(beg)) {
         String month=IsiImporter.parseMonth(value);
         if (month != null) {
           hm.put("month",month);
         }
       }
- else       if (beg.equals("DT")) {
+ else       if ("DT".equals(beg)) {
         Type=value;
-        if (Type.equals("Review")) {
+        if ("Review".equals(Type)) {
           Type="article";
         }
- else         if (Type.startsWith("Article") || Type.startsWith("Journal") || PT.equals("article")) {
+ else         if (Type.startsWith("Article") || Type.startsWith("Journal") || "article".equals(PT)) {
           Type="article";
         }
  else {
           Type="misc";
         }
       }
- else       if (beg.equals("CR")) {
+ else       if ("CR".equals(beg)) {
         hm.put("CitedReferences",value.replaceAll("EOLEOL"," ; ").trim());
       }
  else {
-        if (beg.equals("ER") || beg.equals("EF") || beg.equals("VR")|| beg.equals("FN")) {
+        if ("ER".equals(beg) || "EF".equals(beg) || "VR".equals(beg)|| "FN".equals(beg)) {
           continue;
         }
         hm.put(beg,value);
@@ -160,10 +160,10 @@
     }
     BibtexEntry b=new BibtexEntry(DEFAULT_BIBTEXENTRY_ID,EntryTypes.getBibtexEntryType(Type));
     ArrayList<Object> toRemove=new ArrayList<>();
-    for (    String key : hm.keySet()) {
-      String content=hm.get(key);
+    for (    Map.Entry<String,String> field : hm.entrySet()) {
+      String content=field.getValue();
       if ((content == null) || content.trim().isEmpty()) {
-        toRemove.add(key);
+        toRemove.add(field.getKey());
       }
     }
     for (    Object aToRemove : toRemove) {
