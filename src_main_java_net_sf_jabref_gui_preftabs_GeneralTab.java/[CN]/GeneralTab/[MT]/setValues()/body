@@ -19,13 +19,8 @@
   inspectionWarnDupli.setSelected(prefs.getBoolean(JabRefPreferences.WARN_ABOUT_DUPLICATES_IN_INSPECTION));
   markImportedEntries.setSelected(prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
   unmarkAllEntriesBeforeImporting.setSelected(prefs.getBoolean(JabRefPreferences.UNMARK_ALL_ENTRIES_BEFORE_IMPORTING));
-  String enc=prefs.get(JabRefPreferences.DEFAULT_ENCODING);
-  for (int i=0; i < Encodings.ENCODINGS.length; i++) {
-    if (Encodings.ENCODINGS[i].equalsIgnoreCase(enc)) {
-      encodings.setSelectedIndex(i);
-      break;
-    }
-  }
+  Charset enc=Charset.forName(prefs.get(JabRefPreferences.DEFAULT_ENCODING));
+  encodingsModel.setSelectedItem(enc);
   String oldLan=prefs.get(JabRefPreferences.LANGUAGE);
   int ilk=0;
   for (  String lan : LANGUAGES.values()) {
