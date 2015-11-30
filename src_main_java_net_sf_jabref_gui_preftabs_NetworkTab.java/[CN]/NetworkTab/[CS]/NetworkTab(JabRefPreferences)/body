@@ -6,24 +6,44 @@
   defProxyHostname.setEnabled(false);
   defProxyPort=new JTextField();
   defProxyPort.setEnabled(false);
+  useProxyAuthentication=new JCheckBox(Localization.lang("Proxy requires authentication"));
+  useProxyAuthentication.setEnabled(false);
+  defProxyUsername=new JTextField();
+  defProxyUsername.setEnabled(false);
+  defProxyPassword=new JPasswordField();
+  defProxyPassword.setEnabled(false);
   Insets marg=new Insets(0,12,3,0);
   useProxy.setMargin(marg);
   defProxyPort.setMargin(marg);
+  useProxyAuthentication.setMargin(marg);
   useProxy.addChangeListener(new ChangeListener(){
     @Override public void stateChanged(    ChangeEvent event){
       defProxyHostname.setEnabled(useProxy.isSelected());
       defProxyPort.setEnabled(useProxy.isSelected());
+      useProxyAuthentication.setEnabled(useProxy.isSelected());
     }
   }
 );
-  FormLayout layout=new FormLayout("8dlu, left:pref, 4dlu, fill:150dlu","p, 2dlu, p, 2dlu, p, 2dlu, p");
+  useProxyAuthentication.addChangeListener(new ChangeListener(){
+    @Override public void stateChanged(    ChangeEvent event){
+      defProxyUsername.setEnabled(useProxyAuthentication.isSelected());
+      defProxyPassword.setEnabled(useProxyAuthentication.isSelected());
+    }
+  }
+);
+  FormLayout layout=new FormLayout("8dlu, left:pref, 4dlu, left:pref, 4dlu, fill:150dlu","p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p, 2dlu, p");
   FormBuilder builder=FormBuilder.create().layout(layout);
-  builder.addSeparator(Localization.lang("Network")).xyw(1,1,4);
-  builder.add(useProxy).xyw(2,3,3);
+  builder.addSeparator(Localization.lang("Network")).xyw(1,1,6);
+  builder.add(useProxy).xyw(2,3,5);
   builder.add(Localization.lang("Host") + ':').xy(2,5);
-  builder.add(defProxyHostname).xy(4,5);
+  builder.add(defProxyHostname).xyw(4,5,3);
   builder.add(Localization.lang("Port") + ':').xy(2,7);
-  builder.add(defProxyPort).xy(4,7);
+  builder.add(defProxyPort).xyw(4,7,3);
+  builder.add(useProxyAuthentication).xyw(4,9,3);
+  builder.add(Localization.lang("Username:")).xy(4,11);
+  builder.add(defProxyUsername).xy(6,11);
+  builder.add(Localization.lang("Password:")).xy(4,13);
+  builder.add(defProxyPassword).xy(6,13);
   JPanel pan=builder.getPanel();
   pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   add(pan,BorderLayout.CENTER);
