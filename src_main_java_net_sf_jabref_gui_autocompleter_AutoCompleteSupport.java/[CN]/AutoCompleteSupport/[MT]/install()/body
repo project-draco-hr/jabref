@@ -2,19 +2,21 @@
   final Action upAction=new MoveAction(-1);
   final Action downAction=new MoveAction(1);
   final Action hidePopupAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       popup.setVisible(false);
     }
   }
 ;
   final Action acceptAction=new AbstractAction(){
-    public void actionPerformed(    ActionEvent e){
+    @Override public void actionPerformed(    ActionEvent e){
       E itemToInsert=renderer.getSelectedItem();
-      if (itemToInsert == null)       return;
+      if (itemToInsert == null) {
+        return;
+      }
       String toInsert=autoCompleter.getAutoCompleteText(itemToInsert);
       if (!autoCompleter.isSingleUnitField()) {
         int priv=textComp.getText().length() - 1;
-        while ((priv >= 0) && !Character.isWhitespace(textComp.getText().charAt(priv)) && textComp.getText().charAt(priv) != ',') {
+        while ((priv >= 0) && !Character.isWhitespace(textComp.getText().charAt(priv)) && (textComp.getText().charAt(priv) != ',')) {
           priv--;
         }
         textComp.setText(textComp.getText().substring(0,priv + 1) + toInsert);
@@ -34,13 +36,13 @@
   popup.setRequestFocusEnabled(false);
   popup.add(renderer.init(acceptAction));
   textComp.getDocument().addDocumentListener(new DocumentListener(){
-    public void insertUpdate(    DocumentEvent e){
+    @Override public void insertUpdate(    DocumentEvent e){
       postProcessTextChange();
     }
-    public void removeUpdate(    DocumentEvent e){
+    @Override public void removeUpdate(    DocumentEvent e){
       postProcessTextChange();
     }
-    public void changedUpdate(    DocumentEvent e){
+    @Override public void changedUpdate(    DocumentEvent e){
     }
   }
 );
@@ -49,13 +51,13 @@
   textComp.registerKeyboardAction(hidePopupAction,KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0),JComponent.WHEN_IN_FOCUSED_WINDOW);
   this.textComp.addFocusListener(new ComboBoxEditorFocusHandler());
   popup.addPopupMenuListener(new PopupMenuListener(){
-    public void popupMenuWillBecomeVisible(    PopupMenuEvent e){
+    @Override public void popupMenuWillBecomeVisible(    PopupMenuEvent e){
       textComp.registerKeyboardAction(acceptAction,KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),JComponent.WHEN_FOCUSED);
     }
-    public void popupMenuWillBecomeInvisible(    PopupMenuEvent e){
+    @Override public void popupMenuWillBecomeInvisible(    PopupMenuEvent e){
       textComp.unregisterKeyboardAction(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0));
     }
-    public void popupMenuCanceled(    PopupMenuEvent e){
+    @Override public void popupMenuCanceled(    PopupMenuEvent e){
     }
   }
 );

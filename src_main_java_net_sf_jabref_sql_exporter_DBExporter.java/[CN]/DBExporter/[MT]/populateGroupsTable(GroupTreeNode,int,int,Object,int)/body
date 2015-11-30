@@ -30,7 +30,10 @@
       rs.next();
       myID=rs.getInt("groups_id");
     }
-   }
+  finally {
+      ((Statement)response).close();
+    }
+  }
   for (Enumeration<GroupTreeNode> e=cursor.children(); e.hasMoreElements(); ) {
     ++currentID;
     currentID=populateGroupsTable(e.nextElement(),myID,currentID,out,database_id);

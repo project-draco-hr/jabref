@@ -1,14 +1,6 @@
 {
   final ArrayList<BibtexEntry> res=new ArrayList<>(1);
-  PDDocument document;
-  try {
-    document=PDDocument.load(in);
-  }
- catch (  IOException e) {
-    LOGGER.error("Could not load document",e);
-    return res;
-  }
-  try {
+  try (PDDocument document=PDDocument.load(in)){
     if (document.isEncrypted()) {
       LOGGER.error("Encrypted documents are not supported");
     }
@@ -254,8 +246,8 @@
       LOGGER.error("Could not find class",e);
     }
   }
- finally {
-    document.close();
+catch (  IOException e) {
+    LOGGER.error("Could not load document",e);
   }
   return res;
 }
