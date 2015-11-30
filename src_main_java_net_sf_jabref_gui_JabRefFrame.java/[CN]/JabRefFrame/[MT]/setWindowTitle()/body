@@ -1,14 +1,16 @@
 {
-  BasePanel bp=getCurrentBasePanel();
-  if (bp == null) {
-    setTitle(GUIGlobals.frameTitle);
+  BasePanel panel=getCurrentBasePanel();
+  String mode=biblatexMode ? " (Biblatex mode)" : " (BibTeX mode)";
+  if (panel == null) {
+    setTitle(GUIGlobals.frameTitle + mode);
     return;
   }
-  String star=bp.isBaseChanged() ? "*" : "";
-  if (bp.getDatabaseFile() != null) {
-    setTitle(GUIGlobals.frameTitle + " - " + bp.getDatabaseFile().getPath()+ star);
+  String changeFlag=panel.isBaseChanged() ? "*" : "";
+  if (panel.getDatabaseFile() != null) {
+    String databaseFile=panel.getDatabaseFile().getPath();
+    setTitle(GUIGlobals.frameTitle + " - " + databaseFile+ changeFlag+ mode);
   }
  else {
-    setTitle(GUIGlobals.frameTitle + " - " + GUIGlobals.untitledTitle+ star);
+    setTitle(GUIGlobals.frameTitle + " - " + GUIGlobals.untitledTitle+ changeFlag+ mode);
   }
 }
