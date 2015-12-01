@@ -1,0 +1,13 @@
+{
+  String newValue=oldString;
+  newValue=newValue.replace("$$","").replaceAll("(?<!\\\\[\\p{Alpha}]{0,100}\\{[^\\}]{0,100})\\}([-/ ]?)\\{","$1");
+  newValue=newValue.replaceAll("(([^$]|\\\\\\$)*)\\$","$1@@");
+  newValue=newValue.replaceAll("([^@]*)@@([^@]*)@@","$1\\$$2@@");
+  newValue=newValue.replaceAll("([0-9\\(\\.]+[ ]?[-+/]?[ ]?)\\$","\\$$1");
+  newValue=newValue.replaceAll("@@([ ]?[-+/]?[ ]?[0-9\\)\\.]+)"," $1@@");
+  newValue=newValue.replace("@@","$");
+  newValue=newValue.replace("  "," ");
+  newValue=newValue.replace("$$","");
+  newValue=newValue.replace(" )$",")$");
+  return newValue;
+}
