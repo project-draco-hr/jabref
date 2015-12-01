@@ -70,6 +70,7 @@
           BibtexEntry be=parseEntry(tp);
           boolean duplicateKey=database.insertEntry(be);
           be.setParsedSerialization(dumpTextReadSoFarToString());
+          lastParsedEntry=be;
           if (duplicateKey) {
             parserResult.addDuplicateKey(be.getCiteKey());
           }
@@ -86,6 +87,9 @@
     }
     checkEntryTypes(parserResult);
     parserResult.setMetaData(new MetaData(meta,database));
+    if (lastParsedEntry != null) {
+      lastParsedEntry.setParsedSerialization(lastParsedEntry.getParsedSerialization() + dumpTextReadSoFarToString());
+    }
     return parserResult;
   }
  catch (  KeyCollisionException kce) {

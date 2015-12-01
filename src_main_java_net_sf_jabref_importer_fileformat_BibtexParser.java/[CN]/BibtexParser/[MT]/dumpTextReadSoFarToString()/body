@@ -5,18 +5,23 @@
   }
   String result=entry.toString();
   int indexOfAt=entry.indexOf("@");
-  int runningIndex=indexOfAt - 1;
-  while (runningIndex >= 0) {
-    if (!Character.isWhitespace(result.charAt(runningIndex))) {
-      break;
-    }
-    runningIndex--;
-  }
-  if (runningIndex > 0 && !"}".equals(result.charAt(runningIndex - 1))) {
-    result=result.substring(indexOfAt);
+  if (indexOfAt == -1) {
+    return purgeEOFCharacters(entry);
   }
  else {
-    result=result.substring(runningIndex + 1);
+    int runningIndex=indexOfAt - 1;
+    while (runningIndex >= 0) {
+      if (!Character.isWhitespace(result.charAt(runningIndex))) {
+        break;
+      }
+      runningIndex--;
+    }
+    if (runningIndex > 0 && !"}".equals(result.charAt(runningIndex - 1))) {
+      result=result.substring(indexOfAt);
+    }
+ else {
+      result=result.substring(runningIndex + 1);
+    }
+    return result;
   }
-  return result;
 }
