@@ -1,9 +1,9 @@
 {
-  boolean validSetting;
+  boolean validSetting, validAuthenticationSetting=false;
   if (useProxy.isSelected()) {
     String host=defProxyHostname.getText();
     String port=defProxyPort.getText();
-    if (host == null || host.trim().isEmpty() || port == null || port.trim().isEmpty()) {
+    if ((host == null) || host.trim().isEmpty() || (port == null)|| port.trim().isEmpty()) {
       validSetting=false;
     }
  else {
@@ -16,12 +16,28 @@
         validSetting=false;
       }
     }
+    if (useProxyAuthentication.isSelected()) {
+      String userName=defProxyUsername.getText();
+      char[] password=defProxyPassword.getPassword();
+      if ((userName == null) || userName.trim().isEmpty() || (password == null)|| (password.length == 0)) {
+        validAuthenticationSetting=false;
+        validSetting=false;
+      }
+ else {
+        validAuthenticationSetting=true;
+      }
+    }
   }
  else {
     validSetting=true;
   }
   if (!validSetting) {
-    JOptionPane.showMessageDialog(null,Localization.lang("Please specify both hostname and port"),Localization.lang("Invalid setting"),JOptionPane.ERROR_MESSAGE);
+    if (!validAuthenticationSetting) {
+      JOptionPane.showMessageDialog(null,Localization.lang("Please specify both username and password"),Localization.lang("Invalid setting"),JOptionPane.ERROR_MESSAGE);
+    }
+ else {
+      JOptionPane.showMessageDialog(null,Localization.lang("Please specify both hostname and port"),Localization.lang("Invalid setting"),JOptionPane.ERROR_MESSAGE);
+    }
   }
   return validSetting;
 }

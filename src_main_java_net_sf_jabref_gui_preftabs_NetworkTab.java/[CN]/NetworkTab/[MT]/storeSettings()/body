@@ -2,4 +2,10 @@
   prefs.putBoolean(JabRefPreferences.USE_PROXY,useProxy.isSelected());
   prefs.put(JabRefPreferences.PROXY_HOSTNAME,defProxyHostname.getText().trim());
   prefs.put(JabRefPreferences.PROXY_PORT,defProxyPort.getText().trim());
+  prefs.putBoolean(JabRefPreferences.USE_PROXY_AUTHENTICATION,useProxyAuthentication.isSelected());
+  prefs.put(JabRefPreferences.PROXY_USERNAME,defProxyUsername.getText().trim());
+  prefs.put(JabRefPreferences.PROXY_PASSWORD,new String(defProxyPassword.getPassword()));
+  if ((oldUseProxy != useProxy.isSelected()) || (oldUseProxyAuth != useProxyAuthentication.isSelected()) || (getProxyConfigHash() != oldProxyConfigHash)) {
+    JOptionPane.showMessageDialog(null,Localization.lang("You have changed the proxy settings.").concat(" ").concat(Localization.lang("You must restart JabRef for this to come into effect.")),Localization.lang("Changed proxy settings"),JOptionPane.WARNING_MESSAGE);
+  }
 }
