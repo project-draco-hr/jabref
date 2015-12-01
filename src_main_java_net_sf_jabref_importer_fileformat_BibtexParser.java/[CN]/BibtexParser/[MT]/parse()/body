@@ -3,88 +3,10 @@
     return parserResult;
   }
   initializeParserResult();
-  HashMap<String,String> meta=new HashMap<>();
   setVersionNumber();
   skipWhitespace();
   try {
-    while (!eof) {
-      boolean found=consumeUncritically('@');
-      if (!found) {
-        break;
-      }
-      skipWhitespace();
-      String entryType=parseTextToken();
-      EntryType type=EntryTypes.getType(entryType);
-      boolean isEntry=type != null;
-      if (!isEntry) {
-        if ("preamble".equals(entryType.toLowerCase())) {
-          database.setPreamble(parsePreamble());
-        }
- else         if ("string".equals(entryType.toLowerCase())) {
-          BibtexString bibtexString=parseString();
-          bibtexString.setParsedSerialization(dumpTextReadSoFarToString());
-          try {
-            database.addString(bibtexString);
-          }
- catch (          KeyCollisionException ex) {
-            parserResult.addWarning(Localization.lang("Duplicate string name") + ": " + bibtexString.getName());
-          }
-        }
- else         if ("comment".equals(entryType.toLowerCase())) {
-          StringBuffer buffer=parseBracketedTextExactly();
-          String comment=buffer.toString().replaceAll("[\\x0d\\x0a]","");
-          if (comment.substring(0,Math.min(comment.length(),GUIGlobals.META_FLAG.length())).equals(GUIGlobals.META_FLAG) || comment.substring(0,Math.min(comment.length(),GUIGlobals.META_FLAG_OLD.length())).equals(GUIGlobals.META_FLAG_OLD)) {
-            String rest;
-            if (comment.substring(0,GUIGlobals.META_FLAG.length()).equals(GUIGlobals.META_FLAG)) {
-              rest=comment.substring(GUIGlobals.META_FLAG.length());
-            }
- else {
-              rest=comment.substring(GUIGlobals.META_FLAG_OLD.length());
-            }
-            int pos=rest.indexOf(':');
-            if (pos > 0) {
-              meta.put(rest.substring(0,pos),rest.substring(pos + 1));
-            }
-          }
- else           if (comment.substring(0,Math.min(comment.length(),CustomEntryType.ENTRYTYPE_FLAG.length())).equals(CustomEntryType.ENTRYTYPE_FLAG)) {
-            CustomEntryType typ=CustomEntryTypesManager.parseEntryType(comment);
-            entryTypes.put(typ.getName(),typ);
-          }
- else {
-            LOGGER.info("Dropped comment from database: " + comment);
-          }
-        }
- else {
-          type=new UnknownEntryType(EntryUtil.capitalizeFirst(entryType));
-          isEntry=true;
-        }
-      }
-      if (isEntry) {
-        try {
-          BibtexEntry entry=parseEntry(type);
-          boolean duplicateKey=database.insertEntry(entry);
-          entry.setParsedSerialization(dumpTextReadSoFarToString());
-          lastParsedEntry=entry;
-          if (duplicateKey) {
-            parserResult.addDuplicateKey(entry.getCiteKey());
-          }
- else           if ((entry.getCiteKey() == null) || "".equals(entry.getCiteKey())) {
-            parserResult.addWarning(Localization.lang("Empty BibTeX key") + ": " + entry.getAuthorTitleYear(40)+ " ("+ Localization.lang("grouping may not work for this entry")+ ")");
-          }
-        }
- catch (        IOException ex) {
-          LOGGER.warn("Could not parse entry",ex);
-          parserResult.addWarning(Localization.lang("Error occurred when parsing entry") + ": '" + ex.getMessage()+ "'. "+ Localization.lang("Skipped entry."));
-        }
-      }
-      skipWhitespace();
-    }
-    checkEntryTypes(parserResult);
-    parserResult.setMetaData(new MetaData(meta,database));
-    if (lastParsedEntry != null) {
-      lastParsedEntry.setParsedSerialization(lastParsedEntry.getParsedSerialization() + dumpTextReadSoFarToString());
-    }
-    return parserResult;
+    return parseFileContent();
   }
  catch (  KeyCollisionException kce) {
     throw new IOException("Duplicate ID in bibtex file: " + kce);

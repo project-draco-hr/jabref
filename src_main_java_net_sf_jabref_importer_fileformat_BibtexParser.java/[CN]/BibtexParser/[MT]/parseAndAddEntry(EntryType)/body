@@ -1,0 +1,18 @@
+{
+  try {
+    BibtexEntry entry=parseEntry(type);
+    boolean duplicateKey=database.insertEntry(entry);
+    entry.setParsedSerialization(dumpTextReadSoFarToString());
+    lastParsedEntry=entry;
+    if (duplicateKey) {
+      parserResult.addDuplicateKey(entry.getCiteKey());
+    }
+ else     if ((entry.getCiteKey() == null) || "".equals(entry.getCiteKey())) {
+      parserResult.addWarning(Localization.lang("Empty BibTeX key") + ": " + entry.getAuthorTitleYear(40)+ " ("+ Localization.lang("grouping may not work for this entry")+ ")");
+    }
+  }
+ catch (  IOException ex) {
+    LOGGER.warn("Could not parse entry",ex);
+    parserResult.addWarning(Localization.lang("Error occurred when parsing entry") + ": '" + ex.getMessage()+ "'. "+ Localization.lang("Skipped entry."));
+  }
+}
