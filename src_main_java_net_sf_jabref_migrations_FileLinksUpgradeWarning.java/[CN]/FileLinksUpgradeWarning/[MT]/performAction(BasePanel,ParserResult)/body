@@ -1,8 +1,5 @@
 {
-  boolean offerChangeSettings=!Globals.prefs.getBoolean(JabRefPreferences.FILE_COLUMN) || !showsFileInGenFields();
-  boolean offerChangeDatabase=linksFound(pr.getDatabase(),FileLinksUpgradeWarning.FIELDS_TO_LOOK_FOR);
-  boolean offerSetFileDir=!Globals.prefs.hasKey(Globals.FILE_FIELD + "Directory") && (Globals.prefs.hasKey("pdfDirectory") || Globals.prefs.hasKey("psDirectory"));
-  if (!offerChangeDatabase && !offerChangeSettings && !offerSetFileDir) {
+  if (!isThereSomethingToBeDone()) {
     return;
   }
   JCheckBox changeSettings=new JCheckBox(Localization.lang("Change table column and General fields settings to use the new feature"),offerChangeSettings);
