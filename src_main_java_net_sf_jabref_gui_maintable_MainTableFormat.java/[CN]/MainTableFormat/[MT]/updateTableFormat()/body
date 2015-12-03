@@ -1,8 +1,7 @@
 {
   tableColumns.clear();
-  tableColumns.add(new MainTableColumn(GUIGlobals.NUMBER_COL));
+  tableColumns.add(SpecialMainTableColumns.NUMBER_COL);
   String[] colSettings=Globals.prefs.getStringArray(JabRefPreferences.COLUMN_NAMES);
-  columns=new String[colSettings.length][];
   for (int i=0; i < colSettings.length; i++) {
     String columnName=colSettings[i];
     String[] fields=colSettings[i].split(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
@@ -10,45 +9,45 @@
   }
   if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
-      tableColumns.add(new MainTableColumn(SpecialFieldsUtils.FIELDNAME_RANKING));
+      tableColumns.add(SpecialMainTableColumns.RANKING_COLUMN);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
-      tableColumns.add(new MainTableColumn(SpecialFieldsUtils.FIELDNAME_RELEVANCE));
+      tableColumns.add(SpecialMainTableColumns.RELEVANCE_COLUMN);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
-      tableColumns.add(new MainTableColumn(SpecialFieldsUtils.FIELDNAME_QUALITY));
+      tableColumns.add(SpecialMainTableColumns.QUALITY_COLUMN);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
-      tableColumns.add(new MainTableColumn(SpecialFieldsUtils.FIELDNAME_PRIORITY));
+      tableColumns.add(SpecialMainTableColumns.PRIORITY_COLUMN);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED)) {
-      tableColumns.add(new MainTableColumn(SpecialFieldsUtils.FIELDNAME_PRINTED));
+      tableColumns.add(SpecialMainTableColumns.PRINTED_COLUMN);
     }
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ)) {
-      tableColumns.add(new MainTableColumn(SpecialFieldsUtils.FIELDNAME_READ));
+      tableColumns.add(SpecialMainTableColumns.READ_STATUS_COLUMN);
     }
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.FILE_COLUMN)) {
-    tableColumns.add(new MainTableColumn(JabRefPreferences.FILE_COLUMN));
+    tableColumns.add(SpecialMainTableColumns.FILE_COLUMN);
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.PDF_COLUMN)) {
-    tableColumns.add(new MainTableColumn(JabRefPreferences.PDF_COLUMN,MainTableFormat.PDF));
+    tableColumns.add(SpecialMainTableColumns.createIconColumn(JabRefPreferences.PDF_COLUMN,MainTableFormat.PDF));
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.URL_COLUMN)) {
     if (Globals.prefs.getBoolean(JabRefPreferences.PREFER_URL_DOI)) {
-      tableColumns.add(new MainTableColumn(JabRefPreferences.URL_COLUMN,MainTableFormat.DOI_FIRST));
+      tableColumns.add(SpecialMainTableColumns.createIconColumn(JabRefPreferences.URL_COLUMN,MainTableFormat.DOI_FIRST));
     }
  else {
-      tableColumns.add(new MainTableColumn(JabRefPreferences.URL_COLUMN,MainTableFormat.URL_FIRST));
+      tableColumns.add(SpecialMainTableColumns.createIconColumn(JabRefPreferences.URL_COLUMN,MainTableFormat.URL_FIRST));
     }
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.ARXIV_COLUMN)) {
-    tableColumns.add(new MainTableColumn(JabRefPreferences.ARXIV_COLUMN,MainTableFormat.ARXIV));
+    tableColumns.add(SpecialMainTableColumns.createIconColumn(JabRefPreferences.ARXIV_COLUMN,MainTableFormat.ARXIV));
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.EXTRA_FILE_COLUMNS)) {
     String[] desiredColumns=Globals.prefs.getStringArray(JabRefPreferences.LIST_OF_FILE_COLUMNS);
     for (    String desiredColumn : desiredColumns) {
-      tableColumns.add(new MainTableColumn(desiredColumn,new String[]{Globals.FILE_FIELD}));
+      tableColumns.add(SpecialMainTableColumns.createFileIconColumn(desiredColumn));
     }
   }
   namesNatbib=Globals.prefs.getBoolean(JabRefPreferences.NAMES_NATBIB);

@@ -1,0 +1,25 @@
+{
+  return new MainTableColumn(externalFileTypeName){
+    @Override public Object getColumnValue(    BibtexEntry entry){
+      boolean iconFound=false;
+      JLabel iconLabel=null;
+      FileListTableModel fileList=new FileListTableModel();
+      fileList.setContent(entry.getField(Globals.FILE_FIELD));
+      for (int i=0; i < fileList.getRowCount(); i++) {
+        if (fileList.getEntry(i).getType() != null) {
+          if (externalFileTypeName.equalsIgnoreCase(fileList.getEntry(i).getType().getName())) {
+            if (iconFound) {
+              return new JLabel(IconTheme.JabRefIcon.FILE_MULTIPLE.getSmallIcon());
+            }
+ else {
+              iconLabel=fileList.getEntry(i).getType().getIconLabel();
+              iconFound=true;
+            }
+          }
+        }
+      }
+      return iconLabel;
+    }
+  }
+;
+}
