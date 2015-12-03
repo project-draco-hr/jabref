@@ -8,12 +8,10 @@
       if (val.startsWith("pure")) {
         val=val.substring(4);
       }
- else {
-        if ((authString == null) || "".equals(authString)) {
-          authString=entry.getField("editor");
-          if (authString != null) {
-            authString=LabelPatternUtil.normalize(LabelPatternUtil.database.resolveForStrings(authString));
-          }
+      if ((authString == null) || "".equals(authString)) {
+        authString=entry.getField("editor");
+        if (authString != null) {
+          authString=LabelPatternUtil.normalize(LabelPatternUtil.database.resolveForStrings(authString));
         }
       }
       if ("auth".equals(val)) {
@@ -151,7 +149,10 @@
     }
  else     if ("shortyear".equals(val)) {
       String ss=entry.getFieldOrAlias("year");
-      if (ss.startsWith("in") || ss.startsWith("sub")) {
+      if (ss == null) {
+        return "";
+      }
+ else       if (ss.startsWith("in") || ss.startsWith("sub")) {
         return "IP";
       }
  else       if (ss.length() > 2) {
