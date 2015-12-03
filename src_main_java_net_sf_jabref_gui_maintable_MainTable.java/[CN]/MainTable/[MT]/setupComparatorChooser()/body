@@ -2,22 +2,6 @@
   List<Comparator> comparators=comparatorChooser.getComparatorsForColumn(0);
   comparators.clear();
   comparators.add(new FirstColumnComparator(panel.database()));
-  for (int i=1; i < tableFormat.padleft; i++) {
-    comparators=comparatorChooser.getComparatorsForColumn(i);
-    comparators.clear();
-    String[] iconField=tableFormat.getIconTypeForColumn(i);
-    if (iconField[0].equals(SpecialFieldsUtils.FIELDNAME_RANKING)) {
-      comparators.add(new RankingFieldComparator());
-    }
- else {
-      comparators.add(new IconComparator(iconField));
-    }
-  }
-  for (int i=tableFormat.padleft; i < tableFormat.getColumnCount(); i++) {
-    comparators=comparatorChooser.getComparatorsForColumn(i);
-    comparators.clear();
-    comparators.add(new FieldComparator(tableFormat.getColumnName(i).toLowerCase()));
-  }
   String[] sortFields=new String[]{Globals.prefs.get(JabRefPreferences.TABLE_PRIMARY_SORT_FIELD),Globals.prefs.get(JabRefPreferences.TABLE_SECONDARY_SORT_FIELD),Globals.prefs.get(JabRefPreferences.TABLE_TERTIARY_SORT_FIELD)};
   boolean[] sortDirections=new boolean[]{Globals.prefs.getBoolean(JabRefPreferences.TABLE_PRIMARY_SORT_DESCENDING),Globals.prefs.getBoolean(JabRefPreferences.TABLE_SECONDARY_SORT_DESCENDING),Globals.prefs.getBoolean(JabRefPreferences.TABLE_TERTIARY_SORT_DESCENDING)};
   sortedForTable.getReadWriteLock().writeLock().lock();
