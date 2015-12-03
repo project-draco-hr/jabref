@@ -3,6 +3,7 @@
   cleanUpDOI=new JCheckBox(Localization.lang("Move DOIs from note and URL field to DOI field and remove http prefix"));
   cleanUpMonth=new JCheckBox(Localization.lang("Format content of month field to #mon#"));
   cleanUpPageNumbers=new JCheckBox(Localization.lang("Ensure that page ranges are of the form num1--num2"));
+  cleanUpDate=new JCheckBox(Localization.lang("Format date field in the form yyyy-mm or yyyy-mm-dd"));
   cleanUpMakePathsRelative=new JCheckBox(Localization.lang("Make paths of linked files relative (if possible)"));
   cleanUpRenamePDF=new JCheckBox(Localization.lang("Rename PDFs to given filename format pattern"));
   cleanUpRenamePDF.addChangeListener(new ChangeListener(){
@@ -20,7 +21,7 @@
   cleanUpUnicode=new JCheckBox(Localization.lang("Run Unicode converter on title, author(s), and abstract"));
   cleanUpBibLatex=new JCheckBox(Localization.lang("Convert to BibLatex format (for example, move the value of the 'journal' field to 'journaltitle')"));
   retrieveSettings();
-  FormLayout layout=new FormLayout("left:15dlu,pref:grow","pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref");
+  FormLayout layout=new FormLayout("left:15dlu,pref:grow","pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref, pref");
   FormBuilder builder=FormBuilder.create().layout(layout);
   builder.add(cleanUpHTML).xyw(1,1,2);
   builder.add(cleanUpUnicode).xyw(1,2,2);
@@ -31,12 +32,13 @@
   builder.add(cleanUpDOI).xyw(1,7,2);
   builder.add(cleanUpMonth).xyw(1,8,2);
   builder.add(cleanUpPageNumbers).xyw(1,9,2);
-  builder.add(cleanUpUpgradeExternalLinks).xyw(1,10,2);
-  builder.add(cleanUpMakePathsRelative).xyw(1,11,2);
-  builder.add(cleanUpRenamePDF).xyw(1,12,2);
+  builder.add(cleanUpDate).xyw(1,10,2);
+  builder.add(cleanUpUpgradeExternalLinks).xyw(1,11,2);
+  builder.add(cleanUpMakePathsRelative).xyw(1,12,2);
+  builder.add(cleanUpRenamePDF).xyw(1,13,2);
   String currentPattern=Localization.lang("Filename format pattern").concat(": ").concat(Globals.prefs.get(ImportSettingsTab.PREF_IMPORT_FILENAMEPATTERN));
-  builder.add(new JLabel(currentPattern)).xy(2,13);
-  builder.add(cleanUpRenamePDFonlyRelativePaths).xy(2,14);
-  builder.add(cleanUpBibLatex).xyw(1,15,2);
+  builder.add(new JLabel(currentPattern)).xy(2,14);
+  builder.add(cleanUpRenamePDFonlyRelativePaths).xy(2,15);
+  builder.add(cleanUpBibLatex).xyw(1,16,2);
   optionsPanel=builder.build();
 }
