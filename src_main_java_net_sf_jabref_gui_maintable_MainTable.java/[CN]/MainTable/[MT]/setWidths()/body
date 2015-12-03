@@ -1,6 +1,34 @@
 {
   int ncWidth=Globals.prefs.getInt(JabRefPreferences.NUMBER_COL_WIDTH);
-  String[] widths=Globals.prefs.getStringArray(JabRefPreferences.COLUMN_WIDTHS);
+  String[] widthsFromPreferences=Globals.prefs.getStringArray(JabRefPreferences.COLUMN_WIDTHS);
   TableColumnModel cm=getColumnModel();
   cm.getColumn(0).setPreferredWidth(ncWidth);
+  for (int i=1; i < cm.getColumnCount(); i++) {
+    MainTableColumn mainTableColumn=tableFormat.getTableColumns().get(cm.getColumn(i).getModelIndex());
+    if (SpecialFieldsUtils.FIELDNAME_RANKING.equals(mainTableColumn.getColumnName())) {
+      cm.getColumn(i).setPreferredWidth(GUIGlobals.WIDTH_ICON_COL_RANKING);
+      cm.getColumn(i).setMinWidth(GUIGlobals.WIDTH_ICON_COL_RANKING);
+      cm.getColumn(i).setMaxWidth(GUIGlobals.WIDTH_ICON_COL_RANKING);
+    }
+ else     if (mainTableColumn.isIconColumn()) {
+      cm.getColumn(i).setPreferredWidth(GUIGlobals.WIDTH_ICON_COL);
+      cm.getColumn(i).setMinWidth(GUIGlobals.WIDTH_ICON_COL);
+      cm.getColumn(i).setMaxWidth(GUIGlobals.WIDTH_ICON_COL);
+    }
+ else {
+      String[] allColumns=Globals.prefs.getStringArray(JabRefPreferences.COLUMN_NAMES);
+      for (int j=0; j < allColumns.length; j++) {
+        if (allColumns[j].equalsIgnoreCase(mainTableColumn.getDisplayName())) {
+          try {
+            cm.getColumn(i).setPreferredWidth(Integer.parseInt(widthsFromPreferences[j]));
+          }
+ catch (          NumberFormatException e) {
+            LOGGER.info("Exception while setting column widths. Choosing default.",e);
+            cm.getColumn(i).setPreferredWidth(GUIGlobals.DEFAULT_FIELD_LENGTH);
+          }
+          break;
+        }
+      }
+    }
+  }
 }
