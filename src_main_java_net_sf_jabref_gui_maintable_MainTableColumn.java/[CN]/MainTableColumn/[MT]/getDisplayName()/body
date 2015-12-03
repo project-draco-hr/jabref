@@ -1,0 +1,22 @@
+{
+  if (bibtexFields.isPresent()) {
+    String[] fields=bibtexFields.get();
+    StringBuilder builder=new StringBuilder();
+    for (int i=0; i < fields.length; i++) {
+      if (i > 0) {
+        builder.append(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
+      }
+      String fieldDisplayName=BibtexFields.getFieldDisplayName(fields[i]);
+      if (fieldDisplayName != null) {
+        builder.append(fieldDisplayName);
+      }
+ else {
+        builder.append(EntryUtil.capitalizeFirst(fields[i]));
+      }
+    }
+    return builder.toString();
+  }
+ else {
+    return columnName;
+  }
+}
