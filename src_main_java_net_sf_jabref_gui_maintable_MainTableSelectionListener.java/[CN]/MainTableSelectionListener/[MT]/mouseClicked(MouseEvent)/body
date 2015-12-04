@@ -4,91 +4,71 @@
   if (e.getClickCount() == 2) {
     BibtexEntry toShow=tableRows.get(row);
     editSignalled(toShow);
-  }
-  final String[] iconType=table.getIconTypeForColumn(col);
-  if (OS.WINDOWS && (iconType != null) && (e.getButton() != MouseEvent.BUTTON1)) {
     return;
   }
-  if (iconType != null) {
-    SpecialField field=SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(iconType[0]);
-    if ((e.getClickCount() == 1) && (field != null)) {
-      if (field.isSingleValueField()) {
-        field.getValues().get(0).getAction(panel.frame()).action();
-      }
- else {
-        JPopupMenu menu=new JPopupMenu();
-        for (        SpecialFieldValue val : field.getValues()) {
-          menu.add(val.getMenuAction(panel.frame()));
-        }
-        menu.show(table,e.getX(),e.getY());
-      }
-      return;
-    }
+  int modelIndex=table.getColumnModel().getColumn(col).getModelIndex();
+  MainTableColumn modelColumn=table.getMainTableColumn(modelIndex);
+  if (OS.WINDOWS && (modelColumn.isIconColumn()) && (e.getButton() != MouseEvent.BUTTON1)) {
+    return;
+  }
+  if (modelColumn.isIconColumn() && SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(modelColumn.getColumnName()) != null) {
+    handleSpecialFieldLeftClick(e,modelColumn.getColumnName());
+  }
+ else   if (modelColumn.isIconColumn()) {
     Object value=table.getValueAt(row,col);
     if (value == null) {
       return;
     }
     final BibtexEntry entry=tableRows.get(row);
-    int hasField=-1;
-    for (int i=iconType.length - 1; i >= 0; i--) {
-      if (entry.getField(iconType[i]) != null) {
-        hasField=i;
-      }
-    }
-    if (hasField == -1) {
-      return;
-    }
-    final String fieldName=iconType[hasField];
-    String[] fileTypes={};
-    if ((hasField == 0) && iconType[hasField].equals(Globals.FILE_FIELD) && (iconType.length > 1)) {
-      fileTypes=iconType;
-    }
-    final List<String> listOfFileTypes=Collections.unmodifiableList(Arrays.asList(fileTypes));
+    final List<String> fieldNames=modelColumn.getBibtexFields();
+    final List<String> listOfFileTypes=new ArrayList<>();
     JabRefExecutorService.INSTANCE.execute(new Runnable(){
       @Override public void run(){
         panel.output(Localization.lang("External viewer called") + '.');
-        Object link=entry.getField(fieldName);
-        if (link == null) {
-          LOGGER.info("Error: no link to " + fieldName + '.');
-          return;
-        }
-        if (fieldName.equals(Globals.FILE_FIELD)) {
-          FileListTableModel fileList=new FileListTableModel();
-          fileList.setContent((String)link);
-          FileListEntry flEntry=null;
-          if (!listOfFileTypes.isEmpty()) {
-            for (int i=0; i < fileList.getRowCount(); i++) {
-              flEntry=fileList.getEntry(i);
-              boolean correctType=false;
-              for (              String listOfFileType : listOfFileTypes) {
-                if (flEntry.getType().toString().equals(listOfFileType)) {
-                  correctType=true;
+        for (        String fieldName : fieldNames) {
+          String link=entry.getField(fieldName);
+          if (link == null) {
+            continue;
+          }
+          if (fieldName.equals(Globals.FILE_FIELD)) {
+            FileListTableModel fileList=new FileListTableModel();
+            fileList.setContent(link);
+            FileListEntry flEntry=null;
+            if (!listOfFileTypes.isEmpty()) {
+              for (int i=0; i < fileList.getRowCount(); i++) {
+                flEntry=fileList.getEntry(i);
+                boolean correctType=false;
+                for (                String listOfFileType : listOfFileTypes) {
+                  if (flEntry.getType().toString().equals(listOfFileType)) {
+                    correctType=true;
+                  }
                 }
+                if (correctType) {
+                  break;
+                }
+                flEntry=null;
               }
-              if (correctType) {
-                break;
+            }
+ else             if (fileList.getRowCount() > 0) {
+              flEntry=fileList.getEntry(0);
+            }
+            if (flEntry != null) {
+              ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.getLink(),flEntry.getType().getIcon(),panel.metaData(),flEntry.getType());
+              boolean success=item.openLink();
+              if (!success) {
+                panel.output(Localization.lang("Unable to open link."));
               }
-              flEntry=null;
             }
           }
- else           if (fileList.getRowCount() > 0) {
-            flEntry=fileList.getEntry(0);
-          }
-          if (flEntry != null) {
-            ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.getLink(),flEntry.getType().getIcon(),panel.metaData(),flEntry.getType());
-            boolean success=item.openLink();
-            if (!success) {
+ else {
+            try {
+              JabRefDesktop.openExternalViewer(panel.metaData(),link,fieldName);
+            }
+ catch (            IOException ex) {
               panel.output(Localization.lang("Unable to open link."));
             }
           }
-        }
- else {
-          try {
-            JabRefDesktop.openExternalViewer(panel.metaData(),(String)link,fieldName);
-          }
- catch (          IOException ex) {
-            panel.output(Localization.lang("Unable to open link."));
-          }
+          break;
         }
       }
     }
