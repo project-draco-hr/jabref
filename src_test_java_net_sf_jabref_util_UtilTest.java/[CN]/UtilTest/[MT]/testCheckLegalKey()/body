@@ -1,5 +1,13 @@
 {
+  Assert.assertEquals("AAAA",net.sf.jabref.util.Util.checkLegalKey("AA AA",true));
+  Assert.assertEquals("SPECIALCHARS",net.sf.jabref.util.Util.checkLegalKey("SPECIAL CHARS#{\\\"}~,^",true));
+  Assert.assertEquals("",net.sf.jabref.util.Util.checkLegalKey("\n\t\r",true));
+  Assert.assertEquals("AAAA",net.sf.jabref.util.Util.checkLegalKey("AA AA",false));
+  Assert.assertEquals("SPECIALCHARS#~^",net.sf.jabref.util.Util.checkLegalKey("SPECIAL CHARS#{\\\"}~,^",false));
+  Assert.assertEquals("",net.sf.jabref.util.Util.checkLegalKey("\n\t\r",false));
+  Assert.assertNull(net.sf.jabref.util.Util.checkLegalKey(null));
+  Assert.assertNull(net.sf.jabref.util.Util.checkLegalKey(null,true));
+  Assert.assertNull(net.sf.jabref.util.Util.checkLegalKey(null,false));
   Assert.assertEquals("AAAA",net.sf.jabref.util.Util.checkLegalKey("AA AA"));
-  Assert.assertEquals("SPECIALCHARS",net.sf.jabref.util.Util.checkLegalKey("SPECIAL CHARS#{\\\"}~,^"));
   Assert.assertEquals("",net.sf.jabref.util.Util.checkLegalKey("\n\t\r"));
 }
