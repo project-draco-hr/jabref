@@ -21,7 +21,6 @@
     }
     final BibtexEntry entry=tableRows.get(row);
     final List<String> fieldNames=modelColumn.getBibtexFields();
-    final List<String> listOfFileTypes=new ArrayList<>();
     JabRefExecutorService.INSTANCE.execute(new Runnable(){
       @Override public void run(){
         panel.output(Localization.lang("External viewer called") + '.');
@@ -34,19 +33,12 @@
             FileListTableModel fileList=new FileListTableModel();
             fileList.setContent(link);
             FileListEntry flEntry=null;
-            if (!listOfFileTypes.isEmpty()) {
+            if (modelColumn.isFileFilter()) {
               for (int i=0; i < fileList.getRowCount(); i++) {
-                flEntry=fileList.getEntry(i);
-                boolean correctType=false;
-                for (                String listOfFileType : listOfFileTypes) {
-                  if (flEntry.getType().toString().equals(listOfFileType)) {
-                    correctType=true;
-                  }
-                }
-                if (correctType) {
+                if (fileList.getEntry(i).getType().toString().equals(modelColumn.getColumnName())) {
+                  flEntry=fileList.getEntry(i);
                   break;
                 }
-                flEntry=null;
               }
             }
  else             if (fileList.getRowCount() > 0) {
