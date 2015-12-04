@@ -1,8 +1,15 @@
 {
   String oldValue=entry.getField(field);
   if (oldValue == null) {
-    return;
+    return new ArrayList<>();
   }
   String newValue=formatter.format(oldValue);
-  entry.setField(field,newValue);
+  if (!oldValue.equals(newValue)) {
+    entry.setField(field,newValue);
+    FieldChange change=new FieldChange(entry,field,oldValue,newValue);
+    return Arrays.asList(new FieldChange[]{change});
+  }
+ else {
+    return new ArrayList<>();
+  }
 }
