@@ -46,9 +46,7 @@
   if (!loaded.isEmpty()) {
     for (Iterator<ParserResult> i=loaded.iterator(); i.hasNext(); ) {
       ParserResult pr=i.next();
-      String lastFocusedDatabase=Globals.prefs.get(JabRefPreferences.LAST_FOCUSED);
-      boolean hadLastFocus=pr.getFile().getAbsolutePath().equals(lastFocusedDatabase);
-      if (hadLastFocus) {
+      if (new LastFocusedTabPreferences(Globals.prefs).hadLastFocus(pr.getFile())) {
         first=true;
       }
       if (pr.isInvalid()) {
