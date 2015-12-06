@@ -3,28 +3,28 @@
   consume('{');
   int brackets=0;
   while (!((peek() == '}') && (brackets == 0))) {
-    int j=read();
-    if ((j == -1) || (j == 65535)) {
+    int character=read();
+    if (isEOFCharacter(character)) {
       throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
     }
- else     if (j == '{') {
+ else     if (character == '{') {
       brackets++;
     }
- else     if (j == '}') {
+ else     if (character == '}') {
       brackets--;
     }
-    if (Character.isWhitespace((char)j)) {
-      String whs=skipAndRecordWhitespace(j);
-      if (!"".equals(whs) && !"\n\t".equals(whs)) {
-        whs=whs.replaceAll("\t","");
-        value.append(whs);
+    if (Character.isWhitespace((char)character)) {
+      String whitespacesReduced=skipAndRecordWhitespace(character);
+      if (!"".equals(whitespacesReduced) && !"\n\t".equals(whitespacesReduced)) {
+        whitespacesReduced=whitespacesReduced.replaceAll("\t","");
+        value.append(whitespacesReduced);
       }
  else {
         value.append(' ');
       }
     }
  else {
-      value.append((char)j);
+      value.append((char)character);
     }
   }
   consume('}');

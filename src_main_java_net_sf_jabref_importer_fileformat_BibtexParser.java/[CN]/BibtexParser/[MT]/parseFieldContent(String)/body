@@ -1,24 +1,24 @@
 {
   skipWhitespace();
   StringBuilder value=new StringBuilder();
-  int c;
-  while (((c=peek()) != ',') && (c != '}') && (c != ')')) {
+  int character;
+  while (((character=peek()) != ',') && (character != '}') && (character != ')')) {
     if (eof) {
       throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
     }
-    if (c == '"') {
+    if (character == '"') {
       StringBuffer text=parseQuotedFieldExactly();
       value.append(fieldContentParser.format(text,key));
     }
- else     if (c == '{') {
+ else     if (character == '{') {
       StringBuffer text=parseBracketedTextExactly();
       value.append(fieldContentParser.format(text,key));
     }
- else     if (Character.isDigit((char)c)) {
-      String numString=parseTextToken();
-      value.append(numString);
+ else     if (Character.isDigit((char)character)) {
+      String number=parseTextToken();
+      value.append(number);
     }
- else     if (c == '#') {
+ else     if (character == '#') {
       consume('#');
     }
  else {
