@@ -1,5 +1,10 @@
 {
   cli=new JabRefCLI(args);
+  if (!cli.isBlank() && cli.isDebugLogging()) {
+    Globals.handler.setLevel(Level.FINE);
+    ((Jdk14Logger)LOGGER).getLogger().setLevel(Level.FINE);
+    LOGGER.debug("Showing debug messages");
+  }
   if (initialStartup && cli.isShowVersion()) {
     cli.displayVersion();
   }
