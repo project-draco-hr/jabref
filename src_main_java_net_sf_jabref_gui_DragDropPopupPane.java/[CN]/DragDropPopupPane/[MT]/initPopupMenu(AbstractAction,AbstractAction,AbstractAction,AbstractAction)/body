@@ -1,5 +1,15 @@
 {
   popupMenu=new JPopupMenu();
+  JMenuItem close=new JMenuItem(Localization.lang("Close"));
+  JMenuItem closeOthers=new JMenuItem(Localization.lang("Close Others"));
+  JMenuItem closeAll=new JMenuItem(Localization.lang("Close All"));
+  close.addActionListener(new CloseDatabaseAction(this));
+  closeOthers.addActionListener(new CloseDatabaseAction(this,CloseDatabaseAction.CloseMode.OTHER));
+  closeAll.addActionListener(new CloseDatabaseAction(this,CloseDatabaseAction.CloseMode.ALL));
+  popupMenu.add(close);
+  popupMenu.add(closeOthers);
+  popupMenu.add(closeAll);
+  popupMenu.addSeparator();
   JMenuItem databasePropertiesBtn=new JMenuItem(Localization.lang("Database properties"));
   databasePropertiesBtn.addActionListener(databasePropertiesAction);
   popupMenu.add(databasePropertiesBtn);
@@ -9,7 +19,4 @@
   JMenuItem manageSelectorsBtn=new JMenuItem(Localization.lang("Manage content selectors"));
   manageSelectorsBtn.addActionListener(manageSelectorsAction);
   popupMenu.add(manageSelectorsBtn);
-  JMenuItem closeBtn=new JMenuItem(Localization.lang("Close"),IconTheme.JabRefIcon.CLOSE.getSmallIcon());
-  closeBtn.addActionListener(closeDatabaseAction);
-  popupMenu.add(closeBtn);
 }
