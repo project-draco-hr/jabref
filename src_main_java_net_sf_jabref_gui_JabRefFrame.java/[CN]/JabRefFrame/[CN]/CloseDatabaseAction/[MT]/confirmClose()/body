@@ -1,0 +1,23 @@
+{
+  boolean close=false;
+  String filename;
+  if (getCurrentBasePanel().getDatabaseFile() != null) {
+    filename=getCurrentBasePanel().getDatabaseFile().getAbsolutePath();
+  }
+ else {
+    filename=GUIGlobals.untitledTitle;
+  }
+  int answer=showSaveDialog(filename);
+  if (answer == JOptionPane.YES_OPTION) {
+    try {
+      SaveDatabaseAction saveAction=new SaveDatabaseAction(getCurrentBasePanel());
+      saveAction.runCommand();
+      if (saveAction.isSuccess()) {
+        close=true;
+      }
+    }
+ catch (    Throwable ex) {
+    }
+  }
+  return close;
+}

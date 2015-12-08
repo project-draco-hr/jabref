@@ -1,34 +1,13 @@
 {
-  boolean close=true;
   if (getCurrentBasePanel() == null) {
     return;
   }
-  if (getCurrentBasePanel().isBaseChanged()) {
-    String filename;
-    if (getCurrentBasePanel().getDatabaseFile() != null) {
-      filename=getCurrentBasePanel().getDatabaseFile().getAbsolutePath();
-    }
- else {
-      filename=GUIGlobals.untitledTitle;
-    }
-    int answer=showSaveDialog(filename);
-    if ((answer == JOptionPane.CANCEL_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {
-      close=false;
-    }
-    if (answer == JOptionPane.YES_OPTION) {
-      try {
-        SaveDatabaseAction saveAction=new SaveDatabaseAction(getCurrentBasePanel());
-        saveAction.runCommand();
-        if (saveAction.isCancelled() || !saveAction.isSuccess()) {
-          close=false;
-        }
-      }
- catch (      Throwable ex) {
-        close=false;
-      }
+  if (getCurrentBasePanel().isModified()) {
+    if (confirmClose()) {
+      close();
     }
   }
-  if (close) {
+ else {
     close();
   }
 }
