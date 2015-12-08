@@ -1,0 +1,11 @@
+{
+  AutoCompletePreferences preferences=mock(AutoCompletePreferences.class);
+  when(preferences.getFirstnameMode()).thenReturn(AutoCompleteFirstNameMode.ONLY_FULL);
+  NameFieldAutoCompleter autoCompleter=new NameFieldAutoCompleter("field",preferences);
+  BibtexEntry entry=new BibtexEntry();
+  entry.setField("field","Honig B??r");
+  autoCompleter.addBibtexEntry(entry);
+  String[] result=autoCompleter.complete("B??");
+  Assert.assertEquals(1,result.length);
+  Assert.assertEquals("B??r, Honig",result[0]);
+}

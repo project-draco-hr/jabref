@@ -1,0 +1,11 @@
+{
+  AutoCompletePreferences preferences=mock(AutoCompletePreferences.class);
+  when(preferences.getFirstnameMode()).thenReturn(AutoCompleteFirstNameMode.ONLY_ABBREVIATED);
+  NameFieldAutoCompleter autoCompleter=new NameFieldAutoCompleter("field",preferences);
+  BibtexEntry entry=new BibtexEntry();
+  entry.setField("field","Eric von Hippel");
+  autoCompleter.addBibtexEntry(entry);
+  String[] result=autoCompleter.complete("von");
+  Assert.assertEquals(1,result.length);
+  Assert.assertEquals("von Hippel, E.",result[0]);
+}

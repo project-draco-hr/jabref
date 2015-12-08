@@ -1,12 +1,12 @@
 {
   super(preferences);
-  this.fieldNames=fieldNames;
+  this.fieldNames=Objects.requireNonNull(fieldNames);
   this.lastNameOnlyAndSeparationBySpace=lastNameOnlyAndSeparationBySpace;
-  if (preferences.getCompleteFirstLast()) {
+  if (preferences.getOnlyCompleteFirstLast()) {
     autoCompFF=true;
     autoCompLF=false;
   }
- else   if (preferences.getCompleteLastFirst()) {
+ else   if (preferences.getOnlyCompleteLastFirst()) {
     autoCompFF=false;
     autoCompLF=true;
   }
@@ -14,5 +14,5 @@
     autoCompFF=true;
     autoCompLF=true;
   }
-  autoCompFirstnameMode=preferences.getFirstnameMode();
+  autoCompFirstnameMode=preferences.getFirstnameMode() != null ? preferences.getFirstnameMode() : AutoCompleteFirstNameMode.BOTH;
 }
