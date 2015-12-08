@@ -1,36 +1,64 @@
 {
-  terms=query;
+  terms=query.replaceAll("\"","\\.QT\\.");
   shouldContinue=true;
   parsed=0;
-  unparseable=0;
-  piv=0;
   int pageNumber=1;
-  searchUrl=makeUrl(pageNumber);
+  postData=makeSearchPostRequestPayload(pageNumber);
   try {
-    URL url=new URL(searchUrl);
-    String page=Util.getResults(url);
-    if (page.contains("You have entered an invalid search")) {
-      status.showMessage(Localization.lang("You have entered an invalid search '%0'.",terms),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
+    URL url=new URL(IEEEXploreFetcher.URL_SEARCH);
+    HttpURLConnection con=(HttpURLConnection)url.openConnection();
+    con.setRequestMethod("POST");
+    con.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0");
+    con.setRequestProperty("Accept","application/json");
+    con.setRequestProperty("Content-type","application/json");
+    String page=Util.getPostResultsWithEncoding(con,postData,null);
+    if (page.isEmpty()) {
+      status.showMessage(Localization.lang("You have entered an invalid search '%0'.",query),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    if (page.contains("Bad request")) {
-      status.showMessage(Localization.lang("Bad Request '%0'.",terms),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
+    JSONObject jsonObj=new JSONObject(page);
+    hits=jsonObj.getInt("totalRecords");
+    if (hits == 0) {
+      status.showMessage(Localization.lang("No entries found for the search string '%0'",query),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    if (page.contains("No results were found.")) {
-      status.showMessage(Localization.lang("No entries found for the search string '%0'",terms),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
-      return false;
-    }
-    if (page.contains("Error Page")) {
-      status.showMessage(Localization.lang("Intermittent errors on the IEEE Xplore server. Please try again in a while."),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
-      return false;
-    }
-    hits=getNumberOfHits(page,"display-status",hitsPattern);
-    includeAbstract=absCheckBox.isSelected();
     if (hits > IEEEXploreFetcher.MAX_FETCH) {
       status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)}),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
-    parse(dialog,page);
+    StringBuffer bibtexQueryURLStringBuf=new StringBuffer();
+    bibtexQueryURLStringBuf.append(URL_BIBTEX_START);
+    JSONArray recordsJsonArray=jsonObj.getJSONArray("records");
+    for (int n=0; n < recordsJsonArray.length(); n++) {
+      if (!recordsJsonArray.getJSONObject(n).isNull("articleNumber")) {
+        bibtexQueryURLStringBuf.append(recordsJsonArray.getJSONObject(n).getString("articleNumber") + ",");
+      }
+    }
+    bibtexQueryURLStringBuf.deleteCharAt(bibtexQueryURLStringBuf.length() - 1);
+    includeAbstract=absCheckBox.isSelected();
+    if (includeAbstract) {
+      bibtexQueryURLStringBuf.append("&citations-format=citation-abstract");
+    }
+ else {
+      bibtexQueryURLStringBuf.append("&citations-format=citation-only");
+    }
+    bibtexQueryURLStringBuf.append(URL_BIBTEX_END);
+    URL bibtexURL=new URL(bibtexQueryURLStringBuf.toString());
+    String bibtexPage=Util.getResults(bibtexURL);
+    bibtexPage=bibtexPage.replaceAll("(?<!&)(#[x]*[0]*\\p{XDigit}+;)","&$1");
+    bibtexPage=bibtexPage.replaceAll("(?<!\\\\)%","\\\\%");
+    bibtexPage=htmlConverter.format(bibtexPage);
+    Collection<BibtexEntry> parsedBibtexCollection=BibtexParser.fromString(bibtexPage);
+    if (parsedBibtexCollection == null) {
+      status.showMessage(Localization.lang("Error occured parsing Bibtex returned from IEEEXplore"),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    int nEntries=parsedBibtexCollection.size();
+    Iterator<BibtexEntry> parsedBibtexCollectionIterator=parsedBibtexCollection.iterator();
+    while (parsedBibtexCollectionIterator.hasNext() && shouldContinue) {
+      dialog.addEntry(cleanup(parsedBibtexCollectionIterator.next()));
+      dialog.setProgress(parsed,nEntries);
+      parsed++;
+    }
     return true;
   }
  catch (  MalformedURLException e) {
@@ -39,7 +67,14 @@
 catch (  ConnectException e) {
     status.showMessage(Localization.lang("Connection to IEEEXplore failed"),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
   }
+catch (  UnknownHostException e) {
+    status.showMessage(Localization.lang("Connection to IEEEXplore failed"),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
+  }
 catch (  IOException e) {
+    status.showMessage(e.getMessage(),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
+    LOGGER.warn("Search IEEEXplore: " + e.getMessage(),e);
+  }
+catch (  JSONException e) {
     status.showMessage(e.getMessage(),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
     LOGGER.warn("Search IEEEXplore: " + e.getMessage(),e);
   }
