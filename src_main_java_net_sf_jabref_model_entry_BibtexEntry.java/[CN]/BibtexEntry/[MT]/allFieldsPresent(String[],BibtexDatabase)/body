@@ -1,14 +1,15 @@
 {
   final String orSeparator="/";
   for (  String field : allFields) {
-    if (field.contains(orSeparator)) {
+    String fieldName=normalizeFieldName(field);
+    if (fieldName.contains(orSeparator)) {
       String[] altFields=field.split(orSeparator);
       if (!atLeastOnePresent(altFields,database)) {
         return false;
       }
     }
  else {
-      if (BibtexDatabase.getResolvedField(field,this,database) == null) {
+      if (BibtexDatabase.getResolvedField(fieldName,this,database) == null) {
         return false;
       }
     }

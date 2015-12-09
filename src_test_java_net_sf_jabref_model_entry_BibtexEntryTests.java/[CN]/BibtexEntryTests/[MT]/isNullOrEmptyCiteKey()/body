@@ -3,8 +3,12 @@
   Assert.assertFalse(e.hasCiteKey());
   e.setField(BibtexEntry.KEY_FIELD,"");
   Assert.assertFalse(e.hasCiteKey());
-  e.setField(BibtexEntry.KEY_FIELD,null);
-  Assert.assertFalse(e.hasCiteKey());
+  try {
+    e.setField(BibtexEntry.KEY_FIELD,null);
+    Assert.fail();
+  }
+ catch (  NullPointerException asExpected) {
+  }
   e.setField(BibtexEntry.KEY_FIELD,"key");
   Assert.assertTrue(e.hasCiteKey());
   e.clearField(BibtexEntry.KEY_FIELD);

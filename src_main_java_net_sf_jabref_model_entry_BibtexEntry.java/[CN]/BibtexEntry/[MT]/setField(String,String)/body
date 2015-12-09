@@ -1,15 +1,18 @@
 {
-  if (BibtexEntry.ID_FIELD.equals(name)) {
+  Objects.requireNonNull(name,"field name must not be null");
+  Objects.requireNonNull(value,"field value must not be null");
+  String fieldName=normalizeFieldName(name);
+  if (BibtexEntry.ID_FIELD.equals(fieldName)) {
     throw new IllegalArgumentException("The field name '" + name + "' is reserved");
   }
   changed=true;
-  String oldValue=fields.get(name);
+  String oldValue=fields.get(fieldName);
   try {
-    fields.put(name,value);
-    firePropertyChangedEvent(name,oldValue,value);
+    fields.put(fieldName,value);
+    firePropertyChangedEvent(fieldName,oldValue,value);
   }
  catch (  PropertyVetoException pve) {
-    fields.put(name,oldValue);
+    fields.put(fieldName,oldValue);
     throw new IllegalArgumentException("Change rejected: " + pve);
   }
 }
