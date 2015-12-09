@@ -1,9 +1,9 @@
 {
   if (toComplete == null) {
-    return new String[]{};
+    return new ArrayList<>();
   }
   if (isTooShortToComplete(toComplete)) {
-    return new String[]{};
+    return new ArrayList<>();
   }
   String lowerCase=toComplete.toLowerCase();
   if (lowerCase.equals(toComplete)) {
@@ -13,11 +13,11 @@
     for (    String s : subset) {
       result.addAll(possibleStringsForSearchString.get(s));
     }
-    return result.toArray(new String[result.size()]);
+    return result;
   }
  else {
     String ender=AbstractAutoCompleter.incrementLastCharacter(toComplete);
     SortedSet<String> subset=indexCaseSensitive.subSet(toComplete,ender);
-    return subset.toArray(new String[subset.size()]);
+    return new ArrayList<>(subset);
   }
 }
