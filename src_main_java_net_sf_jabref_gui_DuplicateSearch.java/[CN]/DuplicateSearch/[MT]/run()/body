@@ -16,51 +16,51 @@
   int current=0;
   final ArrayList<BibtexEntry> toRemove=new ArrayList<>();
   final ArrayList<BibtexEntry> toAdd=new ArrayList<>();
-  while (!st.finished() || (current < duplicates.size())) {
-    if (current >= duplicates.size()) {
 synchronized (duplicates) {
+    while (!st.finished() || (current < duplicates.size())) {
+      if (current >= duplicates.size()) {
         try {
           duplicates.wait();
         }
- catch (        Exception ignored) {
+ catch (        InterruptedException ignored) {
         }
       }
-    }
  else {
-      BibtexEntry[] be=duplicates.get(current);
-      current++;
-      if (!toRemove.contains(be[0]) && !toRemove.contains(be[1])) {
-        boolean askAboutExact=false;
-        if (DuplicateCheck.compareEntriesStrictly(be[0],be[1]) > 1) {
-          if (autoRemoveExactDuplicates) {
+        BibtexEntry[] be=duplicates.get(current);
+        current++;
+        if (!toRemove.contains(be[0]) && !toRemove.contains(be[1])) {
+          boolean askAboutExact=false;
+          if (DuplicateCheck.compareEntriesStrictly(be[0],be[1]) > 1) {
+            if (autoRemoveExactDuplicates) {
+              toRemove.add(be[1]);
+              duplicateCounter++;
+              continue;
+            }
+            askAboutExact=true;
+          }
+          DuplicateCallBack cb=new DuplicateCallBack(panel.frame,be[0],be[1],askAboutExact ? DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT : DuplicateResolverDialog.DUPLICATE_SEARCH);
+          ((CallBack)Spin.over(cb)).update();
+          duplicateCounter++;
+          int answer=cb.getSelected();
+          if ((answer == DuplicateResolverDialog.KEEP_UPPER) || (answer == DuplicateResolverDialog.AUTOREMOVE_EXACT)) {
             toRemove.add(be[1]);
-            duplicateCounter++;
-            continue;
+            if (answer == DuplicateResolverDialog.AUTOREMOVE_EXACT) {
+              autoRemoveExactDuplicates=true;
+            }
           }
-          askAboutExact=true;
-        }
-        DuplicateCallBack cb=new DuplicateCallBack(panel.frame,be[0],be[1],askAboutExact ? DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT : DuplicateResolverDialog.DUPLICATE_SEARCH);
-        ((CallBack)Spin.over(cb)).update();
-        duplicateCounter++;
-        int answer=cb.getSelected();
-        if ((answer == DuplicateResolverDialog.KEEP_UPPER) || (answer == DuplicateResolverDialog.AUTOREMOVE_EXACT)) {
-          toRemove.add(be[1]);
-          if (answer == DuplicateResolverDialog.AUTOREMOVE_EXACT) {
-            autoRemoveExactDuplicates=true;
+ else           if (answer == DuplicateResolverDialog.KEEP_LOWER) {
+            toRemove.add(be[0]);
           }
-        }
- else         if (answer == DuplicateResolverDialog.KEEP_LOWER) {
-          toRemove.add(be[0]);
-        }
- else         if (answer == DuplicateResolverDialog.BREAK) {
-          st.setFinished();
-          current=Integer.MAX_VALUE;
-          duplicateCounter--;
-        }
- else         if (answer == DuplicateResolverDialog.KEEP_MERGE) {
-          toRemove.add(be[0]);
-          toRemove.add(be[1]);
-          toAdd.add(cb.getMergedEntry());
+ else           if (answer == DuplicateResolverDialog.BREAK) {
+            st.setFinished();
+            current=Integer.MAX_VALUE;
+            duplicateCounter--;
+          }
+ else           if (answer == DuplicateResolverDialog.KEEP_MERGE) {
+            toRemove.add(be[0]);
+            toRemove.add(be[1]);
+            toAdd.add(cb.getMergedEntry());
+          }
         }
       }
     }
