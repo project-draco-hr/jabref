@@ -1,0 +1,20 @@
+{
+  StringBuffer bibtexQueryURLStringBuf=new StringBuffer();
+  bibtexQueryURLStringBuf.append(URL_BIBTEX_START);
+  JSONArray recordsJsonArray=searchResultsJson.getJSONArray("records");
+  for (int n=0; n < recordsJsonArray.length(); n++) {
+    if (!recordsJsonArray.getJSONObject(n).isNull("articleNumber")) {
+      bibtexQueryURLStringBuf.append(recordsJsonArray.getJSONObject(n).getString("articleNumber") + ",");
+    }
+  }
+  bibtexQueryURLStringBuf.deleteCharAt(bibtexQueryURLStringBuf.length() - 1);
+  boolean includeAbstract=absCheckBox.isSelected();
+  if (includeAbstract) {
+    bibtexQueryURLStringBuf.append("&citations-format=citation-abstract");
+  }
+ else {
+    bibtexQueryURLStringBuf.append("&citations-format=citation-only");
+  }
+  bibtexQueryURLStringBuf.append(URL_BIBTEX_END);
+  return bibtexQueryURLStringBuf.toString();
+}

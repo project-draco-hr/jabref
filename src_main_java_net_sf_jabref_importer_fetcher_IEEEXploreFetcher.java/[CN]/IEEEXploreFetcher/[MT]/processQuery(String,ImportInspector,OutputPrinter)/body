@@ -1,52 +1,31 @@
 {
-  terms=query.replaceAll("\"","\\.QT\\.");
+  String terms=query.replaceAll("\"","\\.QT\\.");
   shouldContinue=true;
-  parsed=0;
+  int parsed=0;
   int pageNumber=1;
-  postData=makeSearchPostRequestPayload(pageNumber);
+  String postData=makeSearchPostRequestPayload(pageNumber,terms);
   try {
     URL url=new URL(IEEEXploreFetcher.URL_SEARCH);
     HttpURLConnection con=(HttpURLConnection)url.openConnection();
-    con.setRequestMethod("POST");
-    con.setRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0");
     con.setRequestProperty("Accept","application/json");
     con.setRequestProperty("Content-type","application/json");
-    String page=Util.getPostResultsWithEncoding(con,postData,null);
+    String page=Util.getPostResults(con,postData,null);
     if (page.isEmpty()) {
       status.showMessage(Localization.lang("You have entered an invalid search '%0'.",query),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    JSONObject jsonObj=new JSONObject(page);
-    hits=jsonObj.getInt("totalRecords");
+    JSONObject searchResultsJson=new JSONObject(page);
+    int hits=searchResultsJson.getInt("totalRecords");
     if (hits == 0) {
       status.showMessage(Localization.lang("No entries found for the search string '%0'",query),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
     if (hits > IEEEXploreFetcher.MAX_FETCH) {
-      status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)}),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
+      status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
-    StringBuffer bibtexQueryURLStringBuf=new StringBuffer();
-    bibtexQueryURLStringBuf.append(URL_BIBTEX_START);
-    JSONArray recordsJsonArray=jsonObj.getJSONArray("records");
-    for (int n=0; n < recordsJsonArray.length(); n++) {
-      if (!recordsJsonArray.getJSONObject(n).isNull("articleNumber")) {
-        bibtexQueryURLStringBuf.append(recordsJsonArray.getJSONObject(n).getString("articleNumber") + ",");
-      }
-    }
-    bibtexQueryURLStringBuf.deleteCharAt(bibtexQueryURLStringBuf.length() - 1);
-    includeAbstract=absCheckBox.isSelected();
-    if (includeAbstract) {
-      bibtexQueryURLStringBuf.append("&citations-format=citation-abstract");
-    }
- else {
-      bibtexQueryURLStringBuf.append("&citations-format=citation-only");
-    }
-    bibtexQueryURLStringBuf.append(URL_BIBTEX_END);
-    URL bibtexURL=new URL(bibtexQueryURLStringBuf.toString());
+    URL bibtexURL=new URL(createBibtexQueryURL(searchResultsJson));
     String bibtexPage=Util.getResults(bibtexURL);
-    bibtexPage=bibtexPage.replaceAll("(?<!&)(#[x]*[0]*\\p{XDigit}+;)","&$1");
-    bibtexPage=bibtexPage.replaceAll("(?<!\\\\)%","\\\\%");
-    bibtexPage=htmlConverter.format(bibtexPage);
+    bibtexPage=preprocessBibtexResultsPage(bibtexPage);
     Collection<BibtexEntry> parsedBibtexCollection=BibtexParser.fromString(bibtexPage);
     if (parsedBibtexCollection == null) {
       status.showMessage(Localization.lang("Error occured parsing Bibtex returned from IEEEXplore"),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
