@@ -1,5 +1,5 @@
 {
-  List<BibtexEntry> toGenerateFor=new ArrayList<>();
+  List<BibEntry> toGenerateFor=new ArrayList<>();
   for (  String key : dupes.keySet()) {
     ResolveDuplicateLabelDialog rdld=new ResolveDuplicateLabelDialog(panel,key,dupes.get(key));
     rdld.show();
@@ -14,7 +14,7 @@
   }
   if (!toGenerateFor.isEmpty()) {
     NamedCompound ce=new NamedCompound("resolve duplicate keys");
-    for (    BibtexEntry entry : toGenerateFor) {
+    for (    BibEntry entry : toGenerateFor) {
       String oldKey=entry.getCiteKey();
       LabelPatternUtil.makeLabel(panel.metaData(),panel.database(),entry);
       ce.addEdit(new UndoableKeyChange(panel.database(),entry.getId(),oldKey,entry.getCiteKey()));

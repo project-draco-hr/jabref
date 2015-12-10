@@ -1,5 +1,5 @@
 {
-  BibtexDatabase database=new BibtexDatabase();
+  BibDatabase database=new BibDatabase();
   ParserResult directParserResult=null;
   boolean anythingUseful=false;
   for (  ImportFormatReader.UnknownFormatImport importResult : imports) {
@@ -12,7 +12,7 @@
       if (directParserResult == null) {
         directParserResult=pr;
       }
-      for (      BibtexEntry entry : pr.getDatabase().getEntries()) {
+      for (      BibEntry entry : pr.getDatabase().getEntries()) {
         database.insertEntry(entry);
       }
       for (      BibtexString bs : pr.getDatabase().getStringValues()) {
@@ -25,10 +25,10 @@
     }
  else {
       ParserResult pr=importResult.parserResult;
-      Collection<BibtexEntry> entries=pr.getDatabase().getEntries();
+      Collection<BibEntry> entries=pr.getDatabase().getEntries();
       anythingUseful=anythingUseful | !entries.isEmpty();
       Util.setAutomaticFields(entries,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),!openInNew && Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
-      for (      BibtexEntry entry : entries) {
+      for (      BibEntry entry : entries) {
         database.insertEntry(entry);
       }
     }

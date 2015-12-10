@@ -1,7 +1,7 @@
 {
   try (FileReader fr=new FileReader(ImportDataTest.UNLINKED_FILES_TEST_BIB)){
     ParserResult result=BibtexParser.parse(fr);
-    BibtexDatabase database=result.getDatabase();
+    BibDatabase database=result.getDatabase();
     List<File> files=new ArrayList<>();
     files.add(ImportDataTest.FILE_NOT_IN_DATABASE);
     files.add(ImportDataTest.NOT_EXISTING_PDF);
@@ -10,7 +10,7 @@
     Assert.assertEquals(1,errors.size());
     boolean file1Found=false;
     boolean file2Found=false;
-    for (    BibtexEntry entry : database.getEntries()) {
+    for (    BibEntry entry : database.getEntries()) {
       String filesInfo=entry.getField("file");
       if (filesInfo.contains(files.get(0).getName())) {
         file1Found=true;

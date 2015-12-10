@@ -10,9 +10,9 @@
   panel.frame().setProgressBarMaximum(progressBarMax);
   int progress=0;
   final NamedCompound ce=new NamedCompound(Localization.lang("Autoset %0 field",fieldName));
-  Set<BibtexEntry> changedEntries=new HashSet<>();
+  Set<BibEntry> changedEntries=new HashSet<>();
   if (autoSet) {
-    Collection<BibtexEntry> entries=new ArrayList<>();
+    Collection<BibEntry> entries=new ArrayList<>();
     Collections.addAll(entries,sel);
     Runnable r=Util.autoSetLinks(entries,ce,changedEntries,null,panel.metaData(),null,null);
     JabRefExecutorService.INSTANCE.executeAndWait(r);
@@ -21,7 +21,7 @@
   panel.frame().setProgressBarValue(progress);
   if (checkExisting) {
     boolean removeAllBroken=false;
-    mainLoop:     for (    BibtexEntry aSel : sel) {
+    mainLoop:     for (    BibEntry aSel : sel) {
       panel.frame().setProgressBarValue(progress++);
       final String old=aSel.getField(fieldName);
       if ((old != null) && !"".equals(old)) {

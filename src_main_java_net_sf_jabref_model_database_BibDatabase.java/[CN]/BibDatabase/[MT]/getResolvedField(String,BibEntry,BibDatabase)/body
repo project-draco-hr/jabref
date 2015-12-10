@@ -1,0 +1,16 @@
+{
+  if (field.equals("bibtextype")) {
+    return bibtex.getType().getName();
+  }
+  Object o=bibtex.getFieldOrAlias(field);
+  if ((o == null) && (database != null) && database.followCrossrefs&& !field.equals(BibEntry.KEY_FIELD)) {
+    Object crossRef=bibtex.getField("crossref");
+    if (crossRef != null) {
+      BibEntry referred=database.getEntryByKey((String)crossRef);
+      if (referred != null) {
+        o=referred.getField(field);
+      }
+    }
+  }
+  return BibDatabase.getText((String)o,database);
+}
