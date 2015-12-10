@@ -6,4 +6,12 @@
   BibEntry biblatex=new BibEntry("someid",BibLatexEntryTypes.MVBOOK);
   entries=Arrays.asList(custom,biblatex);
   assertEquals(BibDatabaseType.BIBLATEX,BibDatabaseTypeDetection.inferType(entries));
+  biblatex=new BibEntry("someid",BibtexEntryTypes.ARTICLE);
+  biblatex.setField("translator","Stefan Kolb");
+  entries=Arrays.asList(custom,biblatex,bibtex);
+  assertEquals(BibDatabaseType.BIBLATEX,BibDatabaseTypeDetection.inferType(entries));
+  biblatex=new BibEntry("someid",BibtexEntryTypes.ARTICLE);
+  bibtex.setField("journal","IEEE Trans. Services Computing");
+  entries=Arrays.asList(custom,biblatex,bibtex);
+  assertEquals(BibDatabaseType.BIBTEX,BibDatabaseTypeDetection.inferType(entries));
 }
