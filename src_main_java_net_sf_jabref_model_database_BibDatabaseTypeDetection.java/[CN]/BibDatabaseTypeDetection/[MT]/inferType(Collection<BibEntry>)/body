@@ -1,2 +1,12 @@
 {
+  final List<EntryType> bibtex=BibtexEntryTypes.ALL;
+  final List<EntryType> biblatex=BibLatexEntryTypes.ALL;
+  final List<EntryType> exclusiveBiblatex=filterEntryTypes(biblatex,isNotIncludedIn(bibtex));
+  final List<EntryType> entryTypes=getEntryTypes(entries);
+  if (entryTypes.stream().anyMatch(isIncludedIn(exclusiveBiblatex))) {
+    return BibDatabaseType.BIBLATEX;
+  }
+ else   if (entryTypes.stream().allMatch(isIncludedIn(bibtex))) {
+  }
+  return BibDatabaseType.BIBTEX;
 }
