@@ -7,7 +7,8 @@
       }
  else {
         content=entry.getFieldOrAlias(field);
-        if ("Author".equalsIgnoreCase(columnName) && (content != null)) {
+        if ((database != null) && "Author".equalsIgnoreCase(columnName) && (content != null)) {
+          content=database.resolveForStrings(content);
         }
       }
       if (content != null) {
@@ -15,6 +16,7 @@
       }
     }
     if (isNameColumn()) {
+      return MainTableNameFormatter.formatName(content);
     }
     return content;
   }

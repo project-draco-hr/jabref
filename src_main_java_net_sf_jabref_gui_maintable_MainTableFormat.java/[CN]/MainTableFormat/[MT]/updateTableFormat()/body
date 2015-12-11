@@ -2,10 +2,9 @@
   tableColumns.clear();
   tableColumns.add(SpecialMainTableColumns.NUMBER_COL);
   String[] colSettings=Globals.prefs.getStringArray(JabRefPreferences.COLUMN_NAMES);
-  for (int i=0; i < colSettings.length; i++) {
-    String columnName=colSettings[i];
-    String[] fields=colSettings[i].split(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
-    tableColumns.add(new MainTableColumn(columnName,fields));
+  for (  String columnName : colSettings) {
+    String[] fields=columnName.split(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
+    tableColumns.add(new MainTableColumn(columnName,fields,database));
   }
   if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
     if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
@@ -47,10 +46,4 @@
       tableColumns.add(SpecialMainTableColumns.createFileIconColumn(desiredColumn));
     }
   }
-  namesNatbib=Globals.prefs.getBoolean(JabRefPreferences.NAMES_NATBIB);
-  namesLastOnly=Globals.prefs.getBoolean(JabRefPreferences.NAMES_LAST_ONLY);
-  namesAsIs=Globals.prefs.getBoolean(JabRefPreferences.NAMES_AS_IS);
-  abbr_names=Globals.prefs.getBoolean(JabRefPreferences.ABBR_AUTHOR_NAMES);
-  namesFf=Globals.prefs.getBoolean(JabRefPreferences.NAMES_FIRST_LAST);
-  namesLf=!(namesAsIs || namesFf || namesNatbib|| namesLastOnly);
 }
