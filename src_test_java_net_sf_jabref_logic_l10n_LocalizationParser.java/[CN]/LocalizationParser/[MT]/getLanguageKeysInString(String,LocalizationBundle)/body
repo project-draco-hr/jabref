@@ -1,0 +1,59 @@
+{
+  List<String> result=new LinkedList<>();
+  Matcher matcher;
+  if (type == LocalizationBundle.LANG) {
+    matcher=LOCALIZATION_START_PATTERN.matcher(content);
+  }
+ else {
+    matcher=LOCALIZATION_MENU_START_PATTERN.matcher(content);
+  }
+  while (matcher.find()) {
+    int index=matcher.end();
+    int brackets=1;
+    StringBuilder buffer=new StringBuilder();
+    while (brackets != 0) {
+      char c=content.charAt(index);
+      if (c == '(') {
+        brackets++;
+      }
+ else       if (c == ')') {
+        brackets--;
+      }
+      buffer.append(c);
+      index++;
+    }
+    String parsedContentsOfLangMethod=ESCAPED_QUOTATION_SYMBOL.matcher(buffer.toString()).replaceAll("QUOTATIONPLACEHOLDER");
+    StringBuilder b=new StringBuilder();
+    int quotations=0;
+    for (    char c : parsedContentsOfLangMethod.toCharArray()) {
+      if (c == '"' && quotations > 0) {
+        quotations--;
+      }
+ else       if (c == '"') {
+        quotations++;
+      }
+ else {
+        if (quotations != 0) {
+          b.append(c);
+        }
+ else {
+          if (c == ',') {
+            break;
+          }
+        }
+      }
+    }
+    String languageKey=QUOTATION_SYMBOL.matcher(b.toString()).replaceAll("\\\"");
+    String languagePropertyKey=new Localization.LocalizationKey(languageKey).getPropertiesKey();
+    if (languagePropertyKey.endsWith("_")) {
+      throw new RuntimeException(languageKey + " ends with a space. As this is a localization key, this is illegal!");
+    }
+    if (languagePropertyKey.contains("\\n")) {
+      throw new RuntimeException(languageKey + " contains a new line character. As this is a localization key, this is illegal!");
+    }
+    if (!languagePropertyKey.trim().isEmpty()) {
+      result.add(languagePropertyKey);
+    }
+  }
+  return result;
+}
