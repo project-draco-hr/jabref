@@ -45,6 +45,9 @@
     }
     String languageKey=QUOTATION_SYMBOL.matcher(b.toString()).replaceAll("\\\"");
     String languagePropertyKey=languageKey.replaceAll(" ","_").replaceAll("=","\\=").replaceAll(":","\\:");
+    if (languagePropertyKey.endsWith("_")) {
+      throw new RuntimeException("Key " + languageKey + " ends with a space");
+    }
     if (!languagePropertyKey.trim().isEmpty()) {
       result.add(languagePropertyKey);
     }
