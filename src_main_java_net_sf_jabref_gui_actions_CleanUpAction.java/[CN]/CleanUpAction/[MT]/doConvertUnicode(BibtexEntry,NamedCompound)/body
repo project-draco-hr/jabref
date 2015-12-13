@@ -1,15 +1,3 @@
 {
-  final String[] fields={"title","author","abstract"};
-  for (  String field : fields) {
-    String oldValue=entry.getField(field);
-    if (oldValue == null) {
-      return;
-    }
-    final HTMLConverter htmlConverter=new HTMLConverter();
-    String newValue=htmlConverter.formatUnicode(oldValue);
-    if (!oldValue.equals(newValue)) {
-      entry.setField(field,newValue);
-      ce.addEdit(new UndoableFieldChange(entry,field,oldValue,newValue));
-    }
-  }
+  doCleanup(new UnicodeCleanup(),entry,ce);
 }

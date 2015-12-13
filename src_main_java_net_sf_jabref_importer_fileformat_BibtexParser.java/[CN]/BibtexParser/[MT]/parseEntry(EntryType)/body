@@ -1,29 +1,26 @@
 {
   String id=IdGenerator.next();
-  BibtexEntry result=new BibtexEntry(id,tp);
+  BibtexEntry result=new BibtexEntry(id,entryType);
   skipWhitespace();
   consume('{','(');
-  int c=peek();
-  if ((c != '\n') && (c != '\r')) {
+  int character=peek();
+  if ((character != '\n') && (character != '\r')) {
     skipWhitespace();
   }
   String key=parseKey();
-  if ("".equals(key)) {
-    key=null;
-  }
   result.setField(BibtexEntry.KEY_FIELD,key);
   skipWhitespace();
   while (true) {
-    c=peek();
-    if ((c == '}') || (c == ')')) {
+    character=peek();
+    if ((character == '}') || (character == ')')) {
       break;
     }
-    if (c == ',') {
+    if (character == ',') {
       consume(',');
     }
     skipWhitespace();
-    c=peek();
-    if ((c == '}') || (c == ')')) {
+    character=peek();
+    if ((character == '}') || (character == ')')) {
       break;
     }
     parseField(result);

@@ -1,0 +1,21 @@
+{
+  String sciLink="";
+  try {
+    String request=API_URL + doi;
+    HttpResponse<JsonNode> jsonResponse=Unirest.get(request).header("X-ELS-APIKey",API_KEY).queryString("httpAccept","application/json").asJson();
+    JSONObject json=jsonResponse.getBody().getObject();
+    JSONArray links=json.getJSONObject("full-text-retrieval-response").getJSONObject("coredata").getJSONArray("link");
+    for (int i=0; i < links.length(); i++) {
+      JSONObject link=links.getJSONObject(i);
+      if (link.getString("@rel").equals("scidir")) {
+        sciLink=link.getString("@href");
+      }
+    }
+  }
+ catch (  JSONException e) {
+    LOGGER.debug("No ScienceDirect link found in API request: " + e.getMessage(),e);
+  }
+ finally {
+    return sciLink;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  AutoCompletePreferences preferences=mock(AutoCompletePreferences.class);
+  when(preferences.getFirstnameMode()).thenReturn(AutoCompleteFirstNameMode.ONLY_ABBREVIATED);
+  NameFieldAutoCompleter autoCompleter=new NameFieldAutoCompleter("field",preferences);
+  BibtexEntry entry=new BibtexEntry();
+  entry.setField("field","Reagle, Jr., Joseph M.");
+  autoCompleter.addBibtexEntry(entry);
+  List<String> result=autoCompleter.complete("Rea");
+  Assert.assertEquals(Arrays.asList("Reagle, Jr., J. M."),result);
+}

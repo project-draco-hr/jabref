@@ -1,0 +1,16 @@
+{
+  EntryTypes bibtexentrytypes=new EntryTypes();
+  assertEquals(BibtexEntryTypes.ARTICLE,bibtexentrytypes.getType("article"));
+  assertNull(bibtexentrytypes.getType("aaaaarticle"));
+  assertNull(bibtexentrytypes.getStandardType("aaaaarticle"));
+  assertEquals(19,bibtexentrytypes.getAllValues().size());
+  assertEquals(19,bibtexentrytypes.getAllTypes().size());
+  assertEquals(BibtexEntryTypes.MISC,bibtexentrytypes.getBibtexEntryType("aaaaarticle"));
+  ArrayList<String> requiredFields=new ArrayList<>(BibtexEntryTypes.ARTICLE.getRequiredFields());
+  requiredFields.add("specialfield");
+  CustomEntryType newArticle=new CustomEntryType("article",requiredFields,BibtexEntryTypes.ARTICLE.getOptionalFields());
+  bibtexentrytypes.addOrModifyCustomEntryType(newArticle);
+  assertNotEquals(BibtexEntryTypes.ARTICLE,bibtexentrytypes.getType("article"));
+  bibtexentrytypes.removeType("article");
+  assertEquals(BibtexEntryTypes.ARTICLE,bibtexentrytypes.getType("article"));
+}

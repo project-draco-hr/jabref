@@ -45,49 +45,54 @@
       isUniversity=false;
     }
     if (isUniversity) {
-      university="Uni";
+      StringBuilder universitySB=new StringBuilder();
+      universitySB.append("Uni");
       for (      String k : part) {
         if ((k.length() >= 5) && !"univ".equals(k.toLowerCase().substring(0,5))) {
-          university+=k;
+          universitySB.append(k);
         }
       }
+      university=universitySB.toString();
       if ((index > 0) && (department == null)) {
         department=parts[index - 1];
       }
     }
  else     if (isSchool || isDepartment) {
-      if (isSchool) {
-        school="";
-      }
-      if (isDepartment) {
-        department="";
-      }
+      StringBuilder schoolSB=new StringBuilder();
+      StringBuilder departmentSB=new StringBuilder();
       for (      String k : part) {
         if ((k.length() >= 7) && !k.toLowerCase().substring(0,7).matches("d[ei]part") && !"school".equals(k.toLowerCase())&& !"faculty".equals(k.toLowerCase())&& !"".equals(k.replaceAll("[^A-Z]",""))) {
           if (isSchool) {
-            school+=k.replaceAll("[^A-Z]","");
+            schoolSB.append(k.replaceAll("[^A-Z]",""));
           }
           if (isDepartment) {
-            department+=k.replaceAll("[^A-Z]","");
+            departmentSB.append(k.replaceAll("[^A-Z]",""));
           }
         }
       }
+      if (isSchool) {
+        school=schoolSB.toString();
+      }
+      if (isDepartment) {
+        department=departmentSB.toString();
+      }
     }
  else     if (rest == null) {
-      rest="";
+      StringBuilder restSB=new StringBuilder();
       if (part.size() < 3) {
         for (        String k : part) {
-          rest+=k;
+          restSB.append(k);
         }
       }
  else {
         for (        String k : part) {
           k=k.replaceAll("[^A-Z]","");
           if (!"".equals(k)) {
-            rest+=k;
+            restSB.append(k);
           }
         }
       }
+      rest=restSB.toString();
     }
   }
   return (university == null ? rest : university) + (school == null ? "" : school) + ((department == null) || ((school != null) && department.equals(school)) ? "" : department);

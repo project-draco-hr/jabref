@@ -1,17 +1,17 @@
 {
   final int CHARS_OF_FIRST=5;
   authorField=AuthorList.fixAuthorForAlphabetization(authorField);
-  String author="";
   String[] tokens=authorField.split("\\s+\\band\\b\\s+");
   int i=1;
   if (tokens.length == 0) {
-    return author;
+    return "";
   }
   String firstAuthor=tokens[0].split(",")[0];
-  author=firstAuthor.substring(0,Math.min(CHARS_OF_FIRST,firstAuthor.length()));
+  StringBuilder authorSB=new StringBuilder();
+  authorSB.append(firstAuthor.substring(0,Math.min(CHARS_OF_FIRST,firstAuthor.length())));
   while (tokens.length > i) {
-    author+=tokens[i].charAt(0);
+    authorSB.append(tokens[i].charAt(0));
     i++;
   }
-  return author;
+  return authorSB.toString();
 }

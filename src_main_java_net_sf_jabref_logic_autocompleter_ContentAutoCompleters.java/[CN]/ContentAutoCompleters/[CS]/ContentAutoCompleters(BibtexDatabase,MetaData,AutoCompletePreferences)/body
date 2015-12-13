@@ -1,0 +1,12 @@
+{
+  this(preferences);
+  AutoCompleterFactory autoCompleterFactory=new AutoCompleterFactory(preferences);
+  String[] completeFields=preferences.getCompleteNames();
+  for (  String field : completeFields) {
+    AutoCompleter<String> autoCompleter=autoCompleterFactory.getFor(field);
+    put(field,autoCompleter);
+  }
+  addDatabase(database);
+  addJournalListToAutoCompleter();
+  addContentSelectorValuesToAutoCompleters(metaData);
+}
