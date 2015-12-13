@@ -1,8 +1,11 @@
 {
-  List<String> result=new LinkedList<>();
+  List<LocalizationEntry> result=new LinkedList<>();
   try {
     String content=String.join("\n",Files.readAllLines(path,Charsets.UTF_8));
-    result.addAll(getLanguageKeysInString(content,type));
+    List<String> keys=getLanguageKeysInString(content,type);
+    for (    String key : keys) {
+      result.add(new LocalizationEntry(path,key,1,type));
+    }
   }
  catch (  IOException ignore) {
     ignore.printStackTrace();
