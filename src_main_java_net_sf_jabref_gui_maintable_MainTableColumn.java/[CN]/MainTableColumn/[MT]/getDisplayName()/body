@@ -1,23 +1,16 @@
 {
-  if (!bibtexFields.isEmpty()) {
-    StringBuilder builder=new StringBuilder();
-    int i=0;
-    for (    String field : bibtexFields) {
-      if (i > 0) {
-        builder.append(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
-      }
-      String fieldDisplayName=BibtexFields.getFieldDisplayName(field);
-      if (fieldDisplayName != null) {
-        builder.append(fieldDisplayName);
-      }
- else {
-        builder.append(EntryUtil.capitalizeFirst(field));
-      }
-      i++;
+  if (bibtexFields.isEmpty()) {
+    return null;
+  }
+  StringJoiner joiner=new StringJoiner(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
+  for (  String field : bibtexFields) {
+    String fieldDisplayName=BibtexFields.getFieldDisplayName(field);
+    if (fieldDisplayName != null) {
+      joiner.add(fieldDisplayName);
     }
-    return builder.toString();
-  }
  else {
-    return columnName;
+      joiner.add(EntryUtil.capitalizeFirst(field));
+    }
   }
+  return joiner.toString();
 }

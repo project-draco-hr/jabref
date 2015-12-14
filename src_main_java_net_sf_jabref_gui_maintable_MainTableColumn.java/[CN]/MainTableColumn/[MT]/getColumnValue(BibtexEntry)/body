@@ -1,24 +1,24 @@
 {
-  if (!bibtexFields.isEmpty()) {
-    String content=null;
-    for (    String field : bibtexFields) {
-      if (field.equals(BibtexEntry.TYPE_HEADER)) {
-        content=entry.getType().getName();
-      }
- else {
-        content=entry.getFieldOrAlias(field);
-        if ((database != null) && "Author".equalsIgnoreCase(columnName) && (content != null)) {
-          content=database.resolveForStrings(content);
-        }
-      }
-      if (content != null) {
-        break;
-      }
-    }
-    if (isNameColumn()) {
-      return MainTableNameFormatter.formatName(content);
-    }
-    return content;
+  if (bibtexFields.isEmpty()) {
+    return null;
   }
-  return null;
+  String content=null;
+  for (  String field : bibtexFields) {
+    if (field.equals(BibtexEntry.TYPE_HEADER)) {
+      content=entry.getType().getName();
+    }
+ else {
+      content=entry.getFieldOrAlias(field);
+      if ((database != null) && "Author".equalsIgnoreCase(columnName) && (content != null)) {
+        content=database.resolveForStrings(content);
+      }
+    }
+    if (content != null) {
+      break;
+    }
+  }
+  if (isNameColumn()) {
+    return MainTableNameFormatter.formatName(content);
+  }
+  return content;
 }
