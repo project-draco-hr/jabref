@@ -1,21 +1,18 @@
 {
-  Locale locale=new Locale(language);
+  Optional<String> knownLanguage=Languages.convertToKnownLocale(language);
+  if (!knownLanguage.isPresent()) {
+    LOGGER.warn("Language " + language + " is not supported by JabRef (Default:"+ Locale.getDefault()+ ")");
+    setLanguage("en");
+    return;
+  }
+  Locale locale=new Locale(knownLanguage.get());
+  Locale.setDefault(locale);
+  javax.swing.JComponent.setDefaultLocale(locale);
   try {
-    messages=ResourceBundle.getBundle(RESOURCE_PREFIX,locale,new EncodingControl(StandardCharsets.UTF_8));
-    menuTitles=ResourceBundle.getBundle(MENU_RESOURCE_PREFIX,locale,new EncodingControl(StandardCharsets.UTF_8));
-    if (!messages.getLocale().equals(locale) && !menuTitles.getLocale().equals(locale)) {
-      LOGGER.warn("Bundle for locale <" + locale + "> not found. Falling back to system locale <"+ defaultLocale+ ">");
-      locale=defaultLocale;
-    }
+    createResourceBundles(locale);
   }
  catch (  MissingResourceException e) {
-    LOGGER.warn("Bundle for locale <" + locale + "> not found. Fallback to system locale <"+ defaultLocale+ "> failed, using locale <en> instead",e);
-    locale=new Locale("en");
-    messages=ResourceBundle.getBundle(RESOURCE_PREFIX,locale,new EncodingControl(StandardCharsets.UTF_8));
-    menuTitles=ResourceBundle.getBundle(MENU_RESOURCE_PREFIX,locale,new EncodingControl(StandardCharsets.UTF_8));
-  }
- finally {
-    Locale.setDefault(locale);
-    javax.swing.JComponent.setDefaultLocale(locale);
+    LOGGER.warn("Could not find bundles for language " + locale + ", switching to full english language",e);
+    setLanguage("en");
   }
 }
