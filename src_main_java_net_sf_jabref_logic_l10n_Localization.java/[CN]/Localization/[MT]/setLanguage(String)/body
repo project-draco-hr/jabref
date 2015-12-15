@@ -3,8 +3,9 @@
   try {
     messages=ResourceBundle.getBundle(RESOURCE_PREFIX,locale,new EncodingControl(StandardCharsets.UTF_8));
     menuTitles=ResourceBundle.getBundle(MENU_RESOURCE_PREFIX,locale,new EncodingControl(StandardCharsets.UTF_8));
-    if (!messages.getLocale().equals(locale)) {
+    if (!messages.getLocale().equals(locale) && !menuTitles.getLocale().equals(locale)) {
       LOGGER.warn("Bundle for locale <" + locale + "> not found. Falling back to system locale <"+ defaultLocale+ ">");
+      locale=defaultLocale;
     }
   }
  catch (  MissingResourceException e) {

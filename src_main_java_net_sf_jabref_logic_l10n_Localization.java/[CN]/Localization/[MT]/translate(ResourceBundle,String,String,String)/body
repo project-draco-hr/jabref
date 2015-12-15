@@ -13,8 +13,8 @@
     LOGGER.warn("Warning: could not get " + idForErrorMessage + " translation for \""+ key+ "\" for locale "+ Locale.getDefault());
     translation=key;
   }
-  if ((translation != null) && !translation.isEmpty()) {
-    return new LocalizationKeyParams(translation,params).replacePlaceholders();
+  if (translation == null || translation.isEmpty()) {
+    return key;
   }
-  return key;
+  return new LocalizationKeyParams(translation,params).replacePlaceholders();
 }
