@@ -1,5 +1,4 @@
 {
-  StringBuilder querySB=new StringBuilder();
   ArrayList<String> fieldRequirement=new ArrayList<>();
   ArrayList<String> existentTypes=new ArrayList<>();
   if (out instanceof Connection) {
@@ -10,6 +9,7 @@
     }
    }
   for (  EntryType val : EntryTypes.getAllValues()) {
+    StringBuilder querySB=new StringBuilder();
     fieldRequirement.clear();
     for (int i=0; i < SQLUtil.getAllFields().size(); i++) {
       fieldRequirement.add(i,"gen");
@@ -33,7 +33,7 @@
         querySB.append(update[i] + "='" + fieldRequirement.get(i)+ "',");
       }
       querySB.delete(querySB.lastIndexOf(","),querySB.length());
-      querySB.append(" WHERE label='" + val.getName().toLowerCase() + '\'');
+      querySB.append(" WHERE label='" + val.getName().toLowerCase() + "';");
     }
     SQLUtil.processQuery(out,querySB.toString());
   }
