@@ -1,0 +1,31 @@
+{
+  final int selRow=table.getSelectedRow();
+  boolean isAnyRowSelected=selRow >= 0;
+  if (!isAnyRowSelected) {
+    return;
+  }
+  final String code=KeyEvent.getKeyText(evt.getKeyCode());
+  final String modifier=KeyEvent.getKeyModifiersText(evt.getModifiers());
+  if ("".equals(modifier)) {
+    int kc=evt.getKeyCode();
+    boolean isFunctionKey=(kc >= KeyEvent.VK_F1) && (kc <= KeyEvent.VK_F12);
+    boolean isEscapeKey=kc == KeyEvent.VK_ESCAPE;
+    boolean isDeleteKey=kc == KeyEvent.VK_DELETE;
+    if (!(isFunctionKey || isEscapeKey || isDeleteKey)) {
+      return;
+    }
+  }
+  if ("Tab".equals(code) || "Backspace".equals(code) || "Enter".equals(code)|| "Space".equals(code)|| "Ctrl".equals(code)|| "Shift".equals(code)|| "Alt".equals(code)) {
+    return;
+  }
+  String newKey;
+  if (!"".equals(modifier)) {
+    newKey=modifier.toLowerCase().replaceAll("\\+"," ") + " " + code;
+  }
+ else {
+    newKey=code;
+  }
+  table.setValueAt(newKey,selRow,1);
+  table.revalidate();
+  table.repaint();
+}

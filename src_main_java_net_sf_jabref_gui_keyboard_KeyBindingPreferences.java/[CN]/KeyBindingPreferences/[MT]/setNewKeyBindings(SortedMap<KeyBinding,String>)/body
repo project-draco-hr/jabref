@@ -1,0 +1,15 @@
+{
+  if (!newBindings.equals(keyBindingRepository.getKeyBindings())) {
+    String[] bindNames=new String[newBindings.size()];
+    String[] bindings=new String[newBindings.size()];
+    int index=0;
+    for (    Map.Entry<KeyBinding,String> keyBinding : newBindings.entrySet()) {
+      bindNames[index]=keyBinding.getKey().getKey();
+      bindings[index]=keyBinding.getValue();
+      index++;
+    }
+    prefs.putStringArray("bindNames",bindNames);
+    prefs.putStringArray("bindings",bindings);
+    keyBindingRepository.overwriteBindings(newBindings);
+  }
+}
