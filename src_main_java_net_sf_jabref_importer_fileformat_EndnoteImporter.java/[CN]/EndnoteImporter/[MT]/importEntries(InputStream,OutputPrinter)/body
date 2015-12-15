@@ -1,5 +1,5 @@
 {
-  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
+  ArrayList<BibEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String ENDOFRECORD="__EOREOR__";
@@ -169,7 +169,7 @@
         }
       }
  else       if ("F".equals(prefix)) {
-        hm.put(BibtexEntry.KEY_FIELD,Util.checkLegalKey(val));
+        hm.put(BibEntry.KEY_FIELD,Util.checkLegalKey(val));
       }
     }
     if (IsEditedBook && "".equals(editor)) {
@@ -185,7 +185,7 @@
     if (((hm.get("pages") == null) || "-".equals(hm.get("pages"))) && !"".equals(artnum)) {
       hm.put("pages",artnum);
     }
-    BibtexEntry b=new BibtexEntry(DEFAULT_BIBTEXENTRY_ID,EntryTypes.getBibtexEntryType(Type));
+    BibEntry b=new BibEntry(DEFAULT_BIBTEXENTRY_ID,EntryTypes.getTypeOrDefault(Type));
     b.setField(hm);
     if (!b.getFieldNames().isEmpty()) {
       bibitems.add(b);

@@ -2,7 +2,7 @@
   if (!"pdf".equals(fileType.extension)) {
     return false;
   }
-  List<BibtexEntry> xmpEntriesInFile;
+  List<BibEntry> xmpEntriesInFile;
   try {
     xmpEntriesInFile=XMPUtil.readXMP(fileName);
   }
@@ -21,7 +21,7 @@
     return false;
   }
   boolean isSingle=xmpEntriesInFile.size() == 1;
-  BibtexEntry single=isSingle ? xmpEntriesInFile.get(0) : null;
+  BibEntry single=isSingle ? xmpEntriesInFile.get(0) : null;
   boolean success=true;
   String destFilename;
   if (linkInPlace.isSelected()) {
@@ -42,7 +42,7 @@
     }
   }
   if (success) {
-    for (    BibtexEntry aXmpEntriesInFile : xmpEntriesInFile) {
+    for (    BibEntry aXmpEntriesInFile : xmpEntriesInFile) {
       aXmpEntriesInFile.setId(IdGenerator.next());
       edits.addEdit(new UndoableInsertEntry(panel.getDatabase(),aXmpEntriesInFile,panel));
       panel.getDatabase().insertEntry(aXmpEntriesInFile);

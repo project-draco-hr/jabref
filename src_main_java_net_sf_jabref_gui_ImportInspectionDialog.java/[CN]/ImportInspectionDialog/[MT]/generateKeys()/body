@@ -1,23 +1,23 @@
 {
   entries.getReadWriteLock().writeLock().lock();
-  BibtexDatabase database;
+  BibDatabase database;
   MetaData localMetaData;
   if (panel != null) {
     database=panel.database();
     localMetaData=panel.metaData();
   }
  else {
-    database=new BibtexDatabase();
+    database=new BibDatabase();
     localMetaData=new MetaData();
   }
   List<String> keys=new ArrayList<>(entries.size());
-  for (  BibtexEntry entry : entries) {
+  for (  BibEntry entry : entries) {
     entry.setId(IdGenerator.next());
     database.insertEntry(entry);
     LabelPatternUtil.makeLabel(localMetaData,database,entry);
     keys.add(entry.getCiteKey());
   }
-  for (  BibtexEntry entry : entries) {
+  for (  BibEntry entry : entries) {
     database.removeEntry(entry.getId());
   }
   entries.getReadWriteLock().writeLock().lock();

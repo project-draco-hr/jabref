@@ -1,0 +1,69 @@
+{
+  final int col=table.columnAtPoint(e.getPoint());
+  final int row=table.rowAtPoint(e.getPoint());
+  if (e.getClickCount() == 2) {
+    BibEntry toShow=tableRows.get(row);
+    editSignalled(toShow);
+    return;
+  }
+  int modelIndex=table.getColumnModel().getColumn(col).getModelIndex();
+  MainTableColumn modelColumn=table.getMainTableColumn(modelIndex);
+  if (OS.WINDOWS && (modelColumn.isIconColumn()) && (e.getButton() != MouseEvent.BUTTON1)) {
+    return;
+  }
+  if (modelColumn.isIconColumn() && SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(modelColumn.getColumnName()) != null) {
+    handleSpecialFieldLeftClick(e,modelColumn.getColumnName());
+  }
+ else   if (modelColumn.isIconColumn()) {
+    Object value=table.getValueAt(row,col);
+    if (value == null) {
+      return;
+    }
+    final BibEntry entry=tableRows.get(row);
+    final List<String> fieldNames=modelColumn.getBibtexFields();
+    JabRefExecutorService.INSTANCE.execute(new Runnable(){
+      @Override public void run(){
+        panel.output(Localization.lang("External viewer called") + '.');
+        for (        String fieldName : fieldNames) {
+          String link=entry.getField(fieldName);
+          if (link == null) {
+            continue;
+          }
+          if (fieldName.equals(Globals.FILE_FIELD)) {
+            FileListTableModel fileList=new FileListTableModel();
+            fileList.setContent(link);
+            FileListEntry flEntry=null;
+            if (modelColumn.isFileFilter()) {
+              for (int i=0; i < fileList.getRowCount(); i++) {
+                if (fileList.getEntry(i).getType().toString().equals(modelColumn.getColumnName())) {
+                  flEntry=fileList.getEntry(i);
+                  break;
+                }
+              }
+            }
+ else             if (fileList.getRowCount() > 0) {
+              flEntry=fileList.getEntry(0);
+            }
+            if (flEntry != null) {
+              ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.getLink(),flEntry.getType().getIcon(),panel.metaData(),flEntry.getType());
+              boolean success=item.openLink();
+              if (!success) {
+                panel.output(Localization.lang("Unable to open link."));
+              }
+            }
+          }
+ else {
+            try {
+              JabRefDesktop.openExternalViewer(panel.metaData(),link,fieldName);
+            }
+ catch (            IOException ex) {
+              panel.output(Localization.lang("Unable to open link."));
+            }
+          }
+          break;
+        }
+      }
+    }
+);
+  }
+}

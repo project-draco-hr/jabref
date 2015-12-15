@@ -9,7 +9,7 @@
     jabrefDBs=jabrefDBs.substring(0,jabrefDBs.length() - 1) + ')';
     try (ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs)){
       while (rsDatabase.next()) {
-        BibtexDatabase database=new BibtexDatabase();
+        BibDatabase database=new BibDatabase();
         HashMap<String,EntryType> types=new HashMap<>();
         try (ResultSet rsEntryType=SQLUtil.queryAllFromTable(conn,"entry_types")){
           while (rsEntryType.next()) {
@@ -26,12 +26,12 @@
           }
           rsColumns.getStatement().close();
           String database_id=rsDatabase.getString("database_id");
-          HashMap<String,BibtexEntry> entries=new HashMap<>();
+          HashMap<String,BibEntry> entries=new HashMap<>();
           try (ResultSet rsEntries=SQLUtil.queryAllFromTable(conn,"entries WHERE database_id= '" + database_id + "';")){
             while (rsEntries.next()) {
               String id=rsEntries.getString("entries_id");
-              BibtexEntry entry=new BibtexEntry(IdGenerator.next(),types.get(rsEntries.getString("entry_types_id")));
-              entry.setField(BibtexEntry.KEY_FIELD,rsEntries.getString("cite_key"));
+              BibEntry entry=new BibEntry(IdGenerator.next(),types.get(rsEntries.getString("entry_types_id")));
+              entry.setField(BibEntry.KEY_FIELD,rsEntries.getString("cite_key"));
               for (              String col : colNames) {
                 String value=rsEntries.getString(col);
                 if (value != null) {

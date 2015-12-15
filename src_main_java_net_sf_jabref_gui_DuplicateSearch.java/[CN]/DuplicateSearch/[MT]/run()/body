@@ -7,15 +7,15 @@
   if (keys.length < 2) {
     return;
   }
-  bes=new BibtexEntry[keys.length];
+  bes=new BibEntry[keys.length];
   for (int i=0; i < keys.length; i++) {
     bes[i]=panel.getDatabase().getEntryById((String)keys[i]);
   }
   SearcherRunnable st=new SearcherRunnable();
   JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThread(st,"Searcher");
   int current=0;
-  final ArrayList<BibtexEntry> toRemove=new ArrayList<>();
-  final ArrayList<BibtexEntry> toAdd=new ArrayList<>();
+  final ArrayList<BibEntry> toRemove=new ArrayList<>();
+  final ArrayList<BibEntry> toAdd=new ArrayList<>();
 synchronized (duplicates) {
     while (!st.finished() || (current < duplicates.size())) {
       if (current >= duplicates.size()) {
@@ -26,7 +26,7 @@ synchronized (duplicates) {
         }
       }
  else {
-        BibtexEntry[] be=duplicates.get(current);
+        BibEntry[] be=duplicates.get(current);
         current++;
         if (!toRemove.contains(be[0]) && !toRemove.contains(be[1])) {
           boolean askAboutExact=false;
@@ -69,14 +69,14 @@ synchronized (duplicates) {
   SwingUtilities.invokeLater(new Runnable(){
     @Override public void run(){
       if (!toRemove.isEmpty()) {
-        for (        BibtexEntry entry : toRemove) {
+        for (        BibEntry entry : toRemove) {
           panel.getDatabase().removeEntry(entry.getId());
           ce.addEdit(new UndoableRemoveEntry(panel.getDatabase(),entry,panel));
         }
         panel.markBaseChanged();
       }
       if (!toAdd.isEmpty()) {
-        for (        BibtexEntry entry : toAdd) {
+        for (        BibEntry entry : toAdd) {
           panel.getDatabase().insertEntry(entry);
           ce.addEdit(new UndoableInsertEntry(panel.getDatabase(),entry,panel));
         }

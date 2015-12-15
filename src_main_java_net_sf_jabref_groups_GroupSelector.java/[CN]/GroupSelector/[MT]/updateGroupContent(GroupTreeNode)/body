@@ -1,11 +1,11 @@
 {
-  BibtexEntry[] entries=panel.getSelectedEntries();
+  BibEntry[] entries=panel.getSelectedEntries();
   AbstractGroup group=node.getGroup();
   AbstractUndoableEdit undoRemove=null;
   AbstractUndoableEdit undoAdd=null;
-  ArrayList<BibtexEntry> toRemove=new ArrayList<>(entries.length);
-  ArrayList<BibtexEntry> toAdd=new ArrayList<>(entries.length);
-  for (  BibtexEntry entry : entries) {
+  ArrayList<BibEntry> toRemove=new ArrayList<>(entries.length);
+  ArrayList<BibEntry> toAdd=new ArrayList<>(entries.length);
+  for (  BibEntry entry : entries) {
     if (group.contains(entry)) {
       LOGGER.info("Removing entry " + entry);
       toRemove.add(entry);
@@ -16,10 +16,10 @@
     }
   }
   if (!toRemove.isEmpty()) {
-    undoRemove=node.removeFromGroup(toRemove.toArray(new BibtexEntry[toRemove.size()]));
+    undoRemove=node.removeFromGroup(toRemove.toArray(new BibEntry[toRemove.size()]));
   }
   if (!toAdd.isEmpty()) {
-    undoAdd=node.addToGroup(toAdd.toArray(new BibtexEntry[toAdd.size()]));
+    undoAdd=node.addToGroup(toAdd.toArray(new BibEntry[toAdd.size()]));
   }
   if (undoRemove != null) {
     if (undoAdd != null) {

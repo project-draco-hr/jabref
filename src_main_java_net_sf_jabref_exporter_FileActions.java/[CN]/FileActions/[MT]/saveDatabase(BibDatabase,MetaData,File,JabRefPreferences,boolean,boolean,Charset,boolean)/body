@@ -1,0 +1,66 @@
+{
+  TreeMap<String,EntryType> types=new TreeMap<>();
+  boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
+  if (suppressBackup) {
+    backup=false;
+  }
+  SaveSession session;
+  BibEntry exceptionCause=null;
+  try {
+    session=new SaveSession(file,encoding,backup);
+  }
+ catch (  Throwable e) {
+    if (encoding != null) {
+      LOGGER.error("Error from encoding: '" + encoding.displayName(),e);
+    }
+    throw new SaveException(e.getMessage(),e.getLocalizedMessage());
+  }
+  try (VerifyingWriter writer=session.getWriter()){
+    FileActions.writeBibFileHeader(writer,encoding);
+    FileActions.writePreamble(writer,database.getPreamble());
+    FileActions.writeStrings(writer,database);
+    List<BibEntry> sorter=FileActions.getSortedEntries(database,metaData,null,true);
+    BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
+    for (    BibEntry entry : sorter) {
+      exceptionCause=entry;
+      EntryType entryType=entry.getType();
+      if (EntryTypes.getStandardType(entryType.getName()) == null) {
+        types.put(entryType.getName(),entryType);
+      }
+      boolean write=true;
+      if (checkSearch && !FileActions.nonZeroField(entry,BibtexFields.SEARCH)) {
+        write=false;
+      }
+      if (checkGroup && !FileActions.nonZeroField(entry,BibtexFields.GROUPSEARCH)) {
+        write=false;
+      }
+      if (write) {
+        bibtexEntryWriter.write(entry,writer);
+      }
+    }
+    if (metaData != null) {
+      metaData.writeMetaData(writer);
+    }
+    if (!types.isEmpty()) {
+      for (      Map.Entry<String,EntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
+        EntryType type=stringBibtexEntryTypeEntry.getValue();
+        if (type instanceof CustomEntryType) {
+          CustomEntryType tp=(CustomEntryType)type;
+          CustomEntryTypesManager.save(tp,writer);
+        }
+      }
+    }
+    if (database.getEpilog() != null && database.getEpilog() != "") {
+      writer.write(database.getEpilog());
+    }
+ else {
+      writer.write(Globals.NEWLINE);
+    }
+  }
+ catch (  IOException ex) {
+    LOGGER.error("Could not write file",ex);
+    session.cancel();
+    throw new SaveException(ex.getMessage(),ex.getLocalizedMessage(),exceptionCause);
+  }
+  return session;
+}
