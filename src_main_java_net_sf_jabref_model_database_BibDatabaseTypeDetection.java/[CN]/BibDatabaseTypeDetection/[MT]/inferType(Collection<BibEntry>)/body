@@ -1,0 +1,12 @@
+{
+  final List<EntryType> entryTypes=getEntryTypes(entries);
+  if (entryTypes.stream().anyMatch(isIncludedIn(exclusiveBiblatex))) {
+    return BibDatabaseType.BIBLATEX;
+  }
+ else {
+    if (entries.stream().anyMatch(hasBiblatexFields())) {
+      return BibDatabaseType.BIBLATEX;
+    }
+  }
+  return BibDatabaseType.BIBTEX;
+}

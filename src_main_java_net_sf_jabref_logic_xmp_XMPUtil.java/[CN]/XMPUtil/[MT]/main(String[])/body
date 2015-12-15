@@ -8,9 +8,9 @@ case 0:
   break;
 case 1:
 if (args[0].endsWith(".pdf")) {
-  List<BibtexEntry> l=XMPUtil.readXMP(new File(args[0]));
+  List<BibEntry> l=XMPUtil.readXMP(new File(args[0]));
   BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),false);
-  for (  BibtexEntry entry : l) {
+  for (  BibEntry entry : l) {
     StringWriter sw=new StringWriter();
     bibtexEntryWriter.write(entry,sw);
     System.out.println(sw.getBuffer());
@@ -19,9 +19,9 @@ if (args[0].endsWith(".pdf")) {
  else if (args[0].endsWith(".bib")) {
   try (FileReader fr=new FileReader(args[0])){
     ParserResult result=BibtexParser.parse(fr);
-    Collection<BibtexEntry> entries=result.getDatabase().getEntries();
+    Collection<BibEntry> entries=result.getDatabase().getEntries();
     if (entries.isEmpty()) {
-      System.err.println("Could not find BibtexEntry in " + args[0]);
+      System.err.println("Could not find BibEntry in " + args[0]);
     }
  else {
       System.out.println(XMPUtil.toXMP(entries,result.getDatabase()));
@@ -45,9 +45,9 @@ break;
 }
 if (args[0].endsWith(".bib") && args[1].endsWith(".pdf")) {
 ParserResult result=BibtexParser.parse(new FileReader(args[0]));
-Collection<BibtexEntry> entries=result.getDatabase().getEntries();
+Collection<BibEntry> entries=result.getDatabase().getEntries();
 if (entries.isEmpty()) {
-System.err.println("Could not find BibtexEntry in " + args[0]);
+System.err.println("Could not find BibEntry in " + args[0]);
 }
  else {
 XMPUtil.writeXMP(new File(args[1]),entries,result.getDatabase(),false);
@@ -63,9 +63,9 @@ XMPUtil.usage();
 break;
 }
 ParserResult result=BibtexParser.parse(new FileReader(args[1]));
-BibtexEntry e=result.getDatabase().getEntryByKey(args[0]);
+BibEntry e=result.getDatabase().getEntryByKey(args[0]);
 if (e == null) {
-System.err.println("Could not find BibtexEntry " + args[0] + " in "+ args[0]);
+System.err.println("Could not find BibEntry " + args[0] + " in "+ args[0]);
 }
  else {
 XMPUtil.writeXMP(new File(args[2]),e,result.getDatabase());

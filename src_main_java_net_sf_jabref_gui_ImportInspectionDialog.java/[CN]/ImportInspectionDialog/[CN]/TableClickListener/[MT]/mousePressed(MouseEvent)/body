@@ -6,8 +6,8 @@
   final int col=glTable.columnAtPoint(e.getPoint());
   final int row=glTable.rowAtPoint(e.getPoint());
   if ((col == DUPL_COL) && (glTable.getValueAt(row,col) != null)) {
-    BibtexEntry first=sortedList.get(row);
-    BibtexEntry other=DuplicateCheck.containsDuplicate(panel.database(),first);
+    BibEntry first=sortedList.get(row);
+    BibEntry other=DuplicateCheck.containsDuplicate(panel.database(),first);
     if (other != null) {
       DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,other,first,DuplicateResolverDialog.INSPECTION);
       PositionWindow.placeDialog(diag,ImportInspectionDialog.this);
@@ -36,7 +36,7 @@
         diag.getMergedEntry().setSearchHit(true);
         entries.add(diag.getMergedEntry());
         entries.remove(first);
-        first=new BibtexEntry();
+        first=new BibEntry();
         entries.getReadWriteLock().writeLock().unlock();
       }
     }

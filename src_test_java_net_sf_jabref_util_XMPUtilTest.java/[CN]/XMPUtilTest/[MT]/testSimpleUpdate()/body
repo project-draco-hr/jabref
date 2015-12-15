@@ -7,9 +7,9 @@
   Assert.assertEquals(1,XMPUtil.readXMP(pdfFile).size());
 {
     XMPUtil.writeXMP(pdfFile,t1BibtexEntry(),null);
-    List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+    List<BibEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
     Assert.assertEquals(1,l.size());
-    BibtexEntry e=l.get(0);
+    BibEntry e=l.get(0);
     assertEqualsBibtexEntry(t1BibtexEntry(),e);
     try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
       if (document.isEncrypted()) {
@@ -60,12 +60,12 @@
       Assert.assertEquals("17",mm.getSequenceList("xapMM:VersionID").get(0));
     }
    }
-  BibtexEntry toSet=t1BibtexEntry();
+  BibEntry toSet=t1BibtexEntry();
   toSet.setField("author","Pokemon!");
   XMPUtil.writeXMP(pdfFile,toSet,null);
-  List<BibtexEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+  List<BibEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
   Assert.assertEquals(1,l.size());
-  BibtexEntry e=l.get(0);
+  BibEntry e=l.get(0);
   assertEqualsBibtexEntry(toSet,e);
   try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
     if (document.isEncrypted()) {

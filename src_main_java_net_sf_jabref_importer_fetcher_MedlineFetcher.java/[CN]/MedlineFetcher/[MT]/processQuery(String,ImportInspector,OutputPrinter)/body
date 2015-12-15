@@ -3,11 +3,11 @@
   query=query.trim().replace(';',',');
   if (query.matches("\\d+[,\\d+]*")) {
     frameOP.setStatus(Localization.lang("Fetching Medline by id..."));
-    List<BibtexEntry> bibs=MedlineImporter.fetchMedline(query,frameOP);
+    List<BibEntry> bibs=MedlineImporter.fetchMedline(query,frameOP);
     if (bibs.isEmpty()) {
       frameOP.showMessage(Localization.lang("No references found"));
     }
-    for (    BibtexEntry entry : bibs) {
+    for (    BibEntry entry : bibs) {
       iIDialog.addEntry(entry);
     }
     return true;
@@ -43,8 +43,8 @@
       }
       int noToFetch=Math.min(MedlineFetcher.PACING,numberToFetch - i);
       result=getIds(searchTerm,i,noToFetch);
-      List<BibtexEntry> bibs=MedlineImporter.fetchMedline(result.ids,frameOP);
-      for (      BibtexEntry entry : bibs) {
+      List<BibEntry> bibs=MedlineImporter.fetchMedline(result.ids,frameOP);
+      for (      BibEntry entry : bibs) {
         iIDialog.addEntry(entry);
       }
       iIDialog.setProgress(i + noToFetch,numberToFetch);
