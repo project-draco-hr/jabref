@@ -1,0 +1,24 @@
+{
+  Objects.requireNonNull(wordsToHighlight);
+  Objects.requireNonNull(text);
+  if (text.isEmpty() || wordsToHighlight.isEmpty()) {
+    return text;
+  }
+  Optional<Pattern> patternForWords=getPatternForWords(wordsToHighlight,Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REG_EXP),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_CASE_SENSITIVE));
+  if (!patternForWords.isPresent()) {
+    return text;
+  }
+  Matcher matcher=patternForWords.get().matcher(text);
+  StringBuffer sb=new StringBuffer();
+  boolean foundSomething=false;
+  while (matcher.find()) {
+    String found=matcher.group();
+    matcher.appendReplacement(sb,"<span style=\"background-color:" + HIGHLIGHT_COLOR + ";\">"+ found+ "</span>");
+    foundSomething=true;
+  }
+  if (foundSomething) {
+    matcher.appendTail(sb);
+    text=sb.toString();
+  }
+  return text;
+}

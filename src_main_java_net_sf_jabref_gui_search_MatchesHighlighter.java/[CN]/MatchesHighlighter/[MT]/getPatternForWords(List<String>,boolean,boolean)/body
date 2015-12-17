@@ -1,0 +1,16 @@
+{
+  if ((words == null) || words.isEmpty() || words.get(0).isEmpty()) {
+    return Optional.empty();
+  }
+  StringJoiner joiner=new StringJoiner(")|(","(",")");
+  for (  String word : words) {
+    joiner.add(useRegex ? word : Pattern.quote(word));
+  }
+  String searchPattern=joiner.toString();
+  if (isCaseSensitive) {
+    return Optional.of(Pattern.compile(searchPattern));
+  }
+ else {
+    return Optional.of(Pattern.compile(searchPattern,Pattern.CASE_INSENSITIVE));
+  }
+}
