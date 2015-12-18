@@ -1,0 +1,31 @@
+{
+  Objects.requireNonNull(parserResult);
+  Objects.requireNonNull(jabRefFrame);
+  Objects.requireNonNull(maxWarnings);
+  Objects.requireNonNull(dataBaseNumber);
+  if (parserResult.hasWarnings()) {
+    if (dataBaseNumber < 0) {
+      jabRefFrame.showBasePanelAt(dataBaseNumber);
+    }
+    List<String> wrns=parserResult.warnings();
+    StringBuilder wrn=new StringBuilder();
+    for (int j=0; j < Math.min(maxWarnings,wrns.size()); j++) {
+      wrn.append(j + 1).append(". ").append(wrns.get(j)).append("\n");
+    }
+    if (wrns.size() > maxWarnings) {
+      wrn.append("... ");
+      wrn.append(Localization.lang("%0 warnings",String.valueOf(wrns.size())));
+    }
+ else     if (wrn.length() > 0) {
+      wrn.deleteCharAt(wrn.length() - 1);
+    }
+    String dialogTitle;
+    if (dataBaseNumber < 0) {
+      dialogTitle=Localization.lang("Warnings");
+    }
+ else {
+      dialogTitle=Localization.lang("Warnings") + " (" + parserResult.getFile().getName()+ ")";
+    }
+    JOptionPane.showMessageDialog(jabRefFrame,wrn.toString(),dialogTitle,JOptionPane.WARNING_MESSAGE);
+  }
+}
