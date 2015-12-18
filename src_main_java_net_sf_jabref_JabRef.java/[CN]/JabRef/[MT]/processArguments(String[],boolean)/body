@@ -97,8 +97,8 @@
       String searchTerm=data[0].replace("\\$"," ");
       ParserResult pr=loaded.elementAt(loaded.size() - 1);
       BibDatabase dataBase=pr.getDatabase();
-      SearchManagerNoGUI smng=new SearchManagerNoGUI(searchTerm,dataBase);
-      BibDatabase newBase=smng.getDBfromMatches();
+      SearchQuery query=new SearchQuery(searchTerm,Globals.prefs.getBoolean(JabRefPreferences.SEARCH_CASE_SENSITIVE),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REG_EXP));
+      BibDatabase newBase=new DatabaseSearcher(query,dataBase).getDatabasefromMatches();
       if ((newBase != null) && (newBase.getEntryCount() > 0)) {
         String formatName=null;
         IExportFormat format;
