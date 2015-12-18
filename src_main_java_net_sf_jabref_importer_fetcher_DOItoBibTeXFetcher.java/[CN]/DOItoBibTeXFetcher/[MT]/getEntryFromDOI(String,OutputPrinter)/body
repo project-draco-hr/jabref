@@ -9,7 +9,13 @@
   }
   URL url;
   try {
-    url=doi.getURI().toURL();
+    Optional<URI> uri=doi.getURI();
+    if (!uri.isPresent()) {
+      return null;
+    }
+ else {
+      url=uri.get().toURL();
+    }
   }
  catch (  MalformedURLException e) {
     e.printStackTrace();
