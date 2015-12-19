@@ -1,0 +1,27 @@
+{
+  JPanel controls=new JPanel();
+  controls.setLayout(new BorderLayout());
+  if (panel.metaData.getData(Globals.SELECTOR_META_PREFIX + editor.getFieldName()) != null) {
+    FieldContentSelector ws=new FieldContentSelector(frame,panel,frame,editor,panel.metaData,storeFieldAction,false,", ");
+    contentSelectors.add(ws);
+    controls.add(ws,BorderLayout.NORTH);
+  }
+  JButton button=new JButton(Localization.lang("Toggle abbreviation"));
+  button.setToolTipText(ABBREVIATION_TOOLTIP_TEXT);
+  button.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      String text=editor.getText();
+      if (Abbreviations.journalAbbrev.isKnownName(text)) {
+        String s=Abbreviations.toggleAbbreviation(text);
+        if (s != null) {
+          editor.setText(s);
+          storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
+          panel.undoManager.addEdit(new UndoableFieldChange(entry,editor.getFieldName(),text,s));
+        }
+      }
+    }
+  }
+);
+  controls.add(button,BorderLayout.SOUTH);
+  return controls;
+}
