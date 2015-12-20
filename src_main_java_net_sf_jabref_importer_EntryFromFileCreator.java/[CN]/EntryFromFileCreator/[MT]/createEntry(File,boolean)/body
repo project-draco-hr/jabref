@@ -2,16 +2,16 @@
   if ((f == null) || !f.exists()) {
     return null;
   }
-  BibEntry newEntry=createBibtexEntry(f);
-  if (newEntry == null) {
+  Optional<BibEntry> newEntry=createBibtexEntry(f);
+  if (!(newEntry.isPresent())) {
     return null;
   }
   if (addPathTokensAsKeywords) {
-    appendToField(newEntry,"keywords",extractPathesToKeyWordsfield(f.getAbsolutePath()));
+    appendToField(newEntry.get(),"keywords",extractPathesToKeyWordsfield(f.getAbsolutePath()));
   }
-  if (newEntry.getField("title") == null) {
-    newEntry.setField("title",f.getName());
+  if (newEntry.get().getField("title") == null) {
+    newEntry.get().setField("title",f.getName());
   }
-  addFileInfo(newEntry,f);
-  return newEntry;
+  addFileInfo(newEntry.get(),f);
+  return newEntry.get();
 }
