@@ -19,7 +19,7 @@
   for (int index=0; index < parts.length; index++) {
     List<String> part=new ArrayList<>();
     for (    String k : parts[index].replaceAll("\\{[A-Z]+\\}","").split("[ \\-_]")) {
-      if ((!"".equals(k) && !ignore.contains(k.toLowerCase()) && (k.charAt(k.length() - 1) != '.')&& (String.valueOf(k.charAt(0))).matches("[A-Z]")) || ((k.length() >= 3) && "uni".equals(k.toLowerCase().substring(0,2)))) {
+      if ((!(k.isEmpty()) && !ignore.contains(k.toLowerCase()) && (k.charAt(k.length() - 1) != '.')&& (String.valueOf(k.charAt(0))).matches("[A-Z]")) || ((k.length() >= 3) && "uni".equals(k.toLowerCase().substring(0,2)))) {
         part.add(k);
       }
     }
@@ -61,7 +61,7 @@
       StringBuilder schoolSB=new StringBuilder();
       StringBuilder departmentSB=new StringBuilder();
       for (      String k : part) {
-        if ((k.length() >= 7) && !k.toLowerCase().substring(0,7).matches("d[ei]part") && !"school".equals(k.toLowerCase())&& !"faculty".equals(k.toLowerCase())&& !"".equals(k.replaceAll("[^A-Z]",""))) {
+        if ((k.length() >= 7) && !k.toLowerCase().substring(0,7).matches("d[ei]part") && !"school".equals(k.toLowerCase())&& !"faculty".equals(k.toLowerCase())&& !(k.replaceAll("[^A-Z]","").isEmpty())) {
           if (isSchool) {
             schoolSB.append(k.replaceAll("[^A-Z]",""));
           }
@@ -87,7 +87,7 @@
  else {
         for (        String k : part) {
           k=k.replaceAll("[^A-Z]","");
-          if (!"".equals(k)) {
+          if (!(k.isEmpty())) {
             restSB.append(k);
           }
         }
