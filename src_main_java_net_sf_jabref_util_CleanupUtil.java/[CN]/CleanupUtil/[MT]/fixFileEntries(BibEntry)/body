@@ -1,0 +1,30 @@
+{
+  String oldValue=entry.getField(Globals.FILE_FIELD);
+  if (oldValue == null) {
+    return new ArrayList<>();
+  }
+  FileListTableModel flModel=new FileListTableModel();
+  flModel.setContent(oldValue);
+  if (flModel.getRowCount() == 0) {
+    return new ArrayList<>();
+  }
+  boolean changed=false;
+  for (int i=0; i < flModel.getRowCount(); i++) {
+    FileListEntry flEntry=flModel.getEntry(i);
+    String link=flEntry.getLink();
+    String description=flEntry.getDescription();
+    if ("".equals(link) && (!"".equals(description))) {
+      flEntry.setLink(flEntry.getDescription());
+      flEntry.setDescription("");
+      changed=true;
+    }
+  }
+  if (changed) {
+    String newValue=flModel.getStringRepresentation();
+    assert(!oldValue.equals(newValue));
+    entry.setField(Globals.FILE_FIELD,newValue);
+    FieldChange change=new FieldChange(entry,Globals.FILE_FIELD,oldValue,newValue);
+    return Collections.singletonList(change);
+  }
+  return new ArrayList<>();
+}

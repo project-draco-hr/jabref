@@ -1,0 +1,10 @@
+{
+  CleanupPreset preset=new CleanupPreset();
+  preset.setMakePathsRelative(true);
+  File tempFile=testFolder.newFile();
+  BibEntry entry=new BibEntry();
+  entry.setField("file",tempFile.getAbsolutePath());
+  CleanupWorker worker=new CleanupWorker(preset,Collections.singletonList(testFolder.getRoot().getAbsolutePath()));
+  worker.cleanup(entry);
+  Assert.assertEquals(tempFile.getName(),entry.getField("file"));
+}

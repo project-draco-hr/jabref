@@ -1,0 +1,11 @@
+{
+  NamedCompound ce=new NamedCompound(Localization.lang("Move external links to 'file' field"));
+  for (  BibEntry entry : database.getEntryMap().values()) {
+    List<FieldChange> changes=upgradePdfPsToFile(entry,Arrays.asList(fields));
+    for (    FieldChange change : changes) {
+      ce.addEdit(new UndoableFieldChange(change));
+    }
+  }
+  ce.end();
+  return ce;
+}
