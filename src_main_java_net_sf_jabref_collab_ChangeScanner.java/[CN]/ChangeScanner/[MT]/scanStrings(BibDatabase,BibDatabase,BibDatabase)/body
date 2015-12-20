@@ -14,9 +14,9 @@
         BibtexString disk=onDisk.getString(diskId);
         if (disk.getName().equals(tmp.getName())) {
           if ((tmp.getContent() != null) && !tmp.getContent().equals(disk.getContent())) {
-            BibtexString mem=findString(inMem1,tmp.getName(),usedInMem);
-            if (mem != null) {
-              changes.add(new StringChange(mem,tmp,tmp.getName(),mem.getContent(),disk.getContent()));
+            Optional<BibtexString> mem=findString(inMem1,tmp.getName(),usedInMem);
+            if (mem.isPresent()) {
+              changes.add(new StringChange(mem.get(),tmp,tmp.getName(),mem.get().getContent(),disk.getContent()));
             }
  else {
               changes.add(new StringChange(null,tmp,tmp.getName(),null,disk.getContent()));
@@ -56,9 +56,9 @@
   if (!notMatched.isEmpty()) {
     for (    String nmId : notMatched) {
       BibtexString tmp=onTmp.getString(nmId);
-      BibtexString mem=findString(inMem1,tmp.getName(),usedInMem);
-      if (mem != null) {
-        changes.add(new StringRemoveChange(tmp,tmp,mem));
+      Optional<BibtexString> mem=findString(inMem1,tmp.getName(),usedInMem);
+      if (mem.isPresent()) {
+        changes.add(new StringRemoveChange(tmp,tmp,mem.get()));
       }
     }
   }
