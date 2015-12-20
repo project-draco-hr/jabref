@@ -53,7 +53,7 @@
       bPanel.getSearchBar().getSearchTextObservable().addSearchListener((TextArea)fieldEditor);
       defaultHeight=fieldEditor.getPane().getPreferredSize().height;
     }
-    JComponent extra=parent.getExtra(fieldEditor);
+    Optional<JComponent> extra=parent.getExtra(fieldEditor);
     AutoCompleter<String> autoCompleter=bPanel.getAutoCompleters().get(fields[i]);
     AutoCompleteListener autoCompleteListener=null;
     if (autoCompleter != null) {
@@ -69,14 +69,14 @@
       fieldEditor.getPane().setPreferredSize(new Dimension(100,Math.max(defaultHeight,wHeight)));
     }
     builder.append(fieldEditor.getLabel());
-    if (extra == null) {
+    if (!(extra.isPresent())) {
       builder.append(fieldEditor.getPane(),3);
     }
  else {
       builder.append(fieldEditor.getPane());
       JPanel pan=new JPanel();
       pan.setLayout(new BorderLayout());
-      pan.add(extra,BorderLayout.NORTH);
+      pan.add(extra.get(),BorderLayout.NORTH);
       builder.append(pan);
     }
     if (((i + 1) % fieldsPerRow) == 0) {
