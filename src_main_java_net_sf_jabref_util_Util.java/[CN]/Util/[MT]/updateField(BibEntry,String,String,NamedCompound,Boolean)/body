@@ -7,7 +7,12 @@
     return;
   }
   if ((oldValue == null) || !oldValue.equals(newValue)) {
-    be.setField(field,newValue);
+    if (newValue == null) {
+      be.clearField(field);
+    }
+ else {
+      be.setField(field,newValue);
+    }
     if (ce != null) {
       ce.addEdit(new UndoableFieldChange(be,field,oldValue,newValue));
     }
