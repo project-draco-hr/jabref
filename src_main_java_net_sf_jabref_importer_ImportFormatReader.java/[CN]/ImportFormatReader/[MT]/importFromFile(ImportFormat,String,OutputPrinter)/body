@@ -1,9 +1,11 @@
 {
   File file=new File(filename);
-  try (InputStream stream=new FileInputStream(file)){
-    if (!importer.isRecognizedFormat(stream)) {
+  try (InputStream stream=new FileInputStream(file);BufferedInputStream bis=new BufferedInputStream(stream)){
+    bis.mark(Integer.MAX_VALUE);
+    if (!importer.isRecognizedFormat(bis)) {
       throw new IOException("Wrong file format");
     }
-    return importer.importEntries(stream,status);
+    bis.reset();
+    return importer.importEntries(bis,status);
   }
  }
