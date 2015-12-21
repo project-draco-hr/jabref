@@ -11,11 +11,11 @@
  else {
           entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")),JabRef.jrf);
         }
-        return new ParserResult(entries);
+        return Optional.of(new ParserResult(entries));
       }
  catch (      IllegalArgumentException ex) {
         System.err.println(Localization.lang("Unknown import format") + ": " + data[1]);
-        return null;
+        return Optional.empty();
       }
     }
  else {
@@ -29,7 +29,7 @@
       }
       if (importResult != null) {
         System.out.println(Localization.lang("Format used") + ": " + importResult.format);
-        return importResult.parserResult;
+        return Optional.of(importResult.parserResult);
       }
  else {
         System.out.println(Localization.lang("Could not find a suitable import format."));
@@ -39,5 +39,5 @@
  catch (  IOException ex) {
     System.err.println(Localization.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getLocalizedMessage());
   }
-  return null;
+  return Optional.empty();
 }
