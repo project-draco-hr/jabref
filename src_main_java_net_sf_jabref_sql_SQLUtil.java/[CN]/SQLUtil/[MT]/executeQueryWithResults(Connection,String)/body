@@ -1,9 +1,18 @@
 {
-  Statement stmnt=conn.createStatement();
-  stmnt.executeQuery(qry);
-  SQLWarning warn=stmnt.getWarnings();
-  if (warn != null) {
-    LOGGER.warn(warn);
+  Statement stmnt=null;
+  try {
+    stmnt=conn.createStatement();
+    stmnt.executeQuery(qry);
+    SQLWarning warn=stmnt.getWarnings();
+    if (warn != null) {
+      LOGGER.warn(warn);
+    }
+    return stmnt;
   }
-  return stmnt;
+ catch (  SQLException rethrow) {
+    if (stmnt != null) {
+      stmnt.close();
+    }
+    throw rethrow;
+  }
 }

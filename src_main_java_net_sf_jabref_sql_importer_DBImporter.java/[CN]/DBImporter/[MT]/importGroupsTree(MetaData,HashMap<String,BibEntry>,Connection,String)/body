@@ -2,7 +2,7 @@
   HashMap<String,GroupTreeNode> groups=new HashMap<>();
   LinkedHashMap<GroupTreeNode,String> parentIds=new LinkedHashMap<>();
   GroupTreeNode rootNode=new GroupTreeNode(new AllEntriesGroup());
-  try (ResultSet rsGroups=SQLUtil.queryAllFromTable(conn,"groups WHERE database_id='" + database_id + "' ORDER BY groups_id")){
+  try (ResultSet rsGroups=SQLUtil.queryAllFromTable(conn,"groups WHERE database_id='" + database_id + "' ORDER BY groups_id").getResultSet()){
     while (rsGroups.next()) {
       AbstractGroup group=null;
       String typeId=findGroupTypeName(rsGroups.getString("group_types_id"),conn);
@@ -34,7 +34,7 @@
           parent.add(groupTreeNodeStringEntry.getKey());
         }
       }
-      try (ResultSet rsEntryGroup=SQLUtil.queryAllFromTable(conn,"entry_group")){
+      try (ResultSet rsEntryGroup=SQLUtil.queryAllFromTable(conn,"entry_group").getResultSet()){
         while (rsEntryGroup.next()) {
           String entryId=rsEntryGroup.getString("entries_id");
           String groupId=rsEntryGroup.getString("groups_id");

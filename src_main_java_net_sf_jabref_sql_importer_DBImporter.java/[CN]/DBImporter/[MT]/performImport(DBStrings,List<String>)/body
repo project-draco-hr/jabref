@@ -7,11 +7,11 @@
       jabrefDBs+='\'' + itLista.next() + "',";
     }
     jabrefDBs=jabrefDBs.substring(0,jabrefDBs.length() - 1) + ')';
-    try (ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs)){
+    try (ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs).getResultSet()){
       while (rsDatabase.next()) {
         BibDatabase database=new BibDatabase();
         HashMap<String,EntryType> types=new HashMap<>();
-        try (ResultSet rsEntryType=SQLUtil.queryAllFromTable(conn,"entry_types")){
+        try (ResultSet rsEntryType=SQLUtil.queryAllFromTable(conn,"entry_types").getResultSet()){
           while (rsEntryType.next()) {
             types.put(rsEntryType.getString("entry_types_id"),EntryTypes.getType(rsEntryType.getString("label")));
           }
@@ -25,7 +25,7 @@
         }
         String database_id=rsDatabase.getString("database_id");
         HashMap<String,BibEntry> entries=new HashMap<>();
-        try (ResultSet rsEntries=SQLUtil.queryAllFromTable(conn,"entries WHERE database_id= '" + database_id + "';")){
+        try (ResultSet rsEntries=SQLUtil.queryAllFromTable(conn,"entries WHERE database_id= '" + database_id + "';").getResultSet()){
           while (rsEntries.next()) {
             String id=rsEntries.getString("entries_id");
             BibEntry entry=new BibEntry(IdGenerator.next(),types.get(rsEntries.getString("entry_types_id")));
@@ -42,7 +42,7 @@
           }
           rsEntries.getStatement().close();
         }
-         try (ResultSet rsStrings=SQLUtil.queryAllFromTable(conn,"strings WHERE database_id='" + database_id + '\'')){
+         try (ResultSet rsStrings=SQLUtil.queryAllFromTable(conn,"strings WHERE database_id='" + database_id + '\'').getResultSet()){
           while (rsStrings.next()) {
             String label=rsStrings.getString("label");
             String content=rsStrings.getString("content");
