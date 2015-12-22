@@ -1,15 +1,13 @@
 {
-  String contentType=null;
   try {
-    contentType=Unirest.head(url).asBinary().getHeaders().getFirst("content-type");
+    String contentType=Unirest.head(url).asBinary().getHeaders().getFirst("content-type");
     if (contentType == null) {
       contentType=Unirest.get(url).asBinary().getHeaders().getFirst("content-type");
     }
+    return contentType;
   }
  catch (  UnirestException e) {
     LOGGER.debug("Error getting MIME type of URL",e);
-  }
- finally {
-    return contentType;
+    return null;
   }
 }

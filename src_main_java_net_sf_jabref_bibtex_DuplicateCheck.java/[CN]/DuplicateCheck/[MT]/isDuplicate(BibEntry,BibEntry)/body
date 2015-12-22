@@ -2,7 +2,8 @@
   if (one.getType() != two.getType()) {
     return false;
   }
-  String[] fields=one.getType().getRequiredFieldsFlat().toArray(new String[0]);
+  java.util.List<String> var=one.getType().getRequiredFieldsFlat();
+  String[] fields=var.toArray(new String[var.size()]);
   double[] req;
   if (fields == null) {
     req=new double[]{0.,0.};
@@ -13,7 +14,8 @@
   if (Math.abs(req[0] - DuplicateCheck.duplicateThreshold) > DuplicateCheck.doubtRange) {
     return req[0] >= DuplicateCheck.duplicateThreshold;
   }
-  fields=one.getType().getOptionalFields().toArray(new String[0]);
+  java.util.List<String> var=one.getType().getOptionalFields();
+  fields=var.toArray(new String[var.size()]);
   if (fields != null) {
     double[] opt=DuplicateCheck.compareFieldSet(fields,one,two);
     double totValue=((DuplicateCheck.reqWeight * req[0] * req[1]) + (opt[0] * opt[1])) / ((req[1] * DuplicateCheck.reqWeight) + opt[1]);
