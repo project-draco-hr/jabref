@@ -1,0 +1,20 @@
+{
+  Objects.requireNonNull(highlightPattern);
+  Objects.requireNonNull(text);
+  if (text.isEmpty() || !highlightPattern.isPresent()) {
+    return text;
+  }
+  Matcher matcher=highlightPattern.get().matcher(text);
+  StringBuffer sb=new StringBuffer();
+  boolean foundSomething=false;
+  while (matcher.find()) {
+    String found=matcher.group();
+    matcher.appendReplacement(sb,"<span style=\"background-color:" + HIGHLIGHT_COLOR + ";\">"+ found+ "</span>");
+    foundSomething=true;
+  }
+  if (foundSomething) {
+    matcher.appendTail(sb);
+    text=sb.toString();
+  }
+  return text;
+}
