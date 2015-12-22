@@ -7,7 +7,8 @@
       jabrefDBs+='\'' + itLista.next() + "',";
     }
     jabrefDBs=jabrefDBs.substring(0,jabrefDBs.length() - 1) + ')';
-    try (ResultSet rsDatabase=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs).getResultSet()){
+    try (Statement statement=SQLUtil.queryAllFromTable(conn,"jabref_database WHERE database_name IN " + jabrefDBs)){
+      ResultSet rsDatabase=statement.getResultSet();
       while (rsDatabase.next()) {
         BibDatabase database=new BibDatabase();
         HashMap<String,EntryType> types=new HashMap<>();
