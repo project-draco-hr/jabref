@@ -18,12 +18,10 @@
         @Override public void run(){
           for (          File file : theFiles) {
             String name=file.getAbsolutePath();
-            String extension;
+            Optional<String> extension=FileUtil.getFileExtension(name);
             ExternalFileType fileType=null;
-            int index=name.lastIndexOf('.');
-            if ((index >= 0) && (index < name.length())) {
-              extension=name.substring(index + 1).toLowerCase();
-              fileType=Globals.prefs.getExternalFileTypeByExt(extension);
+            if (extension.isPresent()) {
+              fileType=Globals.prefs.getExternalFileTypeByExt(extension.get());
             }
             if (fileType != null) {
               if (droppedFileHandler == null) {

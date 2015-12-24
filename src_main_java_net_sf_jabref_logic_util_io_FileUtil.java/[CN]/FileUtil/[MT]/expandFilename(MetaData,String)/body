@@ -1,7 +1,6 @@
 {
-  int pos=name.lastIndexOf('.');
-  String extension=(pos >= 0) && (pos < (name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
-  String[] dir=metaData.getFileDirectory(extension);
+  Optional<String> extension=getFileExtension(name);
+  String[] dir=metaData.getFileDirectory(extension.orElse(null));
   String[] fileDir=metaData.getFileDirectory(Globals.FILE_FIELD);
   ArrayList<String> al=new ArrayList<>();
   for (  String aDir : dir) {

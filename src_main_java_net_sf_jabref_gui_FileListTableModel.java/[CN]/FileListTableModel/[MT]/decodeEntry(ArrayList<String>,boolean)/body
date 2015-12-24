@@ -5,10 +5,9 @@
     if (type == null) {
       ExternalFileType typeGuess=null;
       String link=getElementIfAvailable(contents,1);
-      int index=link.lastIndexOf('.');
-      if ((index >= 0) && (index < (link.length() - 1))) {
-        String extension=link.substring(index + 1);
-        typeGuess=Globals.prefs.getExternalFileTypeByExt(extension);
+      Optional<String> extension=FileUtil.getFileExtension(link);
+      if (extension.isPresent()) {
+        typeGuess=Globals.prefs.getExternalFileTypeByExt(extension.get());
       }
       if (typeGuess != null) {
         type=typeGuess;
