@@ -27,10 +27,9 @@
     List<File> res=result.get(entry);
     if (!res.isEmpty()) {
       String filepath=res.get(0).getPath();
-      int index=filepath.lastIndexOf('.');
-      if ((index >= 0) && (index < (filepath.length() - 1))) {
-        String extension=filepath.substring(index + 1);
-        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(extension);
+      Optional<String> extension=FileUtil.getFileExtension(filepath);
+      if (extension.isPresent()) {
+        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(extension.get());
         if (type != null) {
           try {
             JabRefDesktop.openExternalFileAnyFormat(basePanel.metaData,filepath,type);
