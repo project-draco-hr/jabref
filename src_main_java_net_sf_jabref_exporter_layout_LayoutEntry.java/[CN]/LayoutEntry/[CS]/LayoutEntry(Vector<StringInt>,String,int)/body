@@ -1,32 +1,26 @@
 {
   classPrefix=classPrefix_;
-  String blockStart;
-  String blockEnd;
-  StringInt si;
   Vector<StringInt> blockEntries=null;
   Vector<LayoutEntry> tmpEntries=new Vector<>();
   LayoutEntry le;
-  si=parsedEntries.get(0);
-  blockStart=si.s;
-  si=parsedEntries.get(parsedEntries.size() - 1);
-  blockEnd=si.s;
+  String blockStart=parsedEntries.get(0).s;
+  String blockEnd=parsedEntries.get(parsedEntries.size() - 1).s;
   if (!blockStart.equals(blockEnd)) {
     LOGGER.warn("Field start and end entry must be equal.");
   }
   type=layoutType;
-  text=si.s;
-  for (int i=1; i < (parsedEntries.size() - 1); i++) {
-    si=parsedEntries.get(i);
-    if ((si.i == LayoutHelper.IS_LAYOUT_TEXT) || (si.i == LayoutHelper.IS_SIMPLE_FIELD)) {
+  text=blockEnd;
+  for (  StringInt parsedEntry : parsedEntries.subList(1,parsedEntries.size() - 1)) {
+    if ((parsedEntry.i == LayoutHelper.IS_LAYOUT_TEXT) || (parsedEntry.i == LayoutHelper.IS_SIMPLE_FIELD)) {
     }
- else     if ((si.i == LayoutHelper.IS_FIELD_START) || (si.i == LayoutHelper.IS_GROUP_START)) {
+ else     if ((parsedEntry.i == LayoutHelper.IS_FIELD_START) || (parsedEntry.i == LayoutHelper.IS_GROUP_START)) {
       blockEntries=new Vector<>();
-      blockStart=si.s;
+      blockStart=parsedEntry.s;
     }
- else     if ((si.i == LayoutHelper.IS_FIELD_END) || (si.i == LayoutHelper.IS_GROUP_END)) {
-      if (blockStart.equals(si.s)) {
-        blockEntries.add(si);
-        if (si.i == LayoutHelper.IS_GROUP_END) {
+ else     if ((parsedEntry.i == LayoutHelper.IS_FIELD_END) || (parsedEntry.i == LayoutHelper.IS_GROUP_END)) {
+      if (blockStart.equals(parsedEntry.s)) {
+        blockEntries.add(parsedEntry);
+        if (parsedEntry.i == LayoutHelper.IS_GROUP_END) {
           le=new LayoutEntry(blockEntries,classPrefix,LayoutHelper.IS_GROUP_START);
         }
  else {
@@ -39,13 +33,13 @@
         LOGGER.warn("Nested field entries are not implemented !!!");
       }
     }
- else     if (si.i == LayoutHelper.IS_OPTION_FIELD) {
+ else     if (parsedEntry.i == LayoutHelper.IS_OPTION_FIELD) {
     }
     if (blockEntries == null) {
-      tmpEntries.add(new LayoutEntry(si,classPrefix));
+      tmpEntries.add(new LayoutEntry(parsedEntry,classPrefix));
     }
  else {
-      blockEntries.add(si);
+      blockEntries.add(parsedEntry);
     }
   }
   layoutEntries=new LayoutEntry[tmpEntries.size()];
