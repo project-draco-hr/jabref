@@ -18,7 +18,7 @@
   if (fileParts.length > 1) {
     for (int i=0; i < (fileParts.length - 1); i++) {
       String dirToProcess=fileParts[i];
-      dirToProcess=Util.expandBrackets(dirToProcess,entry,database);
+      dirToProcess=Util.expandBrackets(dirToProcess,entry,null);
       if (dirToProcess.matches("^.:$")) {
         directory=new File(dirToProcess + '/');
         continue;
@@ -36,7 +36,7 @@
           String restOfFileString=StringUtil.join(fileParts,"/",i + 1,fileParts.length);
           for (          File subDir : subDirs) {
             if (subDir.isDirectory()) {
-              res.addAll(RegExpFileSearch.findFile(entry,database,subDir,restOfFileString,extensionRegExp));
+              res.addAll(RegExpFileSearch.findFile(entry,subDir,restOfFileString,extensionRegExp));
             }
           }
         }
@@ -55,14 +55,14 @@
             if (!subDir.isDirectory()) {
               continue;
             }
-            res.addAll(RegExpFileSearch.findFile(entry,database,subDir,restOfFileString,extensionRegExp));
+            res.addAll(RegExpFileSearch.findFile(entry,subDir,restOfFileString,extensionRegExp));
           }
         }
       }
     }
   }
   String filePart=fileParts[fileParts.length - 1].replaceAll("\\[extension\\]",RegExpFileSearch.EXT_MARKER);
-  String filenameToLookFor=Util.expandBrackets(filePart,entry,database).replaceAll(RegExpFileSearch.EXT_MARKER,extensionRegExp);
+  String filenameToLookFor=Util.expandBrackets(filePart,entry,null).replaceAll(RegExpFileSearch.EXT_MARKER,extensionRegExp);
   final Pattern toMatch=Pattern.compile('^' + filenameToLookFor.replaceAll("\\\\\\\\","\\\\") + '$',Pattern.CASE_INSENSITIVE);
   File[] matches=directory.listFiles(new FilenameFilter(){
     @Override public boolean accept(    File arg0,    String arg1){
