@@ -5,9 +5,9 @@
   while ((i < c.length) && (braceLevel > 0)) {
     sb.append(c[i]);
     i++;
-    String s=BibtexCaseChanger.findSpecialChar(c,i);
-    if (s != null) {
-      i=convertAccented(c,i,s,sb,format);
+    Optional<String> s=BibtexCaseChanger.findSpecialChar(c,i);
+    if (s.isPresent()) {
+      i=convertAccented(c,i,s.get(),sb,format);
     }
     while ((i < c.length) && (braceLevel > 0) && (c[i] != '\\')) {
       if (c[i] == '}') {
