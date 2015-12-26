@@ -1,30 +1,31 @@
 {
   SaveSession session;
   frame.block();
+  final String SAVE_DATABASE=Localization.lang("Save database");
   try {
-    if (!selectedOnly) {
-      session=FileActions.saveDatabase(database,metaData,file,Globals.prefs,false,false,enc,false);
+    if (selectedOnly) {
+      session=FileActions.savePartOfDatabase(database,metaData,file,Globals.prefs,mainTable.getSelectedEntries(),enc,saveType);
     }
  else {
-      session=FileActions.savePartOfDatabase(database,metaData,file,Globals.prefs,mainTable.getSelectedEntries(),enc,saveType);
+      session=FileActions.saveDatabase(database,metaData,file,Globals.prefs,false,false,enc,false);
     }
   }
  catch (  UnsupportedCharsetException ex2) {
-    JOptionPane.showMessageDialog(frame,Localization.lang("Could not save file.") + ' ' + Localization.lang("Character encoding '%0' is not supported.",enc.displayName()),Localization.lang("Save database"),JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(frame,Localization.lang("Could not save file.") + ' ' + Localization.lang("Character encoding '%0' is not supported.",enc.displayName()),SAVE_DATABASE,JOptionPane.ERROR_MESSAGE);
     throw new SaveException("rt");
   }
 catch (  SaveException ex) {
     if (ex.specificEntry()) {
-      int row=mainTable.findEntry(ex.getEntry());
-      int topShow=Math.max(0,row - 3);
+      final int row=mainTable.findEntry(ex.getEntry());
+      final int topShow=Math.max(0,row - 3);
       mainTable.setRowSelectionInterval(row,row);
       mainTable.scrollTo(topShow);
       showEntry(ex.getEntry());
     }
  else {
-      ex.printStackTrace();
+      LOGGER.warn("Could not save",ex);
     }
-    JOptionPane.showMessageDialog(frame,Localization.lang("Could not save file.") + "\n" + ex.getMessage(),Localization.lang("Save database"),JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(frame,Localization.lang("Could not save file.") + "\n" + ex.getMessage(),SAVE_DATABASE,JOptionPane.ERROR_MESSAGE);
     throw new SaveException("rt");
   }
  finally {
@@ -39,15 +40,15 @@ catch (  SaveException ex) {
     builder.add(ta).xy(3,1);
     builder.add(Localization.lang("What do you want to do?")).xy(1,3);
     String tryDiff=Localization.lang("Try different encoding");
-    int answer=JOptionPane.showOptionDialog(frame,builder.getPanel(),Localization.lang("Save database"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE,null,new String[]{Localization.lang("Save"),tryDiff,Localization.lang("Cancel")},tryDiff);
+    int answer=JOptionPane.showOptionDialog(frame,builder.getPanel(),SAVE_DATABASE,JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE,null,new String[]{Localization.lang("Save"),tryDiff,Localization.lang("Cancel")},tryDiff);
     if (answer == JOptionPane.NO_OPTION) {
-      Object choice=JOptionPane.showInputDialog(frame,Localization.lang("Select encoding"),Localization.lang("Save database"),JOptionPane.QUESTION_MESSAGE,null,Encodings.ENCODINGS_DISPLAYNAMES,enc);
-      if (choice != null) {
-        Charset newEncoding=Charset.forName((String)choice);
-        return saveDatabase(file,selectedOnly,newEncoding,saveType);
+      Object choice=JOptionPane.showInputDialog(frame,Localization.lang("Select encoding"),SAVE_DATABASE,JOptionPane.QUESTION_MESSAGE,null,Encodings.ENCODINGS_DISPLAYNAMES,enc);
+      if (choice == null) {
+        commit=false;
       }
  else {
-        commit=false;
+        Charset newEncoding=Charset.forName((String)choice);
+        return saveDatabase(file,selectedOnly,newEncoding,saveType);
       }
     }
  else     if (answer == JOptionPane.CANCEL_OPTION) {

@@ -1,5 +1,5 @@
 {
-  GlazedEntrySorter eventList=new GlazedEntrySorter(database.getEntryMap());
+  final GlazedEntrySorter eventList=new GlazedEntrySorter(database.getEntryMap());
   database.addDatabaseChangeListener(eventList);
   database.addDatabaseChangeListener(SpecialFieldDatabaseChangeListener.getInstance());
   groupFilterList=new FilterList<>(eventList.getTheList(),EverythingMatcher.INSTANCE);
@@ -40,7 +40,7 @@
         runCommand(Actions.CUT);
       }
  catch (      Throwable ex) {
-        ex.printStackTrace();
+        LOGGER.warn("Could not cut",ex);
       }
     }
   }
@@ -51,7 +51,7 @@
         runCommand(Actions.COPY);
       }
  catch (      Throwable ex) {
-        ex.printStackTrace();
+        LOGGER.warn("Could not copy",ex);
       }
     }
   }
@@ -62,7 +62,7 @@
         runCommand(Actions.PASTE);
       }
  catch (      Throwable ex) {
-        ex.printStackTrace();
+        LOGGER.warn("Could not paste",ex);
       }
     }
   }
@@ -114,7 +114,7 @@ try {
 runCommand(Actions.EDIT);
 }
  catch (Throwable ex) {
-ex.printStackTrace();
+LOGGER.warn("Could not run action based on key press",ex);
 }
 }
 }
