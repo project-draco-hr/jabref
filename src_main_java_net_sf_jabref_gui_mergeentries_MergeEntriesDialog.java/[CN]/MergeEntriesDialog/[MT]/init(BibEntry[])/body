@@ -1,13 +1,13 @@
 {
   if (selected.length != 2) {
-    JOptionPane.showMessageDialog(frame,Localization.lang("You have to choose exactly two entries to merge."),Localization.lang("Merge entries"),JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(panel.frame(),Localization.lang("You have to choose exactly two entries to merge."),MERGE_ENTRIES,JOptionPane.INFORMATION_MESSAGE);
     this.dispose();
     return;
   }
   one=selected[0];
   two=selected[1];
   mergeEntries=new MergeEntries(one,two);
-  ce=new NamedCompound(Localization.lang("Merge entries"));
+  ce=new NamedCompound(MERGE_ENTRIES);
   FormLayout layout=new FormLayout("fill:700px:grow","fill:400px:grow, 4px, p, 5px, p");
   this.setLayout(layout);
   this.add(mergeEntries.getMergeEntryPanel(),cc.xy(1,1));
@@ -22,7 +22,7 @@
     }
   }
 );
-  JButton replaceentries=new JButton(Localization.lang("Merge entries"));
+  JButton replaceentries=new JButton(MERGE_ENTRIES);
   replaceentries.setActionCommand("replace");
   replaceentries.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
@@ -32,10 +32,10 @@
 );
   bb.addButton(new JButton[]{replaceentries,cancel});
   this.add(bb.getPanel(),cc.xy(1,5));
-  layout.appendRow(RowSpec.decode("5px"));
-  layout.appendColumn(ColumnSpec.decode("5px"));
-  layout.insertRow(1,RowSpec.decode("5px"));
-  layout.insertColumn(1,ColumnSpec.decode("5px"));
+  layout.appendRow(RowSpec.decode(MARGIN));
+  layout.appendColumn(ColumnSpec.decode(MARGIN));
+  layout.insertRow(1,RowSpec.decode(MARGIN));
+  layout.insertColumn(1,ColumnSpec.decode(MARGIN));
   this.addComponentListener(new ComponentAdapter(){
     @Override public void componentResized(    ComponentEvent e){
       pw.storeWindowPosition();

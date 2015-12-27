@@ -48,7 +48,10 @@
   JTextArea type1ta=new JTextArea(type1.getName());
   type1ta.setEditable(false);
   mergePanel.add(type1ta,cc.xy(3,1));
-  if (type1.compareTo(type2) != 0) {
+  if (type1.compareTo(type2) == 0) {
+    identical[0]=true;
+  }
+ else {
     identical[0]=false;
     rbg[0]=new ButtonGroup();
     for (int k=0; k < 3; k+=2) {
@@ -63,9 +66,6 @@
 );
     }
     rb[0][0].setSelected(true);
-  }
- else {
-    identical[0]=true;
   }
   JTextArea type2ta=new JTextArea(type2.getName());
   type2ta.setEditable(false);
@@ -82,10 +82,8 @@
     String string1=one.getField(field);
     String string2=two.getField(field);
     identical[row - 1]=false;
-    if ((string1 != null) && (string2 != null)) {
-      if (string1.equals(string2)) {
-        identical[row - 1]=true;
-      }
+    if ((string1 != null) && (string2 != null) && (string1.equals(string2))) {
+      identical[row - 1]=true;
     }
     tmpLabelWidth=label.getPreferredSize().width;
     if (tmpLabelWidth > maxLabelWidth) {
@@ -107,7 +105,10 @@
       tf.setCaretPosition(0);
       tf.setEditable(false);
     }
-    if (!identical[row - 1]) {
+    if (identical[row - 1]) {
+      mergedEntry.setField(field,string1);
+    }
+ else {
       rbg[row - 1]=new ButtonGroup();
       for (int k=0; k < 3; k++) {
         rb[k][row - 1]=new JRadioButton();
@@ -120,21 +121,18 @@
         }
 );
       }
-      if (string1 != null) {
+      if (string1 == null) {
+        rb[0][row - 1].setEnabled(false);
+        mergedEntry.setField(field,string2);
+        rb[2][row - 1].setSelected(true);
+      }
+ else {
         mergedEntry.setField(field,string1);
         rb[0][row - 1].setSelected(true);
         if (string2 == null) {
           rb[2][row - 1].setEnabled(false);
         }
       }
- else {
-        rb[0][row - 1].setEnabled(false);
-        mergedEntry.setField(field,string2);
-        rb[2][row - 1].setSelected(true);
-      }
-    }
- else {
-      mergedEntry.setField(field,string1);
     }
     if ("abstract".equals(field) || "review".equals(field)) {
       JTextArea tf=new JTextArea();
@@ -195,10 +193,10 @@
   }
   jta.setText(sw.getBuffer().toString());
   jta.setCaretPosition(0);
-  mainLayout.appendRow(RowSpec.decode("10px"));
-  mainLayout.appendColumn(ColumnSpec.decode("10px"));
-  mainLayout.insertRow(1,RowSpec.decode("10px"));
-  mainLayout.insertColumn(1,ColumnSpec.decode("10px"));
+  mainLayout.appendRow(RowSpec.decode(MARGIN));
+  mainLayout.appendColumn(ColumnSpec.decode(MARGIN));
+  mainLayout.insertRow(1,RowSpec.decode(MARGIN));
+  mainLayout.insertColumn(1,ColumnSpec.decode(MARGIN));
   if (mainPanel.getHeight() > DIM.height) {
     mainPanel.setSize(new Dimension(mergePanel.getWidth(),DIM.height));
   }
