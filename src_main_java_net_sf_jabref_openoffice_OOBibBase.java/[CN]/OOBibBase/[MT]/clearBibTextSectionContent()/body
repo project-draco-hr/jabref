@@ -1,5 +1,4 @@
 {
-  XTextRangeCompare compare=UnoRuntime.queryInterface(XTextRangeCompare.class,text);
   XTextRange range=getBookmarkRange(OOBibBase.BIB_SECTION_NAME);
   if (range == null) {
     createBibTextSection(atEnd);
@@ -10,6 +9,7 @@
   }
   XTextCursor mxDocCursor=text.createTextCursorByRange(range.getEnd());
   mxDocCursor.goRight((short)1,true);
+  XTextRangeCompare compare=UnoRuntime.queryInterface(XTextRangeCompare.class,text);
   boolean couldExpand=true;
   while (couldExpand && (compare.compareRegionEnds(mxDocCursor,rangeEnd) > 0)) {
     couldExpand=mxDocCursor.goRight((short)1,true);

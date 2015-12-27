@@ -1,10 +1,10 @@
 {
   if (OS.WINDOWS) {
-    List<File> progFiles=AutoDetectPaths.findProgramFilesDir();
-    File sOffice=null;
+    List<File> progFiles=findProgramFilesDir();
     if (fileSearchCancelled) {
       return false;
     }
+    File sOffice=null;
     List<File> sofficeFiles=new ArrayList<>();
     for (    File dir : progFiles) {
       sOffice=findFileDir(dir,"soffice.exe");
@@ -57,18 +57,13 @@
  else {
       sOffice=sofficeFiles.get(0);
     }
-    Globals.prefs.put("ooExecutablePath",new File(sOffice,"soffice.exe").getPath());
-    File unoil=findFileDir(sOffice.getParentFile(),"unoil.jar");
-    if (fileSearchCancelled) {
-      return false;
-    }
+    Globals.prefs.put(JabRefPreferences.OO_EXECUTABLE_PATH,new File(sOffice,"soffice.exe").getPath());
     File jurt=findFileDir(sOffice.getParentFile(),"jurt.jar");
     if (fileSearchCancelled) {
       return false;
     }
-    if ((unoil != null) && (jurt != null)) {
-      Globals.prefs.put("ooUnoilPath",unoil.getPath());
-      Globals.prefs.put("ooJurtPath",jurt.getPath());
+    if (jurt != null) {
+      Globals.prefs.put(JabRefPreferences.OO_JARS_PATH,jurt.getPath());
       return true;
     }
  else {
@@ -91,18 +86,13 @@
       return false;
     }
     if (sOffice != null) {
-      Globals.prefs.put("ooExecutablePath",new File(sOffice,"soffice.bin").getPath());
-      File unoil=findFileDir(rootDir,"unoil.jar");
-      if (fileSearchCancelled) {
-        return false;
-      }
+      Globals.prefs.put(JabRefPreferences.OO_EXECUTABLE_PATH,new File(sOffice,"soffice.bin").getPath());
       File jurt=findFileDir(rootDir,"jurt.jar");
       if (fileSearchCancelled) {
         return false;
       }
-      if ((unoil != null) && (jurt != null)) {
-        Globals.prefs.put("ooUnoilPath",unoil.getPath());
-        Globals.prefs.put("ooJurtPath",jurt.getPath());
+      if (jurt != null) {
+        Globals.prefs.put(JabRefPreferences.OO_JARS_PATH,jurt.getPath());
         return true;
       }
  else {
@@ -115,7 +105,7 @@
   }
  else {
     String usrRoot="/usr/lib";
-    File inUsr=findFileDir(new File("/usr/lib"),"soffice");
+    File inUsr=findFileDir(new File(usrRoot),"soffice");
     if (fileSearchCancelled) {
       return false;
     }
@@ -136,12 +126,10 @@
       return setupPreferencesForOO(usrRoot,inUsr);
     }
  else     if ((inOpt != null) && (inUsr == null)) {
-      Globals.prefs.put("ooExecutablePath",new File(inOpt,"soffice.bin").getPath());
-      File unoil=findFileDir(new File("/opt"),"unoil.jar");
+      Globals.prefs.put(JabRefPreferences.OO_EXECUTABLE_PATH,new File(inOpt,"soffice.bin").getPath());
       File jurt=findFileDir(new File("/opt"),"jurt.jar");
-      if ((unoil != null) && (jurt != null)) {
-        Globals.prefs.put("ooUnoilPath",unoil.getPath());
-        Globals.prefs.put("ooJurtPath",jurt.getPath());
+      if (jurt != null) {
+        Globals.prefs.put(JabRefPreferences.OO_JARS_PATH,jurt.getPath());
         return true;
       }
  else {

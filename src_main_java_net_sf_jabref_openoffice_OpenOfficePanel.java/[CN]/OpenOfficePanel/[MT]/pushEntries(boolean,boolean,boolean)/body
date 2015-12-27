@@ -1,11 +1,11 @@
 {
-  if (!OpenOfficePanel.ooBase.isConnectedToDocument()) {
-    JOptionPane.showMessageDialog(OpenOfficePanel.frame,Localization.lang("Not connected to any Writer document. Please" + " make sure a document is open, and use the 'Select Writer document' button to connect to it."),Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
+  if (!ooBase.isConnectedToDocument()) {
+    JOptionPane.showMessageDialog(frame,Localization.lang("Not connected to any Writer document. Please" + " make sure a document is open, and use the 'Select Writer document' button to connect to it."),Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
     return;
   }
   String pageInfo=null;
   if (addPageInfo) {
-    AdvancedCiteDialog acd=new AdvancedCiteDialog(OpenOfficePanel.frame);
+    AdvancedCiteDialog acd=new AdvancedCiteDialog(frame);
     acd.showDialog();
     if (acd.cancelled()) {
       return;
@@ -15,19 +15,19 @@
     }
     inParenthesis=acd.isInParenthesisCite();
   }
-  BasePanel panel=OpenOfficePanel.frame.getCurrentBasePanel();
+  BasePanel panel=frame.getCurrentBasePanel();
   if (panel != null) {
     final BibDatabase database=panel.database();
     BibEntry[] entries=panel.getSelectedEntries();
     if (entries.length > 0) {
       try {
-        if (OpenOfficePanel.style == null) {
+        if (style == null) {
           readStyleFile();
         }
-        OpenOfficePanel.ooBase.insertEntry(entries,database,getBaseList(),OpenOfficePanel.style,inParenthesis,withText,pageInfo,Globals.prefs.getBoolean("syncOOWhenCiting"));
+        ooBase.insertEntry(entries,database,getBaseList(),style,inParenthesis,withText,pageInfo,Globals.prefs.getBoolean(JabRefPreferences.SYNC_OO_WHEN_CITING));
       }
  catch (      FileNotFoundException ex) {
-        JOptionPane.showMessageDialog(OpenOfficePanel.frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
       }
 catch (      ConnectionLostException ex) {
         showConnectionLostErrorMessage();
