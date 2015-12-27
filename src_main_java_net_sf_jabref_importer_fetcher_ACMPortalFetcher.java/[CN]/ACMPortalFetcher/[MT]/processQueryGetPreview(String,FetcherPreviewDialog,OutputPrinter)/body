@@ -9,7 +9,7 @@
   try {
     URL url=new URL(address);
     String page=Util.getResults(url);
-    int hits=getNumberOfHits(page,"<div id=\"resfound\">",ACMPortalFetcher.hitsPattern);
+    int hits=getNumberOfHits(page,"<div id=\"resfound\">",ACMPortalFetcher.HITS_PATTERN);
     int index=page.indexOf("<div id=\"resfound\">");
     if (index >= 0) {
       page=page.substring(index + 5);
@@ -22,22 +22,22 @@
       status.showMessage(Localization.lang("No entries found for the search string '%0'",terms),Localization.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    hits=getNumberOfHits(page,"<div class=\"pagerange\">",ACMPortalFetcher.maxHitsPattern);
-    parse(page,Math.min(hits,perPage),previews);
+    hits=getNumberOfHits(page,"<div class=\"pagerange\">",ACMPortalFetcher.MAX_HITS_PATTERN);
+    parse(page,Math.min(hits,PER_PAGE),previews);
     for (    Map.Entry<String,JLabel> entry : previews.entrySet()) {
       preview.addEntry(entry.getKey(),entry.getValue());
     }
     return true;
   }
  catch (  MalformedURLException e) {
-    e.printStackTrace();
+    LOGGER.warn("Problem with ACM fetcher URL",e);
   }
 catch (  ConnectException e) {
     status.showMessage(Localization.lang("Connection to ACM Portal failed"),Localization.lang("Search ACM Portal"),JOptionPane.ERROR_MESSAGE);
   }
 catch (  IOException e) {
     status.showMessage(e.getMessage(),Localization.lang("Search ACM Portal"),JOptionPane.ERROR_MESSAGE);
-    e.printStackTrace();
+    LOGGER.warn("Problem with ACM Portal",e);
   }
   return false;
 }

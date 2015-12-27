@@ -5,7 +5,7 @@
   piv=endIndex;
   if (index >= 0) {
     String text=allText.substring(index,endIndex);
-    Matcher fullCitation=ACMPortalFetcher.fullCitationPattern.matcher(text);
+    Matcher fullCitation=ACMPortalFetcher.FULL_CITATION_PATTERN.matcher(text);
     String item;
     if (fullCitation.find()) {
       String link=getEntryBibTeXURL(fullCitation.group(1));
@@ -19,7 +19,7 @@
             sb.append("<p>").append(text.substring(authStart,authEnd)).append("</p>");
           }
         }
-        Matcher titM=ACMPortalFetcher.titlePattern.matcher(text);
+        Matcher titM=ACMPortalFetcher.TITLE_PATTERN.matcher(text);
         if (titM.find()) {
           sb.append("<p>").append(titM.group(1)).append("</p>");
         }
@@ -29,7 +29,7 @@
           int sourceEnd=text.indexOf("</div>",sourceStart + sourceMarker.length());
           if (sourceEnd >= 0) {
             String sourceText=text.substring(sourceStart,sourceEnd);
-            Matcher source=ACMPortalFetcher.sourcePattern.matcher(sourceText);
+            Matcher source=ACMPortalFetcher.SOURCE_PATTERN.matcher(sourceText);
             if (source.find()) {
               sb.append("<p>").append(source.group(1)).append("</p>");
             }
