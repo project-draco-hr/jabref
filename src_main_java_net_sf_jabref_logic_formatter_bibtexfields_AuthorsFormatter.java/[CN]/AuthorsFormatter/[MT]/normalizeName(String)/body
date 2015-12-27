@@ -1,58 +1,34 @@
 {
-  Matcher matcher=AuthorsFormatter.lastFF.matcher(name);
+  Matcher matcher=AuthorsFormatter.LAST_F_F.matcher(name);
   if (matcher.matches()) {
     String initials=matcher.group(2);
     StringBuilder stringBuilder=new StringBuilder(matcher.group(1));
     stringBuilder.append(", ");
-    for (int i=0; i < initials.length(); i++) {
-      stringBuilder.append(initials.charAt(i));
-      stringBuilder.append('.');
-      if (i < (initials.length() - 1)) {
-        stringBuilder.append(' ');
-      }
-    }
+    fixInitials(initials,stringBuilder);
     return stringBuilder.toString();
   }
-  matcher=AuthorsFormatter.lastFdotF.matcher(name);
+  matcher=AuthorsFormatter.LAST_FDOT_F.matcher(name);
   if (matcher.matches()) {
     String initials=matcher.group(2).replaceAll("[\\. ]+","");
     StringBuilder stringBuilder=new StringBuilder(matcher.group(1));
     stringBuilder.append(", ");
-    for (int i=0; i < initials.length(); i++) {
-      stringBuilder.append(initials.charAt(i));
-      stringBuilder.append('.');
-      if (i < (initials.length() - 1)) {
-        stringBuilder.append(' ');
-      }
-    }
+    fixInitials(initials,stringBuilder);
     return stringBuilder.toString();
   }
-  matcher=AuthorsFormatter.FFlast.matcher(name);
+  matcher=AuthorsFormatter.F_F_LAST.matcher(name);
   if (matcher.matches()) {
     String initials=matcher.group(1);
     StringBuilder stringBuilder=new StringBuilder(matcher.group(2));
     stringBuilder.append(", ");
-    for (int i=0; i < initials.length(); i++) {
-      stringBuilder.append(initials.charAt(i));
-      stringBuilder.append('.');
-      if (i < (initials.length() - 1)) {
-        stringBuilder.append(' ');
-      }
-    }
+    fixInitials(initials,stringBuilder);
     return stringBuilder.toString();
   }
-  matcher=AuthorsFormatter.FdotFlast.matcher(name);
+  matcher=AuthorsFormatter.FDOT_F_LAST.matcher(name);
   if (matcher.matches()) {
     String initials=matcher.group(1).replaceAll("[\\. ]+","");
     StringBuilder stringBuilder=new StringBuilder(matcher.group(2));
     stringBuilder.append(", ");
-    for (int i=0; i < initials.length(); i++) {
-      stringBuilder.append(initials.charAt(i));
-      stringBuilder.append('.');
-      if (i < (initials.length() - 1)) {
-        stringBuilder.append(' ');
-      }
-    }
+    fixInitials(initials,stringBuilder);
     return stringBuilder.toString();
   }
   if (name.indexOf(',') >= 0) {
@@ -84,13 +60,7 @@
       }
  else {
         String initials=firstNameParts[0].replaceAll("[\\.]+","");
-        for (int i=0; i < initials.length(); i++) {
-          stringBuilder.append(initials.charAt(i));
-          stringBuilder.append('.');
-          if (i < (initials.length() - 1)) {
-            stringBuilder.append(' ');
-          }
-        }
+        fixInitials(initials,stringBuilder);
       }
     }
     return stringBuilder.toString();
