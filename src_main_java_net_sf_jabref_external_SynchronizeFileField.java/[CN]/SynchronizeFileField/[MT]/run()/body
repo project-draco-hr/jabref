@@ -9,7 +9,7 @@
   int progressBarMax=(autoSet ? weightAutoSet * sel.length : 0) + (checkExisting ? sel.length : 0);
   panel.frame().setProgressBarMaximum(progressBarMax);
   int progress=0;
-  final NamedCompound ce=new NamedCompound(Localization.lang("Autoset %0 field",fieldName));
+  final NamedCompound ce=new NamedCompound(Localization.lang("Autoset %0 field",Globals.FILE_FIELD));
   Set<BibEntry> changedEntries=new HashSet<>();
   if (autoSet) {
     Collection<BibEntry> entries=new ArrayList<>();
@@ -23,7 +23,7 @@
     boolean removeAllBroken=false;
     mainLoop:     for (    BibEntry aSel : sel) {
       panel.frame().setProgressBarValue(progress++);
-      final String old=aSel.getField(fieldName);
+      final String old=aSel.getField(Globals.FILE_FIELD);
       if ((old != null) && !(old.isEmpty())) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old);
@@ -97,10 +97,13 @@ editor.setVisible(true,false);
 if (!tableModel.getStringRepresentation().equals(old)) {
 String toSet=tableModel.getStringRepresentation();
 if (toSet.isEmpty()) {
-toSet=null;
+ce.addEdit(new UndoableFieldChange(aSel,Globals.FILE_FIELD,old,null));
+aSel.clearField(Globals.FILE_FIELD);
 }
-ce.addEdit(new UndoableFieldChange(aSel,fieldName,old,toSet));
-aSel.setField(fieldName,toSet);
+ else {
+ce.addEdit(new UndoableFieldChange(aSel,Globals.FILE_FIELD,old,toSet));
+aSel.setField(Globals.FILE_FIELD,toSet);
+}
 changedEntries.add(aSel);
 }
 }
