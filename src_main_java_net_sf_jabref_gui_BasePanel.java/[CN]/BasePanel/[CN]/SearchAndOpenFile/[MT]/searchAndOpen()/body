@@ -3,15 +3,15 @@
     return Optional.empty();
   }
   final Collection<BibEntry> entries=Collections.singleton(entry);
-  ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
-  ArrayList<File> dirs=new ArrayList<>();
+  final ExternalFileType[] types=Globals.prefs.getExternalFileTypeSelection();
+  final List<File> dirs=new ArrayList<>();
   if (basePanel.metaData.getFileDirectory(Globals.FILE_FIELD).length > 0) {
-    String[] mdDirs=basePanel.metaData.getFileDirectory(Globals.FILE_FIELD);
-    for (    String mdDir : mdDirs) {
+    final String[] mdDirs=basePanel.metaData.getFileDirectory(Globals.FILE_FIELD);
+    for (    final String mdDir : mdDirs) {
       dirs.add(new File(mdDir));
     }
   }
-  Collection<String> extensions=new ArrayList<>();
+  final List<String> extensions=new ArrayList<>();
   for (  final ExternalFileType type : types) {
     extensions.add(type.getExtension());
   }
@@ -24,10 +24,10 @@
     result=Util.findAssociatedFiles(entries,extensions,dirs);
   }
   if (result.get(entry) != null) {
-    List<File> res=result.get(entry);
+    final List<File> res=result.get(entry);
     if (!res.isEmpty()) {
-      String filepath=res.get(0).getPath();
-      Optional<String> extension=FileUtil.getFileExtension(filepath);
+      final String filepath=res.get(0).getPath();
+      final Optional<String> extension=FileUtil.getFileExtension(filepath);
       if (extension.isPresent()) {
         ExternalFileType type=Globals.prefs.getExternalFileTypeByExt(extension.get());
         if (type != null) {
