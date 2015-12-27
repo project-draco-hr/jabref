@@ -3,22 +3,20 @@
   final int row=glTable.rowAtPoint(e.getPoint());
   if (isIconColumn(col)) {
     BibEntry entry=sortedList.get(row);
-switch (col) {
-case FILE_COL:
+    if (col == FILE_COL) {
       Object o=entry.getField(Globals.FILE_FIELD);
-    if (o != null) {
-      FileListTableModel tableModel=new FileListTableModel();
-      tableModel.setContent((String)o);
-      if (tableModel.getRowCount() == 0) {
-        return;
+      if (o != null) {
+        FileListTableModel tableModel=new FileListTableModel();
+        tableModel.setContent((String)o);
+        if (tableModel.getRowCount() == 0) {
+          return;
+        }
+        FileListEntry fl=tableModel.getEntry(0);
+        (new ExternalFileMenuItem(frame,entry,"",fl.getLink(),null,panel.metaData(),fl.getType())).actionPerformed(null);
       }
-      FileListEntry fl=tableModel.getEntry(0);
-      (new ExternalFileMenuItem(frame,entry,"",fl.getLink(),null,panel.metaData(),fl.getType())).actionPerformed(null);
     }
-  break;
-case URL_COL:
-openExternalLink("url",e);
-break;
-}
-}
+ else {
+      openExternalLink(URL_FIELD,e);
+    }
+  }
 }

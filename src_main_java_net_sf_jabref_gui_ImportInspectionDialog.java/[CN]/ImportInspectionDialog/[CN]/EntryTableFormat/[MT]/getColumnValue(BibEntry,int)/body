@@ -9,7 +9,10 @@ case DUPL_COL:
       return entry.isGroupHit() ? duplLabel : null;
 case FILE_COL:
     o=entry.getField(Globals.FILE_FIELD);
-  if (o != null) {
+  if (o == null) {
+    return null;
+  }
+ else {
     FileListTableModel model=new FileListTableModel();
     model.setContent((String)o);
     fileLabel.setToolTipText(model.getToolTipHTMLRepresentation());
@@ -18,17 +21,14 @@ case FILE_COL:
     }
     return fileLabel;
   }
- else {
-    return null;
-  }
 case URL_COL:
-o=entry.getField("url");
-if (o != null) {
-urlLabel.setToolTipText((String)o);
-return urlLabel;
+o=entry.getField(URL_FIELD);
+if (o == null) {
+return null;
 }
  else {
-return null;
+urlLabel.setToolTipText((String)o);
+return urlLabel;
 }
 default :
 return null;
@@ -38,7 +38,7 @@ return null;
 String field=fields[i - PAD];
 if ("author".equals(field) || "editor".equals(field)) {
 String contents=entry.getField(field);
-return (contents != null) ? AuthorList.fixAuthor_Natbib(contents) : "";
+return (contents == null) ? "" : AuthorList.fixAuthor_Natbib(contents);
 }
  else {
 return entry.getField(field);
