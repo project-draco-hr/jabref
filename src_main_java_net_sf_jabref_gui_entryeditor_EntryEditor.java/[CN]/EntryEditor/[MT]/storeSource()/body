@@ -58,7 +58,7 @@
     if (duplicateWarning) {
       warnDuplicateBibtexkey();
     }
- else     if (emptyWarning && showError) {
+ else     if (emptyWarning) {
       warnEmptyBibtexkey();
     }
  else {
@@ -89,13 +89,11 @@
     updateSource=false;
     lastSourceAccepted=false;
     tabbed.setSelectedComponent(srcPanel);
-    if (showError) {
-      Object[] options={Localization.lang("Edit"),Localization.lang("Revert to original source")};
-      int answer=JOptionPane.showOptionDialog(frame,Localization.lang("Error") + ": " + ex.getMessage(),Localization.lang("Problem with parsing entry"),JOptionPane.YES_NO_OPTION,JOptionPane.ERROR_MESSAGE,null,options,options[0]);
-      if (answer != 0) {
-        updateSource=true;
-        updateSource();
-      }
+    Object[] options={Localization.lang("Edit"),Localization.lang("Revert to original source")};
+    int answer=JOptionPane.showOptionDialog(frame,Localization.lang("Error") + ": " + ex.getMessage(),Localization.lang("Problem with parsing entry"),JOptionPane.YES_NO_OPTION,JOptionPane.ERROR_MESSAGE,null,options,options[0]);
+    if (answer != 0) {
+      updateSource=true;
+      updateSource();
     }
     return false;
   }
