@@ -1,18 +1,18 @@
 {
-  final BibDatabase database=OpenOfficePanel.frame.getCurrentBasePanel().database();
+  final BibDatabase database=frame.getCurrentBasePanel().database();
   if (entries.length > 0) {
-    String pageInfo=null;
-    AdvancedCiteDialog acd=new AdvancedCiteDialog(OpenOfficePanel.frame);
+    AdvancedCiteDialog acd=new AdvancedCiteDialog(frame);
     acd.showDialog();
     if (acd.cancelled()) {
       return;
     }
+    String pageInfo=null;
     if (!acd.getPageInfo().isEmpty()) {
       pageInfo=acd.getPageInfo();
     }
     inParenthesis=acd.isInParenthesisCite();
     try {
-      OpenOfficePanel.ooBase.insertEntry(entries,database,getBaseList(),OpenOfficePanel.style,inParenthesis,true,pageInfo,Globals.prefs.getBoolean("syncOOWhenCiting"));
+      ooBase.insertEntry(entries,database,getBaseList(),style,inParenthesis,true,pageInfo,Globals.prefs.getBoolean(JabRefPreferences.SYNC_OO_WHEN_CITING));
     }
  catch (    ConnectionLostException ex) {
       showConnectionLostErrorMessage();

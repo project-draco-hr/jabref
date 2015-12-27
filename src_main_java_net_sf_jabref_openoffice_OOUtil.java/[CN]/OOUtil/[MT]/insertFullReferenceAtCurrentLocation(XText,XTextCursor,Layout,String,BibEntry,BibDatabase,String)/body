@@ -1,8 +1,17 @@
 {
-  final String UNIQUEFIER_FIELD="uniq";
   String oldUniqVal=entry.getField(UNIQUEFIER_FIELD);
-  entry.setField(UNIQUEFIER_FIELD,uniquefier);
+  if (uniquefier == null) {
+    entry.clearField(UNIQUEFIER_FIELD);
+  }
+ else {
+    entry.setField(UNIQUEFIER_FIELD,uniquefier);
+  }
   String lText=layout.doLayout(entry,database);
-  entry.setField(UNIQUEFIER_FIELD,oldUniqVal);
+  if (oldUniqVal == null) {
+    entry.clearField(UNIQUEFIER_FIELD);
+  }
+ else {
+    entry.setField(UNIQUEFIER_FIELD,oldUniqVal);
+  }
   OOUtil.insertOOFormattedTextAtCurrentLocation(text,cursor,lText,parStyle);
 }
