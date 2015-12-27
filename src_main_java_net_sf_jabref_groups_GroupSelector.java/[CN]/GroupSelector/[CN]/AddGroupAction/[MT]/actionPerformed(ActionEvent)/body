@@ -1,5 +1,4 @@
 {
-  final GroupTreeNode node=getNodeToUse();
   final GroupDialog gd=new GroupDialog(frame,panel,null);
   gd.setVisible(true);
   if (!gd.okPressed()) {
@@ -7,6 +6,7 @@
   }
   final AbstractGroup newGroup=gd.getResultingGroup();
   final GroupTreeNode newNode=new GroupTreeNode(newGroup);
+  final GroupTreeNode node=getNodeToUse();
   if (node == null) {
     groupsRoot.add(newNode);
   }
@@ -15,7 +15,7 @@
   }
   UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(GroupSelector.this,groupsRoot,newNode,UndoableAddOrRemoveGroup.ADD_NODE);
   revalidateGroups();
-  groupsTree.expandPath(new TreePath((node != null ? node : groupsRoot).getPath()));
+  groupsTree.expandPath(new TreePath((node == null ? groupsRoot : node).getPath()));
   panel.undoManager.addEdit(undo);
   panel.markBaseChanged();
   frame.output(Localization.lang("Added group \"%0\".",newGroup.getName()));

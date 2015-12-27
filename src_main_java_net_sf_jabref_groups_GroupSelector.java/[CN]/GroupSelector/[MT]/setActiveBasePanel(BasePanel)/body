@@ -5,13 +5,13 @@
     return;
   }
   MetaData metaData=panel.metaData();
-  if (metaData.getGroups() != null) {
-    setGroups(metaData.getGroups());
-  }
- else {
+  if (metaData.getGroups() == null) {
     GroupTreeNode newGroupsRoot=new GroupTreeNode(new AllEntriesGroup());
     metaData.setGroups(newGroupsRoot);
     setGroups(newGroupsRoot);
+  }
+ else {
+    setGroups(metaData.getGroups());
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.GROUP_AUTO_SHOW) && !groupsRoot.isLeaf()) {
     frame.sidePaneManager.show("groups");
