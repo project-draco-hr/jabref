@@ -24,16 +24,16 @@
   try {
     for (int i=0; i < sortFields.length; i++) {
       int index=-1;
-      if (!sortFields[i].startsWith("iconcol:")) {
-        index=tableFormat.getColumnIndex(sortFields[i]);
-      }
- else {
+      if (sortFields[i].startsWith("iconcol:")) {
         for (int j=0; j < tableFormat.getColumnCount(); j++) {
           if (sortFields[i].equals(tableFormat.getColumnName(j))) {
             index=j;
             break;
           }
         }
+      }
+ else {
+        index=tableFormat.getColumnIndex(sortFields[i]);
       }
       if (index >= 0) {
         comparatorChooser.appendComparator(index,0,sortDirections[i]);

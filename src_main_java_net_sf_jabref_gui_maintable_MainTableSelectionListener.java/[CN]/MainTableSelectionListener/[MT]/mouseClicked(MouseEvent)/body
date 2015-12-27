@@ -1,17 +1,17 @@
 {
-  final int col=table.columnAtPoint(e.getPoint());
   final int row=table.rowAtPoint(e.getPoint());
   if (e.getClickCount() == 2) {
     BibEntry toShow=tableRows.get(row);
     editSignalled(toShow);
     return;
   }
+  final int col=table.columnAtPoint(e.getPoint());
   int modelIndex=table.getColumnModel().getColumn(col).getModelIndex();
   MainTableColumn modelColumn=table.getMainTableColumn(modelIndex);
   if (OS.WINDOWS && (modelColumn.isIconColumn()) && (e.getButton() != MouseEvent.BUTTON1)) {
     return;
   }
-  if (modelColumn.isIconColumn() && SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(modelColumn.getColumnName()) != null) {
+  if (modelColumn.isIconColumn() && (SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(modelColumn.getColumnName()) != null)) {
     handleSpecialFieldLeftClick(e,modelColumn.getColumnName());
   }
  else   if (modelColumn.isIconColumn()) {
