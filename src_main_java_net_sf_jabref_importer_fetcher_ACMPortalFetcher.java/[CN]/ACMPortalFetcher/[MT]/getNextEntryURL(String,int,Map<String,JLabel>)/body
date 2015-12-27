@@ -1,24 +1,16 @@
 {
-  String toFind="<strong>" + entryNumber + "</strong><br>";
-  int index=allText.indexOf(toFind,startIndex);
-  int endIndex=allText.length();
+  String toFind="<div class=\"numbering\">";
+  int index=allText.indexOf(toFind,piv);
+  int endIndex=allText.indexOf("<br clear=\"all\" />",index);
+  piv=endIndex;
   if (index >= 0) {
-    piv=index + 1;
     String text=allText.substring(index,endIndex);
     Matcher fullCitation=ACMPortalFetcher.fullCitationPattern.matcher(text);
+    String item;
     if (fullCitation.find()) {
       String link=getEntryBibTeXURL(fullCitation.group(1));
-      String part;
-      int endOfRecord=text.indexOf("<div class=\"abstract2\">");
-      if (endOfRecord > 0) {
+      if (endIndex > 0) {
         StringBuilder sb=new StringBuilder();
-        part=text.substring(0,endOfRecord);
-        try {
-          save("part" + entryNumber + ".html",part);
-        }
- catch (        IOException e) {
-          e.printStackTrace();
-        }
         String authMarker="<div class=\"authors\">";
         int authStart=text.indexOf(authMarker);
         if (authStart >= 0) {
@@ -27,20 +19,28 @@
             sb.append("<p>").append(text.substring(authStart,authEnd)).append("</p>");
           }
         }
-        Matcher titM=ACMPortalFetcher.titlePattern.matcher(part);
+        Matcher titM=ACMPortalFetcher.titlePattern.matcher(text);
         if (titM.find()) {
           sb.append("<p>").append(titM.group(1)).append("</p>");
         }
-        Matcher mY=ACMPortalFetcher.monthYearPattern.matcher(part);
-        if (mY.find()) {
-          sb.append("<p>").append(mY.group(1)).append("</p>");
+        String sourceMarker="<div class=\"source\">";
+        int sourceStart=text.indexOf(sourceMarker);
+        if (sourceStart >= 0) {
+          int sourceEnd=text.indexOf("</div>",sourceStart + sourceMarker.length());
+          if (sourceEnd >= 0) {
+            String sourceText=text.substring(sourceStart,sourceEnd);
+            Matcher source=ACMPortalFetcher.sourcePattern.matcher(sourceText);
+            if (source.find()) {
+              sb.append("<p>").append(source.group(1)).append("</p>");
+            }
+          }
         }
-        part=sb.toString();
+        item=sb.toString();
       }
  else {
-        part=link;
+        item=link;
       }
-      JLabel preview=new JLabel("<html>" + part + "</html>");
+      JLabel preview=new JLabel("<html>" + item + "</html>");
       preview.setPreferredSize(new Dimension(750,100));
       entries.put(link,preview);
       return true;

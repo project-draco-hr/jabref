@@ -4,17 +4,16 @@
   shouldContinue=true;
   acmOrGuide=acmButton.isSelected();
   fetchAbstract=absCheckBox.isSelected();
-  int firstEntry=1;
-  String address=makeUrl(firstEntry);
+  String address=makeUrl();
   LinkedHashMap<String,JLabel> previews=new LinkedHashMap<>();
   try {
     URL url=new URL(address);
     String page=Util.getResults(url);
-    int hits=getNumberOfHits(page,"Found",ACMPortalFetcher.hitsPattern);
-    int index=page.indexOf("Found");
+    int hits=getNumberOfHits(page,"<div id=\"resfound\">",ACMPortalFetcher.hitsPattern);
+    int index=page.indexOf("<div id=\"resfound\">");
     if (index >= 0) {
       page=page.substring(index + 5);
-      index=page.indexOf("Found");
+      index=page.indexOf("<div id=\"resfound\">");
       if (index >= 0) {
         page=page.substring(index);
       }
@@ -23,11 +22,8 @@
       status.showMessage(Localization.lang("No entries found for the search string '%0'",terms),Localization.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    hits=getNumberOfHits(page,"Results",ACMPortalFetcher.maxHitsPattern);
-    for (int i=0; i < hits; i++) {
-      parse(page,0,firstEntry,previews);
-      firstEntry+=ACMPortalFetcher.perPage;
-    }
+    hits=getNumberOfHits(page,"<div class=\"pagerange\">",ACMPortalFetcher.maxHitsPattern);
+    parse(page,Math.min(hits,perPage),previews);
     for (    Map.Entry<String,JLabel> entry : previews.entrySet()) {
       preview.addEntry(entry.getKey(),entry.getValue());
     }
