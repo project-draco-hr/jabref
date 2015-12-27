@@ -9,18 +9,18 @@
   try {
     URL url=new URL(address);
     String page=Util.getResults(url);
-    int hits=getNumberOfHits(page,"<div id=\"resfound\">",ACMPortalFetcher.HITS_PATTERN);
-    int index=page.indexOf("<div id=\"resfound\">");
+    String resultsFound="<div id=\"resfound\">";
+    int hits=getNumberOfHits(page,resultsFound,ACMPortalFetcher.HITS_PATTERN);
+    int index=page.indexOf(resultsFound);
     if (index >= 0) {
-      page=page.substring(index + 5);
-      index=page.indexOf("<div id=\"resfound\">");
-      if (index >= 0) {
-        page=page.substring(index);
-      }
+      page=page.substring(index + resultsFound.length());
     }
     if (hits == 0) {
       status.showMessage(Localization.lang("No entries found for the search string '%0'",terms),Localization.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
       return false;
+    }
+ else     if (hits > 20) {
+      status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",String.valueOf(hits),String.valueOf(PER_PAGE)),Localization.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
     }
     hits=getNumberOfHits(page,"<div class=\"pagerange\">",ACMPortalFetcher.MAX_HITS_PATTERN);
     parse(page,Math.min(hits,PER_PAGE),previews);
