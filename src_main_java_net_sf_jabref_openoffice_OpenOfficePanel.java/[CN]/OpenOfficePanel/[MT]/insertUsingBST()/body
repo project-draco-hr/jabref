@@ -9,14 +9,13 @@
       BstWrapper wrapper=new BstWrapper();
       wrapper.loadBstFile(new File("/home/usr/share/texmf-tetex/bibtex/bst/ams/amsalpha.bst"));
       Map<String,String> result=wrapper.processEntries(el,database);
-      for (      String key : result.keySet()) {
-        System.out.println("Key: " + key);
-        System.out.println("Entry: " + result.get(key));
-        ooBase.insertMarkedUpTextAtViewCursor(result.get(key),"Default");
+      for (      Entry<String,String> entry : result.entrySet()) {
+        LOGGER.debug("Key: " + entry.getKey() + " Entry: "+ entry.getValue());
+        ooBase.insertMarkedUpTextAtViewCursor(entry.getValue(),"Default");
       }
     }
   }
  catch (  Exception ex) {
-    ex.printStackTrace();
+    LOGGER.warn("Could not insert entry",ex);
   }
 }
