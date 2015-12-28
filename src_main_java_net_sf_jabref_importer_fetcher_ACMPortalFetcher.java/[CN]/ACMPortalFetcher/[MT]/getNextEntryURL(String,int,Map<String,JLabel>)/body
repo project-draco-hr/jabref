@@ -1,0 +1,52 @@
+{
+  String toFind="<div class=\"numbering\">";
+  int index=allText.indexOf(toFind,piv);
+  int endIndex=allText.indexOf("<br clear=\"all\" />",index);
+  piv=endIndex;
+  if (index >= 0) {
+    String text=allText.substring(index,endIndex);
+    Matcher fullCitation=ACMPortalFetcher.FULL_CITATION_PATTERN.matcher(text);
+    String item;
+    if (fullCitation.find()) {
+      String link=getEntryBibTeXURL(fullCitation.group(1));
+      if (endIndex > 0) {
+        StringBuilder sb=new StringBuilder();
+        String authMarker="<div class=\"authors\">";
+        int authStart=text.indexOf(authMarker);
+        if (authStart >= 0) {
+          int authEnd=text.indexOf("</div>",authStart + authMarker.length());
+          if (authEnd >= 0) {
+            sb.append("<p>").append(text.substring(authStart,authEnd)).append("</p>");
+          }
+        }
+        Matcher titM=ACMPortalFetcher.TITLE_PATTERN.matcher(text);
+        if (titM.find()) {
+          sb.append("<p>").append(titM.group(1)).append("</p>");
+        }
+        String sourceMarker="<div class=\"source\">";
+        int sourceStart=text.indexOf(sourceMarker);
+        if (sourceStart >= 0) {
+          int sourceEnd=text.indexOf("</div>",sourceStart + sourceMarker.length());
+          if (sourceEnd >= 0) {
+            String sourceText=text.substring(sourceStart,sourceEnd);
+            Matcher source=ACMPortalFetcher.SOURCE_PATTERN.matcher(sourceText);
+            if (source.find()) {
+              sb.append("<p>").append(source.group(1)).append("</p>");
+            }
+          }
+        }
+        item=sb.toString();
+      }
+ else {
+        item=link;
+      }
+      JLabel preview=new JLabel("<html>" + item + "</html>");
+      preview.setPreferredSize(new Dimension(750,100));
+      entries.put(link,preview);
+      return true;
+    }
+    LOGGER.warn("Citation unmatched " + Integer.toString(entryNumber));
+    return false;
+  }
+  return false;
+}
