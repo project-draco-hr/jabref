@@ -25,28 +25,28 @@
   Charset oldEncoding=panel.getEncoding();
   Charset newEncoding=(Charset)encoding.getSelectedItem();
   panel.setEncoding(newEncoding);
-  Vector<String> dir=new Vector<>(1);
+  List<String> dir=new ArrayList<>(1);
   String text=fileDir.getText().trim();
-  if (!text.isEmpty()) {
-    dir.add(text);
-    metaData.putData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR),dir);
-  }
- else {
+  if (text.isEmpty()) {
     metaData.remove(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR));
   }
-  dir=new Vector<>(1);
-  text=fileDirIndv.getText().trim();
-  if (!text.isEmpty()) {
-    dir.add(text);
-    metaData.putData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL),dir);
-  }
  else {
+    dir.add(text);
+    metaData.putData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR),new Vector<>(dir));
+  }
+  dir=new ArrayList<>(1);
+  text=fileDirIndv.getText().trim();
+  if (text.isEmpty()) {
     metaData.remove(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL));
   }
+ else {
+    dir.add(text);
+    metaData.putData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL),new Vector<>(dir));
+  }
   if (protect.isSelected()) {
-    dir=new Vector<>(1);
+    dir=new ArrayList<>(1);
     dir.add("true");
-    metaData.putData(Globals.PROTECTED_FLAG_META,dir);
+    metaData.putData(Globals.PROTECTED_FLAG_META,new Vector<>(dir));
   }
  else {
     metaData.remove(Globals.PROTECTED_FLAG_META);

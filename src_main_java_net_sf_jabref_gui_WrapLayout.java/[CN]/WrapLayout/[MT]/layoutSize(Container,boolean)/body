@@ -1,7 +1,9 @@
 {
 synchronized (target.getTreeLock()) {
     int targetWidth=target.getSize().width;
-    if (targetWidth == 0)     targetWidth=Integer.MAX_VALUE;
+    if (targetWidth == 0) {
+      targetWidth=Integer.MAX_VALUE;
+    }
     int hgap=getHgap();
     int vgap=getVgap();
     Insets insets=target.getInsets();
@@ -15,7 +17,7 @@ synchronized (target.getTreeLock()) {
       Component m=target.getComponent(i);
       if (m.isVisible()) {
         Dimension d=preferred ? m.getPreferredSize() : m.getMinimumSize();
-        if (rowWidth + d.width > maxWidth) {
+        if ((rowWidth + d.width) > maxWidth) {
           addRow(dim,rowWidth,rowHeight);
           rowWidth=0;
           rowHeight=0;
@@ -29,7 +31,7 @@ synchronized (target.getTreeLock()) {
     }
     addRow(dim,rowWidth,rowHeight);
     dim.width+=horizontalInsetsAndGap;
-    dim.height+=insets.top + insets.bottom + vgap * 2;
+    dim.height+=insets.top + insets.bottom + (vgap * 2);
     Container scrollPane=SwingUtilities.getAncestorOfClass(JScrollPane.class,target);
     if (scrollPane != null) {
       dim.width-=(hgap + 1);

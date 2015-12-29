@@ -1,7 +1,4 @@
 {
-  final NamedCompound ce=new NamedCompound(Localization.lang("duplicate removal"));
-  int duplicateCounter=0;
-  boolean autoRemoveExactDuplicates=false;
   panel.output(Localization.lang("Searching for duplicates..."));
   Object[] keys=panel.getDatabase().getKeySet().toArray();
   if (keys.length < 2) {
@@ -14,8 +11,10 @@
   SearcherRunnable st=new SearcherRunnable();
   JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThread(st,"Searcher");
   int current=0;
-  final ArrayList<BibEntry> toRemove=new ArrayList<>();
-  final ArrayList<BibEntry> toAdd=new ArrayList<>();
+  final List<BibEntry> toRemove=new ArrayList<>();
+  final List<BibEntry> toAdd=new ArrayList<>();
+  int duplicateCounter=0;
+  boolean autoRemoveExactDuplicates=false;
 synchronized (duplicates) {
     while (!st.finished() || (current < duplicates.size())) {
       if (current >= duplicates.size()) {
@@ -38,7 +37,7 @@ synchronized (duplicates) {
             }
             askAboutExact=true;
           }
-          DuplicateCallBack cb=new DuplicateCallBack(panel.frame,be[0],be[1],askAboutExact ? DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT : DuplicateResolverDialog.DUPLICATE_SEARCH);
+          DuplicateCallBack cb=new DuplicateCallBack(JabRef.jrf,be[0],be[1],askAboutExact ? DuplicateResolverDialog.DUPLICATE_SEARCH_WITH_EXACT : DuplicateResolverDialog.DUPLICATE_SEARCH);
           ((CallBack)Spin.over(cb)).update();
           duplicateCounter++;
           int answer=cb.getSelected();
@@ -65,6 +64,7 @@ synchronized (duplicates) {
       }
     }
   }
+  final NamedCompound ce=new NamedCompound(Localization.lang("duplicate removal"));
   final int dupliC=duplicateCounter;
   SwingUtilities.invokeLater(new Runnable(){
     @Override public void run(){
