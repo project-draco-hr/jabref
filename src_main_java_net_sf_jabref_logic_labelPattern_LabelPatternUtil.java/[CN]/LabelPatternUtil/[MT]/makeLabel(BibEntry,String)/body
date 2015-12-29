@@ -10,11 +10,11 @@
       }
       if ((authString == null) || authString.isEmpty()) {
         authString=entry.getField("editor");
-        if (authString != null) {
-          authString=LabelPatternUtil.normalize(LabelPatternUtil.database.resolveForStrings(authString));
+        if (authString == null) {
+          authString="";
         }
  else {
-          authString="";
+          authString=LabelPatternUtil.normalize(LabelPatternUtil.database.resolveForStrings(authString));
         }
       }
       if ("auth".equals(val)) {
@@ -68,11 +68,11 @@
         return s == null ? "" : s;
       }
  else       if (val.matches("auth\\d+")) {
-        int num=Integer.parseInt(val.substring(4));
         String fa=LabelPatternUtil.firstAuthor(authString);
         if (fa == null) {
           return "";
         }
+        int num=Integer.parseInt(val.substring(4));
         if (num > fa.length()) {
           num=fa.length();
         }
@@ -124,11 +124,11 @@
         return s == null ? "" : s;
       }
  else       if (val.matches("edtr\\d+")) {
-        int num=Integer.parseInt(val.substring(4));
         String fa=LabelPatternUtil.firstAuthor(entry.getField("editor"));
         if (fa == null) {
           return "";
         }
+        int num=Integer.parseInt(val.substring(4));
         if (num > fa.length()) {
           num=fa.length();
         }
