@@ -1,18 +1,19 @@
 {
-  out.write('@' + entry.getType().getName() + '{');
+  out.write('@' + EntryTypes.getDisplayNameFor(entry.getType()) + '{');
   writeKeyField(entry,out);
   HashSet<String> written=new HashSet<>();
   written.add(BibEntry.KEY_FIELD);
   boolean hasWritten=false;
   int indentation=getLengthOfLongestFieldName(entry);
-  List<String> fields=entry.getRequiredFieldsFlat();
+  EntryType type=EntryTypes.getType(entry.getType());
+  List<String> fields=type.getRequiredFieldsFlat();
   if (fields != null) {
     for (    String value : fields) {
       hasWritten=hasWritten | writeField(entry,out,value,hasWritten,indentation);
       written.add(value);
     }
   }
-  fields=entry.getOptionalFields();
+  fields=type.getOptionalFields();
   if (fields != null) {
     for (    String value : fields) {
       if (!written.contains(value)) {

@@ -6,32 +6,22 @@
       break;
     }
     skipWhitespace();
-    String entryType=parseTextToken();
-    EntryType type=EntryTypes.getType(entryType);
-    boolean isEntry=type != null;
-    String trimmedEntryType=entryType.toLowerCase().trim();
-    if (!isEntry) {
-      if ("preamble".equals(trimmedEntryType)) {
-        database.setPreamble(parsePreamble());
-        dumpTextReadSoFarToString();
-      }
- else       if ("string".equals(trimmedEntryType)) {
-        parseBibtexString();
-      }
- else       if ("comment".equals(trimmedEntryType)) {
-        parseJabRefComment(meta);
-      }
- else {
-        type=new UnknownEntryType(EntryUtil.capitalizeFirst(entryType));
-        isEntry=true;
-      }
+    String entryType=parseTextToken().toLowerCase().trim();
+    if ("preamble".equals(entryType)) {
+      database.setPreamble(parsePreamble());
+      dumpTextReadSoFarToString();
     }
-    if (isEntry) {
-      parseAndAddEntry(type);
+ else     if ("string".equals(entryType)) {
+      parseBibtexString();
+    }
+ else     if ("comment".equals(entryType)) {
+      parseJabRefComment(meta);
+    }
+ else {
+      parseAndAddEntry(entryType);
     }
     skipWhitespace();
   }
-  checkEntryTypes();
   parserResult.setMetaData(new MetaData(meta,database));
   parseRemainingContent();
   return parserResult;
