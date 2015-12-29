@@ -15,11 +15,11 @@
     }
     if (piv2 < (disk.getEntryCount() - 1)) {
       for (int i=piv2 + 1; i < disk.getEntryCount(); i++) {
-        if (!used.contains(String.valueOf(i))) {
-          comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
+        if (used.contains(String.valueOf(i))) {
+          comp=-1;
         }
  else {
-          comp=-1;
+          comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
         }
         if (comp > 1) {
           used.add(String.valueOf(i));
@@ -37,11 +37,11 @@
       double comp;
       if (piv2 < (disk.getEntryCount() - 1)) {
         for (int i=piv2; i < disk.getEntryCount(); i++) {
-          if (!used.contains(String.valueOf(i))) {
-            comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
+          if (used.contains(String.valueOf(i))) {
+            comp=-1;
           }
  else {
-            comp=-1;
+            comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
           }
           if (comp > bestMatch) {
             bestMatch=comp;
@@ -49,7 +49,6 @@
           }
         }
       }
-      double MATCH_THRESHOLD=0.4;
       if (bestMatch > MATCH_THRESHOLD) {
         used.add(String.valueOf(bestMatchI));
         it.remove();
