@@ -1,11 +1,11 @@
 {
   List<ExternalFileType> types=getDefaultExternalFileTypes();
-  if (prefs.get("externalFileTypes",null) == null) {
+  if (prefs.get(EXTERNAL_FILE_TYPES,null) == null) {
     externalFileTypes.clear();
     externalFileTypes.addAll(types);
     return;
   }
-  String[][] vals=StringUtil.decodeStringDoubleArray(prefs.get("externalFileTypes",""));
+  String[][] vals=StringUtil.decodeStringDoubleArray(prefs.get(EXTERNAL_FILE_TYPES,""));
   for (  String[] val : vals) {
     if ((val.length == 2) && val[1].equals(JabRefPreferences.FILE_TYPE_REMOVED_FLAG)) {
       ExternalFileType toRemove=null;
@@ -20,7 +20,7 @@
       }
     }
  else {
-      ExternalFileType type=new ExternalFileType(val);
+      ExternalFileType type=ExternalFileType.buildFromArgs(val);
       ExternalFileType toRemove=null;
       for (      ExternalFileType defType : types) {
         if (type.getName().equals(defType.getName())) {
