@@ -5,13 +5,13 @@
       dbName=dialogo.selectedDB;
       if ((dialogo.selectedInt == 0) && (!dialogo.removeAction)) {
         dbName=JOptionPane.showInputDialog(dialogo.getDiag(),"Please enter the desired name:","SQL Export",JOptionPane.INFORMATION_MESSAGE);
-        if (dbName != null) {
+        if (dbName == null) {
+          getDBName(matrix,databaseStrings,frame,new DBImportExportDialog(frame,matrix,DBImportExportDialog.DialogType.EXPORTER));
+        }
+ else {
           while (!isValidDBName(dbNames,dbName)) {
             dbName=JOptionPane.showInputDialog(dialogo.getDiag(),"You have entered an invalid or already existent DB name.\n Please enter the desired name:","SQL Export",JOptionPane.ERROR_MESSAGE);
           }
-        }
- else {
-          getDBName(matrix,databaseStrings,frame,new DBImportExportDialog(frame,matrix,DBImportExportDialog.DialogType.EXPORTER));
         }
       }
     }

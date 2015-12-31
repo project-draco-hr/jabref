@@ -13,7 +13,10 @@
           v.add(rs.getString("database_name"));
           matrix.add(v);
         }
-        if (!matrix.isEmpty()) {
+        if (matrix.isEmpty()) {
+          JOptionPane.showMessageDialog(frame,Localization.lang("There are no available databases to be imported"),Localization.lang("Import from SQL database"),JOptionPane.INFORMATION_MESSAGE);
+        }
+ else {
           DBImportExportDialog dialogo=new DBImportExportDialog(frame,matrix,DBImportExportDialog.DialogType.IMPORTER);
           if (dialogo.removeAction) {
             String dbName=dialogo.selectedDB;
@@ -32,9 +35,6 @@
  else {
             frame.output(Localization.lang("Importing cancelled"));
           }
-        }
- else {
-          JOptionPane.showMessageDialog(frame,Localization.lang("There are no available databases to be imported"),Localization.lang("Import from SQL database"),JOptionPane.INFORMATION_MESSAGE);
         }
       }
      }
