@@ -6,7 +6,7 @@
   addFromFolderButton.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       String chosenFileStr=null;
-      CustomImportList.Importer importer=new CustomImportList.Importer();
+      CustomImporter importer=new CustomImporter();
       importer.setBasePath(FileDialogs.getNewDir(frame,new File(prefs.get(JabRefPreferences.WORKING_DIRECTORY)),"",Localization.lang("Select Classpath of New Importer"),JFileChooser.CUSTOM_DIALOG,false));
       if (importer.getBasePath() != null) {
         chosenFileStr=FileDialogs.getNewFile(frame,importer.getFileFromBasePath(),".class",Localization.lang("Select new ImportFormat Subclass"),JFileChooser.CUSTOM_DIALOG,false);
@@ -63,13 +63,13 @@ catch (        NoClassDefFoundError exc) {
         JOptionPane.showMessageDialog(frame,Localization.lang("Please select an importer."));
       }
  else {
-        CustomImportList.Importer importer=((ImportTableModel)customImporterTable.getModel()).getImporter(row);
+        CustomImporter importer=((ImportTableModel)customImporterTable.getModel()).getImporter(row);
         try {
           ImportFormat importFormat=importer.getInstance();
           JOptionPane.showMessageDialog(frame,importFormat.getDescription());
         }
  catch (        Exception exc) {
-          exc.printStackTrace();
+          LOGGER.warn("Could not instantiate importer " + importer.getName(),exc);
           JOptionPane.showMessageDialog(frame,Localization.lang("Could not instantiate %0 %1",importer.getName() + ":\n",exc.getMessage()));
         }
       }
