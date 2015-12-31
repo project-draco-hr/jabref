@@ -19,7 +19,6 @@
     while (!done) {
       String fileName=file.getPath();
       Globals.prefs.put(JabRefPreferences.WORKING_DIRECTORY,file.getPath());
-      Charset encoding=Globals.prefs.getDefaultEncoding();
       if (FileBasedLock.hasLockFile(file)) {
         long modificationTIme=FileBasedLock.getLockFileTimeStamp(file);
         if ((modificationTIme != -1) && ((System.currentTimeMillis() - modificationTIme) > SaveSession.LOCKFILE_CRITICAL_AGE)) {
@@ -36,6 +35,7 @@
           return;
         }
       }
+      Charset encoding=Globals.prefs.getDefaultEncoding();
       ParserResult result;
       String errorMessage=null;
       try {

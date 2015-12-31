@@ -3,11 +3,11 @@
     if (bibEntry.getType() instanceof UnknownEntryType) {
       String name=bibEntry.getType().getName();
       EntryType type=entryTypes.get(name);
-      if (type != null) {
-        bibEntry.setType(type);
+      if (type == null) {
+        parserResult.addWarning(Localization.lang("Unknown entry type") + ": " + name+ "; key: "+ bibEntry.getCiteKey());
       }
  else {
-        parserResult.addWarning(Localization.lang("Unknown entry type") + ": " + name+ "; key: "+ bibEntry.getCiteKey());
+        bibEntry.setType(type);
       }
     }
   }

@@ -59,7 +59,10 @@ catch (        NoClassDefFoundError exc) {
   showDescButton.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int row=customImporterTable.getSelectedRow();
-      if (row != -1) {
+      if (row == -1) {
+        JOptionPane.showMessageDialog(frame,Localization.lang("Please select an importer."));
+      }
+ else {
         CustomImportList.Importer importer=((ImportTableModel)customImporterTable.getModel()).getImporter(row);
         try {
           ImportFormat importFormat=importer.getInstance();
@@ -70,9 +73,6 @@ catch (        NoClassDefFoundError exc) {
           JOptionPane.showMessageDialog(frame,Localization.lang("Could not instantiate %0 %1",importer.getName() + ":\n",exc.getMessage()));
         }
       }
- else {
-        JOptionPane.showMessageDialog(frame,Localization.lang("Please select an importer."));
-      }
     }
   }
 );
@@ -80,15 +80,15 @@ catch (        NoClassDefFoundError exc) {
   removeButton.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int row=customImporterTable.getSelectedRow();
-      if (row != -1) {
+      if (row == -1) {
+        JOptionPane.showMessageDialog(frame,Localization.lang("Please select an importer."));
+      }
+ else {
         customImporterTable.removeRowSelectionInterval(row,row);
         prefs.customImports.remove(((ImportTableModel)customImporterTable.getModel()).getImporter(row));
         Globals.importFormatReader.resetImportFormats();
         customImporterTable.revalidate();
         customImporterTable.repaint();
-      }
- else {
-        JOptionPane.showMessageDialog(frame,Localization.lang("Please select an importer."));
       }
     }
   }

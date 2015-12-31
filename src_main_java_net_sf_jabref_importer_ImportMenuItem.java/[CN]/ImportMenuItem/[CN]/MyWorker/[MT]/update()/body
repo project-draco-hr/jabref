@@ -2,8 +2,25 @@
   if (!fileOk) {
     return;
   }
-  if (bibtexResult != null) {
-    if (!openInNew) {
+  if (bibtexResult == null) {
+    if (importer == null) {
+      frame.output(Localization.lang("Could not find a suitable import format."));
+    }
+ else {
+      if (importError == null) {
+        JOptionPane.showMessageDialog(frame,Localization.lang("No entries found. Please make sure you are using the correct import filter."),Localization.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
+      }
+ else {
+        JOptionPane.showMessageDialog(frame,importError.getMessage(),Localization.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
+      }
+    }
+  }
+ else {
+    if (openInNew) {
+      frame.addTab(bibtexResult.getDatabase(),bibtexResult.getFile(),bibtexResult.getMetaData(),Globals.prefs.getDefaultEncoding(),true);
+      frame.output(Localization.lang("Imported entries") + ": " + bibtexResult.getDatabase().getEntryCount());
+    }
+ else {
       final BasePanel panel=(BasePanel)frame.getTabbedPane().getSelectedComponent();
       ImportInspectionDialog diag=new ImportInspectionDialog(frame,panel,BibtexFields.DEFAULT_INSPECTION_FIELDS,Localization.lang("Import"),openInNew);
       diag.addEntries(bibtexResult.getDatabase().getEntries());
@@ -11,23 +28,6 @@
       PositionWindow.placeDialog(diag,frame);
       diag.setVisible(true);
       diag.toFront();
-    }
- else {
-      frame.addTab(bibtexResult.getDatabase(),bibtexResult.getFile(),bibtexResult.getMetaData(),Globals.prefs.getDefaultEncoding(),true);
-      frame.output(Localization.lang("Imported entries") + ": " + bibtexResult.getDatabase().getEntryCount());
-    }
-  }
- else {
-    if (importer == null) {
-      frame.output(Localization.lang("Could not find a suitable import format."));
-    }
- else {
-      if (importError != null) {
-        JOptionPane.showMessageDialog(frame,importError.getMessage(),Localization.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
-      }
- else {
-        JOptionPane.showMessageDialog(frame,Localization.lang("No entries found. Please make sure you are using the correct import filter."),Localization.lang("Import failed"),JOptionPane.ERROR_MESSAGE);
-      }
     }
   }
   frame.unblock();

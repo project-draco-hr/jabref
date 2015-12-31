@@ -10,15 +10,15 @@
   URL url;
   try {
     Optional<URI> uri=doi.getURI();
-    if (!uri.isPresent()) {
-      return null;
+    if (uri.isPresent()) {
+      url=uri.get().toURL();
     }
  else {
-      url=uri.get().toURL();
+      return null;
     }
   }
  catch (  MalformedURLException e) {
-    e.printStackTrace();
+    LOGGER.warn("Bad URL",e);
     return null;
   }
   URLConnection conn;
@@ -26,7 +26,7 @@
     conn=url.openConnection();
   }
  catch (  IOException e) {
-    e.printStackTrace();
+    LOGGER.warn("Could not open URL connection",e);
     return null;
   }
   conn.setRequestProperty("Accept","application/x-bibtex");
@@ -41,7 +41,7 @@
     return null;
   }
 catch (  IOException e) {
-    e.printStackTrace();
+    LOGGER.warn("Communication problems",e);
     return null;
   }
   bibtexString=bibtexString.replaceAll("(pages=\\{[0-9]+)\u2013([0-9]+\\})","$1--$2");

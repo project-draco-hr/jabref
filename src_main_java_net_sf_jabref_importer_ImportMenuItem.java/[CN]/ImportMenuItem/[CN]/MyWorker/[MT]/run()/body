@@ -5,13 +5,13 @@
   List<ImportFormatReader.UnknownFormatImport> imports=new ArrayList<>();
   for (  String filename : filenames) {
     try {
-      if (importer != null) {
-        ParserResult pr=new ParserResult(Globals.importFormatReader.importFromFile(importer,filename,frame));
-        imports.add(new ImportFormatReader.UnknownFormatImport(importer.getFormatName(),pr));
-      }
- else {
+      if (importer == null) {
         frame.output(Localization.lang("Importing in unknown format") + "...");
         imports.add(Globals.importFormatReader.importUnknownFormat(filename));
+      }
+ else {
+        ParserResult pr=new ParserResult(Globals.importFormatReader.importFromFile(importer,filename,frame));
+        imports.add(new ImportFormatReader.UnknownFormatImport(importer.getFormatName(),pr));
       }
     }
  catch (    IOException e) {

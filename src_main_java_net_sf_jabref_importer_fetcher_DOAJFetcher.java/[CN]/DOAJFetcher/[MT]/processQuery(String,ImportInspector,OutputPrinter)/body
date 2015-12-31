@@ -3,12 +3,12 @@
   try {
     status.setStatus(Localization.lang("Searching..."));
     HttpResponse<JsonNode> jsonResponse;
-    jsonResponse=Unirest.get(searchURL + query + "?pageSize=1").header("accept","application/json").asJson();
+    jsonResponse=Unirest.get(SEARCH_URL + query + "?pageSize=1").header("accept","application/json").asJson();
     JSONObject jo=jsonResponse.getBody().getObject();
     int hits=jo.getInt("total");
     int numberToFetch=0;
     if (hits > 0) {
-      if (hits > maxPerPage) {
+      if (hits > MAX_PER_PAGE) {
         while (true) {
           String strCount=JOptionPane.showInputDialog(Localization.lang("References found") + ": " + hits+ "  "+ Localization.lang("Number of references to fetch?"),Integer.toString(hits));
           if (strCount == null) {
@@ -19,7 +19,7 @@
             numberToFetch=Integer.parseInt(strCount.trim());
             break;
           }
- catch (          RuntimeException ex) {
+ catch (          NumberFormatException ex) {
             status.showMessage(Localization.lang("Please enter a valid number"));
           }
         }
@@ -28,12 +28,12 @@
         numberToFetch=hits;
       }
       int fetched=0;
-      for (int page=1; ((page - 1) * maxPerPage) <= numberToFetch; page++) {
+      for (int page=1; ((page - 1) * MAX_PER_PAGE) <= numberToFetch; page++) {
         if (!shouldContinue) {
           break;
         }
-        int noToFetch=Math.min(maxPerPage,numberToFetch - ((page - 1) * maxPerPage));
-        jsonResponse=Unirest.get(searchURL + query + "?page="+ page+ "&pageSize="+ noToFetch).header("accept","application/json").asJson();
+        int noToFetch=Math.min(MAX_PER_PAGE,numberToFetch - ((page - 1) * MAX_PER_PAGE));
+        jsonResponse=Unirest.get(SEARCH_URL + query + "?page="+ page+ "&pageSize="+ noToFetch).header("accept","application/json").asJson();
         jo=jsonResponse.getBody().getObject();
         if (jo.has("results")) {
           JSONArray results=jo.getJSONArray("results");
