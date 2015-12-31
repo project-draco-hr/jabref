@@ -1,0 +1,11 @@
+{
+  try (InputStream is=PdfXmpImporterTest.class.getResourceAsStream("annotated.pdf")){
+    List<BibEntry> bibEntries=importer.importEntries(is,new OutputPrinterToNull());
+    assertEquals(1,bibEntries.size());
+    BibEntry be0=bibEntries.get(0);
+    assertEquals("how to annotate a pdf",be0.getField("abstract"));
+    assertEquals("Chris",be0.getField("author"));
+    assertEquals("pdf, annotation",be0.getField("keywords"));
+    assertEquals("The best Pdf ever",be0.getField("title"));
+  }
+ }
