@@ -1,5 +1,4 @@
 {
-  TreeMap<String,EntryType> types=new TreeMap<>();
   boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
   if (suppressBackup) {
     backup=false;
@@ -15,6 +14,7 @@
     }
     throw new SaveException(e.getMessage(),e.getLocalizedMessage());
   }
+  Map<String,EntryType> types=new TreeMap<>();
   try (VerifyingWriter writer=session.getWriter()){
     FileActions.writeBibFileHeader(writer,encoding);
     FileActions.writePreamble(writer,database.getPreamble());
