@@ -1,9 +1,9 @@
 {
   try {
-    Class<?> GEClass=Class.forName("java.awt.GraphicsEnvironment");
-    Object GEInstance=GEClass.getMethod("getLocalGraphicsEnvironment").invoke(null);
-    String[] nameArray=(String[])GEClass.getMethod("getAvailableFontFamilyNames").invoke(GEInstance);
-    Vector<String> nameVector=new Vector<>(nameArray.length);
+    Class<?> geClass=Class.forName("java.awt.GraphicsEnvironment");
+    Object geInstance=geClass.getMethod("getLocalGraphicsEnvironment").invoke(null);
+    String[] nameArray=(String[])geClass.getMethod("getAvailableFontFamilyNames").invoke(geInstance);
+    List<String> nameList=new ArrayList<>(nameArray.length);
     for (int i=0, j; i < nameArray.length; i++) {
       for (j=0; j < FontSelectorDialog.HIDEFONTS.length; j++) {
         if (nameArray[i].contains(FontSelectorDialog.HIDEFONTS[j])) {
@@ -11,12 +11,11 @@
         }
       }
       if (j == FontSelectorDialog.HIDEFONTS.length) {
-        nameVector.addElement(nameArray[i]);
+        nameList.add(nameArray[i]);
       }
     }
-    String[] _array=new String[nameVector.size()];
-    nameVector.copyInto(_array);
-    return _array;
+    String[] resultArray=new String[nameList.size()];
+    return nameList.toArray(resultArray);
   }
  catch (  ClassNotFoundException|NoSuchMethodException|SecurityException|InvocationTargetException|IllegalAccessException|IllegalArgumentException ex) {
     return null;
