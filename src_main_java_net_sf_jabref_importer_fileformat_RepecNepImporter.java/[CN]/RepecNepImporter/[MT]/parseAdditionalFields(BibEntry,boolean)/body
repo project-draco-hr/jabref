@@ -2,17 +2,13 @@
   if ((this.lastLine != null) && "".equals(this.lastLine.trim())) {
     readLine();
   }
-  while ((this.lastLine != null) && !isStartOfWorkingPaper() && (startsWithKeyword(RepecNepImporter.recognizedFields) || "".equals(this.lastLine))) {
+  while ((this.lastLine != null) && !isStartOfWorkingPaper() && (startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS) || "".equals(this.lastLine))) {
     String keyword="".equals(this.lastLine) ? "" : this.lastLine.substring(0,this.lastLine.indexOf(':')).trim();
     this.lastLine="".equals(this.lastLine) ? "" : this.lastLine.substring(this.lastLine.indexOf(':') + 1,this.lastLine.length()).trim();
     if ("Keywords".equals(keyword)) {
       String content=readMultipleLines();
       String[] keywords=content.split("[,;]");
-      String keywordStr="";
-      for (      String keyword1 : keywords) {
-        keywordStr+=" '" + keyword1.trim() + "'";
-      }
-      be.setField("keywords",keywordStr.trim());
+      be.addKeywords(Arrays.asList(keywords));
     }
  else     if ("JEL".equals(keyword)) {
       be.setField("jel",readMultipleLines());
