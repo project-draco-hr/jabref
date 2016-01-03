@@ -11,14 +11,14 @@
  else {
     req=DuplicateCheck.compareFieldSet(fields,one,two);
   }
-  if (Math.abs(req[0] - DuplicateCheck.duplicateThreshold) > DuplicateCheck.doubtRange) {
+  if (Math.abs(req[0] - DuplicateCheck.duplicateThreshold) > DuplicateCheck.DOUBT_RANGE) {
     return req[0] >= DuplicateCheck.duplicateThreshold;
   }
   java.util.List<String> optionalFields=one.getType().getOptionalFields();
   fields=optionalFields.toArray(new String[optionalFields.size()]);
   if (fields != null) {
     double[] opt=DuplicateCheck.compareFieldSet(fields,one,two);
-    double totValue=((DuplicateCheck.reqWeight * req[0] * req[1]) + (opt[0] * opt[1])) / ((req[1] * DuplicateCheck.reqWeight) + opt[1]);
+    double totValue=((DuplicateCheck.REQUIRED_WEIGHT * req[0] * req[1]) + (opt[0] * opt[1])) / ((req[1] * DuplicateCheck.REQUIRED_WEIGHT) + opt[1]);
     return totValue >= DuplicateCheck.duplicateThreshold;
   }
   return req[0] >= DuplicateCheck.duplicateThreshold;
