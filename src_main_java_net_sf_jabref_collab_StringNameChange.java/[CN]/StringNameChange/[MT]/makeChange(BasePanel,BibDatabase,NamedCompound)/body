@@ -2,11 +2,7 @@
   if (panel.database().hasStringLabel(disk)) {
     LOGGER.info("Cannot rename string '" + mem + "' to '"+ disk+ "' because the name "+ "is already in use.");
   }
-  if (string != null) {
-    string.setName(disk);
-    undoEdit.addEdit(new UndoableStringChange(panel,string,true,mem,disk));
-  }
- else {
+  if (string == null) {
     String newId=IdGenerator.next();
     BibtexString bs=new BibtexString(newId,disk,content);
     try {
@@ -17,13 +13,17 @@
       LOGGER.info("Error: could not add string '" + bs.getName() + "': "+ ex.getMessage(),ex);
     }
   }
-  if (tmpString != null) {
-    tmpString.setName(disk);
-  }
  else {
+    string.setName(disk);
+    undoEdit.addEdit(new UndoableStringChange(panel,string,true,mem,disk));
+  }
+  if (tmpString == null) {
     String newId=IdGenerator.next();
     BibtexString bs=new BibtexString(newId,disk,content);
     secondary.addString(bs);
+  }
+ else {
+    tmpString.setName(disk);
   }
   return true;
 }
