@@ -30,11 +30,11 @@
   this.getDatabase().addDatabaseChangeListener(new SearchAutoCompleterUpdater());
   AutoCompletePreferences autoCompletePreferences=new AutoCompletePreferences(Globals.prefs);
   if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_COMPLETE)) {
-    autoCompleters=new ContentAutoCompleters(getDatabase(),bibDatabaseContext.getMetaData(),autoCompletePreferences);
+    autoCompleters=new ContentAutoCompleters(getDatabase(),bibDatabaseContext.getMetaData(),autoCompletePreferences,frame.getJournalAbbreviationLoader());
     this.getDatabase().addDatabaseChangeListener(new AutoCompletersUpdater());
   }
  else {
-    autoCompleters=new ContentAutoCompleters(autoCompletePreferences);
+    autoCompleters=new ContentAutoCompleters(autoCompletePreferences,frame.getJournalAbbreviationLoader());
   }
   if (floatSearchActive) {
     startShowingFloatSearch();

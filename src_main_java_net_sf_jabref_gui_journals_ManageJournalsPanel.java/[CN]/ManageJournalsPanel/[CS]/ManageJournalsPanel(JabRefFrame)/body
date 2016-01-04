@@ -61,9 +61,8 @@
   journalEditPanel=builder2.getPanel();
   viewBuiltin.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
-      JournalAbbreviationRepository abbr=new JournalAbbreviationRepository();
-      abbr.readJournalListFromResource(Abbreviations.JOURNALS_FILE_BUILTIN);
-      JTable table=new JTable(JournalAbbreviationsUtil.getTableModel(Abbreviations.journalAbbrev));
+      JournalAbbreviationLoader abbreviationLoader=frame.getJournalAbbreviationLoader();
+      JTable table=new JTable(JournalAbbreviationsUtil.getTableModel(abbreviationLoader.getRepository().getAbbreviations()));
       JScrollPane pane=new JScrollPane(table);
       JOptionPane.showMessageDialog(null,pane,Localization.lang("Journal list preview"),JOptionPane.INFORMATION_MESSAGE);
     }
