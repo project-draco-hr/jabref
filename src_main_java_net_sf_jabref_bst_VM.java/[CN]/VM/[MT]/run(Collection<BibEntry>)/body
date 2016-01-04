@@ -1,7 +1,14 @@
 {
-  reset();
+  bbl=new StringBuffer();
+  strings=new HashMap<>();
+  integers=new HashMap<>();
+  integers.put("entry.max$",Integer.MAX_VALUE);
+  integers.put("global.max$",Integer.MAX_VALUE);
+  functions=new HashMap<>();
+  functions.putAll(buildInFunctions);
+  stack=new Stack<>();
 {
-    entries=new Vector<>(bibtex.size());
+    entries=new ArrayList<>(bibtex.size());
     ListIterator<BstEntry> i=entries.listIterator();
     for (    BibEntry entry : bibtex) {
       i.add(new BstEntry(entry));
@@ -39,6 +46,9 @@ read();
 break;
 case BstParser.MACRO:
 macro(child);
+break;
+default :
+LOGGER.info("Unknown type: " + child.getType());
 break;
 }
 }
