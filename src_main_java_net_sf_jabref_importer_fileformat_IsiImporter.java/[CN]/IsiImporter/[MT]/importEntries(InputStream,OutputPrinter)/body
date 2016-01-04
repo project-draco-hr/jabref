@@ -82,11 +82,11 @@
  else       if ("ID".equals(beg) || "KW".equals(beg)) {
         value=value.replaceAll("EOLEOL"," ");
         String existingKeywords=hm.get("keywords");
-        if ((existingKeywords != null) && !existingKeywords.contains(value)) {
-          existingKeywords+=", " + value;
+        if ((existingKeywords == null) || existingKeywords.contains(value)) {
+          existingKeywords=value;
         }
  else {
-          existingKeywords=value;
+          existingKeywords+=", " + value;
         }
         hm.put("keywords",existingKeywords);
       }
@@ -159,7 +159,7 @@
       continue;
     }
     BibEntry b=new BibEntry(DEFAULT_BIBTEXENTRY_ID,EntryTypes.getTypeOrDefault(Type));
-    ArrayList<Object> toRemove=new ArrayList<>();
+    List<Object> toRemove=new ArrayList<>();
     for (    Map.Entry<String,String> field : hm.entrySet()) {
       String content=field.getValue();
       if ((content == null) || content.trim().isEmpty()) {

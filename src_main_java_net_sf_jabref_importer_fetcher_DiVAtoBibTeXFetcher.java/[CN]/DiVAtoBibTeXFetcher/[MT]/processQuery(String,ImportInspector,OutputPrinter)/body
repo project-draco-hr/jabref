@@ -5,7 +5,7 @@
   }
  catch (  UnsupportedEncodingException e) {
     status.setStatus(Localization.lang("Error"));
-    e.printStackTrace();
+    LOGGER.warn("Encoding issues",e);
     return false;
   }
   String urlString=String.format(DiVAtoBibTeXFetcher.URL_PATTERN,q);
@@ -14,7 +14,7 @@
     url=new URL(urlString);
   }
  catch (  MalformedURLException e) {
-    e.printStackTrace();
+    LOGGER.warn("Bad URL",e);
     return false;
   }
   String bibtexString;
@@ -26,7 +26,7 @@
     return false;
   }
 catch (  IOException e) {
-    e.printStackTrace();
+    LOGGER.warn("Communication problems",e);
     return false;
   }
   BibEntry entry=BibtexParser.singleFromString(bibtexString);

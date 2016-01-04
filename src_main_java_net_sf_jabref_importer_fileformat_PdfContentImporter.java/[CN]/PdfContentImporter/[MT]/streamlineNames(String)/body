@@ -41,7 +41,21 @@
     int i=0;
     res="";
     do {
-      if (!workedOnFirstOrMiddle) {
+      if (workedOnFirstOrMiddle) {
+        if (splitNames[i].contains(".")) {
+          res=res.concat(splitNames[i]).concat(" ");
+        }
+ else {
+          res=res.concat(removeNonLettersAtEnd(splitNames[i]));
+          if (!splitNames[i].isEmpty() && Character.isLowerCase(splitNames[i].charAt(0))) {
+            res=res.concat(" ");
+          }
+ else {
+            workedOnFirstOrMiddle=false;
+          }
+        }
+      }
+ else {
         if ("and".equalsIgnoreCase(splitNames[i])) {
         }
  else {
@@ -58,20 +72,6 @@
  else {
             res=res.concat(splitNames[i]).concat(" ");
             workedOnFirstOrMiddle=true;
-          }
-        }
-      }
- else {
-        if (splitNames[i].contains(".")) {
-          res=res.concat(splitNames[i]).concat(" ");
-        }
- else {
-          res=res.concat(removeNonLettersAtEnd(splitNames[i]));
-          if (!splitNames[i].isEmpty() && Character.isLowerCase(splitNames[i].charAt(0))) {
-            res=res.concat(" ");
-          }
- else {
-            workedOnFirstOrMiddle=false;
           }
         }
       }

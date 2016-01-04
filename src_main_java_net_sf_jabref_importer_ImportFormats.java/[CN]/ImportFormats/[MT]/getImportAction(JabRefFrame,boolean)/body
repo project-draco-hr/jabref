@@ -27,16 +27,16 @@ class ImportAction extends MnemonicAwareAction {
         }
         ImportMenuItem imi=new ImportMenuItem(frame,openInNew,format);
         imi.automatedImport(new String[]{file.getAbsolutePath()});
-        if (format != null) {
-          Globals.prefs.put(JabRefPreferences.LAST_USED_IMPORT,format.getFormatName());
+        if (format == null) {
+          Globals.prefs.put(JabRefPreferences.LAST_USED_IMPORT,"__all");
         }
  else {
-          Globals.prefs.put(JabRefPreferences.LAST_USED_IMPORT,"__all");
+          Globals.prefs.put(JabRefPreferences.LAST_USED_IMPORT,format.getFormatName());
         }
         Globals.prefs.put(JabRefPreferences.IMPORT_WORKING_DIRECTORY,file.getParent());
       }
  catch (      Exception ex) {
-        ex.printStackTrace();
+        LOGGER.warn("Problem with import format",ex);
       }
     }
   }

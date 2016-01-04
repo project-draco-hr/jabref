@@ -28,8 +28,8 @@
       final String[] htmlLines=bibtexHTMLPage.split("\n");
       for (      final String line : htmlLines) {
         if (line.contains("biburl")) {
-          int sidx=line.indexOf("{");
-          int eidx=line.indexOf("}");
+          int sidx=line.indexOf('{');
+          int eidx=line.indexOf('}');
           String bibtexUrl=line.substring(sidx + 1,eidx);
           bibtexUrl=bibtexUrl.replace("dblp.uni-trier.de","www.dblp.org");
           final URL bibFileURL=new URL(bibtexUrl);
@@ -50,7 +50,7 @@
     res=true;
   }
  catch (  IOException e) {
-    e.printStackTrace();
+    LOGGER.warn("Communcation problems",e);
     status.showMessage(e.getMessage());
   }
   return res;

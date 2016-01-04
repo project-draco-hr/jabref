@@ -1,10 +1,10 @@
 {
-  StringBuffer bibtexQueryURLStringBuf=new StringBuffer();
+  StringBuffer bibtexQueryURLStringBuf=new StringBuffer(45);
   bibtexQueryURLStringBuf.append(URL_BIBTEX_START);
   JSONArray recordsJsonArray=searchResultsJson.getJSONArray("records");
   for (int n=0; n < recordsJsonArray.length(); n++) {
     if (!recordsJsonArray.getJSONObject(n).isNull("articleNumber")) {
-      bibtexQueryURLStringBuf.append(recordsJsonArray.getJSONObject(n).getString("articleNumber") + ",");
+      bibtexQueryURLStringBuf.append(recordsJsonArray.getJSONObject(n).getString("articleNumber")).append(',');
     }
   }
   bibtexQueryURLStringBuf.deleteCharAt(bibtexQueryURLStringBuf.length() - 1);
