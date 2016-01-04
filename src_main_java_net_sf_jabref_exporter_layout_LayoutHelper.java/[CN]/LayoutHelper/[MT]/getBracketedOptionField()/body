@@ -11,11 +11,11 @@
     if (c == -1) {
       _eof=true;
       if (buffer != null) {
-        if (option != null) {
-          tmp=buffer.toString() + '\n' + option;
+        if (option == null) {
+          tmp=buffer.toString();
         }
  else {
-          tmp=buffer.toString();
+          tmp=buffer.toString() + '\n' + option;
         }
         parsedEntries.add(new StringInt(tmp,LayoutHelper.IS_OPTION_FIELD));
       }
@@ -31,11 +31,11 @@
         }
  else         if (c == '}') {
           String parameter=buffer == null ? " " : buffer.toString();
-          if (option != null) {
-            tmp=parameter + '\n' + option;
+          if (option == null) {
+            tmp=parameter;
           }
  else {
-            tmp=parameter;
+            tmp=parameter + '\n' + option;
           }
           parsedEntries.add(new StringInt(tmp,LayoutHelper.IS_OPTION_FIELD));
           return null;

@@ -5,17 +5,17 @@
   try {
     panel.storeCurrentEdit();
     panel.autoGenerateKeysBeforeSaving();
-    if (!FileBasedLock.waitForFileLock(panel.getDatabaseFile(),10)) {
-      success=false;
-      fileLockedError=true;
-    }
- else {
+    if (FileBasedLock.waitForFileLock(panel.getDatabaseFile(),10)) {
       success=saveDatabase(panel.getDatabaseFile(),false,panel.getEncoding());
       try {
         Globals.fileUpdateMonitor.updateTimeStamp(panel.getFileMonitorHandle());
       }
  catch (      IllegalArgumentException ex) {
       }
+    }
+ else {
+      success=false;
+      fileLockedError=true;
     }
     panel.setSaving(false);
     if (success) {
@@ -33,6 +33,6 @@
       fileLockedError=true;
       return;
     }
-    ex2.printStackTrace();
+    LOGGER.error("Problem saving file",ex2);
   }
 }

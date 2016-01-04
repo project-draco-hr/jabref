@@ -2,11 +2,11 @@
   SaveSession session;
   frame.block();
   try {
-    if (!selectedOnly) {
-      session=FileActions.saveDatabase(panel.database(),panel.metaData(),file,Globals.prefs,false,false,encoding,false);
+    if (selectedOnly) {
+      session=FileActions.savePartOfDatabase(panel.database(),panel.metaData(),file,Globals.prefs,panel.getSelectedEntries(),encoding,FileActions.DatabaseSaveType.DEFAULT);
     }
  else {
-      session=FileActions.savePartOfDatabase(panel.database(),panel.metaData(),file,Globals.prefs,panel.getSelectedEntries(),encoding,FileActions.DatabaseSaveType.DEFAULT);
+      session=FileActions.saveDatabase(panel.database(),panel.metaData(),file,Globals.prefs,false,false,encoding,false);
     }
   }
  catch (  UnsupportedCharsetException ex2) {
@@ -25,7 +25,7 @@ catch (  SaveException ex) {
       panel.showEntry(ex.getEntry());
     }
  else {
-      ex.printStackTrace();
+      LOGGER.error("Problem saving file",ex);
     }
     JOptionPane.showMessageDialog(frame,Localization.lang("Could not save file.") + ".\n" + ex.getMessage(),Localization.lang("Save database"),JOptionPane.ERROR_MESSAGE);
     throw new SaveException("rt");
@@ -45,12 +45,12 @@ catch (  SaveException ex) {
     int answer=JOptionPane.showOptionDialog(frame,builder.getPanel(),Localization.lang("Save database"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE,null,new String[]{Localization.lang("Save"),tryDiff,Localization.lang("Cancel")},tryDiff);
     if (answer == JOptionPane.NO_OPTION) {
       Object choice=JOptionPane.showInputDialog(frame,Localization.lang("Select encoding"),Localization.lang("Save database"),JOptionPane.QUESTION_MESSAGE,null,Encodings.ENCODINGS_DISPLAYNAMES,encoding);
-      if (choice != null) {
-        Charset newEncoding=Charset.forName((String)choice);
-        return saveDatabase(file,selectedOnly,newEncoding);
+      if (choice == null) {
+        commit=false;
       }
  else {
-        commit=false;
+        Charset newEncoding=Charset.forName((String)choice);
+        return saveDatabase(file,selectedOnly,newEncoding);
       }
     }
  else     if (answer == JOptionPane.CANCEL_OPTION) {

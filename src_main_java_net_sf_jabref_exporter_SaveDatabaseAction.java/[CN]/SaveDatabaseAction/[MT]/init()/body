@@ -25,10 +25,7 @@
             if (scanner.changesFound()) {
               scanner.displayResult(new ChangeScanner.DisplayResultCallback(){
                 @Override public void scanResultsResolved(                boolean resolved){
-                  if (!resolved) {
-                    cancelled=true;
-                  }
- else {
+                  if (resolved) {
                     panel.setUpdatedExternally(false);
                     SwingUtilities.invokeLater(new Runnable(){
                       @Override public void run(){
@@ -36,6 +33,9 @@
                       }
                     }
 );
+                  }
+ else {
+                    cancelled=true;
                   }
                 }
               }
