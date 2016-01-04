@@ -1,14 +1,14 @@
 {
   builder=FormBuilder.create();
   builder.layout(new FormLayout("left:pref, 4dlu, fill:pref:grow, 4dlu, fill:pref","p"));
-  String label=Localization.lang("Path to %0",getApplicationName());
-  if (getCommandName() != null) {
-    label+=" (" + getCommandName() + "):";
+  StringBuffer label=new StringBuffer(Localization.lang("Path to %0",getApplicationName()));
+  if (getCommandName() == null) {
+    label.append(':');
   }
  else {
-    label+=":";
+    label.append(" (").append(getCommandName()).append("):");
   }
-  builder.add(label).xy(1,1);
+  builder.add(label.toString()).xy(1,1);
   builder.add(Path).xy(3,1);
   BrowseAction action=BrowseAction.buildForFile(Path);
   JButton browse=new JButton(Localization.lang("Browse"));
