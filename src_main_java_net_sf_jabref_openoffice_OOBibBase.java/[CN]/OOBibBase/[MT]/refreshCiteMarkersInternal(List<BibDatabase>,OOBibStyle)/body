@@ -52,8 +52,8 @@
           cEntries[j]=OOUtil.createAdaptedEntry(database.getEntryByKey(keys[j]));
         }
         if (cEntries[j] == null) {
-          System.out.println("Bibtex key not found : '" + keys[j] + '\'');
-          System.out.println("Problem with reference mark: '" + names[i] + '\'');
+          LOGGER.info("Bibtex key not found : '" + keys[j] + '\'');
+          LOGGER.info("Problem with reference mark: '" + names[i] + '\'');
           cEntries[j]=new UndefinedBibtexEntry(keys[j]);
         }
       }
@@ -96,11 +96,11 @@
         }
  else {
           int[] num=findCitedEntryIndex(names[i],cited);
-          if (num != null) {
-            citationMarker=style.getNumCitationMarker(num,minGroupingCount,false);
+          if (num == null) {
+            throw new BibEntryNotFoundException(names[i],Localization.lang("Could not resolve BibTeX entry for citation marker '%0'.",names[i]));
           }
  else {
-            throw new BibtexEntryNotFoundException(names[i],Localization.lang("Could not resolve BibTeX entry for citation marker '%0'.",names[i]));
+            citationMarker=style.getNumCitationMarker(num,minGroupingCount,false);
           }
           for (int j=0; j < keys.length; j++) {
             normCitMarker[j]=style.getNumCitationMarker(new int[]{num[j]},minGroupingCount,false);
