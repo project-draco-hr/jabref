@@ -6,12 +6,12 @@
     preferredPositions.put(componentName,index);
     index++;
   }
-  Set<String> var=preferredPositions.keySet();
-  String[] tmpComponentNames=var.toArray(new String[var.size()]);
-  String[] componentPositions=new String[preferredPositions.size()];
-  for (int i=0; i < tmpComponentNames.length; ++i) {
-    componentPositions[i]=preferredPositions.get(tmpComponentNames[i]).toString();
+  List<String> tmpComponentNames=new ArrayList<>();
+  List<String> componentPositions=new ArrayList<>();
+  for (  Map.Entry<String,Integer> component : preferredPositions.entrySet()) {
+    tmpComponentNames.add(component.getKey());
+    componentPositions.add(component.getValue().toString());
   }
-  Globals.prefs.putStringArray(JabRefPreferences.SIDE_PANE_COMPONENT_NAMES,tmpComponentNames);
-  Globals.prefs.putStringArray(JabRefPreferences.SIDE_PANE_COMPONENT_PREFERRED_POSITIONS,componentPositions);
+  Globals.prefs.putStringList(JabRefPreferences.SIDE_PANE_COMPONENT_NAMES,tmpComponentNames);
+  Globals.prefs.putStringList(JabRefPreferences.SIDE_PANE_COMPONENT_PREFERRED_POSITIONS,componentPositions);
 }
