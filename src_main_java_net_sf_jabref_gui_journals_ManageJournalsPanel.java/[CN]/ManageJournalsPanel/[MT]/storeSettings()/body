@@ -29,19 +29,13 @@
     }
     Globals.prefs.put(JabRefPreferences.PERSONAL_JOURNAL_LIST,filename);
   }
-  ArrayList<String> extFiles=new ArrayList<>();
+  List<String> extFiles=new ArrayList<>();
   for (  ExternalFileEntry efe : externals) {
     if (!"".equals(efe.getValue())) {
       extFiles.add(efe.getValue());
     }
   }
-  if (extFiles.isEmpty()) {
-    Globals.prefs.put(JabRefPreferences.EXTERNAL_JOURNAL_LISTS,"");
-  }
- else {
-    String[] list=extFiles.toArray(new String[extFiles.size()]);
-    Globals.prefs.putStringArray(JabRefPreferences.EXTERNAL_JOURNAL_LISTS,list);
-  }
+  Globals.prefs.putStringList(JabRefPreferences.EXTERNAL_JOURNAL_LISTS,extFiles);
   Abbreviations.initializeJournalNames(Globals.prefs);
   for (int i=0; i < frame.getBasePanelCount(); i++) {
     frame.getBasePanelAt(i).getAutoCompleters().addJournalListToAutoCompleter();

@@ -2,12 +2,12 @@
   formats.clear();
   list.clear();
   int i=0;
-  String[] s;
-  while ((s=Globals.prefs.getStringArray(JabRefPreferences.CUSTOM_EXPORT_FORMAT + i)) != null) {
+  List<String> s;
+  while (!((s=Globals.prefs.getStringList(JabRefPreferences.CUSTOM_EXPORT_FORMAT + i)).isEmpty())) {
     Optional<ExportFormat> format=createFormat(s);
     if (format.isPresent()) {
       formats.put(format.get().getConsoleName(),format.get());
-      list.add(s);
+      list.add(s.toArray(new String[s.size()]));
     }
  else {
       String customExportFormat=Globals.prefs.get(JabRefPreferences.CUSTOM_EXPORT_FORMAT + i);

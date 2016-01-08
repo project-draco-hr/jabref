@@ -1,10 +1,10 @@
 {
-  String[] numFields=Globals.prefs.getStringArray(JabRefPreferences.NUMERIC_FIELDS);
-  if (numFields == null) {
+  List<String> numFields=Globals.prefs.getStringList(JabRefPreferences.NUMERIC_FIELDS);
+  if (numFields.isEmpty()) {
     return;
   }
-  HashSet<String> nF=new HashSet<>();
-  Collections.addAll(nF,numFields);
+  Set<String> nF=new HashSet<>();
+  nF.addAll(numFields);
   for (  String fieldName : BibtexFields.RUNTIME.fieldSet.keySet()) {
     BibtexSingleField field=BibtexFields.RUNTIME.fieldSet.get(fieldName);
     if (!field.isNumeric() && nF.contains(fieldName)) {

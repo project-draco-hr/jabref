@@ -1,19 +1,13 @@
 {
   Map<String,String> result=new HashMap<>();
-  String[] names=Globals.prefs.getStringArray(NameFormatterTab.NAME_FORMATER_KEY);
-  String[] formats=Globals.prefs.getStringArray(NameFormatterTab.NAME_FORMATTER_VALUE);
-  if (names == null) {
-    names=new String[]{};
-  }
-  if (formats == null) {
-    formats=new String[]{};
-  }
-  for (int i=0; i < names.length; i++) {
-    if (i < formats.length) {
-      result.put(names[i],formats[i]);
+  List<String> names=Globals.prefs.getStringList(NameFormatterTab.NAME_FORMATER_KEY);
+  List<String> formats=Globals.prefs.getStringList(NameFormatterTab.NAME_FORMATTER_VALUE);
+  for (int i=0; i < names.size(); i++) {
+    if (i < formats.size()) {
+      result.put(names.get(i),formats.get(i));
     }
  else {
-      result.put(names[i],NameFormatter.DEFAULT_FORMAT);
+      result.put(names.get(i),NameFormatter.DEFAULT_FORMAT);
     }
   }
   return result;

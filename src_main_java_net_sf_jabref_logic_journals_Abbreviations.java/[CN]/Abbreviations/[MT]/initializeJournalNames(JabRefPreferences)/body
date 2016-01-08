@@ -7,10 +7,10 @@
  else {
     journalAbbrev.readJournalListFromResource(JOURNALS_IEEE_ABBREVIATION_LIST_WITH_TEXT);
   }
-  String[] lists=jabRefPreferences.getStringArray(JabRefPreferences.EXTERNAL_JOURNAL_LISTS);
-  if ((lists != null) && (lists.length > 0)) {
-    for (int i=lists.length - 1; i >= 0; i--) {
-      String filename=lists[i];
+  List<String> lists=jabRefPreferences.getStringList(JabRefPreferences.EXTERNAL_JOURNAL_LISTS);
+  if (!(lists.isEmpty())) {
+    Collections.reverse(lists);
+    for (    String filename : lists) {
       try {
         journalAbbrev.readJournalListFromFile(new File(filename));
       }
