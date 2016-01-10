@@ -1,10 +1,10 @@
 {
-  BibEntry[] entries=panel.getSelectedEntries();
+  List<BibEntry> entries=panel.getSelectedEntries();
   AbstractGroup group=node.getGroup();
   AbstractUndoableEdit undoRemove=null;
   AbstractUndoableEdit undoAdd=null;
-  ArrayList<BibEntry> toRemove=new ArrayList<>(entries.length);
-  ArrayList<BibEntry> toAdd=new ArrayList<>(entries.length);
+  ArrayList<BibEntry> toRemove=new ArrayList<>(entries.size());
+  ArrayList<BibEntry> toAdd=new ArrayList<>(entries.size());
   for (  BibEntry entry : entries) {
     if (group.contains(entry)) {
       LOGGER.info("Removing entry " + entry);
@@ -16,10 +16,10 @@
     }
   }
   if (!toRemove.isEmpty()) {
-    undoRemove=node.removeFromGroup(toRemove.toArray(new BibEntry[toRemove.size()]));
+    undoRemove=node.removeFromGroup(toRemove);
   }
   if (!toAdd.isEmpty()) {
-    undoAdd=node.addToGroup(toAdd.toArray(new BibEntry[toAdd.size()]));
+    undoAdd=node.addToGroup(toAdd);
   }
   if (undoRemove != null) {
     if (undoAdd != null) {
