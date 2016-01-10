@@ -1,10 +1,12 @@
 {
-  List<BibEntry> entries=FileActions.getSortedEntries(database,metaData,keySet,false);
+  Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE)));
+  BibDatabaseContext bibDatabaseContext=new BibDatabaseContext(database,metaData,defaults);
+  SavePreferences savePrefs=new SavePreferences(Globals.prefs,false);
+  List<BibEntry> entries=BibDatabaseWriter.getSortedEntries(bibDatabaseContext,keySet,savePrefs);
   GroupTreeNode gtn=metaData.getGroups();
   final int database_id=getDatabaseIDByName(metaData,out,dbName);
   removeAllRecordsForAGivenDB(out,database_id);
-  Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE)));
-  populateEntryTypesTable(out,new BibDatabaseContext(database,metaData,defaults).getMode());
+  populateEntryTypesTable(out,bibDatabaseContext.getMode());
   populateEntriesTable(database_id,entries,out);
   populateStringTable(database,out,database_id);
   populateGroupTypesTable(out);

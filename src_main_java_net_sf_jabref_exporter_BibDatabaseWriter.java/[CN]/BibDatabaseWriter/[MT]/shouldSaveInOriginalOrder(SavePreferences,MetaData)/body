@@ -1,0 +1,17 @@
+{
+  boolean inOriginalOrder;
+  if (prefs.isSaveOperation()) {
+    List<String> storedSaveOrderConfig=metaData.getData(net.sf.jabref.gui.DatabasePropertiesDialog.SAVE_ORDER_CONFIG);
+    if (storedSaveOrderConfig == null) {
+      inOriginalOrder=true;
+    }
+ else {
+      SaveOrderConfig saveOrderConfig=new SaveOrderConfig(storedSaveOrderConfig);
+      inOriginalOrder=saveOrderConfig.saveInOriginalOrder;
+    }
+  }
+ else {
+    inOriginalOrder=Globals.prefs.getBoolean(JabRefPreferences.EXPORT_IN_ORIGINAL_ORDER);
+  }
+  return inOriginalOrder;
+}
