@@ -1,2 +1,19 @@
 {
+  SaveSession session;
+  try {
+    session=new SaveSession(preferences.getEncoding(),preferences.getMakeBackup());
+  }
+ catch (  IOException e) {
+    throw new SaveException(e.getMessage(),e.getLocalizedMessage());
+  }
+  exceptionCause=null;
+  try (VerifyingWriter writer=session.getWriter()){
+    writePartOfDatabase(writer,bibDatabaseContext,entries,preferences,checkSearch,checkGroup);
+  }
+ catch (  IOException ex) {
+    LOGGER.error("Could not write file",ex);
+    session.cancel();
+    throw new SaveException(ex.getMessage(),ex.getLocalizedMessage(),exceptionCause);
+  }
+  return session;
 }
