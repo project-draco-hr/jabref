@@ -1,28 +1,17 @@
 {
-  String[] searchKeys=entry.getFieldNames().toArray(new String[entry.getFieldNames().size()]);
-  boolean noSuchField=true;
-  for (int i=0; i < (searchKeys.length + 1); i++) {
-    String content;
-    if ((i - searchKeys.length) == 0) {
-      if (!fieldPattern.matcher("entrytype").matches()) {
-        continue;
-      }
-      content=entry.getType().getName();
-    }
- else {
-      String searchKey=searchKeys[i];
-      if (!fieldPattern.matcher(searchKey).matches()) {
-        continue;
-      }
-      content=entry.getField(searchKey);
-    }
-    noSuchField=false;
-    if (content == null) {
+  Set<String> fieldsKeys=entry.getFieldNames();
+  if (fieldPattern.matcher("entrytype").matches()) {
+    return matchFieldValue(entry.getType().getName());
+  }
+  List<String> matchedFieldKeys=fieldsKeys.stream().filter(matchFieldKey()).collect(Collectors.toList());
+  for (  String field : matchedFieldKeys) {
+    String fieldValue=entry.getField(field);
+    if (fieldValue == null) {
       continue;
     }
-    if (matchInField(content)) {
+    if (matchFieldValue(fieldValue)) {
       return true;
     }
   }
-  return noSuchField && (operator == ComparisonOperator.DOES_NOT_CONTAIN);
+  return matchedFieldKeys.isEmpty() && (operator == ComparisonOperator.DOES_NOT_CONTAIN);
 }
