@@ -1,11 +1,8 @@
 {
-  File file;
   if ((name == null) || name.isEmpty()) {
     return null;
   }
- else {
-    file=new File(name);
-  }
+  File file=new File(name);
   if (!file.exists() && (dir != null)) {
     if (dir.endsWith(FILE_SEPARATOR)) {
       name=dir + name;
@@ -18,12 +15,7 @@
       return file;
     }
     if (OS.WINDOWS) {
-      try {
-        name=name.replaceAll("/","\\\\");
-      }
- catch (      StringIndexOutOfBoundsException exc) {
-        LOGGER.error("An internal Java error was caused by the entry " + "\"" + name + "\"",exc);
-      }
+      name=name.replaceAll("/","\\\\");
     }
  else {
       name=name.replaceAll("\\\\","/");
