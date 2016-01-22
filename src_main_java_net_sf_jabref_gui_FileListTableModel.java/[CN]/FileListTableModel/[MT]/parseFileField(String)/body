@@ -30,13 +30,8 @@
  else     if (!escaped && (c == ';') && !inXmlChar) {
       entry.add(sb.toString());
       sb=new StringBuilder();
-      if (firstOnly) {
-        return decodeEntry(entry,deduceUnknownTypes);
-      }
- else {
-        files.add(decodeEntry(entry,deduceUnknownTypes));
-        entry.clear();
-      }
+      files.add(decodeEntry(entry,true));
+      entry.clear();
     }
  else {
       sb.append(c);
@@ -47,17 +42,7 @@
     entry.add(sb.toString());
   }
   if (!entry.isEmpty()) {
-    if (firstOnly) {
-      return decodeEntry(entry,deduceUnknownTypes);
-    }
- else {
-      files.add(decodeEntry(entry,deduceUnknownTypes));
-    }
+    files.add(decodeEntry(entry,true));
   }
-synchronized (list) {
-    list.clear();
-    list.addAll(files);
-  }
-  fireTableChanged(new TableModelEvent(this));
-  return null;
+  return files;
 }
