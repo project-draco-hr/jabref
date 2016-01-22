@@ -1,10 +1,9 @@
 {
-  if ((file == null) || (entry == null)) {
-    return false;
-  }
+  Objects.requireNonNull(entry);
   FileListTableModel model=new FileListTableModel();
   String fileField=entry.getField(DatabaseFileLookup.KEY_FILE_FIELD);
   model.setContent(fileField);
+  List<File> fileLinks=new ArrayList<>();
   for (int i=0; i < model.getRowCount(); i++) {
     FileListEntry flEntry=model.getEntry(i);
     String link=flEntry.getLink();
@@ -12,9 +11,7 @@
       break;
     }
     File expandedFilename=FileUtil.expandFilename(link,possibleFilePaths);
-    if (Objects.equals(expandedFilename,file)) {
-      return true;
-    }
+    fileLinks.add(expandedFilename);
   }
-  return false;
+  return fileLinks;
 }
