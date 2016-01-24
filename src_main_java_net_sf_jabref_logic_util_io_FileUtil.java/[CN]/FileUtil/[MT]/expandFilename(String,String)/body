@@ -3,27 +3,26 @@
     return null;
   }
   File file=new File(name);
-  if (!file.exists() && (dir != null)) {
-    if (dir.endsWith(FILE_SEPARATOR)) {
-      name=dir + name;
-    }
- else {
-      name=dir + FILE_SEPARATOR + name;
-    }
-    file=new File(name);
-    if (file.exists()) {
-      return file;
-    }
-    if (OS.WINDOWS) {
-      name=name.replaceAll("/","\\\\");
-    }
- else {
-      name=name.replaceAll("\\\\","/");
-    }
-    file=new File(name);
-    if (!file.exists()) {
-      file=null;
-    }
+  if (file.exists() || dir == null) {
+    return file;
   }
-  return file;
+  if (dir.endsWith(FILE_SEPARATOR)) {
+    name=dir + name;
+  }
+ else {
+    name=dir + FILE_SEPARATOR + name;
+  }
+  if (OS.WINDOWS) {
+    name=SLASH.matcher(name).replaceAll("\\\\");
+  }
+ else {
+    name=BACKSLASH.matcher(name).replaceAll("/");
+  }
+  File fileInDir=new File(name);
+  if (fileInDir.exists()) {
+    return fileInDir;
+  }
+ else {
+    return null;
+  }
 }

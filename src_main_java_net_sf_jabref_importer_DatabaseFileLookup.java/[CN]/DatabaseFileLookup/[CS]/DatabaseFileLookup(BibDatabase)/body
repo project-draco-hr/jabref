@@ -1,7 +1,7 @@
 {
-  if (aDatabase == null) {
-    throw new IllegalArgumentException("Passing a 'null' BibDatabase.");
+  Objects.requireNonNull(database);
+  possibleFilePaths=Optional.ofNullable(JabRef.jrf.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD)).orElse(new String[]{});
+  for (  BibEntry entry : database.getEntries()) {
+    fileCache.addAll(parseFileField(entry));
   }
-  entries=aDatabase.getEntries();
-  possibleFilePaths=JabRef.jrf.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD);
 }
