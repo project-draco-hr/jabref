@@ -1,0 +1,16 @@
+{
+  ExternalFileType type=Globals.prefs.getExternalFileTypeByName(entry.fileType);
+  if (deduceUnknownType && (type instanceof UnknownExternalFileType)) {
+    type=Globals.prefs.getExternalFileTypeByMimeType(entry.fileType);
+    if (type == null) {
+      Optional<String> extension=FileUtil.getFileExtension(entry.link);
+      if (extension.isPresent()) {
+        ExternalFileType typeGuess=Globals.prefs.getExternalFileTypeByExt(extension.get());
+        if (typeGuess != null) {
+          type=typeGuess;
+        }
+      }
+    }
+  }
+  return new FileListEntry(entry.description,entry.link,type);
+}

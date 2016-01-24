@@ -1,11 +1,11 @@
 {
   Objects.requireNonNull(entry);
   String fileField=entry.getField(DatabaseFileLookup.KEY_FILE_FIELD);
-  List<FileListEntry> entries=new FileListTableModel().parseFileField(fileField);
+  List<FileField.ParsedFileField> entries=FileField.parse(fileField);
   List<File> fileLinks=new ArrayList<>();
-  for (  FileListEntry e : entries) {
-    String link=e.getLink();
-    if (link == null || link.contains("//")) {
+  for (  FileField.ParsedFileField field : entries) {
+    String link=field.link;
+    if (link.contains("//")) {
       continue;
     }
     File expandedFilename=FileUtil.expandFilename(link,possibleFilePaths);

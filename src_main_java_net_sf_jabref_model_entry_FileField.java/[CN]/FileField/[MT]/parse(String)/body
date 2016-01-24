@@ -1,9 +1,9 @@
 {
-  if (value == null) {
-    value="";
+  if (value == null || value.trim().isEmpty()) {
+    return Collections.emptyList();
   }
-  ArrayList<FileListEntry> files=new ArrayList<>();
-  ArrayList<String> entry=new ArrayList<>();
+  List<FileField.ParsedFileField> files=new ArrayList<>();
+  List<String> entry=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
   boolean inXmlChar=false;
   boolean escaped=false;
@@ -30,8 +30,7 @@
  else     if (!escaped && (c == ';') && !inXmlChar) {
       entry.add(sb.toString());
       sb=new StringBuilder();
-      files.add(decodeEntry(entry,true));
-      entry.clear();
+      files.add(convert(entry));
     }
  else {
       sb.append(c);
@@ -42,7 +41,7 @@
     entry.add(sb.toString());
   }
   if (!entry.isEmpty()) {
-    files.add(decodeEntry(entry,true));
+    files.add(convert(entry));
   }
   return files;
 }

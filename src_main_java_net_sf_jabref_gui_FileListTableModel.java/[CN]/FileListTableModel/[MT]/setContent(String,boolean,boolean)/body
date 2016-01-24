@@ -2,51 +2,12 @@
   if (value == null) {
     value="";
   }
+  List<FileField.ParsedFileField> fields=FileField.parse(value);
   ArrayList<FileListEntry> files=new ArrayList<>();
-  ArrayList<String> entry=new ArrayList<>();
-  StringBuilder sb=new StringBuilder();
-  boolean inXmlChar=false;
-  boolean escaped=false;
-  for (int i=0; i < value.length(); i++) {
-    char c=value.charAt(i);
-    if (!escaped && (c == '\\')) {
-      escaped=true;
+  for (  FileField.ParsedFileField entry : fields) {
+    if (entry.isEmpty()) {
       continue;
     }
- else     if (!escaped && (c == '&') && !inXmlChar) {
-      sb.append(c);
-      if ((value.length() > (i + 1)) && (value.charAt(i + 1) == '#')) {
-        inXmlChar=true;
-      }
-    }
- else     if (!escaped && inXmlChar && (c == ';')) {
-      sb.append(c);
-      inXmlChar=false;
-    }
- else     if (!escaped && (c == ':')) {
-      entry.add(sb.toString());
-      sb=new StringBuilder();
-    }
- else     if (!escaped && (c == ';') && !inXmlChar) {
-      entry.add(sb.toString());
-      sb=new StringBuilder();
-      if (firstOnly) {
-        return decodeEntry(entry,deduceUnknownTypes);
-      }
- else {
-        files.add(decodeEntry(entry,deduceUnknownTypes));
-        entry.clear();
-      }
-    }
- else {
-      sb.append(c);
-    }
-    escaped=false;
-  }
-  if (sb.length() > 0) {
-    entry.add(sb.toString());
-  }
-  if (!entry.isEmpty()) {
     if (firstOnly) {
       return decodeEntry(entry,deduceUnknownTypes);
     }
