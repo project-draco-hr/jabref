@@ -4,7 +4,6 @@
   if (!isAnyRowSelected) {
     return;
   }
-  final String code=KeyEvent.getKeyText(evt.getKeyCode());
   final String modifier=KeyEvent.getKeyModifiersText(evt.getModifiers());
   if ("".equals(modifier)) {
     int kc=evt.getKeyCode();
@@ -15,15 +14,16 @@
       return;
     }
   }
+  final String code=KeyEvent.getKeyText(evt.getKeyCode());
   if ("Tab".equals(code) || "Backspace".equals(code) || "Enter".equals(code)|| "Space".equals(code)|| "Ctrl".equals(code)|| "Shift".equals(code)|| "Alt".equals(code)) {
     return;
   }
   String newKey;
-  if (!"".equals(modifier)) {
-    newKey=modifier.toLowerCase().replaceAll("\\+"," ") + " " + code;
+  if ("".equals(modifier)) {
+    newKey=code;
   }
  else {
-    newKey=code;
+    newKey=modifier.toLowerCase().replaceAll("\\+"," ") + " " + code;
   }
   table.setValueAt(newKey,selRow,1);
   table.revalidate();

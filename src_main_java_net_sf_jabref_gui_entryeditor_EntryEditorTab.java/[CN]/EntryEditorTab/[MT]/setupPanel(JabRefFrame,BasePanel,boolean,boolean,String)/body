@@ -19,7 +19,7 @@
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout(colSpec,rowSpec),panel);
   for (int i=0; i < fields.length; i++) {
     int editorType=BibtexFields.getEditorType(fields[i]);
-    final FieldEditor fieldEditor;
+    FieldEditor fieldEditor;
     int defaultHeight;
     int wHeight=(int)(50.0 * BibtexFields.getFieldWeight(fields[i]));
     if (editorType == GUIGlobals.FILE_LIST_EDITOR) {
@@ -48,15 +48,15 @@
       fieldEditor.getPane().setPreferredSize(new Dimension(100,Math.max(defaultHeight,wHeight)));
     }
     builder.append(fieldEditor.getLabel());
-    if (!(extra.isPresent())) {
-      builder.append(fieldEditor.getPane(),3);
-    }
- else {
+    if (extra.isPresent()) {
       builder.append(fieldEditor.getPane());
       JPanel pan=new JPanel();
       pan.setLayout(new BorderLayout());
       pan.add(extra.get(),BorderLayout.NORTH);
       builder.append(pan);
+    }
+ else {
+      builder.append(fieldEditor.getPane(),3);
     }
     if (((i + 1) % fieldsPerRow) == 0) {
       builder.nextLine();

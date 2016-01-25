@@ -1,16 +1,16 @@
 {
   boolean close=true;
-  Vector<String> filenames=new Vector<>();
+  List<String> filenames=new ArrayList<>();
   if (tabbedPane.getTabCount() > 0) {
     for (int i=0; i < tabbedPane.getTabCount(); i++) {
       if (getBasePanelAt(i).isModified()) {
         tabbedPane.setSelectedIndex(i);
         String filename;
-        if (getBasePanelAt(i).getDatabaseFile() != null) {
-          filename=getBasePanelAt(i).getDatabaseFile().getAbsolutePath();
+        if (getBasePanelAt(i).getDatabaseFile() == null) {
+          filename=GUIGlobals.untitledTitle;
         }
  else {
-          filename=GUIGlobals.untitledTitle;
+          filename=getBasePanelAt(i).getDatabaseFile().getAbsolutePath();
         }
         int answer=showSaveDialog(filename);
         if ((answer == JOptionPane.CANCEL_OPTION) || (answer == JOptionPane.CLOSED_OPTION)) {

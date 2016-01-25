@@ -21,16 +21,16 @@
       textField.setValidBackgroundColor();
     }
     boolean isDuplicate=panel.getDatabase().setCiteKeyForEntry(entry.getId(),newValue);
-    if (newValue != null) {
+    if (newValue == null) {
+      warnEmptyBibtexkey();
+    }
+ else {
       if (isDuplicate) {
         warnDuplicateBibtexkey();
       }
  else {
         panel.output(Localization.lang("BibTeX key is unique."));
       }
-    }
- else {
-      warnEmptyBibtexkey();
     }
     UndoableKeyChange undoableKeyChange=new UndoableKeyChange(panel.getDatabase(),entry.getId(),oldValue,newValue);
     if (net.sf.jabref.util.Util.updateTimeStampIsSet()) {
@@ -68,11 +68,11 @@
           new LatexFieldFormatter().format(toSet,fieldEditor.getFieldName());
         }
         String oldValue=entry.getField(fieldEditor.getFieldName());
-        if (toSet != null) {
-          entry.setField(fieldEditor.getFieldName(),toSet);
+        if (toSet == null) {
+          entry.clearField(fieldEditor.getFieldName());
         }
  else {
-          entry.clearField(fieldEditor.getFieldName());
+          entry.setField(fieldEditor.getFieldName(),toSet);
         }
         fieldEditor.setValidBackgroundColor();
         AutoCompleter<String> aComp=panel.getAutoCompleters().get(fieldEditor.getFieldName());
