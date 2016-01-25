@@ -1,0 +1,15 @@
+{
+  Objects.requireNonNull(bes);
+  Objects.requireNonNull(fileDirs);
+  List<File> result=new ArrayList<>();
+  for (  BibEntry entry : bes) {
+    List<FileField.ParsedFileField> fileList=FileField.parse(entry.getField(Globals.FILE_FIELD));
+    for (    FileField.ParsedFileField file : fileList) {
+      File f=expandFilename(file.link,fileDirs.toArray(new String[fileDirs.size()]));
+      if (f != null) {
+        result.add(f);
+      }
+    }
+  }
+  return result;
+}

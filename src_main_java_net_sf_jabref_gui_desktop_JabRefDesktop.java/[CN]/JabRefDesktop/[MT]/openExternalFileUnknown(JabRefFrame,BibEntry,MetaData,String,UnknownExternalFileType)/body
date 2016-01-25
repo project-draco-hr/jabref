@@ -13,11 +13,11 @@
     editor.setVisible(true);
     if (editor.okPressed()) {
       List<ExternalFileType> fileTypes=new ArrayList<>();
-      ExternalFileType[] oldTypes=Globals.prefs.getExternalFileTypeSelection();
+      ExternalFileType[] oldTypes=ExternalFileTypes.getInstance().getExternalFileTypeSelection();
       Collections.addAll(fileTypes,oldTypes);
       fileTypes.add(newType);
       Collections.sort(fileTypes);
-      Globals.prefs.setExternalFileTypes(fileTypes);
+      ExternalFileTypes.getInstance().setExternalFileTypes(fileTypes);
       return openExternalFileAnyFormat(metaData,link,newType);
     }
  else {
@@ -32,7 +32,7 @@
     FileListEntry flEntry=null;
     for (int i=0; i < tModel.getRowCount(); i++) {
       FileListEntry iEntry=tModel.getEntry(i);
-      if (iEntry.getLink().equals(link)) {
+      if (iEntry.link.equals(link)) {
         flEntry=iEntry;
         break;
       }
@@ -48,7 +48,7 @@
       entry.setField(Globals.FILE_FIELD,newValue);
       frame.getCurrentBasePanel().undoManager.addEdit(ce);
       frame.getCurrentBasePanel().markBaseChanged();
-      return openExternalFileAnyFormat(metaData,flEntry.getLink(),flEntry.getType());
+      return openExternalFileAnyFormat(metaData,flEntry.link,flEntry.type);
     }
  else {
       frame.output(cancelMessage);

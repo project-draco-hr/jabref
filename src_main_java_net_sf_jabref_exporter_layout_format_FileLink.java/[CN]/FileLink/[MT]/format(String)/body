@@ -1,20 +1,18 @@
 {
-  FileListTableModel tableModel=new FileListTableModel();
   if (field == null) {
     return "";
   }
-  tableModel.setContent(field);
+  List<ParsedFileField> fileList=FileField.parse(field);
   String link=null;
   if (fileType == null) {
-    if (tableModel.getRowCount() > 0) {
-      link=tableModel.getEntry(0).getLink();
+    if (!(fileList.isEmpty())) {
+      link=fileList.get(0).link;
     }
   }
  else {
-    for (int i=0; i < tableModel.getRowCount(); i++) {
-      FileListEntry flEntry=tableModel.getEntry(i);
-      if (flEntry.getType().getName().toLowerCase().equals(fileType)) {
-        link=flEntry.getLink();
+    for (    ParsedFileField flEntry : fileList) {
+      if (flEntry.fileType.equalsIgnoreCase(fileType)) {
+        link=flEntry.link;
         break;
       }
     }
