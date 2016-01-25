@@ -1,17 +1,16 @@
 {
-  super(parent_,Localization.lang("Edit custom export"),true);
-  parent=parent_;
+  super(parent,Localization.lang("Edit custom export"),true);
   ActionListener okListener=new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       if (layoutFile.getText().isEmpty() || name.getText().isEmpty() || extension.getText().isEmpty()|| !layoutFile.getText().endsWith(".layout")) {
         return;
       }
-      ok_pressed=true;
+      okPressed=true;
       dispose();
     }
   }
 ;
-  JButton ok=new JButton(Localization.lang("Ok"));
+  JButton ok=new JButton(Localization.lang("OK"));
   ok.addActionListener(okListener);
   name.addActionListener(okListener);
   layoutFile.addActionListener(okListener);
@@ -41,7 +40,7 @@
   JPanel main=new JPanel();
   ActionMap am=main.getActionMap();
   InputMap im=main.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  im.put(parent.prefs().getKey(KeyBinds.CLOSE_DIALOG),"close");
+  im.put(Globals.getKeyPrefs().getKey(KeyBinding.CLOSE_DIALOG),"close");
   am.put("close",cancelAction);
   GridBagLayout gbl=new GridBagLayout();
   main.setLayout(gbl);

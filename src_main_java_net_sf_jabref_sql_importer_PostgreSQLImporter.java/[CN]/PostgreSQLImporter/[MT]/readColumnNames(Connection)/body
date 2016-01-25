@@ -1,5 +1,10 @@
 {
   try (Statement statement=(Statement)SQLUtil.processQueryWithResults(conn,"SELECT column_name FROM information_schema.columns WHERE table_name ='entries';")){
-    return statement.getResultSet();
+    List<String> colNames=new ArrayList<>();
+    ResultSet rsColumns=statement.getResultSet();
+    while (rsColumns.next()) {
+      colNames.add(rsColumns.getString(1));
+    }
+    return colNames;
   }
  }

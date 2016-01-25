@@ -1,0 +1,16 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@string{bourdieu = {Bourdieu, Pierre}}" + "@string{adieu = {Adieu, Pierre}}"));
+  Assert.assertEquals(2,result.getDatabase().getStringCount());
+  Iterator<BibtexString> iterator=result.getDatabase().getStringValues().iterator();
+  BibtexString s=iterator.next();
+  BibtexString t=iterator.next();
+  if (s.getName().equals("adieu")) {
+    BibtexString tmp=s;
+    s=t;
+    t=tmp;
+  }
+  Assert.assertEquals("bourdieu",s.getName());
+  Assert.assertEquals("Bourdieu, Pierre",s.getContent());
+  Assert.assertEquals("adieu",t.getName());
+  Assert.assertEquals("Adieu, Pierre",t.getContent());
+}

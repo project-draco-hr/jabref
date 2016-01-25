@@ -4,8 +4,8 @@
   try (ServerSocket socket=new ServerSocket(port)){
     new Thread(){
       @Override public void run(){
-        try {
-          socket.accept().getOutputStream().write("whatever".getBytes());
+        try (OutputStream os=socket.accept().getOutputStream()){
+          os.write("whatever".getBytes());
         }
  catch (        IOException e) {
         }

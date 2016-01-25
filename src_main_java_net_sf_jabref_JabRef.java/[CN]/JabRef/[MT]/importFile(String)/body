@@ -4,18 +4,18 @@
     if ((data.length > 1) && !"*".equals(data[1])) {
       System.out.println(Localization.lang("Importing") + ": " + data[0]);
       try {
-        List<BibtexEntry> entries;
+        List<BibEntry> entries;
         if (OS.WINDOWS) {
           entries=Globals.importFormatReader.importFromFile(data[1],data[0],JabRef.jrf);
         }
  else {
           entries=Globals.importFormatReader.importFromFile(data[1],data[0].replaceAll("~",System.getProperty("user.home")),JabRef.jrf);
         }
-        return new ParserResult(entries);
+        return Optional.of(new ParserResult(entries));
       }
  catch (      IllegalArgumentException ex) {
         System.err.println(Localization.lang("Unknown import format") + ": " + data[1]);
-        return null;
+        return Optional.empty();
       }
     }
  else {
@@ -27,17 +27,17 @@
  else {
         importResult=Globals.importFormatReader.importUnknownFormat(data[0].replaceAll("~",System.getProperty("user.home")));
       }
-      if (importResult != null) {
-        System.out.println(Localization.lang("Format used") + ": " + importResult.format);
-        return importResult.parserResult;
+      if (importResult == null) {
+        System.out.println(Localization.lang("Could not find a suitable import format."));
       }
  else {
-        System.out.println(Localization.lang("Could not find a suitable import format."));
+        System.out.println(Localization.lang("Format used") + ": " + importResult.format);
+        return Optional.of(importResult.parserResult);
       }
     }
   }
  catch (  IOException ex) {
     System.err.println(Localization.lang("Error opening file") + " '" + data[0]+ "': "+ ex.getLocalizedMessage());
   }
-  return null;
+  return Optional.empty();
 }

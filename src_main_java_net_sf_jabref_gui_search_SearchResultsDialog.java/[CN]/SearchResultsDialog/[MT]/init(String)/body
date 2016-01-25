@@ -3,16 +3,16 @@
   int activePreview=Globals.prefs.getInt(JabRefPreferences.ACTIVE_PREVIEW);
   preview=new PreviewPanel(null,new MetaData(),activePreview == 0 ? Globals.prefs.get(JabRefPreferences.PREVIEW_0) : Globals.prefs.get(JabRefPreferences.PREVIEW_1));
   sortedEntries=new SortedList<>(entries,new EntryComparator(false,true,"author"));
-  model=(DefaultEventTableModel<BibtexEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedEntries,new EntryTableFormat());
+  model=(DefaultEventTableModel<BibEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedEntries,new EntryTableFormat());
   entryTable=new JTable(model);
   GeneralRenderer renderer=new GeneralRenderer(Color.white);
   entryTable.setDefaultRenderer(JLabel.class,renderer);
   entryTable.setDefaultRenderer(String.class,renderer);
   setWidths();
-  TableComparatorChooser<BibtexEntry> tableSorter=TableComparatorChooser.install(entryTable,sortedEntries,AbstractTableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  TableComparatorChooser<BibEntry> tableSorter=TableComparatorChooser.install(entryTable,sortedEntries,AbstractTableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
   setupComparatorChooser(tableSorter);
   JScrollPane sp=new JScrollPane(entryTable);
-  final DefaultEventSelectionModel<BibtexEntry> selectionModel=(DefaultEventSelectionModel<BibtexEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(sortedEntries);
+  final DefaultEventSelectionModel<BibEntry> selectionModel=(DefaultEventSelectionModel<BibEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(sortedEntries);
   entryTable.setSelectionModel(selectionModel);
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
   entryTable.addMouseListener(new TableClickListener());
@@ -26,12 +26,12 @@
 ;
   ActionMap am=contentPane.getActionMap();
   InputMap im=contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  im.put(Globals.prefs.getKey(KeyBinds.CLOSE_DIALOG),"close");
+  im.put(Globals.getKeyPrefs().getKey(KeyBinding.CLOSE_DIALOG),"close");
   am.put("close",closeAction);
   entryTable.getActionMap().put("copy",new AbstractAction(){
     @Override public void actionPerformed(    ActionEvent e){
       if (!selectionModel.getSelected().isEmpty()) {
-        BibtexEntry[] bes=selectionModel.getSelected().toArray(new BibtexEntry[selectionModel.getSelected().size()]);
+        BibEntry[] bes=selectionModel.getSelected().toArray(new BibEntry[selectionModel.getSelected().size()]);
         TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,frame.getCurrentBasePanel());
         frame.output(Localization.lang("Copied") + ' ' + (bes.length > 1 ? bes.length + " " + Localization.lang("entries") : "1 " + Localization.lang("entry") + '.'));

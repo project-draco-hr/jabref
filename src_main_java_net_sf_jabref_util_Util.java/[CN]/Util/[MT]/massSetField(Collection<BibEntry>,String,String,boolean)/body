@@ -1,0 +1,18 @@
+{
+  NamedCompound ce=new NamedCompound(Localization.lang("Set field"));
+  for (  BibEntry entry : entries) {
+    String oldVal=entry.getField(field);
+    if (!overwriteValues && (oldVal != null) && !oldVal.isEmpty()) {
+      continue;
+    }
+    if (text != null) {
+      entry.setField(field,text);
+    }
+ else {
+      entry.clearField(field);
+    }
+    ce.addEdit(new UndoableFieldChange(entry,field,oldVal,text));
+  }
+  ce.end();
+  return ce;
+}

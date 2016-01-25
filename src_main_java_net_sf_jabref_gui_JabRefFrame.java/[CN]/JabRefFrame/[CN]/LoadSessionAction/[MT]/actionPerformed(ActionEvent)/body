@@ -1,5 +1,5 @@
 {
-  if (prefs.get("savedSession") == null) {
+  if (prefs.get(JabRefPreferences.SAVED_SESSION) == null) {
     output(Localization.lang("No saved session found."));
     return;
   }
@@ -20,10 +20,10 @@
           }
         }
       }
-      String[] names=prefs.getStringArray("savedSession");
+      List<String> names=prefs.getStringList(JabRefPreferences.SAVED_SESSION);
       ArrayList<File> filesToOpen=new ArrayList<>();
-      for (int i=0; i < names.length; i++) {
-        filesToOpen.add(new File(names[i]));
+      for (      String name : names) {
+        filesToOpen.add(new File(name));
       }
       open.openFiles(filesToOpen,true);
       running=false;

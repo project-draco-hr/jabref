@@ -1,45 +1,59 @@
 {
-  terms=query;
+  String terms=query.replaceAll("\"","\\.QT\\.");
   shouldContinue=true;
-  parsed=0;
-  unparseable=0;
-  piv=0;
+  int parsed=0;
   int pageNumber=1;
-  searchUrl=makeUrl(pageNumber);
+  String postData=makeSearchPostRequestPayload(pageNumber,terms);
   try {
-    URL url=new URL(searchUrl);
-    String page=Util.getResults(url);
-    if (page.contains("You have entered an invalid search")) {
-      status.showMessage(Localization.lang("You have entered an invalid search '%0'.",terms),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
+    URL url=new URL(IEEEXploreFetcher.URL_SEARCH);
+    HttpURLConnection con=(HttpURLConnection)url.openConnection();
+    con.setRequestProperty("Accept","application/json");
+    con.setRequestProperty("Content-type","application/json");
+    String page=Util.getPostResults(con,postData,StandardCharsets.UTF_8);
+    if (page.isEmpty()) {
+      status.showMessage(Localization.lang("You have entered an invalid search '%0'.",query),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    if (page.contains("Bad request")) {
-      status.showMessage(Localization.lang("Bad Request '%0'.",terms),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
+    JSONObject searchResultsJson=new JSONObject(page);
+    int hits=searchResultsJson.getInt("totalRecords");
+    if (hits == 0) {
+      status.showMessage(Localization.lang("No entries found for the search string '%0'",query),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    if (page.contains("No results were found.")) {
-      status.showMessage(Localization.lang("No entries found for the search string '%0'",terms),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
-      return false;
-    }
-    if (page.contains("Error Page")) {
-      status.showMessage(Localization.lang("Intermittent errors on the IEEE Xplore server. Please try again in a while."),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
-      return false;
-    }
-    hits=getNumberOfHits(page,"display-status",hitsPattern);
-    includeAbstract=absCheckBox.isSelected();
     if (hits > IEEEXploreFetcher.MAX_FETCH) {
-      status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",new String[]{String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)}),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
+      status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
-    parse(dialog,page);
+    URL bibtexURL=new URL(createBibtexQueryURL(searchResultsJson));
+    String bibtexPage=Util.getResults(bibtexURL);
+    bibtexPage=preprocessBibtexResultsPage(bibtexPage);
+    Collection<BibEntry> parsedBibtexCollection=BibtexParser.fromString(bibtexPage);
+    if (parsedBibtexCollection == null) {
+      status.showMessage(Localization.lang("Error occured parsing BibTeX returned from IEEEXplore"),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
+      return false;
+    }
+    int nEntries=parsedBibtexCollection.size();
+    Iterator<BibEntry> parsedBibtexCollectionIterator=parsedBibtexCollection.iterator();
+    while (parsedBibtexCollectionIterator.hasNext() && shouldContinue) {
+      dialog.addEntry(cleanup(parsedBibtexCollectionIterator.next()));
+      dialog.setProgress(parsed,nEntries);
+      parsed++;
+    }
     return true;
   }
  catch (  MalformedURLException e) {
-    e.printStackTrace();
+    LOGGER.warn("Bad URL",e);
   }
 catch (  ConnectException e) {
     status.showMessage(Localization.lang("Connection to IEEEXplore failed"),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
   }
+catch (  UnknownHostException e) {
+    status.showMessage(Localization.lang("Connection to IEEEXplore failed"),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
+  }
 catch (  IOException e) {
+    status.showMessage(e.getMessage(),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
+    LOGGER.warn("Search IEEEXplore: " + e.getMessage(),e);
+  }
+catch (  JSONException e) {
     status.showMessage(e.getMessage(),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
     LOGGER.warn("Search IEEEXplore: " + e.getMessage(),e);
   }

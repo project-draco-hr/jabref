@@ -12,9 +12,9 @@
     return;
   }
   StringWriter sw=new StringWriter();
-  BibtexEntry[] bes=panel.getSelectedEntries();
-  BibtexEntryWriter bibtexEntryWriter=new BibtexEntryWriter(new LatexFieldFormatter(),true);
-  for (  BibtexEntry entry : bes) {
+  BibEntry[] bes=panel.getSelectedEntries();
+  BibEntryWriter bibtexEntryWriter=new BibEntryWriter(new LatexFieldFormatter(),true);
+  for (  BibEntry entry : bes) {
     try {
       bibtexEntryWriter.write(entry,sw);
     }
@@ -24,7 +24,7 @@
   }
   ArrayList<String> attachments=new ArrayList<>();
   boolean openFolders=JabRefPreferences.getInstance().getBoolean(JabRefPreferences.OPEN_FOLDERS_OF_ATTACHED_FILES);
-  List<File> fileList=Util.getListOfLinkedFiles(bes,frame.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD));
+  List<File> fileList=FileUtil.getListOfLinkedFiles(Arrays.asList(bes),Arrays.asList(frame.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD)));
   for (  File f : fileList) {
     attachments.add(f.getPath());
     if (openFolders) {

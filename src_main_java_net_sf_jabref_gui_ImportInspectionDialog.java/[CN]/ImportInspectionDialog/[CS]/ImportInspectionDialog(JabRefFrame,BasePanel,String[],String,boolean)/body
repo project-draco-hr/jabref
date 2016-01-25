@@ -1,22 +1,22 @@
 {
   this.frame=frame;
   this.panel=panel;
-  this.metaData=(panel != null) ? panel.metaData() : new MetaData();
-  this.fields=fields;
+  this.metaData=(panel == null) ? new MetaData() : panel.metaData();
+  this.fields=Arrays.copyOf(fields,fields.length);
   this.undoName=undoName;
   this.newDatabase=newDatabase;
   preview=new PreviewPanel(null,metaData,Globals.prefs.get(JabRefPreferences.PREVIEW_0));
   duplLabel.setToolTipText(Localization.lang("Possible duplicate of existing entry. Click to resolve."));
   sortedList=new SortedList<>(entries);
-  DefaultEventTableModel<BibtexEntry> tableModelGl=(DefaultEventTableModel<BibtexEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList,new EntryTableFormat());
+  DefaultEventTableModel<BibEntry> tableModelGl=(DefaultEventTableModel<BibEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList,new EntryTableFormat());
   glTable=new EntryTable(tableModelGl);
   GeneralRenderer renderer=new GeneralRenderer(Color.white);
   glTable.setDefaultRenderer(JLabel.class,renderer);
   glTable.setDefaultRenderer(String.class,renderer);
-  glTable.getInputMap().put(Globals.prefs.getKey(KeyBinds.DELETE_ENTRY),"delete");
+  glTable.getInputMap().put(Globals.getKeyPrefs().getKey(KeyBinding.DELETE_ENTRY),"delete");
   DeleteListener deleteListener=new DeleteListener();
   glTable.getActionMap().put("delete",deleteListener);
-  selectionModel=(DefaultEventSelectionModel<BibtexEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(sortedList);
+  selectionModel=(DefaultEventSelectionModel<BibEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(sortedList);
   glTable.setSelectionModel(selectionModel);
   selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
   comparatorChooser=TableComparatorChooser.install(glTable,sortedList,AbstractTableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
@@ -101,6 +101,6 @@
 ;
   ActionMap am=contentPane.getActionMap();
   InputMap im=contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  im.put(Globals.prefs.getKey(KeyBinds.CLOSE_DIALOG),"close");
+  im.put(Globals.getKeyPrefs().getKey(KeyBinding.CLOSE_DIALOG),"close");
   am.put("close",closeAction);
 }

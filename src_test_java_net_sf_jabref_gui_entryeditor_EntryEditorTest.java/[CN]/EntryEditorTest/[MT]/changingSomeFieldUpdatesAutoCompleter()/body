@@ -1,0 +1,12 @@
+{
+  TestUtils.initJabRef();
+  BibEntry bibEntry=new BibEntry();
+  bibEntry.setField("journal","Testtext");
+  FieldEditor authorTextField=new TextArea("journal","New Testtext");
+  EntryEditor editor=new EntryEditor(JabRef.jrf,JabRef.jrf.getCurrentBasePanel(),bibEntry);
+  editor.storeFieldAction.actionPerformed(new ActionEvent(authorTextField,0,""));
+  AutoCompleter<String> autoCompleter=JabRef.jrf.getCurrentBasePanel().getAutoCompleters().get("journal");
+  List<String> result=autoCompleter.complete("Ne");
+  Assert.assertEquals(Arrays.asList("New Testtext"),result);
+  TestUtils.closeJabRef();
+}

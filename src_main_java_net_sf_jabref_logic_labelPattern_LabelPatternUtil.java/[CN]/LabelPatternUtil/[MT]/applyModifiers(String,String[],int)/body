@@ -9,17 +9,17 @@
         label=label.toUpperCase();
       }
  else       if ("abbr".equals(modifier)) {
-        StringBuilder abbr=new StringBuilder();
+        StringBuilder abbreviateSB=new StringBuilder();
         String[] words=label.replaceAll("[\\{\\}']","").split("[\\(\\) \r\n\"]");
         for (        String word1 : words) {
           if (!word1.isEmpty()) {
-            abbr.append(word1.charAt(0));
+            abbreviateSB.append(word1.charAt(0));
           }
         }
-        label=abbr.toString();
+        label=abbreviateSB.toString();
       }
- else       if (modifier.startsWith("(") && modifier.endsWith(")")) {
-        if ("".equals(label) && (modifier.length() > 2)) {
+ else       if (!modifier.isEmpty() && (modifier.charAt(0) == '(') && modifier.endsWith(")")) {
+        if (label.isEmpty() && (modifier.length() > 2)) {
           return modifier.substring(1,modifier.length() - 1);
         }
       }

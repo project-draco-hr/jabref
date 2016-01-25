@@ -1,0 +1,65 @@
+{
+  int score=-3;
+  DefaultTableCellRenderer renderer=MainTable.defRenderer;
+  int status=getCellStatus(row,column);
+  if (!isFloatSearchActive || matches(row,searchMatcher)) {
+    score++;
+  }
+  if (!isFloatGroupingActive || matches(row,groupMatcher)) {
+    score+=2;
+  }
+  if (score < -1) {
+    if (column == 0) {
+      MainTable.veryGrayedOutNumberRenderer.setNumber(row);
+      renderer=MainTable.veryGrayedOutNumberRenderer;
+    }
+ else {
+      renderer=MainTable.veryGrayedOutRenderer;
+    }
+  }
+ else   if (score == -1) {
+    if (column == 0) {
+      MainTable.grayedOutNumberRenderer.setNumber(row);
+      renderer=MainTable.grayedOutNumberRenderer;
+    }
+ else {
+      renderer=MainTable.grayedOutRenderer;
+    }
+  }
+ else   if (column == 0) {
+    if (isComplete(row)) {
+      MainTable.compRenderer.setNumber(row);
+      int marking=isMarked(row);
+      if (marking > 0) {
+        marking=Math.min(marking,EntryMarker.MARK_COLOR_LEVELS);
+        renderer=MainTable.markedNumberRenderers[marking - 1];
+        MainTable.markedNumberRenderers[marking - 1].setNumber(row);
+      }
+ else {
+        renderer=MainTable.compRenderer;
+      }
+    }
+ else {
+      MainTable.incRenderer.setNumber(row);
+      renderer=MainTable.incRenderer;
+    }
+    renderer.setHorizontalAlignment(JLabel.CENTER);
+  }
+ else   if (tableColorCodes) {
+    if (status == MainTable.REQUIRED) {
+      renderer=MainTable.reqRenderer;
+    }
+ else     if (status == MainTable.OPTIONAL) {
+      renderer=MainTable.optRenderer;
+    }
+ else     if (status == MainTable.BOOLEAN) {
+      renderer=(DefaultTableCellRenderer)getDefaultRenderer(Boolean.class);
+    }
+  }
+  int marking=isMarked(row);
+  if ((column != 0) && (marking > 0)) {
+    marking=Math.min(marking,EntryMarker.MARK_COLOR_LEVELS);
+    renderer=MainTable.markedRenderers[marking - 1];
+  }
+  return renderer;
+}

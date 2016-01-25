@@ -18,7 +18,7 @@
       try {
         UIManager.setLookAndFeel(lookFeel);
       }
- catch (      Exception e) {
+ catch (      ClassNotFoundException|InstantiationException|IllegalAccessException|UnsupportedLookAndFeelException e) {
         UIManager.setLookAndFeel(systemLnF);
         Globals.prefs.put(JabRefPreferences.WIN_LOOK_AND_FEEL,systemLnF);
         JOptionPane.showMessageDialog(JabRef.jrf,Localization.lang("Unable to find the requested Look & Feel and thus the default one is used."),Localization.lang("Warning"),JOptionPane.WARNING_MESSAGE);
@@ -34,8 +34,7 @@
     UIDefaults defaults=UIManager.getDefaults();
     Enumeration<Object> keys=defaults.keys();
     Double zoomLevel=null;
-    while (keys.hasMoreElements()) {
-      Object key=keys.nextElement();
+    for (    Object key : Collections.list(keys)) {
       if ((key instanceof String) && ((String)key).endsWith(".font")) {
         FontUIResource font=(FontUIResource)UIManager.get(key);
         if (zoomLevel == null) {

@@ -2,22 +2,22 @@
   if (selectionModel.getSelected().size() != 1) {
     return;
   }
-  BibtexEntry entry=selectionModel.getSelected().get(0);
+  BibEntry entry=selectionModel.getSelected().get(0);
   entries.getReadWriteLock().writeLock().lock();
-  BibtexDatabase database;
+  BibDatabase database;
   MetaData localMetaData;
-  if (panel != null) {
-    database=panel.database();
-    localMetaData=panel.metaData();
+  if (panel == null) {
+    database=new BibDatabase();
+    localMetaData=new MetaData();
   }
  else {
-    database=new BibtexDatabase();
-    localMetaData=new MetaData();
+    database=panel.database();
+    localMetaData=panel.metaData();
   }
   entry.setId(IdGenerator.next());
   database.insertEntry(entry);
   LabelPatternUtil.makeLabel(localMetaData,database,entry);
-  database.removeEntry(entry.getId());
+  database.removeEntry(entry);
   entries.getReadWriteLock().writeLock().lock();
   glTable.repaint();
 }

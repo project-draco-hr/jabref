@@ -1,0 +1,14 @@
+{
+  for (  FullTextFinder finder : finders) {
+    try {
+      Optional<URL> result=finder.findFullText(entry);
+      if (result.isPresent() && MimeTypeDetector.isPdfContentType(result.get().toString())) {
+        return result;
+      }
+    }
+ catch (    IOException e) {
+      LOGGER.debug("Failed to find fulltext PDF at given URL",e);
+    }
+  }
+  return Optional.empty();
+}

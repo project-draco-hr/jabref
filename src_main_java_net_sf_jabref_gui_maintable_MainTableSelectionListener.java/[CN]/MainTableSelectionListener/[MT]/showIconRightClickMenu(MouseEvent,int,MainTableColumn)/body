@@ -1,0 +1,45 @@
+{
+  BibEntry entry=tableRows.get(row);
+  JPopupMenu menu=new JPopupMenu();
+  boolean showDefaultPopup=true;
+  if (!column.getBibtexFields().isEmpty()) {
+    for (    String field : column.getBibtexFields()) {
+      if (Globals.FILE_FIELD.equals(field)) {
+        String fileFieldContent=entry.getField(field);
+        FileListTableModel fileList=new FileListTableModel();
+        fileList.setContent(fileFieldContent);
+        for (int i=0; i < fileList.getRowCount(); i++) {
+          FileListEntry flEntry=fileList.getEntry(i);
+          if (column.isFileFilter() && !flEntry.type.toString().equals(column.getColumnName())) {
+            continue;
+          }
+          String description=flEntry.description;
+          if ((description == null) || (description.trim().isEmpty())) {
+            description=flEntry.link;
+          }
+          menu.add(new ExternalFileMenuItem(panel.frame(),entry,description,flEntry.link,flEntry.type.getIcon(),panel.metaData(),flEntry.type));
+          showDefaultPopup=false;
+        }
+      }
+ else {
+        SpecialField specialField=SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(column.getColumnName());
+        if (specialField == null) {
+          if (entry.hasField(field)) {
+            String content=entry.getField(field);
+            menu.add(new ExternalFileMenuItem(panel.frame(),entry,content,content,GUIGlobals.getTableIcon(field).getIcon(),panel.metaData(),field));
+            showDefaultPopup=false;
+          }
+        }
+ else {
+          showDefaultPopup=true;
+        }
+      }
+    }
+    if (showDefaultPopup) {
+      processPopupTrigger(e,row);
+    }
+ else {
+      menu.show(table,e.getX(),e.getY());
+    }
+  }
+}

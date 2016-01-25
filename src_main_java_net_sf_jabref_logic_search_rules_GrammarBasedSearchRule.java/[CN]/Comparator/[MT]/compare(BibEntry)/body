@@ -1,0 +1,17 @@
+{
+  Set<String> fieldsKeys=entry.getFieldNames();
+  if (fieldPattern.matcher("entrytype").matches()) {
+    return matchFieldValue(entry.getType().getName());
+  }
+  List<String> matchedFieldKeys=fieldsKeys.stream().filter(matchFieldKey()).collect(Collectors.toList());
+  for (  String field : matchedFieldKeys) {
+    String fieldValue=entry.getField(field);
+    if (fieldValue == null) {
+      continue;
+    }
+    if (matchFieldValue(fieldValue)) {
+      return true;
+    }
+  }
+  return matchedFieldKeys.isEmpty() && (operator == ComparisonOperator.DOES_NOT_CONTAIN);
+}

@@ -2,7 +2,7 @@
   if (stream == null) {
     throw new IOException("No stream given.");
   }
-  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
+  ArrayList<BibEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String str;
@@ -82,11 +82,11 @@
  else       if ("ID".equals(beg) || "KW".equals(beg)) {
         value=value.replaceAll("EOLEOL"," ");
         String existingKeywords=hm.get("keywords");
-        if ((existingKeywords != null) && !existingKeywords.contains(value)) {
-          existingKeywords+=", " + value;
+        if ((existingKeywords == null) || existingKeywords.contains(value)) {
+          existingKeywords=value;
         }
  else {
-          existingKeywords=value;
+          existingKeywords+=", " + value;
         }
         hm.put("keywords",existingKeywords);
       }
@@ -149,7 +149,7 @@
         if ("ER".equals(beg) || "EF".equals(beg) || "VR".equals(beg)|| "FN".equals(beg)) {
           continue;
         }
-        hm.put(beg,value);
+        hm.put(beg.toLowerCase(),value);
       }
     }
     if (!"".equals(pages)) {
@@ -158,8 +158,8 @@
     if (hm.isEmpty()) {
       continue;
     }
-    BibtexEntry b=new BibtexEntry(DEFAULT_BIBTEXENTRY_ID,EntryTypes.getBibtexEntryType(Type));
-    ArrayList<Object> toRemove=new ArrayList<>();
+    BibEntry b=new BibEntry(DEFAULT_BIBTEXENTRY_ID,EntryTypes.getTypeOrDefault(Type));
+    List<Object> toRemove=new ArrayList<>();
     for (    Map.Entry<String,String> field : hm.entrySet()) {
       String content=field.getValue();
       if ((content == null) || content.trim().isEmpty()) {

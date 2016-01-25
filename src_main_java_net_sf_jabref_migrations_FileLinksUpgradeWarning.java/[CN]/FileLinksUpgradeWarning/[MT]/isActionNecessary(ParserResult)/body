@@ -1,17 +1,6 @@
 {
-  if (!Globals.prefs.getBoolean(JabRefPreferences.SHOW_FILE_LINKS_UPGRADE_WARNING)) {
-    return false;
-  }
-  if (pr.getJabrefMajorVersion() <= 0) {
-    return false;
-  }
- else   if (pr.getJabrefMajorVersion() < 2) {
-    return true;
-  }
- else   if (pr.getJabrefMajorVersion() == 2) {
-    return pr.getJabrefMinorVersion() <= 2;
-  }
- else {
-    return true;
-  }
+  offerChangeSettings=!Globals.prefs.getBoolean(JabRefPreferences.FILE_COLUMN) || !showsFileInGenFields();
+  offerChangeDatabase=linksFound(pr.getDatabase(),FileLinksUpgradeWarning.FIELDS_TO_LOOK_FOR);
+  offerSetFileDir=!Globals.prefs.hasKey(Globals.FILE_FIELD + Globals.DIR_SUFFIX) && (Globals.prefs.hasKey("pdfDirectory") || Globals.prefs.hasKey("psDirectory"));
+  return Globals.prefs.getBoolean(JabRefPreferences.SHOW_FILE_LINKS_UPGRADE_WARNING) && isThereSomethingToBeDone();
 }

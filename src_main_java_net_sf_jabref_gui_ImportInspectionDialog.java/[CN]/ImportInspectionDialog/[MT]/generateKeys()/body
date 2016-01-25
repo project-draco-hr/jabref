@@ -1,24 +1,24 @@
 {
   entries.getReadWriteLock().writeLock().lock();
-  BibtexDatabase database;
+  BibDatabase database;
   MetaData localMetaData;
-  if (panel != null) {
+  if (panel == null) {
+    database=new BibDatabase();
+    localMetaData=new MetaData();
+  }
+ else {
     database=panel.database();
     localMetaData=panel.metaData();
   }
- else {
-    database=new BibtexDatabase();
-    localMetaData=new MetaData();
-  }
   List<String> keys=new ArrayList<>(entries.size());
-  for (  BibtexEntry entry : entries) {
+  for (  BibEntry entry : entries) {
     entry.setId(IdGenerator.next());
     database.insertEntry(entry);
     LabelPatternUtil.makeLabel(localMetaData,database,entry);
     keys.add(entry.getCiteKey());
   }
-  for (  BibtexEntry entry : entries) {
-    database.removeEntry(entry.getId());
+  for (  BibEntry entry : entries) {
+    database.removeEntry(entry);
   }
   entries.getReadWriteLock().writeLock().lock();
   glTable.repaint();

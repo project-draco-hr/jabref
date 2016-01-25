@@ -1,0 +1,22 @@
+{
+  Objects.requireNonNull(entry);
+  Optional<URL> pdfLink=Optional.empty();
+  Optional<DOI> doi=DOI.build(entry.getField("doi"));
+  if (doi.isPresent()) {
+    try {
+      String sciLink=getUrlByDoi(doi.get().getDOI());
+      if (!sciLink.isEmpty()) {
+        Document html=Jsoup.connect(sciLink).ignoreHttpErrors(true).get();
+        Element link=html.getElementById("pdfLink");
+        if (link != null) {
+          LOGGER.info("Fulltext PDF found @ ScienceDirect.");
+          pdfLink=Optional.of(new URL(link.attr("pdfurl")));
+        }
+      }
+    }
+ catch (    UnirestException e) {
+      LOGGER.warn("ScienceDirect API request failed",e);
+    }
+  }
+  return pdfLink;
+}

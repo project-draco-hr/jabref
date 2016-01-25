@@ -18,12 +18,10 @@
         @Override public void run(){
           for (          File file : theFiles) {
             String name=file.getAbsolutePath();
-            String extension;
+            Optional<String> extension=FileUtil.getFileExtension(name);
             ExternalFileType fileType=null;
-            int index=name.lastIndexOf('.');
-            if ((index >= 0) && (index < name.length())) {
-              extension=name.substring(index + 1).toLowerCase();
-              fileType=Globals.prefs.getExternalFileTypeByExt(extension);
+            if (extension.isPresent()) {
+              fileType=ExternalFileTypes.getInstance().getExternalFileTypeByExt(extension.get());
             }
             if (fileType != null) {
               if (droppedFileHandler == null) {
@@ -47,7 +45,7 @@ catch (  UnsupportedFlavorException ufe) {
   StringBuilder logMessage=new StringBuilder("Cannot transfer input:");
   DataFlavor[] inflavs=t.getTransferDataFlavors();
   for (  DataFlavor inflav : inflavs) {
-    logMessage.append(" " + inflav);
+    logMessage.append(" ").append(inflav);
   }
   LOGGER.warn(logMessage.toString());
   return false;

@@ -1,12 +1,12 @@
 {
   int i=0;
-  String[] s;
-  while ((s=prefs.getStringArray("customImportFormat" + i)) != null) {
+  List<String> s;
+  while (!((s=prefs.getStringList(JabRefPreferences.CUSTOM_IMPORT_FORMAT + i)).isEmpty())) {
     try {
-      super.add(new Importer(s));
+      super.add(new CustomImporter(s));
     }
  catch (    Exception e) {
-      System.err.println("Warning! Could not load " + s[0] + " from preferences. Will ignore.");
+      LOGGER.warn("Could not load " + s.get(0) + " from preferences. Will ignore.",e);
     }
     i++;
   }

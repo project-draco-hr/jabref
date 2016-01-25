@@ -1,0 +1,42 @@
+{
+  super();
+  addFocusListener(Globals.focusListener);
+  setAutoResizeMode(Globals.prefs.getInt(JabRefPreferences.AUTO_RESIZE_MODE));
+  this.tableFormat=tableFormat;
+  this.panel=panel;
+  sortedForTable=new SortedList<>(list,null);
+  sortedForMarking=new SortedList<>(sortedForTable,null);
+  sortedForSearch=new SortedList<>(sortedForMarking,null);
+  sortedForGrouping=new SortedList<>(sortedForSearch,null);
+  searchMatcher=null;
+  groupMatcher=null;
+  searchComparator=null;
+  groupComparator=null;
+  DefaultEventTableModel<BibEntry> tableModel=(DefaultEventTableModel<BibEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedForGrouping,tableFormat);
+  setModel(tableModel);
+  tableColorCodes=Globals.prefs.getBoolean(JabRefPreferences.TABLE_COLOR_CODES_ON);
+  localSelectionModel=(DefaultEventSelectionModel<BibEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(sortedForGrouping);
+  setSelectionModel(localSelectionModel);
+  pane=new JScrollPane(this);
+  pane.setBorder(BorderFactory.createEmptyBorder());
+  pane.getViewport().setBackground(Globals.prefs.getColor(JabRefPreferences.TABLE_BACKGROUND));
+  setGridColor(Globals.prefs.getColor(JabRefPreferences.GRID_COLOR));
+  if (Globals.prefs.getBoolean(JabRefPreferences.TABLE_SHOW_GRID)) {
+    setShowGrid(true);
+  }
+ else {
+    setShowGrid(false);
+    setIntercellSpacing(new Dimension(0,0));
+  }
+  this.setTableHeader(new PreventDraggingJTableHeader(this,tableFormat));
+  comparatorChooser=this.createTableComparatorChooser(this,sortedForTable,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  this.tableColumnListener=new PersistenceTableColumnListener(this);
+  getSelected();
+  setDragEnabled(true);
+  TransferHandler xfer=new EntryTableTransferHandler(this,frame,panel);
+  setTransferHandler(xfer);
+  pane.setTransferHandler(xfer);
+  setupComparatorChooser();
+  refreshSorting();
+  setWidths();
+}

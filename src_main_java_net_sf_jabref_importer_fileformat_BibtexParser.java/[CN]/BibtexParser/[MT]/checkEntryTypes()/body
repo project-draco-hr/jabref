@@ -1,0 +1,14 @@
+{
+  for (  BibEntry bibEntry : database.getEntries()) {
+    if (bibEntry.getType() instanceof UnknownEntryType) {
+      String name=bibEntry.getType().getName();
+      EntryType type=entryTypes.get(name);
+      if (type == null) {
+        parserResult.addWarning(Localization.lang("Unknown entry type") + ": " + name+ "; key: "+ bibEntry.getCiteKey());
+      }
+ else {
+        bibEntry.setType(type);
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   String[] singleFieldStrings={"issn","volume","abstract","doi","title","number","publisher"};
-  BibtexEntry entry=new BibtexEntry();
+  BibEntry entry=new BibEntry();
   String nametype;
   String isbn=springerJsonEntry.optString("isbn");
   if (com.google.common.base.Strings.isNullOrEmpty(isbn)) {
@@ -36,8 +36,8 @@
       }
     }
   }
-  if (springerJsonEntry.has("startingPage") && (springerJsonEntry.getString("startingPage").length() > 0)) {
-    if (springerJsonEntry.has("endPage") && (springerJsonEntry.getString("endPage").length() > 0)) {
+  if (springerJsonEntry.has("startingPage") && !(springerJsonEntry.getString("startingPage").isEmpty())) {
+    if (springerJsonEntry.has("endPage") && !(springerJsonEntry.getString("endPage").isEmpty())) {
       entry.setField("pages",springerJsonEntry.getString("startingPage") + "--" + springerJsonEntry.getString("endPage"));
     }
  else {
@@ -49,11 +49,11 @@
   }
   if (springerJsonEntry.has("url")) {
     JSONArray urlarray=springerJsonEntry.optJSONArray("url");
-    if (urlarray != null) {
-      entry.setField("url",urlarray.getJSONObject(0).optString("value"));
+    if (urlarray == null) {
+      entry.setField("url",springerJsonEntry.optString("url"));
     }
  else {
-      entry.setField("url",springerJsonEntry.optString("url"));
+      entry.setField("url",urlarray.getJSONObject(0).optString("value"));
     }
   }
   if (springerJsonEntry.has("publicationDate")) {

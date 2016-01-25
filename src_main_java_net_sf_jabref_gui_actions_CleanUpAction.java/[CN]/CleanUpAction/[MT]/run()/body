@@ -33,17 +33,11 @@
       return;
     }
   }
-  if (choiceCleanUpUpgradeExternalLinks) {
-    NamedCompound ce=Util.upgradePdfPsToFile(Arrays.asList(panel.getSelectedEntries()),new String[]{"pdf","ps"});
-    if (ce.hasEdits()) {
-      panel.undoManager.addEdit(ce);
-      panel.markBaseChanged();
-      panel.updateEntryEditorIfShowing();
-      panel.output(Localization.lang("Upgraded links."));
-    }
-  }
-  for (  BibtexEntry entry : panel.getSelectedEntries()) {
+  for (  BibEntry entry : panel.getSelectedEntries()) {
     NamedCompound ce=new NamedCompound(Localization.lang("Cleanup entry"));
+    if (choiceCleanUpUpgradeExternalLinks) {
+      doUpgradePdfPsToFile(entry,ce);
+    }
     if (choiceCleanUpSuperscripts) {
       doCleanUpSuperscripts(entry,ce);
     }
@@ -82,7 +76,7 @@
       doConvertUnicode(entry,ce);
     }
     if (choiceConvertToBiblatex) {
-      convertToBiblatex(entry,ce);
+      doConvertToBiblatex(entry,ce);
     }
     ce.end();
     if (ce.hasEdits()) {

@@ -13,15 +13,15 @@
   String format=(String)o1;
   Integer name=(Integer)o2;
   String names=(String)o3;
-  if (names != null) {
+  if (names == null) {
+    stack.push("");
+  }
+ else {
     AuthorList a=AuthorList.getAuthorList(names);
     if (name > a.size()) {
       throw new VMException("Author Out of Bounds. Number " + name + " invalid for "+ names);
     }
     Author author=a.getAuthor(name - 1);
     stack.push(BibtexNameFormatter.formatName(author,format,vm));
-  }
- else {
-    stack.push("");
   }
 }

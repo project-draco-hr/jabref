@@ -1,5 +1,5 @@
 {
-  final ArrayList<BibtexEntry> res=new ArrayList<>(1);
+  final ArrayList<BibEntry> res=new ArrayList<>(1);
   try (PDDocument document=PDDocument.load(in)){
     if (document.isEncrypted()) {
       LOGGER.error("Encrypted documents are not supported");
@@ -19,7 +19,7 @@
         }
         @Override public void setProgress(        int current,        int max){
         }
-        @Override public void addEntry(        BibtexEntry entry){
+        @Override public void addEntry(        BibEntry entry){
           res.add(entry);
         }
       }
@@ -31,6 +31,14 @@
  else {
       }
     }
+    final String lineBreak=System.lineSeparator();
+    split=textResult.split(lineBreak);
+    proceedToNextNonEmptyLine();
+    if (i >= split.length) {
+      return res;
+    }
+    curString=split[i];
+    i=i + 1;
     String author;
     String editor=null;
     String institution=null;
@@ -45,14 +53,6 @@
     String pages=null;
     String publisher=null;
     EntryType type=BibtexEntryTypes.INPROCEEDINGS;
-    final String lineBreak=System.lineSeparator();
-    split=textResult.split(lineBreak);
-    proceedToNextNonEmptyLine();
-    if (i >= split.length) {
-      return res;
-    }
-    curString=split[i];
-    i=i + 1;
     if (curString.length() > 4) {
       extractYear();
       if (curString.contains("Conference")) {
@@ -191,7 +191,7 @@
         }
       }
     }
-    BibtexEntry entry=new BibtexEntry();
+    BibEntry entry=new BibEntry();
     entry.setType(type);
     if (author != null) {
       entry.setField("author",author);

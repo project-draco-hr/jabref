@@ -1,0 +1,31 @@
+{
+  fieldAndFormat=StringUtil.stripBrackets(fieldAndFormat);
+  int colon=fieldAndFormat.indexOf(':');
+  String beforeColon;
+  String afterColon;
+  if (colon == -1) {
+    beforeColon=fieldAndFormat;
+    afterColon=null;
+  }
+ else {
+    beforeColon=fieldAndFormat.substring(0,colon);
+    afterColon=fieldAndFormat.substring(colon + 1);
+  }
+  beforeColon=beforeColon.trim();
+  if (beforeColon.isEmpty()) {
+    return null;
+  }
+  String fieldValue=BibDatabase.getResolvedField(beforeColon,entry,database);
+  if (fieldValue == null) {
+    fieldValue=LabelPatternUtil.makeLabel(entry,beforeColon);
+  }
+  if (fieldValue == null) {
+    return null;
+  }
+  if ((afterColon == null) || afterColon.isEmpty()) {
+    return fieldValue;
+  }
+  String[] parts=afterColon.split(":");
+  fieldValue=LabelPatternUtil.applyModifiers(fieldValue,parts,0);
+  return fieldValue;
+}

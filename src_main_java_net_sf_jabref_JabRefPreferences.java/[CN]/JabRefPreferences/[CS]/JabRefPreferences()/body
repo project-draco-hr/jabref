@@ -42,7 +42,7 @@
   defaults.put(PROXY_PASSWORD,"");
   defaults.put(PDF_PREVIEW,Boolean.FALSE);
   defaults.put(USE_DEFAULT_LOOK_AND_FEEL,Boolean.TRUE);
-  defaults.put(LYXPIPE,System.getProperty("user.home") + File.separator + ".lyx/lyxpipe");
+  defaults.put(LYXPIPE,USER_HOME + File.separator + ".lyx/lyxpipe");
   defaults.put(VIM,"vim");
   defaults.put(VIM_SERVER,"vim");
   defaults.put(POS_X,0);
@@ -85,22 +85,23 @@
   defaults.put(NEWLINE,System.lineSeparator());
   defaults.put(SIDE_PANE_COMPONENT_NAMES,"");
   defaults.put(SIDE_PANE_COMPONENT_PREFERRED_POSITIONS,"");
-  defaults.put(COLUMN_NAMES,"entrytype;author;title;year;journal;bibtexkey");
+  defaults.put(COLUMN_NAMES,"entrytype;author/editor;title;year;journal/booktitle;bibtexkey");
   defaults.put(COLUMN_WIDTHS,"75;300;470;60;130;100");
   defaults.put(PersistenceTableColumnListener.ACTIVATE_PREF_KEY,PersistenceTableColumnListener.DEFAULT_ENABLED);
   defaults.put(XMP_PRIVACY_FILTERS,"pdf;timestamp;keywords;owner;note;review");
   defaults.put(USE_XMP_PRIVACY_FILTER,Boolean.FALSE);
   defaults.put(NUMBER_COL_WIDTH,GUIGlobals.NUMBER_COL_LENGTH);
-  defaults.put(WORKING_DIRECTORY,System.getProperty("user.home"));
-  defaults.put(EXPORT_WORKING_DIRECTORY,System.getProperty("user.home"));
-  defaults.put(IMPORT_WORKING_DIRECTORY,System.getProperty("user.home"));
-  defaults.put(FILE_WORKING_DIRECTORY,System.getProperty("user.home"));
+  defaults.put(WORKING_DIRECTORY,USER_HOME);
+  defaults.put(EXPORT_WORKING_DIRECTORY,USER_HOME);
+  defaults.put(IMPORT_WORKING_DIRECTORY,USER_HOME);
+  defaults.put(FILE_WORKING_DIRECTORY,USER_HOME);
   defaults.put(AUTO_OPEN_FORM,Boolean.TRUE);
   defaults.put(ENTRY_TYPE_FORM_HEIGHT_FACTOR,1);
   defaults.put(ENTRY_TYPE_FORM_WIDTH,1);
   defaults.put(BACKUP,Boolean.TRUE);
   defaults.put(OPEN_LAST_EDITED,Boolean.TRUE);
   defaults.put(LAST_EDITED,null);
+  defaults.put(LAST_FOCUSED,null);
   defaults.put(STRINGS_POS_X,0);
   defaults.put(STRINGS_POS_Y,0);
   defaults.put(STRINGS_SIZE_X,600);
@@ -124,11 +125,7 @@
   defaults.put(EDITOR_EMACS_KEYBINDINGS_REBIND_CA,Boolean.TRUE);
   defaults.put(EDITOR_EMACS_KEYBINDINGS_REBIND_CF,Boolean.TRUE);
   defaults.put(AUTO_COMPLETE,Boolean.TRUE);
-  defaults.put(AUTO_COMPLETE_FIELDS,"author;editor;title;journal;publisher;keywords;crossref");
-  defaults.put(AUTO_COMP_FIRST_LAST,Boolean.FALSE);
-  defaults.put(AUTO_COMP_LAST_FIRST,Boolean.FALSE);
-  defaults.put(SHORTEST_TO_COMPLETE,1);
-  defaults.put(AUTOCOMPLETE_FIRSTNAME_MODE,JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_BOTH);
+  AutoCompletePreferences.putDefaults(defaults);
   defaults.put(GROUP_FLOAT_SELECTIONS,Boolean.TRUE);
   defaults.put(GROUP_INTERSECT_SELECTIONS,Boolean.TRUE);
   defaults.put(GROUP_INVERT_SELECTIONS,Boolean.FALSE);
@@ -181,7 +178,6 @@
   defaults.put(INCOMPLETE_ENTRY_BACKGROUND,"250:175:175");
   defaults.put(CTRL_CLICK,Boolean.FALSE);
   defaults.put(DISABLE_ON_MULTIPLE_SELECTION,Boolean.FALSE);
-  defaults.put(PDF_COLUMN,Boolean.FALSE);
   defaults.put(URL_COLUMN,Boolean.TRUE);
   defaults.put(PREFER_URL_DOI,Boolean.FALSE);
   defaults.put(FILE_COLUMN,Boolean.TRUE);
@@ -197,7 +193,6 @@
   defaults.put(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ,SpecialFieldsUtils.PREF_SHOWCOLUMN_READ_DEFAULT);
   defaults.put(SpecialFieldsUtils.PREF_AUTOSYNCSPECIALFIELDSTOKEYWORDS,SpecialFieldsUtils.PREF_AUTOSYNCSPECIALFIELDSTOKEYWORDS_DEFAULT);
   defaults.put(SpecialFieldsUtils.PREF_SERIALIZESPECIALFIELDS,SpecialFieldsUtils.PREF_SERIALIZESPECIALFIELDS_DEFAULT);
-  defaults.put(SHOW_ONE_LETTER_HEADING_FOR_ICON_COLUMNS,Boolean.FALSE);
   defaults.put(USE_OWNER,Boolean.FALSE);
   defaults.put(OVERWRITE_OWNER,Boolean.FALSE);
   defaults.put(ALLOW_TABLE_EDITING,Boolean.FALSE);
@@ -230,11 +225,6 @@
   defaults.put(TIME_STAMP_FIELD,BibtexFields.TIMESTAMP);
   defaults.put(UPDATE_TIMESTAMP,Boolean.FALSE);
   defaults.put(GENERATE_KEYS_BEFORE_SAVING,Boolean.FALSE);
-  defaults.put(WRITEFIELD_ADDSPACES,Boolean.TRUE);
-  defaults.put(WRITEFIELD_CAMELCASENAME,Boolean.TRUE);
-  defaults.put(WRITEFIELD_SORTSTYLE,0);
-  defaults.put(WRITEFIELD_USERDEFINEDORDER,"author;title;journal;year;volume;number;pages;month;note;volume;pages;part;eid");
-  defaults.put(WRITEFIELD_WRAPFIELD,Boolean.FALSE);
   defaults.put(RemotePreferences.USE_REMOTE_SERVER,Boolean.TRUE);
   defaults.put(RemotePreferences.REMOTE_SERVER_PORT,6050);
   defaults.put(PERSONAL_JOURNAL_LIST,null);
@@ -258,10 +248,9 @@
   defaults.put(ENFORCE_LEGAL_BIBTEX_KEY,Boolean.TRUE);
   defaults.put(BIBLATEX_MODE,Boolean.FALSE);
   defaults.put(VALUE_DELIMITERS2,1);
-  defaults.put(INCLUDE_EMPTY_FIELDS,Boolean.FALSE);
   defaults.put(KEY_GEN_FIRST_LETTER_A,Boolean.TRUE);
   defaults.put(KEY_GEN_ALWAYS_ADD_LETTER,Boolean.FALSE);
-  defaults.put(EMAIL_SUBJECT,Localization.lang("References"));
+  defaults.put(EMAIL_SUBJECT,"References");
   defaults.put(OPEN_FOLDERS_OF_ATTACHED_FILES,Boolean.FALSE);
   defaults.put(ALLOW_FILE_AUTO_OPEN_BROWSE,Boolean.TRUE);
   defaults.put(WEB_SEARCH_VISIBLE,Boolean.FALSE);
@@ -281,7 +270,6 @@
   defaults.put(ImportSettingsTab.PREF_IMPORT_ALWAYSUSE,Boolean.FALSE);
   defaults.put(ImportSettingsTab.PREF_IMPORT_DEFAULT_PDF_IMPORT_STYLE,ImportSettingsTab.DEFAULT_STYLE);
   defaults.put(ImportSettingsTab.PREF_IMPORT_FILENAMEPATTERN,ImportSettingsTab.DEFAULT_FILENAMEPATTERNS[1]);
-  restoreKeyBindings();
   customExports=new CustomExportList(new ExportComparator());
   customImports=new CustomImportList(this);
   updateSpecialFieldHandling();
@@ -295,14 +283,14 @@
   defaults.put(USE_CONVERT_TO_EQUATION,Boolean.FALSE);
   defaults.put(USE_CASE_KEEPER_ON_SEARCH,Boolean.TRUE);
   defaults.put(USE_UNIT_FORMATTER_ON_SEARCH,Boolean.TRUE);
-  defaults.put(USER_FILE_DIR,Globals.FILE_FIELD + "Directory");
+  defaults.put(USER_FILE_DIR,Globals.FILE_FIELD + Globals.DIR_SUFFIX);
   try {
-    defaults.put(USER_FILE_DIR_IND_LEGACY,Globals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER)+ '@'+ InetAddress.getLocalHost().getHostName());
-    defaults.put(USER_FILE_DIR_INDIVIDUAL,Globals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER)+ '-'+ InetAddress.getLocalHost().getHostName());
+    defaults.put(USER_FILE_DIR_IND_LEGACY,Globals.FILE_FIELD + Globals.DIR_SUFFIX + '-'+ get(DEFAULT_OWNER)+ '@'+ InetAddress.getLocalHost().getHostName());
+    defaults.put(USER_FILE_DIR_INDIVIDUAL,Globals.FILE_FIELD + Globals.DIR_SUFFIX + '-'+ get(DEFAULT_OWNER)+ '-'+ InetAddress.getLocalHost().getHostName());
   }
  catch (  UnknownHostException ex) {
     LOGGER.info("Hostname not found.",ex);
-    defaults.put(USER_FILE_DIR_IND_LEGACY,Globals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER));
-    defaults.put(USER_FILE_DIR_INDIVIDUAL,Globals.FILE_FIELD + "Directory" + '-'+ get(DEFAULT_OWNER));
+    defaults.put(USER_FILE_DIR_IND_LEGACY,Globals.FILE_FIELD + Globals.DIR_SUFFIX + '-'+ get(DEFAULT_OWNER));
+    defaults.put(USER_FILE_DIR_INDIVIDUAL,Globals.FILE_FIELD + Globals.DIR_SUFFIX + '-'+ get(DEFAULT_OWNER));
   }
 }

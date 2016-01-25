@@ -11,9 +11,9 @@
     try {
       panel.frame().output(Localization.lang("Establishing SQL connection..."));
       DBExporter exporter=(new DBExporterAndImporterFactory()).getExporter(dbs.getServerType());
-      Connection conn=exporter.connectToDB(dbs);
-      conn.close();
-      dbs.isConfigValid(true);
+      try (Connection conn=exporter.connectToDB(dbs)){
+      }
+       dbs.isConfigValid(true);
       panel.frame().output(Localization.lang("SQL connection established."));
     }
  catch (    Exception ex) {

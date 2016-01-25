@@ -1,5 +1,5 @@
 {
-  if (Authors.authorOrder.contains(key.trim().toLowerCase())) {
+  if (Authors.AUTHOR_ORDER.contains(key.trim().toLowerCase())) {
     if (comp(key,"FirstFirst")) {
       flMode=Authors.FIRST_FIRST;
     }
@@ -10,7 +10,7 @@
       flMode=Authors.LF_FF;
     }
   }
- else   if (Authors.authorAbbr.contains(key.trim().toLowerCase())) {
+ else   if (Authors.AUTHOR_ABRV.contains(key.trim().toLowerCase())) {
     if (comp(key,"FullName")) {
       abbreviate=false;
     }
@@ -34,7 +34,7 @@
       abbrSpaces=false;
     }
   }
- else   if (Authors.authorPunc.contains(key.trim().toLowerCase())) {
+ else   if (Authors.AUTHOR_PUNC.contains(key.trim().toLowerCase())) {
     if (comp(key,"FullPunc")) {
       abbrDots=true;
       lastFirstSeparator=", ";
@@ -52,41 +52,41 @@
       lastFirstSeparator=", ";
     }
   }
- else   if (Authors.separators.contains(key.trim().toLowerCase()) || Authors.lastSeparators.contains(key.trim().toLowerCase())) {
+ else   if (Authors.SEPARATORS.contains(key.trim().toLowerCase()) || Authors.LAST_SEPARATORS.contains(key.trim().toLowerCase())) {
     if (comp(key,"Comma")) {
-      if (!setSep) {
+      if (setSep) {
+        lastSeparator=Authors.COMMA;
+      }
+ else {
         separator=Authors.COMMA;
         setSep=true;
       }
- else {
-        lastSeparator=Authors.COMMA;
-      }
     }
  else     if (comp(key,"And")) {
-      if (!setSep) {
+      if (setSep) {
+        lastSeparator=Authors.AND;
+      }
+ else {
         separator=Authors.AND;
         setSep=true;
       }
- else {
-        lastSeparator=Authors.AND;
-      }
     }
  else     if (comp(key,"Colon")) {
-      if (!setSep) {
+      if (setSep) {
+        lastSeparator=Authors.COLON;
+      }
+ else {
         separator=Authors.COLON;
         setSep=true;
       }
- else {
-        lastSeparator=Authors.COLON;
-      }
     }
  else     if (comp(key,"Semicolon")) {
-      if (!setSep) {
-        separator=Authors.SEMICOLON;
-        setSep=true;
+      if (setSep) {
+        lastSeparator=Authors.SEMICOLON;
       }
  else {
-        lastSeparator=Authors.SEMICOLON;
+        separator=Authors.SEMICOLON;
+        setSep=true;
       }
     }
  else     if (comp(key,"Oxford")) {
@@ -106,14 +106,14 @@
  else   if ("etal".equals(key.trim().toLowerCase()) && !value.isEmpty()) {
     etAlString=value;
   }
- else   if (Authors.numberPattern.matcher(key.trim()).matches()) {
+ else   if (Authors.NUMBER_PATTERN.matcher(key.trim()).matches()) {
     int num=Integer.parseInt(key.trim());
-    if (!setMaxAuthors) {
-      maxAuthors=num;
-      setMaxAuthors=true;
+    if (setMaxAuthors) {
+      authorNumberEtAl=num;
     }
  else {
-      authorNumberEtAl=num;
+      maxAuthors=num;
+      setMaxAuthors=true;
     }
   }
 }

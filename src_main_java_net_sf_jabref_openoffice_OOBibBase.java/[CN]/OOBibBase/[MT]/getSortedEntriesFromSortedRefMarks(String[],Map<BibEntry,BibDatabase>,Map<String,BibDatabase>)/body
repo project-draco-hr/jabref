@@ -1,0 +1,33 @@
+{
+  Map<BibEntry,BibDatabase> newList=new LinkedHashMap<>();
+  Map<BibEntry,BibEntry> adaptedEntries=new HashMap<>();
+  for (  String name : names) {
+    Matcher m=citePattern.matcher(name);
+    if (m.find()) {
+      String[] keys=m.group(2).split(",");
+      for (      String key : keys) {
+        BibDatabase database=linkSourceBase.get(key);
+        BibEntry origEntry=null;
+        if (database != null) {
+          origEntry=database.getEntryByKey(key);
+        }
+        if (origEntry == null) {
+          LOGGER.info("Bibtex key not found : '" + key + "'");
+          LOGGER.info("Problem with reference mark: '" + name + "'");
+          newList.put(new UndefinedBibtexEntry(key),null);
+        }
+ else {
+          BibEntry entry=adaptedEntries.get(origEntry);
+          if (entry == null) {
+            entry=OOUtil.createAdaptedEntry(origEntry);
+            adaptedEntries.put(origEntry,entry);
+          }
+          if (!newList.containsKey(entry)) {
+            newList.put(entry,database);
+          }
+        }
+      }
+    }
+  }
+  return newList;
+}

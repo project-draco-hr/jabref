@@ -6,7 +6,7 @@ class ImportAction extends MnemonicAwareAction {
       this.frame=frame;
       this.openInNew=openInNew;
       putValue(Action.NAME,openInNew ? Localization.menuTitle("Import into new database") : Localization.menuTitle("Import into current database"));
-      putValue(Action.ACCELERATOR_KEY,openInNew ? Globals.prefs.getKey(KeyBinds.IMPORT_INTO_NEW_DATABASE) : Globals.prefs.getKey(KeyBinds.IMPORT_INTO_CURRENT_DATABASE));
+      putValue(Action.ACCELERATOR_KEY,openInNew ? Globals.getKeyPrefs().getKey(KeyBinding.IMPORT_INTO_NEW_DATABASE) : Globals.getKeyPrefs().getKey(KeyBinding.IMPORT_INTO_CURRENT_DATABASE));
     }
     @Override public void actionPerformed(    ActionEvent e){
       JFileChooser fc=ImportFormats.createImportFileChooser(Globals.prefs.get(JabRefPreferences.WORKING_DIRECTORY));
@@ -27,16 +27,16 @@ class ImportAction extends MnemonicAwareAction {
         }
         ImportMenuItem imi=new ImportMenuItem(frame,openInNew,format);
         imi.automatedImport(new String[]{file.getAbsolutePath()});
-        if (format != null) {
-          Globals.prefs.put("lastUsedImport",format.getFormatName());
+        if (format == null) {
+          Globals.prefs.put(JabRefPreferences.LAST_USED_IMPORT,"__all");
         }
  else {
-          Globals.prefs.put("lastUsedImport","__all");
+          Globals.prefs.put(JabRefPreferences.LAST_USED_IMPORT,format.getFormatName());
         }
         Globals.prefs.put(JabRefPreferences.IMPORT_WORKING_DIRECTORY,file.getParent());
       }
  catch (      Exception ex) {
-        ex.printStackTrace();
+        LOGGER.warn("Problem with import format",ex);
       }
     }
   }

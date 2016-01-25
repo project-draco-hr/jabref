@@ -1,0 +1,56 @@
+{
+  if ((this.lastLine != null) && "".equals(this.lastLine.trim())) {
+    readLine();
+  }
+  while ((this.lastLine != null) && !isStartOfWorkingPaper() && (startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS) || "".equals(this.lastLine))) {
+    String keyword="".equals(this.lastLine) ? "" : this.lastLine.substring(0,this.lastLine.indexOf(':')).trim();
+    this.lastLine="".equals(this.lastLine) ? "" : this.lastLine.substring(this.lastLine.indexOf(':') + 1,this.lastLine.length()).trim();
+    if ("Keywords".equals(keyword)) {
+      String content=readMultipleLines();
+      String[] keywords=content.split("[,;]");
+      be.addKeywords(Arrays.asList(keywords));
+    }
+ else     if ("JEL".equals(keyword)) {
+      be.setField("jel",readMultipleLines());
+    }
+ else     if (keyword.startsWith("Date")) {
+      Date date=null;
+      String content=readMultipleLines();
+      String[] recognizedDateFormats=new String[]{"yyyy-MM-dd","yyyy-MM","yyyy"};
+      int i=0;
+      for (; (i < recognizedDateFormats.length) && (date == null); i++) {
+        try {
+          date=new SimpleDateFormat(recognizedDateFormats[i]).parse(content);
+        }
+ catch (        ParseException e) {
+        }
+      }
+      Calendar cal=new GregorianCalendar();
+      cal.setTime(date == null ? new Date() : date);
+      be.setField("year",String.valueOf(cal.get(Calendar.YEAR)));
+      if ((date != null) && recognizedDateFormats[i - 1].contains("MM")) {
+        be.setField("month",String.valueOf(cal.get(Calendar.MONTH) + 1));
+      }
+      if ((date != null) && recognizedDateFormats[i - 1].contains("dd")) {
+        be.setField("day",String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
+      }
+    }
+ else     if (keyword.startsWith("URL")) {
+      String content;
+      if (multilineUrlFieldAllowed) {
+        content=readMultipleLines();
+      }
+ else {
+        content=this.lastLine;
+        readLine();
+      }
+      be.setField("url",content);
+    }
+ else     if (keyword.startsWith("By")) {
+      parseAuthors(be);
+    }
+ else {
+      readLine();
+    }
+  }
+}

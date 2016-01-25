@@ -1,0 +1,33 @@
+def find_duplicate_keys_and_keys_with_no_value(current_file, display_keys):
+    lines = read_all_lines(current_file)
+    mappings = {}
+    duplication_count = 0
+    empty_values_count = 0
+    for line in lines:
+        is_no_comment = (line.find('#') != 0)
+        index = line.find('=')
+        contains_property = (index > 0)
+        if (is_no_comment and contains_property):
+            key = line[0:index]
+            value = line[(index + 1):].strip()
+            if (key in mappings):
+                mappings[key].append(value)
+                duplication_count += 1
+                if display_keys:
+                    print (((('Duplicate: ' + current_file) + ': ') + key) + ' ='),
+                    print mappings[key]
+            else:
+                mappings[key] = [value]
+                if (value == ''):
+                    empty_values_count += 1
+                    if display_keys:
+                        print ((('Empty value: ' + current_file) + ': ') + key)
+    issues_count = (duplication_count + empty_values_count)
+    message = ''
+    if (issues_count == 0):
+        message = 'ok'
+    elif (duplication_count > 0):
+        message += (str(duplication_count) + ' duplicates. ')
+    elif (empty_values_count > 0):
+        message += (str(empty_values_count) + ' empty values. ')
+    print ((current_file + ': ') + message)

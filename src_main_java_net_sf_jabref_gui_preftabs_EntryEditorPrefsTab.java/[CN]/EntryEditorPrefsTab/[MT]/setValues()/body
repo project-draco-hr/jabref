@@ -6,12 +6,12 @@
   emacsRebindCtrlF.setSelected(prefs.getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CF));
   disableOnMultiple.setSelected(prefs.getBoolean(JabRefPreferences.DISABLE_ON_MULTIPLE_SELECTION));
   autoComplete.setSelected(prefs.getBoolean(JabRefPreferences.AUTO_COMPLETE));
-  autoCompFields.setText(prefs.get(JabRefPreferences.AUTO_COMPLETE_FIELDS));
-  shortestToComplete.setValue(prefs.getInt(JabRefPreferences.SHORTEST_TO_COMPLETE));
-  if (prefs.getBoolean(JabRefPreferences.AUTO_COMP_FIRST_LAST)) {
+  autoCompFields.setText(autoCompletePreferences.getCompleteNamesAsString());
+  shortestToComplete.setValue(autoCompletePreferences.getShortestLengthToComplete());
+  if (autoCompletePreferences.getOnlyCompleteFirstLast()) {
     autoCompFF.setSelected(true);
   }
- else   if (prefs.getBoolean(JabRefPreferences.AUTO_COMP_LAST_FIRST)) {
+ else   if (autoCompletePreferences.getOnlyCompleteLastFirst()) {
     autoCompLF.setSelected(true);
   }
  else {
@@ -19,17 +19,18 @@
   }
   oldAutoCompFF=autoCompFF.isSelected();
   oldAutoCompLF=autoCompLF.isSelected();
-  if (prefs.get(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE).equals(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_ONLY_ABBR)) {
+switch (autoCompletePreferences.getFirstnameMode()) {
+case ONLY_ABBREVIATED:
     firstNameModeAbbr.setSelected(true);
-  }
- else   if (prefs.get(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE).equals(JabRefPreferences.AUTOCOMPLETE_FIRSTNAME_MODE_ONLY_FULL)) {
-    firstNameModeFull.setSelected(true);
-  }
- else {
-    firstNameModeBoth.setSelected(true);
-  }
-  oldAutoCompFModeAbbr=firstNameModeAbbr.isSelected();
-  oldAutoCompFModeFull=firstNameModeFull.isSelected();
-  emacsRebindCtrlA.setEnabled(emacsMode.isSelected());
-  setAutoCompleteElementsEnabled(autoComplete.isSelected());
+  break;
+case ONLY_FULL:
+firstNameModeFull.setSelected(true);
+break;
+default :
+firstNameModeBoth.setSelected(true);
+}
+oldAutoCompFModeAbbr=firstNameModeAbbr.isSelected();
+oldAutoCompFModeFull=firstNameModeFull.isSelected();
+emacsRebindCtrlA.setEnabled(emacsMode.isSelected());
+setAutoCompleteElementsEnabled(autoComplete.isSelected());
 }

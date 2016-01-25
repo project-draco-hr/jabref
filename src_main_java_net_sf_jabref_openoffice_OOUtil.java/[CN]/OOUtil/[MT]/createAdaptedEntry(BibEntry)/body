@@ -1,0 +1,15 @@
+{
+  if (entry == null) {
+    return null;
+  }
+  BibEntry e=(BibEntry)entry.clone();
+  for (  String field : e.getFieldNames()) {
+    if (field.equals(BibEntry.KEY_FIELD)) {
+      continue;
+    }
+    if (!OpenOfficePanel.postLayoutSupported && (e.hasField(field))) {
+      e.setField(field,OOUtil.POSTFORMATTER.format(e.getField(field)));
+    }
+  }
+  return e;
+}

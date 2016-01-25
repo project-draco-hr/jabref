@@ -1,0 +1,23 @@
+def compare_property_files_to_main_property_file(main_properties_file, other_properties_files, append_missing_keys_to_other_properties_files):
+    keys_in_properties_file = get_keys_from_lines(read_all_lines(main_properties_file))
+    for other_properties_file in other_properties_files:
+        keys_in_other_properties_file = get_keys_from_lines(read_all_lines(other_properties_file))
+        keys_missing = find_missing_keys(keys_in_properties_file, keys_in_other_properties_file)
+        keys_obsolete = find_missing_keys(keys_in_other_properties_file, keys_in_properties_file)
+        print (("\n\nFile '" + other_properties_file) + "'\n")
+        if (not keys_missing):
+            print '----> No missing keys.'
+        else:
+            print '----> Missing keys:'
+            for key in keys_missing:
+                print key
+            if append_missing_keys_to_other_properties_files:
+                append_keys_to_file(other_properties_file, keys_missing)
+            print ''
+        if (not keys_obsolete):
+            print '----> No possible obsolete keys (not in English language file).'
+        else:
+            print '----> Possible obsolete keys (not in English language file):'
+            for key in keys_obsolete:
+                print key
+            print ''

@@ -6,15 +6,15 @@
   final int col=glTable.columnAtPoint(e.getPoint());
   final int row=glTable.rowAtPoint(e.getPoint());
   if ((col == DUPL_COL) && (glTable.getValueAt(row,col) != null)) {
-    BibtexEntry first=sortedList.get(row);
-    BibtexEntry other=DuplicateCheck.containsDuplicate(panel.database(),first);
-    if (other != null) {
-      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,other,first,DuplicateResolverDialog.INSPECTION);
+    BibEntry first=sortedList.get(row);
+    Optional<BibEntry> other=DuplicateCheck.containsDuplicate(panel.database(),first);
+    if (other.isPresent()) {
+      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,other.get(),first,DuplicateResolverDialog.INSPECTION);
       PositionWindow.placeDialog(diag,ImportInspectionDialog.this);
       diag.setVisible(true);
       ImportInspectionDialog.this.toFront();
       if (diag.getSelected() == DuplicateResolverDialog.KEEP_UPPER) {
-        entriesToDelete.add(other);
+        entriesToDelete.add(other.get());
         entries.getReadWriteLock().writeLock().lock();
         first.setGroupHit(false);
         entries.getReadWriteLock().writeLock().unlock();
@@ -30,25 +30,25 @@
         entries.getReadWriteLock().writeLock().unlock();
       }
  else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_MERGE) {
-        entriesToDelete.add(other);
+        entriesToDelete.add(other.get());
         entries.getReadWriteLock().writeLock().lock();
         diag.getMergedEntry().setGroupHit(false);
         diag.getMergedEntry().setSearchHit(true);
         entries.add(diag.getMergedEntry());
         entries.remove(first);
-        first=new BibtexEntry();
+        first=new BibEntry();
         entries.getReadWriteLock().writeLock().unlock();
       }
     }
     other=internalDuplicate(entries,first);
-    if (other != null) {
-      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,first,other,DuplicateResolverDialog.DUPLICATE_SEARCH);
+    if (other.isPresent()) {
+      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,first,other.get(),DuplicateResolverDialog.DUPLICATE_SEARCH);
       PositionWindow.placeDialog(diag,ImportInspectionDialog.this);
       diag.setVisible(true);
       ImportInspectionDialog.this.toFront();
       int answer=diag.getSelected();
       if (answer == DuplicateResolverDialog.KEEP_UPPER) {
-        entries.remove(other);
+        entries.remove(other.get());
         first.setGroupHit(false);
       }
  else       if (answer == DuplicateResolverDialog.KEEP_LOWER) {
@@ -62,7 +62,7 @@
         diag.getMergedEntry().setSearchHit(true);
         entries.add(diag.getMergedEntry());
         entries.remove(first);
-        entries.remove(other);
+        entries.remove(other.get());
       }
     }
   }

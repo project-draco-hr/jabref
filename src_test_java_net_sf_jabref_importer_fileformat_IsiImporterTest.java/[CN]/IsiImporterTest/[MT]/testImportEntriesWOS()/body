@@ -1,15 +1,12 @@
 {
   IsiImporter importer=new IsiImporter();
-  List<BibtexEntry> entries=importer.importEntries(IsiImporterTest.class.getResourceAsStream("IsiImporterTestWOS.isi"),new OutputPrinterToNull());
-  Assert.assertEquals(2,entries.size());
-  BibtexEntry a=entries.get(0);
-  BibtexEntry b=entries.get(1);
-  if (a.getField("title").equals("Optical waveguides in Sn2P2S6 by low fluence MeV He+ ion implantation")) {
-    BibtexEntry tmp=a;
-    a=b;
-    b=tmp;
+  try (InputStream is=IsiImporterTest.class.getResourceAsStream("IsiImporterTestWOS.isi")){
+    List<BibEntry> entries=importer.importEntries(is,new OutputPrinterToNull());
+    Assert.assertEquals(2,entries.size());
+    BibEntry a=entries.get(0);
+    BibEntry b=entries.get(1);
+    Assert.assertEquals("Optical and photoelectric spectroscopy of photorefractive Sn2P2S6 crystals",a.getField("title"));
+    Assert.assertEquals("Optical waveguides in Sn2P2S6 by low fluence MeV He+ ion implantation",b.getField("title"));
+    Assert.assertEquals("Journal of Physics-condensed Matter",a.getField("journal"));
   }
-  Assert.assertEquals("Optical and photoelectric spectroscopy of photorefractive Sn2P2S6 crystals",a.getField("title"));
-  Assert.assertEquals("Optical waveguides in Sn2P2S6 by low fluence MeV He+ ion implantation",b.getField("title"));
-  Assert.assertEquals("Journal of Physics-condensed Matter",a.getField("journal"));
-}
+ }

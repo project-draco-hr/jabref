@@ -16,10 +16,6 @@
       if (!((o1 instanceof Integer) && (o2 instanceof Integer))) {
         throw new VMException("Can only compare two integers with >");
       }
-      if (o1 == o2) {
-        stack.push(VM.FALSE);
-        return;
-      }
       stack.push(((Integer)o1).compareTo((Integer)o2) > 0 ? VM.TRUE : VM.FALSE);
     }
   }
@@ -36,10 +32,6 @@
       Object o1=stack.pop();
       if (!((o1 instanceof Integer) && (o2 instanceof Integer))) {
         throw new VMException("Can only compare two integers with <");
-      }
-      if (o1 == o2) {
-        stack.push(VM.FALSE);
-        return;
       }
       stack.push(((Integer)o1).compareTo((Integer)o2) < 0 ? VM.TRUE : VM.FALSE);
     }
@@ -60,7 +52,7 @@
         stack.push(VM.FALSE);
         return;
       }
-      if (o1 == o2) {
+      if ((o1 == null) && (o2 == null)) {
         stack.push(VM.TRUE);
         return;
       }
@@ -185,7 +177,7 @@
       if (context == null) {
         throw new VMException("Call.type$ can only be called from within a context (ITERATE or REVERSE).");
       }
-      VM.this.execute(context.entry.getType().getName().toLowerCase(),context);
+      VM.this.execute(context.getBibtexEntry().getType().getName().toLowerCase(),context);
     }
   }
 );
@@ -215,7 +207,7 @@
  * entry.
  */
     @Override public void execute(    BstEntry context){
-      stack.push(context.entry.getCiteKey());
+      stack.push(context.getBibtexEntry().getCiteKey());
     }
   }
 );
@@ -395,11 +387,11 @@
  * @PREAMBLE strings read from the database files.
  */
     @Override public void execute(    BstEntry context){
-      if (preamble != null) {
-        stack.push(preamble);
+      if (preamble == null) {
+        stack.push("");
       }
  else {
-        stack.push("");
+        stack.push(preamble);
       }
     }
   }
@@ -570,7 +562,7 @@
  * the null string if the type is either unknown or undefined.
  */
     @Override public void execute(    BstEntry context){
-      stack.push(context.entry.getType().getName());
+      stack.push(context.getBibtexEntry().getType().getName());
     }
   }
 );

@@ -1,14 +1,14 @@
 {
-  String author="";
   String[] tokens=AuthorList.fixAuthorForAlphabetization(authorField).split("\\s+\\band\\b\\s+");
   int i=0;
+  StringBuilder authorSB=new StringBuilder();
   while ((tokens.length > i) && (i < n)) {
     String lastName=tokens[i].replaceAll(",\\s+.*","");
-    author+=lastName;
+    authorSB.append(lastName);
     i++;
   }
-  if (tokens.length <= n) {
-    return author;
+  if (tokens.length > n) {
+    authorSB.append("EtAl");
   }
-  return author + "EtAl";
+  return authorSB.toString();
 }

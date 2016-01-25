@@ -1,9 +1,7 @@
 {
   if ("PubmedArticle".equals(localName)) {
-    if ("".equals(year)) {
-      if (!"".equals(MedlineDate)) {
-        year=MedlineDate.substring(0,4);
-      }
+    if ("".equals(year) && !"".equals(MedlineDate)) {
+      year=MedlineDate.substring(0,4);
     }
     StringBuilder sb=new StringBuilder();
     for (Iterator<String> iterator=descriptors.iterator(); iterator.hasNext(); ) {
@@ -14,13 +12,13 @@
       }
     }
     String keywords=sb.toString();
-    BibtexEntry b=new BibtexEntry(IdGenerator.next(),EntryTypes.getBibtexEntryType("article"));
+    BibEntry b=new BibEntry(IdGenerator.next(),EntryTypes.getTypeOrDefault("article"));
     if (!"".equals(author)) {
-      b.setField("author",MedlineHandler.htmlConverter.formatUnicode(ImportFormatReader.expandAuthorInitials(author)));
+      b.setField("author",MedlineHandler.HTML_CONVERTER.formatUnicode(ImportFormatReader.expandAuthorInitials(author)));
       author="";
     }
     if (!"".equals(title)) {
-      b.setField("title",MedlineHandler.htmlConverter.formatUnicode(title));
+      b.setField("title",MedlineHandler.HTML_CONVERTER.formatUnicode(title));
     }
     if (!"".equals(journal)) {
       b.setField("journal",journal);
@@ -138,7 +136,7 @@
     if ((forename.length() == 3) && (forename.charAt(1) == ' ')) {
       forename=initials;
     }
-    if (lastname.indexOf(" ") > 0) {
+    if (lastname.indexOf(' ') > 0) {
       author="{" + lastname + "}";
     }
  else {

@@ -1,20 +1,20 @@
 {
   URL url=new URL(urlString);
   String cont=new URLDownload(url).downloadToString(StandardCharsets.UTF_8);
-  Matcher m=CiteSeerXFetcher.titlePattern.matcher(cont);
+  Matcher m=CiteSeerXFetcher.TITLE_PATTERN.matcher(cont);
   if (m.find()) {
-    BibtexEntry entry=new BibtexEntry(IdGenerator.next());
+    BibEntry entry=new BibEntry(IdGenerator.next());
     entry.setField("title",m.group(1));
-    m=CiteSeerXFetcher.authorPattern.matcher(cont);
+    m=CiteSeerXFetcher.AUTHOR_PATTERN.matcher(cont);
     if (m.find()) {
       String authors=m.group(1);
       entry.setField("author",new AuthorsFormatter().format(authors));
     }
-    m=CiteSeerXFetcher.yearPattern.matcher(cont);
+    m=CiteSeerXFetcher.YEAR_PATTERN.matcher(cont);
     if (m.find()) {
       entry.setField("year",m.group(1));
     }
-    m=CiteSeerXFetcher.abstractPattern.matcher(cont);
+    m=CiteSeerXFetcher.ABSTRACT_PATTERN.matcher(cont);
     if (m.find()) {
       entry.setField("abstract",m.group(1));
     }

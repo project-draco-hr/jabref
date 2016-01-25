@@ -2,14 +2,13 @@
   if ((fetchCommand == null) || !fetchCommand.contains(":") || (fetchCommand.split(":").length != 2)) {
     System.out.println(Localization.lang("Expected syntax for --fetch='<name of fetcher>:<query>'"));
     System.out.println(Localization.lang("The following fetchers are available:"));
-    return null;
+    return Optional.empty();
   }
   String[] split=fetchCommand.split(":");
   String engine=split[0];
-  String query=split[1];
   EntryFetcher fetcher=null;
   for (  EntryFetcher e : EntryFetchers.INSTANCE.getEntryFetchers()) {
-    if (engine.toLowerCase().equals(e.getClass().getSimpleName().replaceAll("Fetcher","").toLowerCase())) {
+    if (engine.equalsIgnoreCase(e.getClass().getSimpleName().replaceAll("Fetcher",""))) {
       fetcher=e;
     }
   }
@@ -19,13 +18,14 @@
     for (    EntryFetcher e : EntryFetchers.INSTANCE.getEntryFetchers()) {
       System.out.println("  " + e.getClass().getSimpleName().replaceAll("Fetcher","").toLowerCase());
     }
-    return null;
+    return Optional.empty();
   }
+  String query=split[1];
   System.out.println(Localization.lang("Running Query '%0' with fetcher '%1'.",query,engine) + " " + Localization.lang("Please wait..."));
-  Collection<BibtexEntry> result=new ImportInspectionCommandLine().query(query,fetcher);
+  Collection<BibEntry> result=new ImportInspectionCommandLine().query(query,fetcher);
   if ((result == null) || result.isEmpty()) {
     System.out.println(Localization.lang("Query '%0' with fetcher '%1' did not return any results.",query,engine));
-    return null;
+    return Optional.empty();
   }
-  return new ParserResult(result);
+  return Optional.of(new ParserResult(result));
 }

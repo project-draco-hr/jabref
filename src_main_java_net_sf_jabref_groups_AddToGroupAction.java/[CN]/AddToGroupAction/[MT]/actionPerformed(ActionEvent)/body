@@ -1,15 +1,13 @@
 {
-  final BibtexEntry[] entries=m_panel.getSelectedEntries();
+  final BibEntry[] entries=mPanel.getSelectedEntries();
   final Vector<GroupTreeNode> removeGroupsNodes=new Vector<>();
   if (m_move) {
-    Enumeration<GroupTreeNode> e=((GroupTreeNode)m_node.getRoot()).preorderEnumeration();
-    GroupTreeNode node;
-    while (e.hasMoreElements()) {
-      node=e.nextElement();
+    Enumeration<GroupTreeNode> e=((GroupTreeNode)mNode.getRoot()).preorderEnumeration();
+    for (    GroupTreeNode node : Collections.list(e)) {
       if (!node.getGroup().supportsRemove()) {
         continue;
       }
-      for (      BibtexEntry entry : entries) {
+      for (      BibEntry entry : entries) {
         if (node.getGroup().contains(entry)) {
           removeGroupsNodes.add(node);
         }
@@ -19,17 +17,17 @@
     for (int i=0; i < removeGroupsNodes.size(); ++i) {
       groups[i]=removeGroupsNodes.elementAt(i).getGroup();
     }
-    groups[groups.length - 1]=m_node.getGroup();
-    if (!Util.warnAssignmentSideEffects(groups,entries,m_panel.getDatabase(),m_panel.frame())) {
+    groups[groups.length - 1]=mNode.getGroup();
+    if (!Util.warnAssignmentSideEffects(groups,entries,mPanel.getDatabase(),mPanel.frame())) {
       return;
     }
   }
  else {
-    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{m_node.getGroup()},entries,m_panel.getDatabase(),m_panel.frame())) {
+    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{mNode.getGroup()},entries,mPanel.getDatabase(),mPanel.frame())) {
       return;
     }
   }
-  m_panel.storeCurrentEdit();
+  mPanel.storeCurrentEdit();
   NamedCompound undoAll=new NamedCompound(Localization.lang("change assignment of entries"));
   if (m_move) {
     for (int i=0; i < removeGroupsNodes.size(); ++i) {
@@ -38,21 +36,21 @@
         undoAll.addEdit(node.removeFromGroup(entries));
       }
     }
-    AbstractUndoableEdit undoAdd=m_node.addToGroup(entries);
+    AbstractUndoableEdit undoAdd=mNode.addToGroup(entries);
     if (undoAdd != null) {
       undoAll.addEdit(undoAdd);
     }
   }
  else {
-    AbstractUndoableEdit undoAdd=m_node.addToGroup(entries);
+    AbstractUndoableEdit undoAdd=mNode.addToGroup(entries);
     if (undoAdd == null) {
       return;
     }
     undoAll.addEdit(undoAdd);
   }
   undoAll.end();
-  m_panel.undoManager.addEdit(undoAll);
-  m_panel.markBaseChanged();
-  m_panel.updateEntryEditorIfShowing();
-  m_panel.getGroupSelector().valueChanged(null);
+  mPanel.undoManager.addEdit(undoAll);
+  mPanel.markBaseChanged();
+  mPanel.updateEntryEditorIfShowing();
+  mPanel.getGroupSelector().valueChanged(null);
 }

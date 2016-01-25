@@ -1,8 +1,9 @@
 {
   auto.setEnabled(false);
-  BibtexEntry entry=entryEditor.getEntry();
+  Collection<BibEntry> entries=new ArrayList<>();
+  entries.addAll(Arrays.asList(frame.getCurrentBasePanel().getSelectedEntries()));
   JDialog dialog=new JDialog(frame,true);
-  JabRefExecutorService.INSTANCE.execute(net.sf.jabref.util.Util.autoSetLinks(entry,tableModel,metaData,new ActionListener(){
+  JabRefExecutorService.INSTANCE.execute(net.sf.jabref.util.Util.autoSetLinks(entries,null,null,tableModel,metaData,new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       auto.setEnabled(true);
       if (e.getID() > 0) {

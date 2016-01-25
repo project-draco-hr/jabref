@@ -23,9 +23,7 @@
   String subtitle="";
   String entryType="book";
   List<Element> datafields=getChildren("datafield",e);
-  Iterator<Element> iter=datafields.iterator();
-  while (iter.hasNext()) {
-    Element datafield=iter.next();
+  for (  Element datafield : datafields) {
     String tag=datafield.getAttribute("tag");
     LOGGER.debug("tag: " + tag);
     if ("002@".equals(tag)) {
@@ -37,33 +35,33 @@
     if ("028A".equals(tag)) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
-      if (author != null) {
-        author=author.concat(" and ");
+      if (author == null) {
+        author="";
       }
  else {
-        author="";
+        author=author.concat(" and ");
       }
       author=author.concat(vorname + " " + nachname);
     }
     if ("028B".equals(tag)) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
-      if (author != null) {
-        author=author.concat(" and ");
+      if (author == null) {
+        author="";
       }
  else {
-        author="";
+        author=author.concat(" and ");
       }
       author=author.concat(vorname + " " + nachname);
     }
     if ("028C".equals(tag)) {
       String vorname=getSubfield("d",datafield);
       String nachname=getSubfield("a",datafield);
-      if (editor != null) {
-        editor=editor.concat(" and ");
+      if (editor == null) {
+        editor="";
       }
  else {
-        editor="";
+        editor=editor.concat(" and ");
       }
       editor=editor.concat(vorname + " " + nachname);
     }
@@ -112,8 +110,8 @@
       edition=getSubfield("a",datafield);
     }
     if ("004A".equals(tag)) {
-      String isbn_10=getSubfield("0",datafield);
-      String isbn_13=getSubfield("A",datafield);
+      final String isbn_10=getSubfield("0",datafield);
+      final String isbn_13=getSubfield("A",datafield);
       if (isbn_10 != null) {
         isbn=isbn_10;
       }
@@ -159,7 +157,7 @@
       quelle=getSubfield("8",datafield);
     }
     if ("046R".equals(tag)) {
-      if ("".equals(quelle) || (quelle == null)) {
+      if ((quelle == null) || quelle.isEmpty()) {
         quelle=getSubfield("a",datafield);
       }
     }
@@ -195,13 +193,13 @@
       entryType="article";
     }
   }
- else   if ("".equals(mak)) {
+ else   if (mak.isEmpty()) {
     entryType="misc";
   }
  else   if (mak.startsWith("O")) {
     entryType="misc";
   }
-  BibtexEntry result=new BibtexEntry(IdGenerator.next(),EntryTypes.getType(entryType));
+  BibEntry result=new BibEntry(IdGenerator.next(),EntryTypes.getType(entryType));
   if (author != null) {
     result.setField("author",ImportFormatReader.expandAuthorInitials(author));
   }

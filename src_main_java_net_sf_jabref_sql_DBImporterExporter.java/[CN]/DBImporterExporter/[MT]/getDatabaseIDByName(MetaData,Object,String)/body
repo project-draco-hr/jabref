@@ -1,7 +1,6 @@
 {
   if (out instanceof Connection) {
-    Object response=SQLUtil.processQueryWithResults(out,"SELECT database_id FROM jabref_database WHERE database_name='" + dbName + "';");
-    try (ResultSet rs=((Statement)response).getResultSet()){
+    try (Statement response=(Statement)SQLUtil.processQueryWithResults(out,"SELECT database_id FROM jabref_database WHERE database_name='" + dbName + "';");ResultSet rs=response.getResultSet()){
       if (rs.next()) {
         return rs.getInt("database_id");
       }

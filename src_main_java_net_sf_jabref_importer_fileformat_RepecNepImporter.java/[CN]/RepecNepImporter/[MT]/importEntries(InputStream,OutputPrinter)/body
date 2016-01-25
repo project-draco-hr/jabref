@@ -1,5 +1,5 @@
 {
-  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
+  ArrayList<BibEntry> bibitems=new ArrayList<>();
   String paperNoStr=null;
   this.line=0;
   try {
@@ -10,11 +10,11 @@
         this.inOverviewSection=this.preLine.startsWith("In this issue we have");
       }
       if (isStartOfWorkingPaper()) {
-        BibtexEntry be=new BibtexEntry(IdGenerator.next());
+        BibEntry be=new BibEntry(IdGenerator.next());
         be.setType(EntryTypes.getType("techreport"));
         paperNoStr=this.lastLine.substring(0,this.lastLine.indexOf('.'));
         parseTitleString(be);
-        if (startsWithKeyword(RepecNepImporter.recognizedFields)) {
+        if (startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS)) {
           parseAdditionalFields(be,false);
         }
  else {
@@ -22,7 +22,7 @@
           parseAuthors(be);
           readLine();
         }
-        if (!startsWithKeyword(RepecNepImporter.recognizedFields)) {
+        if (!startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS)) {
           parseAbstract(be);
         }
         parseAdditionalFields(be,true);

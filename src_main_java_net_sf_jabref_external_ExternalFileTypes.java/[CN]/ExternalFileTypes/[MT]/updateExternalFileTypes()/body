@@ -1,0 +1,40 @@
+{
+  List<ExternalFileType> types=getDefaultExternalFileTypes();
+  if (Globals.prefs.get(JabRefPreferences.EXTERNAL_FILE_TYPES,null) == null) {
+    externalFileTypes.clear();
+    externalFileTypes.addAll(types);
+    return;
+  }
+  String[][] vals=StringUtil.decodeStringDoubleArray(Globals.prefs.get(JabRefPreferences.EXTERNAL_FILE_TYPES,""));
+  for (  String[] val : vals) {
+    if ((val.length == 2) && val[1].equals(FILE_TYPE_REMOVED_FLAG)) {
+      ExternalFileType toRemove=null;
+      for (      ExternalFileType type : types) {
+        if (type.getName().equals(val[0])) {
+          toRemove=type;
+          break;
+        }
+      }
+      if (toRemove != null) {
+        types.remove(toRemove);
+      }
+    }
+ else {
+      ExternalFileType type=ExternalFileType.buildFromArgs(val);
+      ExternalFileType toRemove=null;
+      for (      ExternalFileType defType : types) {
+        if (type.getName().equals(defType.getName())) {
+          toRemove=defType;
+          break;
+        }
+      }
+      if (toRemove != null) {
+        types.remove(toRemove);
+      }
+      types.add(type);
+    }
+  }
+  for (  ExternalFileType type : types) {
+    externalFileTypes.add(type);
+  }
+}

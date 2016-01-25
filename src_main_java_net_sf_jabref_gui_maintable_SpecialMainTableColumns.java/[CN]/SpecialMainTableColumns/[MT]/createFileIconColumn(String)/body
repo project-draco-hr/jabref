@@ -1,0 +1,29 @@
+{
+  return new MainTableColumn(externalFileTypeName,new String[]{Globals.FILE_FIELD},new JLabel()){
+    @Override public boolean isFileFilter(){
+      return true;
+    }
+    @Override public String getDisplayName(){
+      return externalFileTypeName;
+    }
+    @Override public Object getColumnValue(    BibEntry entry){
+      boolean iconFound=false;
+      JLabel iconLabel=null;
+      FileListTableModel fileList=new FileListTableModel();
+      fileList.setContent(entry.getField(Globals.FILE_FIELD));
+      for (int i=0; i < fileList.getRowCount(); i++) {
+        if ((fileList.getEntry(i).type != null) && externalFileTypeName.equalsIgnoreCase(fileList.getEntry(i).type.getName())) {
+          if (iconFound) {
+            return new JLabel(IconTheme.JabRefIcon.FILE_MULTIPLE.getSmallIcon());
+          }
+ else {
+            iconLabel=fileList.getEntry(i).type.getIconLabel();
+            iconFound=true;
+          }
+        }
+      }
+      return iconLabel;
+    }
+  }
+;
+}

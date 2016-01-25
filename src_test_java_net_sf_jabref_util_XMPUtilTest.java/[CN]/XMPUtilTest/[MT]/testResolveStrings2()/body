@@ -5,7 +5,7 @@
     AuthorList originalAuthors=AuthorList.getAuthorList("Patterson, David and Arvind and Asanov\\'\\i{}c, Krste and Chiou, Derek and Hoe, James and Kozyrakis, Christos and Lu, S{hih-Lien} and Oskin, Mark and Rabaey, Jan and Wawrzynek, John");
     try {
       XMPUtil.writeXMP(pdfFile,result.getDatabase().getEntryByKey("Patterson06"),result.getDatabase());
-      BibtexEntry b=XMPUtil.readXMP(pdfFile).get(0);
+      BibEntry b=XMPUtil.readXMP(pdfFile).get(0);
       Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
       try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
         Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(document.getDocumentInformation().getAuthor()));

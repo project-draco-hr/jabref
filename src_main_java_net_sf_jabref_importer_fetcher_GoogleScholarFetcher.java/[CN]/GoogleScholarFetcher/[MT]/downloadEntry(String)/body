@@ -5,14 +5,11 @@
     BibtexParser bp=new BibtexParser(new StringReader(s));
     ParserResult pr=bp.parse();
     if ((pr != null) && (pr.getDatabase() != null)) {
-      Collection<BibtexEntry> entries=pr.getDatabase().getEntries();
+      Collection<BibEntry> entries=pr.getDatabase().getEntries();
       if (entries.size() == 1) {
-        BibtexEntry entry=entries.iterator().next();
-        boolean clearKeys=true;
-        if (clearKeys) {
-          entry.setField(BibtexEntry.KEY_FIELD,null);
-        }
-        if (entry.getField("url") == null) {
+        BibEntry entry=entries.iterator().next();
+        entry.clearField(BibEntry.KEY_FIELD);
+        if (!entry.hasField("url")) {
           String storedUrl=entryLinks.get(link);
           if (storedUrl != null) {
             entry.setField("url",storedUrl);

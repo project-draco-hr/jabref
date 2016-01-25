@@ -1,0 +1,12 @@
+{
+  TestUtils.initJabRef();
+  BibEntry bibEntry=new BibEntry();
+  bibEntry.setField("author","Brigitte Laurant");
+  FieldEditor authorTextField=new TextArea("author","Hans Meiser");
+  EntryEditor editor=new EntryEditor(JabRef.jrf,JabRef.jrf.getCurrentBasePanel(),bibEntry);
+  editor.storeFieldAction.actionPerformed(new ActionEvent(authorTextField,0,""));
+  AutoCompleter<String> autoCompleter=JabRef.jrf.getCurrentBasePanel().getAutoCompleters().get("author");
+  List<String> result=autoCompleter.complete("Hans");
+  Assert.assertEquals(Arrays.asList("Hans Meiser"),result);
+  TestUtils.closeJabRef();
+}

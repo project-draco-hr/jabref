@@ -1,0 +1,21 @@
+{
+  try (FileReader fr=new FileReader("src/test/resources/testbib/testjabref.bib")){
+    ParserResult result=BibtexParser.parse(fr);
+    BibDatabase db=result.getDatabase();
+    List<String> fieldList=new ArrayList<>();
+    fieldList.add("author");
+    Set<String> authorSet=GroupsUtil.findAuthorLastNames(db,fieldList);
+    assertTrue(authorSet.contains("Brewer"));
+    assertEquals(15,authorSet.size());
+    Set<String> keywordSet=GroupsUtil.findDeliminatedWordsInField(db,"keywords",";");
+    assertTrue(keywordSet.contains("Brain"));
+    assertEquals(60,keywordSet.size());
+    Set<String> wordSet=GroupsUtil.findAllWordsInField(db,"month","");
+    assertTrue(wordSet.contains("Feb"));
+    assertTrue(wordSet.contains("Mar"));
+    assertTrue(wordSet.contains("May"));
+    assertTrue(wordSet.contains("Jul"));
+    assertTrue(wordSet.contains("Dec"));
+    assertEquals(5,wordSet.size());
+  }
+ }

@@ -17,11 +17,14 @@
     }
   }
  else   if ("doi".equals(fieldName)) {
+    Optional<DOI> doiUrl=DOI.build(link);
+    if (doiUrl.isPresent()) {
+      link=doiUrl.get().getURLAsASCIIString();
+    }
     fieldName="url";
   }
  else   if ("eprint".equals(fieldName)) {
     fieldName="url";
-    link=URLUtil.sanitizeUrl(link);
     if (!link.startsWith("http://")) {
       link=Util.ARXIV_LOOKUP_PREFIX + link;
     }
@@ -38,16 +41,16 @@
  else   if ("ps".equals(fieldName)) {
     try {
       if (OS.OS_X) {
-        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("ps");
-        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get("psviewer");
+        ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("ps");
+        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get(JabRefPreferences.PSVIEWER);
         String[] cmd={"/usr/bin/open","-a",viewer,link};
         Runtime.getRuntime().exec(cmd);
       }
  else       if (OS.WINDOWS) {
-        openFileOnWindows(link,true);
+        openFileOnWindows(link);
       }
  else {
-        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("ps");
+        ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("ps");
         String viewer=type != null ? type.getOpenWith() : "xdg-open";
         String[] cmdArray=new String[2];
         cmdArray[0]=viewer;
@@ -56,23 +59,23 @@
       }
     }
  catch (    IOException e) {
-      System.err.println("An error occured on the command: " + Globals.prefs.get("psviewer") + " "+ link);
+      System.err.println("An error occured on the command: " + Globals.prefs.get(JabRefPreferences.PSVIEWER) + " "+ link);
     }
   }
  else   if ("pdf".equals(fieldName)) {
     try {
       if (OS.OS_X) {
-        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("pdf");
-        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get("psviewer");
+        ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("pdf");
+        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get(JabRefPreferences.PSVIEWER);
         String[] cmd={"/usr/bin/open","-a",viewer,link};
         Runtime.getRuntime().exec(cmd);
       }
  else       if (OS.WINDOWS) {
-        openFileOnWindows(link,true);
+        openFileOnWindows(link);
       }
  else {
-        ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("pdf");
-        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get("psviewer");
+        ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("pdf");
+        String viewer=type != null ? type.getOpenWith() : Globals.prefs.get(JabRefPreferences.PSVIEWER);
         String[] cmdArray=new String[2];
         cmdArray[0]=viewer;
         cmdArray[1]=link;
@@ -81,7 +84,7 @@
     }
  catch (    IOException e) {
       e.printStackTrace();
-      System.err.println("An error occured on the command: " + Globals.prefs.get("pdfviewer") + " #"+ link);
+      System.err.println("An error occured on the command: " + Globals.prefs.get(JabRefPreferences.PDFVIEWER) + " #"+ link);
       System.err.println(e.getMessage());
     }
   }

@@ -1,17 +1,18 @@
 {
   List<String> tokens=new ArrayList<>();
   int b=0;
-  String and="";
-  String token="";
+  StringBuffer and=new StringBuffer();
+  StringBuffer token=new StringBuffer();
   for (int p=0; p < content.length(); p++) {
     if (b == 0) {
-      if (("".equals(and) && (content.charAt(p) == ' ')) || (" ".equals(and) && (content.charAt(p) == 'a')) || (" a".equals(and) && (content.charAt(p) == 'n'))|| (" an".equals(and) && (content.charAt(p) == 'd'))) {
-        and+=content.charAt(p);
+      String andString=and.toString();
+      if (((andString.isEmpty()) && (content.charAt(p) == ' ')) || (" ".equals(andString) && (content.charAt(p) == 'a')) || (" a".equals(andString) && (content.charAt(p) == 'n'))|| (" an".equals(andString) && (content.charAt(p) == 'd'))) {
+        and.append(content.charAt(p));
       }
- else       if (" and".equals(and) && (content.charAt(p) == ' ')) {
-        and="";
-        tokens.add(token.trim());
-        token="";
+ else       if (" and".equals(and.toString()) && (content.charAt(p) == ' ')) {
+        and=new StringBuffer();
+        tokens.add(token.toString().trim());
+        token=new StringBuffer();
       }
  else {
         if (content.charAt(p) == '{') {
@@ -20,16 +21,16 @@
         if (content.charAt(p) == '}') {
           b--;
         }
-        token+=and;
-        and="";
-        token+=content.charAt(p);
+        token.append(and);
+        and=new StringBuffer();
+        token.append(content.charAt(p));
       }
     }
  else {
-      token+=content.charAt(p);
+      token.append(content.charAt(p));
     }
   }
-  tokens.add(token);
+  tokens.add(token.toString());
   StringBuilder normalized=new StringBuilder("");
   for (int i=0; i < tokens.size(); i++) {
     if (i > 0) {

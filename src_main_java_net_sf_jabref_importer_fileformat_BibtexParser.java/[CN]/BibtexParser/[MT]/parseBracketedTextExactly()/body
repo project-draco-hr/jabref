@@ -2,19 +2,24 @@
   StringBuffer value=new StringBuffer();
   consume('{');
   int brackets=0;
-  while (!((peek() == '}') && (brackets == 0))) {
-    int j=read();
-    if ((j == -1) || (j == 65535)) {
-      throw new RuntimeException("Error in line " + line + ": EOF in mid-string");
+  char character;
+  char lastCharacter='\0';
+  while (true) {
+    character=(char)read();
+    boolean isClosingBracket=(character == '}') && (lastCharacter != '\\');
+    if (isClosingBracket && (brackets == 0)) {
+      return value;
     }
- else     if (j == '{') {
+ else     if (isEOFCharacter(character)) {
+      throw new IOException("Error in line " + line + ": EOF in mid-string");
+    }
+ else     if ((character == '{') && (lastCharacter != '\\')) {
       brackets++;
     }
- else     if (j == '}') {
+ else     if (isClosingBracket) {
       brackets--;
     }
-    value.append((char)j);
+    value.append(character);
+    lastCharacter=character;
   }
-  consume('}');
-  return value;
 }

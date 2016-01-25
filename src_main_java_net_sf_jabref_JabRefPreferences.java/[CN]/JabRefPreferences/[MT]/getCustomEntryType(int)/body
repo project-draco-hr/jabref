@@ -1,16 +1,15 @@
 {
-  String nr="" + number;
+  String nr=String.valueOf(number);
   String name=get(JabRefPreferences.CUSTOM_TYPE_NAME + nr);
-  String[] req=getStringArray(JabRefPreferences.CUSTOM_TYPE_REQ + nr);
-  String[] opt=getStringArray(JabRefPreferences.CUSTOM_TYPE_OPT + nr);
-  String[] priOpt=getStringArray(JabRefPreferences.CUSTOM_TYPE_PRIOPT + nr);
   if (name == null) {
     return null;
   }
-  if (priOpt == null) {
-    return new CustomEntryType(EntryUtil.capitalizeFirst(name),Arrays.asList(req),Arrays.asList(opt));
+  List<String> req=getStringList(JabRefPreferences.CUSTOM_TYPE_REQ + nr);
+  List<String> opt=getStringList(JabRefPreferences.CUSTOM_TYPE_OPT + nr);
+  List<String> priOpt=getStringList(JabRefPreferences.CUSTOM_TYPE_PRIOPT + nr);
+  if (priOpt.isEmpty()) {
+    return new CustomEntryType(EntryUtil.capitalizeFirst(name),req,opt);
   }
-  List<String> secondary=EntryUtil.getRemainder(Arrays.asList(opt),Arrays.asList(priOpt));
-  String[] secOpt=secondary.toArray(new String[secondary.size()]);
-  return new CustomEntryType(EntryUtil.capitalizeFirst(name),Arrays.asList(req),Arrays.asList(priOpt),Arrays.asList(secOpt));
+  List<String> secondary=EntryUtil.getRemainder(opt,priOpt);
+  return new CustomEntryType(EntryUtil.capitalizeFirst(name),req,priOpt,secondary);
 }

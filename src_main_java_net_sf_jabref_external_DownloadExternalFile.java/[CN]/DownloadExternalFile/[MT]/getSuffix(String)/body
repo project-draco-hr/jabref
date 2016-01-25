@@ -9,20 +9,20 @@
  catch (  MalformedURLException e) {
   }
   String suffix;
-  int index=strippedLink.lastIndexOf('.');
-  if ((index <= 0) || (index == (strippedLink.length() - 1))) {
+  int strippedLinkIndex=strippedLink.lastIndexOf('.');
+  if ((strippedLinkIndex <= 0) || (strippedLinkIndex == (strippedLink.length() - 1))) {
     suffix=null;
   }
  else {
-    suffix=strippedLink.substring(index + 1);
+    suffix=strippedLink.substring(strippedLinkIndex + 1);
   }
-  if (Globals.prefs.getExternalFileTypeByExt(suffix) != null) {
+  if (ExternalFileTypes.getInstance().getExternalFileTypeByExt(suffix) != null) {
     return suffix;
   }
  else {
-    index=link.lastIndexOf('.');
-    if ((index <= 0) || (index == (strippedLink.length() - 1))) {
-      if (suffix.indexOf('/') > 0) {
+    int index=link.lastIndexOf('.');
+    if ((index <= 0) || (index == (link.length() - 1))) {
+      if (strippedLink.substring(strippedLinkIndex + 1).indexOf('/') > 0) {
         return "";
       }
  else {

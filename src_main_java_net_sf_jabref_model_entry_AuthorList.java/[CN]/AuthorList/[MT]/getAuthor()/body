@@ -1,9 +1,9 @@
 {
-  tokens=new Vector<>();
-  int von_start=-1;
-  int last_start=-1;
-  int comma_first=-1;
-  int comma_second=-1;
+  tokens=new ArrayList<>();
+  int vonStart=-1;
+  int lastStart=-1;
+  int commaFirst=-1;
+  int commaSecond=-1;
   token_loop:   while (true) {
     int token=getToken();
 switch (token) {
@@ -11,11 +11,11 @@ case TOKEN_EOF:
 case TOKEN_AND:
       break token_loop;
 case TOKEN_COMMA:
-    if (comma_first < 0) {
-      comma_first=tokens.size();
+    if (commaFirst < 0) {
+      commaFirst=tokens.size();
     }
- else     if (comma_second < 0) {
-      comma_second=tokens.size();
+ else     if (commaSecond < 0) {
+      commaSecond=tokens.size();
     }
   break;
 case TOKEN_WORD:
@@ -23,20 +23,20 @@ tokens.add(original.substring(tokenStart,tokenEnd));
 tokens.add(original.substring(tokenStart,tokenAbbr));
 tokens.add(tokenTerm);
 tokens.add(tokenCase);
-if (comma_first >= 0) {
+if (commaFirst >= 0) {
 break;
 }
-if (last_start >= 0) {
+if (lastStart >= 0) {
 break;
 }
-if (von_start < 0) {
+if (vonStart < 0) {
 if (!tokenCase) {
-von_start=tokens.size() - AuthorList.TOKEN_GROUP_LENGTH;
+vonStart=tokens.size() - AuthorList.TOKEN_GROUP_LENGTH;
 break;
 }
 }
- else if ((last_start < 0) && tokenCase) {
-last_start=tokens.size() - AuthorList.TOKEN_GROUP_LENGTH;
+ else if ((lastStart < 0) && tokenCase) {
+lastStart=tokens.size() - AuthorList.TOKEN_GROUP_LENGTH;
 break;
 }
 }
@@ -44,85 +44,85 @@ break;
 if (tokens.isEmpty()) {
 return null;
 }
-int first_part_start=-1;
-int von_part_start=-1;
-int last_part_start=-1;
-int jr_part_start=-1;
-int first_part_end;
-int von_part_end=0;
-int last_part_end=0;
-int jr_part_end=0;
-if (comma_first < 0) {
-if (von_start < 0) {
-last_part_end=tokens.size();
-last_part_start=tokens.size() - AuthorList.TOKEN_GROUP_LENGTH;
+int firstPartStart=-1;
+int vonPartStart=-1;
+int lastPartStart=-1;
+int jrPartStart=-1;
+int firstPartEnd;
+int vonPartEnd=0;
+int lastPartEnd=0;
+int jrPartEnd=0;
+if (commaFirst < 0) {
+if (vonStart < 0) {
+lastPartEnd=tokens.size();
+lastPartStart=tokens.size() - AuthorList.TOKEN_GROUP_LENGTH;
 int index=(tokens.size() - (2 * AuthorList.TOKEN_GROUP_LENGTH)) + AuthorList.OFFSET_TOKEN_TERM;
 if (index > 0) {
-Character ch=(Character)tokens.elementAt(index);
+Character ch=(Character)tokens.get(index);
 if (ch == '-') {
-last_part_start-=AuthorList.TOKEN_GROUP_LENGTH;
+lastPartStart-=AuthorList.TOKEN_GROUP_LENGTH;
 }
 }
-first_part_end=last_part_start;
-if (first_part_end > 0) {
-first_part_start=0;
-}
-}
- else {
-if (last_start >= 0) {
-last_part_end=tokens.size();
-last_part_start=last_start;
-von_part_end=last_part_start;
-}
- else {
-von_part_end=tokens.size();
-}
-von_part_start=von_start;
-first_part_end=von_part_start;
-if (first_part_end > 0) {
-first_part_start=0;
-}
+firstPartEnd=lastPartStart;
+if (firstPartEnd > 0) {
+firstPartStart=0;
 }
 }
  else {
-first_part_end=tokens.size();
-if (comma_second < 0) {
-if (comma_first < first_part_end) {
-first_part_start=comma_first;
+if (lastStart >= 0) {
+lastPartEnd=tokens.size();
+lastPartStart=lastStart;
+vonPartEnd=lastPartStart;
+}
+ else {
+vonPartEnd=tokens.size();
+}
+vonPartStart=vonStart;
+firstPartEnd=vonPartStart;
+if (firstPartEnd > 0) {
+firstPartStart=0;
+}
 }
 }
  else {
-if (comma_second < first_part_end) {
-first_part_start=comma_second;
-}
-jr_part_end=comma_second;
-if (comma_first < jr_part_end) {
-jr_part_start=comma_first;
-}
-}
-if (von_start != 0) {
-last_part_end=comma_first;
-if (last_part_end > 0) {
-last_part_start=0;
+firstPartEnd=tokens.size();
+if (commaSecond < 0) {
+if (commaFirst < firstPartEnd) {
+firstPartStart=commaFirst;
 }
 }
  else {
-if (last_start < 0) {
-von_part_end=comma_first;
+if (commaSecond < firstPartEnd) {
+firstPartStart=commaSecond;
+}
+jrPartEnd=commaSecond;
+if (commaFirst < jrPartEnd) {
+jrPartStart=commaFirst;
+}
+}
+if (vonStart == 0) {
+if (lastStart < 0) {
+vonPartEnd=commaFirst;
 }
  else {
-last_part_end=comma_first;
-last_part_start=last_start;
-von_part_end=last_part_start;
+lastPartEnd=commaFirst;
+lastPartStart=lastStart;
+vonPartEnd=lastPartStart;
 }
-von_part_start=0;
+vonPartStart=0;
+}
+ else {
+lastPartEnd=commaFirst;
+if (lastPartEnd > 0) {
+lastPartStart=0;
 }
 }
-if ((first_part_start == -1) && (last_part_start == -1) && (von_part_start != -1)) {
-last_part_start=von_part_start;
-last_part_end=von_part_end;
-von_part_start=-1;
-von_part_end=-1;
 }
-return new Author(first_part_start < 0 ? null : concatTokens(first_part_start,first_part_end,AuthorList.OFFSET_TOKEN,false),first_part_start < 0 ? null : concatTokens(first_part_start,first_part_end,AuthorList.OFFSET_TOKEN_ABBR,true),von_part_start < 0 ? null : concatTokens(von_part_start,von_part_end,AuthorList.OFFSET_TOKEN,false),last_part_start < 0 ? null : concatTokens(last_part_start,last_part_end,AuthorList.OFFSET_TOKEN,false),jr_part_start < 0 ? null : concatTokens(jr_part_start,jr_part_end,AuthorList.OFFSET_TOKEN,false));
+if ((firstPartStart == -1) && (lastPartStart == -1) && (vonPartStart != -1)) {
+lastPartStart=vonPartStart;
+lastPartEnd=vonPartEnd;
+vonPartStart=-1;
+vonPartEnd=-1;
+}
+return new Author(firstPartStart < 0 ? null : concatTokens(firstPartStart,firstPartEnd,AuthorList.OFFSET_TOKEN,false),firstPartStart < 0 ? null : concatTokens(firstPartStart,firstPartEnd,AuthorList.OFFSET_TOKEN_ABBR,true),vonPartStart < 0 ? null : concatTokens(vonPartStart,vonPartEnd,AuthorList.OFFSET_TOKEN,false),lastPartStart < 0 ? null : concatTokens(lastPartStart,lastPartEnd,AuthorList.OFFSET_TOKEN,false),jrPartStart < 0 ? null : concatTokens(jrPartStart,jrPartEnd,AuthorList.OFFSET_TOKEN,false));
 }

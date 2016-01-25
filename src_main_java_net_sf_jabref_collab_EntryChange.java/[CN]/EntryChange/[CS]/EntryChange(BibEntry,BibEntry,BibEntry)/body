@@ -1,0 +1,30 @@
+{
+  super();
+  String key=tmpEntry.getCiteKey();
+  if (key == null) {
+    name=Localization.lang("Modified entry");
+  }
+ else {
+    name=Localization.lang("Modified entry") + ": '" + key+ '\'';
+  }
+  boolean isModifiedLocally=(DuplicateCheck.compareEntriesStrictly(memEntry,tmpEntry) <= 1);
+  boolean modificationsAgree=(DuplicateCheck.compareEntriesStrictly(memEntry,diskEntry) > 1);
+  LOGGER.debug("Modified entry: " + memEntry.getCiteKey() + "\n Modified locally: "+ isModifiedLocally+ " Modifications agree: "+ modificationsAgree);
+  TreeSet<String> allFields=new TreeSet<>();
+  allFields.addAll(memEntry.getFieldNames());
+  allFields.addAll(tmpEntry.getFieldNames());
+  allFields.addAll(diskEntry.getFieldNames());
+  for (  String field : allFields) {
+    String mem=memEntry.getField(field);
+    String tmp=tmpEntry.getField(field);
+    String disk=diskEntry.getField(field);
+    if ((tmp != null) && (disk != null)) {
+      if (!tmp.equals(disk)) {
+        add(new FieldChange(field,memEntry,tmpEntry,mem,tmp,disk));
+      }
+    }
+ else     if (((tmp == null) && (disk != null) && !disk.isEmpty()) || ((disk == null) && (tmp != null) && !tmp.isEmpty()&& (mem != null)&& !mem.isEmpty())) {
+      add(new FieldChange(field,memEntry,tmpEntry,mem,tmp,disk));
+    }
+  }
+}

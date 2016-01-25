@@ -1,11 +1,8 @@
 {
-  if (frame.getTabbedPane().getTabCount() == 0) {
-    return;
-  }
-  for (int i=0; i < frame.getTabbedPane().getTabCount(); i++) {
-    BasePanel bp=(BasePanel)frame.getTabbedPane().getComponentAt(i);
+  for (int i=0; i < frame.getBasePanelCount(); i++) {
+    BasePanel bp=frame.getBasePanelAt(i);
     bp.entryEditors.remove(typeName);
-    for (    BibtexEntry entry : bp.database().getEntries()) {
+    for (    BibEntry entry : bp.database().getEntries()) {
       EntryType newType=EntryTypes.getType(entry.getType().getName());
       if (newType != null) {
         entry.setType(newType);

@@ -9,14 +9,17 @@
     }
   }
 );
-  JButton okButton=new JButton(Localization.lang("Ok"));
+  JButton okButton=new JButton(Localization.lang("OK"));
   okButton.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       int row=table.getSelectedRow();
-      if (row != -1) {
+      if (row == -1) {
+        JOptionPane.showMessageDialog(zipFileChooser,Localization.lang("Please select an importer."));
+      }
+ else {
         ZipFileChooserTableModel model=(ZipFileChooserTableModel)table.getModel();
         ZipEntry tempZipEntry=model.getZipEntry(row);
-        CustomImportList.Importer importer=new CustomImportList.Importer();
+        CustomImporter importer=new CustomImporter();
         importer.setBasePath(model.getZipFile().getName());
         String className=tempZipEntry.getName().substring(0,tempZipEntry.getName().lastIndexOf('.')).replaceAll("/",".");
         importer.setClassName(className);
@@ -28,12 +31,9 @@
           dispose();
         }
  catch (        Exception exc) {
-          exc.printStackTrace();
+          LOGGER.warn("Could not instantiate importer: " + importer.getName(),exc);
           JOptionPane.showMessageDialog(zipFileChooser,Localization.lang("Could not instantiate %0 %1",importer.getName() + ":\n",exc.getMessage()));
         }
-      }
- else {
-        JOptionPane.showMessageDialog(zipFileChooser,Localization.lang("Please select an importer."));
       }
     }
   }

@@ -1,0 +1,10 @@
+{
+  for (int n=3; n <= 7; n++) {
+    try (InputStream is=OvidImporter.class.getResourceAsStream("OvidImporterTest" + n + ".txt");InputStream nis=OvidImporter.class.getResourceAsStream("OvidImporterTestBib" + n + ".bib")){
+      List<BibEntry> entries=importer.importEntries(is,new OutputPrinterToNull());
+      Assert.assertNotNull(entries);
+      Assert.assertEquals(1,entries.size());
+      BibtexEntryAssert.assertEquals(nis,entries.get(0));
+    }
+   }
+}

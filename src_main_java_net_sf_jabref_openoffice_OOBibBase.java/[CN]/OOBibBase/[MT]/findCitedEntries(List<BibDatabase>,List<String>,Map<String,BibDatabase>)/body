@@ -1,0 +1,19 @@
+{
+  Map<BibEntry,BibDatabase> entries=new LinkedHashMap<>();
+  for (  String key : keys) {
+    boolean found=false;
+    for (    BibDatabase database : databases) {
+      BibEntry entry=database.getEntryByKey(key);
+      if (entry != null) {
+        entries.put(OOUtil.createAdaptedEntry(entry),database);
+        linkSourceBase.put(key,database);
+        found=true;
+        break;
+      }
+    }
+    if (!found) {
+      entries.put(new UndefinedBibtexEntry(key),null);
+    }
+  }
+  return entries;
+}

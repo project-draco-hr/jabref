@@ -1,0 +1,21 @@
+{
+  final int columnCount=mainTable.getColumnCount();
+  List<String> storedColumns=new ArrayList<>(columnCount - 1);
+  List<String> columnsWidths=new ArrayList<>(columnCount - 1);
+  int ncWidth=-1;
+  for (int i=0; i < columnCount; i++) {
+    final String name=mainTable.getColumnName(i);
+    if ((name != null) && !name.isEmpty()) {
+      if (GUIGlobals.NUMBER_COL.equals(name)) {
+        ncWidth=mainTable.getColumnModel().getColumn(i).getWidth();
+      }
+ else {
+        storedColumns.add(name.toLowerCase());
+        columnsWidths.add(String.valueOf(mainTable.getColumnModel().getColumn(i).getWidth()));
+      }
+    }
+  }
+  Globals.prefs.putStringList(JabRefPreferences.COLUMN_NAMES,storedColumns);
+  Globals.prefs.putStringList(JabRefPreferences.COLUMN_WIDTHS,columnsWidths);
+  Globals.prefs.putInt(JabRefPreferences.NUMBER_COL_WIDTH,ncWidth);
+}

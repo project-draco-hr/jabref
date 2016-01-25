@@ -1,6 +1,5 @@
 {
   entries=new HashSet<>();
-  ArrayList<BibtexEntry> bibitems=new ArrayList<>();
   Document inputDocument=null;
   try {
     DocumentBuilder documentBuilder=DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -8,6 +7,7 @@
   }
  catch (  ParserConfigurationException|SAXException|IOException e) {
     LOGGER.warn("Could not parse document",e);
+    return null;
   }
   String bcol="b:";
   NodeList rootList=inputDocument.getElementsByTagName("b:Sources");
@@ -15,6 +15,7 @@
     rootList=inputDocument.getElementsByTagName("Sources");
     bcol="";
   }
+  List<BibEntry> bibitems=new ArrayList<>();
   if (rootList.getLength() == 0) {
     return bibitems;
   }

@@ -1,6 +1,6 @@
 {
   if (Globals.prefs.getBoolean(JabRefPreferences.WARN_ABOUT_DUPLICATES_IN_INSPECTION)) {
-    for (    BibtexEntry entry : entries) {
+    for (    BibEntry entry : entries) {
       if (!entry.isSearchHit()) {
         continue;
       }
@@ -19,29 +19,29 @@
   }
   NamedCompound ce=new NamedCompound(undoName);
   if (!entriesToDelete.isEmpty()) {
-    for (    BibtexEntry entry : entriesToDelete) {
+    for (    BibEntry entry : entriesToDelete) {
       ce.addEdit(new UndoableRemoveEntry(panel.database(),entry,panel));
-      panel.database().removeEntry(entry.getId());
+      panel.database().removeEntry(entry);
     }
   }
   if (autoGenerate.isSelected() && !generatedKeys) {
     generateKeys();
   }
   Globals.prefs.putBoolean(JabRefPreferences.GENERATE_KEYS_AFTER_INSPECTION,autoGenerate.isSelected());
-  final List<BibtexEntry> selected=getSelectedEntries();
+  final List<BibEntry> selected=getSelectedEntries();
   if (!selected.isEmpty()) {
     if (newDatabase) {
-      BibtexDatabase base=new BibtexDatabase();
+      BibDatabase base=new BibDatabase();
       panel=new BasePanel(frame,base,null,new MetaData(),Globals.prefs.getDefaultEncoding());
     }
     boolean groupingCanceled=false;
     net.sf.jabref.util.Util.setAutomaticFields(selected,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
     if (Globals.prefs.getBoolean(JabRefPreferences.UNMARK_ALL_ENTRIES_BEFORE_IMPORTING)) {
-      for (      BibtexEntry entry : panel.database().getEntries()) {
+      for (      BibEntry entry : panel.database().getEntries()) {
         EntryMarker.unmarkEntry(entry,true,panel.database(),ce);
       }
     }
-    for (    BibtexEntry entry : selected) {
+    for (    BibEntry entry : selected) {
       entry.setSearchHit(false);
       entry.setGroupHit(false);
       Set<GroupTreeNode> groups=groupAdditions.get(entry);
@@ -58,13 +58,11 @@
         if (entry.getCiteKey() != null) {
           for (          GroupTreeNode node : groups) {
             if (node.getGroup().supportsAdd()) {
-              AbstractUndoableEdit undo=node.getGroup().add(new BibtexEntry[]{entry});
+              AbstractUndoableEdit undo=node.getGroup().add(new BibEntry[]{entry});
               if (undo instanceof UndoableChangeAssignment) {
                 ((UndoableChangeAssignment)undo).setEditedNode(node);
               }
               ce.addEdit(undo);
-            }
- else {
             }
           }
         }
@@ -83,11 +81,11 @@
         frame.addTab(panel,null,true);
       }
       panel.markBaseChanged();
-      if (!selected.isEmpty()) {
-        frame.output(Localization.lang("Number of entries successfully imported") + ": " + selected.size());
+      if (selected.isEmpty()) {
+        frame.output(Localization.lang("No entries imported."));
       }
  else {
-        frame.output(Localization.lang("No entries imported."));
+        frame.output(Localization.lang("Number of entries successfully imported") + ": " + selected.size());
       }
     }
   }

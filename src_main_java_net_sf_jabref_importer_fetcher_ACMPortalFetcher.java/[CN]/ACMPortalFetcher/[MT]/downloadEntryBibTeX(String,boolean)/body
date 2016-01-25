@@ -1,9 +1,9 @@
 {
   try {
-    URL url=new URL(ACMPortalFetcher.startUrl + ACMPortalFetcher.bibtexUrl + ID+ ACMPortalFetcher.bibtexUrlEnd);
+    URL url=new URL(ACMPortalFetcher.START_URL + ACMPortalFetcher.BIBTEX_URL + id+ ACMPortalFetcher.BIBTEX_URL_END);
     URLConnection connection=url.openConnection();
     connection.addRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0");
-    Collection<BibtexEntry> items=null;
+    Collection<BibEntry> items=null;
     try (BufferedReader in=new BufferedReader(new InputStreamReader(connection.getInputStream()))){
       items=BibtexParser.parse(in).getDatabase().getEntries();
     }
@@ -13,12 +13,12 @@
     if ((items == null) || items.isEmpty()) {
       return null;
     }
-    BibtexEntry entry=items.iterator().next();
+    BibEntry entry=items.iterator().next();
     Thread.sleep(ACMPortalFetcher.WAIT_TIME);
     if (downloadAbstract) {
-      url=new URL(ACMPortalFetcher.startUrl + ACMPortalFetcher.abstractUrl + ID);
+      url=new URL(ACMPortalFetcher.START_URL + ACMPortalFetcher.ABSTRACT_URL + id);
       String page=Util.getResults(url);
-      Matcher absM=ACMPortalFetcher.absPattern.matcher(page);
+      Matcher absM=ACMPortalFetcher.ABSTRACT_PATTERN.matcher(page);
       if (absM.find()) {
         entry.setField("abstract",absM.group(1).trim());
       }
@@ -27,15 +27,11 @@
     return entry;
   }
  catch (  NoSuchElementException e) {
-    LOGGER.info("Bad Bibtex record read at: " + ACMPortalFetcher.bibtexUrl + ID+ ACMPortalFetcher.bibtexUrlEnd,e);
+    LOGGER.info("Bad Bibtex record read at: " + ACMPortalFetcher.BIBTEX_URL + id+ ACMPortalFetcher.BIBTEX_URL_END,e);
     return null;
   }
 catch (  MalformedURLException e) {
     LOGGER.info("Malformed URL.",e);
-    return null;
-  }
-catch (  ConnectException e) {
-    LOGGER.info("Cannot connect.",e);
     return null;
   }
 catch (  IOException e) {

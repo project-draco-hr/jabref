@@ -2,14 +2,14 @@
   URLClassLoader sysloader=(URLClassLoader)ClassLoader.getSystemClassLoader();
   Class<URLClassLoader> sysclass=URLClassLoader.class;
   try {
-    Method method=sysclass.getDeclaredMethod("addURL",OpenOfficePanel.parameters);
+    Method method=sysclass.getDeclaredMethod("addURL",CLASS_PARAMETERS);
     method.setAccessible(true);
     for (    URL anU : u) {
       method.invoke(sysloader,anU);
     }
   }
  catch (  Throwable t) {
-    t.printStackTrace();
+    LOGGER.error("Could not add URL to system classloader",t);
     throw new IOException("Error, could not add URL to system classloader");
   }
 }

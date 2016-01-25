@@ -1,0 +1,28 @@
+{
+  if (entry == null) {
+    clearPreview();
+    return;
+  }
+  picLabel.setText("rendering preview...");
+  picLabel.setIcon(null);
+  List<FileField.ParsedFileField> fileList=FileField.parse(entry.getField(Globals.FILE_FIELD));
+  FileField.ParsedFileField flEntry=null;
+  for (  FileField.ParsedFileField tmpFileListEntry : fileList) {
+    if ("pdf".equals(tmpFileListEntry.fileType.toLowerCase())) {
+      flEntry=tmpFileListEntry;
+      break;
+    }
+  }
+  if (flEntry != null) {
+    File pdfFile=FileUtil.expandFilename(metaData,flEntry.link);
+    if (pdfFile != null) {
+      renderPDFFile(pdfFile);
+    }
+ else {
+      clearPreview();
+    }
+  }
+ else {
+    clearPreview();
+  }
+}

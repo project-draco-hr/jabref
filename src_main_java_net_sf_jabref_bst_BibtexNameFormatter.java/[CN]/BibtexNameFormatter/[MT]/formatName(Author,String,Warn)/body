@@ -8,7 +8,6 @@
   while (i < n) {
     if (c[i] == '{') {
       group++;
-      int groupStart=sb.length();
       i++;
       braceLevel++;
       StringBuffer level1Chars=new StringBuffer();
@@ -25,16 +24,14 @@
           i++;
           continue;
         }
-        if (braceLevel == 1) {
-          if (Character.isLetter(c[i])) {
-            if ("fvlj".indexOf(c[i]) == -1) {
-              if (warn != null) {
-                warn.warn("Format String in format.name$ may only contain fvlj on brace level 1 in group " + group + ": "+ format);
-              }
+        if ((braceLevel == 1) && Character.isLetter(c[i])) {
+          if ("fvlj".indexOf(c[i]) == -1) {
+            if (warn != null) {
+              warn.warn("Format String in format.name$ may only contain fvlj on brace level 1 in group " + group + ": "+ format);
             }
+          }
  else {
-              level1Chars.append(c[i]);
-            }
+            level1Chars.append(c[i]);
           }
         }
         i++;
@@ -87,18 +84,17 @@ wholeChar.deleteCharAt(wholeChar.length() - 1);
 char[] d=wholeChar.toString().toCharArray();
 int bLevel=1;
 String interToken=null;
+int groupStart=sb.length();
 for (int j=0; j < d.length; j++) {
 if (Character.isLetter(d[j]) && (bLevel == 1)) {
 groupStart=sb.length();
 if (!abbreviateThatIsSingleLetter) {
 j++;
 }
-if ((j + 1) < d.length) {
-if (d[j + 1] == '{') {
+if (((j + 1) < d.length) && (d[j + 1] == '{')) {
 StringBuffer interTokenSb=new StringBuffer();
 j=BibtexNameFormatter.consumeToMatchingBrace(interTokenSb,d,j + 1);
 interToken=interTokenSb.substring(1,interTokenSb.length() - 1);
-}
 }
 for (int k=0; k < tokens.length; k++) {
 String token=tokens[k];
@@ -117,13 +113,13 @@ sb.append(token);
 if (k < (tokens.length - 1)) {
 if (interToken == null) {
 if (abbreviateThatIsSingleLetter) {
-sb.append(".");
+sb.append('.');
 }
 if ((k == (tokens.length - 2)) || (BibtexNameFormatter.numberOfChars(sb.substring(groupStart,sb.length()),3) < 3)) {
-sb.append("~");
+sb.append('~');
 }
  else {
-sb.append(" ");
+sb.append(' ');
 }
 }
  else {
@@ -166,7 +162,7 @@ sb.append(c[i]);
 }
 i++;
 }
-if (braceLevel != 0) {
+if ((braceLevel != 0) && (warn != null)) {
 warn.warn("Unbalanced brace in format string for nameFormat: " + format);
 }
 return sb.toString();

@@ -1,7 +1,6 @@
 {
   setHighlight1Cell(null);
   try {
-    final Transferable transferable=dtde.getTransferable();
     final Point p=dtde.getLocation();
     final TreePath path=getPathForLocation(p.x,p.y);
     if (path == null) {
@@ -9,8 +8,9 @@
       return;
     }
     final GroupTreeNode target=(GroupTreeNode)path.getLastPathComponent();
-    if (transferable.isDataFlavorSupported(GroupTreeNode.flavor)) {
-      GroupTreeNode source=(GroupTreeNode)transferable.getTransferData(GroupTreeNode.flavor);
+    final Transferable transferable=dtde.getTransferable();
+    if (transferable.isDataFlavorSupported(GroupTreeNode.FLAVOR)) {
+      GroupTreeNode source=(GroupTreeNode)transferable.getTransferData(GroupTreeNode.FLAVOR);
       if (source == target) {
         dtde.rejectDrop();
         return;
@@ -26,16 +26,16 @@
       groupSelector.revalidateGroups(new TreePath[]{new TreePath(source.getPath())},refreshPaths(expandedPaths));
       groupSelector.concludeMoveGroup(undo,source);
     }
- else     if (transferable.isDataFlavorSupported(TransferableEntrySelection.flavorInternal)) {
+ else     if (transferable.isDataFlavorSupported(TransferableEntrySelection.FLAVOR_INTERNAL)) {
       final AbstractGroup group=target.getGroup();
       if (!group.supportsAdd()) {
         dtde.rejectDrop();
         return;
       }
-      final TransferableEntrySelection selection=(TransferableEntrySelection)transferable.getTransferData(TransferableEntrySelection.flavorInternal);
-      final BibtexEntry[] entries=selection.getSelection();
+      final TransferableEntrySelection selection=(TransferableEntrySelection)transferable.getTransferData(TransferableEntrySelection.FLAVOR_INTERNAL);
+      final BibEntry[] entries=selection.getSelection();
       int assignedEntries=0;
-      for (      BibtexEntry entry : entries) {
+      for (      BibEntry entry : entries) {
         if (!target.getGroup().contains(entry)) {
           ++assignedEntries;
         }

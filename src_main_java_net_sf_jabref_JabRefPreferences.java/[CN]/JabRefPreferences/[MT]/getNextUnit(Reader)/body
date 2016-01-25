@@ -5,21 +5,21 @@
   StringBuilder res=new StringBuilder();
   while (!done && ((c=data.read()) != -1)) {
     if (c == '\\') {
-      if (!escape) {
-        escape=true;
-      }
- else {
+      if (escape) {
         escape=false;
         res.append('\\');
+      }
+ else {
+        escape=true;
       }
     }
  else {
       if (c == ';') {
-        if (!escape) {
-          done=true;
+        if (escape) {
+          res.append(';');
         }
  else {
-          res.append(';');
+          done=true;
         }
       }
  else {

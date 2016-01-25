@@ -1,0 +1,18 @@
+{
+  String timeStampField=Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD);
+  String defaultOwner=Globals.prefs.get(JabRefPreferences.DEFAULT_OWNER);
+  String timestamp=net.sf.jabref.util.Util.dateFormatter.getCurrentDate();
+  boolean globalSetOwner=Globals.prefs.getBoolean(JabRefPreferences.USE_OWNER);
+  boolean globalSetTimeStamp=Globals.prefs.getBoolean(JabRefPreferences.USE_TIME_STAMP);
+  if (!(globalSetOwner || globalSetTimeStamp || markEntries)) {
+    return;
+  }
+  for (  BibEntry curEntry : bibs) {
+    boolean setOwner=globalSetOwner && (overwriteOwner || (!curEntry.hasField(BibtexFields.OWNER)));
+    boolean setTimeStamp=globalSetTimeStamp && (overwriteTimestamp || (!curEntry.hasField(timeStampField)));
+    net.sf.jabref.util.Util.setAutomaticFields(curEntry,setOwner,defaultOwner,setTimeStamp,timeStampField,timestamp);
+    if (markEntries) {
+      EntryMarker.markEntry(curEntry,EntryMarker.IMPORT_MARK_LEVEL,false,new NamedCompound(""));
+    }
+  }
+}

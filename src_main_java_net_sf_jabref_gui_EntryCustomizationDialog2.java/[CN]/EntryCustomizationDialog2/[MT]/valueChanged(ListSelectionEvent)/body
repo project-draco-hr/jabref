@@ -16,33 +16,33 @@
   List<String> rl=reqLists.get(s);
   if (rl == null) {
     EntryType type=EntryTypes.getType(s);
-    if (type != null) {
+    if (type == null) {
+      reqComp.setFields(new ArrayList<>());
+      reqComp.setEnabled(true);
+      optComp.setFields(new ArrayList<>());
+      optComp.setEnabled(true);
+      if (biblatexMode) {
+        optComp2.setFields(new ArrayList<>());
+        optComp2.setEnabled(true);
+      }
+      new FocusRequester(reqComp);
+    }
+ else {
       List<String> req=type.getRequiredFields();
       List<String> opt;
-      if (!biblatexMode) {
-        opt=type.getOptionalFields();
-      }
- else {
+      if (biblatexMode) {
         opt=type.getPrimaryOptionalFields();
         List<String> opt2=type.getSecondaryOptionalFields();
         optComp2.setFields(opt2);
         optComp2.setEnabled(true);
       }
+ else {
+        opt=type.getOptionalFields();
+      }
       reqComp.setFields(req);
       reqComp.setEnabled(true);
       optComp.setFields(opt);
       optComp.setEnabled(true);
-    }
- else {
-      reqComp.setFields(new ArrayList<String>());
-      reqComp.setEnabled(true);
-      optComp.setFields(new ArrayList<String>());
-      optComp.setEnabled(true);
-      if (biblatexMode) {
-        optComp2.setFields(new ArrayList<String>());
-        optComp2.setEnabled(true);
-      }
-      new FocusRequester(reqComp);
     }
   }
  else {

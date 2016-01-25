@@ -3,17 +3,13 @@
   List<String> notBibFiles=new ArrayList<>();
   List<String> bibFiles=new ArrayList<>();
   for (  String fileName : fileNames) {
-    String extension="";
+    Optional<String> extension=FileUtil.getFileExtension(fileName);
     ExternalFileType fileType=null;
-    int index=fileName.lastIndexOf('.');
-    if ((index >= 0) && (index < fileName.length())) {
-      extension=fileName.substring(index + 1).toLowerCase();
-    }
-    if ("bib".equals(extension)) {
+    if (extension.isPresent() && "bib".equals(extension.get())) {
       bibFiles.add(fileName);
       continue;
     }
-    fileType=Globals.prefs.getExternalFileTypeByExt(extension);
+    fileType=ExternalFileTypes.getInstance().getExternalFileTypeByExt(extension.orElse(""));
     if ((fileType != null) && (dropRow >= 0)) {
       boolean local=true;
       DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);

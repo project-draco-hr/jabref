@@ -5,22 +5,22 @@
   bg.add(useDefaultNumerical);
   bg.add(chooseDirectly);
   bg.add(setDirectory);
-  if (Globals.prefs.getBoolean("ooUseDefaultAuthoryearStyle")) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.OO_USE_DEFAULT_AUTHORYEAR_STYLE)) {
     useDefaultAuthoryear.setSelected(true);
   }
- else   if (Globals.prefs.getBoolean("ooUseDefaultNumericalStyle")) {
+ else   if (Globals.prefs.getBoolean(JabRefPreferences.OO_USE_DEFAULT_NUMERICAL_STYLE)) {
     useDefaultNumerical.setSelected(true);
   }
  else {
-    if (Globals.prefs.getBoolean("ooChooseStyleDirectly")) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.OO_CHOOSE_STYLE_DIRECTLY)) {
       chooseDirectly.setSelected(true);
     }
  else {
       setDirectory.setSelected(true);
     }
   }
-  directFile.setText(Globals.prefs.get("ooDirectFile"));
-  styleDir.setText(Globals.prefs.get("ooStyleDirectory"));
+  directFile.setText(Globals.prefs.get(JabRefPreferences.OO_DIRECT_FILE));
+  styleDir.setText(Globals.prefs.get(JabRefPreferences.OO_STYLE_DIRECTORY));
   directFile.setEditable(false);
   styleDir.setEditable(false);
   popup.add(edit);
@@ -46,14 +46,14 @@
       if (i == -1) {
         return;
       }
-      ExternalFileType type=Globals.prefs.getExternalFileTypeByExt("jstyle");
+      ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("jstyle");
       String link=tableModel.getElementAt(i).getFile().getPath();
       try {
-        if (type != null) {
-          JabRefDesktop.openExternalFileAnyFormat(new MetaData(),link,type);
+        if (type == null) {
+          JabRefDesktop.openExternalFileUnknown(frame,null,new MetaData(),link,new UnknownExternalFileType("jstyle"));
         }
  else {
-          JabRefDesktop.openExternalFileUnknown(frame,null,new MetaData(),link,new UnknownExternalFileType("jstyle"));
+          JabRefDesktop.openExternalFileAnyFormat(new MetaData(),link,type);
         }
       }
  catch (      IOException e) {
@@ -184,7 +184,7 @@
   diag.add(bb.getPanel(),BorderLayout.SOUTH);
   ActionMap am=bb.getPanel().getActionMap();
   InputMap im=bb.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-  im.put(Globals.prefs.getKey(KeyBinds.CLOSE_DIALOG),"close");
+  im.put(Globals.getKeyPrefs().getKey(KeyBinding.CLOSE_DIALOG),"close");
   am.put("close",cancelListener);
   im.put(KeyStroke.getKeyStroke("ENTER"),"enterOk");
   am.put("enterOk",okListener);

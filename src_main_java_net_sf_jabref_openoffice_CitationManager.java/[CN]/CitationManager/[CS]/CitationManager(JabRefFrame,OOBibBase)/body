@@ -5,15 +5,16 @@
   XNameAccess nameAccess=ooBase.getReferenceMarks();
   String[] names=ooBase.getJabRefReferenceMarks(nameAccess);
   for (  String name : names) {
-    List<String> keys=ooBase.parseRefMarkName(name);
-    list.add(new CitEntry(name,keys,"<html>..." + ooBase.getCitationContext(nameAccess,name,30,30,true) + "...</html>",ooBase.getCustomProperty(name)));
+    list.add(new CitEntry(name,"<html>..." + ooBase.getCitationContext(nameAccess,name,30,30,true) + "...</html>",ooBase.getCustomProperty(name)));
   }
   tableModel=new DefaultEventTableModel<>(list,new CitEntryFormat());
   table=new JTable(tableModel);
   diag.add(new JScrollPane(table),BorderLayout.CENTER);
   ButtonBarBuilder bb=new ButtonBarBuilder();
   bb.addGlue();
+  JButton ok=new JButton(Localization.lang("OK"));
   bb.addButton(ok);
+  JButton cancel=new JButton(Localization.lang("Cancel"));
   bb.addButton(cancel);
   bb.addGlue();
   bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -26,7 +27,7 @@
         storeSettings();
       }
  catch (      Exception ex) {
-        ex.printStackTrace();
+        LOGGER.warn("Problem modifying citation",ex);
         JOptionPane.showMessageDialog(frame,Localization.lang("Problem modifying citation"));
       }
       diag.dispose();
@@ -41,7 +42,7 @@
   }
 ;
   cancel.addActionListener(cancelAction);
-  bb.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(Globals.prefs.getKey(KeyBinds.CLOSE_DIALOG),"close");
+  bb.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(Globals.getKeyPrefs().getKey(KeyBinding.CLOSE_DIALOG),"close");
   bb.getPanel().getActionMap().put("close",cancelAction);
   table.getColumnModel().getColumn(0).setPreferredWidth(600);
   table.getColumnModel().getColumn(1).setPreferredWidth(90);

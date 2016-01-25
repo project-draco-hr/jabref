@@ -6,7 +6,6 @@
   Object bookmark=mxDocFactory.createInstance("com.sun.star.text.ReferenceMark");
   XNamed xNamed=UnoRuntime.queryInterface(XNamed.class,bookmark);
   xNamed.setName(name);
-  XTextContent xTextContent=UnoRuntime.queryInterface(XTextContent.class,bookmark);
   if (withText) {
     position.setString(citText);
     XPropertySet xCursorProps=UnoRuntime.queryInterface(XPropertySet.class,position);
@@ -24,6 +23,7 @@
  else {
     position.setString("");
   }
+  XTextContent xTextContent=UnoRuntime.queryInterface(XTextContent.class,bookmark);
   position.getText().insertTextContent(position,xTextContent,true);
   boolean italicize=style.getBooleanCitProperty("ItalicEtAl");
   if (italicize) {

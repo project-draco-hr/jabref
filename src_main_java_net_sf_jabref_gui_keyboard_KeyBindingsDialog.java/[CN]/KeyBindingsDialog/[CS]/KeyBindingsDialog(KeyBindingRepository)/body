@@ -1,0 +1,26 @@
+{
+  super();
+  setTitle(Localization.lang("Key bindings"));
+  setModal(true);
+  getContentPane().setLayout(new BorderLayout());
+  this.keyBindingRepository=keyBindingRepository;
+  this.table=setupTable();
+  updateTableData();
+  JScrollPane listScroller=new JScrollPane(table);
+  listScroller.setPreferredSize(new Dimension(250,400));
+  getContentPane().add(listScroller,BorderLayout.CENTER);
+  grabB.addKeyListener(new KeyBindingsListener(table));
+  buttonBox.add(grabB);
+  buttonBox.add(resetToDefaultKeyBindings);
+  buttonBox.add(ok);
+  buttonBox.add(cancel);
+  getContentPane().add(buttonBox,BorderLayout.SOUTH);
+  activateListeners();
+  Util.bindCloseDialogKeyToCancelAction(getRootPane(),cancel.getAction());
+  addWindowListener(new WindowAdapter(){
+    @Override public void windowClosing(    WindowEvent e){
+      dispose();
+    }
+  }
+);
+}

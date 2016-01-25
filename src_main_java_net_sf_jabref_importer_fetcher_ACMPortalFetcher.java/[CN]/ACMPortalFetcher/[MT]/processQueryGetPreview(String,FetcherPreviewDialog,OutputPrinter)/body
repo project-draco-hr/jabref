@@ -4,44 +4,40 @@
   shouldContinue=true;
   acmOrGuide=acmButton.isSelected();
   fetchAbstract=absCheckBox.isSelected();
-  int firstEntry=1;
-  String address=makeUrl(firstEntry);
+  String address=makeUrl();
   LinkedHashMap<String,JLabel> previews=new LinkedHashMap<>();
   try {
     URL url=new URL(address);
     String page=Util.getResults(url);
-    int hits=getNumberOfHits(page,"Found",ACMPortalFetcher.hitsPattern);
-    int index=page.indexOf("Found");
+    String resultsFound="<div id=\"resfound\">";
+    int hits=getNumberOfHits(page,resultsFound,ACMPortalFetcher.HITS_PATTERN);
+    int index=page.indexOf(resultsFound);
     if (index >= 0) {
-      page=page.substring(index + 5);
-      index=page.indexOf("Found");
-      if (index >= 0) {
-        page=page.substring(index);
-      }
+      page=page.substring(index + resultsFound.length());
     }
     if (hits == 0) {
       status.showMessage(Localization.lang("No entries found for the search string '%0'",terms),Localization.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
-    hits=getNumberOfHits(page,"Results",ACMPortalFetcher.maxHitsPattern);
-    for (int i=0; i < hits; i++) {
-      parse(page,0,firstEntry,previews);
-      firstEntry+=ACMPortalFetcher.perPage;
+ else     if (hits > 20) {
+      status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",String.valueOf(hits),String.valueOf(PER_PAGE)),Localization.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
     }
+    hits=getNumberOfHits(page,"<div class=\"pagerange\">",ACMPortalFetcher.MAX_HITS_PATTERN);
+    parse(page,Math.min(hits,PER_PAGE),previews);
     for (    Map.Entry<String,JLabel> entry : previews.entrySet()) {
       preview.addEntry(entry.getKey(),entry.getValue());
     }
     return true;
   }
  catch (  MalformedURLException e) {
-    e.printStackTrace();
+    LOGGER.warn("Problem with ACM fetcher URL",e);
   }
 catch (  ConnectException e) {
     status.showMessage(Localization.lang("Connection to ACM Portal failed"),Localization.lang("Search ACM Portal"),JOptionPane.ERROR_MESSAGE);
   }
 catch (  IOException e) {
     status.showMessage(e.getMessage(),Localization.lang("Search ACM Portal"),JOptionPane.ERROR_MESSAGE);
-    e.printStackTrace();
+    LOGGER.warn("Problem with ACM Portal",e);
   }
   return false;
 }

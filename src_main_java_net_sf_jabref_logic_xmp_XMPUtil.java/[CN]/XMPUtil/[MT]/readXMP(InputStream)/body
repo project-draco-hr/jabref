@@ -1,5 +1,5 @@
 {
-  List<BibtexEntry> result=new LinkedList<>();
+  List<BibEntry> result=new LinkedList<>();
   try (PDDocument document=PDDocument.load(inputStream)){
     if (document.isEncrypted()) {
       throw new EncryptionNotSupportedException("Error: Cannot read metadata from encrypted document.");
@@ -15,7 +15,7 @@
         schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
         for (        XMPSchema schema : schemas) {
           XMPSchemaDublinCore dc=(XMPSchemaDublinCore)schema;
-          BibtexEntry entry=XMPUtil.getBibtexEntryFromDublinCore(dc);
+          BibEntry entry=XMPUtil.getBibtexEntryFromDublinCore(dc);
           if (entry != null) {
             result.add(entry);
           }
@@ -23,7 +23,7 @@
       }
     }
     if (result.isEmpty()) {
-      BibtexEntry entry=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
+      BibEntry entry=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
       if (entry != null) {
         result.add(entry);
       }
