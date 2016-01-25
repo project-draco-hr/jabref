@@ -1,33 +1,36 @@
 {
-  entry.setDescription(description.getText().trim());
+  String description=this.description.getText().trim();
+  String link="";
   try {
     String[] dirs=metaData.getFileDirectory(Globals.FILE_FIELD);
     if (dirs.length == 0) {
-      entry.setLink(link.getText().trim());
+      link=this.link.getText().trim();
     }
  else {
       boolean found=false;
       for (      String dir : dirs) {
         String canPath=(new File(dir)).getCanonicalPath();
-        File fl=new File(link.getText().trim());
+        File fl=new File(this.link.getText().trim());
         if (fl.isAbsolute()) {
           String flPath=fl.getCanonicalPath();
           if ((flPath.length() > canPath.length()) && (flPath.startsWith(canPath))) {
             String relFileName=fl.getCanonicalPath().substring(canPath.length() + 1);
-            entry.setLink(relFileName);
+            link=relFileName;
             found=true;
             break;
           }
         }
       }
       if (!found) {
-        entry.setLink(link.getText().trim());
+        link=this.link.getText().trim();
       }
     }
   }
- catch (  java.io.IOException ex) {
-    ex.printStackTrace();
-    entry.setLink(link.getText().trim());
+ catch (  IOException ex) {
+    link=this.link.getText().trim();
   }
-  entry.setType((ExternalFileType)types.getSelectedItem());
+  ExternalFileType type=(ExternalFileType)types.getSelectedItem();
+  entry.description=description;
+  entry.type=type;
+  entry.link=link;
 }

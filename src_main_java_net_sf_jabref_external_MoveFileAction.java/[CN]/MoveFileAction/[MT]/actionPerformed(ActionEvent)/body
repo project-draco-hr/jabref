@@ -4,7 +4,7 @@
     return;
   }
   FileListEntry flEntry=editor.getTableModel().getEntry(selected);
-  String ln=flEntry.getLink();
+  String ln=flEntry.link;
   boolean httpLink=ln.toLowerCase().startsWith("http");
   if (httpLink) {
   }
@@ -26,8 +26,8 @@
   }
   if ((file != null) && file.exists()) {
     String extension=null;
-    if (flEntry.getType() != null) {
-      extension="." + flEntry.getType().getExtension();
+    if (flEntry.type != null) {
+      extension="." + flEntry.type.getExtension();
     }
     File newFile=null;
     boolean repeat=true;
@@ -35,7 +35,7 @@
       repeat=false;
       String chosenFile;
       if (toFileDir) {
-        String suggName=Util.getLinkedFileName(eEditor.getDatabase(),eEditor.getEntry()).concat(".").concat(flEntry.getType().getExtension());
+        String suggName=Util.getLinkedFileName(eEditor.getDatabase(),eEditor.getEntry()).concat(".").concat(flEntry.type.getExtension());
         CheckBoxMessage cbm=new CheckBoxMessage(Localization.lang("Move file to file directory?"),Localization.lang("Rename to '%0'",suggName),Globals.prefs.getBoolean(JabRefPreferences.RENAME_ON_MOVE_FILE_TO_FILE_DIR));
         int answer;
         if (suggName.equals(file.getName())) {
@@ -87,14 +87,17 @@
           String canPath=new File(dirs[found]).getCanonicalPath();
           if (newFile.getCanonicalPath().startsWith(canPath)) {
             if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar)) {
-              flEntry.setLink(newFile.getCanonicalPath().substring(1 + canPath.length()));
+              String newLink=newFile.getCanonicalPath().substring(1 + canPath.length());
+              editor.getTableModel().setEntry(selected,new FileListEntry(flEntry.description,newLink,flEntry.type));
             }
  else {
-              flEntry.setLink(newFile.getCanonicalPath().substring(canPath.length()));
+              String newLink=newFile.getCanonicalPath().substring(canPath.length());
+              editor.getTableModel().setEntry(selected,new FileListEntry(flEntry.description,newLink,flEntry.type));
             }
           }
  else {
-            flEntry.setLink(newFile.getCanonicalPath());
+            String newLink=newFile.getCanonicalPath();
+            editor.getTableModel().setEntry(selected,new FileListEntry(flEntry.description,newLink,flEntry.type));
           }
           eEditor.updateField(editor);
           frame.output(Localization.lang("File moved"));
@@ -110,6 +113,6 @@
     }
   }
  else {
-    JOptionPane.showMessageDialog(frame,Localization.lang("Could not find file '%0'.",flEntry.getLink()),Localization.lang("File not found"),JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(frame,Localization.lang("Could not find file '%0'.",flEntry.link),Localization.lang("File not found"),JOptionPane.ERROR_MESSAGE);
   }
 }

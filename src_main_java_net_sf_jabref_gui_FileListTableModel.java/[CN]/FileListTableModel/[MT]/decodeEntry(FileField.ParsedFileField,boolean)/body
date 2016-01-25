@@ -1,11 +1,11 @@
 {
-  ExternalFileType type=Globals.prefs.getExternalFileTypeByName(entry.fileType);
+  ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByName(entry.fileType);
   if (deduceUnknownType && (type instanceof UnknownExternalFileType)) {
-    type=Globals.prefs.getExternalFileTypeByMimeType(entry.fileType);
+    type=ExternalFileTypes.getInstance().getExternalFileTypeByMimeType(entry.fileType);
     if (type == null) {
       Optional<String> extension=FileUtil.getFileExtension(entry.link);
       if (extension.isPresent()) {
-        ExternalFileType typeGuess=Globals.prefs.getExternalFileTypeByExt(extension.get());
+        ExternalFileType typeGuess=ExternalFileTypes.getInstance().getExternalFileTypeByExt(extension.get());
         if (typeGuess != null) {
           type=typeGuess;
         }
