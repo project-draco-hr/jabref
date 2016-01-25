@@ -5,24 +5,15 @@
   statusInfos.setText(null);
   BibDatabase refBase=bp.getDatabase();
   String auxName=auxFileField.getText();
-  if (auxName != null) {
-    if ((refBase != null) && !auxName.isEmpty()) {
-      auxParser.clear();
-      notFoundList.setListData(auxParser.generate(auxName,refBase));
-      statusInfos.append(Localization.lang("keys in database") + " " + refBase.getEntryCount());
-      statusInfos.append("\n" + Localization.lang("found in aux file") + " "+ auxParser.getFoundKeysInAux());
-      statusInfos.append("\n" + Localization.lang("resolved") + " "+ auxParser.getResolvedKeysCount());
-      statusInfos.append("\n" + Localization.lang("not found") + " "+ auxParser.getNotResolvedKeysCount());
-      statusInfos.append("\n" + Localization.lang("crossreferenced entries included") + " "+ auxParser.getCrossreferencedEntriesCount());
-      int nested=auxParser.getNestedAuxCounter();
-      if (nested > 0) {
-        statusInfos.append("\n" + Localization.lang("nested_aux_files") + " "+ nested);
-      }
-      selectInDBButton.setEnabled(true);
-      generateButton.setEnabled(true);
-    }
+  if ((auxName != null) && (refBase != null) && !auxName.isEmpty()) {
+    auxParser.clear();
+    List<String> list=auxParser.generate(auxName,refBase);
+    notFoundList.setListData(list.toArray(new String[list.size()]));
+    statusInfos.append(auxParser.getInformation(false));
+    selectInDBButton.setEnabled(true);
+    generateButton.setEnabled(true);
   }
-  if (auxParser.getGeneratedDatabase().getEntryCount() < 1) {
+  if (auxParser.emptyGeneratedDatabase()) {
     statusInfos.append("\n" + Localization.lang("empty database"));
     generateButton.setEnabled(false);
   }
