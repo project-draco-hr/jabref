@@ -3,6 +3,15 @@
   List<BibEntry> bestResult=null;
   int bestResultCount=0;
   String bestFormatName=null;
+  try {
+    ParserResult pr=OpenDatabaseAction.loadDatabase(new File(filename),Globals.prefs.getDefaultEncoding());
+    if ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0)) {
+      pr.setFile(new File(filename));
+      return new UnknownFormatImport(ImportFormatReader.BIBTEX_FORMAT,pr);
+    }
+  }
+ catch (  Throwable ignore) {
+  }
   for (  ImportFormat imFo : getImportFormats()) {
     try {
       List<BibEntry> entries=importFromFile(imFo,filename,nullOutput);
@@ -26,16 +35,6 @@
   if (bestResult != null) {
     ParserResult parserResult=new ParserResult(bestResult);
     return new UnknownFormatImport(bestFormatName,parserResult);
-  }
-  try {
-    ParserResult pr=OpenDatabaseAction.loadDatabase(new File(filename),Globals.prefs.getDefaultEncoding());
-    if ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0)) {
-      pr.setFile(new File(filename));
-      return new UnknownFormatImport(ImportFormatReader.BIBTEX_FORMAT,pr);
-    }
-  }
- catch (  Throwable ex) {
-    return null;
   }
   return null;
 }
