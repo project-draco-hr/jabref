@@ -4,9 +4,8 @@
   }
   Object o=bibtex.getFieldOrAlias(field);
   if ((o == null) && (database != null) && database.followCrossrefs&& !field.equals(BibEntry.KEY_FIELD)) {
-    Object crossRef=bibtex.getField("crossref");
-    if (crossRef != null) {
-      BibEntry referred=database.getEntryByKey((String)crossRef);
+    if (bibtex.hasField("crossref")) {
+      BibEntry referred=database.getEntryByKey(bibtex.getField("crossref"));
       if (referred != null) {
         o=referred.getField(field);
       }
