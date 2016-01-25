@@ -1,8 +1,8 @@
 {
-  String[] dirs=panel.metaData().getFileDirectory(Globals.FILE_FIELD);
+  List<String> dirs=panel.metaData().getFileDirectory(Globals.FILE_FIELD);
   int found=-1;
-  for (int i=0; i < dirs.length; i++) {
-    if (new File(dirs[i]).exists()) {
+  for (int i=0; i < dirs.size(); i++) {
+    if (new File(dirs.get(i)).exists()) {
       found=i;
       break;
     }
@@ -11,7 +11,7 @@
     return false;
   }
   File fromFile=new File(fileName);
-  File toFile=new File(dirs[found] + System.getProperty("file.separator") + destFilename);
+  File toFile=new File(dirs.get(found) + System.getProperty("file.separator") + destFilename);
   if (toFile.exists()) {
     int answer=JOptionPane.showConfirmDialog(frame,Localization.lang("'%0' exists. Overwrite file?",toFile.getAbsolutePath()),Localization.lang("Overwrite file?"),JOptionPane.YES_NO_OPTION);
     if (answer == JOptionPane.NO_OPTION) {
