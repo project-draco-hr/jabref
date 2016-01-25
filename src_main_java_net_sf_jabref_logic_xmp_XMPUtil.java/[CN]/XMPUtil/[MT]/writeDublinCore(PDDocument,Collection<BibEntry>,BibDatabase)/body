@@ -5,11 +5,11 @@
   PDDocumentCatalog catalog=document.getDocumentCatalog();
   PDMetadata metaRaw=catalog.getMetadata();
   XMPMetadata meta;
-  if (metaRaw != null) {
-    meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+  if (metaRaw == null) {
+    meta=new XMPMetadata();
   }
  else {
-    meta=new XMPMetadata();
+    meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
   }
   List<XMPSchema> schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
   for (  XMPSchema schema : schemas) {
