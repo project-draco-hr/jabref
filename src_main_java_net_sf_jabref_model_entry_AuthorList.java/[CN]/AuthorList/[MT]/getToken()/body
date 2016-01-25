@@ -18,45 +18,43 @@
   tokenAbbr=-1;
   tokenTerm=' ';
   tokenCase=true;
-  int braces_level=0;
-  int current_backslash=-1;
-  boolean first_letter_is_found=false;
+  int bracesLevel=0;
+  int currentBackslash=-1;
+  boolean firstLetterIsFound=false;
   while (tokenEnd < original.length()) {
     char c=original.charAt(tokenEnd);
     if (c == '{') {
-      braces_level++;
+      bracesLevel++;
     }
-    if (braces_level > 0) {
-      if (c == '}') {
-        braces_level--;
-      }
+    if ((c == '}') && (bracesLevel > 0)) {
+      bracesLevel--;
     }
-    if (first_letter_is_found && (tokenAbbr < 0) && (braces_level == 0)) {
+    if (firstLetterIsFound && (tokenAbbr < 0) && (bracesLevel == 0)) {
       tokenAbbr=tokenEnd;
     }
-    if (!first_letter_is_found && (current_backslash < 0) && Character.isLetter(c)) {
-      if (braces_level == 0) {
+    if (!firstLetterIsFound && (currentBackslash < 0) && Character.isLetter(c)) {
+      if (bracesLevel == 0) {
         tokenCase=Character.isUpperCase(c);
       }
  else {
         tokenCase=true;
       }
-      first_letter_is_found=true;
+      firstLetterIsFound=true;
     }
-    if ((current_backslash >= 0) && !Character.isLetter(c)) {
-      if (!first_letter_is_found) {
-        String tex_cmd_name=original.substring(current_backslash + 1,tokenEnd);
-        if (AuthorList.TEX_NAMES.contains(tex_cmd_name)) {
-          tokenCase=Character.isUpperCase(tex_cmd_name.charAt(0));
-          first_letter_is_found=true;
+    if ((currentBackslash >= 0) && !Character.isLetter(c)) {
+      if (!firstLetterIsFound) {
+        String texCmdName=original.substring(currentBackslash + 1,tokenEnd);
+        if (AuthorList.TEX_NAMES.contains(texCmdName)) {
+          tokenCase=Character.isUpperCase(texCmdName.charAt(0));
+          firstLetterIsFound=true;
         }
       }
-      current_backslash=-1;
+      currentBackslash=-1;
     }
     if (c == '\\') {
-      current_backslash=tokenEnd;
+      currentBackslash=tokenEnd;
     }
-    if (braces_level == 0) {
+    if (bracesLevel == 0) {
       if ((c == ',') || (c == '~') || (c == '-')|| Character.isWhitespace(c)) {
         break;
       }
