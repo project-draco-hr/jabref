@@ -1,7 +1,7 @@
 {
   Optional<String> extension=getFileExtension(name);
-  String[] directories=metaData.getFileDirectory(extension.orElse(null));
-  String[] fileDir=metaData.getFileDirectory(Globals.FILE_FIELD);
+  List<String> directories=metaData.getFileDirectory(extension.orElse(null));
+  List<String> fileDir=metaData.getFileDirectory(Globals.FILE_FIELD);
   ArrayList<String> al=new ArrayList<>();
   for (  String dir : directories) {
     if (!al.contains(dir)) {
@@ -13,6 +13,5 @@
       al.add(aFileDir);
     }
   }
-  String[] dirs=al.toArray(new String[al.size()]);
-  return expandFilename(name,dirs);
+  return expandFilename(name,al);
 }

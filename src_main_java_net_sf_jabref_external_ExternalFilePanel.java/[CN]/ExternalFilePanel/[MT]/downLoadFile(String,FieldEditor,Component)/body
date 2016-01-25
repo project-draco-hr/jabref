@@ -42,7 +42,7 @@
         fieldEditor.setText(Localization.lang("Downloading..."));
         output(Localization.lang("Downloading..."));
         String plannedName=getPlannedFileName(res);
-        String[] dirs=metaData.getFileDirectory(fieldName);
+        List<String> dirs=metaData.getFileDirectory(fieldName);
         String directory=null;
         for (        String dir : dirs) {
           if (new File(dir).exists()) {
@@ -51,8 +51,8 @@
           }
         }
         if (directory == null) {
-          if (dirs.length > 0) {
-            JOptionPane.showMessageDialog(parent,Localization.lang("Could not find directory for %0-files: %1",fieldName,dirs[0]),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          if (dirs.size() > 0) {
+            JOptionPane.showMessageDialog(parent,Localization.lang("Could not find directory for %0-files: %1",fieldName,dirs.get(0)),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
           }
  else {
             JOptionPane.showMessageDialog(parent,Localization.lang("No directory defined for %0-files",fieldName),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);

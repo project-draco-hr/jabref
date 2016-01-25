@@ -1,27 +1,2 @@
 {
-  Object o=getKey();
-  if ((o == null) || (Globals.prefs.get(fieldName + Globals.DIR_SUFFIX) == null)) {
-    output(Localization.lang("You must set both BibTeX key and %0 directory",fieldName.toUpperCase()) + '.');
-    return null;
-  }
-  output(Localization.lang("Searching for %0 file",fieldName.toUpperCase()) + " '" + o+ '.'+ fieldName+ "'...");
-  return new Runnable(){
-    @Override public void run(){
-      LinkedList<String> list=new LinkedList<>();
-      String[] dirs=metaData.getFileDirectory(fieldName);
-      Collections.addAll(list,dirs);
-      String found=FileFinder.findPdf(getEntry(),fieldName,list.toArray(new String[list.size()]));
-      if (found != null) {
-        editor.setText(found);
-        if (entryEditor != null) {
-          entryEditor.updateField(editor);
-        }
-        output(Localization.lang("%0 field set",fieldName.toUpperCase()) + '.');
-      }
- else {
-        output(Localization.lang("No %0 found",fieldName.toUpperCase()) + '.');
-      }
-    }
-  }
-;
 }

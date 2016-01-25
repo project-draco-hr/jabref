@@ -8,10 +8,10 @@
   boolean httpLink=ln.toLowerCase().startsWith("http");
   if (httpLink) {
   }
-  String[] dirs=frame.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD);
+  List<String> dirs=frame.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD);
   int found=-1;
-  for (int i=0; i < dirs.length; i++) {
-    if (new File(dirs[i]).exists()) {
+  for (int i=0; i < dirs.size(); i++) {
+    if (new File(dirs.get(i)).exists()) {
       found=i;
       break;
     }
@@ -48,8 +48,8 @@
           return;
         }
         Globals.prefs.putBoolean(JabRefPreferences.RENAME_ON_MOVE_FILE_TO_FILE_DIR,cbm.isSelected());
-        StringBuilder sb=new StringBuilder(dirs[found]);
-        if (!dirs[found].endsWith(File.separator)) {
+        StringBuilder sb=new StringBuilder(dirs.get(found));
+        if (!dirs.get(found).endsWith(File.separator)) {
           sb.append(File.separator);
         }
         if (cbm.isSelected()) {
@@ -84,7 +84,7 @@
         }
         if (success) {
           file.delete();
-          String canPath=new File(dirs[found]).getCanonicalPath();
+          String canPath=new File(dirs.get(found)).getCanonicalPath();
           if (newFile.getCanonicalPath().startsWith(canPath)) {
             if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar)) {
               String newLink=newFile.getCanonicalPath().substring(1 + canPath.length());

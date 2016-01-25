@@ -1,9 +1,9 @@
 {
   String dialogTitle=Localization.lang("Link to file %0",linkFileName);
-  String[] dirs=panel.metaData().getFileDirectory(Globals.FILE_FIELD);
+  List<String> dirs=panel.metaData().getFileDirectory(Globals.FILE_FIELD);
   int found=-1;
-  for (int i=0; i < dirs.length; i++) {
-    if (new File(dirs[i]).exists()) {
+  for (int i=0; i < dirs.size(); i++) {
+    if (new File(dirs.get(i)).exists()) {
       found=i;
       break;
     }
@@ -17,7 +17,7 @@
     linkInPlace.setSelected(true);
   }
  else {
-    destDirLabel.setText(Localization.lang("File directory is '%0':",dirs[found]));
+    destDirLabel.setText(Localization.lang("File directory is '%0':",dirs.get(found)));
     copyRadioButton.setEnabled(true);
     moveRadioButton.setEnabled(true);
     renameToTextBox.setEnabled(true);
