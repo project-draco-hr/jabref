@@ -1,6 +1,12 @@
 {
   sidep.setComponents(visible);
-  if (!visible.isEmpty()) {
+  if (visible.isEmpty()) {
+    if (sidep.isVisible()) {
+      Globals.prefs.putInt(JabRefPreferences.SIDE_PANE_WIDTH,frame.contentPane.getDividerLocation());
+    }
+    sidep.setVisible(false);
+  }
+ else {
     boolean wasVisible=sidep.isVisible();
     sidep.setVisible(true);
     if (!wasVisible) {
@@ -12,11 +18,5 @@
         frame.contentPane.setDividerLocation(getPanel().getPreferredSize().width);
       }
     }
-  }
- else {
-    if (sidep.isVisible()) {
-      Globals.prefs.putInt(JabRefPreferences.SIDE_PANE_WIDTH,frame.contentPane.getDividerLocation());
-    }
-    sidep.setVisible(false);
   }
 }

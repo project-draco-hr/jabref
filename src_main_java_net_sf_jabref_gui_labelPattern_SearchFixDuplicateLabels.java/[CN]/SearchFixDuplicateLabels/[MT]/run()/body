@@ -5,10 +5,7 @@
   for (  BibEntry entry : db.getEntries()) {
     String key=entry.getCiteKey();
     if ((key != null) && !key.isEmpty()) {
-      if (!foundKeys.containsKey(key)) {
-        foundKeys.put(key,entry);
-      }
- else {
+      if (foundKeys.containsKey(key)) {
         if (dupes.containsKey(key)) {
           dupes.get(key).add(entry);
         }
@@ -18,6 +15,9 @@
           al.add(entry);
           dupes.put(key,al);
         }
+      }
+ else {
+        foundKeys.put(key,entry);
       }
     }
   }

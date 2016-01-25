@@ -26,12 +26,10 @@
       duplicateWarning=true;
     }
     for (    String field : entry.getFieldNames()) {
-      if (BibtexFields.isDisplayableField(field)) {
-        if (!newEntry.hasField(field)) {
-          compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),null));
-          entry.clearField(field);
-          anyChanged=true;
-        }
+      if (BibtexFields.isDisplayableField(field) && !newEntry.hasField(field)) {
+        compound.addEdit(new UndoableFieldChange(entry,field,entry.getField(field),null));
+        entry.clearField(field);
+        anyChanged=true;
       }
     }
     for (    String field : newEntry.getFieldNames()) {
@@ -65,13 +63,13 @@
       panel.output(Localization.lang("Stored entry") + '.');
     }
     lastSourceStringAccepted=source.getText();
-    if (!changedType) {
+    if (changedType) {
+      panel.updateEntryEditorIfShowing();
+    }
+ else {
       updateAllFields();
       lastSourceAccepted=true;
       updateSource=true;
-    }
- else {
-      panel.updateEntryEditorIfShowing();
     }
     panel.markBaseChanged();
     SwingUtilities.invokeLater(new Runnable(){

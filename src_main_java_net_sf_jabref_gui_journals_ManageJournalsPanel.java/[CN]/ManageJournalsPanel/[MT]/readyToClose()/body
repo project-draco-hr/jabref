@@ -1,11 +1,7 @@
 {
   File f;
   if (newFile.isSelected()) {
-    if (!newNameTf.getText().isEmpty()) {
-      f=new File(newNameTf.getText());
-      return !f.exists() || (JOptionPane.showConfirmDialog(this,Localization.lang("'%0' exists. Overwrite file?",f.getName()),Localization.lang("Store journal abbreviations"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION);
-    }
- else {
+    if (newNameTf.getText().isEmpty()) {
       if (tableModel.getRowCount() > 0) {
         JOptionPane.showMessageDialog(this,Localization.lang("You must choose a filename to store journal abbreviations"),Localization.lang("Store journal abbreviations"),JOptionPane.ERROR_MESSAGE);
         return false;
@@ -13,6 +9,10 @@
  else {
         return true;
       }
+    }
+ else {
+      f=new File(newNameTf.getText());
+      return !f.exists() || (JOptionPane.showConfirmDialog(this,Localization.lang("'%0' exists. Overwrite file?",f.getName()),Localization.lang("Store journal abbreviations"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION);
     }
   }
   return true;

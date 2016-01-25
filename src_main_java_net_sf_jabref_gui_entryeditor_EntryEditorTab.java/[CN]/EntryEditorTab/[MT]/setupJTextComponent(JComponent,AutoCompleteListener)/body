@@ -1,14 +1,14 @@
 {
-  if (autoCompleteListener != null) {
+  if (autoCompleteListener == null) {
+    component.addFocusListener(fieldListener);
+  }
+ else {
     component.addKeyListener(autoCompleteListener);
     component.addFocusListener(autoCompleteListener);
     autoCompleteListener.setNextFocusListener(fieldListener);
   }
- else {
-    component.addFocusListener(fieldListener);
-  }
   setupKeyBindings(component.getInputMap(JComponent.WHEN_FOCUSED),component.getActionMap());
-  HashSet<AWTKeyStroke> keys=new HashSet<>(component.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
+  Set<AWTKeyStroke> keys=new HashSet<>(component.getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS));
   keys.clear();
   keys.add(AWTKeyStroke.getAWTKeyStroke("pressed TAB"));
   component.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,keys);
