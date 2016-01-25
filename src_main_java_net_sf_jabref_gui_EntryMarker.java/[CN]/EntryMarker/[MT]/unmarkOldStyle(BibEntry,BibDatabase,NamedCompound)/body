@@ -1,25 +1,2 @@
 {
-  TreeSet<Object> owners=new TreeSet<>();
-  for (  BibEntry entry : database.getEntries()) {
-    Object o=entry.getField(BibtexFields.OWNER);
-    if (o != null) {
-      owners.add(o);
-    }
-  }
-  owners.remove(Globals.prefs.get(JabRefPreferences.DEFAULT_OWNER));
-  StringBuilder sb=new StringBuilder();
-  for (  Object owner : owners) {
-    sb.append('[');
-    sb.append(owner);
-    sb.append(']');
-  }
-  String newVal=sb.toString();
-  if (newVal.isEmpty()) {
-    ce.addEdit(new UndoableFieldChange(be,BibtexFields.MARKED,be.getField(BibtexFields.MARKED),null));
-    be.clearField(BibtexFields.MARKED);
-  }
- else {
-    ce.addEdit(new UndoableFieldChange(be,BibtexFields.MARKED,be.getField(BibtexFields.MARKED),newVal));
-    be.setField(BibtexFields.MARKED,newVal);
-  }
 }
