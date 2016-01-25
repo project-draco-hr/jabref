@@ -9,15 +9,16 @@
     String entryType=parseTextToken();
     EntryType type=EntryTypes.getType(entryType);
     boolean isEntry=type != null;
+    String trimmedEntryType=entryType.toLowerCase().trim();
     if (!isEntry) {
-      if ("preamble".equals(entryType.toLowerCase())) {
+      if ("preamble".equals(trimmedEntryType)) {
         database.setPreamble(parsePreamble());
         dumpTextReadSoFarToString();
       }
- else       if ("string".equals(entryType.toLowerCase())) {
+ else       if ("string".equals(trimmedEntryType)) {
         parseBibtexString();
       }
- else       if ("comment".equals(entryType.toLowerCase())) {
+ else       if ("comment".equals(trimmedEntryType)) {
         parseJabRefComment(meta);
       }
  else {
