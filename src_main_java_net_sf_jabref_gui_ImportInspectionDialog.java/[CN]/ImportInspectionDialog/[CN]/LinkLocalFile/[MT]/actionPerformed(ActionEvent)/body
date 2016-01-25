@@ -1,21 +1,2 @@
 {
-  if (selectionModel.getSelected().size() != 1) {
-    return;
-  }
-  entry=selectionModel.getSelected().get(0);
-  FileListEntry flEntry=new FileListEntry("","",null);
-  FileListEntryEditor editor=new FileListEntryEditor(frame,flEntry,false,true,metaData);
-  editor.setVisible(true,true);
-  if (editor.okPressed()) {
-    FileListTableModel localModel=new FileListTableModel();
-    String oldVal=entry.getField(Globals.FILE_FIELD);
-    if (oldVal != null) {
-      localModel.setContent(oldVal);
-    }
-    localModel.addEntry(localModel.getRowCount(),flEntry);
-    entries.getReadWriteLock().writeLock().lock();
-    entry.setField(Globals.FILE_FIELD,localModel.getStringRepresentation());
-    entries.getReadWriteLock().writeLock().unlock();
-    glTable.repaint();
-  }
 }
