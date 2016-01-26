@@ -1,0 +1,9 @@
+{
+  BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
+  BibDatabase database=new BibDatabase();
+  database.setPreamble("Test preamble");
+  BibDatabaseContext context=new BibDatabaseContext(database,new Defaults(BibDatabaseMode.BIBTEX));
+  StringWriter stringWriter=new StringWriter();
+  databaseWriter.writePartOfDatabase(stringWriter,context,Collections.emptyList(),new SavePreferences(),false,false);
+  Assert.assertEquals(Globals.NEWLINE + "@PREAMBLE{Test preamble}" + Globals.NEWLINE,stringWriter.toString());
+}
