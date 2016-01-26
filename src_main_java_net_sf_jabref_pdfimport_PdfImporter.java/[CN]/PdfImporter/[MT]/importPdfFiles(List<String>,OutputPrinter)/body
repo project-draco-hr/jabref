@@ -6,7 +6,7 @@
   boolean doNotShowAgain=false;
   boolean neverShow=Globals.prefs.getBoolean(ImportSettingsTab.PREF_IMPORT_ALWAYSUSE);
   int globalChoice=Globals.prefs.getInt(ImportSettingsTab.PREF_IMPORT_DEFAULT_PDF_IMPORT_STYLE);
-  List<String> dirsS=panel.metaData().getFileDirectory(Globals.FILE_FIELD);
+  List<String> dirsS=panel.loadedDatabase.getMetaData().getFileDirectory(Globals.FILE_FIELD);
   List<BibEntry> res=new ArrayList<>();
   fileNameLoop:   for (  String fileName : fileNames) {
     List<BibEntry> xmpEntriesInFile=readXmpEntries(fileName);
@@ -95,7 +95,7 @@ continue fileNameLoop;
 entry=localRes.get(0);
 panel.database().insertEntry(entry);
 panel.markBaseChanged();
-LabelPatternUtil.makeLabel(panel.metaData(),panel.database(),entry);
+LabelPatternUtil.makeLabel(panel.loadedDatabase.getMetaData(),panel.database(),entry);
 dfh=new DroppedFileHandler(frame,panel);
 dfh.linkPdfToEntry(fileName,entryTable,entry);
 panel.highlightEntry(entry);

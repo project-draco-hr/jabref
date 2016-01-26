@@ -5,8 +5,8 @@
   final Collection<BibEntry> entries=Collections.singleton(entry);
   final ExternalFileType[] types=ExternalFileTypes.getInstance().getExternalFileTypeSelection();
   final List<File> dirs=new ArrayList<>();
-  if (basePanel.metaData.getFileDirectory(Globals.FILE_FIELD).size() > 0) {
-    final List<String> mdDirs=basePanel.metaData.getFileDirectory(Globals.FILE_FIELD);
+  if (basePanel.loadedDatabase.getMetaData().getFileDirectory(Globals.FILE_FIELD).size() > 0) {
+    final List<String> mdDirs=basePanel.loadedDatabase.getMetaData().getFileDirectory(Globals.FILE_FIELD);
     for (    final String mdDir : mdDirs) {
       dirs.add(new File(mdDir));
     }
@@ -32,7 +32,7 @@
         ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt(extension.get());
         if (type != null) {
           try {
-            JabRefDesktop.openExternalFileAnyFormat(basePanel.metaData,filepath,type);
+            JabRefDesktop.openExternalFileAnyFormat(basePanel.loadedDatabase.getMetaData(),filepath,type);
             basePanel.output(Localization.lang("External viewer called") + '.');
             return Optional.of(filepath);
           }

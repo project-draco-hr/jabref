@@ -1,18 +1,17 @@
 {
   Objects.requireNonNull(frame);
-  Objects.requireNonNull(db);
   Objects.requireNonNull(encoding);
-  Objects.requireNonNull(metaData);
+  Objects.requireNonNull(loadedDatabase);
   this.encoding=encoding;
-  this.metaData=metaData;
+  this.loadedDatabase=loadedDatabase;
   this.sidePaneManager=GUIGlobals.sidePaneManager;
   this.frame=frame;
-  database=db;
+  this.database=loadedDatabase.getDatabase();
   searchBar=new SearchBar(this);
   setupMainPanel();
   setupActions();
-  metaData.setFile(file);
-  db.addDatabaseChangeListener(new GroupTreeUpdater());
+  File file=loadedDatabase.getDatabaseFile();
+  this.database.addDatabaseChangeListener(new GroupTreeUpdater());
   if (file == null) {
     if (!database.getEntries().isEmpty()) {
       this.baseChanged=true;

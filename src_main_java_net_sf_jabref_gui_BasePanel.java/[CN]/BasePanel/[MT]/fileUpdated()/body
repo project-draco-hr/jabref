@@ -3,8 +3,8 @@
     return;
   }
   updatedExternally=true;
-  final ChangeScanner scanner=new ChangeScanner(frame,BasePanel.this,BasePanel.this.getDatabaseFile());
-  if ((BasePanel.this.getDatabaseFile() != null) && !FileBasedLock.waitForFileLock(BasePanel.this.getDatabaseFile(),10)) {
+  final ChangeScanner scanner=new ChangeScanner(frame,BasePanel.this,getLoadedDatabase().getDatabaseFile());
+  if ((getLoadedDatabase().getDatabaseFile() != null) && !FileBasedLock.waitForFileLock(getLoadedDatabase().getDatabaseFile(),10)) {
     LOGGER.error("File updated externally, but change scan failed because the file is locked.");
     Globals.fileUpdateMonitor.perturbTimestamp(getFileMonitorHandle());
     return;
@@ -17,7 +17,7 @@
         sidePaneManager.hideComponent(FileUpdatePanel.NAME);
         sidePaneManager.unregisterComponent(FileUpdatePanel.NAME);
       }
-      FileUpdatePanel pan=new FileUpdatePanel(BasePanel.this,sidePaneManager,getDatabaseFile(),scanner);
+      FileUpdatePanel pan=new FileUpdatePanel(BasePanel.this,sidePaneManager,getLoadedDatabase().getDatabaseFile(),scanner);
       sidePaneManager.register(FileUpdatePanel.NAME,pan);
       sidePaneManager.show(FileUpdatePanel.NAME);
     }
