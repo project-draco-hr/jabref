@@ -1,11 +1,12 @@
 {
   if ("bibtextype".equals(field)) {
-    return EntryTypes.getDisplayNameFor(bibtex.getType());
+    TypedBibEntry typedEntry=new TypedBibEntry(entry,Optional.ofNullable(database));
+    return typedEntry.getTypeForDisplay();
   }
-  Object o=bibtex.getFieldOrAlias(field);
+  Object o=entry.getFieldOrAlias(field);
   if ((o == null) && (database != null) && database.followCrossrefs&& !field.equals(BibEntry.KEY_FIELD)) {
-    if (bibtex.hasField("crossref")) {
-      BibEntry referred=database.getEntryByKey(bibtex.getField("crossref"));
+    if (entry.hasField("crossref")) {
+      BibEntry referred=database.getEntryByKey(entry.getField("crossref"));
       if (referred != null) {
         o=referred.getField(field);
       }
