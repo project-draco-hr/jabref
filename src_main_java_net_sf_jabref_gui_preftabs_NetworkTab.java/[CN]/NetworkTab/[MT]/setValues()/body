@@ -1,11 +1,10 @@
 {
-  useProxy.setSelected(prefs.getBoolean(JabRefPreferences.USE_PROXY));
-  defProxyHostname.setText(prefs.get(JabRefPreferences.PROXY_HOSTNAME));
-  defProxyPort.setText(prefs.get(JabRefPreferences.PROXY_PORT));
-  useProxyAuthentication.setSelected(prefs.getBoolean(JabRefPreferences.USE_PROXY_AUTHENTICATION));
-  defProxyUsername.setText(prefs.get(JabRefPreferences.PROXY_USERNAME));
-  defProxyPassword.setText(prefs.get(JabRefPreferences.PROXY_PASSWORD));
-  oldUseProxy=prefs.getBoolean(JabRefPreferences.USE_PROXY);
-  oldUseProxyAuth=prefs.getBoolean(JabRefPreferences.USE_PROXY_AUTHENTICATION);
-  oldProxyConfigHash=getProxyConfigHash();
+  ProxyPreferences proxyPreferences=ProxyPreferences.loadFromPreferences(preferences);
+  useProxyCheckBox.setSelected(proxyPreferences.isUseProxy());
+  hostnameTextField.setText(proxyPreferences.getHostname());
+  portTextField.setText(proxyPreferences.getPort());
+  useAuthenticationCheckBox.setSelected(proxyPreferences.isUseAuthentication());
+  usernameTextField.setText(proxyPreferences.getUsername());
+  passwordTextField.setText(proxyPreferences.getPassword());
+  oldProxyPreferences=proxyPreferences;
 }
