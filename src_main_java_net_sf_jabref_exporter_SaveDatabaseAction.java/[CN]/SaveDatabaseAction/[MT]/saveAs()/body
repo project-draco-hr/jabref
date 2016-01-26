@@ -13,12 +13,12 @@
     }
   }
   if (chosenFile != null) {
-    File oldFile=panel.loadedDatabase.getDatabaseFile();
-    panel.loadedDatabase.getMetaData().setFile(f);
+    File oldFile=panel.getLoadedDatabase().getDatabaseFile();
+    panel.getLoadedDatabase().getMetaData().setFile(f);
     Globals.prefs.put(JabRefPreferences.WORKING_DIRECTORY,f.getParent());
     runCommand();
     if (!success) {
-      panel.loadedDatabase.getMetaData().setFile(oldFile);
+      panel.getLoadedDatabase().getMetaData().setFile(oldFile);
       return;
     }
     try {
@@ -27,6 +27,6 @@
  catch (    IOException ex) {
       LOGGER.error("Problem registering file change notifications",ex);
     }
-    frame.getFileHistory().newFile(panel.loadedDatabase.getDatabaseFile().getPath());
+    frame.getFileHistory().newFile(panel.getLoadedDatabase().getDatabaseFile().getPath());
   }
 }
