@@ -1,0 +1,10 @@
+{
+  BibEntry custom=new BibEntry("someid",new CustomEntryType("unknowntype",new ArrayList<>(0),new ArrayList<>(0)).getName());
+  custom.setField("someunknownfield","value");
+  BibEntry bibtex=new BibEntry("someid",BibtexEntryTypes.ARTICLE.getName());
+  bibtex.setField("journal","IEEE Trans. Services Computing");
+  BibEntry biblatex=new BibEntry("someid",BibLatexEntryTypes.ARTICLE.getName());
+  biblatex.setField("title","someothertitle");
+  Collection<BibEntry> entries=Arrays.asList(custom,bibtex,biblatex);
+  assertEquals(BibDatabaseMode.BIBTEX,BibDatabaseModeDetection.inferMode(BibDatabases.createDatabase(entries)));
+}

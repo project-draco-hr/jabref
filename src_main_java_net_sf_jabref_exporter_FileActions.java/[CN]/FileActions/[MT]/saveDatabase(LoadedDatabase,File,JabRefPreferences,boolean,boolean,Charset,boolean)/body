@@ -23,8 +23,8 @@
     BibEntryWriter bibtexEntryWriter=new BibEntryWriter(new LatexFieldFormatter(),true);
     for (    BibEntry entry : sorter) {
       exceptionCause=entry;
-      EntryType entryType=EntryTypes.getType(entry.getType(),loadedDatabase.getType());
-      if (EntryTypes.getStandardType(entryType.getName(),loadedDatabase.getType()) == null) {
+      EntryType entryType=EntryTypes.getType(entry.getType(),loadedDatabase.getMode());
+      if (EntryTypes.getStandardType(entryType.getName(),loadedDatabase.getMode()) == null) {
         types.put(entryType.getName(),entryType);
       }
       boolean write=true;
@@ -35,7 +35,7 @@
         write=false;
       }
       if (write) {
-        bibtexEntryWriter.write(entry,writer,loadedDatabase.getType());
+        bibtexEntryWriter.write(entry,writer,loadedDatabase.getMode());
       }
     }
     if (loadedDatabase.getMetaData() != null) {
