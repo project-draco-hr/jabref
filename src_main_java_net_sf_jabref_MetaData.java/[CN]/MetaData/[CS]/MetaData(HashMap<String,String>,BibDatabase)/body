@@ -1,13 +1,13 @@
 {
   boolean groupsTreePresent=false;
-  Vector<String> flatGroupsData=null;
-  Vector<String> treeGroupsData=null;
+  List<String> flatGroupsData=null;
+  List<String> treeGroupsData=null;
   int groupsVersionOnDisk=0;
   if (inData != null) {
     for (    Map.Entry<String,String> entry : inData.entrySet()) {
       StringReader data=new StringReader(entry.getValue());
       String unit;
-      Vector<String> orderedData=new Vector<>();
+      List<String> orderedData=new ArrayList<>();
       try {
         while ((unit=getNextUnit(data)) != null) {
           orderedData.add(unit);
@@ -18,7 +18,7 @@
       }
       if ("groupsversion".equals(entry.getKey())) {
         if (orderedData.size() >= 1) {
-          groupsVersionOnDisk=Integer.parseInt(orderedData.firstElement());
+          groupsVersionOnDisk=Integer.parseInt(orderedData.get(0));
         }
       }
  else       if ("groupstree".equals(entry.getKey())) {
