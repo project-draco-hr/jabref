@@ -1,16 +1,16 @@
 {
   StringBuffer value=new StringBuffer();
-  consume('{');
+  consume('{','(');
   int brackets=0;
-  while (!((peek() == '}') && (brackets == 0))) {
+  while (!((isClosingBracketNext()) && (brackets == 0))) {
     int character=read();
     if (isEOFCharacter(character)) {
       throw new IOException("Error in line " + line + ": EOF in mid-string");
     }
- else     if (character == '{') {
+ else     if (character == '{' || character == '(') {
       brackets++;
     }
- else     if (character == '}') {
+ else     if (character == '}' || character == ')') {
       brackets--;
     }
     if (Character.isWhitespace((char)character)) {
@@ -27,6 +27,6 @@
       value.append((char)character);
     }
   }
-  consume('}');
+  consume('}',')');
   return value;
 }
