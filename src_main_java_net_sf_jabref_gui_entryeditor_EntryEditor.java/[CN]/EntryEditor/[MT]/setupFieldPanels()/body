@@ -1,17 +1,18 @@
 {
   tabbed.removeAll();
   tabs.clear();
-  List<String> fieldList=entry.getRequiredFieldsFlat();
+  EntryType type=EntryTypes.getType(entry.getType());
+  List<String> fieldList=type.getRequiredFieldsFlat();
   EntryEditorTab reqPan=new EntryEditorTab(frame,panel,fieldList,this,true,false,Localization.lang("Required fields"));
   if (reqPan.fileListEditor != null) {
     fileListEditor=reqPan.fileListEditor;
   }
   tabbed.addTab(Localization.lang("Required fields"),IconTheme.JabRefIcon.REQUIRED.getSmallIcon(),reqPan.getPane(),Localization.lang("Show required fields"));
   tabs.add(reqPan);
-  if ((entry.getOptionalFields() != null) && (entry.getOptionalFields().size() >= 1)) {
+  if ((type.getOptionalFields() != null) && (type.getOptionalFields().size() >= 1)) {
     EntryEditorTab optPan;
     if (!prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE)) {
-      optPan=new EntryEditorTab(frame,panel,entry.getOptionalFields(),this,false,false,Localization.lang("Optional fields"));
+      optPan=new EntryEditorTab(frame,panel,type.getOptionalFields(),this,false,false,Localization.lang("Optional fields"));
       if (optPan.fileListEditor != null) {
         fileListEditor=optPan.fileListEditor;
       }
@@ -19,7 +20,7 @@
       tabs.add(optPan);
     }
  else {
-      optPan=new EntryEditorTab(frame,panel,entry.getType().getPrimaryOptionalFields(),this,false,true,Localization.lang("Optional fields"));
+      optPan=new EntryEditorTab(frame,panel,type.getPrimaryOptionalFields(),this,false,true,Localization.lang("Optional fields"));
       if (optPan.fileListEditor != null) {
         fileListEditor=optPan.fileListEditor;
       }
@@ -28,11 +29,11 @@
       Set<String> deprecatedFields=new HashSet<>(EntryConverter.FIELD_ALIASES_TEX_TO_LTX.keySet());
       deprecatedFields.add("year");
       deprecatedFields.add("month");
-      List<String> secondaryOptionalFields=entry.getType().getSecondaryOptionalFields();
+      List<String> secondaryOptionalFields=type.getSecondaryOptionalFields();
       List<String> temp=EntryUtil.getRemainder((secondaryOptionalFields),new ArrayList<>(deprecatedFields));
       String[] optionalFieldsNotPrimaryOrDeprecated=temp.toArray(new String[temp.size()]);
       Set<String> optionalFieldsAndAliases=new HashSet<>();
-      for (      String field : entry.getOptionalFields()) {
+      for (      String field : type.getOptionalFields()) {
         optionalFieldsAndAliases.add(field);
         if (EntryConverter.FIELD_ALIASES_LTX_TO_TEX.containsKey(field)) {
           optionalFieldsAndAliases.add(EntryConverter.FIELD_ALIASES_LTX_TO_TEX.get(field));
