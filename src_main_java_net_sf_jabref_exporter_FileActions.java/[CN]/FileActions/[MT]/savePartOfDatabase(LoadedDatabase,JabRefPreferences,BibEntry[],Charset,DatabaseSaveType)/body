@@ -1,0 +1,50 @@
+{
+  BibEntry be=null;
+  boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
+  SaveSession session;
+  try {
+    session=new SaveSession(loadedDatabase.getDatabaseFile(),encoding,backup);
+  }
+ catch (  IOException e) {
+    throw new SaveException(e.getMessage(),e.getLocalizedMessage());
+  }
+  Map<String,EntryType> types=new TreeMap<>();
+  try (VerifyingWriter fw=session.getWriter()){
+    if (saveType != DatabaseSaveType.PLAIN_BIBTEX) {
+      FileActions.writeBibFileHeader(fw,encoding);
+    }
+    FileActions.writePreamble(fw,loadedDatabase.getDatabase().getPreamble());
+    FileActions.writeStrings(fw,loadedDatabase.getDatabase());
+    List<Comparator<BibEntry>> comparators=FileActions.getSaveComparators(true,loadedDatabase.getMetaData());
+    List<BibEntry> sorter=new ArrayList<>(bes.length);
+    Collections.addAll(sorter,bes);
+    Collections.sort(sorter,new FieldComparatorStack<>(comparators));
+    BibEntryWriter bibtexEntryWriter=new BibEntryWriter(new LatexFieldFormatter(),true);
+    for (    BibEntry aSorter : sorter) {
+      be=aSorter;
+      EntryType tp=EntryTypes.getType(be.getType(),loadedDatabase.getType());
+      if (EntryTypes.getStandardType(tp.getName(),loadedDatabase.getType()) == null) {
+        types.put(tp.getName(),tp);
+      }
+      bibtexEntryWriter.write(be,fw,loadedDatabase.getType());
+      if (!be.hasChanged()) {
+        fw.write(Globals.NEWLINE);
+      }
+    }
+    if ((saveType != DatabaseSaveType.PLAIN_BIBTEX) && (loadedDatabase.getMetaData() != null)) {
+      loadedDatabase.getMetaData().writeMetaData(fw);
+    }
+    if (!types.isEmpty()) {
+      for (      Map.Entry<String,EntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
+        CustomEntryType tp=(CustomEntryType)stringBibtexEntryTypeEntry.getValue();
+        CustomEntryTypesManager.save(tp,fw);
+        fw.write(Globals.NEWLINE);
+      }
+    }
+  }
+ catch (  Throwable ex) {
+    session.cancel();
+    throw new SaveException(ex.getMessage(),ex.getLocalizedMessage(),be);
+  }
+  return session;
+}

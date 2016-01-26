@@ -1,7 +1,8 @@
 {
-  File backupFile=AutoSaveManager.getAutoSaveFile(panel.getLoadedDatabase().getDatabaseFile());
+  File databaseFile=panel.getLoadedDatabase().getDatabaseFile();
+  File backupFile=AutoSaveManager.getAutoSaveFile(databaseFile);
   try {
-    SaveSession ss=FileActions.saveDatabase(panel.database(),panel.loadedDatabase.getMetaData(),backupFile,Globals.prefs,false,false,panel.getEncoding(),true);
+    SaveSession ss=FileActions.saveDatabase(new LoadedDatabase(panel.database(),panel.loadedDatabase.getMetaData(),backupFile),Globals.prefs,false,false,panel.getEncoding(),true);
     ss.commit();
   }
  catch (  SaveException e) {
@@ -11,6 +12,9 @@
 catch (  Throwable ex) {
     ex.printStackTrace();
     return false;
+  }
+ finally {
+    panel.loadedDatabase.getMetaData().setFile(databaseFile);
   }
   return true;
 }

@@ -1,0 +1,28 @@
+{
+  final String[] options=new String[13];
+  options[0]=Localization.lang("Select");
+  for (int i=1; i <= 12; i++) {
+    options[i]=MonthUtil.getMonthByNumber(i).fullName;
+  }
+  JComboBox<String> month=new JComboBox<>(options);
+  month.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent actionEvent){
+      int monthnumber=month.getSelectedIndex();
+      if (monthnumber >= 1) {
+        if (type == BibDatabaseType.BIBLATEX) {
+          fieldEditor.setText(String.valueOf(monthnumber));
+        }
+ else {
+          fieldEditor.setText((MonthUtil.getMonthByNumber(monthnumber).bibtexFormat));
+        }
+      }
+ else {
+        fieldEditor.setText("");
+      }
+      entryEditor.updateField(fieldEditor);
+      month.setSelectedIndex(0);
+    }
+  }
+);
+  return Optional.of(month);
+}
