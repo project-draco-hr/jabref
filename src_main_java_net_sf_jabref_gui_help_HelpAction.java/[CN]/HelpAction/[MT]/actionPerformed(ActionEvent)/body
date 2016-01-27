@@ -1,8 +1,9 @@
 {
-  if (resourceOwner == null) {
-    diag.showPage(helpFile);
+  try {
+    JabRefDesktop.openBrowser("http://help.jabref.org/" + Globals.prefs.get(JabRefPreferences.LANGUAGE) + "/"+ urlPart);
   }
- else {
-    diag.showPage(helpFile,resourceOwner);
+ catch (  IOException ex) {
+    LOGGER.warn("Could not open browser",ex);
+    JabRef.jrf.getCurrentBasePanel().output(Localization.lang("Could not open browser."));
   }
 }
