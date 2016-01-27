@@ -1,8 +1,13 @@
 {
-  List<BibEntry> result=new ArrayList<>(toChange.size());
-  SaveActions saveActions=new SaveActions(metaData);
-  for (  BibEntry entry : toChange) {
-    result.add(saveActions.applySaveActions(entry));
+  if (metaData.getData(SaveActions.META_KEY) != null) {
+    return toChange;
   }
-  return result;
+ else {
+    List<BibEntry> result=new ArrayList<>(toChange.size());
+    SaveActions saveActions=new SaveActions(metaData);
+    for (    BibEntry entry : toChange) {
+      result.add(saveActions.applySaveActions(entry));
+    }
+    return result;
+  }
 }
