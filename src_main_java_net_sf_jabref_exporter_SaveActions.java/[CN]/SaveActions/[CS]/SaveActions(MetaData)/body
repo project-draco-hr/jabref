@@ -1,15 +1,19 @@
 {
   actions=new HashMap<>();
-  List<String> formatters=metaData.getData(META_KEY);
   setAvailableFormatters();
-  for (int i=0; i < formatters.size(); i+=2) {
-    try {
-      String field=formatters.get(i);
-      Formatter formatter=getFormatterFromString(formatters.get(i + 1));
-      actions.put(field,formatter);
-    }
- catch (    IndexOutOfBoundsException e) {
-      break;
+  List<String> formatters=metaData.getData(META_KEY);
+  if (formatters == null) {
+  }
+ else {
+    for (int i=0; i < formatters.size(); i+=2) {
+      try {
+        String field=formatters.get(i);
+        Formatter formatter=getFormatterFromString(formatters.get(i + 1));
+        actions.put(field,formatter);
+      }
+ catch (      IndexOutOfBoundsException e) {
+        break;
+      }
     }
   }
 }
