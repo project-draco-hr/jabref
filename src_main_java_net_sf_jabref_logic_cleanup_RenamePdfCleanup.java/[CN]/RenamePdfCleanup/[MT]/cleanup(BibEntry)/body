@@ -1,3 +1,52 @@
 {
-  return CleanupUtil.renameFiles(entry,onlyRelativePaths,database,paths);
+  Optional<String> oldValue=entry.getFieldOptional(Globals.FILE_FIELD);
+  if (!oldValue.isPresent()) {
+    return new ArrayList<>();
+  }
+  List<FileField.ParsedFileField> fileList=FileField.parse(oldValue.get());
+  List<FileField.ParsedFileField> newFileList=new ArrayList<>();
+  boolean changed=false;
+  for (  FileField.ParsedFileField flEntry : fileList) {
+    String realOldFilename=flEntry.link;
+    if (onlyRelativePaths && (new File(realOldFilename).isAbsolute())) {
+      continue;
+    }
+    StringBuilder newFilename=new StringBuilder(Util.getLinkedFileName(database,entry));
+    newFilename.append(".");
+    newFilename.append(FileUtil.getFileExtension(realOldFilename).orElse("pdf"));
+    File expandedOldFile=FileUtil.expandFilename(realOldFilename,paths);
+    if ((expandedOldFile == null) || (expandedOldFile.getParent() == null)) {
+      continue;
+    }
+    String newPath=expandedOldFile.getParent().concat(System.getProperty("file.separator")).concat(newFilename.toString());
+    if (new File(newPath).exists()) {
+      continue;
+    }
+    boolean renameSuccessful=FileUtil.renameFile(expandedOldFile.toString(),newPath);
+    if (renameSuccessful) {
+      changed=true;
+      String description=flEntry.description;
+      String type=flEntry.fileType;
+      File parent=(new File(realOldFilename)).getParentFile();
+      String newFileEntryFileName;
+      if (parent == null || paths.contains(parent.getAbsolutePath())) {
+        newFileEntryFileName=newFilename.toString();
+      }
+ else {
+        newFileEntryFileName=parent.toString().concat(System.getProperty("file.separator")).concat(newFilename.toString());
+      }
+      newFileList.add(new FileField.ParsedFileField(description,newFileEntryFileName,type));
+    }
+ else {
+      unsuccessfulRenames++;
+    }
+  }
+  if (changed) {
+    String newValue=FileField.getStringRepresentation(newFileList);
+    assert(!oldValue.get().equals(newValue));
+    entry.setField(Globals.FILE_FIELD,newValue);
+    FieldChange change=new FieldChange(entry,Globals.FILE_FIELD,oldValue.get(),newValue);
+    return Collections.singletonList(change);
+  }
+  return new ArrayList<>();
 }
