@@ -1,18 +1,53 @@
 {
-  cleanupPreset.setCleanUpSuperscripts(cleanUpSuperscripts.isSelected());
-  cleanupPreset.setCleanUpDOI(cleanUpDOI.isSelected());
-  cleanupPreset.setCleanUpMonth(cleanUpMonth.isSelected());
-  cleanupPreset.setCleanUpPageNumbers(cleanUpPageNumbers.isSelected());
-  cleanupPreset.setCleanUpDate(cleanUpDate.isSelected());
-  cleanupPreset.setCleanUpUpgradeExternalLinks(cleanUpUpgradeExternalLinks.isSelected());
-  cleanupPreset.setMakePathsRelative(cleanUpMakePathsRelative.isSelected());
-  cleanupPreset.setRenamePDF(cleanUpRenamePDF.isSelected());
-  cleanupPreset.setConvertHTMLToLatex(cleanUpHTML.isSelected());
-  cleanupPreset.setConvertCase(cleanUpCase.isSelected());
-  cleanupPreset.setConvertLaTeX(cleanUpLaTeX.isSelected());
-  cleanupPreset.setConvertUnits(cleanUpUnits.isSelected());
-  cleanupPreset.setConvertUnicodeToLatex(cleanUpUnicode.isSelected());
-  cleanupPreset.setConvertToBiblatex(cleanUpBibLatex.isSelected());
-  cleanupPreset.setFixFileLinks(true);
+  EnumSet<CleanupPreset.CleanupStep> activeJobs=EnumSet.noneOf(CleanupPreset.CleanupStep.class);
+  if (cleanUpSuperscripts.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CLEAN_UP_SUPERSCRIPTS);
+  }
+  if (cleanUpDOI.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CLEAN_UP_DOI);
+  }
+  if (cleanUpMonth.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CLEAN_UP_MONTH);
+  }
+  if (cleanUpPageNumbers.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CLEAN_UP_PAGE_NUMBERS);
+  }
+  if (cleanUpDate.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CLEAN_UP_DATE);
+  }
+  if (cleanUpMakePathsRelative.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.MAKE_PATHS_RELATIVE);
+  }
+  if (cleanUpRenamePDF.isSelected()) {
+    if (cleanUpRenamePDFonlyRelativePaths.isSelected()) {
+      activeJobs.add(CleanupPreset.CleanupStep.RENAME_PDF_ONLY_RELATIVE_PATHS);
+    }
+ else {
+      activeJobs.add(CleanupPreset.CleanupStep.RENAME_PDF);
+    }
+  }
+  if (cleanUpUpgradeExternalLinks.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CLEAN_UP_UPGRADE_EXTERNAL_LINKS);
+  }
+  if (cleanUpHTML.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CONVERT_HTML_TO_LATEX);
+  }
+  if (cleanUpCase.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CONVERT_CASE);
+  }
+  if (cleanUpLaTeX.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CONVERT_LATEX);
+  }
+  if (cleanUpUnits.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CONVERT_UNITS);
+  }
+  if (cleanUpUnicode.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CONVERT_UNICODE_TO_LATEX);
+  }
+  if (cleanUpBibLatex.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CONVERT_TO_BIBLATEX);
+  }
+  activeJobs.add(CleanupPreset.CleanupStep.FIX_FILE_LINKS);
+  cleanupPreset=new CleanupPreset(activeJobs);
   return cleanupPreset;
 }
