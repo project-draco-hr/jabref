@@ -59,7 +59,7 @@
           h.put("pages",matcher.group(6));
         }
  else         if ((matcher=OvidImporter.incollection_pat.matcher(content)).find()) {
-          h.put("editor",matcher.group(1).replaceAll(" \\(Ed\\)",""));
+          h.put("editor",matcher.group(1).replace(" (Ed)",""));
           h.put("year",matcher.group(2));
           h.put("booktitle",matcher.group(3));
           h.put("pages",matcher.group(4));
@@ -73,7 +73,7 @@
           h.put("publisher",matcher.group(4));
         }
         if (h.get("pages") != null) {
-          h.put("pages",h.get("pages").replaceAll("-","--"));
+          h.put("pages",h.get("pages").replace("-","--"));
         }
       }
  else       if ("Abstract".equals(fieldName)) {
@@ -94,7 +94,7 @@
         h.put("language",content);
       }
  else       if (fieldName.startsWith("Author Keywords")) {
-        content=content.replaceAll(";",",").replaceAll("  "," ");
+        content=content.replace(";",",").replace("  "," ");
         h.put("keywords",content);
       }
  else       if (fieldName.startsWith("ISSN")) {
@@ -107,7 +107,7 @@
     String auth=h.get("author");
     if ((auth != null) && auth.contains(" [Ed]")) {
       h.remove("author");
-      h.put("editor",auth.replaceAll(" \\[Ed\\]",""));
+      h.put("editor",auth.replace(" [Ed]",""));
     }
     auth=h.get("author");
     if (auth != null) {

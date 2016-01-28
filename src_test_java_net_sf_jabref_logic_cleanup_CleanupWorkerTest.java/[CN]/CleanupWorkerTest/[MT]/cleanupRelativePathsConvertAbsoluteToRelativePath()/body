@@ -1,0 +1,11 @@
+{
+  CleanupPreset preset=new CleanupPreset(CleanupPreset.CleanupStep.MAKE_PATHS_RELATIVE);
+  File tempFile=testFolder.newFile();
+  BibEntry entry=new BibEntry();
+  FileField.ParsedFileField fileField=new FileField.ParsedFileField("",tempFile.getAbsolutePath(),"");
+  entry.setField("file",FileField.getStringRepresentation(fileField));
+  CleanupWorker worker=new CleanupWorker(preset,Collections.singletonList(testFolder.getRoot().getAbsolutePath()));
+  worker.cleanup(entry);
+  FileField.ParsedFileField newFileField=new FileField.ParsedFileField("",tempFile.getName(),"");
+  Assert.assertEquals(FileField.getStringRepresentation(newFileField),entry.getField("file"));
+}
