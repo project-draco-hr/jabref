@@ -3,6 +3,7 @@
   boolean res=false;
   this.query=newQuery;
   shouldContinue=true;
+  double saveThreshold=DuplicateCheck.duplicateThreshold;
   try {
     String address=makeSearchURL();
     URL url=new URL(address);
@@ -16,7 +17,6 @@
         bibtexUrlList.add(addr);
       }
     }
-    double saveThreshold=DuplicateCheck.duplicateThreshold;
     DuplicateCheck.duplicateThreshold=Double.MAX_VALUE;
     int count=1;
     for (    String urlStr : bibtexUrlList) {
@@ -46,12 +46,14 @@
       inspector.setProgress(count,bibtexUrlList.size());
       count++;
     }
-    DuplicateCheck.duplicateThreshold=saveThreshold;
     res=true;
   }
  catch (  IOException e) {
     LOGGER.warn("Communcation problems",e);
     status.showMessage(e.getMessage());
+  }
+ finally {
+    DuplicateCheck.duplicateThreshold=saveThreshold;
   }
   return res;
 }
