@@ -1,6 +1,15 @@
 {
   URLConnection connection=source.openConnection();
   connection.setRequestProperty("User-Agent","JabRef");
+  for (  Map.Entry<String,String> entry : parameters.entrySet()) {
+    connection.setRequestProperty(entry.getKey(),entry.getValue());
+  }
+  if (!postData.isEmpty()) {
+    connection.setDoOutput(true);
+    try (DataOutputStream wr=new DataOutputStream(connection.getOutputStream())){
+      wr.writeBytes(postData);
+    }
+   }
   connection.connect();
   return connection;
 }
