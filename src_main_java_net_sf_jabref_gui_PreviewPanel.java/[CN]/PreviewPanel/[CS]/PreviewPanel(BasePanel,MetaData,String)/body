@@ -1,3 +1,20 @@
 {
-  this(panel,metaData,layoutFile,false);
+  super(new BorderLayout(),true);
+  this.metaData=Objects.requireNonNull(metaData);
+  this.layoutFile=Objects.requireNonNull(layoutFile);
+  updateLayout();
+  this.closeAction=new CloseAction();
+  this.printAction=new PrintAction();
+  this.copyPreviewAction=new CopyPreviewAction();
+  this.panel=Optional.ofNullable(panel);
+  createPreviewPane();
+  if (panel != null) {
+    this.previewPane.setTransferHandler(new PreviewPanelTransferHandler(panel.frame(),this,this.previewPane.getTransferHandler()));
+  }
+  scrollPane=new JScrollPane(previewPane,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+  scrollPane.setBorder(null);
+  if (this.panel.isPresent() && JabRefPreferences.getInstance().getBoolean(JabRefPreferences.PREVIEW_PRINT_BUTTON)) {
+    add(createToolBar(),BorderLayout.LINE_START);
+  }
+  add(scrollPane,BorderLayout.CENTER);
 }
