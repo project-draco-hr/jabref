@@ -1,0 +1,11 @@
+{
+  CleanupWorker cleaner=new CleanupWorker(preset,panel.metaData().getFileDirectory(Globals.FILE_FIELD));
+  List<FieldChange> changes=cleaner.cleanup(entry);
+  unsuccessfulRenames=cleaner.getUnsuccessfulRenames();
+  if (changes.isEmpty()) {
+    return;
+  }
+  for (  FieldChange change : changes) {
+    ce.addEdit(new UndoableFieldChange(change));
+  }
+}
