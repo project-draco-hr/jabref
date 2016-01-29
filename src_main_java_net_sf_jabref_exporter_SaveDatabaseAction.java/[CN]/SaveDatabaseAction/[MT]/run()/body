@@ -1,12 +1,12 @@
 {
-  if (cancelled || (panel.getLoadedDatabase().getDatabaseFile() == null)) {
+  if (cancelled || (panel.getBibDatabaseContext().getDatabaseFile() == null)) {
     return;
   }
   try {
     panel.storeCurrentEdit();
     panel.autoGenerateKeysBeforeSaving();
-    if (FileBasedLock.waitForFileLock(panel.getLoadedDatabase().getDatabaseFile(),10)) {
-      success=saveDatabase(panel.getLoadedDatabase().getDatabaseFile(),false,panel.getEncoding());
+    if (FileBasedLock.waitForFileLock(panel.getBibDatabaseContext().getDatabaseFile(),10)) {
+      success=saveDatabase(panel.getBibDatabaseContext().getDatabaseFile(),false,panel.getEncoding());
       try {
         Globals.fileUpdateMonitor.updateTimeStamp(panel.getFileMonitorHandle());
       }

@@ -2,7 +2,7 @@
   success=false;
   cancelled=false;
   fileLockedError=false;
-  if (panel.getLoadedDatabase().getDatabaseFile() == null) {
+  if (panel.getBibDatabaseContext().getDatabaseFile() == null) {
     saveAs();
   }
  else {
@@ -17,10 +17,10 @@
         cancelled=true;
         JabRefExecutorService.INSTANCE.execute(new Runnable(){
           @Override public void run(){
-            if (!FileBasedLock.waitForFileLock(panel.getLoadedDatabase().getDatabaseFile(),10)) {
+            if (!FileBasedLock.waitForFileLock(panel.getBibDatabaseContext().getDatabaseFile(),10)) {
               LOGGER.error("File locked, this will be trouble.");
             }
-            ChangeScanner scanner=new ChangeScanner(panel.frame(),panel,panel.getLoadedDatabase().getDatabaseFile());
+            ChangeScanner scanner=new ChangeScanner(panel.frame(),panel,panel.getBibDatabaseContext().getDatabaseFile());
             JabRefExecutorService.INSTANCE.executeWithLowPriorityInOwnThreadAndWait(scanner);
             if (scanner.changesFound()) {
               scanner.displayResult(new ChangeScanner.DisplayResultCallback(){
@@ -47,7 +47,7 @@
         return;
       }
  else {
-        List<String> pd=panel.getLoadedDatabase().getMetaData().getData(Globals.PROTECTED_FLAG_META);
+        List<String> pd=panel.getBibDatabaseContext().getMetaData().getData(Globals.PROTECTED_FLAG_META);
         boolean databaseProtectionFlag=(pd != null) && Boolean.parseBoolean(pd.get(0));
         if (databaseProtectionFlag) {
           JOptionPane.showMessageDialog(frame,Localization.lang("Database is protected. Cannot save until external changes have been reviewed."),Localization.lang("Protected database"),JOptionPane.ERROR_MESSAGE);

@@ -1,5 +1,6 @@
 {
-  BibDatabaseMode type=new LoadedDatabase(pr.getDatabase(),pr.getMetaData()).getMode();
+  Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE)));
+  BibDatabaseMode type=new BibDatabaseContext(pr.getDatabase(),pr.getMetaData(),defaults).getMode();
   for (Iterator<String> i=pr.getEntryTypes().keySet().iterator(); i.hasNext(); ) {
     String typeName=i.next().toLowerCase();
     if (EntryTypes.getType(typeName,type) != null) {

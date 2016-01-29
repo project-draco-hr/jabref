@@ -9,7 +9,11 @@
       List<XMPSchema> schemas=meta.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
       for (      XMPSchema schema : schemas) {
         XMPSchemaBibtex bib=(XMPSchemaBibtex)schema;
-        result.add(bib.getBibtexEntry());
+        BibEntry entry=bib.getBibtexEntry();
+        if (entry.getType() == null) {
+          entry.setType("misc");
+        }
+        result.add(entry);
       }
       if (result.isEmpty()) {
         schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
@@ -17,6 +21,9 @@
           XMPSchemaDublinCore dc=(XMPSchemaDublinCore)schema;
           BibEntry entry=XMPUtil.getBibtexEntryFromDublinCore(dc);
           if (entry != null) {
+            if (entry.getType() == null) {
+              entry.setType("misc");
+            }
             result.add(entry);
           }
         }
@@ -25,12 +32,15 @@
     if (result.isEmpty()) {
       BibEntry entry=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
       if (entry != null) {
+        if (entry.getType() == null) {
+          entry.setType("misc");
+        }
         result.add(entry);
       }
     }
   }
    if (result.isEmpty()) {
-    return null;
+    return Collections.emptyList();
   }
   return result;
 }

@@ -2,7 +2,7 @@
   tabbedPane=new DragDropPopupPane(tabPopupMenu());
   MyGlassPane glassPane=new MyGlassPane();
   setGlassPane(glassPane);
-  setTitle(GUIGlobals.frameTitle);
+  setTitle(GUIGlobals.FRAME_TITLE);
   setIconImage(new ImageIcon(IconTheme.getIconUrl("jabrefIcon48")).getImage());
   setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
   addWindowListener(new WindowAdapter(){
@@ -38,16 +38,18 @@
     @Override public void stateChanged(    ChangeEvent e){
       markActiveBasePanel();
       BasePanel bp=getCurrentBasePanel();
-      if (bp != null) {
-        groupToggle.setSelected(sidePaneManager.isComponentVisible("groups"));
-        previewToggle.setSelected(Globals.prefs.getBoolean(JabRefPreferences.PREVIEW_ENABLED));
-        fetcherToggle.setSelected(sidePaneManager.isComponentVisible(generalFetcher.getTitle()));
-        Globals.focusListener.setFocused(bp.mainTable);
-        setWindowTitle();
-        bp.updateSearchManager();
-        bp.setBackAndForwardEnabledState();
-        new FocusRequester(bp.mainTable);
+      if (bp == null) {
+        return;
       }
+      groupToggle.setSelected(sidePaneManager.isComponentVisible("groups"));
+      previewToggle.setSelected(Globals.prefs.getBoolean(JabRefPreferences.PREVIEW_ENABLED));
+      fetcherToggle.setSelected(sidePaneManager.isComponentVisible(generalFetcher.getTitle()));
+      Globals.focusListener.setFocused(bp.mainTable);
+      setWindowTitle();
+      editModeAction.initName();
+      bp.updateSearchManager();
+      bp.setBackAndForwardEnabledState();
+      new FocusRequester(bp.mainTable);
     }
   }
 );

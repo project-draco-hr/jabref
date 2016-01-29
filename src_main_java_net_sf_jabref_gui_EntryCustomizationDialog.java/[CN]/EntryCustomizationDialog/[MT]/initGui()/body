@@ -1,18 +1,18 @@
 {
   Container pane=getContentPane();
   pane.setLayout(new BorderLayout());
-  loadedDatabase=frame.getCurrentBasePanel().getLoadedDatabase();
-  biblatexMode=loadedDatabase.isBiblatexMode();
+  bibDatabaseContext=frame.getCurrentBasePanel().getBibDatabaseContext();
+  biblatexMode=bibDatabaseContext.isBiblatexMode();
   JPanel main=new JPanel();
   JPanel buttons=new JPanel();
   JPanel right=new JPanel();
   main.setLayout(new BorderLayout());
   right.setLayout(new GridLayout(biblatexMode ? 2 : 1,2));
   List<String> entryTypes=new ArrayList<>();
-  for (  String s : EntryTypes.getAllTypes(loadedDatabase.getMode())) {
+  for (  String s : EntryTypes.getAllTypes(bibDatabaseContext.getMode())) {
     entryTypes.add(s);
   }
-  typeComp=new EntryTypeList(entryTypes,loadedDatabase.getMode());
+  typeComp=new EntryTypeList(entryTypes,bibDatabaseContext.getMode());
   typeComp.addListSelectionListener(this);
   typeComp.addAdditionActionListener(this);
   typeComp.addDefaultActionListener(new DefaultListener());

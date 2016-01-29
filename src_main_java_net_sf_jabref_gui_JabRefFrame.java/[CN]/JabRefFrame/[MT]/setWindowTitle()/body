@@ -1,16 +1,17 @@
 {
   BasePanel panel=getCurrentBasePanel();
-  String mode=panel.getLoadedDatabase().isBiblatexMode() ? " (" + Localization.lang("%0 mode","BibLaTeX") + ")" : " (" + Localization.lang("%0 mode","BibTeX") + ")";
   if (panel == null) {
-    setTitle(GUIGlobals.frameTitle + mode);
+    setTitle(GUIGlobals.FRAME_TITLE);
     return;
   }
+  String mode=panel.getBibDatabaseContext().getMode().getFormattedName();
+  String modeInfo=String.format(" (%s)",Localization.lang("%0 mode",mode));
   String changeFlag=panel.isModified() ? "*" : "";
-  if (panel.getLoadedDatabase().getDatabaseFile() == null) {
-    setTitle(GUIGlobals.frameTitle + " - " + GUIGlobals.untitledTitle+ changeFlag+ mode);
+  if (panel.getBibDatabaseContext().getDatabaseFile() == null) {
+    setTitle(GUIGlobals.FRAME_TITLE + " - " + GUIGlobals.untitledTitle+ changeFlag+ modeInfo);
   }
  else {
-    String databaseFile=panel.getLoadedDatabase().getDatabaseFile().getPath();
-    setTitle(GUIGlobals.frameTitle + " - " + databaseFile+ changeFlag+ mode);
+    String databaseFile=panel.getBibDatabaseContext().getDatabaseFile().getPath();
+    setTitle(GUIGlobals.FRAME_TITLE + " - " + databaseFile+ changeFlag+ modeInfo);
   }
 }
