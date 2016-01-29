@@ -3,12 +3,12 @@
   if ((res == null) || res.trim().isEmpty()) {
     return;
   }
-  final BibEntry targetEntry;
-  if (entryEditor != null) {
-    targetEntry=entryEditor.getEntry();
+  BibEntry targetEntry;
+  if (entryEditor == null) {
+    targetEntry=entry;
   }
  else {
-    targetEntry=entry;
+    targetEntry=entryEditor.getEntry();
   }
   JabRefExecutorService.INSTANCE.execute(new Runnable(){
     public String getPlannedFileName(    String result){
@@ -17,14 +17,14 @@
         suffix='.' + fieldName.toLowerCase();
       }
       String plannedName;
-      if (getKey() != null) {
-        plannedName=getKey() + suffix;
-      }
- else {
+      if (getKey() == null) {
         plannedName=JOptionPane.showInputDialog(parent,Localization.lang("BibTeX key not set. Enter a name for the downloaded file"));
         if ((plannedName != null) && !off.accept(plannedName)) {
           plannedName+=suffix;
         }
+      }
+ else {
+        plannedName=getKey() + suffix;
       }
       if (plannedName != null) {
         if (OS.WINDOWS) {
@@ -53,11 +53,11 @@
           }
         }
         if (directory == null) {
-          if (dirs.size() > 0) {
-            JOptionPane.showMessageDialog(parent,Localization.lang("Could not find directory for %0-files: %1",fieldName,dirs.get(0)),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+          if (dirs.isEmpty()) {
+            JOptionPane.showMessageDialog(parent,Localization.lang("No directory defined for %0-files",fieldName),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
           }
  else {
-            JOptionPane.showMessageDialog(parent,Localization.lang("No directory defined for %0-files",fieldName),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent,Localization.lang("Could not find directory for %0-files: %1",fieldName,dirs.get(0)),Localization.lang("Download file"),JOptionPane.ERROR_MESSAGE);
           }
           return;
         }

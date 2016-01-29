@@ -25,7 +25,10 @@
   }
   String suffix=suffixSB.toString();
   fw.write("@String { " + bs.getName() + suffix+ " = ");
-  if (!bs.getContent().isEmpty()) {
+  if (bs.getContent().isEmpty()) {
+    fw.write("{}");
+  }
+ else {
     try {
       String formatted=new LatexFieldFormatter().format(bs.getContent(),LatexFieldFormatter.BIBTEX_STRING);
       fw.write(formatted);
@@ -33,9 +36,6 @@
  catch (    IllegalArgumentException ex) {
       throw new IllegalArgumentException("The # character is not allowed in BibTeX strings unless escaped as in '\\#'.\n" + "Before saving, please edit any strings containing the # character.");
     }
-  }
- else {
-    fw.write("{}");
   }
   fw.write(" }" + Globals.NEWLINE);
 }

@@ -16,10 +16,7 @@
  else {
     suffix=strippedLink.substring(strippedLinkIndex + 1);
   }
-  if (ExternalFileTypes.getInstance().getExternalFileTypeByExt(suffix) != null) {
-    return suffix;
-  }
- else {
+  if (ExternalFileTypes.getInstance().getExternalFileTypeByExt(suffix) == null) {
     int index=link.lastIndexOf('.');
     if ((index <= 0) || (index == (link.length() - 1))) {
       if (strippedLink.substring(strippedLinkIndex + 1).indexOf('/') > 0) {
@@ -37,5 +34,8 @@
         return link.substring(index + 1);
       }
     }
+  }
+ else {
+    return suffix;
   }
 }
