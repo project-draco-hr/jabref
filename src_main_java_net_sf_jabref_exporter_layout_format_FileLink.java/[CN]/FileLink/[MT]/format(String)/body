@@ -21,23 +21,23 @@
     return "";
   }
   String[] dirs;
-  if (Globals.prefs.fileDirForDatabase != null) {
-    dirs=Globals.prefs.fileDirForDatabase;
-  }
- else {
+  if (Globals.prefs.fileDirForDatabase == null) {
     dirs=new String[]{Globals.prefs.get(Globals.FILE_FIELD + Globals.DIR_SUFFIX)};
   }
+ else {
+    dirs=Globals.prefs.fileDirForDatabase;
+  }
   File f=FileUtil.expandFilename(link,Arrays.asList(dirs));
-  if (f != null) {
+  if (f == null) {
+    return link;
+  }
+ else {
     try {
       return f.getCanonicalPath();
     }
  catch (    IOException e) {
-      e.printStackTrace();
+      LOGGER.warn("Problem getting path",e);
       return f.getPath();
     }
-  }
- else {
-    return link;
   }
 }

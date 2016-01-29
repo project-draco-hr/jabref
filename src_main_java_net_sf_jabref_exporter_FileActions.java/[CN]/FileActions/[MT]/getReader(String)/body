@@ -1,18 +1,18 @@
 {
   Reader reader;
   URL reso=Globals.class.getResource(name);
-  if (reso != null) {
+  if (reso == null) {
+    File f=new File(name);
     try {
-      reader=new InputStreamReader(reso.openStream());
+      reader=new FileReader(f);
     }
  catch (    FileNotFoundException ex) {
       throw new IOException("Cannot find layout file: '" + name + "'.");
     }
   }
  else {
-    File f=new File(name);
     try {
-      reader=new FileReader(f);
+      reader=new InputStreamReader(reso.openStream());
     }
  catch (    FileNotFoundException ex) {
       throw new IOException("Cannot find layout file: '" + name + "'.");
