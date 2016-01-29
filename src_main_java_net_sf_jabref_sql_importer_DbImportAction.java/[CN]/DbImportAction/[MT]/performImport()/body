@@ -4,8 +4,7 @@
       frame.output(Localization.lang("Attempting SQL import..."));
       DBExporterAndImporterFactory factory=new DBExporterAndImporterFactory();
       DBImporter importer=factory.getImporter(dbs.getServerType());
-      try (Connection conn=importer.connectToDB(dbs);Statement statement=SQLUtil.queryAllFromTable(conn,"jabref_database")){
-        ResultSet rs=statement.getResultSet();
+      try (Connection conn=importer.connectToDB(dbs);Statement statement=SQLUtil.queryAllFromTable(conn,"jabref_database");ResultSet rs=statement.getResultSet()){
         Vector<String> v;
         Vector<Vector<String>> matrix=new Vector<>();
         while (rs.next()) {
@@ -44,7 +43,7 @@
       dbs.isConfigValid(false);
       JOptionPane.showMessageDialog(frame,preamble + '\n' + errorMessage,Localization.lang("Import from SQL database"),JOptionPane.ERROR_MESSAGE);
       frame.output(Localization.lang("Error importing from database"));
-      ex.printStackTrace();
+      LOGGER.error("Error importing from databae",ex);
     }
   }
 }

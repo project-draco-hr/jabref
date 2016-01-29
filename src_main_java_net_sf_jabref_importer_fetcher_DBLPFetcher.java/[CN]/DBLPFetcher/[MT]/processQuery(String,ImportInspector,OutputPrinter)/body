@@ -3,10 +3,11 @@
   boolean res=false;
   this.query=newQuery;
   shouldContinue=true;
+  double saveThreshold=DuplicateCheck.duplicateThreshold;
   try {
     String address=makeSearchURL();
     URL url=new URL(address);
-    String page=Util.getResults(url);
+    String page=NetUtil.getResults(url);
     String[] lines=page.split("\n");
     List<String> bibtexUrlList=new ArrayList<>();
     for (    final String line : lines) {
@@ -16,7 +17,6 @@
         bibtexUrlList.add(addr);
       }
     }
-    double saveThreshold=DuplicateCheck.duplicateThreshold;
     DuplicateCheck.duplicateThreshold=Double.MAX_VALUE;
     int count=1;
     for (    String urlStr : bibtexUrlList) {
@@ -24,7 +24,7 @@
         break;
       }
       final URL bibUrl=new URL(urlStr);
-      final String bibtexHTMLPage=Util.getResults(bibUrl);
+      final String bibtexHTMLPage=NetUtil.getResults(bibUrl);
       final String[] htmlLines=bibtexHTMLPage.split("\n");
       for (      final String line : htmlLines) {
         if (line.contains("biburl")) {
@@ -33,7 +33,7 @@
           String bibtexUrl=line.substring(sidx + 1,eidx);
           bibtexUrl=bibtexUrl.replace("dblp.uni-trier.de","www.dblp.org");
           final URL bibFileURL=new URL(bibtexUrl);
-          final String bibtexPage=Util.getResults(bibFileURL);
+          final String bibtexPage=NetUtil.getResults(bibFileURL);
           Collection<BibEntry> bibtexEntries=BibtexParser.fromString(bibtexPage);
           for (          BibEntry be : bibtexEntries) {
             if (!bibentryKnown.containsKey(be.getCiteKey())) {
@@ -46,12 +46,14 @@
       inspector.setProgress(count,bibtexUrlList.size());
       count++;
     }
-    DuplicateCheck.duplicateThreshold=saveThreshold;
     res=true;
   }
  catch (  IOException e) {
     LOGGER.warn("Communcation problems",e);
     status.showMessage(e.getMessage());
+  }
+ finally {
+    DuplicateCheck.duplicateThreshold=saveThreshold;
   }
   return res;
 }
