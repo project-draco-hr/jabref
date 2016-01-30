@@ -1,17 +1,17 @@
 {
   List<String> dirs=metaData.getFileDirectory(fieldName);
   String directory=null;
-  if (dirs.size() > 0) {
+  if (!dirs.isEmpty()) {
     directory=dirs.get(0);
   }
   String dir=editor.getText();
   String retVal;
   if ((directory == null) || !new File(dir).isAbsolute()) {
-    if (directory != null) {
-      dir=directory;
+    if (directory == null) {
+      dir=Globals.prefs.get(fieldName + Globals.FILETYPE_PREFS_EXT,"");
     }
  else {
-      dir=Globals.prefs.get(fieldName + Globals.FILETYPE_PREFS_EXT,"");
+      dir=directory;
     }
   }
   String chosenFile=FileDialogs.getNewFile(frame,new File(dir),'.' + fieldName,JFileChooser.OPEN_DIALOG,false);

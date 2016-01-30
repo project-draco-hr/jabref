@@ -3,17 +3,17 @@
   try {
     ExternalFileType type=fileType;
     if (this.fileType == null) {
-      if (this.fieldName != null) {
-        JabRefDesktop.openExternalViewer(frame.getCurrentBasePanel().getBibDatabaseContext().getMetaData(),link,fieldName);
-        return true;
-      }
- else {
+      if (this.fieldName == null) {
         File file=new File(link);
         String name=file.getName();
         int pos=name.indexOf('.');
         String extension=(pos >= 0) && (pos < (name.length() - 1)) ? name.substring(pos + 1).trim().toLowerCase() : null;
         type=ExternalFileTypes.getInstance().getExternalFileTypeByExt(extension);
         fileType=type;
+      }
+ else {
+        JabRefDesktop.openExternalViewer(frame.getCurrentBasePanel().getBibDatabaseContext().getMetaData(),link,fieldName);
+        return true;
       }
     }
     if (type instanceof UnknownExternalFileType) {
@@ -28,7 +28,7 @@
       JOptionPane.showMessageDialog(frame,Localization.lang("Unable to open link. " + "The application '%0' associated with the file type '%1' could not be called.",fileType.getOpenWith(),fileType.getName()),Localization.lang("Could not open link"),JOptionPane.ERROR_MESSAGE);
       return false;
     }
-    e1.printStackTrace();
+    LOGGER.warn("Unable to open link",e1);
   }
   return false;
 }
