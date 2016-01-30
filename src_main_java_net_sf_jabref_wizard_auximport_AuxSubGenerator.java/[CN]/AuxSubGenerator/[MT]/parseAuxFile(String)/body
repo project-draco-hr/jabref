@@ -1,9 +1,7 @@
 {
-  Pattern pattern;
   Matcher matcher;
   boolean cont;
   boolean back=true;
-  pattern=Pattern.compile("\\\\(citation|abx@aux@cite)\\{(.+)\\}");
   List<String> fileList=new ArrayList<>(5);
   fileList.add(filename);
   File dummy=new File(filename);
@@ -30,7 +28,7 @@
         }
         if (maybeLine.isPresent()) {
           String line=maybeLine.get();
-          matcher=pattern.matcher(line);
+          matcher=TAG_PATTERN.matcher(line);
           while (matcher.find()) {
             int len=matcher.end() - matcher.start();
             if (len > 11) {
