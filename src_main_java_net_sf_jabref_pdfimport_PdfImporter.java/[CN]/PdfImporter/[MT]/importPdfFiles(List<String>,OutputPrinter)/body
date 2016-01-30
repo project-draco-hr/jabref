@@ -17,7 +17,7 @@
       }
       centerRelativeToWindow(importDialog,frame);
       importDialog.showDialog();
-      doNotShowAgain=importDialog.getDoNotShowAgain();
+      doNotShowAgain=importDialog.isDoNotShowAgain();
     }
     if (neverShow || (importDialog.getResult() == JOptionPane.OK_OPTION)) {
       int choice=neverShow ? globalChoice : importDialog.getChoice();
@@ -33,13 +33,13 @@ case ImportDialog.XMP:
         localRes=importer.importEntries(in,frame);
       }
  catch (      IOException ex) {
-        ex.printStackTrace();
+        LOGGER.warn("Cannot import entries",ex);
       }
  finally {
         try {
           in.close();
         }
- catch (        Exception ignored) {
+ catch (        IOException ignored) {
         }
       }
     if ((localRes == null) || localRes.isEmpty()) {
@@ -63,9 +63,8 @@ File file=new File(fileName);
 try {
 in=new FileInputStream(file);
 }
- catch (Exception e) {
+ catch (FileNotFoundException e) {
 LOGGER.info("Import failed",e);
-e.printStackTrace();
 entry=createNewBlankEntry(fileName);
 res.add(entry);
 continue fileNameLoop;
@@ -73,9 +72,8 @@ continue fileNameLoop;
 try {
 localRes=contentImporter.importEntries(in,status);
 }
- catch (Exception e) {
+ catch (IOException e) {
 LOGGER.info("Import failed",e);
-e.printStackTrace();
 entry=createNewBlankEntry(fileName);
 res.add(entry);
 continue fileNameLoop;
@@ -84,7 +82,7 @@ continue fileNameLoop;
 try {
 in.close();
 }
- catch (Exception ignored) {
+ catch (IOException ignored) {
 }
 }
 if ((localRes == null) || localRes.isEmpty()) {
