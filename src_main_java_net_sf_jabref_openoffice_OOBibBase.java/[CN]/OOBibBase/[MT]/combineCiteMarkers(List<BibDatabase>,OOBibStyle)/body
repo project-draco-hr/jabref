@@ -1,13 +1,13 @@
 {
   XReferenceMarksSupplier supplier=UnoRuntime.queryInterface(XReferenceMarksSupplier.class,xCurrentComponent);
   XNameAccess nameAccess=supplier.getReferenceMarks();
-  String[] names=getSortedReferenceMarks(nameAccess);
+  List<String> names=getSortedReferenceMarks(nameAccess);
   final XTextRangeCompare compare=UnoRuntime.queryInterface(XTextRangeCompare.class,text);
   int piv=0;
   boolean madeModifications=false;
-  while (piv < (names.length - 1)) {
-    XTextRange r1=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv])).getAnchor().getEnd();
-    XTextRange r2=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names[piv + 1])).getAnchor().getStart();
+  while (piv < (names.size() - 1)) {
+    XTextRange r1=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names.get(piv))).getAnchor().getEnd();
+    XTextRange r2=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(names.get(piv + 1))).getAnchor().getStart();
     if (r1.getText() != r2.getText()) {
       piv++;
       continue;
@@ -30,10 +30,10 @@
           throw new UndefinedCharacterFormatException(charStyle);
         }
       }
-      List<String> keys=parseRefMarkName(names[piv]);
-      keys.addAll(parseRefMarkName(names[piv + 1]));
-      removeReferenceMark(names[piv]);
-      removeReferenceMark(names[piv + 1]);
+      List<String> keys=parseRefMarkName(names.get(piv));
+      keys.addAll(parseRefMarkName(names.get(piv + 1)));
+      removeReferenceMark(names.get(piv));
+      removeReferenceMark(names.get(piv + 1));
       List<BibEntry> entries=new ArrayList<>();
       for (      String key : keys) {
         for (        BibDatabase database : databases) {
@@ -57,7 +57,7 @@
       String keyString=sb.toString();
       String bName=getUniqueReferenceMarkName(keyString,OOBibBase.AUTHORYEAR_PAR);
       insertReferenceMark(bName,"tmp",mxDocCursor,true,style);
-      names[piv + 1]=bName;
+      names.add(piv + 1,bName);
       madeModifications=true;
     }
     piv++;

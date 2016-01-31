@@ -3,26 +3,26 @@
   XTextViewCursor tvc=css.getViewCursor();
   XTextRange initialPos=tvc.getStart();
   String[] names=nameAccess.getElementNames();
-  Point[] positions=new Point[names.length];
-  for (int i=0; i < names.length; i++) {
-    String name=names[i];
-    XTextContent tc=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(name));
-    XTextRange r=tc.getAnchor();
-    if (UnoRuntime.queryInterface(XFootnote.class,r.getText()) != null) {
-      XFootnote footer=UnoRuntime.queryInterface(XFootnote.class,r.getText());
-      r=footer.getAnchor();
+  List<Point> positions=new ArrayList<>(names.length);
+  if (names != null) {
+    for (    String name : names) {
+      XTextContent tc=UnoRuntime.queryInterface(XTextContent.class,nameAccess.getByName(name));
+      XTextRange r=tc.getAnchor();
+      if (UnoRuntime.queryInterface(XFootnote.class,r.getText()) != null) {
+        XFootnote footer=UnoRuntime.queryInterface(XFootnote.class,r.getText());
+        r=footer.getAnchor();
+      }
+      positions.add(findPosition(tvc,r));
     }
-    positions[i]=findPosition(tvc,r);
   }
-  TreeSet<ComparableMark> set=new TreeSet<>();
-  for (int i=0; i < positions.length; i++) {
-    set.add(new ComparableMark(names[i],positions[i]));
+  Set<ComparableMark> set=new TreeSet<>();
+  for (int i=0; i < positions.size(); i++) {
+    set.add(new ComparableMark(names[i],positions.get(i)));
   }
-  int i=0;
+  List<String> result=new ArrayList<>(set.size());
   for (  ComparableMark mark : set) {
-    names[i]=mark.getName();
-    i++;
+    result.add(mark.getName());
   }
   tvc.gotoRange(initialPos,false);
-  return names;
+  return result;
 }

@@ -19,9 +19,9 @@
     @Override public void actionPerformed(    ActionEvent event){
       try {
         ooBase.selectDocument();
-        frame.output(Localization.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle());
+        frame.output(Localization.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle().orElse(""));
       }
- catch (      Exception ex) {
+ catch (      UnknownPropertyException|WrappedTargetException|IndexOutOfBoundsException|NoSuchElementException|NoDocumentException ex) {
         JOptionPane.showMessageDialog(frame,ex.getMessage(),Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
       }
     }
@@ -40,7 +40,7 @@
         try {
           readStyleFile();
         }
- catch (        Exception ex) {
+ catch (        IOException ex) {
           LOGGER.warn("Could not read style file",ex);
         }
       }
@@ -87,7 +87,7 @@
             style.ensureUpToDate();
           }
         }
- catch (        Throwable ex) {
+ catch (        IOException ex) {
           JOptionPane.showMessageDialog(frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
           return;
         }
@@ -145,7 +145,7 @@ catch (      Exception e) {
         CitationManager cm=new CitationManager(frame,ooBase);
         cm.showDialog();
       }
- catch (      Exception e) {
+ catch (      NoSuchElementException|WrappedTargetException|UnknownPropertyException e) {
         LOGGER.warn("Problem showing citation manager",e);
       }
     }
