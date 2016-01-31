@@ -30,7 +30,7 @@
       try {
         xCursorProps.setPropertyValue("CharStyleName",charStyle);
       }
- catch (      Throwable ex) {
+ catch (      UnknownPropertyException|PropertyVetoException|IllegalArgumentException|WrappedTargetException ex) {
         xViewCursor.goLeft((short)1,true);
         xViewCursor.setString("");
         throw new UndefinedCharacterFormatException(charStyle);
@@ -47,13 +47,7 @@
       refreshCiteMarkers(allBases,style);
       rebuildBibTextSection(allBases,style);
     }
-    try {
-      xViewCursor.gotoRange(position,false);
-    }
- catch (    Exception ex) {
-      System.out.println("Catch");
-      ex.printStackTrace();
-    }
+    xViewCursor.gotoRange(position,false);
   }
  catch (  DisposedException ex) {
     throw new ConnectionLostException(ex.getMessage());
