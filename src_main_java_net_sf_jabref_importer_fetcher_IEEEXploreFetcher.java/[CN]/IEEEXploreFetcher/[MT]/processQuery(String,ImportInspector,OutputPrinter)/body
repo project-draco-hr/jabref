@@ -6,10 +6,11 @@
   String postData=makeSearchPostRequestPayload(pageNumber,terms);
   try {
     URL url=new URL(IEEEXploreFetcher.URL_SEARCH);
-    HttpURLConnection con=(HttpURLConnection)url.openConnection();
-    con.setRequestProperty("Accept","application/json");
-    con.setRequestProperty("Content-type","application/json");
-    String page=NetUtil.getPostResults(con,postData,StandardCharsets.UTF_8);
+    URLDownload dl=new URLDownload(url);
+    dl.addParameters("Accept","application/json");
+    dl.addParameters("Content-type","application/json");
+    dl.setPostData(postData);
+    String page=dl.downloadToString(StandardCharsets.UTF_8);
     if (page.isEmpty()) {
       status.showMessage(Localization.lang("You have entered an invalid search '%0'.",query),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
       return false;
@@ -24,7 +25,7 @@
       status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
     URL bibtexURL=new URL(createBibtexQueryURL(searchResultsJson));
-    String bibtexPage=NetUtil.getResults(bibtexURL);
+    String bibtexPage=new URLDownload(bibtexURL).downloadToString();
     bibtexPage=preprocessBibtexResultsPage(bibtexPage);
     Collection<BibEntry> parsedBibtexCollection=BibtexParser.fromString(bibtexPage);
     if (parsedBibtexCollection == null) {

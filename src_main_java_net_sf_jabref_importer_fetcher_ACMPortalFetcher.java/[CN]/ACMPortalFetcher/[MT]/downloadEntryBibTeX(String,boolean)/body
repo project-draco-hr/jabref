@@ -17,7 +17,8 @@
     Thread.sleep(ACMPortalFetcher.WAIT_TIME);
     if (downloadAbstract) {
       url=new URL(ACMPortalFetcher.START_URL + ACMPortalFetcher.ABSTRACT_URL + id);
-      String page=NetUtil.getResults(url);
+      URLDownload dl=new URLDownload(url);
+      String page=dl.downloadToString();
       Matcher absM=ACMPortalFetcher.ABSTRACT_PATTERN.matcher(page);
       if (absM.find()) {
         entry.setField("abstract",absM.group(1).trim());
