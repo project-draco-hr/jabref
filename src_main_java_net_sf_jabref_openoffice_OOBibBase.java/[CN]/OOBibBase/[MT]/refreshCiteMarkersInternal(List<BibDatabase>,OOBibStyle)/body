@@ -73,37 +73,41 @@
       }
  else       if (style.isNumberEntries()) {
         if (style.isSortByPosition()) {
-          int[] num=new int[keys.length];
+          List<Integer> num=new ArrayList<>(keys.length);
           for (int j=0; j < keys.length; j++) {
             if (cEntries[j] instanceof UndefinedBibtexEntry) {
-              num[j]=-1;
+              num.add(j,-1);
             }
  else {
-              num[j]=lastNum + 1;
+              num.add(j,lastNum + 1);
               if (numbers.containsKey(keys[j])) {
-                num[j]=numbers.get(keys[j]);
+                num.add(j,numbers.get(keys[j]));
               }
  else {
-                numbers.put(keys[j],num[j]);
-                lastNum=num[j];
+                numbers.put(keys[j],num.get(j));
+                lastNum=num.get(j);
               }
             }
           }
           citationMarker=style.getNumCitationMarker(num,minGroupingCount,false);
           for (int j=0; j < keys.length; j++) {
-            normCitMarker[j]=style.getNumCitationMarker(new int[]{num[j]},minGroupingCount,false);
+            List<Integer> list=new ArrayList<>(1);
+            list.add(num.get(j));
+            normCitMarker[j]=style.getNumCitationMarker(list,minGroupingCount,false);
           }
         }
  else {
-          int[] num=findCitedEntryIndex(names[i],cited);
-          if (num == null) {
+          List<Integer> num=findCitedEntryIndex(names[i],cited);
+          if (num.isEmpty()) {
             throw new BibEntryNotFoundException(names[i],Localization.lang("Could not resolve BibTeX entry for citation marker '%0'.",names[i]));
           }
  else {
             citationMarker=style.getNumCitationMarker(num,minGroupingCount,false);
           }
           for (int j=0; j < keys.length; j++) {
-            normCitMarker[j]=style.getNumCitationMarker(new int[]{num[j]},minGroupingCount,false);
+            List<Integer> list=new ArrayList<>(1);
+            list.add(num.get(j));
+            normCitMarker[j]=style.getNumCitationMarker(list,minGroupingCount,false);
           }
         }
       }
@@ -136,19 +140,19 @@
       String[] markers=normCitMarkers[i];
       for (int j=0; j < markers.length; j++) {
         String marker=markers[j];
-        if (!refKeys.containsKey(marker)) {
+        if (refKeys.containsKey(marker)) {
+          if (!refKeys.get(marker).contains(bibtexKeys[i][j])) {
+            refKeys.get(marker).add(bibtexKeys[i][j]);
+            refNums.get(marker).add(i);
+          }
+        }
+ else {
           List<String> l=new ArrayList<>(1);
           l.add(bibtexKeys[i][j]);
           refKeys.put(marker,l);
           List<Integer> l2=new ArrayList<>(1);
           l2.add(i);
           refNums.put(marker,l2);
-        }
- else {
-          if (!refKeys.get(marker).contains(bibtexKeys[i][j])) {
-            refKeys.get(marker).add(bibtexKeys[i][j]);
-            refNums.get(marker).add(i);
-          }
         }
       }
     }
@@ -220,7 +224,7 @@
       try {
         xCursorProps.setPropertyValue("CharStyleName",charStyle);
       }
- catch (      Throwable ex) {
+ catch (      UnknownPropertyException|PropertyVetoException|IllegalArgumentException|WrappedTargetException ex) {
         throw new UndefinedCharacterFormatException(charStyle);
       }
     }

@@ -8,8 +8,9 @@
       method.setAccessible(true);
       method.invoke(cl,new File(pathToExecutable).toURI().toURL());
     }
- catch (    Throwable t) {
+ catch (    SecurityException|NoSuchMethodException|MalformedURLException t) {
       LOGGER.error("Error, could not add URL to system classloader",t);
+      cl.close();
       throw new IOException("Error, could not add URL to system classloader",t);
     }
   }
