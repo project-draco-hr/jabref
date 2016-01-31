@@ -1,0 +1,30 @@
+{
+  Objects.requireNonNull(frame);
+  Objects.requireNonNull(encoding);
+  Objects.requireNonNull(bibDatabaseContext);
+  this.encoding=encoding;
+  this.bibDatabaseContext=bibDatabaseContext;
+  this.sidePaneManager=GUIGlobals.sidePaneManager;
+  this.frame=frame;
+  this.database=bibDatabaseContext.getDatabase();
+  searchBar=new SearchBar(this);
+  setupMainPanel();
+  setupActions();
+  File file=bibDatabaseContext.getDatabaseFile();
+  this.database.addDatabaseChangeListener(new GroupTreeUpdater());
+  if (file == null) {
+    if (!database.getEntries().isEmpty()) {
+      this.baseChanged=true;
+    }
+  }
+ else {
+    try {
+      fileMonitorHandle=Globals.fileUpdateMonitor.addUpdateListener(this,file);
+    }
+ catch (    IOException ex) {
+      LOGGER.warn("Could not register FileUpdateMonitor",ex);
+    }
+  }
+  filterSearchToggle=new StartStopListAction<>(searchFilterList,SearchMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+  filterGroupToggle=new StartStopListAction<>(groupFilterList,GroupMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+}

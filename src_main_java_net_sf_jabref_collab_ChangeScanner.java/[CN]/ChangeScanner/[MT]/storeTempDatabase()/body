@@ -2,7 +2,8 @@
   JabRefExecutorService.INSTANCE.execute(new Runnable(){
     @Override public void run(){
       try {
-        SaveSession ss=FileActions.saveDatabase(inTemp,mdInTemp,Globals.fileUpdateMonitor.getTempFile(panel.fileMonitorHandle()),Globals.prefs,false,false,panel.getEncoding(),true);
+        Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE)));
+        SaveSession ss=FileActions.saveDatabase(new BibDatabaseContext(inTemp,mdInTemp,defaults),Globals.fileUpdateMonitor.getTempFile(panel.fileMonitorHandle()),Globals.prefs,false,false,panel.getEncoding(),true);
         ss.commit();
       }
  catch (      SaveException ex) {

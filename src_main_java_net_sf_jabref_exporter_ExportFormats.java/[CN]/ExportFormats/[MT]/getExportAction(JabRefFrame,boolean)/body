@@ -37,8 +37,8 @@ class ExportAction extends MnemonicAwareAction {
             entryIds.add(bibtexEntry.getId());
           }
         }
-        Globals.prefs.fileDirForDatabase=frame.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD).toArray(new String[0]);
-        Globals.prefs.databaseFile=frame.getCurrentBasePanel().metaData().getFile();
+        Globals.prefs.fileDirForDatabase=frame.getCurrentBasePanel().getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD).toArray(new String[0]);
+        Globals.prefs.databaseFile=frame.getCurrentBasePanel().getBibDatabaseContext().getDatabaseFile();
         Globals.prefs.put(JabRefPreferences.LAST_USED_EXPORT,format.getConsoleName());
         Globals.prefs.put(JabRefPreferences.EXPORT_WORKING_DIRECTORY,file.getParent());
         final File finFile=file;
@@ -47,7 +47,7 @@ class ExportAction extends MnemonicAwareAction {
           String errorMessage;
           @Override public void run(){
             try {
-              format.performExport(frame.getCurrentBasePanel().database(),frame.getCurrentBasePanel().metaData(),finFile.getPath(),frame.getCurrentBasePanel().getEncoding(),finEntryIDs);
+              format.performExport(frame.getCurrentBasePanel().database(),frame.getCurrentBasePanel().getBibDatabaseContext().getMetaData(),finFile.getPath(),frame.getCurrentBasePanel().getEncoding(),finEntryIDs);
             }
  catch (            Exception ex) {
               LOGGER.warn("Problem exporting",ex);

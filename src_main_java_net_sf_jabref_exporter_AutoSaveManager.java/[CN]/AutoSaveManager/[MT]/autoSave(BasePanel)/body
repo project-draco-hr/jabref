@@ -1,7 +1,8 @@
 {
-  File backupFile=AutoSaveManager.getAutoSaveFile(panel.getDatabaseFile());
+  File databaseFile=panel.getBibDatabaseContext().getDatabaseFile();
+  File backupFile=AutoSaveManager.getAutoSaveFile(databaseFile);
   try {
-    SaveSession ss=FileActions.saveDatabase(panel.database(),panel.metaData(),backupFile,Globals.prefs,false,false,panel.getEncoding(),true);
+    SaveSession ss=FileActions.saveDatabase(panel.getBibDatabaseContext(),backupFile,Globals.prefs,false,false,panel.getEncoding(),true);
     ss.commit();
   }
  catch (  SaveException e) {

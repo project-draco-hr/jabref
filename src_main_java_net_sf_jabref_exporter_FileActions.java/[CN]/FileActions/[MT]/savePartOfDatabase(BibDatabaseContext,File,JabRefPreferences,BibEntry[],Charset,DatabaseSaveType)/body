@@ -1,0 +1,50 @@
+{
+  BibEntry be=null;
+  boolean backup=prefs.getBoolean(JabRefPreferences.BACKUP);
+  SaveSession session;
+  try {
+    session=new SaveSession(target,encoding,backup);
+  }
+ catch (  IOException e) {
+    throw new SaveException(e.getMessage(),e.getLocalizedMessage());
+  }
+  Map<String,EntryType> types=new TreeMap<>();
+  try (VerifyingWriter fw=session.getWriter()){
+    if (saveType != DatabaseSaveType.PLAIN_BIBTEX) {
+      FileActions.writeBibFileHeader(fw,encoding);
+    }
+    FileActions.writePreamble(fw,bibDatabaseContext.getDatabase().getPreamble());
+    FileActions.writeStrings(fw,bibDatabaseContext.getDatabase());
+    List<Comparator<BibEntry>> comparators=FileActions.getSaveComparators(true,bibDatabaseContext.getMetaData());
+    List<BibEntry> sorter=new ArrayList<>(bes.length);
+    Collections.addAll(sorter,bes);
+    Collections.sort(sorter,new FieldComparatorStack<>(comparators));
+    BibEntryWriter bibtexEntryWriter=new BibEntryWriter(new LatexFieldFormatter(),true);
+    for (    BibEntry aSorter : sorter) {
+      be=aSorter;
+      EntryType tp=EntryTypes.getType(be.getType(),bibDatabaseContext.getMode());
+      if (EntryTypes.getStandardType(tp.getName(),bibDatabaseContext.getMode()) == null) {
+        types.put(tp.getName(),tp);
+      }
+      bibtexEntryWriter.write(be,fw,bibDatabaseContext.getMode());
+      if (!be.hasChanged()) {
+        fw.write(Globals.NEWLINE);
+      }
+    }
+    if ((saveType != DatabaseSaveType.PLAIN_BIBTEX) && (bibDatabaseContext.getMetaData() != null)) {
+      bibDatabaseContext.getMetaData().writeMetaData(fw);
+    }
+    if (!types.isEmpty()) {
+      for (      Map.Entry<String,EntryType> stringBibtexEntryTypeEntry : types.entrySet()) {
+        CustomEntryType tp=(CustomEntryType)stringBibtexEntryTypeEntry.getValue();
+        CustomEntryTypesManager.save(tp,fw);
+        fw.write(Globals.NEWLINE);
+      }
+    }
+  }
+ catch (  Throwable ex) {
+    session.cancel();
+    throw new SaveException(ex.getMessage(),ex.getLocalizedMessage(),be);
+  }
+  return session;
+}
