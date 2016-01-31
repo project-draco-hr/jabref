@@ -1,6 +1,6 @@
 {
   List<String> cited=findCitedKeys();
-  HashMap<String,BibDatabase> linkSourceBase=new HashMap<>();
+  Map<String,BibDatabase> linkSourceBase=new HashMap<>();
   Map<BibEntry,BibDatabase> entries=findCitedEntries(databases,cited,linkSourceBase);
   XNameAccess nameAccess=getReferenceMarks();
   String[] names;
@@ -22,14 +22,14 @@
  else {
     names=sortedReferenceMarks;
   }
-  ArrayList<String> tmp=new ArrayList<>();
+  List<String> tmp=new ArrayList<>();
   for (  String name : names) {
     if (citePattern.matcher(name).find()) {
       tmp.add(name);
     }
   }
   names=tmp.toArray(new String[tmp.size()]);
-  HashMap<String,Integer> numbers=new HashMap<>();
+  Map<String,Integer> numbers=new HashMap<>();
   int lastNum=0;
   String[] citMarkers=new String[names.length];
   String[][] normCitMarkers=new String[names.length][];
@@ -49,7 +49,7 @@
         BibDatabase database=linkSourceBase.get(keys[j]);
         cEntries[j]=null;
         if (database != null) {
-          cEntries[j]=OOUtil.createAdaptedEntry(database.getEntryByKey(keys[j]));
+          cEntries[j]=database.getEntryByKey(keys[j]);
         }
         if (cEntries[j] == null) {
           LOGGER.info("BibTeX key not found : '" + keys[j] + '\'');
@@ -123,7 +123,7 @@
             bibtexKeys[i][j]=cEntries[j].getCiteKey();
           }
         }
-        citationMarker=style.getCitationMarker(cEntries,entries.get(cEntries),type == OOBibBase.AUTHORYEAR_PAR,null,null);
+        citationMarker=style.getCitationMarker(cEntries,entries.get(cEntries),type == OOBibBase.AUTHORYEAR_PAR,(String[])null,(int[])null);
         for (int j=0; j < cEntries.length; j++) {
           normCitMarker[j]=style.getCitationMarker(cEntries[j],entries.get(cEntries),true,null,-1);
         }
@@ -134,8 +134,8 @@
   }
   uniquefiers.clear();
   if (!style.isBibtexKeyCiteMarkers() && !style.isNumberEntries()) {
-    HashMap<String,List<String>> refKeys=new HashMap<>();
-    HashMap<String,List<Integer>> refNums=new HashMap<>();
+    Map<String,List<String>> refKeys=new HashMap<>();
+    Map<String,List<Integer>> refNums=new HashMap<>();
     for (int i=0; i < citMarkers.length; i++) {
       String[] markers=normCitMarkers[i];
       for (int j=0; j < markers.length; j++) {
@@ -167,7 +167,7 @@
       }
     }
     int maxAuthorsFirst=style.getIntCitProperty("MaxAuthorsFirst");
-    HashSet<String> seenBefore=new HashSet<>();
+    Set<String> seenBefore=new HashSet<>();
     for (int j=0; j < bibtexKeys.length; j++) {
       boolean needsChange=false;
       int[] firstLimAuthors=new int[bibtexKeys[j].length];
@@ -186,7 +186,7 @@
           needsChange=true;
           BibDatabase database=linkSourceBase.get(bibtexKeys[j][k]);
           if (database != null) {
-            cEntries[k]=OOUtil.createAdaptedEntry(database.getEntryByKey(bibtexKeys[j][k]));
+            cEntries[k]=database.getEntryByKey(bibtexKeys[j][k]);
           }
           uniquif[k]=uniq;
         }
@@ -194,14 +194,14 @@
           needsChange=true;
           BibDatabase database=linkSourceBase.get(bibtexKeys[j][k]);
           if (database != null) {
-            cEntries[k]=OOUtil.createAdaptedEntry(database.getEntryByKey(bibtexKeys[j][k]));
+            cEntries[k]=database.getEntryByKey(bibtexKeys[j][k]);
           }
           uniquif[k]="";
         }
  else {
           BibDatabase database=linkSourceBase.get(bibtexKeys[j][k]);
           if (database != null) {
-            cEntries[k]=OOUtil.createAdaptedEntry(database.getEntryByKey(bibtexKeys[j][k]));
+            cEntries[k]=database.getEntryByKey(bibtexKeys[j][k]);
           }
           uniquif[k]="";
         }
