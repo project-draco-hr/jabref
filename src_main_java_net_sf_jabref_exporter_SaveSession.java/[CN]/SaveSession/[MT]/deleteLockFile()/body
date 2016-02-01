@@ -3,6 +3,8 @@
   if (!lock.exists()) {
     return false;
   }
-  lock.delete();
+  if (!lock.delete()) {
+    LOGGER.info("Cannot delete lock file");
+  }
   return true;
 }
