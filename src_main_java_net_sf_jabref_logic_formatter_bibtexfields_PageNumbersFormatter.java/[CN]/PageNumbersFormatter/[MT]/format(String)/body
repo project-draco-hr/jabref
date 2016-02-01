@@ -1,12 +1,11 @@
 {
   final String rejectLiterals="[^0-9,\\-\\+]";
-  final Pattern pagesPattern=Pattern.compile("\\A(\\d+)-{1,2}(\\d+)\\Z");
   final String replace="$1--$2";
   if ((value == null) || value.isEmpty()) {
     return value;
   }
   String cleanValue=value.replaceAll(rejectLiterals,"");
-  Matcher matcher=pagesPattern.matcher(cleanValue);
+  Matcher matcher=PAGES_PATTERN.matcher(cleanValue);
   String newValue=matcher.replaceFirst(replace);
   if (!newValue.equals(cleanValue)) {
     return newValue;

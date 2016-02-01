@@ -130,7 +130,6 @@
   }
 );
   buildInFunctions.put("add.period$",new BstFunction(){
-    final Pattern p=Pattern.compile("([^\\.\\?\\!\\}\\s])(\\}|\\s)*$");
     /** 
  * Pops the top (string) literal, adds a `.' to it if the last non
  * '}' character isn't a `.', `?', or `!', and pushes this resulting
@@ -145,7 +144,7 @@
         throw new VMException("Can only add a period to a string for add.period$");
       }
       String s=(String)o1;
-      Matcher m=p.matcher(s);
+      Matcher m=ADD_PERIOD_PATTERN.matcher(s);
       if (m.find()) {
         StringBuffer sb=new StringBuffer();
         m.appendReplacement(sb,m.group(1));
