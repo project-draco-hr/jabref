@@ -83,7 +83,9 @@
           success=FileUtil.copyFile(file,newFile,true);
         }
         if (success) {
-          file.delete();
+          if (!file.delete()) {
+            LOGGER.info("Cannot delete original file");
+          }
           String canPath=new File(dirs.get(found)).getCanonicalPath();
           if (newFile.getCanonicalPath().startsWith(canPath)) {
             if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar)) {
