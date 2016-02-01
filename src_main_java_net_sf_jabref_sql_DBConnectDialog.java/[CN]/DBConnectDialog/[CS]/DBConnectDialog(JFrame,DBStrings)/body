@@ -20,11 +20,11 @@
   rhs.add(txtDatabase);
   rhs.add(txtUsername);
   rhs.add(pwdPassword);
-  lblServerType.setText(Localization.lang("Server Type:"));
-  lblServerHostname.setText(Localization.lang("Server Hostname:"));
-  lblDatabase.setText(Localization.lang("Database:"));
-  lblUsername.setText(Localization.lang("Username:"));
-  lblPassword.setText(Localization.lang("Password:"));
+  lblServerType.setText(Localization.lang("Server type" + ':'));
+  lblServerHostname.setText(Localization.lang("Server hostname" + ':'));
+  lblDatabase.setText(Localization.lang("Database") + ':');
+  lblUsername.setText(Localization.lang("Username") + ':');
+  lblPassword.setText(Localization.lang("Password") + ':');
   for (  JLabel label : lhs) {
     label.setHorizontalAlignment(SwingConstants.RIGHT);
   }
@@ -64,14 +64,14 @@
   pack();
   ActionListener connectAction=new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
-      String errorMessage=checkInput();
-      if (errorMessage == null) {
+      Optional<String> errorMessage=checkInput();
+      if (errorMessage.isPresent()) {
+        JOptionPane.showMessageDialog(null,errorMessage.get(),Localization.lang("Input error"),JOptionPane.ERROR_MESSAGE);
+      }
+ else {
         storeSettings();
         setVisible(false);
         setConnectToDB(true);
-      }
- else {
-        JOptionPane.showMessageDialog(null,errorMessage,"Input Error",JOptionPane.ERROR_MESSAGE);
       }
     }
   }
