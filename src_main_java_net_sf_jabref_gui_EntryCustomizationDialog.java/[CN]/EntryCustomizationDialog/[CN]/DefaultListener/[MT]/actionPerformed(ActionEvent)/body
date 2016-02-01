@@ -3,16 +3,16 @@
     return;
   }
   defaulted.add(lastSelected);
-  EntryType type=EntryTypes.getStandardType(lastSelected,bibDatabaseContext.getMode());
-  if (type != null) {
-    List<String> of=type.getOptionalFields();
-    List<String> req=type.getRequiredFields();
+  Optional<EntryType> type=EntryTypes.getStandardType(lastSelected,bibDatabaseContext.getMode());
+  if (type.isPresent()) {
+    List<String> of=type.get().getOptionalFields();
+    List<String> req=type.get().getRequiredFields();
     List<String> opt1=new ArrayList<>();
     List<String> opt2=new ArrayList<>();
     if (!(of.isEmpty())) {
       if (biblatexMode) {
-        opt1=type.getPrimaryOptionalFields();
-        opt2=type.getSecondaryOptionalFields();
+        opt1=type.get().getPrimaryOptionalFields();
+        opt2=type.get().getSecondaryOptionalFields();
       }
  else {
         opt1=of;

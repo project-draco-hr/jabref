@@ -1,5 +1,9 @@
 {
-  List<String> texFields=EntryTypes.getType(entry.getType(),frame.getCurrentBasePanel().getBibDatabaseContext().getMode()).getAllFields();
+  List<String> texFields=new ArrayList<>();
+  Optional<EntryType> type=EntryTypes.getType(entry.getType(),frame.getCurrentBasePanel().getBibDatabaseContext().getMode());
+  if (type.isPresent()) {
+    texFields.addAll(type.get().getAllFields());
+  }
   List<String> internalFields=InternalBibtexFields.getAllFieldNames();
   for (  String field : internalFields) {
     if (!texFields.contains(field)) {
