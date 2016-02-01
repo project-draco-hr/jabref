@@ -8,12 +8,12 @@
     jtc.setSelectionStart(YankAction.start);
     jtc.setSelectionEnd(YankAction.end);
     String toYank=KillRing.getInstance().next();
-    if (toYank != null) {
-      jtc.replaceSelection(toYank);
-      YankAction.end=jtc.getCaretPosition();
+    if (toYank == null) {
+      jtc.getToolkit().beep();
     }
  else {
-      jtc.getToolkit().beep();
+      jtc.replaceSelection(toYank);
+      YankAction.end=jtc.getCaretPosition();
     }
   }
 }

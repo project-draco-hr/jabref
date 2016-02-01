@@ -1,12 +1,12 @@
 {
-  String field;
   List<String> newFields=new ArrayList<>();
   for (  String field1 : fields) {
-    field=field1;
-    if (SQLUtil.RESERVED_DB_WORDS.contains(field)) {
-      field=field + '_';
+    StringBuilder field=new StringBuilder(field1);
+    if (SQLUtil.RESERVED_DB_WORDS.contains(field.toString())) {
+      field.append('_');
     }
-    newFields.add(field + datatype);
+    field.append(datatype);
+    newFields.add(field.toString());
   }
   return String.join(", ",newFields);
 }
