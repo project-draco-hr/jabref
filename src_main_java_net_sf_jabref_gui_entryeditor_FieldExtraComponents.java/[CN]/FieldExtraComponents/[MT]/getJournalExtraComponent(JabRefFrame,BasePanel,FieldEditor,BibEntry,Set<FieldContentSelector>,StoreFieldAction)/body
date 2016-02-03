@@ -11,8 +11,9 @@
   button.addActionListener(new ActionListener(){
     @Override public void actionPerformed(    ActionEvent actionEvent){
       String text=editor.getText();
-      if (Abbreviations.journalAbbrev.isKnownName(text)) {
-        String s=Abbreviations.toggleAbbreviation(text);
+      JournalAbbreviationRepository abbreviationRepository=Globals.journalAbbreviationLoader.getRepository();
+      if (abbreviationRepository.isKnownName(text)) {
+        String s=abbreviationRepository.getNextAbbreviation(text).orElse(text);
         if (s != null) {
           editor.setText(s);
           storeFieldAction.actionPerformed(new ActionEvent(editor,0,""));
