@@ -7,7 +7,7 @@
       CustomExportDialog ecd=new CustomExportDialog(frame);
       ecd.setVisible(true);
       if (ecd.okPressed()) {
-        String[] newFormat=new String[]{ecd.name(),ecd.layoutFile(),ecd.extension()};
+        List<String> newFormat=Arrays.asList(ecd.name(),ecd.layoutFile(),ecd.extension());
         Globals.prefs.customExports.addFormat(newFormat);
         Globals.prefs.customExports.store();
       }
@@ -21,13 +21,13 @@
       if (row == -1) {
         return;
       }
-      String[] old=Globals.prefs.customExports.getSortedList().get(row);
-      CustomExportDialog ecd=new CustomExportDialog(frame,old[0],old[1],old[2]);
+      List<String> old=Globals.prefs.customExports.getSortedList().get(row);
+      CustomExportDialog ecd=new CustomExportDialog(frame,old.get(0),old.get(1),old.get(2));
       ecd.setVisible(true);
       if (ecd.okPressed()) {
-        old[0]=ecd.name();
-        old[1]=ecd.layoutFile();
-        old[2]=ecd.extension();
+        old.set(0,ecd.name());
+        old.set(1,ecd.layoutFile());
+        old.set(2,ecd.extension());
         table.revalidate();
         table.repaint();
         Globals.prefs.customExports.store();
@@ -42,12 +42,12 @@
       if (rows.length == 0) {
         return;
       }
-      String[][] entries=new String[rows.length][];
+      List<List<String>> entries=new ArrayList<>();
       for (int i=0; i < rows.length; i++) {
-        entries[i]=Globals.prefs.customExports.getSortedList().get(rows[i]);
+        entries.add(Globals.prefs.customExports.getSortedList().get(rows[i]));
       }
-      for (int i=0; i < rows.length; i++) {
-        Globals.prefs.customExports.remove(entries[i]);
+      for (      List<String> list : entries) {
+        Globals.prefs.customExports.remove(list);
       }
       Globals.prefs.customExports.store();
     }
@@ -62,7 +62,7 @@
   JButton close=new JButton(Localization.lang("Close"));
   close.addActionListener(closeAction);
   JButton help=new HelpAction(HelpFiles.exportCustomizationHelp).getHelpButton();
-  DefaultEventTableModel<String[]> tableModel=new DefaultEventTableModel<>(Globals.prefs.customExports.getSortedList(),new ExportTableFormat());
+  DefaultEventTableModel<List<String>> tableModel=new DefaultEventTableModel<>(Globals.prefs.customExports.getSortedList(),new ExportTableFormat());
   table=new JTable(tableModel);
   TableColumnModel cm=table.getColumnModel();
   cm.getColumn(0).setPreferredWidth(GUIGlobals.EXPORT_DIALOG_COL_0_WIDTH);
