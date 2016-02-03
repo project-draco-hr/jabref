@@ -1,0 +1,12 @@
+{
+  if (preferences.isSaveInOriginalOrder()) {
+    return Optional.empty();
+  }
+  if (preferences.getTakeMetadataSaveOrderInAccount()) {
+    List<String> storedSaveOrderConfig=metaData.getData(MetaData.SAVE_ORDER_CONFIG);
+    if (storedSaveOrderConfig != null) {
+      return Optional.of(new SaveOrderConfig(storedSaveOrderConfig));
+    }
+  }
+  return Optional.ofNullable(preferences.getSaveOrder());
+}
