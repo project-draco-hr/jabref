@@ -5,28 +5,25 @@
   for (  String key : metaData) {
     StringBuilder stringBuilder=new StringBuilder();
     stringBuilder.append(Globals.NEWLINE);
-    stringBuilder.append(Globals.NEWLINE);
     List<String> orderedData=metaData.getData(key);
-    stringBuilder.append("@comment{").append(MetaData.META_FLAG).append(key).append(":");
+    stringBuilder.append(COMMENT_PREFIX + "{").append(MetaData.META_FLAG).append(key).append(":");
     for (int j=0; j < orderedData.size(); j++) {
       stringBuilder.append(StringUtil.quote(orderedData.get(j),";",'\\')).append(";");
     }
     stringBuilder.append("}");
+    stringBuilder.append(Globals.NEWLINE);
     out.write(stringBuilder.toString());
   }
   GroupTreeNode groupsRoot=metaData.getGroups();
   if ((groupsRoot != null) && (groupsRoot.getChildCount() > 0)) {
     StringBuffer sb=new StringBuffer();
     sb.append(Globals.NEWLINE);
-    sb.append(Globals.NEWLINE);
-    sb.append("@comment{").append(MetaData.META_FLAG).append(MetaData.GROUPSVERSION).append(":");
+    sb.append(COMMENT_PREFIX + "{").append(MetaData.META_FLAG).append(MetaData.GROUPSVERSION).append(":");
     sb.append("" + VersionHandling.CURRENT_VERSION + ";");
     sb.append("}");
-    out.write(sb.toString());
-    sb=new StringBuffer();
     sb.append(Globals.NEWLINE);
     sb.append(Globals.NEWLINE);
-    sb.append("@comment{").append(MetaData.META_FLAG).append(MetaData.GROUPSTREE).append(":");
+    sb.append(COMMENT_PREFIX + "{").append(MetaData.META_FLAG).append(MetaData.GROUPSTREE).append(":");
     sb.append(Globals.NEWLINE);
     StringTokenizer tok=new StringTokenizer(groupsRoot.getTreeAsString(),Globals.NEWLINE);
     while (tok.hasMoreTokens()) {
@@ -35,6 +32,7 @@
       sb.append(Globals.NEWLINE);
     }
     sb.append("}");
+    sb.append(Globals.NEWLINE);
     out.write(sb.toString());
   }
 }
