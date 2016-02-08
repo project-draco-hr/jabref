@@ -1,13 +1,15 @@
 {
   LabelPatternUtil.database=dBase;
-  List<String> typeList;
   String key;
   StringBuilder stringBuilder=new StringBuilder();
   boolean forceUpper=false;
   boolean forceLower=false;
   try {
     String entryType=entry.getType();
-    typeList=metaData.getLabelPattern().getValue(entryType);
+    List<String> typeList=new ArrayList<>(metaData.getLabelPattern().getValue(entryType));
+    if (!typeList.isEmpty()) {
+      typeList.remove(0);
+    }
     boolean field=false;
     for (    String typeListEntry : typeList) {
       if ("[".equals(typeListEntry)) {
