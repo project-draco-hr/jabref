@@ -1,6 +1,6 @@
 {
   remaining.remove(bs.getName());
-  if (!bs.hasChanged()) {
+  if (!reformatFile && !bs.hasChanged()) {
     fw.write(bs.getParsedSerialization());
     return;
   }
@@ -15,7 +15,7 @@
     content=content.substring(restIndex);
     Object referred=remaining.get(foundLabel.substring(1,foundLabel.length() - 1));
     if (referred != null) {
-      writeString(fw,(BibtexString)referred,remaining,maxKeyLength);
+      writeString(fw,(BibtexString)referred,remaining,maxKeyLength,reformatFile);
     }
   }
   StringBuilder suffixSB=new StringBuilder();
