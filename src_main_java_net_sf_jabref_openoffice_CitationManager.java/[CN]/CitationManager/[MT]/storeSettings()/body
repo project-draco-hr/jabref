@@ -1,7 +1,8 @@
 {
   for (  CitEntry entry : list) {
-    if (entry.pageInfoChanged()) {
-      ooBase.setCustomProperty(entry.refMarkName,entry.pageInfo);
+    Optional<String> pageInfo=entry.getPageInfo();
+    if (entry.pageInfoChanged() && pageInfo.isPresent()) {
+      ooBase.setCustomProperty(entry.getRefMarkName(),pageInfo.get());
     }
   }
 }

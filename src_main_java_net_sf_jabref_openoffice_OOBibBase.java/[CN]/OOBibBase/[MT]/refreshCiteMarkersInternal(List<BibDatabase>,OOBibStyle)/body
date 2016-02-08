@@ -34,7 +34,7 @@
   String[] citMarkers=new String[names.size()];
   String[][] normCitMarkers=new String[names.size()][];
   String[][] bibtexKeys=new String[names.size()][];
-  int minGroupingCount=style.getIntCitProperty("MinimumGroupingCount");
+  int minGroupingCount=style.getIntCitProperty(OOBibStyle.MINIMUM_GROUPING_COUNT);
   int[] types=new int[names.size()];
   for (int i=0; i < names.size(); i++) {
     Matcher m=CITE_PATTERN.matcher(names.get(i));
@@ -91,9 +91,7 @@
           }
           citationMarker=style.getNumCitationMarker(num,minGroupingCount,false);
           for (int j=0; j < keys.length; j++) {
-            List<Integer> list=new ArrayList<>(1);
-            list.add(num.get(j));
-            normCitMarker[j]=style.getNumCitationMarker(list,minGroupingCount,false);
+            normCitMarker[j]=style.getNumCitationMarker(Arrays.asList(num.get(j)),minGroupingCount,false);
           }
         }
  else {
@@ -113,7 +111,7 @@
       }
  else {
         if (cEntries.length > 1) {
-          if (style.getBooleanCitProperty("MultiCiteChronological")) {
+          if (style.getBooleanCitProperty(OOBibStyle.MULTI_CITE_CHRONOLOGICAL)) {
             Arrays.sort(cEntries,yearAuthorTitleComparator);
           }
  else {
@@ -166,7 +164,7 @@
         }
       }
     }
-    int maxAuthorsFirst=style.getIntCitProperty("MaxAuthorsFirst");
+    int maxAuthorsFirst=style.getIntCitProperty(OOBibStyle.MAX_AUTHORS_FIRST);
     Set<String> seenBefore=new HashSet<>();
     for (int j=0; j < bibtexKeys.length; j++) {
       boolean needsChange=false;
@@ -222,7 +220,7 @@
       XPropertySet xCursorProps=UnoRuntime.queryInterface(XPropertySet.class,cursor);
       String charStyle=style.getCitationCharacterFormat();
       try {
-        xCursorProps.setPropertyValue("CharStyleName",charStyle);
+        xCursorProps.setPropertyValue(CHAR_STYLE_NAME,charStyle);
       }
  catch (      UnknownPropertyException|PropertyVetoException|IllegalArgumentException|WrappedTargetException ex) {
         throw new UndefinedCharacterFormatException(charStyle);
