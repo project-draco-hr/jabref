@@ -4,20 +4,20 @@
   if (uniquefiers != null) {
     for (int i=0; i < uniquefiers.length; i++) {
       if ((uniquefiers[i] != null) && !uniquefiers[i].isEmpty()) {
-        String authorField=(String)citProperties.get("AuthorField");
-        int maxAuthors=(Integer)citProperties.get("MaxAuthors");
+        String authorField=(String)citProperties.get(AUTHOR_FIELD);
+        int maxAuthors=(Integer)citProperties.get(MAX_AUTHORS);
         if (piv == -1) {
           piv=i;
-          tmpMarker=getAuthorYearParenthesisMarker(new BibEntry[]{entries[i]},database,authorField,(String)citProperties.get("YearField"),maxAuthors,(String)citProperties.get("AuthorSeparator"),(String)citProperties.get("AuthorLastSeparator"),(String)citProperties.get("EtAlString"),(String)citProperties.get("YearSeparator"),(String)citProperties.get("BracketBefore"),(String)citProperties.get("BracketAfter"),(String)citProperties.get("CitationSeparator"),null,unlimAuthors);
+          tmpMarker=getAuthorYearParenthesisMarker(new BibEntry[]{entries[i]},database,authorField,(String)citProperties.get(YEAR_FIELD),maxAuthors,(String)citProperties.get(AUTHOR_SEPARATOR),(String)citProperties.get(AUTHOR_LAST_SEPARATOR),(String)citProperties.get(ET_AL_STRING),(String)citProperties.get(YEAR_SEPARATOR),(String)citProperties.get(BRACKET_BEFORE),(String)citProperties.get(BRACKET_AFTER),(String)citProperties.get(CITATION_SEPARATOR),null,unlimAuthors);
         }
  else {
-          String thisMarker=getAuthorYearParenthesisMarker(new BibEntry[]{entries[i]},database,authorField,(String)citProperties.get("YearField"),maxAuthors,(String)citProperties.get("AuthorSeparator"),(String)citProperties.get("AuthorLastSeparator"),(String)citProperties.get("EtAlString"),(String)citProperties.get("YearSeparator"),(String)citProperties.get("BracketBefore"),(String)citProperties.get("BracketAfter"),(String)citProperties.get("CitationSeparator"),null,unlimAuthors);
+          String thisMarker=getAuthorYearParenthesisMarker(new BibEntry[]{entries[i]},database,authorField,(String)citProperties.get(YEAR_FIELD),maxAuthors,(String)citProperties.get(AUTHOR_SEPARATOR),(String)citProperties.get(AUTHOR_LAST_SEPARATOR),(String)citProperties.get(ET_AL_STRING),(String)citProperties.get(YEAR_SEPARATOR),(String)citProperties.get(BRACKET_BEFORE),(String)citProperties.get(BRACKET_AFTER),(String)citProperties.get(CITATION_SEPARATOR),null,unlimAuthors);
           String author=getCitationMarkerField(entries[i],database,authorField);
           AuthorList al=AuthorList.getAuthorList(author);
           int prevALim=unlimAuthors[i - 1];
           if (!thisMarker.equals(tmpMarker) || ((al.size() > maxAuthors) && (unlimAuthors[i] != prevALim))) {
             if ((piv > -1) && (i > (piv + 1))) {
-              group(entries,uniquefiers,piv,i - 1,(String)citProperties.get("UniquefierSeparator"));
+              group(entries,uniquefiers,piv,i - 1,(String)citProperties.get(UNIQUEFIER_SEPARATOR));
             }
             tmpMarker=thisMarker;
             piv=i;
@@ -26,24 +26,24 @@
       }
  else {
         if ((piv > -1) && (i > (piv + 1))) {
-          group(entries,uniquefiers,piv,i - 1,(String)citProperties.get("UniquefierSeparator"));
+          group(entries,uniquefiers,piv,i - 1,(String)citProperties.get(UNIQUEFIER_SEPARATOR));
         }
         piv=-1;
       }
     }
     if (piv >= 0) {
-      group(entries,uniquefiers,piv,uniquefiers.length - 1,(String)citProperties.get("UniquefierSeparator"));
+      group(entries,uniquefiers,piv,uniquefiers.length - 1,(String)citProperties.get(UNIQUEFIER_SEPARATOR));
     }
   }
   if (inParenthesis) {
-    return getAuthorYearParenthesisMarker(entries,database,(String)citProperties.get("AuthorField"),(String)citProperties.get("YearField"),(Integer)citProperties.get("MaxAuthors"),(String)citProperties.get("AuthorSeparator"),(String)citProperties.get("AuthorLastSeparator"),(String)citProperties.get("EtAlString"),(String)citProperties.get("YearSeparator"),(String)citProperties.get("BracketBefore"),(String)citProperties.get("BracketAfter"),(String)citProperties.get("CitationSeparator"),uniquefiers,unlimAuthors);
+    return getAuthorYearParenthesisMarker(entries,database,(String)citProperties.get(AUTHOR_FIELD),(String)citProperties.get(YEAR_FIELD),(Integer)citProperties.get(MAX_AUTHORS),(String)citProperties.get(AUTHOR_SEPARATOR),(String)citProperties.get(AUTHOR_LAST_SEPARATOR),(String)citProperties.get(ET_AL_STRING),(String)citProperties.get(YEAR_SEPARATOR),(String)citProperties.get(BRACKET_BEFORE),(String)citProperties.get(BRACKET_AFTER),(String)citProperties.get(CITATION_SEPARATOR),uniquefiers,unlimAuthors);
   }
  else {
-    String authorLastSeparator=(String)citProperties.get("AuthorLastSeparator");
-    String alsInText=(String)citProperties.get("AuthorLastSeparatorInText");
+    String authorLastSeparator=(String)citProperties.get(AUTHOR_LAST_SEPARATOR);
+    String alsInText=(String)citProperties.get(AUTHOR_LAST_SEPARATOR_IN_TEXT);
     if (alsInText != null) {
       authorLastSeparator=alsInText;
     }
-    return getAuthorYearInTextMarker(entries,database,(String)citProperties.get("AuthorField"),(String)citProperties.get("YearField"),(Integer)citProperties.get("MaxAuthors"),(String)citProperties.get("AuthorSeparator"),authorLastSeparator,(String)citProperties.get("EtAlString"),(String)citProperties.get("InTextYearSeparator"),(String)citProperties.get("BracketBefore"),(String)citProperties.get("BracketAfter"),(String)citProperties.get("CitationSeparator"),uniquefiers,unlimAuthors);
+    return getAuthorYearInTextMarker(entries,database,(String)citProperties.get(AUTHOR_FIELD),(String)citProperties.get(YEAR_FIELD),(Integer)citProperties.get(MAX_AUTHORS),(String)citProperties.get(AUTHOR_SEPARATOR),authorLastSeparator,(String)citProperties.get(ET_AL_STRING),(String)citProperties.get(IN_TEXT_YEAR_SEPARATOR),(String)citProperties.get(BRACKET_BEFORE),(String)citProperties.get(BRACKET_AFTER),(String)citProperties.get(CITATION_SEPARATOR),uniquefiers,unlimAuthors);
   }
 }

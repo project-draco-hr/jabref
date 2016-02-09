@@ -41,7 +41,7 @@
     URL[] jarList=new URL[jarFiles.length];
     for (int i=0; i < jarList.length; i++) {
       if (!jarFiles[i].exists()) {
-        throw new Exception("File not found: " + jarFiles[i].getPath());
+        throw new IOException("File not found: " + jarFiles[i].getPath());
       }
       jarList[i]=jarFiles[i].toURI().toURL();
     }
@@ -54,7 +54,7 @@
       throw connectException;
     }
     if (ooBase.isConnectedToDocument()) {
-      frame.output(Localization.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle());
+      frame.output(Localization.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle().orElse(""));
     }
     selectDocument.setEnabled(true);
     pushEntries.setEnabled(true);
@@ -69,7 +69,7 @@
     LOGGER.warn("Could not connect to running OpenOffice/LibreOffice",e);
     JOptionPane.showMessageDialog(frame,Localization.lang("Unable to connect. One possible reason is that JabRef " + "and OpenOffice/LibreOffice are not both running in either 32 bit mode or 64 bit mode."));
   }
-catch (  Throwable e) {
+catch (  IOException e) {
     LOGGER.warn("Could not connect to running OpenOffice/LibreOffice",e);
     JOptionPane.showMessageDialog(frame,Localization.lang("Could not connect to running OpenOffice.") + "\n" + Localization.lang("Make sure you have installed OpenOffice with Java support.")+ "\n"+ Localization.lang("If connecting manually, please verify program and library paths.")+ "\n"+ "\n"+ Localization.lang("Error message:")+ " "+ e.getMessage());
   }

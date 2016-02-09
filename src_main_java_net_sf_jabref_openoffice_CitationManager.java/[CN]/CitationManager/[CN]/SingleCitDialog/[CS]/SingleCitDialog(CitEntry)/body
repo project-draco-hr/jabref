@@ -1,7 +1,7 @@
 {
   this._entry=entry;
-  title=new JLabel(entry.context);
-  pageInfo.setText(entry.pageInfo);
+  title=new JLabel(entry.getContext());
+  pageInfo.setText(entry.getPageInfo().orElse(""));
   singleCiteDialog=new JDialog(CitationManager.this.diag,Localization.lang("Citation"),true);
   DefaultFormBuilder b=new DefaultFormBuilder(new FormLayout("left:pref, 4dlu, left:150dlu",""));
   b.append(title,3);
@@ -20,10 +20,10 @@
   Action okAction=new AbstractAction(){
     @Override public void actionPerformed(    ActionEvent actionEvent){
       if (pageInfo.getText().trim().isEmpty()) {
-        _entry.pageInfo=null;
+        _entry.setPageInfo(null);
       }
  else {
-        _entry.pageInfo=pageInfo.getText().trim();
+        _entry.setPageInfo(pageInfo.getText().trim());
       }
       tableModel.fireTableDataChanged();
       singleCiteDialog.dispose();

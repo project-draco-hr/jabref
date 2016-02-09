@@ -1,6 +1,5 @@
 {
   Map<BibEntry,BibDatabase> newList=new LinkedHashMap<>();
-  Map<BibEntry,BibEntry> adaptedEntries=new HashMap<>();
   for (  String name : names) {
     Matcher m=CITE_PATTERN.matcher(name);
     if (m.find()) {
@@ -12,18 +11,13 @@
           origEntry=database.getEntryByKey(key);
         }
         if (origEntry == null) {
-          LOGGER.info("BibTeX key not found : '" + key + "'");
+          LOGGER.info("BibTeX key not found: '" + key + "'");
           LOGGER.info("Problem with reference mark: '" + name + "'");
           newList.put(new UndefinedBibtexEntry(key),null);
         }
  else {
-          BibEntry entry=adaptedEntries.get(origEntry);
-          if (entry == null) {
-            entry=(BibEntry)origEntry.clone();
-            adaptedEntries.put(origEntry,entry);
-          }
-          if (!newList.containsKey(entry)) {
-            newList.put(entry,database);
+          if (!newList.containsKey(origEntry)) {
+            newList.put(origEntry,database);
           }
         }
       }
