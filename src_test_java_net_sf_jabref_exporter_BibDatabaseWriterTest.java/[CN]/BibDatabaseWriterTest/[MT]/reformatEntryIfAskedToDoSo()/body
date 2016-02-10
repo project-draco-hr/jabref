@@ -9,8 +9,7 @@
   database.insertEntry(entry);
   BibDatabaseContext context=new BibDatabaseContext(database,new Defaults(BibDatabaseMode.BIBTEX));
   StringWriter stringWriter=new StringWriter();
-  SavePreferences preferences=new SavePreferences();
-  preferences.setReformatFile(true);
+  SavePreferences preferences=new SavePreferences().withReformatFile(true);
   databaseWriter.writePartOfDatabase(stringWriter,context,Collections.singletonList(entry),preferences);
   Assert.assertEquals(Globals.NEWLINE + "@Article{," + Globals.NEWLINE+ "  author = {Mr. author}"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE,stringWriter.toString());
 }
