@@ -4,5 +4,7 @@
   try (BufferedInputStream in=new BufferedInputStream(new FileInputStream(tmpFile))){
     OpenOfficeDocumentCreator.storeOpenOfficeFile(file,in);
   }
-   tmpFile.delete();
+   if (!tmpFile.delete()) {
+    LOGGER.info("Cannot delete temporary export file");
+  }
 }
