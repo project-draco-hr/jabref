@@ -30,8 +30,7 @@
       deprecatedFields.add("year");
       deprecatedFields.add("month");
       List<String> secondaryOptionalFields=type.getSecondaryOptionalFields();
-      List<String> temp=EntryUtil.getRemainder((secondaryOptionalFields),new ArrayList<>(deprecatedFields));
-      String[] optionalFieldsNotPrimaryOrDeprecated=temp.toArray(new String[temp.size()]);
+      List<String> optionalFieldsNotPrimaryOrDeprecated=EntryUtil.getRemainder((secondaryOptionalFields),new ArrayList<>(deprecatedFields));
       Set<String> optionalFieldsAndAliases=new HashSet<>();
       for (      String field : type.getOptionalFields()) {
         optionalFieldsAndAliases.add(field);
@@ -41,7 +40,7 @@
       }
       Set<String> usedOptionalFieldsDeprecated=new HashSet<>(deprecatedFields);
       usedOptionalFieldsDeprecated.retainAll(optionalFieldsAndAliases);
-      EntryEditorTab optPan2=new EntryEditorTab(frame,panel,java.util.Arrays.asList(optionalFieldsNotPrimaryOrDeprecated),this,false,true,Localization.lang("Optional fields 2"));
+      EntryEditorTab optPan2=new EntryEditorTab(frame,panel,optionalFieldsNotPrimaryOrDeprecated,this,false,true,Localization.lang("Optional fields 2"));
       if (optPan2.fileListEditor != null) {
         fileListEditor=optPan2.fileListEditor;
       }
@@ -49,7 +48,7 @@
       tabs.add(optPan2);
       if (!usedOptionalFieldsDeprecated.isEmpty()) {
         EntryEditorTab optPan3;
-        optPan3=new EntryEditorTab(frame,panel,java.util.Arrays.asList(usedOptionalFieldsDeprecated.toArray(new String[usedOptionalFieldsDeprecated.size()])),this,false,true,Localization.lang("Deprecated fields"));
+        optPan3=new EntryEditorTab(frame,panel,new ArrayList<>(usedOptionalFieldsDeprecated),this,false,true,Localization.lang("Deprecated fields"));
         if (optPan3.fileListEditor != null) {
           fileListEditor=optPan3.fileListEditor;
         }

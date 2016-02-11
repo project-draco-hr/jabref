@@ -1,5 +1,5 @@
 {
-  final BibEntry[] entries=mPanel.getSelectedEntries();
+  final List<BibEntry> entries=mPanel.getSelectedEntries();
   final Vector<GroupTreeNode> removeGroupsNodes=new Vector<>();
   if (m_move) {
     Enumeration<GroupTreeNode> e=((GroupTreeNode)mNode.getRoot()).preorderEnumeration();
@@ -13,17 +13,17 @@
         }
       }
     }
-    AbstractGroup[] groups=new AbstractGroup[removeGroupsNodes.size() + 1];
+    List<AbstractGroup> groups=new ArrayList<>(removeGroupsNodes.size() + 1);
     for (int i=0; i < removeGroupsNodes.size(); ++i) {
-      groups[i]=removeGroupsNodes.elementAt(i).getGroup();
+      groups.add(removeGroupsNodes.elementAt(i).getGroup());
     }
-    groups[groups.length - 1]=mNode.getGroup();
-    if (!Util.warnAssignmentSideEffects(groups,entries,mPanel.getDatabase(),mPanel.frame())) {
+    groups.add(mNode.getGroup());
+    if (!Util.warnAssignmentSideEffects(groups,mPanel.frame())) {
       return;
     }
   }
  else {
-    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{mNode.getGroup()},entries,mPanel.getDatabase(),mPanel.frame())) {
+    if (!Util.warnAssignmentSideEffects(Arrays.asList(mNode.getGroup()),mPanel.frame())) {
       return;
     }
   }

@@ -41,14 +41,13 @@
       blockEntries.add(parsedEntry);
     }
   }
-  layoutEntries=new LayoutEntry[tmpEntries.size()];
-  for (int i=0; i < tmpEntries.size(); i++) {
-    layoutEntries[i]=tmpEntries.get(i);
-    if (layoutEntries[i].isInvalidFormatter()) {
+  layoutEntries=new ArrayList<>(tmpEntries);
+  for (  LayoutEntry layoutEntry : layoutEntries) {
+    if (layoutEntry.isInvalidFormatter()) {
       if (invalidFormatter == null) {
         invalidFormatter=new ArrayList<>(1);
       }
-      invalidFormatter.addAll(layoutEntries[i].getInvalidFormatters());
+      invalidFormatter.addAll(layoutEntry.getInvalidFormatters());
     }
   }
 }

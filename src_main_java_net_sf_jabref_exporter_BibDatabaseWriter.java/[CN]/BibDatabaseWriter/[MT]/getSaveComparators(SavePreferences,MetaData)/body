@@ -1,0 +1,16 @@
+{
+  List<Comparator<BibEntry>> comparators=new ArrayList<>();
+  Optional<SaveOrderConfig> saveOrder=getSaveOrder(preferences,metaData);
+  if (!saveOrder.isPresent()) {
+    comparators.add(new CrossRefEntryComparator());
+    comparators.add(new IdComparator());
+  }
+ else {
+    comparators.add(new CrossRefEntryComparator());
+    comparators.add(new FieldComparator(saveOrder.get().sortCriteria[0]));
+    comparators.add(new FieldComparator(saveOrder.get().sortCriteria[1]));
+    comparators.add(new FieldComparator(saveOrder.get().sortCriteria[2]));
+    comparators.add(new FieldComparator(BibEntry.KEY_FIELD));
+  }
+  return comparators;
+}

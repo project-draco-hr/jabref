@@ -2,11 +2,13 @@
   SaveSession session;
   frame.block();
   try {
+    SavePreferences prefs=SavePreferences.loadForSaveFromPreferences(Globals.prefs).withEncoding(encoding);
+    BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
     if (selectedOnly) {
-      session=FileActions.savePartOfDatabase(panel.getBibDatabaseContext(),file,Globals.prefs,panel.getSelectedEntries(),encoding,FileActions.DatabaseSaveType.DEFAULT);
+      session=databaseWriter.savePartOfDatabase(panel.getBibDatabaseContext(),prefs,panel.getSelectedEntries());
     }
  else {
-      session=FileActions.saveDatabase(panel.getBibDatabaseContext(),file,Globals.prefs,false,false,encoding,false);
+      session=databaseWriter.saveDatabase(panel.getBibDatabaseContext(),prefs);
     }
   }
  catch (  UnsupportedCharsetException ex2) {
@@ -59,7 +61,7 @@ catch (  SaveException ex) {
   }
   try {
     if (commit) {
-      session.commit();
+      session.commit(file);
       panel.setEncoding(encoding);
     }
  else {
@@ -70,7 +72,7 @@ catch (  SaveException ex) {
     int ans=JOptionPane.showConfirmDialog(null,Localization.lang("Save failed during backup creation") + ". " + Localization.lang("Save without backup?"),Localization.lang("Unable to create backup"),JOptionPane.YES_NO_OPTION);
     if (ans == JOptionPane.YES_OPTION) {
       session.setUseBackup(false);
-      session.commit();
+      session.commit(file);
       panel.setEncoding(encoding);
     }
  else {

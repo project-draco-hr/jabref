@@ -1,0 +1,17 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{canh05}" + "@inProceedings{foo}"));
+  Collection<BibEntry> c=result.getDatabase().getEntries();
+  Assert.assertEquals(2,c.size());
+  Iterator<BibEntry> i=c.iterator();
+  BibEntry a=i.next();
+  BibEntry b=i.next();
+  if (a.getCiteKey().equals("foo")) {
+    BibEntry tmp=a;
+    a=b;
+    b=tmp;
+  }
+  Assert.assertEquals("article",a.getType());
+  Assert.assertEquals("canh05",a.getCiteKey());
+  Assert.assertEquals("inproceedings",b.getType());
+  Assert.assertEquals("foo",b.getCiteKey());
+}
