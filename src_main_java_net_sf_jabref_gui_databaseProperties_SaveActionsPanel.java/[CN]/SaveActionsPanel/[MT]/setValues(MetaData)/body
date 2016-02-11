@@ -1,7 +1,11 @@
 {
   saveActions=new SaveActions(metaData);
+  List<SaveAction> configuredActions=saveActions.getConfiguredActions();
   enabled.setSelected(saveActions.isEnabled());
-  this.setLayout(new GridLayout(2,1));
+  this.setLayout(new GridLayout(2 + configuredActions.size(),1));
   this.add(enabled);
   this.add(getSelectorPanel());
+  for (  SaveAction action : configuredActions) {
+    this.add(getActionsPanel(action));
+  }
 }
