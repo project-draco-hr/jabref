@@ -7,61 +7,10 @@
   ActionListener listener=new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
       boolean selected=e.getSource() == saveInSpecifiedOrder;
-      savePriSort.setEnabled(selected);
-      savePriField.setEnabled(selected);
-      savePriDesc.setEnabled(selected);
-      saveSecSort.setEnabled(selected);
-      saveSecField.setEnabled(selected);
-      saveSecDesc.setEnabled(selected);
-      saveTerSort.setEnabled(selected);
-      saveTerField.setEnabled(selected);
-      saveTerDesc.setEnabled(selected);
+      saveOrderPanel.setEnabled(selected);
     }
   }
 ;
   saveInOriginalOrder.addActionListener(listener);
   saveInSpecifiedOrder.addActionListener(listener);
-  List<String> v=new ArrayList<>(InternalBibtexFields.getAllFieldNames());
-  v.add(BibEntry.KEY_FIELD);
-  Collections.sort(v);
-  String[] allPlusKey=v.toArray(new String[v.size()]);
-  savePriSort=new JComboBox<>(allPlusKey);
-  saveSecSort=new JComboBox<>(allPlusKey);
-  saveTerSort=new JComboBox<>(allPlusKey);
-  savePriSort.insertItemAt(Localization.lang("<select>"),0);
-  saveSecSort.insertItemAt(Localization.lang("<select>"),0);
-  saveTerSort.insertItemAt(Localization.lang("<select>"),0);
-  savePriField=new JTextField(10);
-  saveSecField=new JTextField(10);
-  saveTerField=new JTextField(10);
-  savePriSort.addActionListener(new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent e){
-      if (savePriSort.getSelectedIndex() > 0) {
-        savePriField.setText(savePriSort.getSelectedItem().toString());
-        savePriSort.setSelectedIndex(0);
-      }
-    }
-  }
-);
-  saveSecSort.addActionListener(new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent e){
-      if (saveSecSort.getSelectedIndex() > 0) {
-        saveSecField.setText(saveSecSort.getSelectedItem().toString());
-        saveSecSort.setSelectedIndex(0);
-      }
-    }
-  }
-);
-  saveTerSort.addActionListener(new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent e){
-      if (saveTerSort.getSelectedIndex() > 0) {
-        saveTerField.setText(saveTerSort.getSelectedItem().toString());
-        saveTerSort.setSelectedIndex(0);
-      }
-    }
-  }
-);
-  savePriDesc=new JCheckBox(Localization.lang("Descending"));
-  saveSecDesc=new JCheckBox(Localization.lang("Descending"));
-  saveTerDesc=new JCheckBox(Localization.lang("Descending"));
 }
