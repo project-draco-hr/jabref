@@ -2,13 +2,38 @@
   if (text == null) {
     return null;
   }
+  if (text.isEmpty()) {
+    return text;
+  }
   Set<Character> chars=HTMLUnicodeConversionMaps.UNICODE_SYMBOLS.keySet();
   for (  Character character : chars) {
     text=text.replaceAll(character.toString(),HTMLUnicodeConversionMaps.UNICODE_SYMBOLS.get(character));
   }
-  Integer cp;
+  StringBuilder sb=new StringBuilder();
+  boolean consumed=false;
+  for (int i=0; i <= (text.length() - 2); i++) {
+    if (!consumed && (i < (text.length() - 1))) {
+      int cpCurrent=text.codePointAt(i);
+      Integer cpNext=text.codePointAt(i + 1);
+      String code=HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(cpNext);
+      if (code == null) {
+        sb.append((char)cpCurrent);
+      }
+ else {
+        sb.append("{\\" + code + '{'+ (char)cpCurrent+ "}}");
+        consumed=true;
+      }
+    }
+ else {
+      consumed=false;
+    }
+  }
+  if (!consumed) {
+    sb.append((char)text.codePointAt(text.length() - 1));
+  }
+  text=sb.toString();
   for (int i=0; i <= (text.length() - 1); i++) {
-    cp=text.codePointAt(i);
+    int cp=text.codePointAt(i);
     if (cp >= 129) {
       LOGGER.warn("Unicode character not converted: " + cp);
     }
