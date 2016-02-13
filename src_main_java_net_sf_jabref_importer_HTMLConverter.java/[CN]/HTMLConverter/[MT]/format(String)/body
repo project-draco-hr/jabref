@@ -21,29 +21,29 @@
     }
   }
   text=sb.toString();
-  Set<String> patterns=escapedSymbols.keySet();
+  Set<String> patterns=HTMLUnicodeConversionMaps.ESCAPED_SYMBOLS.keySet();
   for (  String pattern : patterns) {
-    text=text.replaceAll(pattern,escapedSymbols.get(pattern));
+    text=text.replaceAll(pattern,HTMLUnicodeConversionMaps.ESCAPED_SYMBOLS.get(pattern));
   }
   Matcher m=ESCAPED_PATTERN.matcher(text);
   while (m.find()) {
     int num=Integer.decode(m.group(1).replace("x","#") + m.group(3));
-    if (numSymbols.containsKey(num)) {
-      text=text.replaceAll("&#" + m.group(1) + m.group(2)+ m.group(3)+ ";",numSymbols.get(num));
+    if (HTMLUnicodeConversionMaps.NUMERICAL_SYMBOLS.containsKey(num)) {
+      text=text.replaceAll("&#" + m.group(1) + m.group(2)+ m.group(3)+ ";",HTMLUnicodeConversionMaps.NUMERICAL_SYMBOLS.get(num));
     }
   }
   m=ESCAPED_PATTERN2.matcher(text);
   while (m.find()) {
     int num=Integer.decode(m.group(2).replace("x","#") + m.group(4));
-    if (escapedAccents.containsKey(num)) {
+    if (HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.containsKey(num)) {
       if ("i".equals(m.group(1))) {
-        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + escapedAccents.get(num) + "\\{\\\\i\\}\\}");
+        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "\\{\\\\i\\}\\}");
       }
  else       if ("j".equals(m.group(1))) {
-        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + escapedAccents.get(num) + "\\{\\\\j\\}\\}");
+        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "\\{\\\\j\\}\\}");
       }
  else {
-        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + escapedAccents.get(num) + "\\{"+ m.group(1)+ "\\}\\}");
+        text=text.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "\\{"+ m.group(1)+ "\\}\\}");
       }
     }
   }
