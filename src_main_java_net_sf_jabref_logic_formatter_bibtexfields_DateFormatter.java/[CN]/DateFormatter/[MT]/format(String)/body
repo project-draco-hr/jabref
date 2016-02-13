@@ -1,8 +1,8 @@
 {
-  TemporalAccessor parsedDate=tryParseDate(value);
-  if (parsedDate == null) {
+  Optional<TemporalAccessor> parsedDate=tryParseDate(value);
+  if (!parsedDate.isPresent()) {
     return value;
   }
   DateTimeFormatter dateFormatter=DateTimeFormatter.ofPattern("uuuu-MM[-dd]");
-  return dateFormatter.format(parsedDate);
+  return dateFormatter.format(parsedDate.get());
 }

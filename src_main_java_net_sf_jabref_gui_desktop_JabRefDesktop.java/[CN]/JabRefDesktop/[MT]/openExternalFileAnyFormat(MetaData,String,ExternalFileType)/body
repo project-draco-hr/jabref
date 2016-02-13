@@ -5,9 +5,9 @@
   }
   File file=new File(link);
   if (!httpLink) {
-    File tmp=FileUtil.expandFilename(metaData,link);
-    if (tmp != null) {
-      file=tmp;
+    Optional<File> tmp=FileUtil.expandFilename(metaData,link);
+    if (tmp.isPresent()) {
+      file=tmp.get();
     }
   }
   if ((httpLink || file.exists()) && (fileType != null)) {
