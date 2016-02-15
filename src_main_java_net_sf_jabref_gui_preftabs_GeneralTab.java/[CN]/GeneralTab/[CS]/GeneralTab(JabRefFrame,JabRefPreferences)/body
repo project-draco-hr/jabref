@@ -1,6 +1,8 @@
 {
   this.prefs=prefs;
   setLayout(new BorderLayout());
+  biblatexMode=new JComboBox(BibDatabaseMode.values());
+  biblatexMode.setRenderer(new DefaultBibModeRenderer());
   allowEditing=new JCheckBox(Localization.lang("Allow editing in table cells"));
   memoryStick=new JCheckBox(Localization.lang("Load and Save preferences from/to jabref.xml on start-up (memory stick mode)"));
   defSort=new JCheckBox(Localization.lang("Sort automatically"));
@@ -77,6 +79,10 @@
   lab=new JLabel(Localization.lang("Default encoding") + ':');
   builder.append(lab,3);
   builder.append(encodings);
+  builder.nextLine();
+  builder.appendSeparator(Localization.lang("Default bibliography mode"));
+  builder.append(new JPanel());
+  builder.append(biblatexMode);
   JPanel pan=builder.getPanel();
   pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
   add(pan,BorderLayout.CENTER);
