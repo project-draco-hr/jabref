@@ -3,17 +3,20 @@
   saveActions=new SaveActions(metaData);
   List<FieldFormatterCleanup> configuredActions=saveActions.getConfiguredActions();
   enabled.setSelected(saveActions.isEnabled());
-  this.setLayout(new GridLayout(2 + configuredActions.size(),1));
-  this.add(enabled);
-  this.add(getSelectorPanel());
+  FormBuilder builder=FormBuilder.create().layout(new FormLayout("left:pref, 4dlu, left:pref, 4dlu, pref:grow","pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref,"));
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  builder.add(enabled).xy(3,1);
+  builder.add(getSelectorPanel()).xy(3,3);
   List<FieldFormatterCleanup> actionsToDisplay=new ArrayList<>(configuredActions.size());
   for (  FieldFormatterCleanup action : configuredActions) {
     actionsToDisplay.add(action);
   }
   actionsList=new JList(new SaveActionsListModel<>(actionsToDisplay));
   actionsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-  this.add(actionsList);
+  builder.add(actionsList).xyw(3,5,2);
   JButton deleteButton=new JButton(Localization.lang("Delete"));
   deleteButton.addActionListener(new DeleteButtonListener());
-  this.add(deleteButton);
+  builder.add(deleteButton).xy(3,7);
+  this.setLayout(new BorderLayout());
+  this.add(builder.getPanel(),BorderLayout.WEST);
 }
