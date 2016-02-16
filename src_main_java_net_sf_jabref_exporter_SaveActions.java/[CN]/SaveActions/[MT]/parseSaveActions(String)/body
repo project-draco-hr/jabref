@@ -1,0 +1,31 @@
+{
+  int startIndex=0;
+  int index=0;
+  String remainingString=formatterString;
+  try {
+    while (startIndex < formatterString.length()) {
+      index=remainingString.indexOf("[");
+      String fieldKey=remainingString.substring(0,index);
+      int endIndex=remainingString.indexOf("]");
+      startIndex+=endIndex + 1;
+      int commaIndex=remainingString.indexOf(",");
+      do {
+        String formatterKey=remainingString.substring(index + 1,commaIndex);
+        actions.add(new FieldFormatterCleanup(fieldKey,getFormatterFromString(formatterKey)));
+        remainingString=remainingString.substring(commaIndex + 1);
+        commaIndex=remainingString.indexOf(",");
+        index=-1;
+      }
+ while (commaIndex != -1 && commaIndex < endIndex);
+      if ("]".equals(remainingString)) {
+        return;
+      }
+ else {
+        remainingString=remainingString.substring(1,remainingString.length());
+      }
+    }
+  }
+ catch (  StringIndexOutOfBoundsException ignore) {
+    return;
+  }
+}

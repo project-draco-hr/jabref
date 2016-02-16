@@ -1,0 +1,22 @@
+{
+  HashMap<String,List<String>> groupedByField=new HashMap<>();
+  for (  FieldFormatterCleanup cleanup : actionList) {
+    String key=cleanup.getField();
+    if (!groupedByField.containsKey(key)) {
+      groupedByField.put(key,new ArrayList<>());
+    }
+    List<String> formattersForKey=groupedByField.get(key);
+    if (!formattersForKey.contains(cleanup.getFormatter().getKey())) {
+      formattersForKey.add(cleanup.getFormatter().getKey());
+    }
+  }
+  StringBuilder result=new StringBuilder();
+  for (  String fieldKey : groupedByField.keySet()) {
+    result.append(fieldKey + "[");
+    for (    String formatterKey : groupedByField.get(fieldKey)) {
+      result.append(formatterKey + ",");
+    }
+    result.append("],");
+  }
+  return result.toString();
+}
