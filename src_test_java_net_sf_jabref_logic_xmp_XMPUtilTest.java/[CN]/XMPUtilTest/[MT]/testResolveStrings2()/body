@@ -10,7 +10,7 @@
       Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
       try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
         Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(document.getDocumentInformation().getAuthor()));
-        b=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
+        b=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation()).get();
         Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
         PDDocumentCatalog catalog=document.getDocumentCatalog();
         PDMetadata metaRaw=catalog.getMetadata();
@@ -26,7 +26,7 @@
         Assert.assertEquals("David Patterson",dcSchema.getCreators().get(0));
         Assert.assertEquals("Arvind",dcSchema.getCreators().get(1));
         Assert.assertEquals("Krste Asanov\\'\\i{}c",dcSchema.getCreators().get(2));
-        b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema);
+        b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema).get();
         Assert.assertNotNull(b);
         Assert.assertEquals(originalAuthors,AuthorList.getAuthorList(b.getField("author")));
       }
