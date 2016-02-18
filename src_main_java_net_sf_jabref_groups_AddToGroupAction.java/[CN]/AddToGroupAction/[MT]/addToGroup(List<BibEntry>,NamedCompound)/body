@@ -2,8 +2,8 @@
   if (!Util.warnAssignmentSideEffects(node.getGroup(),panel.frame())) {
     return;
   }
-  AbstractUndoableEdit undoAdd=node.addToGroup(entries);
-  if (undoAdd != null) {
-    undo.addEdit(undoAdd);
+  Optional<EntriesGroupChange> undoAdd=node.addToGroup(entries);
+  if (undoAdd.isPresent()) {
+    undo.addEdit(UndoableChangeEntriesOfGroup.getUndoableEdit(node,undoAdd.get()));
   }
 }

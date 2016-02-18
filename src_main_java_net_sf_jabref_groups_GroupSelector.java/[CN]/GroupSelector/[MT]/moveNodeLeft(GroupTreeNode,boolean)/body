@@ -3,12 +3,12 @@
     frame.output(MOVE_ONE_GROUP);
     return false;
   }
-  AbstractUndoableEdit undo;
-  if (!node.canMoveLeft() || ((undo=node.moveLeft(GroupSelector.this)) == null)) {
+  Optional<MoveGroupChange> moveChange;
+  if (!node.canMoveLeft() || (!(moveChange=node.moveLeft()).isPresent())) {
     frame.output(Localization.lang("Cannot move group \"%0\" left.",node.getGroup().getName()));
     return false;
   }
   revalidateGroups(groupsTree.refreshPaths(groupsTree.getSelectionPaths()),groupsTree.refreshPaths(getExpandedPaths()));
-  concludeMoveGroup(undo,node);
+  concludeMoveGroup(moveChange.get(),node);
   return true;
 }

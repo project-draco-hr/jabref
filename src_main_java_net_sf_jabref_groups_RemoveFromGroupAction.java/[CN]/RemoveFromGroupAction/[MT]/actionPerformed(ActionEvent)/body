@@ -2,11 +2,11 @@
   if (!Util.warnAssignmentSideEffects(mNode.getGroup(),mPanel.frame())) {
     return;
   }
-  AbstractUndoableEdit undo=mNode.removeFromGroup(mPanel.getSelectedEntries());
-  if (undo == null) {
+  Optional<EntriesGroupChange> undo=mNode.removeFromGroup(mPanel.getSelectedEntries());
+  if (!undo.isPresent()) {
     return;
   }
-  mPanel.undoManager.addEdit(undo);
+  mPanel.undoManager.addEdit(UndoableChangeEntriesOfGroup.getUndoableEdit(mNode,undo.get()));
   mPanel.markBaseChanged();
   mPanel.updateEntryEditorIfShowing();
   mPanel.getGroupSelector().valueChanged(null);

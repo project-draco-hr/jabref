@@ -58,8 +58,10 @@
         if (entry.getCiteKey() != null) {
           for (          GroupTreeNode node : groups) {
             if (node.getGroup().supportsAdd()) {
-              AbstractUndoableEdit undo=node.addToGroup(Collections.singletonList(entry));
-              ce.addEdit(undo);
+              Optional<EntriesGroupChange> undo=node.addToGroup(Collections.singletonList(entry));
+              if (undo.isPresent()) {
+                ce.addEdit(UndoableChangeEntriesOfGroup.getUndoableEdit(node,undo.get()));
+              }
             }
           }
         }

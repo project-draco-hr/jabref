@@ -1,24 +1,21 @@
 {
   if (!supportsAdd()) {
-    return null;
+    return Optional.empty();
   }
-  if ((entries != null) && !(entries.isEmpty())) {
-    NamedCompound ce=new NamedCompound(Localization.lang("add entries to group"));
+  if ((entriesToAdd != null) && !(entriesToAdd.isEmpty())) {
+    List<FieldChange> changes=new ArrayList<>();
     boolean modified=false;
-    for (    BibEntry entry : entries) {
+    for (    BibEntry entry : entriesToAdd) {
       if (!contains(entry)) {
         String oldContent=entry.getField(searchField);
         String pre=Globals.prefs.get(JabRefPreferences.GROUP_KEYWORD_SEPARATOR);
         String newContent=(oldContent == null ? "" : oldContent + pre) + searchExpression;
         entry.setField(searchField,newContent);
-        ce.addEdit(new UndoableFieldChange(entry,searchField,oldContent,newContent));
+        changes.add(new FieldChange(entry,searchField,oldContent,newContent));
         modified=true;
       }
     }
-    if (modified) {
-      ce.end();
-    }
-    return modified ? ce : null;
+    return modified ? Optional.of(new EntriesGroupChange(changes)) : Optional.empty();
   }
-  return null;
+  return Optional.empty();
 }

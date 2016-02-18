@@ -1,8 +1,8 @@
 {
-  if (entries.isEmpty()) {
-    return null;
+  if (entriesToAdd.isEmpty()) {
+    return Optional.empty();
   }
   HashSet<BibEntry> entriesBeforeEdit=new HashSet<>(this.entries);
-  this.entries.addAll(entries);
-  return new UndoableChangeAssignment(entriesBeforeEdit,this.entries);
+  this.entries.addAll(entriesToAdd);
+  return Optional.of(new EntriesGroupChange(entriesBeforeEdit,this.entries));
 }

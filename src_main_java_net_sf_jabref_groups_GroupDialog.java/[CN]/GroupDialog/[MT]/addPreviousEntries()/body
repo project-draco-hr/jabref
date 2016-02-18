@@ -14,7 +14,10 @@
       return;
     }
     if (!(mResultingGroup instanceof ExplicitGroup)) {
-      mUndoAddPreviousEntires=mResultingGroup.add(list);
+      Optional<EntriesGroupChange> addChange=mResultingGroup.add(list);
+      if (addChange.isPresent()) {
+        mUndoAddPreviousEntires=UndoableChangeEntriesOfGroup.getUndoableEdit(null,addChange.get());
+      }
     }
   }
 }
