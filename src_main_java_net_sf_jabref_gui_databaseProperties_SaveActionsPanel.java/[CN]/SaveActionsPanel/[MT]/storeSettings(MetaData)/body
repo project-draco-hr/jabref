@@ -8,8 +8,9 @@
     actions.add("disabled");
   }
   List<FieldFormatterCleanup> newActions=((SaveActionsListModel)actionsList.getModel()).getAllActions();
-  actions.add(SaveActions.getMetaDataString(newActions));
+  String formatterString=SaveActions.getMetaDataString(newActions);
+  actions.add(formatterString);
   metaData.putData(SaveActions.META_KEY,actions);
-  boolean hasChanged=saveActions.equals(new SaveActions((metaData)));
+  boolean hasChanged=saveActions.equals(new SaveActions(enabled.isSelected(),formatterString));
   return hasChanged;
 }
