@@ -1,59 +1,16 @@
 {
-  final List<BibEntry> entries=mPanel.getSelectedEntries();
-  final Vector<GroupTreeNode> removeGroupsNodes=new Vector<>();
-  if (m_move) {
-    Enumeration<GroupTreeNode> e=((GroupTreeNode)mNode.getRoot()).preorderEnumeration();
-    for (    GroupTreeNode node : Collections.list(e)) {
-      if (!node.getGroup().supportsRemove()) {
-        continue;
-      }
-      for (      BibEntry entry : entries) {
-        if (node.getGroup().contains(entry)) {
-          removeGroupsNodes.add(node);
-        }
-      }
-    }
-    List<AbstractGroup> groups=new ArrayList<>(removeGroupsNodes.size() + 1);
-    for (int i=0; i < removeGroupsNodes.size(); ++i) {
-      groups.add(removeGroupsNodes.elementAt(i).getGroup());
-    }
-    groups.add(mNode.getGroup());
-    if (!Util.warnAssignmentSideEffects(groups,mPanel.frame())) {
-      return;
-    }
-  }
- else {
-    if (!Util.warnAssignmentSideEffects(Arrays.asList(mNode.getGroup()),mPanel.frame())) {
-      return;
-    }
-  }
-  mPanel.storeCurrentEdit();
+  final List<BibEntry> entries=panel.getSelectedEntries();
+  panel.storeCurrentEdit();
   NamedCompound undoAll=new NamedCompound(Localization.lang("change assignment of entries"));
-  if (m_move) {
-    for (int i=0; i < removeGroupsNodes.size(); ++i) {
-      GroupTreeNode node=removeGroupsNodes.elementAt(i);
-      if (node.getGroup().containsAny(entries)) {
-        AbstractUndoableEdit undoRemove=node.removeFromGroup(entries);
-        if (undoRemove != null) {
-          undoAll.addEdit(undoRemove);
-        }
-      }
-    }
-    AbstractUndoableEdit undoAdd=mNode.addToGroup(entries);
-    if (undoAdd != null) {
-      undoAll.addEdit(undoAdd);
-    }
+  if (move) {
+    moveToGroup(entries,undoAll);
   }
  else {
-    AbstractUndoableEdit undoAdd=mNode.addToGroup(entries);
-    if (undoAdd == null) {
-      return;
-    }
-    undoAll.addEdit(undoAdd);
+    addToGroup(entries,undoAll);
   }
   undoAll.end();
-  mPanel.undoManager.addEdit(undoAll);
-  mPanel.markBaseChanged();
-  mPanel.updateEntryEditorIfShowing();
-  mPanel.getGroupSelector().valueChanged(null);
+  panel.undoManager.addEdit(undoAll);
+  panel.markBaseChanged();
+  panel.updateEntryEditorIfShowing();
+  panel.getGroupSelector().valueChanged(null);
 }
