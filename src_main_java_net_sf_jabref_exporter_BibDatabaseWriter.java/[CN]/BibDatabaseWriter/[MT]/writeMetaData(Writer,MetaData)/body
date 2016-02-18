@@ -6,11 +6,11 @@
     StringBuilder stringBuilder=new StringBuilder();
     stringBuilder.append(Globals.NEWLINE);
     stringBuilder.append(COMMENT_PREFIX + "{").append(MetaData.META_FLAG).append(key).append(":");
-    if (SaveActions.META_KEY.equals(key)) {
-      stringBuilder.append(Globals.NEWLINE);
-    }
     for (    String metaItem : metaData.getData(key)) {
       stringBuilder.append(StringUtil.quote(metaItem,";",'\\')).append(";");
+      if (key.equals(SaveActions.META_KEY) && "enabled".equals(metaItem)) {
+        stringBuilder.append(Globals.NEWLINE);
+      }
     }
     stringBuilder.append("}");
     stringBuilder.append(Globals.NEWLINE);
