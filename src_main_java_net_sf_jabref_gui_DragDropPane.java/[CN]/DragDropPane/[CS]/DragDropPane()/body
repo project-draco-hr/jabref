@@ -6,14 +6,7 @@
   addMouseMotionListener(new MouseMotionAdapter(){
     @Override public void mouseDragged(    MouseEvent e){
       int indexActTab=getUI().tabForCoordinate(DragDropPane.this,e.getX(),e.getY());
-      if (!draggingState) {
-        if (indexActTab >= 0) {
-          draggingState=true;
-          indexDraggedTab=indexActTab;
-          repaint();
-        }
-      }
- else {
+      if (draggingState) {
         if ((indexDraggedTab >= 0) && (indexActTab >= 0)) {
           boolean toTheLeft=e.getX() <= getUI().getTabBounds(DragDropPane.this,indexActTab).getCenterX();
           DragDropPane.this.getRootPane().setGlassPane(markerPane);
@@ -31,6 +24,13 @@
  else {
           markerPane.setVisible(false);
           markerPane.repaint();
+        }
+      }
+ else {
+        if (indexActTab >= 0) {
+          draggingState=true;
+          indexDraggedTab=indexActTab;
+          repaint();
         }
       }
       super.mouseDragged(e);

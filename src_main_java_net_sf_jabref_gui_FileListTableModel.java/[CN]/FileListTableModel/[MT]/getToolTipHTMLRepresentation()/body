@@ -1,7 +1,9 @@
 {
   StringJoiner sb=new StringJoiner("<br>","<html>","</html>");
-  for (  FileListEntry entry : list) {
-    sb.add(String.format("%s (%s)",entry.description,entry.link));
+synchronized (list) {
+    for (    FileListEntry entry : list) {
+      sb.add(String.format("%s (%s)",entry.description,entry.link));
+    }
   }
   return sb.toString();
 }
