@@ -1,0 +1,17 @@
+{
+  List<GroupTreeNode> groups=new ArrayList<>();
+  if (requireAll) {
+    if (this.group.containsAll(entries)) {
+      groups.add(this);
+    }
+  }
+ else {
+    if (this.group.containsAny(entries)) {
+      groups.add(this);
+    }
+  }
+  for (  GroupTreeNode child : children()) {
+    groups.addAll(child.getContainingGroups(entries,requireAll));
+  }
+  return groups;
+}

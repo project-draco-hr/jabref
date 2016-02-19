@@ -1,0 +1,15 @@
+{
+  if (this.group instanceof ExplicitGroup) {
+    ExplicitGroup group=(ExplicitGroup)this.group;
+    for (int i=0; i < originalEntries.size(); ++i) {
+      BibEntry entry=originalEntries.get(i);
+      if (group.contains(entry)) {
+        group.removeEntry(entry);
+        group.addEntry(newEntries.get(i));
+      }
+    }
+  }
+  for (  GroupTreeNode child : children()) {
+    child.replaceEntriesInExplicitGroup(originalEntries,newEntries);
+  }
+}

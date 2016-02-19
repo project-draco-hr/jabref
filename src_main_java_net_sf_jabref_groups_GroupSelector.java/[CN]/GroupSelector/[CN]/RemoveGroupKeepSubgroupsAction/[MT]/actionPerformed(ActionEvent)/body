@@ -4,11 +4,11 @@
   int conf=JOptionPane.showConfirmDialog(frame,Localization.lang("Remove group \"%0\"?",group.getName()),Localization.lang("Remove group"),JOptionPane.YES_NO_OPTION);
   if (conf == JOptionPane.YES_OPTION) {
     final UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(GroupSelector.this,groupsRoot,node,UndoableAddOrRemoveGroup.REMOVE_NODE_KEEP_CHILDREN);
-    final GroupTreeNode parent=(GroupTreeNode)node.getParent();
+    final GroupTreeNode parent=node.getParent();
     final int childIndex=parent.getIndex(node);
     node.removeFromParent();
     while (node.getChildCount() > 0) {
-      parent.insert((GroupTreeNode)node.getFirstChild(),childIndex);
+      parent.insert(node.getFirstChild(),childIndex);
     }
     revalidateGroups();
     panel.undoManager.addEdit(undo);

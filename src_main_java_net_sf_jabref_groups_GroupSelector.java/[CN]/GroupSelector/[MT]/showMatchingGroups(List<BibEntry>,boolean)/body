@@ -4,31 +4,10 @@
     groupsTree.revalidate();
     return;
   }
-  List<GroupTreeNode> nodeList=new ArrayList<>();
-  for (Enumeration<GroupTreeNode> e=groupsRoot.preorderEnumeration(); e.hasMoreElements(); ) {
-    GroupTreeNode node=e.nextElement();
-    AbstractGroup group=node.getGroup();
-    boolean breakFromLoop=false;
-    for (    BibEntry entry : list) {
-      if (requireAll) {
-        if (!group.contains(entry)) {
-          breakFromLoop=true;
-          break;
-        }
-      }
- else {
-        if (group.contains(entry)) {
-          nodeList.add(node);
-        }
-      }
-    }
-    if (requireAll && (!breakFromLoop)) {
-      nodeList.add(node);
-    }
-  }
+  List<GroupTreeNode> nodeList=groupsRoot.getContainingGroups(list,requireAll);
   groupsTree.setHighlight3Cells(nodeList.toArray());
   for (  GroupTreeNode node : nodeList) {
-    GroupTreeNode parentNode=(GroupTreeNode)node.getParent();
+    GroupTreeNode parentNode=node.getParent();
     if (parentNode != null) {
       groupsTree.expandPath(new TreePath(parentNode.getPath()));
     }

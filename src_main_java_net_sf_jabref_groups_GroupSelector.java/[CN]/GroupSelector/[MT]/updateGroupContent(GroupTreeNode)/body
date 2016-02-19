@@ -1,8 +1,8 @@
 {
   List<BibEntry> entries=panel.getSelectedEntries();
   AbstractGroup group=node.getGroup();
-  Optional<EntriesGroupChange> changesRemove=null;
-  Optional<EntriesGroupChange> changesAdd=null;
+  Optional<EntriesGroupChange> changesRemove=Optional.empty();
+  Optional<EntriesGroupChange> changesAdd=Optional.empty();
   List<BibEntry> toRemove=new ArrayList<>(entries.size());
   List<BibEntry> toAdd=new ArrayList<>(entries.size());
   for (  BibEntry entry : entries) {
@@ -23,7 +23,7 @@
   }
   if (changesRemove.isPresent()) {
     AbstractUndoableEdit undoRemove=UndoableChangeEntriesOfGroup.getUndoableEdit(node,changesRemove.get());
-    if (changesAdd.isPresent()) {
+    if (changesAdd.isPresent() && undoRemove != null) {
       undoRemove.addEdit(UndoableChangeEntriesOfGroup.getUndoableEdit(node,changesAdd.get()));
     }
     panel.undoManager.addEdit(undoRemove);

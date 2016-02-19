@@ -1,14 +1,4 @@
 {
-  List<GroupTreeNode> nodes=new ArrayList<>();
-  for (Enumeration<GroupTreeNode> e=groupsRoot.depthFirstEnumeration(); e.hasMoreElements(); ) {
-    GroupTreeNode node=e.nextElement();
-    SearchMatcher matcher=node.getSearchRule();
-    for (    BibEntry match : matches) {
-      if (matcher.isMatch(match)) {
-        nodes.add(node);
-        break;
-      }
-    }
-  }
+  List<GroupTreeNode> nodes=groupsRoot.getMatchingGroups(matches);
   groupsTree.setHighlight2Cells(nodes.toArray());
 }
