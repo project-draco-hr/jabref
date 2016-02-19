@@ -1,13 +1,4 @@
 {
-  SaveOrderConfig newSaveOrderConfig=saveOrderPanel.getSaveOrderConfig();
-  if (saveInOriginalOrder.isSelected()) {
-    newSaveOrderConfig.setSaveInOriginalOrder();
-  }
- else {
-    newSaveOrderConfig.setSaveInSpecifiedOrder();
-  }
-  Vector<String> serialized=newSaveOrderConfig.getVector();
-  metaData.putData(MetaData.SAVE_ORDER_CONFIG,serialized);
   Charset oldEncoding=panel.getEncoding();
   Charset newEncoding=(Charset)encoding.getSelectedItem();
   panel.setEncoding(newEncoding);
@@ -37,15 +28,28 @@
  else {
     metaData.remove(Globals.PROTECTED_FLAG_META);
   }
-  boolean saveOrderConfigChanged;
-  if (oldSaveOrderConfig == newSaveOrderConfig) {
-    saveOrderConfigChanged=false;
-  }
- else   if ((oldSaveOrderConfig == null) || (newSaveOrderConfig == null)) {
-    saveOrderConfigChanged=true;
+  SaveOrderConfig newSaveOrderConfig=saveOrderPanel.getSaveOrderConfig();
+  if (saveInOriginalOrder.isSelected()) {
+    newSaveOrderConfig.setSaveInOriginalOrder();
   }
  else {
-    saveOrderConfigChanged=!oldSaveOrderConfig.getVector().equals(newSaveOrderConfig.getVector());
+    newSaveOrderConfig.setSaveInSpecifiedOrder();
+  }
+  boolean saveOrderConfigChanged;
+  if (newSaveOrderConfig.equals(oldSaveOrderConfig)) {
+    saveOrderConfigChanged=false;
+  }
+ else {
+    saveOrderConfigChanged=true;
+  }
+  if (saveOrderConfigChanged) {
+    Vector<String> serialized=newSaveOrderConfig.getVector();
+    if (newSaveOrderConfig.equals(defaultSaveOrderConfig)) {
+      metaData.remove(MetaData.SAVE_ORDER_CONFIG);
+    }
+ else {
+      metaData.putData(MetaData.SAVE_ORDER_CONFIG,serialized);
+    }
   }
   boolean saveActionsChanged=saveActionsPanel.hasChanged();
   if (saveActionsChanged) {
