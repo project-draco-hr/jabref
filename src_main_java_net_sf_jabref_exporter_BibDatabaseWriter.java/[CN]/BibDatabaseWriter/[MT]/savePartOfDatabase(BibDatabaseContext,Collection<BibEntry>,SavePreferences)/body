@@ -8,7 +8,8 @@
   }
   exceptionCause=null;
   try (VerifyingWriter writer=session.getWriter()){
-    writePartOfDatabase(writer,bibDatabaseContext,entries,preferences);
+    List<FieldChange> undoableChanges=writePartOfDatabase(writer,bibDatabaseContext,entries,preferences);
+    session.addUndoableFieldChanges(undoableChanges);
   }
  catch (  IOException ex) {
     LOGGER.error("Could not write file",ex);
