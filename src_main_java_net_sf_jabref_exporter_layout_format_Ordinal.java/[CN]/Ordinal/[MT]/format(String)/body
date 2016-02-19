@@ -1,0 +1,28 @@
+{
+  if (fieldText == null) {
+    return null;
+  }
+  Matcher m=NUMBER_PATTERN.matcher(fieldText);
+  StringBuffer sb=new StringBuffer();
+  while (m.find()) {
+    String result=m.group(1);
+    int value=Integer.valueOf(result);
+    String ordinalString;
+switch (value) {
+case 1:
+      ordinalString="st";
+    break;
+case 2:
+  ordinalString="nd";
+break;
+case 3:
+ordinalString="rd";
+break;
+default :
+ordinalString="th";
+}
+m.appendReplacement(sb,result + ordinalString);
+}
+m.appendTail(sb);
+return sb.toString();
+}
