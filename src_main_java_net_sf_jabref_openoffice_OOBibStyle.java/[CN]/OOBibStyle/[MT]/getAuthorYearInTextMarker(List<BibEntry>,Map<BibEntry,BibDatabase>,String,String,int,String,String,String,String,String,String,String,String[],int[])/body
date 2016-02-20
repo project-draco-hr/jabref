@@ -1,5 +1,5 @@
 {
-  StringBuffer sb=new StringBuffer();
+  StringBuilder sb=new StringBuilder();
   for (int i=0; i < entries.size(); i++) {
     int unlimA=unlimAuthors == null ? -1 : unlimAuthors[i];
     int maxAuthors=unlimA > 0 ? unlimA : maxA;
@@ -10,26 +10,8 @@
       sb.append(citationSeparator);
     }
     String author=getCitationMarkerField(entries.get(i),database.get(entries.get(i)),authorField);
-    if (author != null) {
-      AuthorList al=AuthorList.getAuthorList(author);
-      if (!al.isEmpty()) {
-        sb.append(getAuthorLastName(al,0));
-      }
-      if ((al.size() > 1) && ((al.size() <= maxAuthors) || (maxAuthors < 0))) {
-        int j=1;
-        while (j < (al.size() - 1)) {
-          sb.append(authorSep);
-          sb.append(getAuthorLastName(al,j));
-          j++;
-        }
-        sb.append(andString);
-        sb.append(getAuthorLastName(al,al.size() - 1));
-      }
- else       if (al.size() > maxAuthors) {
-        sb.append(etAlString);
-      }
-      sb.append(yearSep);
-    }
+    String authorString=createAuthorList(author,maxAuthors,authorSep,andString,etAlString,yearSep);
+    sb.append(authorString);
     sb.append(startBrace);
     String year=getCitationMarkerField(entries.get(i),database.get(entries.get(i)),yearField);
     if (year != null) {
