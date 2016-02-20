@@ -1,6 +1,6 @@
 {
   int i;
-  field=field.replaceAll("&|\\\\&","&amp;").replaceAll("[\\n]{1,}","<p>");
+  field=field.replaceAll("&|\\\\&","&amp;").replaceAll("[\\n]{1,}","<p>").replace("\\$","&dollar;").replaceAll("\\$([^\\$]*)\\$","\\{$1\\}");
   StringBuilder sb=new StringBuilder();
   StringBuffer currentCommand=null;
   char c;
@@ -120,5 +120,5 @@
       escaped=false;
     }
   }
-  return sb.toString();
+  return sb.toString().replace("&amp;","&").replace("<p>",Globals.NEWLINE).replace("&dollar;","$").replace("~","\u00A0");
 }
