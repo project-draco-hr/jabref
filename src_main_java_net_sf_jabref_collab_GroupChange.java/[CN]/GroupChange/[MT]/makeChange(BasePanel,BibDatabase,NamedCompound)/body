@@ -1,6 +1,6 @@
 {
   final GroupTreeNode root=panel.getBibDatabaseContext().getMetaData().getGroups();
-  final UndoableModifySubtree undo=new UndoableModifySubtree(panel.getGroupSelector(),panel.getBibDatabaseContext().getMetaData().getGroups(),root,Localization.lang("Modified groups"));
+  final UndoableModifySubtree undo=new UndoableModifySubtree(panel.getGroupSelector(),new GroupTreeNodeViewModel(panel.getBibDatabaseContext().getMetaData().getGroups()),new GroupTreeNodeViewModel(root),Localization.lang("Modified groups"));
   root.removeAllChildren();
   if (changedGroups == null) {
     root.setGroup(new AllEntriesGroup());
@@ -8,11 +8,11 @@
  else {
     root.setGroup(changedGroups.getGroup());
     for (int i=0; i < changedGroups.getChildCount(); ++i) {
-      root.add(((GroupTreeNode)changedGroups.getChildAt(i)).deepCopy());
+      root.add(changedGroups.getChildAt(i).deepCopy());
     }
     root.refreshGroupsForNewDatabase(panel.database());
   }
-  if (panel.getGroupSelector().getGroupTreeRoot() == root) {
+  if (panel.getGroupSelector().getGroupTreeRoot().getNode() == root) {
     panel.getGroupSelector().revalidateGroups();
   }
   undoEdit.addEdit(undo);

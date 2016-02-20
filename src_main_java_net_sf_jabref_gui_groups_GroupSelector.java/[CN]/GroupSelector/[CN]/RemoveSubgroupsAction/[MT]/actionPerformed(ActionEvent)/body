@@ -1,10 +1,10 @@
 {
-  final GroupTreeNode node=getNodeToUse();
-  final AbstractGroup group=node.getGroup();
+  final GroupTreeNodeViewModel node=getNodeToUse();
+  final AbstractGroup group=node.getNode().getGroup();
   int conf=JOptionPane.showConfirmDialog(frame,Localization.lang("Remove all subgroups of \"%0\"?",group.getName()),Localization.lang("Remove subgroups"),JOptionPane.YES_NO_OPTION);
   if (conf == JOptionPane.YES_OPTION) {
     final UndoableModifySubtree undo=new UndoableModifySubtree(GroupSelector.this,getGroupTreeRoot(),node,"Remove subgroups");
-    node.removeAllChildren();
+    node.getNode().removeAllChildren();
     revalidateGroups();
     panel.undoManager.addEdit(undo);
     panel.markBaseChanged();

@@ -1,14 +1,14 @@
 {
-  final GroupTreeNode node=getNodeToUse();
-  final AbstractGroup group=node.getGroup();
+  final GroupTreeNodeViewModel node=getNodeToUse();
+  final AbstractGroup group=node.getNode().getGroup();
   int conf=JOptionPane.showConfirmDialog(frame,Localization.lang("Remove group \"%0\"?",group.getName()),Localization.lang("Remove group"),JOptionPane.YES_NO_OPTION);
   if (conf == JOptionPane.YES_OPTION) {
     final UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(GroupSelector.this,groupsRoot,node,UndoableAddOrRemoveGroup.REMOVE_NODE_KEEP_CHILDREN);
-    final GroupTreeNode parent=node.getParent();
+    final GroupTreeNodeViewModel parent=(GroupTreeNodeViewModel)node.getParent();
     final int childIndex=parent.getIndex(node);
-    node.removeFromParent();
+    node.getNode().removeFromParent();
     while (node.getChildCount() > 0) {
-      parent.insert(node.getFirstChild(),childIndex);
+      parent.getNode().insert(node.getNode().getFirstChild(),childIndex);
     }
     revalidateGroups();
     panel.undoManager.addEdit(undo);

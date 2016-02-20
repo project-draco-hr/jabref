@@ -1,13 +1,13 @@
 {
-  final GroupTreeNode node=getNodeToUse();
-  final AbstractGroup oldGroup=node.getGroup();
+  final GroupTreeNodeViewModel node=getNodeToUse();
+  final AbstractGroup oldGroup=node.getNode().getGroup();
   final GroupDialog gd=new GroupDialog(frame,panel,oldGroup);
   gd.setVisible(true);
   if (gd.okPressed()) {
     AbstractGroup newGroup=gd.getResultingGroup();
     AbstractUndoableEdit undoAddPreviousEntries=gd.getUndoForAddPreviousEntries();
     UndoableModifyGroup undo=new UndoableModifyGroup(GroupSelector.this,groupsRoot,node,newGroup);
-    node.setGroup(newGroup);
+    node.getNode().setGroup(newGroup);
     revalidateGroups(node);
     if (undoAddPreviousEntries == null) {
       panel.undoManager.addEdit(undo);

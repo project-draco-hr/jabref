@@ -1,0 +1,14 @@
+{
+  if (checkSingleSelection && (groupsTree.getSelectionCount() != 1)) {
+    frame.output(MOVE_ONE_GROUP);
+    return false;
+  }
+  Optional<MoveGroupChange> moveChange;
+  if (!node.getNode().canMoveUp() || (!(moveChange=node.getNode().moveUp()).isPresent())) {
+    frame.output(Localization.lang("Cannot move group \"%0\" up.",node.getNode().getGroup().getName()));
+    return false;
+  }
+  revalidateGroups(groupsTree.refreshPaths(groupsTree.getSelectionPaths()),groupsTree.refreshPaths(getExpandedPaths()));
+  concludeMoveGroup(moveChange.get(),node);
+  return true;
+}

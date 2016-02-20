@@ -4,12 +4,12 @@
     groupsTree.revalidate();
     return;
   }
-  List<GroupTreeNode> nodeList=groupsRoot.getContainingGroups(list,requireAll);
+  List<GroupTreeNode> nodeList=groupsRoot.getNode().getContainingGroups(list,requireAll);
   groupsTree.setHighlight3Cells(nodeList.toArray());
   for (  GroupTreeNode node : nodeList) {
     GroupTreeNode parentNode=node.getParent();
     if (parentNode != null) {
-      groupsTree.expandPath(new TreePath(parentNode.getPath()));
+      groupsTree.expandPath(new GroupTreeNodeViewModel(parentNode).getTreePath());
     }
   }
   groupsTree.revalidate();
