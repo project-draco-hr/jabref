@@ -22,15 +22,15 @@
     }
   }
   text=sb.toString();
-  Set<String> patterns=HTMLUnicodeConversionMaps.ESCAPED_SYMBOLS.keySet();
+  Set<String> patterns=HTMLUnicodeConversionMaps.HTML_LATEX_CONVERSION_MAP.keySet();
   for (  String pattern : patterns) {
-    text=text.replaceAll(pattern,HTMLUnicodeConversionMaps.ESCAPED_SYMBOLS.get(pattern));
+    text=text.replaceAll(pattern,HTMLUnicodeConversionMaps.HTML_LATEX_CONVERSION_MAP.get(pattern));
   }
   Matcher m=ESCAPED_PATTERN.matcher(text);
   while (m.find()) {
     int num=Integer.decode(m.group(1).replace("x","#") + m.group(3));
-    if (HTMLUnicodeConversionMaps.NUMERICAL_SYMBOLS.containsKey(num)) {
-      text=text.replaceAll("&#" + m.group(1) + m.group(2)+ m.group(3)+ ";",HTMLUnicodeConversionMaps.NUMERICAL_SYMBOLS.get(num));
+    if (HTMLUnicodeConversionMaps.NUMERICAL_LATEX_CONVERSION_MAP.containsKey(num)) {
+      text=text.replaceAll("&#" + m.group(1) + m.group(2)+ m.group(3)+ ";",HTMLUnicodeConversionMaps.NUMERICAL_LATEX_CONVERSION_MAP.get(num));
     }
   }
   m=ESCAPED_PATTERN2.matcher(text);
