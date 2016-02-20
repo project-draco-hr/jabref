@@ -3,11 +3,22 @@
     if (field != null) {
       field.requestFocus();
       String txt=field.getSelectedText();
+      String allTxt=field.getText();
       boolean cStat=false;
-      if ((txt != null) && !txt.isEmpty()) {
+      if (((txt != null) && (!txt.isEmpty())) || ((allTxt != null) && !allTxt.isEmpty())) {
         cStat=true;
       }
       copyAct.setEnabled(cStat);
+      String data=ClipBoardManager.CLIPBOARD.getClipboardContents();
+      boolean pStat=false;
+      if (!data.isEmpty()) {
+        pStat=true;
+        pasteAct.putValue(Action.SHORT_DESCRIPTION,Localization.lang("Paste from clipboard") + ": " + StringUtil.limitStringLength(data,MAX_PASTE_PREVIEW_LENGTH));
+      }
+ else {
+        pasteAct.putValue(Action.SHORT_DESCRIPTION,Localization.lang("Paste from clipboard"));
+      }
+      pasteAct.setEnabled(pStat);
       inputMenu.show(e.getComponent(),e.getX(),e.getY());
     }
   }
