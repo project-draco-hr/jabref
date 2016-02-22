@@ -47,7 +47,12 @@
   }
   boolean saveActionsChanged=saveActionsPanel.hasChanged();
   if (saveActionsChanged) {
-    saveActionsPanel.storeSettings(metaData);
+    if (saveActionsPanel.isDefaultSaveActions()) {
+      metaData.remove(SaveActions.META_KEY);
+    }
+ else {
+      saveActionsPanel.storeSettings(metaData);
+    }
   }
   boolean changed=saveOrderConfigChanged || !newEncoding.equals(oldEncoding) || !oldFileVal.equals(fileDir.getText())|| !oldFileIndvVal.equals(fileDirIndv.getText())|| (oldProtectVal != protect.isSelected())|| saveActionsChanged;
   if (changed) {

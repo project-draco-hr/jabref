@@ -1,14 +1,8 @@
 {
   Objects.requireNonNull(metaData);
   List<String> saveActionsMetaList=metaData.getData(SaveActions.META_KEY);
-  boolean enablementStatus=false;
-  String formatterString="";
-  if (saveActionsMetaList != null && saveActionsMetaList.size() >= 2) {
-    enablementStatus="enabled".equals(saveActionsMetaList.get(0));
-    formatterString=saveActionsMetaList.get(1);
-  }
+  initializeSaveActions(saveActionsMetaList);
   this.removeAll();
-  saveActions=new SaveActions(enablementStatus,formatterString);
   List<FieldFormatterCleanup> configuredActions=saveActions.getConfiguredActions();
   enabled.setSelected(saveActions.isEnabled());
   enabled.addActionListener(new EnablementStatusListener());
