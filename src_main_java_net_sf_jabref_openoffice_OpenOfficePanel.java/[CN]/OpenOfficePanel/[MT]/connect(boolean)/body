@@ -37,13 +37,13 @@
     }
   }
   try {
-    File[] jarFiles=new File[]{new File(ooBaseDirectory,"unoil.jar"),new File(ooBaseDirectory,"jurt.jar"),new File(ooBaseDirectory,"juh.jar"),new File(ooBaseDirectory,"ridl.jar")};
-    URL[] jarList=new URL[jarFiles.length];
-    for (int i=0; i < jarList.length; i++) {
-      if (!jarFiles[i].exists()) {
-        throw new IOException("File not found: " + jarFiles[i].getPath());
+    List<File> jarFiles=Arrays.asList(new File(ooBaseDirectory,"unoil.jar"),new File(ooBaseDirectory,"jurt.jar"),new File(ooBaseDirectory,"juh.jar"),new File(ooBaseDirectory,"ridl.jar"));
+    List<URL> jarList=new ArrayList<>(jarFiles.size());
+    for (    File jarFile : jarFiles) {
+      if (!jarFile.exists()) {
+        throw new IOException("File not found: " + jarFile.getPath());
       }
-      jarList[i]=jarFiles[i].toURI().toURL();
+      jarList.add(jarFile.toURI().toURL());
     }
     addURL(jarList);
     final JDialog progDiag=new AutoDetectPaths(diag).showProgressDialog(diag,Localization.lang("Connecting"),Localization.lang("Please wait..."),false);

@@ -1,6 +1,6 @@
 {
   int c;
-  StringBuffer buffer=null;
+  StringBuilder buffer=null;
   char firstLetter;
   String name;
   while (!endOfFile) {
@@ -23,22 +23,22 @@
       }
       if (firstLetter == 'b') {
         if ("begin".equalsIgnoreCase(name)) {
-          getBracketedField(LayoutHelper.IS_FIELD_START);
+          doBracketedField(LayoutHelper.IS_FIELD_START);
           return;
         }
  else         if ("begingroup".equalsIgnoreCase(name)) {
-          getBracketedField(LayoutHelper.IS_GROUP_START);
+          doBracketedField(LayoutHelper.IS_GROUP_START);
           return;
         }
       }
  else       if (firstLetter == 'f') {
         if ("format".equalsIgnoreCase(name)) {
           if (c == '[') {
-            getBracketedOptionField();
+            doBracketedOptionField();
             return;
           }
  else {
-            getBracketedField(LayoutHelper.IS_OPTION_FIELD);
+            doBracketedField(LayoutHelper.IS_OPTION_FIELD);
             return;
           }
         }
@@ -53,11 +53,11 @@
       }
  else       if (firstLetter == 'e') {
         if ("end".equalsIgnoreCase(name)) {
-          getBracketedField(LayoutHelper.IS_FIELD_END);
+          doBracketedField(LayoutHelper.IS_FIELD_END);
           return;
         }
  else         if ("endgroup".equalsIgnoreCase(name)) {
-          getBracketedField(LayoutHelper.IS_GROUP_END);
+          doBracketedField(LayoutHelper.IS_GROUP_END);
           return;
         }
  else         if ("encoding".equalsIgnoreCase(name)) {
@@ -70,7 +70,7 @@
     }
  else {
       if (buffer == null) {
-        buffer=new StringBuffer(100);
+        buffer=new StringBuilder(100);
       }
       buffer.append((char)c);
     }
