@@ -79,21 +79,15 @@
   Action updateAction=new AbstractAction(){
     @Override public void actionPerformed(    ActionEvent e){
       try {
-        try {
-          if (style == null) {
-            readStyleFile();
-          }
- else {
-            style.ensureUpToDate();
-          }
+        if (style == null) {
+          readStyleFile();
         }
- catch (        IOException ex) {
-          JOptionPane.showMessageDialog(frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
-          return;
+ else {
+          style.ensureUpToDate();
         }
         ooBase.updateSortedReferenceMarks();
-        java.util.List<BibDatabase> databases=getBaseList();
-        java.util.List<String> unresolvedKeys=ooBase.refreshCiteMarkers(databases,style);
+        List<BibDatabase> databases=getBaseList();
+        List<String> unresolvedKeys=ooBase.refreshCiteMarkers(databases,style);
         ooBase.rebuildBibTextSection(databases,style);
         if (!unresolvedKeys.isEmpty()) {
           JOptionPane.showMessageDialog(frame,Localization.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",unresolvedKeys.get(0)),Localization.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
@@ -107,6 +101,11 @@ catch (      UndefinedParagraphFormatException ex) {
       }
 catch (      ConnectionLostException ex) {
         showConnectionLostErrorMessage();
+      }
+catch (      IOException ex) {
+        JOptionPane.showMessageDialog(frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
+        LOGGER.warn("Problem with style file",ex);
+        return;
       }
 catch (      BibEntryNotFoundException ex) {
         JOptionPane.showMessageDialog(frame,Localization.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",ex.getBibtexKey()),Localization.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
