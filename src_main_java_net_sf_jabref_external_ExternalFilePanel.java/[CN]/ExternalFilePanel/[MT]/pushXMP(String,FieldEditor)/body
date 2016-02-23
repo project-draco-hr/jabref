@@ -5,9 +5,9 @@
       List<String> dirs=metaData.getFileDirectory(fieldName);
       File file=null;
       if (dirs.size() > 0) {
-        File tmp=FileUtil.expandFilename(editor.getText(),dirs);
-        if (tmp != null) {
-          file=tmp;
+        Optional<File> tmp=FileUtil.expandFilename(editor.getText(),dirs);
+        if (tmp.isPresent()) {
+          file=tmp.get();
         }
       }
       if (file == null) {

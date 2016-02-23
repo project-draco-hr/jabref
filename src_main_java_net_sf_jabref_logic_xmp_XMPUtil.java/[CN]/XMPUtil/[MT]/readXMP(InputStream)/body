@@ -19,23 +19,23 @@
         schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
         for (        XMPSchema schema : schemas) {
           XMPSchemaDublinCore dc=(XMPSchemaDublinCore)schema;
-          BibEntry entry=XMPUtil.getBibtexEntryFromDublinCore(dc);
-          if (entry != null) {
-            if (entry.getType() == null) {
-              entry.setType("misc");
+          Optional<BibEntry> entry=XMPUtil.getBibtexEntryFromDublinCore(dc);
+          if (entry.isPresent()) {
+            if (entry.get().getType() == null) {
+              entry.get().setType("misc");
             }
-            result.add(entry);
+            result.add(entry.get());
           }
         }
       }
     }
     if (result.isEmpty()) {
-      BibEntry entry=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
-      if (entry != null) {
-        if (entry.getType() == null) {
-          entry.setType("misc");
+      Optional<BibEntry> entry=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
+      if (entry.isPresent()) {
+        if (entry.get().getType() == null) {
+          entry.get().setType("misc");
         }
-        result.add(entry);
+        result.add(entry.get());
       }
     }
   }

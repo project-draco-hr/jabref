@@ -12,24 +12,23 @@
       continue;
     }
     StringBuilder newFilename=new StringBuilder(Util.getLinkedFileName(database,entry));
-    newFilename.append(".");
-    newFilename.append(FileUtil.getFileExtension(realOldFilename).orElse("pdf"));
-    File expandedOldFile=FileUtil.expandFilename(realOldFilename,paths);
-    if ((expandedOldFile == null) || (expandedOldFile.getParent() == null)) {
+    newFilename.append('.').append(FileUtil.getFileExtension(realOldFilename).orElse("pdf"));
+    Optional<File> expandedOldFile=FileUtil.expandFilename(realOldFilename,paths);
+    if ((!expandedOldFile.isPresent()) || (expandedOldFile.get().getParent() == null)) {
       continue;
     }
-    String newPath=expandedOldFile.getParent().concat(System.getProperty("file.separator")).concat(newFilename.toString());
+    String newPath=expandedOldFile.get().getParent().concat(System.getProperty("file.separator")).concat(newFilename.toString());
     if (new File(newPath).exists()) {
       continue;
     }
-    boolean renameSuccessful=FileUtil.renameFile(expandedOldFile.toString(),newPath);
+    boolean renameSuccessful=FileUtil.renameFile(expandedOldFile.get().toString(),newPath);
     if (renameSuccessful) {
       changed=true;
       String description=flEntry.description;
       String type=flEntry.fileType;
       File parent=(new File(realOldFilename)).getParentFile();
       String newFileEntryFileName;
-      if (parent == null || paths.contains(parent.getAbsolutePath())) {
+      if ((parent == null) || paths.contains(parent.getAbsolutePath())) {
         newFileEntryFileName=newFilename.toString();
       }
  else {

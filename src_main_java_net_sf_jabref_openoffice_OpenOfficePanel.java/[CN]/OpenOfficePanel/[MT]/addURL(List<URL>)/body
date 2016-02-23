@@ -1,0 +1,15 @@
+{
+  URLClassLoader sysloader=(URLClassLoader)ClassLoader.getSystemClassLoader();
+  Class<URLClassLoader> sysclass=URLClassLoader.class;
+  try {
+    Method method=sysclass.getDeclaredMethod("addURL",CLASS_PARAMETERS);
+    method.setAccessible(true);
+    for (    URL anU : jarList) {
+      method.invoke(sysloader,anU);
+    }
+  }
+ catch (  SecurityException|NoSuchMethodException|IllegalAccessException|IllegalArgumentException|InvocationTargetException e) {
+    LOGGER.error("Could not add URL to system classloader",e);
+    throw new IOException("Error, could not add URL to system classloader");
+  }
+}

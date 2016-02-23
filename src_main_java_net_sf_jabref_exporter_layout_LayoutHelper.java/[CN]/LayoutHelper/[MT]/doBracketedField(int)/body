@@ -1,0 +1,34 @@
+{
+  StringBuilder buffer=null;
+  int c;
+  boolean start=false;
+  while (!endOfFile) {
+    c=read();
+    if (c == -1) {
+      endOfFile=true;
+      if (buffer != null) {
+        parsedEntries.add(new StringInt(buffer.toString(),field));
+      }
+      return;
+    }
+    if ((c == '{') || (c == '}')) {
+      if (c == '}') {
+        if (buffer != null) {
+          parsedEntries.add(new StringInt(buffer.toString(),field));
+          return;
+        }
+      }
+ else {
+        start=true;
+      }
+    }
+ else {
+      if (buffer == null) {
+        buffer=new StringBuilder(100);
+      }
+      if (start && (c != '}')) {
+        buffer.append((char)c);
+      }
+    }
+  }
+}

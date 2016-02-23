@@ -145,16 +145,16 @@
         return;
       }
       FileListEntry entry=tableModel.getEntry(row);
-      File file=FileUtil.expandFilename(metaData,entry.link);
+      Optional<File> file=FileUtil.expandFilename(metaData,entry.link);
       try {
-        if (file != null) {
-          Files.delete(file.toPath());
+        if (file.isPresent()) {
+          Files.delete(file.get().toPath());
         }
         removeEntries();
       }
  catch (      IOException ex) {
         JOptionPane.showMessageDialog(frame,Localization.lang("File permission error"),Localization.lang("Cannot delete file"),JOptionPane.ERROR_MESSAGE);
-        LOGGER.warn("File permission error while deleting: " + file.toPath(),ex);
+        LOGGER.warn("File permission error while deleting: " + entry.link,ex);
       }
     }
   }
