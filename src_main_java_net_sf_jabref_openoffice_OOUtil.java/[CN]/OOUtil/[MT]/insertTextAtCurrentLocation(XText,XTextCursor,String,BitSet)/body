@@ -1,29 +1,29 @@
 {
   text.insertString(cursor,string,true);
   XPropertySet xCursorProps=UnoRuntime.queryInterface(XPropertySet.class,cursor);
-  if (bold) {
+  if (formatting.get(FORMAT_BOLD)) {
     xCursorProps.setPropertyValue(CHAR_WEIGHT,com.sun.star.awt.FontWeight.BOLD);
   }
  else {
     xCursorProps.setPropertyValue(CHAR_WEIGHT,com.sun.star.awt.FontWeight.NORMAL);
   }
-  if (italic) {
+  if (formatting.get(FORMAT_ITALIC)) {
     xCursorProps.setPropertyValue(CHAR_POSTURE,com.sun.star.awt.FontSlant.ITALIC);
   }
  else {
     xCursorProps.setPropertyValue(CHAR_POSTURE,com.sun.star.awt.FontSlant.NONE);
   }
-  if (smallCaps) {
+  if (formatting.get(FORMAT_SMALLCAPS)) {
     xCursorProps.setPropertyValue(CHAR_CASE_MAP,com.sun.star.style.CaseMap.SMALLCAPS);
   }
  else {
     xCursorProps.setPropertyValue(CHAR_CASE_MAP,com.sun.star.style.CaseMap.NONE);
   }
-  if (subscript) {
+  if (formatting.get(FORMAT_SUBSCRIPT)) {
     xCursorProps.setPropertyValue(CHAR_ESCAPEMENT,(byte)-101);
     xCursorProps.setPropertyValue(CHAR_ESCAPEMENT_HEIGHT,(byte)58);
   }
- else   if (superscript) {
+ else   if (formatting.get(FORMAT_SUPERSCRIPT)) {
     xCursorProps.setPropertyValue(CHAR_ESCAPEMENT,(byte)101);
     xCursorProps.setPropertyValue(CHAR_ESCAPEMENT_HEIGHT,(byte)58);
   }
@@ -31,17 +31,17 @@
     xCursorProps.setPropertyValue(CHAR_ESCAPEMENT,(byte)0);
     xCursorProps.setPropertyValue(CHAR_ESCAPEMENT_HEIGHT,(byte)100);
   }
-  if (underline) {
-    xCursorProps.setPropertyValue("CharUnderline",com.sun.star.awt.FontUnderline.SINGLE);
+  if (formatting.get(FORMAT_UNDERLINE)) {
+    xCursorProps.setPropertyValue(CHAR_UNDERLINE,com.sun.star.awt.FontUnderline.SINGLE);
   }
  else {
-    xCursorProps.setPropertyValue("CharUnderline",com.sun.star.awt.FontUnderline.NONE);
+    xCursorProps.setPropertyValue(CHAR_UNDERLINE,com.sun.star.awt.FontUnderline.NONE);
   }
-  if (strikeout) {
-    xCursorProps.setPropertyValue("CharStrikeout",com.sun.star.awt.FontStrikeout.SINGLE);
+  if (formatting.get(FORMAT_STRIKEOUT)) {
+    xCursorProps.setPropertyValue(CHAR_STRIKEOUT,com.sun.star.awt.FontStrikeout.SINGLE);
   }
  else {
-    xCursorProps.setPropertyValue("CharStrikeout",com.sun.star.awt.FontStrikeout.NONE);
+    xCursorProps.setPropertyValue(CHAR_STRIKEOUT,com.sun.star.awt.FontStrikeout.NONE);
   }
   cursor.collapseToEnd();
 }

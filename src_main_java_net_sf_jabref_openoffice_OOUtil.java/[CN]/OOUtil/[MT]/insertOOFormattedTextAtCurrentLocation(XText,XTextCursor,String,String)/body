@@ -7,74 +7,67 @@
  catch (  IllegalArgumentException ex) {
     throw new UndefinedParagraphFormatException(parStyle);
   }
+  BitSet formatting=new BitSet(TOTAL_FORMAT_COUNT);
   int piv=0;
-  int italic=0;
-  int bold=0;
-  int sup=0;
-  int sub=0;
-  int mono=0;
-  int smallCaps=0;
-  int underline=0;
-  int strikeout=0;
   Matcher m=OOUtil.HTML_TAG.matcher(lText);
   while (m.find()) {
     String ss=lText.substring(piv,m.start());
     if (!ss.isEmpty()) {
-      OOUtil.insertTextAtCurrentLocation(text,cursor,ss,(bold % 2) > 0,(italic % 2) > 0,mono > 0,smallCaps > 0,sup > 0,sub > 0,underline > 0,strikeout > 0);
+      OOUtil.insertTextAtCurrentLocation(text,cursor,ss,formatting);
     }
     String tag=m.group();
     if ("<b>".equals(tag)) {
-      bold++;
+      formatting.set(FORMAT_BOLD);
     }
  else     if ("</b>".equals(tag)) {
-      bold--;
+      formatting.clear(FORMAT_BOLD);
     }
  else     if ("<i>".equals(tag) || "<em>".equals(tag)) {
-      italic++;
+      formatting.set(FORMAT_ITALIC);
     }
  else     if ("</i>".equals(tag) || "</em>".equals(tag)) {
-      italic--;
-    }
- else     if ("</tt>".equals(tag)) {
-      mono=0;
+      formatting.clear(FORMAT_ITALIC);
     }
  else     if ("<tt>".equals(tag)) {
-      mono=1;
+      formatting.set(FORMAT_MONOSPACE);
     }
- else     if ("</smallcaps>".equals(tag)) {
-      smallCaps=0;
+ else     if ("</tt>".equals(tag)) {
+      formatting.clear(FORMAT_MONOSPACE);
     }
  else     if ("<smallcaps>".equals(tag)) {
-      smallCaps=1;
+      formatting.set(FORMAT_SMALLCAPS);
     }
- else     if ("</sup>".equals(tag)) {
-      sup=0;
+ else     if ("</smallcaps>".equals(tag)) {
+      formatting.clear(FORMAT_SMALLCAPS);
     }
  else     if ("<sup>".equals(tag)) {
-      sup=1;
+      formatting.set(FORMAT_SUPERSCRIPT);
     }
- else     if ("</sub>".equals(tag)) {
-      sub=0;
+ else     if ("</sup>".equals(tag)) {
+      formatting.clear(FORMAT_SUPERSCRIPT);
     }
  else     if ("<sub>".equals(tag)) {
-      sub=1;
+      formatting.set(FORMAT_SUBSCRIPT);
     }
- else     if ("</u>".equals(tag)) {
-      underline=0;
+ else     if ("</sub>".equals(tag)) {
+      formatting.clear(FORMAT_SUBSCRIPT);
     }
  else     if ("<u>".equals(tag)) {
-      underline=1;
+      formatting.set(FORMAT_UNDERLINE);
     }
- else     if ("</s>".equals(tag)) {
-      strikeout=0;
+ else     if ("</u>".equals(tag)) {
+      formatting.clear(FORMAT_UNDERLINE);
     }
  else     if ("<s>".equals(tag)) {
-      strikeout=1;
+      formatting.set(FORMAT_STRIKEOUT);
+    }
+ else     if ("</s>".equals(tag)) {
+      formatting.clear(FORMAT_STRIKEOUT);
     }
     piv=m.end();
   }
   if (piv < lText.length()) {
-    OOUtil.insertTextAtCurrentLocation(text,cursor,lText.substring(piv),(bold % 2) > 0,(italic % 2) > 0,mono > 0,smallCaps > 0,sup > 0,sub > 0,underline > 0,strikeout > 0);
+    OOUtil.insertTextAtCurrentLocation(text,cursor,lText.substring(piv),formatting);
   }
   cursor.collapseToEnd();
 }
