@@ -5,10 +5,24 @@
   if ((directory == null) || !directory.exists() || !directory.isDirectory()) {
     return null;
   }
-  File[] files=directory.listFiles(ff);
+  File[] filesArray=directory.listFiles(ff);
+  List<File> files;
+  if (filesArray == null) {
+    files=Collections.emptyList();
+  }
+ else {
+    files=Arrays.asList(filesArray);
+  }
   CheckableTreeNode root=new CheckableTreeNode(null);
   int filesCount=0;
-  File[] subDirectories=directory.listFiles(DIRECTORY_FILTER);
+  filesArray=directory.listFiles(DIRECTORY_FILTER);
+  List<File> subDirectories;
+  if (filesArray == null) {
+    subDirectories=Collections.emptyList();
+  }
+ else {
+    subDirectories=Arrays.asList(filesArray);
+  }
   for (  File subDirectory : subDirectories) {
     CheckableTreeNode subRoot=searchDirectory(subDirectory,ff,state,changeListener);
     if ((subRoot != null) && (subRoot.getChildCount() > 0)) {
@@ -16,7 +30,7 @@
       root.add(subRoot);
     }
   }
-  root.setUserObject(new FileNodeWrapper(directory,files.length + filesCount));
+  root.setUserObject(new FileNodeWrapper(directory,files.size() + filesCount));
   for (  File file : files) {
     root.add(new CheckableTreeNode(new FileNodeWrapper(file)));
     if (changeListener != null) {

@@ -1,15 +1,14 @@
 {
-  EntryTypes bibtexentrytypes=new EntryTypes();
-  assertEquals(BibtexEntryTypes.ARTICLE,bibtexentrytypes.getType("article"));
-  assertNull(bibtexentrytypes.getType("aaaaarticle"));
-  assertNull(bibtexentrytypes.getStandardType("aaaaarticle"));
-  assertEquals(19,bibtexentrytypes.getAllValues().size());
-  assertEquals(19,bibtexentrytypes.getAllTypes().size());
+  assertEquals(BibtexEntryTypes.ARTICLE,EntryTypes.getType("article",BibDatabaseMode.BIBTEX).get());
+  assertEquals(Optional.empty(),EntryTypes.getType("aaaaarticle",BibDatabaseMode.BIBTEX));
+  assertEquals(Optional.empty(),EntryTypes.getStandardType("aaaaarticle",BibDatabaseMode.BIBTEX));
+  assertEquals(19,EntryTypes.getAllValues(BibDatabaseMode.BIBTEX).size());
+  assertEquals(19,EntryTypes.getAllTypes(BibDatabaseMode.BIBTEX).size());
   ArrayList<String> requiredFields=new ArrayList<>(BibtexEntryTypes.ARTICLE.getRequiredFields());
   requiredFields.add("specialfield");
   CustomEntryType newArticle=new CustomEntryType("article",requiredFields,BibtexEntryTypes.ARTICLE.getOptionalFields());
-  bibtexentrytypes.addOrModifyCustomEntryType(newArticle);
-  assertNotEquals(BibtexEntryTypes.ARTICLE,bibtexentrytypes.getType("article"));
-  bibtexentrytypes.removeType("article");
-  assertEquals(BibtexEntryTypes.ARTICLE,bibtexentrytypes.getType("article"));
+  EntryTypes.addOrModifyCustomEntryType(newArticle);
+  assertNotEquals(BibtexEntryTypes.ARTICLE,EntryTypes.getType("article",BibDatabaseMode.BIBTEX).get());
+  EntryTypes.removeType("article",BibDatabaseMode.BIBTEX);
+  assertEquals(BibtexEntryTypes.ARTICLE,EntryTypes.getType("article",BibDatabaseMode.BIBTEX).get());
 }

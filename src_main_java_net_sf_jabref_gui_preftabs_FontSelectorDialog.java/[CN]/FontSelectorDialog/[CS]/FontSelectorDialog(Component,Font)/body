@@ -4,13 +4,12 @@
   content.setBorder(new EmptyBorder(12,12,12,12));
   setContentPane(content);
   JPanel listPanel=new JPanel(new GridLayout(1,3,6,6));
-  JPanel familyPanel=createTextFieldAndListPanel(Localization.lang("Font Family"),familyField=new JTextField(),familyList=new JList<>(getFontList()));
+  familyList=new JList<>(getFontList());
+  JPanel familyPanel=createTextFieldAndListPanel(Localization.lang("Font Family"),familyField,familyList);
   listPanel.add(familyPanel);
-  String[] sizes={"9","10","12","14","16","18","24"};
-  JPanel sizePanel=createTextFieldAndListPanel(Localization.lang("Font Size"),sizeField=new JTextField(),sizeList=new JList<>(sizes));
+  JPanel sizePanel=createTextFieldAndListPanel(Localization.lang("Font Size"),sizeField,sizeList);
   listPanel.add(sizePanel);
-  String[] styles={FontSelectorDialog.PLAIN,FontSelectorDialog.BOLD,FontSelectorDialog.ITALIC,FontSelectorDialog.BOLD_ITALIC};
-  JPanel stylePanel=createTextFieldAndListPanel(Localization.lang("Font Style"),styleField=new JTextField(),styleList=new JList<>(styles));
+  JPanel stylePanel=createTextFieldAndListPanel(Localization.lang("Font Style"),styleField,styleList);
   styleField.setEditable(false);
   listPanel.add(stylePanel);
   familyList.setSelectedValue(font.getFamily(),true);
@@ -43,12 +42,23 @@
   buttons.setBorder(new EmptyBorder(12,0,0,0));
   buttons.add(Box.createGlue());
   ok=new JButton(Localization.lang("OK"));
-  ok.addActionListener(new ActionHandler());
+  ok.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent evt){
+      isOK=true;
+      dispose();
+    }
+  }
+);
   getRootPane().setDefaultButton(ok);
   buttons.add(ok);
   buttons.add(Box.createHorizontalStrut(6));
   cancel=new JButton(Localization.lang("Cancel"));
-  cancel.addActionListener(new ActionHandler());
+  cancel.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent evt){
+      dispose();
+    }
+  }
+);
   buttons.add(cancel);
   buttons.add(Box.createGlue());
   content.add(BorderLayout.SOUTH,buttons);

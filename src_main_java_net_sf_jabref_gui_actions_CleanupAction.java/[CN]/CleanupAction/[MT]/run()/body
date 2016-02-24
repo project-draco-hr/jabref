@@ -1,0 +1,32 @@
+{
+  if (cancelled) {
+    return;
+  }
+  int choice=showDialog();
+  if (choice != JOptionPane.OK_OPTION) {
+    cancelled=true;
+    return;
+  }
+  CleanupPreset cleanupPreset=presetPanel.getCleanupPreset();
+  cleanupPreset.storeInPreferences(preferences);
+  if (cleanupPreset.isRenamePDF() && Globals.prefs.getBoolean(JabRefPreferences.AKS_AUTO_NAMING_PDFS_AGAIN)) {
+    CheckBoxMessage cbm=new CheckBoxMessage(Localization.lang("Auto-generating PDF-Names does not support undo. Continue?"),Localization.lang("Disable this confirmation dialog"),false);
+    int answer=JOptionPane.showConfirmDialog(frame,cbm,Localization.lang("Autogenerate PDF Names"),JOptionPane.YES_NO_OPTION);
+    if (cbm.isSelected()) {
+      Globals.prefs.putBoolean(JabRefPreferences.AKS_AUTO_NAMING_PDFS_AGAIN,false);
+    }
+    if (answer == JOptionPane.NO_OPTION) {
+      cancelled=true;
+      return;
+    }
+  }
+  for (  BibEntry entry : panel.getSelectedEntries()) {
+    NamedCompound ce=new NamedCompound(Localization.lang("Cleanup entry"));
+    doCleanup(cleanupPreset,entry,ce);
+    ce.end();
+    if (ce.hasEdits()) {
+      modifiedEntriesCount++;
+      panel.undoManager.addEdit(ce);
+    }
+  }
+}

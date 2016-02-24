@@ -1,12 +1,12 @@
 {
   if (result.isPresent()) {
-    List<String> dirs=basePanel.metaData().getFileDirectory(Globals.FILE_FIELD);
-    if (dirs.size() == 0) {
+    List<String> dirs=basePanel.getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD);
+    if (dirs.isEmpty()) {
       JOptionPane.showMessageDialog(basePanel.frame(),"Main file directory not set! Preferences -> External programs","Directory not found",JOptionPane.ERROR_MESSAGE);
       return;
     }
     String bibtexKey=entry.getCiteKey();
-    DownloadExternalFile def=new DownloadExternalFile(basePanel.frame(),basePanel.metaData(),bibtexKey);
+    DownloadExternalFile def=new DownloadExternalFile(basePanel.frame(),basePanel.getBibDatabaseContext().getMetaData(),bibtexKey);
     try {
       def.download(result.get(),new DownloadExternalFile.DownloadCallback(){
         @Override public void downloadComplete(        FileListEntry file){
@@ -24,7 +24,7 @@
 );
     }
  catch (    IOException e) {
-      e.printStackTrace();
+      LOGGER.warn("Problem downloading file",e);
     }
     basePanel.output(Localization.lang("Finished downloading full text document"));
   }

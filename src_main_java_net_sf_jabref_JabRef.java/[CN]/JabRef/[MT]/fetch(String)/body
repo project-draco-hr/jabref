@@ -6,8 +6,9 @@
   }
   String[] split=fetchCommand.split(":");
   String engine=split[0];
+  EntryFetchers fetchers=new EntryFetchers(Globals.journalAbbreviationLoader);
   EntryFetcher fetcher=null;
-  for (  EntryFetcher e : EntryFetchers.INSTANCE.getEntryFetchers()) {
+  for (  EntryFetcher e : fetchers.getEntryFetchers()) {
     if (engine.equalsIgnoreCase(e.getClass().getSimpleName().replaceAll("Fetcher",""))) {
       fetcher=e;
     }
@@ -15,7 +16,7 @@
   if (fetcher == null) {
     System.out.println(Localization.lang("Could not find fetcher '%0'",engine));
     System.out.println(Localization.lang("The following fetchers are available:"));
-    for (    EntryFetcher e : EntryFetchers.INSTANCE.getEntryFetchers()) {
+    for (    EntryFetcher e : fetchers.getEntryFetchers()) {
       System.out.println("  " + e.getClass().getSimpleName().replaceAll("Fetcher","").toLowerCase());
     }
     return Optional.empty();

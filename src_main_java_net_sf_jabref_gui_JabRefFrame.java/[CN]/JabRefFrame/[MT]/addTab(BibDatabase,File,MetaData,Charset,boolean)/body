@@ -5,7 +5,8 @@
   if (encoding == null) {
     encoding=Globals.prefs.getDefaultEncoding();
   }
-  BasePanel bp=new BasePanel(JabRefFrame.this,db,file,metaData,encoding);
+  Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_DEFAULT_MODE)));
+  BasePanel bp=new BasePanel(JabRefFrame.this,new BibDatabaseContext(db,metaData,file,defaults),encoding);
   addTab(bp,file,raisePanel);
   return bp;
 }

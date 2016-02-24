@@ -19,9 +19,9 @@
     @Override public void actionPerformed(    ActionEvent event){
       try {
         ooBase.selectDocument();
-        frame.output(Localization.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle());
+        frame.output(Localization.lang("Connected to document") + ": " + ooBase.getCurrentDocumentTitle().orElse(""));
       }
- catch (      Exception ex) {
+ catch (      UnknownPropertyException|WrappedTargetException|IndexOutOfBoundsException|NoSuchElementException|NoDocumentException ex) {
         JOptionPane.showMessageDialog(frame,ex.getMessage(),Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
       }
     }
@@ -40,7 +40,7 @@
         try {
           readStyleFile();
         }
- catch (        Exception ex) {
+ catch (        IOException ex) {
           LOGGER.warn("Could not read style file",ex);
         }
       }
@@ -79,21 +79,15 @@
   Action updateAction=new AbstractAction(){
     @Override public void actionPerformed(    ActionEvent e){
       try {
-        try {
-          if (style == null) {
-            readStyleFile();
-          }
- else {
-            style.ensureUpToDate();
-          }
+        if (style == null) {
+          readStyleFile();
         }
- catch (        Throwable ex) {
-          JOptionPane.showMessageDialog(frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
-          return;
+ else {
+          style.ensureUpToDate();
         }
         ooBase.updateSortedReferenceMarks();
-        java.util.List<BibDatabase> databases=getBaseList();
-        java.util.List<String> unresolvedKeys=ooBase.refreshCiteMarkers(databases,style);
+        List<BibDatabase> databases=getBaseList();
+        List<String> unresolvedKeys=ooBase.refreshCiteMarkers(databases,style);
         ooBase.rebuildBibTextSection(databases,style);
         if (!unresolvedKeys.isEmpty()) {
           JOptionPane.showMessageDialog(frame,Localization.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",unresolvedKeys.get(0)),Localization.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
@@ -108,11 +102,16 @@ catch (      UndefinedParagraphFormatException ex) {
 catch (      ConnectionLostException ex) {
         showConnectionLostErrorMessage();
       }
+catch (      IOException ex) {
+        JOptionPane.showMessageDialog(frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
+        LOGGER.warn("Problem with style file",ex);
+        return;
+      }
 catch (      BibEntryNotFoundException ex) {
         JOptionPane.showMessageDialog(frame,Localization.lang("Your OpenOffice document references the BibTeX key '%0', which could not be found in your current database.",ex.getBibtexKey()),Localization.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
       }
 catch (      Exception e1) {
-        e1.printStackTrace();
+        LOGGER.warn("Could not update bibliography",e1);
       }
     }
   }
@@ -128,7 +127,7 @@ catch (      Exception e1) {
         reportUndefinedCharacterFormat(e);
       }
 catch (      Exception e) {
-        e.printStackTrace();
+        LOGGER.warn("Problem combining cite markers",e);
       }
     }
   }
@@ -145,8 +144,8 @@ catch (      Exception e) {
         CitationManager cm=new CitationManager(frame,ooBase);
         cm.showDialog();
       }
- catch (      Exception e) {
-        e.printStackTrace();
+ catch (      NoSuchElementException|WrappedTargetException|UnknownPropertyException e) {
+        LOGGER.warn("Problem showing citation manager",e);
       }
     }
   }

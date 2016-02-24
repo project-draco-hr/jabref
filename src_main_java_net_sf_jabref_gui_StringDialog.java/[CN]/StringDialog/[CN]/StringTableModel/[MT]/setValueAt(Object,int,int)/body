@@ -1,6 +1,6 @@
 {
   if (col == 0) {
-    if (!value.equals(((BibtexString)strings[row]).getName())) {
+    if (!value.equals(strings.get(row).getName())) {
       if (tbase.hasStringLabel((String)value)) {
         JOptionPane.showMessageDialog(parent,Localization.lang("A string with that label already exists"),Localization.lang("Label"),JOptionPane.ERROR_MESSAGE);
       }
@@ -14,7 +14,7 @@
         JOptionPane.showMessageDialog(parent,Localization.lang("The label of the string cannot be a number."),Localization.lang("Label"),JOptionPane.ERROR_MESSAGE);
       }
  else {
-        BibtexString subject=(BibtexString)strings[row];
+        BibtexString subject=strings.get(row);
         panel.undoManager.addEdit(new UndoableStringChange(panel,subject,true,subject.getName(),(String)value));
         subject.setName((String)value);
         panel.markBaseChanged();
@@ -23,7 +23,7 @@
     }
   }
  else {
-    BibtexString subject=(BibtexString)strings[row];
+    BibtexString subject=strings.get(row);
     if (!value.equals(subject.getContent())) {
       try {
         new LatexFieldFormatter().format((String)value,"__dummy");

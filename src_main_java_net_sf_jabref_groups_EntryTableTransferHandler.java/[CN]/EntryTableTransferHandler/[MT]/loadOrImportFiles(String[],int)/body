@@ -4,25 +4,22 @@
   List<String> bibFiles=new ArrayList<>();
   for (  String fileName : fileNames) {
     Optional<String> extension=FileUtil.getFileExtension(fileName);
-    ExternalFileType fileType=null;
+    ExternalFileType fileType;
     if (extension.isPresent() && "bib".equals(extension.get())) {
       bibFiles.add(fileName);
       continue;
     }
     fileType=ExternalFileTypes.getInstance().getExternalFileTypeByExt(extension.orElse(""));
     if ((fileType != null) && (dropRow >= 0)) {
-      boolean local=true;
       DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
-      dfh.handleDroppedfile(fileName,fileType,local,entryTable,dropRow);
+      dfh.handleDroppedfile(fileName,fileType,entryTable,dropRow);
       continue;
     }
     notBibFiles.add(fileName);
   }
   openAction.openFilesAsStringList(bibFiles,true);
   if (!notBibFiles.isEmpty()) {
-    String[] toImport=new String[notBibFiles.size()];
-    notBibFiles.toArray(toImport);
     ImportMenuItem importer=new ImportMenuItem(frame,entryTable == null);
-    importer.automatedImport(toImport);
+    importer.automatedImport(notBibFiles);
   }
 }

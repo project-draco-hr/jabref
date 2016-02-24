@@ -1,0 +1,57 @@
+{
+  if (e.getValueIsAdjusting()) {
+    return;
+  }
+  if (lastSelected != null) {
+    reqLists.put(lastSelected,reqComp.getFields());
+    optLists.put(lastSelected,optComp.getFields());
+    if (biblatexMode) {
+      opt2Lists.put(lastSelected,optComp2.getFields());
+    }
+  }
+  String s=typeComp.getFirstSelected();
+  if (s == null) {
+    return;
+  }
+  List<String> rl=reqLists.get(s);
+  if (rl == null) {
+    Optional<EntryType> type=EntryTypes.getType(s,bibDatabaseContext.getMode());
+    if (type.isPresent()) {
+      List<String> req=type.get().getRequiredFields();
+      List<String> opt;
+      if (biblatexMode) {
+        opt=type.get().getPrimaryOptionalFields();
+        List<String> opt2=type.get().getSecondaryOptionalFields();
+        optComp2.setFields(opt2);
+        optComp2.setEnabled(true);
+      }
+ else {
+        opt=type.get().getOptionalFields();
+      }
+      reqComp.setFields(req);
+      reqComp.setEnabled(true);
+      optComp.setFields(opt);
+      optComp.setEnabled(true);
+    }
+ else {
+      reqComp.setFields(new ArrayList<>());
+      reqComp.setEnabled(true);
+      optComp.setFields(new ArrayList<>());
+      optComp.setEnabled(true);
+      if (biblatexMode) {
+        optComp2.setFields(new ArrayList<>());
+        optComp2.setEnabled(true);
+      }
+      new FocusRequester(reqComp);
+    }
+  }
+ else {
+    reqComp.setFields(rl);
+    optComp.setFields(optLists.get(s));
+    if (biblatexMode) {
+      optComp2.setFields(opt2Lists.get(s));
+    }
+  }
+  lastSelected=s;
+  typeComp.enable(s,changed.contains(lastSelected) && !defaulted.contains(lastSelected));
+}

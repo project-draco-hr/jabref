@@ -24,8 +24,8 @@
           lastCaretPosition=comp.getCaretPosition();
           lastCompletions=findCompletions(lastBeginning);
           lastShownCompletion=0;
-          for (int i=0; i < lastCompletions.length; i++) {
-            String lastCompletion=lastCompletions[i];
+          for (int i=0; i < lastCompletions.size(); i++) {
+            String lastCompletion=lastCompletions.get(i);
             if (lastCompletion.endsWith(toSetIn)) {
               lastShownCompletion=i;
               break;
@@ -42,11 +42,11 @@
       if ((toSetIn != null) && ((toSetIn.length() <= 1) || (ch != toSetIn.charAt(1)))) {
         lastBeginning=lastBeginning + ch;
         LOGGER.debug("discont toSetIn: >" + toSetIn + "'<' lastBeginning: >"+ lastBeginning+ '<');
-        String[] completed=findCompletions(lastBeginning);
-        if ((completed != null) && (completed.length > 0)) {
+        List<String> completed=findCompletions(lastBeginning);
+        if ((completed != null) && (!completed.isEmpty())) {
           lastShownCompletion=0;
           lastCompletions=completed;
-          String sno=completed[0];
+          String sno=completed.get(0);
           int lastLen=toSetIn.length() - 1;
           toSetIn=sno.substring(lastBeginning.length() - 1);
           String text=comp.getText();

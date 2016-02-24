@@ -11,7 +11,7 @@
   if (OS.WINDOWS && (modelColumn.isIconColumn()) && (e.getButton() != MouseEvent.BUTTON1)) {
     return;
   }
-  if (modelColumn.isIconColumn() && (SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(modelColumn.getColumnName()) != null)) {
+  if (modelColumn.isIconColumn() && (SpecialFieldsUtils.isSpecialField(modelColumn.getColumnName()))) {
     handleSpecialFieldLeftClick(e,modelColumn.getColumnName());
   }
  else   if (modelColumn.isIconColumn()) {
@@ -45,7 +45,7 @@
               flEntry=fileList.getEntry(0);
             }
             if (flEntry != null) {
-              ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.link,flEntry.type.getIcon(),panel.metaData(),flEntry.type);
+              ExternalFileMenuItem item=new ExternalFileMenuItem(panel.frame(),entry,"",flEntry.link,flEntry.type.getIcon(),panel.getBibDatabaseContext().getMetaData(),flEntry.type);
               boolean success=item.openLink();
               if (!success) {
                 panel.output(Localization.lang("Unable to open link."));
@@ -54,7 +54,7 @@
           }
  else {
             try {
-              JabRefDesktop.openExternalViewer(panel.metaData(),link,fieldName);
+              JabRefDesktop.openExternalViewer(panel.getBibDatabaseContext().getMetaData(),link,fieldName);
             }
  catch (            IOException ex) {
               panel.output(Localization.lang("Unable to open link."));

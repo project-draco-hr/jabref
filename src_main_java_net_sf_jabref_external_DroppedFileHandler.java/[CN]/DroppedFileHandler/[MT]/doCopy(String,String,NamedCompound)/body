@@ -1,0 +1,33 @@
+{
+  List<String> dirs=panel.getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD);
+  int found=-1;
+  for (int i=0; i < dirs.size(); i++) {
+    if (new File(dirs.get(i)).exists()) {
+      found=i;
+      break;
+    }
+  }
+  if (found < 0) {
+    LOGGER.warn("Cannot determine destination directory or destination directory does not exist");
+    return false;
+  }
+  toFile=new File(toFile).getName();
+  File destFile=new File(dirs.get(found) + System.getProperty("file.separator") + toFile);
+  if (destFile.equals(new File(fileName))) {
+    return true;
+  }
+  if (destFile.exists()) {
+    int answer=JOptionPane.showConfirmDialog(frame,Localization.lang("'%0' exists. Overwrite file?",destFile.getPath()),Localization.lang("File exists"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+    if (answer == JOptionPane.NO_OPTION) {
+      return false;
+    }
+  }
+  try {
+    FileUtil.copyFile(new File(fileName),destFile,true);
+  }
+ catch (  IOException e) {
+    LOGGER.error("Problem copying file",e);
+    return false;
+  }
+  return true;
+}

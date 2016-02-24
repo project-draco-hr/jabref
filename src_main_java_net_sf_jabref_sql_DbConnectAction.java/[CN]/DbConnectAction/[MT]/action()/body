@@ -1,12 +1,12 @@
 {
-  DBStrings dbs=panel.metaData().getDBStrings();
+  DBStrings dbs=panel.getBibDatabaseContext().getMetaData().getDBStrings();
   if (!dbs.isInitialized()) {
     dbs.initialize();
   }
   DBConnectDialog dbd=new DBConnectDialog(panel.frame(),dbs);
   PositionWindow.placeDialog(dbd,panel);
   dbd.setVisible(true);
-  if (dbd.getConnectToDB()) {
+  if (dbd.isConnectedToDB()) {
     dbs=dbd.getDBStrings();
     try {
       panel.frame().output(Localization.lang("Establishing SQL connection..."));
@@ -24,7 +24,7 @@
       JOptionPane.showMessageDialog(panel.frame(),preamble + '\n' + errorMessage,Localization.lang("Connect to SQL database"),JOptionPane.ERROR_MESSAGE);
     }
  finally {
-      panel.metaData().setDBStrings(dbs);
+      panel.getBibDatabaseContext().getMetaData().setDBStrings(dbs);
       dbd.dispose();
     }
   }

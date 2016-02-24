@@ -1,14 +1,14 @@
 {
-  String authors="";
-  String institutions="";
+  List<String> authors=new ArrayList<>();
+  StringBuffer institutions=new StringBuffer();
   while ((this.lastLine != null) && !"".equals(this.lastLine) && !startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS)) {
     String author;
-    String institution=null;
+    StringBuffer institution=new StringBuffer();
     boolean institutionDone;
     if (this.lastLine.indexOf('(') >= 0) {
       author=this.lastLine.substring(0,this.lastLine.indexOf('(')).trim();
       institutionDone=this.lastLine.indexOf(')') > 0;
-      institution=this.lastLine.substring(this.lastLine.indexOf('(') + 1,institutionDone && (this.lastLine.indexOf(')') > (this.lastLine.indexOf('(') + 1)) ? this.lastLine.indexOf(')') : this.lastLine.length()).trim();
+      institution.append(this.lastLine.substring(this.lastLine.indexOf('(') + 1,institutionDone && (this.lastLine.indexOf(')') > (this.lastLine.indexOf('(') + 1)) ? this.lastLine.indexOf(')') : this.lastLine.length()).trim());
     }
  else {
       author=this.lastLine.substring(0,this.lastLine.length()).trim();
@@ -17,20 +17,18 @@
     readLine();
     while (!institutionDone && (this.lastLine != null)) {
       institutionDone=this.lastLine.indexOf(')') > 0;
-      institution+=this.lastLine.substring(0,institutionDone ? this.lastLine.indexOf(')') : this.lastLine.length()).trim();
+      institution.append(this.lastLine.substring(0,institutionDone ? this.lastLine.indexOf(')') : this.lastLine.length()).trim());
       readLine();
     }
-    if (author != null) {
-      authors+="".equals(authors) ? author : " and " + author;
-    }
-    if (institution != null) {
-      institutions+="".equals(institutions) ? institution : " and " + institution;
+    authors.add(author);
+    if (institution.length() > 0) {
+      institutions.append((institutions.length() == 0) ? institution.toString() : " and " + institution.toString());
     }
   }
-  if (!"".equals(authors)) {
-    be.setField("author",authors);
+  if (!authors.isEmpty()) {
+    be.setField("author",String.join(" and ",authors));
   }
-  if (!"".equals(institutions)) {
-    be.setField("institution",institutions);
+  if (institutions.length() > 0) {
+    be.setField("institution",institutions.toString());
   }
 }

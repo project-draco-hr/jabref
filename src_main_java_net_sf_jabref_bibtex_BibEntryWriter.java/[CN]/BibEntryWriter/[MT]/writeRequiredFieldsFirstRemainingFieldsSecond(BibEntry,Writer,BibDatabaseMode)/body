@@ -1,0 +1,37 @@
+{
+  TypedBibEntry typedEntry=new TypedBibEntry(entry,Optional.empty(),bibDatabaseMode);
+  out.write('@' + typedEntry.getTypeForDisplay() + '{');
+  writeKeyField(entry,out);
+  HashSet<String> written=new HashSet<>();
+  written.add(BibEntry.KEY_FIELD);
+  boolean hasWritten=false;
+  int indentation=getLengthOfLongestFieldName(entry);
+  EntryType type=EntryTypes.getTypeOrDefault(entry.getType(),bibDatabaseMode);
+  List<String> fields=type.getRequiredFieldsFlat();
+  if (fields != null) {
+    for (    String value : fields) {
+      hasWritten=hasWritten | writeField(entry,out,value,hasWritten,indentation);
+      written.add(value);
+    }
+  }
+  fields=type.getOptionalFields();
+  if (fields != null) {
+    for (    String value : fields) {
+      if (!written.contains(value)) {
+        hasWritten=hasWritten | writeField(entry,out,value,hasWritten,indentation);
+        written.add(value);
+      }
+    }
+  }
+  TreeSet<String> remainingFields=new TreeSet<>();
+  for (  String key : entry.getFieldNames()) {
+    boolean writeIt=write ? InternalBibtexFields.isWriteableField(key) : InternalBibtexFields.isDisplayableField(key);
+    if (!written.contains(key) && writeIt) {
+      remainingFields.add(key);
+    }
+  }
+  for (  String field : remainingFields) {
+    hasWritten=hasWritten | writeField(entry,out,field,hasWritten,indentation);
+  }
+  out.write((hasWritten ? Globals.NEWLINE : "") + '}');
+}

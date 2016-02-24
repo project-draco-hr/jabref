@@ -11,15 +11,11 @@
     }
     OOUtil.insertParagraphBreak(text,cursor);
     if (style.isNumberEntries()) {
-      int minGroupingCount=style.getIntCitProperty("MinimumGroupingCount");
-      OOUtil.insertTextAtCurrentLocation(text,cursor,style.getNumCitationMarker(new int[]{number++},minGroupingCount,true),false,false,false,false,false,false);
+      int minGroupingCount=style.getIntCitProperty(OOBibStyle.MINIMUM_GROUPING_COUNT);
+      OOUtil.insertTextAtCurrentLocation(text,cursor,style.getNumCitationMarker(Arrays.asList(number++),minGroupingCount,true),false,false,false,false,false,false);
     }
     Layout layout=style.getReferenceFormat(entry.getKey().getType());
-    try {
-      layout.setPostFormatter(OOUtil.POSTFORMATTER);
-    }
- catch (    NoSuchMethodError ignore) {
-    }
+    layout.setPostFormatter(POSTFORMATTER);
     OOUtil.insertFullReferenceAtCurrentLocation(text,cursor,layout,parFormat,entry.getKey(),entry.getValue(),uniquefiers.get(entry.getKey().getCiteKey()));
   }
 }

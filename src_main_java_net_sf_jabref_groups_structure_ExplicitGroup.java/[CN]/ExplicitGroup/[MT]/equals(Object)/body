@@ -9,24 +9,19 @@
   HashSet<String> keys=new HashSet<>();
   BibEntry entry;
   String key;
-  for (  BibEntry m_entry1 : entries) {
-    entry=m_entry1;
+  for (  BibEntry mEntry1 : entries) {
+    entry=mEntry1;
     key=entry.getCiteKey();
     if (key != null) {
       keys.add(key);
     }
   }
-  for (  BibEntry m_entry : other.entries) {
-    entry=m_entry;
+  for (  BibEntry mEntry : other.entries) {
+    entry=mEntry;
     key=entry.getCiteKey();
-    if (key != null) {
-      if (!keys.remove(key)) {
-        return false;
-      }
+    if ((key != null) && !keys.remove(key)) {
+      return false;
     }
   }
-  if (!keys.isEmpty()) {
-    return false;
-  }
-  return other.name.equals(name) && (other.getHierarchicalContext() == getHierarchicalContext());
+  return keys.isEmpty() && other.name.equals(name) && (other.getHierarchicalContext() == getHierarchicalContext());
 }

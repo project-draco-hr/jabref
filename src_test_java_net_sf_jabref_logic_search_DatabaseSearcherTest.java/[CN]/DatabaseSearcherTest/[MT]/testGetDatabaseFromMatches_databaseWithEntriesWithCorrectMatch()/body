@@ -1,0 +1,10 @@
+{
+  BibDatabase database=new BibDatabase();
+  BibEntry entry=new BibEntry();
+  entry.setType("article");
+  entry.setField("author","harrer");
+  database.insertEntry(entry);
+  BibDatabase newDatabase=new DatabaseSearcher(new SearchQuery("harrer",true,true),database).getDatabaseFromMatches();
+  assertEquals(1,newDatabase.getEntryCount());
+  assertEquals(entry,newDatabase.getEntries().iterator().next());
+}

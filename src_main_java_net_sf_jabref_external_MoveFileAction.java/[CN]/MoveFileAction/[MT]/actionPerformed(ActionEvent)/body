@@ -8,7 +8,7 @@
   boolean httpLink=ln.toLowerCase().startsWith("http");
   if (httpLink) {
   }
-  List<String> dirs=frame.getCurrentBasePanel().metaData().getFileDirectory(Globals.FILE_FIELD);
+  List<String> dirs=frame.getCurrentBasePanel().getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD);
   int found=-1;
   for (int i=0; i < dirs.size(); i++) {
     if (new File(dirs.get(i)).exists()) {
@@ -22,7 +22,7 @@
   }
   File file=new File(ln);
   if (!file.isAbsolute()) {
-    file=FileUtil.expandFilename(ln,dirs);
+    file=FileUtil.expandFilename(ln,dirs).orElse(null);
   }
   if ((file != null) && file.exists()) {
     String extension=null;
@@ -35,7 +35,7 @@
       repeat=false;
       String chosenFile;
       if (toFileDir) {
-        String suggName=Util.getLinkedFileName(eEditor.getDatabase(),eEditor.getEntry()).concat(".").concat(flEntry.type.getExtension());
+        String suggName=Util.getLinkedFileName(eEditor.getDatabase(),eEditor.getEntry()).concat(flEntry.type == null ? "" : "." + flEntry.type.getExtension());
         CheckBoxMessage cbm=new CheckBoxMessage(Localization.lang("Move file to file directory?"),Localization.lang("Rename to '%0'",suggName),Globals.prefs.getBoolean(JabRefPreferences.RENAME_ON_MOVE_FILE_TO_FILE_DIR));
         int answer;
         if (suggName.equals(file.getName())) {
@@ -83,7 +83,9 @@
           success=FileUtil.copyFile(file,newFile,true);
         }
         if (success) {
-          file.delete();
+          if (!file.delete()) {
+            LOGGER.info("Cannot delete original file");
+          }
           String canPath=new File(dirs.get(found)).getCanonicalPath();
           if (newFile.getCanonicalPath().startsWith(canPath)) {
             if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar)) {

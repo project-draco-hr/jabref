@@ -1,0 +1,28 @@
+{
+  if (lastSelected == null) {
+    return;
+  }
+  defaulted.add(lastSelected);
+  Optional<EntryType> type=EntryTypes.getStandardType(lastSelected,bibDatabaseContext.getMode());
+  if (type.isPresent()) {
+    List<String> of=type.get().getOptionalFields();
+    List<String> req=type.get().getRequiredFields();
+    List<String> opt1=new ArrayList<>();
+    List<String> opt2=new ArrayList<>();
+    if (!(of.isEmpty())) {
+      if (biblatexMode) {
+        opt1=type.get().getPrimaryOptionalFields();
+        opt2=type.get().getSecondaryOptionalFields();
+      }
+ else {
+        opt1=of;
+      }
+    }
+    reqComp.setFields(req);
+    reqComp.setEnabled(true);
+    optComp.setFields(opt1);
+    if (biblatexMode) {
+      optComp2.setFields(opt2);
+    }
+  }
+}

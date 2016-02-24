@@ -1,8 +1,8 @@
 {
-  super(parent,Localization.lang("Connect to SQL database"),true);
+  super(Objects.requireNonNull(parent),Localization.lang("Connect to SQL database"),true);
   this.setResizable(false);
   this.setLocationRelativeTo(parent);
-  dbStrings=dbs;
+  dbStrings=Objects.requireNonNull(dbs);
   ArrayList<JLabel> lhs=new ArrayList<>();
   JLabel lblServerType=new JLabel();
   lhs.add(lblServerType);
@@ -20,11 +20,11 @@
   rhs.add(txtDatabase);
   rhs.add(txtUsername);
   rhs.add(pwdPassword);
-  lblServerType.setText(Localization.lang("Server Type:"));
-  lblServerHostname.setText(Localization.lang("Server Hostname:"));
-  lblDatabase.setText(Localization.lang("Database:"));
-  lblUsername.setText(Localization.lang("Username:"));
-  lblPassword.setText(Localization.lang("Password:"));
+  lblServerType.setText(Localization.lang("Server type" + ':'));
+  lblServerHostname.setText(Localization.lang("Server hostname" + ':'));
+  lblDatabase.setText(Localization.lang("Database") + ':');
+  lblUsername.setText(Localization.lang("Username") + ':');
+  lblPassword.setText(Localization.lang("Password") + ':');
   for (  JLabel label : lhs) {
     label.setHorizontalAlignment(SwingConstants.RIGHT);
   }
@@ -33,7 +33,7 @@
   JButton btnCancel=new JButton();
   btnCancel.setText(Localization.lang("Cancel"));
   String srvSel=dbStrings.getServerType();
-  String[] srv=dbStrings.getServerTypes();
+  List<String> srv=dbStrings.getServerTypes();
   for (  String aSrv : srv) {
     cmbServerType.addItem(aSrv);
   }
@@ -64,14 +64,14 @@
   pack();
   ActionListener connectAction=new ActionListener(){
     @Override public void actionPerformed(    ActionEvent e){
-      String errorMessage=checkInput();
-      if (errorMessage == null) {
+      Optional<String> errorMessage=checkInput();
+      if (errorMessage.isPresent()) {
+        JOptionPane.showMessageDialog(null,errorMessage.get(),Localization.lang("Input error"),JOptionPane.ERROR_MESSAGE);
+      }
+ else {
         storeSettings();
         setVisible(false);
         setConnectToDB(true);
-      }
- else {
-        JOptionPane.showMessageDialog(null,errorMessage,"Input Error",JOptionPane.ERROR_MESSAGE);
       }
     }
   }

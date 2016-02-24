@@ -1,0 +1,33 @@
+{
+  File tempBib=File.createTempFile("JabRef",".bib");
+  try (FileWriter fileWriter=new FileWriter(tempBib)){
+    fileWriter.write(t1BibtexString());
+    fileWriter.write(t3BibtexString());
+    fileWriter.close();
+    try (ByteArrayOutputStream s=new ByteArrayOutputStream()){
+      PrintStream oldOut=System.out;
+      System.setOut(new PrintStream(s));
+      XMPUtil.main(new String[]{tempBib.getAbsolutePath(),pdfFile.getAbsolutePath()});
+      System.setOut(oldOut);
+    }
+     List<BibEntry> l=XMPUtil.readXMP(pdfFile);
+    Assert.assertEquals(2,l.size());
+    BibEntry a=l.get(0);
+    BibEntry b=l.get(1);
+    if (a.getCiteKey().equals("Clarkson06")) {
+      BibEntry tmp=a;
+      a=b;
+      b=tmp;
+    }
+    BibEntry t1=t1BibtexEntry();
+    BibEntry t3=t3BibtexEntry();
+    t3.setField("month","July");
+    assertEqualsBibtexEntry(t1,a);
+    assertEqualsBibtexEntry(t3,b);
+  }
+  finally {
+    if (!tempBib.delete()) {
+      System.err.println("Cannot delete temporary file");
+    }
+  }
+}

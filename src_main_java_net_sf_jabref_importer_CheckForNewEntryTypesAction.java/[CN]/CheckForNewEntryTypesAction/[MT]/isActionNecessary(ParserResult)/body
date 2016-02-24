@@ -1,7 +1,9 @@
 {
+  Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_DEFAULT_MODE)));
+  BibDatabaseMode mode=new BibDatabaseContext(pr.getDatabase(),pr.getMetaData(),defaults).getMode();
   for (Iterator<String> i=pr.getEntryTypes().keySet().iterator(); i.hasNext(); ) {
     String typeName=i.next().toLowerCase();
-    if (EntryTypes.getType(typeName) != null) {
+    if (EntryTypes.getType(typeName,mode).isPresent()) {
       i.remove();
     }
   }

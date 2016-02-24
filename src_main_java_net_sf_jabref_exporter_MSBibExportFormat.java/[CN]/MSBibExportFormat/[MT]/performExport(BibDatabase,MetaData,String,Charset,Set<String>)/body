@@ -1,5 +1,5 @@
 {
-  SaveSession ss=getSaveSession(StandardCharsets.UTF_8,new File(file));
+  SaveSession ss=new SaveSession(StandardCharsets.UTF_8,false);
   MSBibDatabase md=new MSBibDatabase(database,keySet);
   try (VerifyingWriter ps=ss.getWriter()){
     try {
@@ -9,12 +9,12 @@
       trans.setOutputProperty(OutputKeys.INDENT,"yes");
       trans.transform(source,result);
     }
- catch (    Exception e) {
+ catch (    TransformerException|IllegalArgumentException|TransformerFactoryConfigurationError e) {
       throw new Error(e);
     }
-    finalizeSaveSession(ss);
+    finalizeSaveSession(ss,new File(file));
   }
- catch (  Exception ex) {
+ catch (  SaveException|IOException ex) {
     throw new IOException(ex.getMessage());
   }
 }

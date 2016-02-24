@@ -4,14 +4,23 @@
     panel.output(Localization.lang("Cancelled merging entries"));
   }
  else   if ("done".equals(button)) {
-    Set<String> joint=new TreeSet<>(mergedEntry.getFieldNames());
+    Set<String> jointFields=new TreeSet<>(mergedEntry.getFieldNames());
+    Set<String> originalFields=new TreeSet<>(originalEntry.getFieldNames());
     Boolean edited=false;
-    for (    String field : joint) {
+    for (    String field : jointFields) {
       String originalString=originalEntry.getField(field);
       String mergedString=mergedEntry.getField(field);
       if ((originalString == null) || !originalString.equals(mergedEntry.getField(field))) {
         originalEntry.setField(field,mergedString);
         ce.addEdit(new UndoableFieldChange(originalEntry,field,originalString,mergedString));
+        edited=true;
+      }
+    }
+    for (    String field : originalFields) {
+      if (!jointFields.contains(field)) {
+        String originalString=originalEntry.getField(field);
+        originalEntry.clearField(field);
+        ce.addEdit(new UndoableFieldChange(originalEntry,field,originalString,null));
         edited=true;
       }
     }

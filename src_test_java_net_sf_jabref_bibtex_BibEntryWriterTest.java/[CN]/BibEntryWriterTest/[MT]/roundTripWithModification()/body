@@ -2,17 +2,17 @@
   String bibtexEntry=Globals.NEWLINE + "@Article{test," + Globals.NEWLINE+ "  Author                   = {Foo Bar},"+ Globals.NEWLINE+ "  Journal                  = {International Journal of Something},"+ Globals.NEWLINE+ "  Note                     = {some note},"+ Globals.NEWLINE+ "  Number                   = {1}"+ Globals.NEWLINE+ "}";
   ParserResult result=BibtexParser.parse(new StringReader(bibtexEntry));
   Collection<BibEntry> entries=result.getDatabase().getEntries();
-  Assert.assertEquals(1,entries.size());
+  assertEquals(1,entries.size());
   BibEntry entry=entries.iterator().next();
-  Assert.assertEquals("test",entry.getCiteKey());
-  Assert.assertEquals(5,entry.getFieldNames().size());
+  assertEquals("test",entry.getCiteKey());
+  assertEquals(5,entry.getFieldNames().size());
   entry.setField("author","BlaBla");
   Set<String> fields=entry.getFieldNames();
-  Assert.assertTrue(fields.contains("author"));
-  Assert.assertEquals("BlaBla",entry.getField("author"));
+  assertTrue(fields.contains("author"));
+  assertEquals("BlaBla",entry.getField("author"));
   StringWriter stringWriter=new StringWriter();
-  writer.write(entry,stringWriter);
+  writer.write(entry,stringWriter,BibDatabaseMode.BIBTEX);
   String actual=stringWriter.toString();
-  String expected=Globals.NEWLINE + Globals.NEWLINE + "@Article{test,"+ Globals.NEWLINE+ "  author =  {BlaBla},"+ Globals.NEWLINE+ "  journal = {International Journal of Something},"+ Globals.NEWLINE+ "  number =  {1},"+ Globals.NEWLINE+ "  note =    {some note}"+ Globals.NEWLINE+ "}";
+  String expected=Globals.NEWLINE + "@Article{test," + Globals.NEWLINE+ "  author =  {BlaBla},"+ Globals.NEWLINE+ "  journal = {International Journal of Something},"+ Globals.NEWLINE+ "  number =  {1},"+ Globals.NEWLINE+ "  note =    {some note}"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE;
   assertEquals(expected,actual);
 }

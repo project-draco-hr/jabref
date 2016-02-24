@@ -1,25 +1,12 @@
 {
   List<NewEntryAction> actions=new ArrayList<>();
-  if (biblatexMode) {
-    for (    String key : EntryTypes.getAllTypes()) {
-      actions.add(new NewEntryAction(this,key));
-    }
-  }
- else {
-    for (    EntryType type : BibtexEntryTypes.ALL) {
-      KeyStroke keyStroke=ChangeEntryTypeMenu.entryShortCuts.get(type.getName());
-      if (keyStroke == null) {
-        actions.add(new NewEntryAction(this,type.getName()));
-      }
- else {
-        actions.add(new NewEntryAction(this,type.getName(),keyStroke));
-      }
-    }
-    for (    EntryType type : IEEETranEntryTypes.ALL) {
+  for (  EntryType type : BibtexEntryTypes.ALL) {
+    KeyStroke keyStroke=new ChangeEntryTypeMenu().entryShortCuts.get(type.getName());
+    if (keyStroke == null) {
       actions.add(new NewEntryAction(this,type.getName()));
     }
-    for (    EntryType type : CustomEntryTypesManager.ALL) {
-      actions.add(new NewEntryAction(this,type.getName()));
+ else {
+      actions.add(new NewEntryAction(this,type.getName(),keyStroke));
     }
   }
   return actions;

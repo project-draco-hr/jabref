@@ -17,21 +17,28 @@
           if ((description == null) || (description.trim().isEmpty())) {
             description=flEntry.link;
           }
-          menu.add(new ExternalFileMenuItem(panel.frame(),entry,description,flEntry.link,flEntry.type.getIcon(),panel.metaData(),flEntry.type));
+          menu.add(new ExternalFileMenuItem(panel.frame(),entry,description,flEntry.link,flEntry.type.getIcon(),panel.getBibDatabaseContext().getMetaData(),flEntry.type));
           showDefaultPopup=false;
         }
       }
  else {
-        SpecialField specialField=SpecialFieldsUtils.getSpecialFieldInstanceFromFieldName(column.getColumnName());
-        if (specialField == null) {
-          if (entry.hasField(field)) {
-            String content=entry.getField(field);
-            menu.add(new ExternalFileMenuItem(panel.frame(),entry,content,content,GUIGlobals.getTableIcon(field).getIcon(),panel.metaData(),field));
-            showDefaultPopup=false;
-          }
+        if (SpecialFieldsUtils.isSpecialField(column.getColumnName())) {
+          showDefaultPopup=true;
         }
  else {
-          showDefaultPopup=true;
+          if (entry.hasField(field)) {
+            String content=entry.getField(field);
+            Icon icon;
+            JLabel iconLabel=GUIGlobals.getTableIcon(field);
+            if (iconLabel == null) {
+              icon=IconTheme.JabRefIcon.FILE.getIcon();
+            }
+ else {
+              icon=iconLabel.getIcon();
+            }
+            menu.add(new ExternalFileMenuItem(panel.frame(),entry,content,content,icon,panel.getBibDatabaseContext().getMetaData(),field));
+            showDefaultPopup=false;
+          }
         }
       }
     }

@@ -29,7 +29,7 @@
   for (  String entry : entries) {
     hm.clear();
     author="";
-    type="";
+    type="misc";
     editor="";
     artnum="";
     boolean isEditedBook=false;
@@ -168,7 +168,7 @@
         }
       }
  else       if ("F".equals(prefix)) {
-        hm.put(BibEntry.KEY_FIELD,Util.checkLegalKey(val));
+        hm.put(BibEntry.KEY_FIELD,LabelPatternUtil.checkLegalKey(val));
       }
     }
     if (isEditedBook && "".equals(editor)) {
@@ -184,7 +184,7 @@
     if (((hm.get("pages") == null) || "-".equals(hm.get("pages"))) && !"".equals(artnum)) {
       hm.put("pages",artnum);
     }
-    BibEntry b=new BibEntry(DEFAULT_BIBTEXENTRY_ID,EntryTypes.getTypeOrDefault(type));
+    BibEntry b=new BibEntry(DEFAULT_BIBTEXENTRY_ID,type);
     b.setField(hm);
     if (!b.getFieldNames().isEmpty()) {
       bibitems.add(b);

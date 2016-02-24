@@ -1,14 +1,14 @@
 {
-  String title;
-  if (getDatabaseFile() == null) {
-    title=GUIGlobals.untitledTitle;
+  StringBuilder title=new StringBuilder();
+  if (getBibDatabaseContext().getDatabaseFile() == null) {
+    title.append(GUIGlobals.untitledTitle);
     if (!database().getEntries().isEmpty()) {
-      title=title + '*';
+      title.append('*');
     }
   }
  else {
     String changeFlag=isModified() ? "*" : "";
-    title=getDatabaseFile().getName() + changeFlag;
+    title.append(getBibDatabaseContext().getDatabaseFile().getName()).append(changeFlag);
   }
-  return title;
+  return title.toString();
 }

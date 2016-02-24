@@ -1,15 +1,13 @@
 {
-  File backupFile=AutoSaveManager.getAutoSaveFile(panel.getDatabaseFile());
+  File databaseFile=panel.getBibDatabaseContext().getDatabaseFile();
+  File backupFile=AutoSaveManager.getAutoSaveFile(databaseFile);
   try {
-    SaveSession ss=FileActions.saveDatabase(panel.database(),panel.metaData(),backupFile,Globals.prefs,false,false,panel.getEncoding(),true);
-    ss.commit();
+    SavePreferences prefs=SavePreferences.loadForSaveFromPreferences(Globals.prefs).withMakeBackup(false).withEncoding(panel.getEncoding());
+    BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
+    SaveSession ss=databaseWriter.saveDatabase(panel.getBibDatabaseContext(),prefs);
   }
  catch (  SaveException e) {
-    e.printStackTrace();
-    return false;
-  }
-catch (  Throwable ex) {
-    ex.printStackTrace();
+    LOGGER.error("Problem with automatic save",e);
     return false;
   }
   return true;

@@ -1,11 +1,11 @@
 {
-  StringBuffer sb=new StringBuffer();
+  StringBuilder sb=new StringBuilder();
   int c;
   while ((c=in.read()) != -1) {
     sb.append((char)c);
   }
   String[] lines=sb.toString().split("\n");
-  int mode=OOBibStyle.NONE;
+  int mode=OOBibStyle.MODE_NONE;
   for (  String line1 : lines) {
     String line=line1;
     if (!line.isEmpty() && (line.charAt(line.length() - 1) == '\r')) {
@@ -15,44 +15,47 @@
       continue;
     }
     if (line.equals(OOBibStyle.NAME_MARK)) {
-      mode=OOBibStyle.NAME;
+      mode=OOBibStyle.MODE_NAME;
       continue;
     }
  else     if (line.equals(OOBibStyle.LAYOUT_MRK)) {
-      mode=OOBibStyle.LAYOUT;
+      mode=OOBibStyle.MODE_LAYOUT;
       continue;
     }
  else     if (line.equals(OOBibStyle.PROPERTIES_MARK)) {
-      mode=OOBibStyle.PROPERTIES;
+      mode=OOBibStyle.MODE_PROPERTIES;
       continue;
     }
  else     if (line.equals(OOBibStyle.CITATION_MARK)) {
-      mode=OOBibStyle.CITATION;
+      mode=OOBibStyle.MODE_CITATION;
       continue;
     }
  else     if (line.equals(OOBibStyle.JOURNALS_MARK)) {
-      mode=OOBibStyle.JOURNALS;
+      mode=OOBibStyle.MODE_JOURNALS;
       continue;
     }
 switch (mode) {
-case NAME:
+case MODE_NAME:
       if (!line.trim().isEmpty()) {
         name=line.trim();
       }
-case LAYOUT:
-    handleStructureLine(line);
-  break;
-case PROPERTIES:
+    break;
+case MODE_LAYOUT:
+  handleStructureLine(line);
+break;
+case MODE_PROPERTIES:
 handlePropertiesLine(line,properties);
 break;
-case CITATION:
+case MODE_CITATION:
 handlePropertiesLine(line,citProperties);
 break;
-case JOURNALS:
+case MODE_JOURNALS:
 handleJournalsLine(line);
+break;
+default :
 }
 }
-if (mode != OOBibStyle.NONE) {
+if (mode != OOBibStyle.MODE_NONE) {
 valid=true;
 }
 }

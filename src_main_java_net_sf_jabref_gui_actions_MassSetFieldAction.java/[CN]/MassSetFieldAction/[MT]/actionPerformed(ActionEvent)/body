@@ -1,0 +1,47 @@
+{
+  BasePanel bp=frame.getCurrentBasePanel();
+  if (bp == null) {
+    return;
+  }
+  List<BibEntry> entries=bp.getSelectedEntries();
+  if (diag == null) {
+    createDialog();
+  }
+  cancelled=true;
+  prepareDialog(!entries.isEmpty());
+  if (diag != null) {
+    PositionWindow.placeDialog(diag,frame);
+    diag.setVisible(true);
+  }
+  if (cancelled) {
+    return;
+  }
+  Collection<BibEntry> entryList;
+  if (all.isSelected()) {
+    entryList=bp.database().getEntries();
+  }
+ else {
+    entryList=entries;
+  }
+  String toSet=text.getText();
+  if (toSet.isEmpty()) {
+    toSet=null;
+  }
+  String[] fields=getFieldNames(((String)field.getSelectedItem()).trim().toLowerCase());
+  NamedCompound ce=new NamedCompound(Localization.lang("Set field"));
+  if (rename.isSelected()) {
+    if (fields.length > 1) {
+    }
+ else {
+      ce.addEdit(MassSetFieldAction.massRenameField(entryList,fields[0],renameTo.getText(),overwrite.isSelected()));
+    }
+  }
+ else {
+    for (    String field1 : fields) {
+      ce.addEdit(MassSetFieldAction.massSetField(entryList,field1,set.isSelected() ? toSet : null,overwrite.isSelected()));
+    }
+  }
+  ce.end();
+  bp.undoManager.addEdit(ce);
+  bp.markBaseChanged();
+}

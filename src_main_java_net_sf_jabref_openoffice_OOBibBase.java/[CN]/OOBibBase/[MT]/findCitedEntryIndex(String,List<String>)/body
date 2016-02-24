@@ -1,15 +1,15 @@
 {
-  Matcher m=citePattern.matcher(citRefName);
+  Matcher m=CITE_PATTERN.matcher(citRefName);
   if (m.find()) {
-    String[] keyStrings=m.group(2).split(",");
-    int[] res=new int[keyStrings.length];
-    for (int i=0; i < keyStrings.length; i++) {
-      int ind=keys.indexOf(keyStrings[i]);
-      res[i]=ind != -1 ? 1 + ind : -1;
+    List<String> keyStrings=Arrays.asList(m.group(2).split(","));
+    List<Integer> res=new ArrayList<>(keyStrings.size());
+    for (    String key : keyStrings) {
+      int ind=keys.indexOf(key);
+      res.add(ind == -1 ? -1 : 1 + ind);
     }
     return res;
   }
  else {
-    return null;
+    return Collections.EMPTY_LIST;
   }
 }

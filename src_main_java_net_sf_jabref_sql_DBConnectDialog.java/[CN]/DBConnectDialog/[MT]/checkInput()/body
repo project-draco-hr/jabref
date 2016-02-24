@@ -1,5 +1,5 @@
 {
-  String[] fields={"Server Hostname","Database","Username"};
+  String[] fields={Localization.lang("Server hostname"),Localization.lang("Database"),Localization.lang("Username")};
   String[] errors=new String[fields.length];
   int cnt=0;
   if (txtServerHostname.getText().trim().isEmpty()) {
@@ -14,19 +14,24 @@
     errors[cnt]=fields[2];
     cnt++;
   }
-  String errMsg=Localization.lang("Please specify the") + " ";
+  StringBuilder errMsg=new StringBuilder(Localization.lang("Please specify the")).append(' ');
 switch (cnt) {
 case 0:
-    errMsg=null;
+    errMsg=new StringBuilder();
   break;
 case 1:
-errMsg=errMsg + errors[0] + '.';
+errMsg.append(errors[0]).append('.');
 break;
 case 2:
-errMsg=errMsg + errors[0] + " and "+ errors[1]+ '.';
+errMsg.append(errors[0]).append(" and ").append(errors[1]).append('.');
 break;
 default :
-errMsg=errMsg + errors[0] + ", "+ errors[1]+ ", and "+ errors[2]+ '.';
+errMsg.append(errors[0]).append(", ").append(errors[1]).append(", and ").append(errors[2]).append('.');
 }
-return errMsg;
+if (errMsg.toString().isEmpty()) {
+return Optional.empty();
+}
+ else {
+return Optional.of(errMsg.toString());
+}
 }

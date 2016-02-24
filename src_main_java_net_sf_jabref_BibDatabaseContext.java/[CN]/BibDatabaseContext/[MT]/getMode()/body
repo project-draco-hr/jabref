@@ -1,0 +1,13 @@
+{
+  List<String> data=metaData.getData(MetaData.DATABASE_TYPE);
+  if (data == null) {
+    BibDatabaseMode inferredMode=BibDatabaseModeDetection.inferMode(database);
+    if (defaults.mode == BibDatabaseMode.BIBLATEX || inferredMode == BibDatabaseMode.BIBLATEX) {
+      return BibDatabaseMode.BIBLATEX;
+    }
+ else {
+      return BibDatabaseMode.BIBTEX;
+    }
+  }
+  return BibDatabaseMode.valueOf(data.get(0).toUpperCase());
+}

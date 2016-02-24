@@ -1,0 +1,48 @@
+{
+  boolean groupsTreePresent=false;
+  List<String> flatGroupsData=null;
+  List<String> treeGroupsData=null;
+  int groupsVersionOnDisk=0;
+  if (inData != null) {
+    for (    Map.Entry<String,String> entry : inData.entrySet()) {
+      StringReader data=new StringReader(entry.getValue());
+      String unit;
+      List<String> orderedData=new ArrayList<>();
+      try {
+        while ((unit=getNextUnit(data)) != null) {
+          orderedData.add(unit);
+        }
+      }
+ catch (      IOException ex) {
+        System.err.println("Weird error while parsing meta data.");
+      }
+      if (GROUPSVERSION.equals(entry.getKey())) {
+        if (!orderedData.isEmpty()) {
+          groupsVersionOnDisk=Integer.parseInt(orderedData.get(0));
+        }
+      }
+ else       if (GROUPSTREE.equals(entry.getKey())) {
+        groupsTreePresent=true;
+        treeGroupsData=orderedData;
+      }
+ else       if (GROUPS.equals(entry.getKey())) {
+        flatGroupsData=orderedData;
+      }
+ else {
+        putData(entry.getKey(),orderedData);
+      }
+    }
+  }
+  if (groupsTreePresent) {
+    putGroups(treeGroupsData,db,groupsVersionOnDisk);
+  }
+  if (!groupsTreePresent && (flatGroupsData != null)) {
+    try {
+      groupsRoot=VersionHandling.importFlatGroups(flatGroupsData);
+      groupTreeValid=true;
+    }
+ catch (    IllegalArgumentException ex) {
+      groupTreeValid=true;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
+  SavePreferences preferences=new SavePreferences().withEncoding(Charsets.US_ASCII);
+  BibEntry entry=new BibEntry();
+  entry.setType(BibtexEntryTypes.ARTICLE);
+  BibDatabase database=new BibDatabase();
+  database.insertEntry(entry);
+  BibDatabaseContext context=new BibDatabaseContext(database,new Defaults(BibDatabaseMode.BIBTEX));
+  StringWriter stringWriter=new StringWriter();
+  databaseWriter.writePartOfDatabase(stringWriter,context,Collections.singletonList(entry),preferences);
+  Assert.assertEquals("% Encoding: US-ASCII" + Globals.NEWLINE + Globals.NEWLINE+ "@Article{,"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE,stringWriter.toString());
+}

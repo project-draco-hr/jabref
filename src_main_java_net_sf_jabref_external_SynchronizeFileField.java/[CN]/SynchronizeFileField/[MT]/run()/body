@@ -3,21 +3,21 @@
     panel.output(Localization.lang("No entries selected."));
     return;
   }
+  entriesChangedCount=0;
   panel.frame().setProgressBarValue(0);
   panel.frame().setProgressBarVisible(true);
   int weightAutoSet=10;
-  int progressBarMax=(autoSet ? weightAutoSet * sel.length : 0) + (checkExisting ? sel.length : 0);
+  int progressBarMax=(autoSet ? weightAutoSet * sel.size() : 0) + (checkExisting ? sel.size() : 0);
   panel.frame().setProgressBarMaximum(progressBarMax);
   int progress=0;
   final NamedCompound ce=new NamedCompound(Localization.lang("Autoset %0 field",Globals.FILE_FIELD));
   Set<BibEntry> changedEntries=new HashSet<>();
   if (autoSet) {
-    Collection<BibEntry> entries=new ArrayList<>();
-    Collections.addAll(entries,sel);
-    Runnable r=Util.autoSetLinks(entries,ce,changedEntries,null,panel.metaData(),null,null);
+    Collection<BibEntry> entries=new ArrayList<>(sel);
+    Runnable r=Util.autoSetLinks(entries,ce,changedEntries,null,panel.getBibDatabaseContext().getMetaData(),null,null);
     JabRefExecutorService.INSTANCE.executeAndWait(r);
   }
-  progress+=sel.length * weightAutoSet;
+  progress+=sel.size() * weightAutoSet;
   panel.frame().setProgressBarValue(progress);
   if (checkExisting) {
     boolean removeAllBroken=false;
@@ -27,8 +27,8 @@
       if ((old != null) && !(old.isEmpty())) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old);
-        List<String> dirsS=panel.metaData().getFileDirectory(Globals.FILE_FIELD);
-        ArrayList<File> dirs=new ArrayList<>();
+        List<String> dirsS=panel.getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD);
+        List<File> dirs=new ArrayList<>();
         for (        String dirs1 : dirsS) {
           dirs.add(new File(dirs1));
         }
@@ -39,18 +39,18 @@
             continue;
           }
           boolean deleted=false;
-          File file=FileUtil.expandFilename(flEntry.link,dirsS);
-          if ((file == null) || !file.exists()) {
+          Optional<File> file=FileUtil.expandFilename(flEntry.link,dirsS);
+          if ((!file.isPresent()) || !file.get().exists()) {
             int answer;
-            if (!removeAllBroken) {
-              answer=JOptionPane.showOptionDialog(panel.frame(),Localization.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",flEntry.link,aSel.getCiteKey()),Localization.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+            if (removeAllBroken) {
+              answer=2;
             }
  else {
-              answer=2;
+              answer=JOptionPane.showOptionDialog(panel.frame(),Localization.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",flEntry.link,aSel.getCiteKey()),Localization.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
             }
 switch (answer) {
 case 1:
-              FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.metaData());
+              FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext().getMetaData());
             flEditor.setVisible(true,true);
           break;
 case 2:
@@ -79,9 +79,7 @@ ExternalFileType newType=new ExternalFileType(flEntry.type.getName(),"","","","n
 ExternalFileTypeEntryEditor editor=new ExternalFileTypeEntryEditor(panel.frame(),newType);
 editor.setVisible(true);
 if (editor.okPressed()) {
-List<ExternalFileType> fileTypes=new ArrayList<>();
-ExternalFileType[] oldTypes=ExternalFileTypes.getInstance().getExternalFileTypeSelection();
-Collections.addAll(fileTypes,oldTypes);
+List<ExternalFileType> fileTypes=new ArrayList<>(ExternalFileTypes.getInstance().getExternalFileTypeSelection());
 fileTypes.add(newType);
 Collections.sort(fileTypes);
 ExternalFileTypes.getInstance().setExternalFileTypes(fileTypes);
@@ -89,7 +87,7 @@ panel.mainTable.repaint();
 }
 }
  else {
-FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.metaData());
+FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext().getMetaData());
 editor.setVisible(true,false);
 }
 }
@@ -113,5 +111,6 @@ if (!changedEntries.isEmpty()) {
 ce.end();
 panel.undoManager.addEdit(ce);
 panel.markBaseChanged();
+entriesChangedCount=changedEntries.size();
 }
 }

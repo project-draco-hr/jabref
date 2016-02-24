@@ -1,8 +1,8 @@
 {
   int i;
   field=field.replaceAll("&|\\\\&","&");
-  StringBuffer sb=new StringBuffer();
-  StringBuffer currentCommand=null;
+  StringBuilder sb=new StringBuilder();
+  StringBuilder currentCommand=null;
   char c;
   boolean escaped=false;
   boolean incommand=false;
@@ -16,16 +16,16 @@
       if (incommand) {
         String command=currentCommand.toString();
         Object result=OOPreFormatter.CHARS.get(command);
-        if (result != null) {
-          sb.append((String)result);
+        if (result == null) {
+          sb.append(command);
         }
  else {
-          sb.append(command);
+          sb.append((String)result);
         }
       }
       escaped=true;
       incommand=true;
-      currentCommand=new StringBuffer();
+      currentCommand=new StringBuilder();
     }
  else     if (!incommand && ((c == '{') || (c == '}'))) {
     }
@@ -63,18 +63,18 @@
           if ((i + 1) == field.length()) {
             String command=currentCommand.toString();
             Object result=OOPreFormatter.CHARS.get(command);
-            if (result != null) {
-              sb.append((String)result);
+            if (result == null) {
+              sb.append(command);
             }
  else {
-              sb.append(command);
+              sb.append((String)result);
             }
           }
         }
       }
     }
  else {
-      String argument=null;
+      String argument;
       if (!incommand) {
         sb.append(c);
       }
@@ -94,32 +94,30 @@
           String part=StringUtil.getPart(field,i,true);
           i+=part.length();
           argument=part;
-          if (argument != null) {
-            Object result=OOPreFormatter.CHARS.get(command + argument);
-            if (result != null) {
-              sb.append((String)result);
-            }
+          Object result=OOPreFormatter.CHARS.get(command + argument);
+          if (result == null) {
+            sb.append(argument);
+          }
  else {
-              sb.append(argument);
-            }
+            sb.append((String)result);
           }
         }
  else         if (c == '}') {
           Object result=OOPreFormatter.CHARS.get(command);
-          if (result != null) {
-            sb.append((String)result);
+          if (result == null) {
+            sb.append(command);
           }
  else {
-            sb.append(command);
+            sb.append((String)result);
           }
         }
  else {
           Object result=OOPreFormatter.CHARS.get(command);
-          if (result != null) {
-            sb.append((String)result);
+          if (result == null) {
+            sb.append(command);
           }
  else {
-            sb.append(command);
+            sb.append((String)result);
           }
           sb.append(' ');
         }

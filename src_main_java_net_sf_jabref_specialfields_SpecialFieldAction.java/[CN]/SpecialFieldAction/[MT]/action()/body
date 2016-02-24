@@ -1,8 +1,8 @@
 {
   try {
     NamedCompound ce=new NamedCompound(undoText);
-    BibEntry[] bes=frame.getCurrentBasePanel().getSelectedEntries();
-    if (bes == null) {
+    List<BibEntry> bes=frame.getCurrentBasePanel().getSelectedEntries();
+    if ((bes == null) || bes.isEmpty()) {
       return;
     }
     for (    BibEntry be : bes) {
@@ -15,10 +15,10 @@
       frame.getCurrentBasePanel().updateEntryEditorIfShowing();
       String outText;
       if (nullFieldIfValueIsTheSame) {
-        outText=Localization.lang(doneTextPattern,Integer.toString(bes.length));
+        outText=Localization.lang(doneTextPattern,Integer.toString(bes.size()));
       }
  else {
-        outText=Localization.lang(doneTextPattern,value,Integer.toString(bes.length));
+        outText=Localization.lang(doneTextPattern,value,Integer.toString(bes.size()));
       }
       frame.output(outText);
     }

@@ -1,15 +1,14 @@
 {
-  ArrayList<String> f=new ArrayList<>();
-  EntryType type=EntryTypes.getType(entry.getType());
-  List<String> req=type.getRequiredFieldsFlat();
-  List<String> opt=type.getOptionalFields();
-  List<String> allFields=BibtexFields.getAllFieldNames();
-  f.addAll(req);
-  f.addAll(opt);
-  for (  String allField : allFields) {
-    if (!f.contains(allField)) {
-      f.add(allField);
+  List<String> texFields=new ArrayList<>();
+  Optional<EntryType> type=EntryTypes.getType(entry.getType(),frame.getCurrentBasePanel().getBibDatabaseContext().getMode());
+  if (type.isPresent()) {
+    texFields.addAll(type.get().getAllFields());
+  }
+  List<String> internalFields=InternalBibtexFields.getAllFieldNames();
+  for (  String field : internalFields) {
+    if (!texFields.contains(field)) {
+      texFields.add(field);
     }
   }
-  return f.toArray(new String[f.size()]);
+  return texFields.toArray(new String[texFields.size()]);
 }

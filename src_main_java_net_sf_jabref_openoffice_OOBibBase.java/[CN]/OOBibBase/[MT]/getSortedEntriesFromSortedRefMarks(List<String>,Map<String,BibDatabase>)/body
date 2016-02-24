@@ -1,0 +1,27 @@
+{
+  Map<BibEntry,BibDatabase> newList=new LinkedHashMap<>();
+  for (  String name : names) {
+    Matcher m=CITE_PATTERN.matcher(name);
+    if (m.find()) {
+      String[] keys=m.group(2).split(",");
+      for (      String key : keys) {
+        BibDatabase database=linkSourceBase.get(key);
+        BibEntry origEntry=null;
+        if (database != null) {
+          origEntry=database.getEntryByKey(key);
+        }
+        if (origEntry == null) {
+          LOGGER.info("BibTeX key not found: '" + key + "'");
+          LOGGER.info("Problem with reference mark: '" + name + "'");
+          newList.put(new UndefinedBibtexEntry(key),null);
+        }
+ else {
+          if (!newList.containsKey(origEntry)) {
+            newList.put(origEntry,database);
+          }
+        }
+      }
+    }
+  }
+  return newList;
+}

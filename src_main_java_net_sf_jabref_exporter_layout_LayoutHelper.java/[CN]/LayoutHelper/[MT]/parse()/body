@@ -1,16 +1,16 @@
 {
   skipWhitespace();
   int c;
-  StringBuffer buffer=null;
+  StringBuilder buffer=null;
   boolean escaped=false;
-  while (!_eof) {
+  while (!endOfFile) {
     c=read();
     if (c == -1) {
-      _eof=true;
+      endOfFile=true;
       if (buffer != null) {
         parsedEntries.add(new StringInt(buffer.toString(),LayoutHelper.IS_LAYOUT_TEXT));
       }
-      return null;
+      return;
     }
     if ((c == '\\') && (peek() != '\\') && !escaped) {
       if (buffer != null) {
@@ -22,7 +22,7 @@
     }
  else {
       if (buffer == null) {
-        buffer=new StringBuffer(100);
+        buffer=new StringBuilder(100);
       }
       if ((c != '\\') || escaped) {
         buffer.append((char)c);
@@ -30,5 +30,4 @@
       escaped=(c == '\\') && !escaped;
     }
   }
-  return null;
 }

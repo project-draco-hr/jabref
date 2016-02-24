@@ -1,0 +1,14 @@
+{
+  BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
+  BibEntry entry=new BibEntry();
+  entry.setType(BibtexEntryTypes.ARTICLE);
+  entry.setField("author","Mr. author");
+  entry.setParsedSerialization("presaved serialization");
+  entry.setChanged(false);
+  BibDatabase database=new BibDatabase();
+  database.insertEntry(entry);
+  BibDatabaseContext context=new BibDatabaseContext(database,new Defaults(BibDatabaseMode.BIBTEX));
+  StringWriter stringWriter=new StringWriter();
+  databaseWriter.writePartOfDatabase(stringWriter,context,Collections.singletonList(entry),new SavePreferences());
+  Assert.assertEquals("presaved serialization",stringWriter.toString());
+}

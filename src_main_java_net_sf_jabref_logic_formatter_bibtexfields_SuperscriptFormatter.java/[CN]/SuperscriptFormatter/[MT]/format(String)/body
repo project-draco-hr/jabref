@@ -1,9 +1,8 @@
 {
-  final Pattern pattern=Pattern.compile("\\b(\\d+)(st|nd|rd|th)\\b",Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-  final String replace="$1\\\\textsuperscript{$2}";
-  if ((value == null) || value.isEmpty()) {
+  Objects.requireNonNull(value);
+  if (value.isEmpty()) {
     return value;
   }
-  Matcher matcher=pattern.matcher(value);
-  return matcher.replaceAll(replace);
+  Matcher matcher=SUPERSCRIPT_DETECT_PATTERN.matcher(value);
+  return matcher.replaceAll(SUPERSCRIPT_REPLACE_PATTERN);
 }

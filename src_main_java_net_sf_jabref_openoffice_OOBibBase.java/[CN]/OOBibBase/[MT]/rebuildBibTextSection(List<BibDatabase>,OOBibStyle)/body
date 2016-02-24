@@ -1,14 +1,14 @@
 {
   List<String> cited=findCitedKeys();
-  HashMap<String,BibDatabase> linkSourceBase=new HashMap<>();
+  Map<String,BibDatabase> linkSourceBase=new HashMap<>();
   Map<BibEntry,BibDatabase> entries=findCitedEntries(databases,cited,linkSourceBase);
-  String[] names=sortedReferenceMarks;
+  List<String> names=sortedReferenceMarks;
   if (style.isSortByPosition()) {
-    entries=getSortedEntriesFromSortedRefMarks(names,entries,linkSourceBase);
+    entries=getSortedEntriesFromSortedRefMarks(names,linkSourceBase);
   }
  else {
     SortedMap<BibEntry,BibDatabase> newMap=new TreeMap<>(entryComparator);
-    for (    Map.Entry<BibEntry,BibDatabase> bibtexEntryBibtexDatabaseEntry : entries.entrySet()) {
+    for (    Map.Entry<BibEntry,BibDatabase> bibtexEntryBibtexDatabaseEntry : findCitedEntries(databases,cited,linkSourceBase).entrySet()) {
       newMap.put(bibtexEntryBibtexDatabaseEntry.getKey(),bibtexEntryBibtexDatabaseEntry.getValue());
     }
     entries=newMap;

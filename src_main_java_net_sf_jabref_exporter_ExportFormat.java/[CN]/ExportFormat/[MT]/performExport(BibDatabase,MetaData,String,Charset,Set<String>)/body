@@ -3,14 +3,14 @@
   SaveSession ss=null;
   if (this.encoding != null) {
     try {
-      ss=getSaveSession(this.encoding,outFile);
+      ss=new SaveSession(this.encoding,false);
     }
  catch (    IOException ex) {
       LOGGER.warn("Can not get save session.",ex);
     }
   }
   if (ss == null) {
-    ss=getSaveSession(enc,outFile);
+    ss=new SaveSession(encoding,false);
   }
   try (VerifyingWriter ps=ss.getWriter()){
     Layout beginLayout=null;
@@ -18,20 +18,22 @@
     List<String> missingFormatters=new ArrayList<>(1);
     try (Reader reader=getReader(lfFileName + ".begin.layout")){
       LayoutHelper layoutHelper=new LayoutHelper(reader);
-      beginLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+      beginLayout=layoutHelper.getLayoutFromText();
     }
  catch (    IOException ex) {
     }
     if (beginLayout != null) {
-      ps.write(beginLayout.doLayout(database,enc));
+      ps.write(beginLayout.doLayout(database,encoding));
       missingFormatters.addAll(beginLayout.getMissingFormatters());
     }
-    List<BibEntry> sorted=FileActions.getSortedEntries(database,metaData,entryIds,false);
-    Layout defLayout=null;
-    LayoutHelper layoutHelper=null;
+    Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_DEFAULT_MODE)));
+    SavePreferences savePrefs=SavePreferences.loadForExportFromPreferences(Globals.prefs);
+    List<BibEntry> sorted=BibDatabaseWriter.getSortedEntries(new BibDatabaseContext(database,metaData,defaults),entryIds,savePrefs);
+    Layout defLayout;
+    LayoutHelper layoutHelper;
     try (Reader reader=getReader(lfFileName + ".layout")){
       layoutHelper=new LayoutHelper(reader);
-      defLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+      defLayout=layoutHelper.getLayoutFromText();
     }
      if (defLayout != null) {
       missingFormatters.addAll(defLayout.getMissingFormatters());
@@ -51,7 +53,7 @@
  else {
         try (Reader reader=getReader(lfFileName + '.' + type+ ".layout")){
           layoutHelper=new LayoutHelper(reader);
-          layout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+          layout=layoutHelper.getLayoutFromText();
           layouts.put(type,layout);
           if (layout != null) {
             missingFormatters.addAll(layout.getMissingFormatters());
@@ -66,25 +68,20 @@
     Layout endLayout=null;
     try (Reader reader=getReader(lfFileName + ".end.layout")){
       layoutHelper=new LayoutHelper(reader);
-      endLayout=layoutHelper.getLayoutFromText(Globals.FORMATTER_PACKAGE);
+      endLayout=layoutHelper.getLayoutFromText();
     }
  catch (    IOException ex) {
     }
-    if (endLayout != null) {
-      ps.write(endLayout.doLayout(database,encoding));
+    if ((endLayout != null) && (this.encoding != null)) {
+      ps.write(endLayout.doLayout(database,this.encoding));
       missingFormatters.addAll(endLayout.getMissingFormatters());
     }
     Globals.prefs.customExportNameFormatters=null;
     if (!missingFormatters.isEmpty()) {
       StringBuilder sb=new StringBuilder("The following formatters could not be found: ");
-      for (Iterator<String> i=missingFormatters.iterator(); i.hasNext(); ) {
-        sb.append(i.next());
-        if (i.hasNext()) {
-          sb.append(", ");
-        }
-      }
+      sb.append(String.join(", ",missingFormatters));
       LOGGER.warn(sb);
     }
-    finalizeSaveSession(ss);
+    finalizeSaveSession(ss,outFile);
   }
  }

@@ -1,7 +1,8 @@
 {
   diag=new JDialog(frame,title,false);
   int activePreview=Globals.prefs.getInt(JabRefPreferences.ACTIVE_PREVIEW);
-  preview=new PreviewPanel(null,new MetaData(),activePreview == 0 ? Globals.prefs.get(JabRefPreferences.PREVIEW_0) : Globals.prefs.get(JabRefPreferences.PREVIEW_1));
+  String layoutFile=activePreview == 0 ? Globals.prefs.get(JabRefPreferences.PREVIEW_0) : Globals.prefs.get(JabRefPreferences.PREVIEW_1);
+  preview=new PreviewPanel(null,new MetaData(),layoutFile);
   sortedEntries=new SortedList<>(entries,new EntryComparator(false,true,"author"));
   model=(DefaultEventTableModel<BibEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedEntries,new EntryTableFormat());
   entryTable=new JTable(model);
@@ -31,10 +32,10 @@
   entryTable.getActionMap().put("copy",new AbstractAction(){
     @Override public void actionPerformed(    ActionEvent e){
       if (!selectionModel.getSelected().isEmpty()) {
-        BibEntry[] bes=selectionModel.getSelected().toArray(new BibEntry[selectionModel.getSelected().size()]);
+        List<BibEntry> bes=selectionModel.getSelected();
         TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,frame.getCurrentBasePanel());
-        frame.output(Localization.lang("Copied") + ' ' + (bes.length > 1 ? bes.length + " " + Localization.lang("entries") : "1 " + Localization.lang("entry") + '.'));
+        frame.output(Localization.lang("Copied") + ' ' + (bes.size() > 1 ? bes.size() + " " + Localization.lang("entries") : "1 " + Localization.lang("entry") + '.'));
       }
     }
   }

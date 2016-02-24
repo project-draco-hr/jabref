@@ -1,0 +1,131 @@
+{
+  keyword=new JTextField();
+  keywordListModel=new DefaultListModel<>();
+  keywordList=new JList<>(keywordListModel);
+  keywordList.setVisibleRowCount(8);
+  JScrollPane kPane=new JScrollPane(keywordList);
+  diag=new JDialog(frame,Localization.lang("Manage keywords"),true);
+  JButton ok=new JButton(Localization.lang("OK"));
+  JButton cancel=new JButton(Localization.lang("Cancel"));
+  JButton add=new JButton(Localization.lang("Add"));
+  JButton remove=new JButton(Localization.lang("Remove"));
+  keywordList.setVisibleRowCount(10);
+  intersectKeywords=new JRadioButton("Display keywords appearing in ALL entries");
+  mergeKeywords=new JRadioButton("Display keywords appearing in ANY entry");
+  ButtonGroup group=new ButtonGroup();
+  group.add(intersectKeywords);
+  group.add(mergeKeywords);
+  ActionListener stateChanged=new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent arg0){
+      fillKeyWordList();
+    }
+  }
+;
+  intersectKeywords.addActionListener(stateChanged);
+  mergeKeywords.addActionListener(stateChanged);
+  intersectKeywords.setSelected(true);
+  FormBuilder builder=FormBuilder.create().layout(new FormLayout("fill:200dlu:grow, 4dlu, fill:pref","pref, 2dlu, pref, 1dlu, pref, 2dlu, fill:100dlu:grow, 4dlu, pref, 4dlu, pref, "));
+  builder.addSeparator(Localization.lang("Keywords of selected entries")).xyw(1,1,3);
+  builder.add(intersectKeywords).xyw(1,3,3);
+  builder.add(mergeKeywords).xyw(1,5,3);
+  builder.add(kPane).xywh(1,7,1,3);
+  builder.add(remove).xy(3,9);
+  builder.add(keyword).xy(1,11);
+  builder.add(add).xy(3,11);
+  ButtonBarBuilder bb=new ButtonBarBuilder();
+  bb.addGlue();
+  bb.addButton(ok);
+  bb.addButton(cancel);
+  bb.addGlue();
+  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  bb.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+  ok.addActionListener(new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent e){
+      cancelled=false;
+      diag.dispose();
+    }
+  }
+);
+  AbstractAction cancelAction=new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      cancelled=true;
+      diag.dispose();
+    }
+  }
+;
+  cancel.addActionListener(cancelAction);
+  final ActionListener addActionListener=new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent arg0){
+      String text=keyword.getText().trim();
+      if (text.isEmpty()) {
+        return;
+      }
+      if (keywordListModel.isEmpty()) {
+        keywordListModel.addElement(text);
+      }
+ else {
+        int idx=0;
+        String element=keywordListModel.getElementAt(idx);
+        while ((idx < keywordListModel.size()) && (element.compareTo(text) < 0)) {
+          idx++;
+        }
+        if (idx == keywordListModel.size()) {
+          keywordListModel.addElement(text);
+        }
+ else         if (element.compareTo(text) == 0) {
+        }
+ else {
+          keywordListModel.add(idx,text);
+        }
+      }
+      keyword.setText(null);
+      keyword.requestFocusInWindow();
+    }
+  }
+;
+  add.addActionListener(addActionListener);
+  final ActionListener removeActionListenter=new ActionListener(){
+    @Override public void actionPerformed(    ActionEvent arg0){
+      List<String> values=keywordList.getSelectedValuesList();
+      for (      String val : values) {
+        keywordListModel.removeElement(val);
+      }
+    }
+  }
+;
+  remove.addActionListener(removeActionListenter);
+  keywordList.addKeyListener(new KeyListener(){
+    @Override public void keyTyped(    KeyEvent arg0){
+    }
+    @Override public void keyReleased(    KeyEvent arg0){
+    }
+    @Override public void keyPressed(    KeyEvent arg0){
+      if (arg0.getKeyCode() == KeyEvent.VK_DELETE) {
+        removeActionListenter.actionPerformed(null);
+      }
+    }
+  }
+);
+  AutoCompleter<String> autoComp=JabRef.jrf.getCurrentBasePanel().getAutoCompleters().get("keywords");
+  AutoCompleteListener acl=new AutoCompleteListener(autoComp);
+  keyword.addKeyListener(acl);
+  keyword.addFocusListener(acl);
+  keyword.addKeyListener(new KeyListener(){
+    @Override public void keyTyped(    KeyEvent e){
+    }
+    @Override public void keyReleased(    KeyEvent e){
+    }
+    @Override public void keyPressed(    KeyEvent e){
+      if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        addActionListener.actionPerformed(null);
+      }
+    }
+  }
+);
+  ActionMap am=builder.getPanel().getActionMap();
+  InputMap im=builder.getPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.getKeyPrefs().getKey(KeyBinding.CLOSE_DIALOG),"close");
+  am.put("close",cancelAction);
+  diag.getContentPane().add(builder.getPanel(),BorderLayout.CENTER);
+  diag.getContentPane().add(bb.getPanel(),BorderLayout.SOUTH);
+}

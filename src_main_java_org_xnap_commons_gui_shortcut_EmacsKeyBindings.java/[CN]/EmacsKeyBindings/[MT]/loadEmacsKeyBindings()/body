@@ -1,33 +1,33 @@
 {
-  EmacsKeyBindings.logger.debug("Loading emacs keybindings");
-  for (  JTextComponent JTC : EmacsKeyBindings.JTCS) {
-    Action[] origActions=JTC.getActions();
+  EmacsKeyBindings.LOGGER.debug("Loading emacs keybindings");
+  for (  JTextComponent jtc : EmacsKeyBindings.JTCS) {
+    Action[] origActions=jtc.getActions();
     Action[] actions=new Action[origActions.length + EmacsKeyBindings.EMACS_ACTIONS.length];
     System.arraycopy(origActions,0,actions,0,origActions.length);
     System.arraycopy(EmacsKeyBindings.EMACS_ACTIONS,0,actions,origActions.length,EmacsKeyBindings.EMACS_ACTIONS.length);
-    Keymap k=JTC.getKeymap();
+    Keymap k=jtc.getKeymap();
     JTextComponent.KeyBinding[] keybindings;
     boolean rebindCA=JabRefPreferences.getInstance().getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CA);
     boolean rebindCF=JabRefPreferences.getInstance().getBoolean(JabRefPreferences.EDITOR_EMACS_KEYBINDINGS_REBIND_CF);
     if (rebindCA || rebindCF) {
       int size=EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE.length;
-      int CAPos=-1;
-      int CFPos=-1;
+      int posCA=-1;
+      int posCF=-1;
       if (rebindCA) {
-        CAPos=size;
+        posCA=size;
         size++;
       }
       if (rebindCF) {
-        CFPos=size;
+        posCF=size;
         size++;
       }
       keybindings=new JTextComponent.KeyBinding[size];
       System.arraycopy(EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE,0,keybindings,0,EmacsKeyBindings.EMACS_KEY_BINDINGS_BASE.length);
       if (rebindCA) {
-        keybindings[CAPos]=EmacsKeyBindings.EMACS_KEY_BINDING_C_A;
+        keybindings[posCA]=EmacsKeyBindings.EMACS_KEY_BINDING_C_A;
       }
       if (rebindCF) {
-        keybindings[CFPos]=EmacsKeyBindings.EMACS_KEY_BINDING_C_F;
+        keybindings[posCF]=EmacsKeyBindings.EMACS_KEY_BINDING_C_F;
       }
     }
  else {
