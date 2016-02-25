@@ -1,0 +1,61 @@
+{
+  Charset oldEncoding=panel.getEncoding();
+  Charset newEncoding=(Charset)encoding.getSelectedItem();
+  panel.setEncoding(newEncoding);
+  String text=fileDir.getText().trim();
+  if (text.isEmpty()) {
+    metaData.remove(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR));
+  }
+ else {
+    metaData.putData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR),Arrays.asList(text));
+  }
+  text=fileDirIndv.getText().trim();
+  if (text.isEmpty()) {
+    metaData.remove(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL));
+  }
+ else {
+    metaData.putData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL),Arrays.asList(text));
+  }
+  if (protect.isSelected()) {
+    metaData.putData(Globals.PROTECTED_FLAG_META,Arrays.asList("true"));
+  }
+ else {
+    metaData.remove(Globals.PROTECTED_FLAG_META);
+  }
+  SaveOrderConfig newSaveOrderConfig=saveOrderPanel.getSaveOrderConfig();
+  if (saveInOriginalOrder.isSelected()) {
+    newSaveOrderConfig.setSaveInOriginalOrder();
+  }
+ else {
+    newSaveOrderConfig.setSaveInSpecifiedOrder();
+  }
+  boolean saveOrderConfigChanged;
+  if (newSaveOrderConfig.equals(oldSaveOrderConfig)) {
+    saveOrderConfigChanged=false;
+  }
+ else {
+    saveOrderConfigChanged=true;
+  }
+  if (saveOrderConfigChanged) {
+    List<String> serialized=newSaveOrderConfig.getConfigurationList();
+    if (newSaveOrderConfig.equals(defaultSaveOrderConfig)) {
+      metaData.remove(MetaData.SAVE_ORDER_CONFIG);
+    }
+ else {
+      metaData.putData(MetaData.SAVE_ORDER_CONFIG,serialized);
+    }
+  }
+  boolean saveActionsChanged=saveActionsPanel.hasChanged();
+  if (saveActionsChanged) {
+    if (saveActionsPanel.isDefaultSaveActions()) {
+      metaData.remove(SaveActions.META_KEY);
+    }
+ else {
+      saveActionsPanel.storeSettings(metaData);
+    }
+  }
+  boolean changed=saveOrderConfigChanged || !newEncoding.equals(oldEncoding) || !oldFileVal.equals(fileDir.getText())|| !oldFileIndvVal.equals(fileDirIndv.getText())|| (oldProtectVal != protect.isSelected())|| saveActionsChanged;
+  if (changed) {
+    panel.markNonUndoableBaseChanged();
+  }
+}

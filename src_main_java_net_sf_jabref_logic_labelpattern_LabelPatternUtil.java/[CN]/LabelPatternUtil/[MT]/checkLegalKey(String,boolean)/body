@@ -1,0 +1,23 @@
+{
+  if (key == null) {
+    return null;
+  }
+  if (!enforceLegalKey) {
+    StringBuilder newKey=new StringBuilder();
+    for (int i=0; i < key.length(); i++) {
+      char c=key.charAt(i);
+      if (!Character.isWhitespace(c) && ("{}(),\\\"".indexOf(c) == -1)) {
+        newKey.append(c);
+      }
+    }
+    return newKey.toString();
+  }
+  StringBuilder newKey=new StringBuilder();
+  for (int i=0; i < key.length(); i++) {
+    char c=key.charAt(i);
+    if (!Character.isWhitespace(c) && ("{}(),\\\"#~^'".indexOf(c) == -1)) {
+      newKey.append(c);
+    }
+  }
+  return StringUtil.replaceSpecialCharacters(newKey.toString());
+}
