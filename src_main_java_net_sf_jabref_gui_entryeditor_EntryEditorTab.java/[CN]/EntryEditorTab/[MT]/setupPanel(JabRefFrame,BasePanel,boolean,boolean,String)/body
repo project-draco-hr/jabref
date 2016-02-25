@@ -5,7 +5,7 @@
   int fieldsPerRow=compressed ? 2 : 1;
   String colSpec=compressed ? "fill:pref, 1dlu, fill:10dlu:grow, 1dlu, fill:pref, " + "8dlu, fill:pref, 1dlu, fill:10dlu:grow, 1dlu, fill:pref" : "fill:pref, 1dlu, fill:pref:grow, 1dlu, fill:pref";
   StringBuilder stringBuilder=new StringBuilder();
-  int rows=(int)Math.ceil((double)fields.length / fieldsPerRow);
+  int rows=(int)Math.ceil((double)fields.size() / fieldsPerRow);
   for (int i=0; i < rows; i++) {
     stringBuilder.append("fill:pref:grow, ");
   }
@@ -17,30 +17,31 @@
   }
   String rowSpec=stringBuilder.toString();
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout(colSpec,rowSpec),panel);
-  for (int i=0; i < fields.length; i++) {
-    int editorType=InternalBibtexFields.getEditorType(fields[i]);
+  for (int i=0; i < fields.size(); i++) {
+    String field=fields.get(i);
+    int editorType=InternalBibtexFields.getEditorType(field);
     FieldEditor fieldEditor;
     int defaultHeight;
-    int wHeight=(int)(50.0 * InternalBibtexFields.getFieldWeight(fields[i]));
+    int wHeight=(int)(50.0 * InternalBibtexFields.getFieldWeight(field));
     if (editorType == GUIGlobals.FILE_LIST_EDITOR) {
-      fieldEditor=new FileListEditor(frame,bPanel.getBibDatabaseContext().getMetaData(),fields[i],null,parent);
+      fieldEditor=new FileListEditor(frame,bPanel.getBibDatabaseContext().getMetaData(),field,null,parent);
       fileListEditor=(FileListEditor)fieldEditor;
       defaultHeight=0;
     }
  else {
-      fieldEditor=new TextArea(fields[i],null);
+      fieldEditor=new TextArea(field,null);
       bPanel.getSearchBar().getSearchQueryHighlightObservable().addSearchListener((TextArea)fieldEditor);
       defaultHeight=fieldEditor.getPane().getPreferredSize().height;
     }
     Optional<JComponent> extra=parent.getExtra(fieldEditor);
-    AutoCompleter<String> autoCompleter=bPanel.getAutoCompleters().get(fields[i]);
+    AutoCompleter<String> autoCompleter=bPanel.getAutoCompleters().get(field);
     AutoCompleteListener autoCompleteListener=null;
     if (autoCompleter != null) {
       autoCompleteListener=new AutoCompleteListener(autoCompleter);
     }
     setupJTextComponent(fieldEditor.getTextComponent(),autoCompleteListener);
     fieldEditor.setAutoCompleteListener(autoCompleteListener);
-    editors.put(fields[i],fieldEditor);
+    editors.put(field,fieldEditor);
     if (i == 0) {
       activeField=fieldEditor;
     }
@@ -65,7 +66,7 @@
   if (addKeyField) {
     final TextField textField=new TextField(BibEntry.KEY_FIELD,parent.getEntry().getCiteKey(),true);
     setupJTextComponent(textField,null);
-    editors.put("bibtexkey",textField);
+    editors.put(BibEntry.KEY_FIELD,textField);
     if (editors.size() == 1) {
       activeField=textField;
     }

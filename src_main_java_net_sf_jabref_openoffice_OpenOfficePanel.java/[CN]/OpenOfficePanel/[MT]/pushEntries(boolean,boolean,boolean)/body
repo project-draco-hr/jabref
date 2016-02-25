@@ -3,6 +3,7 @@
     JOptionPane.showMessageDialog(frame,Localization.lang("Not connected to any Writer document. Please" + " make sure a document is open, and use the 'Select Writer document' button to connect to it."),Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
     return;
   }
+  Boolean inParenthesis=inParenthesisIn;
   String pageInfo=null;
   if (addPageInfo) {
     AdvancedCiteDialog acd=new AdvancedCiteDialog(frame);
@@ -18,8 +19,8 @@
   BasePanel panel=frame.getCurrentBasePanel();
   if (panel != null) {
     final BibDatabase database=panel.database();
-    BibEntry[] entries=panel.getSelectedEntries();
-    if (entries.length > 0) {
+    List<BibEntry> entries=panel.getSelectedEntries();
+    if (!entries.isEmpty()) {
       try {
         if (style == null) {
           readStyleFile();
@@ -28,6 +29,7 @@
       }
  catch (      FileNotFoundException ex) {
         JOptionPane.showMessageDialog(frame,Localization.lang("You must select either a valid style file, or use one of the default styles."),Localization.lang("No valid style file defined"),JOptionPane.ERROR_MESSAGE);
+        LOGGER.warn("Problem with style file",ex);
       }
 catch (      ConnectionLostException ex) {
         showConnectionLostErrorMessage();

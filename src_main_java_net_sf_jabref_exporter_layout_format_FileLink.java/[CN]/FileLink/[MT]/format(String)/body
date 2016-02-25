@@ -27,17 +27,17 @@
  else {
     dirs=Globals.prefs.fileDirForDatabase;
   }
-  File f=FileUtil.expandFilename(link,Arrays.asList(dirs));
-  if (f == null) {
-    return link;
-  }
- else {
+  Optional<File> f=FileUtil.expandFilename(link,Arrays.asList(dirs));
+  if (f.isPresent()) {
     try {
-      return f.getCanonicalPath();
+      return f.get().getCanonicalPath();
     }
  catch (    IOException e) {
       LOGGER.warn("Problem getting path",e);
-      return f.getPath();
+      return f.get().getPath();
     }
+  }
+ else {
+    return link;
   }
 }

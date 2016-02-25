@@ -1,9 +1,11 @@
 {
-  String[][] array=new String[list.size()][];
-  int i=0;
-  for (  FileListEntry entry : list) {
-    array[i]=entry.getStringArrayRepresentation();
-    i++;
+synchronized (list) {
+    String[][] array=new String[list.size()][];
+    int i=0;
+    for (    FileListEntry entry : list) {
+      array[i]=entry.getStringArrayRepresentation();
+      i++;
+    }
+    return FileField.encodeStringArray(array);
   }
-  return FileField.encodeStringArray(array);
 }

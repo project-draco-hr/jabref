@@ -31,7 +31,7 @@
   final List<BibEntry> selected=getSelectedEntries();
   if (!selected.isEmpty()) {
     if (newDatabase) {
-      Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_MODE)));
+      Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_DEFAULT_MODE)));
       panel=new BasePanel(frame,new BibDatabaseContext(defaults),Globals.prefs.getDefaultEncoding());
     }
     boolean groupingCanceled=false;
@@ -58,7 +58,7 @@
         if (entry.getCiteKey() != null) {
           for (          GroupTreeNode node : groups) {
             if (node.getGroup().supportsAdd()) {
-              AbstractUndoableEdit undo=node.getGroup().add(new BibEntry[]{entry});
+              AbstractUndoableEdit undo=node.getGroup().add(Collections.singletonList(entry));
               if (undo instanceof UndoableChangeAssignment) {
                 ((UndoableChangeAssignment)undo).setEditedNode(node);
               }

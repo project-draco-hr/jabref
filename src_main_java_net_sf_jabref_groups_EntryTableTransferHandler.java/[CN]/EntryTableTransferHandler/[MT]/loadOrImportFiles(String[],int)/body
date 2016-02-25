@@ -11,18 +11,15 @@
     }
     fileType=ExternalFileTypes.getInstance().getExternalFileTypeByExt(extension.orElse(""));
     if ((fileType != null) && (dropRow >= 0)) {
-      boolean local=true;
       DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
-      dfh.handleDroppedfile(fileName,fileType,local,entryTable,dropRow);
+      dfh.handleDroppedfile(fileName,fileType,entryTable,dropRow);
       continue;
     }
     notBibFiles.add(fileName);
   }
   openAction.openFilesAsStringList(bibFiles,true);
   if (!notBibFiles.isEmpty()) {
-    String[] toImport=new String[notBibFiles.size()];
-    notBibFiles.toArray(toImport);
     ImportMenuItem importer=new ImportMenuItem(frame,entryTable == null);
-    importer.automatedImport(toImport);
+    importer.automatedImport(notBibFiles);
   }
 }

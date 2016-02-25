@@ -3,20 +3,18 @@
   if (i == JOptionPane.NO_OPTION) {
     return;
   }
-  Vector<BibEntry> vec=new Vector<>();
+  List<BibEntry> list=new ArrayList<>();
   for (  BibEntry entry : m_basePanel.database().getEntries()) {
     if (m_editedGroup.contains(entry)) {
-      vec.add(entry);
+      list.add(entry);
     }
   }
-  if (!vec.isEmpty()) {
-    BibEntry[] entries=new BibEntry[vec.size()];
-    vec.toArray(entries);
-    if (!Util.warnAssignmentSideEffects(new AbstractGroup[]{mResultingGroup},entries,m_basePanel.getDatabase(),this)) {
+  if (!list.isEmpty()) {
+    if (!Util.warnAssignmentSideEffects(Arrays.asList(mResultingGroup),this)) {
       return;
     }
     if (!(mResultingGroup instanceof ExplicitGroup)) {
-      mUndoAddPreviousEntires=mResultingGroup.add(entries);
+      mUndoAddPreviousEntires=mResultingGroup.add(list);
     }
   }
 }

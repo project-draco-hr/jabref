@@ -1,12 +1,15 @@
 {
-  final SearchRuleSet searchRules=SearchRuleSets.build(andCb.isSelected() ? SearchRuleSets.RuleSetType.AND : SearchRuleSets.RuleSetType.OR);
+  final MatcherSet searchRules=MatcherSets.build(andCb.isSelected() ? MatcherSets.MatcherType.AND : MatcherSets.MatcherType.OR);
   TreePath[] selection=groupsTree.getSelectionPaths();
+  if (selection == null) {
+    selection=new TreePath[0];
+  }
   for (  TreePath aSelection : selection) {
-    SearchRule searchRule=((GroupTreeNode)aSelection.getLastPathComponent()).getSearchRule();
+    SearchMatcher searchRule=((GroupTreeNode)aSelection.getLastPathComponent()).getSearchRule();
     searchRules.addRule(searchRule);
   }
-  SearchRule searchRule=invCb.isSelected() ? new InvertSearchRule(searchRules) : searchRules;
-  GroupingWorker worker=new GroupingWorker(searchRule,SearchRule.DUMMY_QUERY);
+  SearchMatcher searchRule=invCb.isSelected() ? new NotMatcher(searchRules) : searchRules;
+  GroupingWorker worker=new GroupingWorker(searchRule);
   worker.getWorker().run();
   worker.getCallBack().update();
 }

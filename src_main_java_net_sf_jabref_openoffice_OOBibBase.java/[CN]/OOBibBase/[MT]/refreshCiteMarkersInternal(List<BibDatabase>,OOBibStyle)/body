@@ -121,9 +121,9 @@
             bibtexKeys[i][j]=cEntries[j].getCiteKey();
           }
         }
-        citationMarker=style.getCitationMarker(cEntries,entries.get(cEntries),type == OOBibBase.AUTHORYEAR_PAR,null,null);
+        citationMarker=style.getCitationMarker(Arrays.asList(cEntries),entries,type == OOBibBase.AUTHORYEAR_PAR,null,null);
         for (int j=0; j < cEntries.length; j++) {
-          normCitMarker[j]=style.getCitationMarker(cEntries[j],entries.get(cEntries),true,null,-1);
+          normCitMarker[j]=style.getCitationMarker(Arrays.asList(cEntries[j]),entries,true,null,new int[]{-1});
         }
       }
       citMarkers[i]=citationMarker;
@@ -180,7 +180,7 @@
           seenBefore.add(bibtexKeys[j][k]);
         }
         String uniq=uniquefiers.get(bibtexKeys[j][k]);
-        if ((uniq != null) && (uniq.length() >= 0)) {
+        if (uniq != null) {
           needsChange=true;
           BibDatabase database=linkSourceBase.get(bibtexKeys[j][k]);
           if (database != null) {
@@ -205,7 +205,7 @@
         }
       }
       if (needsChange) {
-        citMarkers[j]=style.getCitationMarker(cEntries,entries.get(cEntries),types[j] == OOBibBase.AUTHORYEAR_PAR,uniquif,firstLimAuthors);
+        citMarkers[j]=style.getCitationMarker(Arrays.asList(cEntries),entries,types[j] == OOBibBase.AUTHORYEAR_PAR,uniquif,firstLimAuthors);
       }
     }
   }

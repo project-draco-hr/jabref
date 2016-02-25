@@ -1,0 +1,40 @@
+{
+  remaining.remove(bs.getName());
+  if (!reformatFile && !bs.hasChanged()) {
+    fw.write(bs.getParsedSerialization());
+    return;
+  }
+  if (isFirstStringInType) {
+    fw.write(Globals.NEWLINE);
+  }
+  String content=bs.getContent();
+  Matcher m;
+  while ((m=BibDatabaseWriter.REFERENCE_PATTERN.matcher(content)).find()) {
+    String foundLabel=m.group(1);
+    int restIndex=content.indexOf(foundLabel) + foundLabel.length();
+    content=content.substring(restIndex);
+    Object referred=remaining.get(foundLabel.substring(1,foundLabel.length() - 1));
+    if (referred != null) {
+      writeString(fw,(BibtexString)referred,remaining,maxKeyLength,reformatFile);
+    }
+  }
+  StringBuilder suffixSB=new StringBuilder();
+  for (int i=maxKeyLength - bs.getName().length(); i > 0; i--) {
+    suffixSB.append(' ');
+  }
+  String suffix=suffixSB.toString();
+  fw.write(STRING_PREFIX + "{" + bs.getName()+ suffix+ " = ");
+  if (bs.getContent().isEmpty()) {
+    fw.write("{}");
+  }
+ else {
+    try {
+      String formatted=new LatexFieldFormatter().format(bs.getContent(),LatexFieldFormatter.BIBTEX_STRING);
+      fw.write(formatted);
+    }
+ catch (    IllegalArgumentException ex) {
+      throw new IllegalArgumentException("The # character is not allowed in BibTeX strings unless escaped as in '\\#'.\n" + "Before saving, please edit any strings containing the # character.");
+    }
+  }
+  fw.write("}" + Globals.NEWLINE);
+}

@@ -3,14 +3,14 @@
   SaveSession ss=null;
   if (this.encoding != null) {
     try {
-      ss=getSaveSession(this.encoding,outFile);
+      ss=new SaveSession(this.encoding,false);
     }
  catch (    IOException ex) {
       LOGGER.warn("Can not get save session.",ex);
     }
   }
   if (ss == null) {
-    ss=getSaveSession(encoding,outFile);
+    ss=new SaveSession(encoding,false);
   }
   try (VerifyingWriter ps=ss.getWriter()){
     Layout beginLayout=null;
@@ -26,7 +26,9 @@
       ps.write(beginLayout.doLayout(database,encoding));
       missingFormatters.addAll(beginLayout.getMissingFormatters());
     }
-    List<BibEntry> sorted=FileActions.getSortedEntries(database,metaData,entryIds,false);
+    Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_DEFAULT_MODE)));
+    SavePreferences savePrefs=SavePreferences.loadForExportFromPreferences(Globals.prefs);
+    List<BibEntry> sorted=BibDatabaseWriter.getSortedEntries(new BibDatabaseContext(database,metaData,defaults),entryIds,savePrefs);
     Layout defLayout;
     LayoutHelper layoutHelper;
     try (Reader reader=getReader(lfFileName + ".layout")){
@@ -70,21 +72,16 @@
     }
  catch (    IOException ex) {
     }
-    if ((endLayout != null) && (encoding != null)) {
-      ps.write(endLayout.doLayout(database,encoding));
+    if ((endLayout != null) && (this.encoding != null)) {
+      ps.write(endLayout.doLayout(database,this.encoding));
       missingFormatters.addAll(endLayout.getMissingFormatters());
     }
     Globals.prefs.customExportNameFormatters=null;
     if (!missingFormatters.isEmpty()) {
       StringBuilder sb=new StringBuilder("The following formatters could not be found: ");
-      for (Iterator<String> i=missingFormatters.iterator(); i.hasNext(); ) {
-        sb.append(i.next());
-        if (i.hasNext()) {
-          sb.append(", ");
-        }
-      }
+      sb.append(String.join(", ",missingFormatters));
       LOGGER.warn(sb);
     }
-    finalizeSaveSession(ss);
+    finalizeSaveSession(ss,outFile);
   }
  }

@@ -1,7 +1,8 @@
 {
   description.setText(entry.description);
   link.setText(entry.link);
-  types.setModel(new DefaultComboBoxModel<>(ExternalFileTypes.getInstance().getExternalFileTypeSelection()));
+  Collection<ExternalFileType> list=ExternalFileTypes.getInstance().getExternalFileTypeSelection();
+  types.setModel(new DefaultComboBoxModel<>(list.toArray(new ExternalFileType[list.size()])));
   types.setSelectedIndex(-1);
   if ((entry.type != null) && !(entry.type instanceof UnknownExternalFileType)) {
     types.setSelectedItem(entry.type);

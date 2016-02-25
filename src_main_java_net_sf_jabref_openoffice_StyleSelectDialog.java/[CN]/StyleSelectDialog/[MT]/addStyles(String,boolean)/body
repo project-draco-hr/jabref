@@ -1,10 +1,17 @@
 {
   File dirF=new File(dir);
   if (dirF.isDirectory()) {
-    List<File> files=Arrays.asList(dirF.listFiles());
+    File[] fileArray=dirF.listFiles();
+    List<File> files;
+    if (fileArray == null) {
+      files=Collections.emptyList();
+    }
+ else {
+      files=Arrays.asList(fileArray);
+    }
     for (    File file : files) {
       if (!file.isDirectory() && (file.getName().endsWith(StyleSelectDialog.STYLE_FILE_EXTENSION))) {
-        addSingleFile(file);
+        addSingleFile(file,Globals.prefs.getDefaultEncoding());
       }
  else       if (file.isDirectory() && recurse) {
         addStyles(file.getPath(),recurse);
@@ -12,6 +19,6 @@
     }
   }
  else {
-    addSingleFile(dirF);
+    addSingleFile(dirF,Globals.prefs.getDefaultEncoding());
   }
 }
