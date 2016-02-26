@@ -1,6 +1,6 @@
 {
-  StringBuffer sb=new StringBuffer("");
-  StringBuffer currentCommand=null;
+  StringBuilder sb=new StringBuilder("");
+  StringBuilder currentCommand=null;
   boolean escaped=false;
   boolean incommand=false;
   for (int i=0; i < field.length(); i++) {
@@ -12,7 +12,7 @@
  else     if (c == '\\') {
       escaped=true;
       incommand=true;
-      currentCommand=new StringBuffer();
+      currentCommand=new StringBuilder();
     }
  else     if (!incommand && ((c == '{') || (c == '}'))) {
     }
@@ -72,12 +72,12 @@
         }
         if (((c == '{') || (c == ' ')) && (currentCommand.length() > 0)) {
           String command=currentCommand.toString();
-          if ("em".equals(command) || "emph".equals(command) || "textit".equals(command)) {
+          if ("em".equals(command) || "emph".equals(command) || "textit".equals(command)|| "it".equals(command)) {
             StringInt part=getPart(field,i,c == '{');
             i+=part.i;
             sb.append("{\\i ").append(part.s).append('}');
           }
- else           if ("textbf".equals(command)) {
+ else           if ("textbf".equals(command) || "bf".equals(command)) {
             StringInt part=getPart(field,i,c == '{');
             i+=part.i;
             sb.append("{\\b ").append(part.s).append('}');
@@ -97,7 +97,7 @@
     }
   }
   char[] chars=sb.toString().toCharArray();
-  sb=new StringBuffer();
+  sb=new StringBuilder();
   for (  char c : chars) {
     if (c < 128) {
       sb.append(c);
