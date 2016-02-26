@@ -3,8 +3,8 @@
   try {
     status.setStatus(Localization.lang("Searching..."));
     HttpResponse<JsonNode> jsonResponse;
-    query=URLEncoder.encode(query,"UTF-8");
-    jsonResponse=Unirest.get(API_URL + query + "&api_key="+ API_KEY+ "&p=1").header("accept","application/json").asJson();
+    String encodedQuery=URLEncoder.encode(query,"UTF-8");
+    jsonResponse=Unirest.get(API_URL + encodedQuery + "&api_key="+ API_KEY+ "&p=1").header("accept","application/json").asJson();
     JSONObject jo=jsonResponse.getBody().getObject();
     int hits=jo.getJSONArray("result").getJSONObject(0).getInt("total");
     int numberToFetch=0;
@@ -34,7 +34,7 @@
           break;
         }
         int noToFetch=Math.min(MAX_PER_PAGE,numberToFetch - startItem);
-        jsonResponse=Unirest.get(API_URL + query + "&api_key="+ API_KEY+ "&p="+ noToFetch+ "&s="+ startItem).header("accept","application/json").asJson();
+        jsonResponse=Unirest.get(API_URL + encodedQuery + "&api_key="+ API_KEY+ "&p="+ noToFetch+ "&s="+ startItem).header("accept","application/json").asJson();
         jo=jsonResponse.getBody().getObject();
         if (jo.has("records")) {
           JSONArray results=jo.getJSONArray("records");
@@ -50,7 +50,7 @@
       return true;
     }
  else {
-      status.showMessage(Localization.lang("No entries found for the search string '%0'",query),Localization.lang("Search %0","Springer"),JOptionPane.INFORMATION_MESSAGE);
+      status.showMessage(Localization.lang("No entries found for the search string '%0'",encodedQuery),Localization.lang("Search %0","Springer"),JOptionPane.INFORMATION_MESSAGE);
       return false;
     }
   }
