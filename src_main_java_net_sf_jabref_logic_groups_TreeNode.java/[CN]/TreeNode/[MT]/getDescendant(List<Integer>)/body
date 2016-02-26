@@ -1,7 +1,13 @@
 {
-  GroupTreeNode cursor=(GroupTreeNode)this;
-  for (int i=0; (i < indexedPath.size()) && (cursor != null); ++i) {
-    cursor=cursor.getChildAt(indexedPath.get(i));
+  T cursor=(T)this;
+  for (  int index : indexedPath) {
+    Optional<T> child=cursor.getChildAt(index);
+    if (child.isPresent()) {
+      cursor=child.get();
+    }
+ else {
+      return Optional.empty();
+    }
   }
-  return cursor;
+  return Optional.of(cursor);
 }

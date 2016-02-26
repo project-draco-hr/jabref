@@ -5,11 +5,8 @@
   if (conf == JOptionPane.YES_OPTION) {
     final UndoableAddOrRemoveGroup undo=new UndoableAddOrRemoveGroup(GroupSelector.this,groupsRoot,node,UndoableAddOrRemoveGroup.REMOVE_NODE_KEEP_CHILDREN);
     final GroupTreeNodeViewModel parent=(GroupTreeNodeViewModel)node.getParent();
-    final int childIndex=parent.getIndex(node);
     node.getNode().removeFromParent();
-    while (node.getChildCount() > 0) {
-      parent.getNode().insert(node.getNode().getFirstChild(),childIndex);
-    }
+    node.getNode().moveAllChildrenTo(parent.getNode(),parent.getIndex(node));
     revalidateGroups();
     panel.undoManager.addEdit(undo);
     panel.markBaseChanged();

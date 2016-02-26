@@ -1,8 +1,8 @@
 {
-  final GroupTreeNode parent=getParent();
-  final int index=parent.getIndex(this);
+  final GroupTreeNode parent=getParent().get();
+  final int index=parent.getIndexOfChild(this).get();
   if (index > 0) {
-    parent.insert(this,index - 1);
+    this.moveTo(parent,index - 1);
     return Optional.of(new MoveGroupChange(parent,index,parent,index - 1));
   }
   return Optional.empty();

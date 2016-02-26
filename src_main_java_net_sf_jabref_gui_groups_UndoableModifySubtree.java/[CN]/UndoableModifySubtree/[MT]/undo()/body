@@ -1,13 +1,13 @@
 {
   super.undo();
   m_modifiedSubtree.clear();
-  final GroupTreeNode subtreeRoot=m_groupRoot.getNode(m_subtreeRootPath);
-  for (int i=0; i < subtreeRoot.getChildCount(); ++i) {
-    m_modifiedSubtree.add(subtreeRoot.getChildAt(i));
+  final GroupTreeNode subtreeRoot=m_groupRoot.getDescendant(m_subtreeRootPath).get();
+  for (  GroupTreeNode child : subtreeRoot.getChildren()) {
+    m_modifiedSubtree.add(child);
   }
   subtreeRoot.removeAllChildren();
-  for (int i=0; i < m_subtreeBackup.getChildCount(); ++i) {
-    subtreeRoot.add(m_subtreeBackup.getChildAt(i).deepCopy());
+  for (  GroupTreeNode child : m_subtreeBackup.getChildren()) {
+    child.deepCopy().moveTo(subtreeRoot);
   }
   if (mRevalidate) {
     m_groupSelector.revalidateGroups();
