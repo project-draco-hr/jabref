@@ -10,11 +10,10 @@
     URL url=new URL(address);
     URLDownload dl=new URLDownload(url);
     String page=dl.downloadToString();
-    String resultsFound="<div id=\"resfound\">";
-    int hits=getNumberOfHits(page,resultsFound,ACMPortalFetcher.HITS_PATTERN);
-    int index=page.indexOf(resultsFound);
+    int hits=getNumberOfHits(page,RESULTS_FOUND_PATTERN,ACMPortalFetcher.HITS_PATTERN);
+    int index=page.indexOf(RESULTS_FOUND_PATTERN);
     if (index >= 0) {
-      page=page.substring(index + resultsFound.length());
+      page=page.substring(index + RESULTS_FOUND_PATTERN.length());
     }
     if (hits == 0) {
       status.showMessage(Localization.lang("No entries found for the search string '%0'",terms),Localization.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
@@ -23,7 +22,7 @@
  else     if (hits > 20) {
       status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",String.valueOf(hits),String.valueOf(PER_PAGE)),Localization.lang("Search ACM Portal"),JOptionPane.INFORMATION_MESSAGE);
     }
-    hits=getNumberOfHits(page,"<div class=\"pagerange\">",ACMPortalFetcher.MAX_HITS_PATTERN);
+    hits=getNumberOfHits(page,PAGE_RANGE_PATTERN,ACMPortalFetcher.MAX_HITS_PATTERN);
     parse(page,Math.min(hits,PER_PAGE),previews);
     for (    Map.Entry<String,JLabel> entry : previews.entrySet()) {
       preview.addEntry(entry.getKey(),entry.getValue());
@@ -35,6 +34,7 @@
   }
 catch (  ConnectException e) {
     status.showMessage(Localization.lang("Connection to ACM Portal failed"),Localization.lang("Search ACM Portal"),JOptionPane.ERROR_MESSAGE);
+    LOGGER.warn("Problem with ACM connection",e);
   }
 catch (  IOException e) {
     status.showMessage(e.getMessage(),Localization.lang("Search ACM Portal"),JOptionPane.ERROR_MESSAGE);
