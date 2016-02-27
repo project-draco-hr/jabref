@@ -1,0 +1,16 @@
+{
+  FieldFormatterCleanups actions=new FieldFormatterCleanups(true,"pages[PageNumbersFormatter]title[LowerCaseChanger]");
+  List<FieldFormatterCleanup> formatterCleanups=actions.getConfiguredActions();
+  assertEquals(2,formatterCleanups.size());
+  for (  FieldFormatterCleanup cleanup : formatterCleanups) {
+    if (cleanup.getField().equals("title")) {
+      assertEquals("LowerCaseChanger",cleanup.getFormatter().getKey());
+    }
+ else     if (cleanup.getField().equals("pages")) {
+      assertEquals("PageNumbersFormatter",cleanup.getFormatter().getKey());
+    }
+  }
+  actions.applySaveActions(entry);
+  assertEquals("educational session 1",entry.getField("title"));
+  assertEquals("1--7",entry.getField("pages"));
+}

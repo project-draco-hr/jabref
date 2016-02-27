@@ -1,0 +1,18 @@
+{
+  Objects.requireNonNull(metaData);
+  List<String> actions=new ArrayList<>();
+  if (enabled.isSelected()) {
+    actions.add("enabled");
+  }
+ else {
+    actions.add("disabled");
+  }
+  List<FieldFormatterCleanup> newActions=((SaveActionsListModel)actionsList.getModel()).getAllActions();
+  if (newActions.isEmpty()) {
+    metaData.remove(MetaData.SAVE_ACTIONS);
+    return;
+  }
+  String formatterString=FieldFormatterCleanups.getMetaDataString(newActions);
+  actions.add(formatterString);
+  metaData.putData(MetaData.SAVE_ACTIONS,actions);
+}
