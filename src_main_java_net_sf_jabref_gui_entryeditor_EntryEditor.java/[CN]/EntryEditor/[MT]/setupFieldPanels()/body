@@ -11,15 +11,7 @@
   tabs.add(reqPan);
   if ((type.getOptionalFields() != null) && (type.getOptionalFields().size() >= 1)) {
     EntryEditorTab optPan;
-    if (!this.frame.getCurrentBasePanel().getBibDatabaseContext().isBiblatexMode()) {
-      optPan=new EntryEditorTab(frame,panel,type.getOptionalFields(),this,false,false,Localization.lang("Optional fields"));
-      if (optPan.fileListEditor != null) {
-        fileListEditor=optPan.fileListEditor;
-      }
-      tabbed.addTab(Localization.lang("Optional fields"),IconTheme.JabRefIcon.OPTIONAL.getSmallIcon(),optPan.getPane(),Localization.lang("Show optional fields"));
-      tabs.add(optPan);
-    }
- else {
+    if (this.frame.getCurrentBasePanel().getBibDatabaseContext().isBiblatexMode()) {
       optPan=new EntryEditorTab(frame,panel,type.getPrimaryOptionalFields(),this,false,true,Localization.lang("Optional fields"));
       if (optPan.fileListEditor != null) {
         fileListEditor=optPan.fileListEditor;
@@ -30,7 +22,7 @@
       deprecatedFields.add("year");
       deprecatedFields.add("month");
       List<String> secondaryOptionalFields=type.getSecondaryOptionalFields();
-      List<String> optionalFieldsNotPrimaryOrDeprecated=EntryUtil.getRemainder((secondaryOptionalFields),new ArrayList<>(deprecatedFields));
+      List<String> optionalFieldsNotPrimaryOrDeprecated=EntryUtil.getRemainder(secondaryOptionalFields,new ArrayList<>(deprecatedFields));
       Set<String> optionalFieldsAndAliases=new HashSet<>();
       for (      String field : type.getOptionalFields()) {
         optionalFieldsAndAliases.add(field);
@@ -55,6 +47,14 @@
         tabbed.addTab(Localization.lang("Deprecated fields"),IconTheme.JabRefIcon.OPTIONAL.getSmallIcon(),optPan3.getPane(),Localization.lang("Show deprecated bibtex fields"));
         tabs.add(optPan3);
       }
+    }
+ else {
+      optPan=new EntryEditorTab(frame,panel,type.getOptionalFields(),this,false,false,Localization.lang("Optional fields"));
+      if (optPan.fileListEditor != null) {
+        fileListEditor=optPan.fileListEditor;
+      }
+      tabbed.addTab(Localization.lang("Optional fields"),IconTheme.JabRefIcon.OPTIONAL.getSmallIcon(),optPan.getPane(),Localization.lang("Show optional fields"));
+      tabs.add(optPan);
     }
   }
   EntryEditorTabList tabList=Globals.prefs.getEntryEditorTabList();
