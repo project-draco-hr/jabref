@@ -18,10 +18,12 @@
       continue;
     }
     String newPath=expandedOldFile.get().getParent().concat(System.getProperty("file.separator")).concat(newFilename.toString());
-    if (new File(newPath).exists()) {
+    String expandedOldFilePath=expandedOldFile.get().toString();
+    Boolean pathsDifferOnlyByCase=newPath.equalsIgnoreCase(expandedOldFilePath) && !newPath.equals(expandedOldFilePath);
+    if (new File(newPath).exists() && !pathsDifferOnlyByCase) {
       continue;
     }
-    boolean renameSuccessful=FileUtil.renameFile(expandedOldFile.get().toString(),newPath);
+    boolean renameSuccessful=FileUtil.renameFile(expandedOldFilePath,newPath);
     if (renameSuccessful) {
       changed=true;
       String description=flEntry.description;
