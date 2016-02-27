@@ -1,25 +1,5 @@
 {
   Objects.requireNonNull(metaData);
   List<String> saveActionsMetaList=metaData.getData(MetaData.SAVE_ACTIONS);
-  initializeSaveActions(saveActionsMetaList);
-  this.removeAll();
-  List<FieldFormatterCleanup> configuredActions=fieldFormatterCleanups.getConfiguredActions();
-  FormBuilder builder=FormBuilder.create().layout(new FormLayout("left:pref, 4dlu, left:pref, 4dlu, pref:grow","pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref,"));
-  builder.getPanel().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-  builder.add(enabled).xy(3,1);
-  builder.add(getSelectorPanel()).xy(3,3);
-  List<FieldFormatterCleanup> actionsToDisplay=new ArrayList<>(configuredActions.size());
-  for (  FieldFormatterCleanup action : configuredActions) {
-    actionsToDisplay.add(action);
-  }
-  actionsList=new JList(new SaveActionsListModel<>(actionsToDisplay));
-  actionsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-  builder.add(actionsList).xyw(3,5,2);
-  deleteButton=new JButton(IconTheme.JabRefIcon.REMOVE_NOBOX.getSmallIcon());
-  deleteButton.addActionListener(new DeleteButtonListener());
-  builder.add(deleteButton).xy(3,7);
-  this.setLayout(new BorderLayout());
-  this.add(builder.getPanel(),BorderLayout.WEST);
-  enabled.addActionListener(new EnablementStatusListener(fieldFormatterCleanups.isEnabled()));
-  enabled.setSelected(fieldFormatterCleanups.isEnabled());
+  setValues(FieldFormatterCleanups.parseFromString(saveActionsMetaList));
 }
