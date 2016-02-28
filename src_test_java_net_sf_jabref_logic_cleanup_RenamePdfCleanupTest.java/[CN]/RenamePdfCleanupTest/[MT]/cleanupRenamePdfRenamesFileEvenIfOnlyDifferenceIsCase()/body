@@ -1,0 +1,13 @@
+{
+  Globals.prefs=mock(JabRefPreferences.class);
+  when(Globals.prefs.get("importFileNamePattern")).thenReturn("\\bibtexkey");
+  RenamePdfCleanup cleanup=new RenamePdfCleanup(Collections.singletonList(testFolder.getRoot().getAbsolutePath()),false,null,mock(JournalAbbreviationRepository.class));
+  File tempFile=testFolder.newFile("toot.tmp");
+  BibEntry entry=new BibEntry();
+  entry.setField(BibEntry.KEY_FIELD,"Toot");
+  FileField.ParsedFileField fileField=new FileField.ParsedFileField("",tempFile.getAbsolutePath(),"");
+  entry.setField("file",FileField.getStringRepresentation(fileField));
+  cleanup.cleanup(entry);
+  FileField.ParsedFileField newFileField=new FileField.ParsedFileField("","Toot.tmp","");
+  assertEquals(FileField.getStringRepresentation(newFileField),entry.getField("file"));
+}
