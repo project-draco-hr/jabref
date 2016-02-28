@@ -1,25 +1,23 @@
 {
-  if (e.isPopupTrigger()) {
-    if (field != null) {
-      field.requestFocus();
-      String txt=field.getSelectedText();
-      String allTxt=field.getText();
-      boolean copyStatus=false;
-      if (((txt != null) && (!txt.isEmpty())) || ((allTxt != null) && !allTxt.isEmpty())) {
-        copyStatus=true;
-      }
-      copyAction.setEnabled(copyStatus);
-      String data=ClipBoardManager.CLIPBOARD.getClipboardContents();
-      boolean pasteStatus=false;
-      if (!data.isEmpty()) {
-        pasteStatus=true;
-        pasteAction.putValue(Action.SHORT_DESCRIPTION,Localization.lang("Paste from clipboard") + ": " + StringUtil.limitStringLength(data,MAX_PASTE_PREVIEW_LENGTH));
-      }
- else {
-        pasteAction.putValue(Action.SHORT_DESCRIPTION,Localization.lang("Paste from clipboard"));
-      }
-      pasteAction.setEnabled(pasteStatus);
-      inputMenu.show(e.getComponent(),e.getX(),e.getY());
+  if (e.isPopupTrigger() && (field != null)) {
+    field.requestFocus();
+    String txt=field.getSelectedText();
+    String allTxt=field.getText();
+    boolean copyStatus=false;
+    if (((txt != null) && (!txt.isEmpty())) || ((allTxt != null) && !allTxt.isEmpty())) {
+      copyStatus=true;
     }
+    copyAction.setEnabled(copyStatus);
+    String data=ClipBoardManager.CLIPBOARD.getClipboardContents();
+    boolean pasteStatus=false;
+    if (!data.isEmpty()) {
+      pasteStatus=true;
+      pasteAction.putValue(Action.SHORT_DESCRIPTION,Localization.lang("Paste from clipboard") + ": " + StringUtil.limitStringLength(data,MAX_PASTE_PREVIEW_LENGTH));
+    }
+ else {
+      pasteAction.putValue(Action.SHORT_DESCRIPTION,Localization.lang("Paste from clipboard"));
+    }
+    pasteAction.setEnabled(pasteStatus);
+    inputMenu.show(e.getComponent(),e.getX(),e.getY());
   }
 }

@@ -20,12 +20,10 @@
       keywordList.add(foundPos,newValue);
     }
   }
-  String oldValue=be.getField("keywords");
+  String oldValue=be.getField(KEYWORDS_FIELD);
   be.putKeywords(keywordList);
-  String updatedValue=be.getField("keywords");
-  if ((oldValue == null) || !oldValue.equals(updatedValue)) {
-    if (ce != null) {
-      ce.addEdit(new UndoableFieldChange(be,"keywords",oldValue,updatedValue));
-    }
+  String updatedValue=be.getField(KEYWORDS_FIELD);
+  if (((oldValue == null) || !oldValue.equals(updatedValue)) && (ce != null)) {
+    ce.addEdit(new UndoableFieldChange(be,KEYWORDS_FIELD,oldValue,updatedValue));
   }
 }
