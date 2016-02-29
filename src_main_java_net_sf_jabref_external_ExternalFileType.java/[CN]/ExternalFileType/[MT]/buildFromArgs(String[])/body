@@ -18,11 +18,12 @@
     openWith=val[3];
     iconName=val[4];
   }
-  if ("new".equals(iconName)) {
-    icon=IconTheme.JabRefIcon.FILE.getSmallIcon();
-  }
- else {
-    icon=IconTheme.getImage(iconName);
+  icon=IconTheme.JabRefIcon.FILE.getSmallIcon();
+  for (  ExternalFileType fileType : ExternalFileTypes.getDefaultExternalFileTypes()) {
+    if (fileType.getName().equals(name)) {
+      icon=fileType.icon;
+      break;
+    }
   }
   return new ExternalFileType(name,extension,mimeType,openWith,iconName,icon);
 }
