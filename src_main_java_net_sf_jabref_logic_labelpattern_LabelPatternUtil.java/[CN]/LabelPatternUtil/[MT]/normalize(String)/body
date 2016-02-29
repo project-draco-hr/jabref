@@ -1,8 +1,8 @@
 {
   List<String> tokens=new ArrayList<>();
   int b=0;
-  StringBuffer and=new StringBuffer();
-  StringBuffer token=new StringBuffer();
+  StringBuilder and=new StringBuilder();
+  StringBuilder token=new StringBuilder();
   for (int p=0; p < content.length(); p++) {
     if (b == 0) {
       String andString=and.toString();
@@ -10,9 +10,9 @@
         and.append(content.charAt(p));
       }
  else       if (" and".equals(and.toString()) && (content.charAt(p) == ' ')) {
-        and=new StringBuffer();
+        and=new StringBuilder();
         tokens.add(token.toString().trim());
-        token=new StringBuffer();
+        token=new StringBuilder();
       }
  else {
         if (content.charAt(p) == '{') {
@@ -22,7 +22,7 @@
           b--;
         }
         token.append(and);
-        and=new StringBuffer();
+        and=new StringBuilder();
         token.append(content.charAt(p));
       }
     }
@@ -36,7 +36,7 @@
     if (i > 0) {
       normalized.append(" and ");
     }
-    normalized.append(LabelPatternUtil.isInstitution(tokens.get(i)) ? LabelPatternUtil.generateInstitutionKey(tokens.get(i)) : LabelPatternUtil.removeDiacritics(tokens.get(i)));
+    normalized.append(isInstitution(tokens.get(i)) ? generateInstitutionKey(tokens.get(i)) : removeDiacritics(tokens.get(i)));
   }
   return normalized.toString();
 }

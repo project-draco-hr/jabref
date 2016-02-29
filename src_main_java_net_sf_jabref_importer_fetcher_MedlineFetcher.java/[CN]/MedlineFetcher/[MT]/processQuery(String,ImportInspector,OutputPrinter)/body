@@ -1,9 +1,9 @@
 {
   shouldContinue=true;
-  query=query.trim().replace(';',',');
-  if (query.matches("\\d+[,\\d+]*")) {
+  String cleanQuery=query.trim().replace(';',',');
+  if (cleanQuery.matches("\\d+[,\\d+]*")) {
     frameOP.setStatus(Localization.lang("Fetching Medline by id..."));
-    List<BibEntry> bibs=MedlineImporter.fetchMedline(query,frameOP);
+    List<BibEntry> bibs=MedlineImporter.fetchMedline(cleanQuery,frameOP);
     if (bibs.isEmpty()) {
       frameOP.showMessage(Localization.lang("No references found"));
     }
@@ -32,7 +32,7 @@
           numberToFetch=Integer.parseInt(strCount.trim());
           break;
         }
- catch (        RuntimeException ex) {
+ catch (        NumberFormatException ex) {
           frameOP.showMessage(Localization.lang("Please enter a valid number"));
         }
       }

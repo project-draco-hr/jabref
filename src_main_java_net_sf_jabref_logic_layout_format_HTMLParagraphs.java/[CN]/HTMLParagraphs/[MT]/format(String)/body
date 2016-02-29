@@ -1,0 +1,23 @@
+{
+  if (fieldText == null) {
+    return fieldText;
+  }
+  String trimmedFieldText=fieldText.trim();
+  if (trimmedFieldText.isEmpty()) {
+    return trimmedFieldText;
+  }
+  Matcher m=HTMLParagraphs.BEFORE_NEW_LINES_PATTERN.matcher(trimmedFieldText);
+  StringBuffer s=new StringBuffer();
+  while (m.find()) {
+    String middle=m.group(1).trim();
+    if (!middle.isEmpty()) {
+      s.append("<p>\n");
+      m.appendReplacement(s,m.group(1));
+      s.append("\n</p>\n");
+    }
+  }
+  s.append("<p>\n");
+  m.appendTail(s);
+  s.append("\n</p>");
+  return s.toString();
+}
