@@ -4,20 +4,22 @@
   int lastStart=-1;
   int commaFirst=-1;
   int commaSecond=-1;
-  token_loop:   while (true) {
+  boolean continueLoop=true;
+  while (continueLoop) {
     int token=getToken();
 switch (token) {
 case TOKEN_EOF:
 case TOKEN_AND:
-      break token_loop;
+      continueLoop=false;
+    break;
 case TOKEN_COMMA:
-    if (commaFirst < 0) {
-      commaFirst=tokens.size();
-    }
- else     if (commaSecond < 0) {
-      commaSecond=tokens.size();
-    }
-  break;
+  if (commaFirst < 0) {
+    commaFirst=tokens.size();
+  }
+ else   if (commaSecond < 0) {
+    commaSecond=tokens.size();
+  }
+break;
 case TOKEN_WORD:
 tokens.add(original.substring(tokenStart,tokenEnd));
 tokens.add(original.substring(tokenStart,tokenAbbr));
@@ -39,6 +41,9 @@ break;
 lastStart=tokens.size() - AuthorList.TOKEN_GROUP_LENGTH;
 break;
 }
+break;
+default :
+break;
 }
 }
 if (tokens.isEmpty()) {
