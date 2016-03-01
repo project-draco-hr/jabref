@@ -10,14 +10,14 @@ case ADD_NODE:
       cursor.remove(childIndex);
     break;
 case REMOVE_NODE_KEEP_CHILDREN:
-  GroupTreeNode newNode=m_subtreeBackup.deepCopy();
+  GroupTreeNode newNode=m_subtreeBackup.copySubtree();
 for (int i=childIndex; i < (childIndex + m_subtreeRootChildCount); ++i) {
   cursor.getChildAt(childIndex).get().moveTo(newNode);
 }
 newNode.moveTo(cursor,childIndex);
 break;
 case REMOVE_NODE_AND_CHILDREN:
-m_subtreeBackup.deepCopy().moveTo(cursor,childIndex);
+m_subtreeBackup.copySubtree().moveTo(cursor,childIndex);
 break;
 default :
 break;
@@ -26,7 +26,7 @@ break;
  else {
 switch (m_editType) {
 case ADD_NODE:
-m_subtreeBackup.deepCopy().moveTo(cursor,childIndex);
+m_subtreeBackup.copySubtree().moveTo(cursor,childIndex);
 break;
 case REMOVE_NODE_KEEP_CHILDREN:
 GroupTreeNode removedNode=cursor.getChildAt(childIndex).get();

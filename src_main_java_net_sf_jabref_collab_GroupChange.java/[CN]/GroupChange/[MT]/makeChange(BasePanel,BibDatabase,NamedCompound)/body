@@ -8,7 +8,7 @@
  else {
     root.setGroup(changedGroups.getGroup());
     for (    GroupTreeNode child : changedGroups.getChildren()) {
-      child.deepCopy().moveTo(root);
+      child.copySubtree().moveTo(root);
     }
     root.refreshGroupsForNewDatabase(panel.database());
   }
@@ -18,10 +18,10 @@
   undoEdit.addEdit(undo);
   tmpGroupRoot.removeAllChildren();
   if (changedGroups != null) {
-    GroupTreeNode copied=changedGroups.deepCopy();
+    GroupTreeNode copied=changedGroups.copySubtree();
     tmpGroupRoot.setGroup(copied.getGroup());
     for (    GroupTreeNode child : copied.getChildren()) {
-      child.deepCopy().moveTo(tmpGroupRoot);
+      child.copySubtree().moveTo(tmpGroupRoot);
     }
   }
   tmpGroupRoot.refreshGroupsForNewDatabase(secondary);
