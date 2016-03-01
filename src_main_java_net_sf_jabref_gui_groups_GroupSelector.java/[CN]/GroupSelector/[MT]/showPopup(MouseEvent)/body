@@ -25,8 +25,7 @@
     sortDirectSubgroupsPopupAction.setNode(node);
     sortAllSubgroupsPopupAction.setNode(node);
     groupsTree.setHighlightBorderCell(node);
-    AbstractGroup group=node.getNode().getGroup();
-    if (group instanceof AllEntriesGroup) {
+    if (node.canBeEdited()) {
       editGroupPopupAction.setEnabled(false);
       addGroupPopupAction.setEnabled(false);
       removeGroupAndSubgroupsPopupAction.setEnabled(false);
@@ -43,10 +42,10 @@
     collapseSubtreePopupAction.setEnabled(groupsTree.isExpanded(path) || groupsTree.hasExpandedDescendant(path));
     sortSubmenu.setEnabled(!node.isLeaf());
     removeSubgroupsPopupAction.setEnabled(!node.isLeaf());
-    moveNodeUpPopupAction.setEnabled(node.getNode().canMoveUp());
-    moveNodeDownPopupAction.setEnabled(node.getNode().canMoveDown());
-    moveNodeLeftPopupAction.setEnabled(node.getNode().canMoveLeft());
-    moveNodeRightPopupAction.setEnabled(node.getNode().canMoveRight());
+    moveNodeUpPopupAction.setEnabled(node.canMoveUp());
+    moveNodeDownPopupAction.setEnabled(node.canMoveDown());
+    moveNodeLeftPopupAction.setEnabled(node.canMoveLeft());
+    moveNodeRightPopupAction.setEnabled(node.canMoveRight());
     moveSubmenu.setEnabled(moveNodeUpPopupAction.isEnabled() || moveNodeDownPopupAction.isEnabled() || moveNodeLeftPopupAction.isEnabled()|| moveNodeRightPopupAction.isEnabled());
     moveNodeUpPopupAction.setNode(node);
     moveNodeDownPopupAction.setNode(node);
@@ -54,7 +53,7 @@
     moveNodeRightPopupAction.setNode(node);
     List<BibEntry> selection=frame.getCurrentBasePanel().getSelectedEntries();
     if (selection.size() > 0) {
-      if (node.getNode().getGroup().supportsAdd() && !node.getNode().getGroup().containsAll(selection)) {
+      if (node.canAddEntries(selection)) {
         addToGroup.setNode(node);
         addToGroup.setBasePanel(panel);
         addToGroup.setEnabled(true);
@@ -62,7 +61,7 @@
         moveToGroup.setBasePanel(panel);
         moveToGroup.setEnabled(true);
       }
-      if (node.getNode().getGroup().supportsRemove() && node.getNode().getGroup().containsAny(selection)) {
+      if (node.canRemoveEntries(selection)) {
         removeFromGroup.setNode(node);
         removeFromGroup.setBasePanel(panel);
         removeFromGroup.setEnabled(true);

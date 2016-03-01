@@ -1,9 +1,10 @@
 {
-  LOGGER.info("Performing annotation " + node);
   if (editModeIndicator) {
-    updateGroupContent(node);
+    LOGGER.info("Performing annotation " + node.getName());
+    List<BibEntry> entries=panel.getSelectedEntries();
+    node.changeEntriesTo(entries,panel.undoManager);
     panel.markBaseChanged();
     panel.updateEntryEditorIfShowing();
-    updateSelections();
+    updateShownEntriesAccordingToSelectedGroups();
   }
 }
