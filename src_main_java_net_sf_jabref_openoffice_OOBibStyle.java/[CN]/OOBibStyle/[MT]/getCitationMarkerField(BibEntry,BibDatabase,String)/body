@@ -1,10 +1,16 @@
 {
+  String authorField=(String)citProperties.get(AUTHOR_FIELD);
   String[] fields=field.split("/");
   for (  String s : fields) {
     String content=BibDatabase.getResolvedField(s,entry,database);
     if ((content != null) && !content.trim().isEmpty()) {
       if (fieldFormatter != null) {
-        content=fieldFormatter.format(content);
+        if (field.equals(authorField) && StringUtil.isInCurlyBrackets(content)) {
+          content=fieldFormatter.format(content);
+          content="{" + content + "}";
+          return content;
+        }
+        return fieldFormatter.format(content);
       }
       return content;
     }
