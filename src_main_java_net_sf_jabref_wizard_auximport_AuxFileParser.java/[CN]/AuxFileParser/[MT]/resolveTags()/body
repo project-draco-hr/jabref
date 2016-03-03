@@ -1,2 +1,15 @@
 {
+  for (  String key : uniqueKeys) {
+    BibEntry entry=masterDatabase.getEntryByKey(key);
+    if (entry == null) {
+      unresolvedKeys.add(key);
+    }
+ else {
+      insertEntry(entry);
+      resolveCrossReferences(entry);
+    }
+  }
+  if (auxDatabase.getEntryCount() > 0) {
+    copyDatabaseConfiguration();
+  }
 }

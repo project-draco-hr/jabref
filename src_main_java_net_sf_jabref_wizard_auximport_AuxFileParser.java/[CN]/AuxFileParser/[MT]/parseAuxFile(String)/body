@@ -1,68 +1,36 @@
 {
-  Matcher matcher;
-  List<String> fileList=new ArrayList<>(5);
-  fileList.add(filename);
-  File dummy=new File(filename);
-  String path=dummy.getParent();
-  if (path == null) {
-    path="";
-  }
- else {
-    path=path + File.separator;
-  }
-  nestedAuxCount=-1;
+  List<String> fileList=Arrays.asList(filename);
   int fileIndex=0;
-  boolean cont;
   while (fileIndex < fileList.size()) {
-    String fName=fileList.get(fileIndex);
-    try (BufferedReader br=new BufferedReader(new FileReader(fName))){
-      cont=true;
-      while (cont) {
-        Optional<String> maybeLine;
-        try {
-          maybeLine=Optional.ofNullable(br.readLine());
-        }
- catch (        IOException ioe) {
-          maybeLine=Optional.empty();
-        }
-        if (maybeLine.isPresent()) {
-          String line=maybeLine.get();
-          matcher=TAG_PATTERN.matcher(line);
-          while (matcher.find()) {
-            int len=matcher.end() - matcher.start();
-            if (len > 11) {
-              String str=matcher.group(2);
-              String[] keys=str.split(",");
-              for (              String dummyStr : keys) {
-                uniqueKeys.add(dummyStr.trim());
-              }
-            }
-          }
-          int index=line.indexOf("\\@input{");
-          if (index >= 0) {
-            int start=index + 8;
-            int end=line.indexOf('}',start);
-            if (end > start) {
-              String str=path + line.substring(index + 8,end);
-              if (!fileList.contains(str)) {
-                fileList.add(str);
-              }
-            }
+    String file=fileList.get(fileIndex);
+    try (BufferedReader br=new BufferedReader(new FileReader(file))){
+      String line;
+      while ((line=br.readLine()) != null) {
+        Matcher citeMatch=CITE_PATTERN.matcher(line);
+        while (citeMatch.find()) {
+          String keyString=citeMatch.group(2);
+          String[] keys=keyString.split(",");
+          for (          String key : keys) {
+            uniqueKeys.add(key.trim());
           }
         }
- else {
-          cont=false;
+        Matcher inputMatch=INPUT_PATTERN.matcher(line);
+        while (inputMatch.find()) {
+          String inputString=citeMatch.group(2);
+          String inputFile=new File(filename).toPath().resolve(inputString).toString();
+          if (!fileList.contains(inputFile)) {
+            fileList.add(inputFile);
+            nestedAuxCount++;
+          }
         }
       }
-      nestedAuxCount++;
     }
  catch (    FileNotFoundException e) {
-      LOGGER.info("Cannot locate input file!",e);
+      LOGGER.info("Cannot locate input file",e);
     }
 catch (    IOException e) {
-      LOGGER.warn("Problem opening file!",e);
+      LOGGER.warn("Problem opening file",e);
     }
     fileIndex++;
   }
-  return true;
 }
