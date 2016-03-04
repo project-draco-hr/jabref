@@ -1,25 +1,26 @@
 {
+  String resultingLabel=label;
   if (parts.length > offset) {
     for (int j=offset; j < parts.length; j++) {
       String modifier=parts[j];
       if ("lower".equals(modifier)) {
-        label=label.toLowerCase();
+        resultingLabel=resultingLabel.toLowerCase();
       }
  else       if ("upper".equals(modifier)) {
-        label=label.toUpperCase();
+        resultingLabel=resultingLabel.toUpperCase();
       }
  else       if ("abbr".equals(modifier)) {
         StringBuilder abbreviateSB=new StringBuilder();
-        String[] words=label.replaceAll("[\\{\\}']","").split("[\\(\\) \r\n\"]");
+        String[] words=resultingLabel.replaceAll("[\\{\\}']","").split("[\\(\\) \r\n\"]");
         for (        String word1 : words) {
           if (!word1.isEmpty()) {
             abbreviateSB.append(word1.charAt(0));
           }
         }
-        label=abbreviateSB.toString();
+        resultingLabel=abbreviateSB.toString();
       }
  else       if (!modifier.isEmpty() && (modifier.charAt(0) == '(') && modifier.endsWith(")")) {
-        if (label.isEmpty() && (modifier.length() > 2)) {
+        if (resultingLabel.isEmpty() && (modifier.length() > 2)) {
           return modifier.substring(1,modifier.length() - 1);
         }
       }
@@ -28,5 +29,5 @@
       }
     }
   }
-  return label;
+  return resultingLabel;
 }

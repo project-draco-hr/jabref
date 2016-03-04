@@ -1,26 +1,26 @@
 {
-  fieldAndFormat=StringUtil.stripBrackets(fieldAndFormat);
-  int colon=fieldAndFormat.indexOf(':');
+  String strippedFieldAndFormat=StringUtil.stripBrackets(fieldAndFormat);
+  int colon=strippedFieldAndFormat.indexOf(':');
   String beforeColon;
   String afterColon;
   if (colon == -1) {
-    beforeColon=fieldAndFormat;
+    beforeColon=strippedFieldAndFormat;
     afterColon=null;
   }
  else {
-    beforeColon=fieldAndFormat.substring(0,colon);
-    afterColon=fieldAndFormat.substring(colon + 1);
+    beforeColon=strippedFieldAndFormat.substring(0,colon);
+    afterColon=strippedFieldAndFormat.substring(colon + 1);
   }
   beforeColon=beforeColon.trim();
   if (beforeColon.isEmpty()) {
-    return null;
+    return "";
   }
   String fieldValue=BibDatabase.getResolvedField(beforeColon,entry,database);
   if (fieldValue == null) {
     fieldValue=LabelPatternUtil.makeLabel(entry,beforeColon);
   }
   if (fieldValue == null) {
-    return null;
+    return "";
   }
   if ((afterColon == null) || afterColon.isEmpty()) {
     return fieldValue;

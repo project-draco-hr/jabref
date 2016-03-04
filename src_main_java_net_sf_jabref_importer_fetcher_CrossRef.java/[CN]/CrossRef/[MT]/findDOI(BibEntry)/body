@@ -2,7 +2,7 @@
   Objects.requireNonNull(entry);
   Optional<DOI> doi=Optional.empty();
   String title=entry.getField("title");
-  if (title == null || title.equals("")) {
+  if ((title == null) || title.isEmpty()) {
     return doi;
   }
   try {
@@ -16,7 +16,7 @@
     }
   }
  catch (  UnirestException e) {
-    LOGGER.warn("Unable to query CrossRef API: " + e.getMessage());
+    LOGGER.warn("Unable to query CrossRef API: " + e.getMessage(),e);
   }
   return doi;
 }

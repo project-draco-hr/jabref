@@ -1,13 +1,13 @@
 {
   int i;
-  field=field.replaceAll("&|\\\\&","&");
+  String finalResult=field.replaceAll("&|\\\\&","&").replace("\\$","&dollar;").replaceAll("\\$([^\\$]*)\\$","\\{$1\\}");
   StringBuilder sb=new StringBuilder();
   StringBuilder currentCommand=null;
   char c;
   boolean escaped=false;
   boolean incommand=false;
-  for (i=0; i < field.length(); i++) {
-    c=field.charAt(i);
+  for (i=0; i < finalResult.length(); i++) {
+    c=finalResult.charAt(i);
     if (escaped && (c == '\\')) {
       sb.append('\\');
       escaped=false;
@@ -15,12 +15,12 @@
  else     if (c == '\\') {
       if (incommand) {
         String command=currentCommand.toString();
-        Object result=OOPreFormatter.CHARS.get(command);
+        String result=OOPreFormatter.CHARS.get(command);
         if (result == null) {
           sb.append(command);
         }
  else {
-          sb.append((String)result);
+          sb.append(result);
         }
       }
       escaped=true;
@@ -37,30 +37,30 @@
  else {
         currentCommand.append(c);
         testCharCom:         if ((currentCommand.length() == 1) && Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString())) {
-          if (i >= (field.length() - 1)) {
+          if (i >= (finalResult.length() - 1)) {
             break testCharCom;
           }
           String command=currentCommand.toString();
           i++;
-          c=field.charAt(i);
+          c=finalResult.charAt(i);
           String combody;
           if (c == '{') {
-            String part=StringUtil.getPart(field,i,false);
+            String part=StringUtil.getPart(finalResult,i,false);
             i+=part.length();
             combody=part;
           }
  else {
-            combody=field.substring(i,i + 1);
+            combody=finalResult.substring(i,i + 1);
           }
-          Object result=OOPreFormatter.CHARS.get(command + combody);
+          String result=OOPreFormatter.CHARS.get(command + combody);
           if (result != null) {
-            sb.append((String)result);
+            sb.append(result);
           }
           incommand=false;
           escaped=false;
         }
  else {
-          if ((i + 1) == field.length()) {
+          if ((i + 1) == finalResult.length()) {
             String command=currentCommand.toString();
             Object result=OOPreFormatter.CHARS.get(command);
             if (result == null) {
@@ -80,44 +80,40 @@
       }
  else       if (Character.isWhitespace(c) || (c == '{') || (c == '}')) {
         String command=currentCommand.toString();
-        if ("em".equals(command) || "emph".equals(command) || "textit".equals(command)) {
-          String part=StringUtil.getPart(field,i,true);
+        String tag=getHTMLTag(command);
+        if (!tag.isEmpty()) {
+          String part=StringUtil.getPart(finalResult,i,true);
           i+=part.length();
-          sb.append("<em>").append(part).append("</em>");
-        }
- else         if ("textbf".equals(command)) {
-          String part=StringUtil.getPart(field,i,true);
-          i+=part.length();
-          sb.append("<b>").append(part).append("</b>");
+          sb.append('<').append(tag).append('>').append(part).append("</").append(tag).append('>');
         }
  else         if (c == '{') {
-          String part=StringUtil.getPart(field,i,true);
+          String part=StringUtil.getPart(finalResult,i,true);
           i+=part.length();
           argument=part;
-          Object result=OOPreFormatter.CHARS.get(command + argument);
+          String result=OOPreFormatter.CHARS.get(command + argument);
           if (result == null) {
             sb.append(argument);
           }
  else {
-            sb.append((String)result);
+            sb.append(result);
           }
         }
  else         if (c == '}') {
-          Object result=OOPreFormatter.CHARS.get(command);
+          String result=OOPreFormatter.CHARS.get(command);
           if (result == null) {
             sb.append(command);
           }
  else {
-            sb.append((String)result);
+            sb.append(result);
           }
         }
  else {
-          Object result=OOPreFormatter.CHARS.get(command);
+          String result=OOPreFormatter.CHARS.get(command);
           if (result == null) {
             sb.append(command);
           }
  else {
-            sb.append((String)result);
+            sb.append(result);
           }
           sb.append(' ');
         }
@@ -128,5 +124,5 @@
       escaped=false;
     }
   }
-  return sb.toString();
+  return sb.toString().replace("&dollar;","$");
 }

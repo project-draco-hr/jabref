@@ -1,0 +1,26 @@
+{
+  AuthorList al=AuthorList.getAuthorList(toFormat);
+  String parameters;
+  if ((inParameters == null) || inParameters.isEmpty()) {
+    parameters="*:*:\"{ff}{vv}{ll}{,jj} \"";
+  }
+ else {
+    parameters=inParameters;
+  }
+  String[] cases=parameters.split("@@");
+  for (  String aCase : cases) {
+    String[] formatString=aCase.split("@");
+    if (formatString.length < 3) {
+      return toFormat;
+    }
+    if ("*".equals(formatString[0])) {
+      return format(toFormat,al,formatString);
+    }
+ else {
+      if (al.size() <= Integer.parseInt(formatString[0])) {
+        return format(toFormat,al,formatString);
+      }
+    }
+  }
+  return toFormat;
+}

@@ -7,13 +7,12 @@
   String auxName=auxFileField.getText();
   if ((auxName != null) && (refBase != null) && !auxName.isEmpty()) {
     auxParser.clear();
-    List<String> list=auxParser.generate(auxName,refBase);
+    List<String> list=auxParser.generateBibDatabase(auxName,refBase);
     notFoundList.setListData(list.toArray(new String[list.size()]));
     statusInfos.append(auxParser.getInformation(false));
-    selectInDBButton.setEnabled(true);
     generateButton.setEnabled(true);
   }
-  if (auxParser.emptyGeneratedDatabase()) {
+  if (auxParser.getGeneratedBibDatabase().isEmpty()) {
     statusInfos.append("\n" + Localization.lang("empty database"));
     generateButton.setEnabled(false);
   }

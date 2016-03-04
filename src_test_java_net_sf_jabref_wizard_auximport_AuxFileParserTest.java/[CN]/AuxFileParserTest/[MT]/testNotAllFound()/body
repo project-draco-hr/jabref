@@ -1,0 +1,21 @@
+{
+  InputStream originalStream=AuxFileParserTest.class.getResourceAsStream("origin.bib");
+  File auxFile=new File(AuxFileParserTest.class.getResource("badpaper.aux").getFile());
+  try (InputStreamReader originalReader=new InputStreamReader(originalStream)){
+    ParserResult result=BibtexParser.parse(originalReader);
+    AuxFileParser auxFileParser=new AuxFileParser();
+    List<String> unresolved=auxFileParser.generateBibDatabase(auxFile.getAbsolutePath(),result.getDatabase());
+    assertFalse(auxFileParser.getGeneratedBibDatabase().isEmpty());
+    assertEquals(1,unresolved.size());
+    assertEquals(1,auxFileParser.getNotResolvedKeysCount());
+    BibDatabase newDB=auxFileParser.getGeneratedBibDatabase();
+    assertEquals(2,newDB.getEntries().size());
+    assertEquals(2,auxFileParser.getResolvedKeysCount());
+    assertEquals(3,auxFileParser.getFoundKeysInAux());
+    assertEquals(auxFileParser.getFoundKeysInAux(),auxFileParser.getResolvedKeysCount() + auxFileParser.getNotResolvedKeysCount());
+    assertEquals(0,auxFileParser.getCrossreferencedEntriesCount());
+  }
+ catch (  IOException ex) {
+    fail("Cannot open file");
+  }
+}

@@ -1,0 +1,68 @@
+{
+  int c;
+  StringBuilder buffer=null;
+  String name;
+  while (!endOfFile) {
+    c=read();
+    if (c == -1) {
+      endOfFile=true;
+    }
+    if (!Character.isLetter((char)c) && (c != '_') && (c != '-')) {
+      unread(c);
+      name=buffer == null ? "" : buffer.toString();
+      if (name.isEmpty()) {
+        StringBuilder lastFive=new StringBuilder(10);
+        for (        StringInt entry : parsedEntries.subList(Math.max(0,parsedEntries.size() - 6),parsedEntries.size() - 1)) {
+          lastFive.append(entry.s);
+        }
+        throw new StringIndexOutOfBoundsException("Backslash parsing error near \'" + lastFive.toString().replace("\n"," ") + '\'');
+      }
+      if ("begin".equalsIgnoreCase(name)) {
+        doBracketedField(LayoutHelper.IS_FIELD_START);
+        return;
+      }
+ else       if ("begingroup".equalsIgnoreCase(name)) {
+        doBracketedField(LayoutHelper.IS_GROUP_START);
+        return;
+      }
+ else       if ("format".equalsIgnoreCase(name)) {
+        if (c == '[') {
+          doBracketedOptionField();
+          return;
+        }
+ else {
+          doBracketedField(LayoutHelper.IS_OPTION_FIELD);
+          return;
+        }
+      }
+ else       if ("filename".equalsIgnoreCase(name)) {
+        parsedEntries.add(new StringInt(name,LayoutHelper.IS_FILENAME));
+        return;
+      }
+ else       if ("filepath".equalsIgnoreCase(name)) {
+        parsedEntries.add(new StringInt(name,LayoutHelper.IS_FILEPATH));
+        return;
+      }
+ else       if ("end".equalsIgnoreCase(name)) {
+        doBracketedField(LayoutHelper.IS_FIELD_END);
+        return;
+      }
+ else       if ("endgroup".equalsIgnoreCase(name)) {
+        doBracketedField(LayoutHelper.IS_GROUP_END);
+        return;
+      }
+ else       if ("encoding".equalsIgnoreCase(name)) {
+        parsedEntries.add(new StringInt(name,LayoutHelper.IS_ENCODING_NAME));
+        return;
+      }
+      parsedEntries.add(new StringInt(name,LayoutHelper.IS_SIMPLE_FIELD));
+      return;
+    }
+ else {
+      if (buffer == null) {
+        buffer=new StringBuilder(100);
+      }
+      buffer.append((char)c);
+    }
+  }
+}

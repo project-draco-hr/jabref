@@ -1,8 +1,24 @@
 {
+  int count=0;
+  int brackets=0;
   if ((toCheck == null) || toCheck.isEmpty()) {
     return false;
   }
  else {
-    return (toCheck.charAt(0) == '{') && (toCheck.charAt(toCheck.length() - 1) == '}');
+    if ((toCheck.charAt(0) == '{') && (toCheck.charAt(toCheck.length() - 1) == '}')) {
+      for (      char c : toCheck.toCharArray()) {
+        if (c == '{') {
+          if (brackets == 0) {
+            count++;
+          }
+          brackets++;
+        }
+ else         if (c == '}') {
+          brackets--;
+        }
+      }
+      return count == 1;
+    }
+    return false;
   }
 }

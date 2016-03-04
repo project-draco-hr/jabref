@@ -10,23 +10,17 @@
     int dot=name.lastIndexOf('.');
     for (    BibEntry entry : entries) {
       String citeKey=entry.getCiteKey();
-      if ((citeKey != null) && !citeKey.isEmpty()) {
-        if (dot > 0) {
-          if (name.substring(0,dot).equals(citeKey)) {
-            result.get(entry).add(file);
-            continue nextFile;
-          }
-        }
+      if ((citeKey != null) && !citeKey.isEmpty() && (dot > 0)&& name.substring(0,dot).equals(citeKey)) {
+        result.get(entry).add(file);
+        continue nextFile;
       }
     }
     if (!exactOnly) {
       for (      BibEntry entry : entries) {
         String citeKey=entry.getCiteKey();
-        if ((citeKey != null) && !citeKey.isEmpty()) {
-          if (name.startsWith(citeKey)) {
-            result.get(entry).add(file);
-            continue nextFile;
-          }
+        if ((citeKey != null) && !citeKey.isEmpty() && name.startsWith(citeKey)) {
+          result.get(entry).add(file);
+          continue nextFile;
         }
       }
     }

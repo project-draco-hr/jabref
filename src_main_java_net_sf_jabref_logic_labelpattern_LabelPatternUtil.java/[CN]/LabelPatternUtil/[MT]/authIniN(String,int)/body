@@ -2,9 +2,9 @@
   if (n <= 0) {
     return "";
   }
-  authorField=AuthorList.fixAuthorForAlphabetization(authorField);
+  String fixedAuthorField=AuthorList.fixAuthorForAlphabetization(authorField);
   StringBuilder author=new StringBuilder();
-  String[] tokens=authorField.split("\\band\\b");
+  String[] tokens=fixedAuthorField.split("\\band\\b");
   if (tokens.length == 0) {
     return author.toString();
   }
@@ -12,10 +12,10 @@
   int charsAll=n / tokens.length;
   while (tokens.length > i) {
     if (i < (n % tokens.length)) {
-      author.append(LabelPatternUtil.authN_M(authorField,charsAll + 1,i + 1));
+      author.append(authNofMth(fixedAuthorField,charsAll + 1,i + 1));
     }
  else {
-      author.append(LabelPatternUtil.authN_M(authorField,charsAll,i + 1));
+      author.append(authNofMth(fixedAuthorField,charsAll,i + 1));
     }
     i++;
   }
