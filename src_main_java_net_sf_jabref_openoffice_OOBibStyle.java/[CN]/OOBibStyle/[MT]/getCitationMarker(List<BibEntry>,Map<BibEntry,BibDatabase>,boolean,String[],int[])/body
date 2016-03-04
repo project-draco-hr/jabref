@@ -3,18 +3,25 @@
   String tmpMarker=null;
   if (uniquefiers != null) {
     for (int i=0; i < uniquefiers.length; i++) {
-      if ((uniquefiers[i] != null) && !uniquefiers[i].isEmpty()) {
+      if ((uniquefiers[i] == null) || uniquefiers[i].isEmpty()) {
+        if ((piv > -1) && (i > (piv + 1))) {
+          group(entries,uniquefiers,piv,i - 1);
+        }
+        piv=-1;
+      }
+ else {
         Map<BibEntry,BibDatabase> tmpMap=new HashMap<>(1);
-        tmpMap.put(entries.get(i),database.get(entries.get(i)));
+        BibEntry tmpEntry=entries.get(i);
+        tmpMap.put(tmpEntry,database.get(tmpEntry));
         if (piv == -1) {
           piv=i;
-          tmpMarker=getAuthorYearParenthesisMarker(Collections.singletonList(entries.get(i)),tmpMap,null,unlimAuthors);
+          tmpMarker=getAuthorYearParenthesisMarker(Collections.singletonList(tmpEntry),tmpMap,null,unlimAuthors);
         }
  else {
-          String thisMarker=getAuthorYearParenthesisMarker(Collections.singletonList(entries.get(i)),tmpMap,null,unlimAuthors);
+          String thisMarker=getAuthorYearParenthesisMarker(Collections.singletonList(tmpEntry),tmpMap,null,unlimAuthors);
           String authorField=getStringCitProperty(AUTHOR_FIELD);
           int maxAuthors=getIntCitProperty(MAX_AUTHORS);
-          String author=getCitationMarkerField(entries.get(i),database.get(entries.get(i)),authorField);
+          String author=getCitationMarkerField(tmpEntry,database.get(tmpEntry),authorField);
           AuthorList al=AuthorList.getAuthorList(author);
           int prevALim=unlimAuthors[i - 1];
           if (!thisMarker.equals(tmpMarker) || ((al.size() > maxAuthors) && (unlimAuthors[i] != prevALim))) {
@@ -25,12 +32,6 @@
             piv=i;
           }
         }
-      }
- else {
-        if ((piv > -1) && (i > (piv + 1))) {
-          group(entries,uniquefiers,piv,i - 1);
-        }
-        piv=-1;
       }
     }
     if (piv >= 0) {
