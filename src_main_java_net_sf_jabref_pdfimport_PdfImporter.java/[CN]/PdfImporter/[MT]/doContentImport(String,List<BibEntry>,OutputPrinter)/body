@@ -1,0 +1,51 @@
+{
+  File file=new File(fileName);
+  InputStream in;
+  BibEntry entry;
+  try {
+    in=new FileInputStream(file);
+  }
+ catch (  FileNotFoundException e) {
+    LOGGER.info("Import failed",e);
+    entry=createNewBlankEntry(fileName);
+    res.add(entry);
+    return;
+  }
+  PdfContentImporter contentImporter=new PdfContentImporter();
+  List<BibEntry> localRes=null;
+  try {
+    localRes=contentImporter.importEntries(in,status);
+  }
+ catch (  IOException e) {
+    LOGGER.info("Import failed",e);
+    entry=createNewBlankEntry(fileName);
+    res.add(entry);
+    return;
+  }
+ finally {
+    try {
+      in.close();
+    }
+ catch (    IOException ex) {
+      LOGGER.warn("Problem closing PDF",ex);
+    }
+  }
+  if ((localRes == null) || localRes.isEmpty()) {
+    entry=createNewBlankEntry(fileName);
+    res.add(entry);
+    return;
+  }
+  entry=localRes.get(0);
+  panel.database().insertEntry(entry);
+  panel.markBaseChanged();
+  LabelPatternUtil.makeLabel(panel.getBibDatabaseContext().getMetaData(),panel.database(),entry);
+  DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
+  dfh.linkPdfToEntry(fileName,entry);
+  panel.highlightEntry(entry);
+  if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_OPEN_FORM)) {
+    EntryEditor editor=panel.getEntryEditor(entry);
+    panel.showEntryEditor(editor);
+    panel.adjustSplitter();
+  }
+  res.add(entry);
+}
