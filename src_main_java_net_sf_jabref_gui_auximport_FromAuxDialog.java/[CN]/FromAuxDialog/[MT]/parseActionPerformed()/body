@@ -6,13 +6,17 @@
   BibDatabase refBase=bp.getDatabase();
   String auxName=auxFileField.getText();
   if ((auxName != null) && (refBase != null) && !auxName.isEmpty()) {
-    auxParser=new AuxFileParser(auxName,refBase);
-    notFoundList.setListData(auxParser.getUnresolvedKeys().toArray(new String[auxParser.getUnresolvedKeys().size()]));
-    statusInfos.append(auxParser.getInformation(false));
+    auxParser=new AuxParser(auxName,refBase);
+    AuxParserResult result=auxParser.parse();
+    notFoundList.setListData(result.getUnresolvedKeys().toArray(new String[result.getUnresolvedKeys().size()]));
+    statusInfos.append(result.getInformation(false));
     generateButton.setEnabled(true);
+    if (result.getGeneratedBibDatabase().isEmpty()) {
+      statusInfos.append("\n" + Localization.lang("empty database"));
+      generateButton.setEnabled(false);
+    }
   }
-  if (auxParser.getGeneratedBibDatabase().isEmpty()) {
-    statusInfos.append("\n" + Localization.lang("empty database"));
+ else {
     generateButton.setEnabled(false);
   }
   parseButton.setEnabled(true);
