@@ -1,11 +1,11 @@
 {
-  String bracketBefore=(String)citProperties.get(BRACKET_BEFORE);
+  String bracketBefore=getStringCitProperty(BRACKET_BEFORE);
   if (inList && (citProperties.get(BRACKET_BEFORE_IN_LIST) != null)) {
-    bracketBefore=(String)citProperties.get(BRACKET_BEFORE_IN_LIST);
+    bracketBefore=getStringCitProperty(BRACKET_BEFORE_IN_LIST);
   }
-  String bracketAfter=(String)citProperties.get(BRACKET_AFTER);
+  String bracketAfter=getStringCitProperty(BRACKET_AFTER);
   if (inList && (citProperties.get(BRACKET_AFTER_IN_LIST) != null)) {
-    bracketAfter=(String)citProperties.get(BRACKET_AFTER_IN_LIST);
+    bracketAfter=getStringCitProperty(BRACKET_AFTER_IN_LIST);
   }
   List<Integer> lNum=new ArrayList<>(number);
   Collections.sort(lNum);
@@ -20,7 +20,7 @@
       }
  else {
         if (i > 0) {
-          sb.append((String)citProperties.get(CITATION_SEPARATOR));
+          sb.append(getStringCitProperty(CITATION_SEPARATOR));
         }
         sb.append(lNum.get(i) > 0 ? String.valueOf(lNum.get(i)) : OOBibStyle.UNDEFINED_CITATION_MARKER);
         written++;
@@ -29,11 +29,11 @@
  else {
       if ((i == (lNum.size() - 1)) || (lNum.get(i + 1) != (i1 + 1))) {
         if (written > 0) {
-          sb.append((String)citProperties.get(CITATION_SEPARATOR));
+          sb.append(getStringCitProperty(CITATION_SEPARATOR));
         }
         if ((minGroupingCount > 0) && (((i1 + 1) - combineFrom) >= minGroupingCount)) {
           sb.append(combineFrom);
-          sb.append((String)citProperties.get(GROUPED_NUMBERS_SEPARATOR));
+          sb.append(getStringCitProperty(GROUPED_NUMBERS_SEPARATOR));
           sb.append(i1);
           written++;
         }
@@ -41,7 +41,7 @@
           for (int jj=combineFrom; jj <= i1; jj++) {
             sb.append(jj);
             if (jj < i1) {
-              sb.append((String)citProperties.get(CITATION_SEPARATOR));
+              sb.append(getStringCitProperty(CITATION_SEPARATOR));
             }
             written++;
           }
