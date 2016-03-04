@@ -1,27 +1,31 @@
 {
   type=si.i;
-  if (type == LayoutHelper.IS_LAYOUT_TEXT) {
+switch (type) {
+case LayoutHelper.IS_LAYOUT_TEXT:
     text=si.s;
-  }
- else   if (type == LayoutHelper.IS_SIMPLE_FIELD) {
-    text=si.s.trim();
-  }
- else   if ((type == LayoutHelper.IS_FIELD_START) || (type == LayoutHelper.IS_FIELD_END)) {
-  }
- else   if (type == LayoutHelper.IS_OPTION_FIELD) {
-    List<String> v=StringUtil.tokenizeToList(si.s,"\n");
-    if (v.size() == 1) {
-      text=v.get(0);
-    }
+  break;
+case LayoutHelper.IS_SIMPLE_FIELD:
+text=si.s.trim();
+break;
+case LayoutHelper.IS_OPTION_FIELD:
+List<String> v=StringUtil.tokenizeToList(si.s,"\n");
+if (v.size() == 1) {
+text=v.get(0);
+}
  else {
-      text=v.get(0).trim();
-      option=LayoutEntry.getOptionalLayout(v.get(1),repository);
-      for (      LayoutFormatter anOption : option) {
-        if (anOption instanceof NotFoundFormatter) {
-          String notFound=((NotFoundFormatter)anOption).getNotFound();
-          invalidFormatter.add(notFound);
-        }
-      }
-    }
-  }
+text=v.get(0).trim();
+option=LayoutEntry.getOptionalLayout(v.get(1),repository);
+for (LayoutFormatter anOption : option) {
+if (anOption instanceof NotFoundFormatter) {
+String notFound=((NotFoundFormatter)anOption).getNotFound();
+invalidFormatter.add(notFound);
+}
+}
+}
+break;
+case LayoutHelper.IS_FIELD_START:
+case LayoutHelper.IS_FIELD_END:
+default :
+break;
+}
 }
