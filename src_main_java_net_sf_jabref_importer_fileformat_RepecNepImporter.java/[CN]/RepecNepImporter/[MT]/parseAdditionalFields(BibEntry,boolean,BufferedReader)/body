@@ -1,21 +1,21 @@
 {
   if ((this.lastLine != null) && "".equals(this.lastLine.trim())) {
-    readLine();
+    readLine(in);
   }
   while ((this.lastLine != null) && !isStartOfWorkingPaper() && (startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS) || "".equals(this.lastLine))) {
     String keyword="".equals(this.lastLine) ? "" : this.lastLine.substring(0,this.lastLine.indexOf(':')).trim();
     this.lastLine="".equals(this.lastLine) ? "" : this.lastLine.substring(this.lastLine.indexOf(':') + 1,this.lastLine.length()).trim();
     if ("Keywords".equals(keyword)) {
-      String content=readMultipleLines();
+      String content=readMultipleLines(in);
       String[] keywords=content.split("[,;]");
       be.addKeywords(Arrays.asList(keywords));
     }
  else     if ("JEL".equals(keyword)) {
-      be.setField("jel",readMultipleLines());
+      be.setField("jel",readMultipleLines(in));
     }
  else     if (keyword.startsWith("Date")) {
       Date date=null;
-      String content=readMultipleLines();
+      String content=readMultipleLines(in);
       String[] recognizedDateFormats=new String[]{"yyyy-MM-dd","yyyy-MM","yyyy"};
       int i=0;
       for (; (i < recognizedDateFormats.length) && (date == null); i++) {
@@ -38,19 +38,19 @@
  else     if (keyword.startsWith("URL")) {
       String content;
       if (multilineUrlFieldAllowed) {
-        content=readMultipleLines();
+        content=readMultipleLines(in);
       }
  else {
         content=this.lastLine;
-        readLine();
+        readLine(in);
       }
       be.setField("url",content);
     }
  else     if (keyword.startsWith("By")) {
-      parseAuthors(be);
+      parseAuthors(be,in);
     }
  else {
-      readLine();
+      readLine(in);
     }
   }
 }

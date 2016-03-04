@@ -1,13 +1,14 @@
 {
-  ArrayList<BibEntry> bibitems=new ArrayList<>();
+  List<BibEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  String str;
-  while ((str=in.readLine()) != null) {
-    sb.append(str);
-    sb.append('\n');
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    String str;
+    while ((str=in.readLine()) != null) {
+      sb.append(str);
+      sb.append('\n');
+    }
   }
-  String[] entries=sb.toString().replace("\u2013","-").replace("\u2014","--").replace("\u2015","--").split("ER  -.*\\n");
+   String[] entries=sb.toString().replace("\u2013","-").replace("\u2014","--").replace("\u2015","--").split("ER  -.*\\n");
   for (  String entry1 : entries) {
     String type="";
     String author="";
@@ -206,7 +207,7 @@
       hm.put("pages",startPage + endPage);
     }
     BibEntry b=new BibEntry(DEFAULT_BIBTEXENTRY_ID,type);
-    ArrayList<Object> toRemove=new ArrayList<>();
+    List<Object> toRemove=new ArrayList<>();
     for (    Map.Entry<String,String> key : hm.entrySet()) {
       String content=key.getValue();
       if ((content == null) || content.trim().isEmpty()) {
