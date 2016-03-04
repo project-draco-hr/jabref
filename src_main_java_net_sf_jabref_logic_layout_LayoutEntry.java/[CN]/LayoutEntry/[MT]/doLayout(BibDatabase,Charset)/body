@@ -1,38 +1,36 @@
 {
-  if (type == LayoutHelper.IS_LAYOUT_TEXT) {
+switch (type) {
+case LayoutHelper.IS_LAYOUT_TEXT:
     return text;
-  }
- else   if (type == LayoutHelper.IS_SIMPLE_FIELD) {
-    throw new UnsupportedOperationException("bibtex entry fields not allowed in begin or end layout");
-  }
- else   if ((type == LayoutHelper.IS_FIELD_START) || (type == LayoutHelper.IS_GROUP_START)) {
-    throw new UnsupportedOperationException("field and group starts not allowed in begin or end layout");
-  }
- else   if ((type == LayoutHelper.IS_FIELD_END) || (type == LayoutHelper.IS_GROUP_END)) {
-    throw new UnsupportedOperationException("field and group ends not allowed in begin or end layout");
-  }
- else   if (type == LayoutHelper.IS_OPTION_FIELD) {
-    String field=BibDatabase.getText(text,database);
-    if (option != null) {
-      for (      LayoutFormatter anOption : option) {
-        field=anOption.format(field);
-      }
-    }
-    if (postFormatter != null) {
-      field=postFormatter.format(field);
-    }
-    return field;
-  }
- else   if (type == LayoutHelper.IS_ENCODING_NAME) {
-    return encoding.displayName();
-  }
- else   if (type == LayoutHelper.IS_FILENAME) {
-    File f=Globals.prefs.databaseFile;
-    return f == null ? "" : f.getName();
-  }
- else   if (type == LayoutHelper.IS_FILEPATH) {
-    File f=Globals.prefs.databaseFile;
-    return f == null ? "" : f.getPath();
-  }
-  return "";
+case LayoutHelper.IS_SIMPLE_FIELD:
+  throw new UnsupportedOperationException("bibtex entry fields not allowed in begin or end layout");
+case LayoutHelper.IS_FIELD_START:
+case LayoutHelper.IS_GROUP_START:
+throw new UnsupportedOperationException("field and group starts not allowed in begin or end layout");
+case LayoutHelper.IS_FIELD_END:
+case LayoutHelper.IS_GROUP_END:
+throw new UnsupportedOperationException("field and group ends not allowed in begin or end layout");
+case LayoutHelper.IS_OPTION_FIELD:
+String field=BibDatabase.getText(text,database);
+if (option != null) {
+for (LayoutFormatter anOption : option) {
+field=anOption.format(field);
+}
+}
+if (postFormatter != null) {
+field=postFormatter.format(field);
+}
+return field;
+case LayoutHelper.IS_ENCODING_NAME:
+return encoding.displayName();
+case LayoutHelper.IS_FILENAME:
+File f=Globals.prefs.databaseFile;
+return f == null ? "" : f.getName();
+case LayoutHelper.IS_FILEPATH:
+File f2=Globals.prefs.databaseFile;
+return f2 == null ? "" : f2.getPath();
+default :
+break;
+}
+return "";
 }
