@@ -13,7 +13,6 @@ value=postFormatter.format(value);
 return value;
 case LayoutHelper.IS_FIELD_START:
 case LayoutHelper.IS_GROUP_START:
-{
 String field;
 if (type == LayoutHelper.IS_GROUP_START) {
 field=BibDatabase.getResolvedField(text,bibtex,database);
@@ -24,7 +23,7 @@ field=null;
 for (String part : parts) {
 field=BibDatabase.getResolvedField(part,bibtex,database);
 if (field == null) {
-  break;
+break;
 }
 }
 }
@@ -34,7 +33,7 @@ field=null;
 for (String part : parts) {
 field=BibDatabase.getResolvedField(part,bibtex,database);
 if (field != null) {
-  break;
+break;
 }
 }
 }
@@ -51,37 +50,36 @@ boolean previousSkipped=false;
 for (int i=0; i < layoutEntries.size(); i++) {
 fieldText=layoutEntries.get(i).doLayout(bibtex,database);
 if (fieldText == null) {
-  if ((i + 1) < layoutEntries.size()) {
-    if (layoutEntries.get(i + 1).doLayout(bibtex,database).trim().isEmpty()) {
-      i++;
-      previousSkipped=true;
-      continue;
-    }
-  }
+if ((i + 1) < layoutEntries.size()) {
+if (layoutEntries.get(i + 1).doLayout(bibtex,database).trim().isEmpty()) {
+i++;
+previousSkipped=true;
+continue;
+}
+}
 }
  else {
-  if (previousSkipped) {
-    int eol=0;
-    while ((eol < fieldText.length()) && ((fieldText.charAt(eol) == '\n') || (fieldText.charAt(eol) == '\r'))) {
-      eol++;
-    }
-    if (eol < fieldText.length()) {
-      sb.append(fieldText.substring(eol));
-    }
-  }
+if (previousSkipped) {
+int eol=0;
+while ((eol < fieldText.length()) && ((fieldText.charAt(eol) == '\n') || (fieldText.charAt(eol) == '\r'))) {
+eol++;
+}
+if (eol < fieldText.length()) {
+sb.append(fieldText.substring(eol));
+}
+}
  else {
-    if (bibtex.isSearchHit()) {
-      sb.append(MatchesHighlighter.highlightWordsWithHTML(fieldText,highlightPattern));
-    }
+if (bibtex.isSearchHit()) {
+sb.append(MatchesHighlighter.highlightWordsWithHTML(fieldText,highlightPattern));
+}
  else {
-      sb.append(fieldText);
-    }
-  }
+sb.append(fieldText);
+}
+}
 }
 previousSkipped=false;
 }
 return sb.toString();
-}
 }
 case LayoutHelper.IS_FIELD_END:
 case LayoutHelper.IS_GROUP_END:
@@ -92,12 +90,12 @@ if ("bibtextype".equals(text)) {
 fieldEntry=bibtex.getType();
 }
  else {
-String field=text.startsWith("\\") ? BibDatabase.getResolvedField(text.substring(1),bibtex,database) : BibDatabase.getText(text,database);
-if (field == null) {
+String fieldText=text.startsWith("\\") ? BibDatabase.getResolvedField(text.substring(1),bibtex,database) : BibDatabase.getText(text,database);
+if (fieldText == null) {
 fieldEntry="";
 }
  else {
-fieldEntry=field;
+fieldEntry=fieldText;
 }
 }
 if (option != null) {
