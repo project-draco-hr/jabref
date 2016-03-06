@@ -11,18 +11,16 @@
       Document doc=builder.parse(response.getBody());
       NodeList nodes=doc.getElementsByTagName("arxiv:doi");
       Node doiTag=nodes.item(0);
-      if (doiTag != null) {
-        if (doiTag.getTextContent().equals(doiString)) {
-          NodeList links=doc.getElementsByTagName("link");
-          for (int i=0; i < links.getLength(); i++) {
-            Node link=links.item(i);
-            NamedNodeMap attr=link.getAttributes();
-            String rel=attr.getNamedItem("rel").getNodeValue();
-            String href=attr.getNamedItem("href").getNodeValue();
-            if ("related".equals(rel) && "pdf".equals(attr.getNamedItem("title").getNodeValue())) {
-              pdfLink=Optional.of(new URL(href));
-              LOGGER.info("Fulltext PDF found @ arXiv.");
-            }
+      if ((doiTag != null) && doiTag.getTextContent().equals(doiString)) {
+        NodeList links=doc.getElementsByTagName("link");
+        for (int i=0; i < links.getLength(); i++) {
+          Node link=links.item(i);
+          NamedNodeMap attr=link.getAttributes();
+          String rel=attr.getNamedItem("rel").getNodeValue();
+          String href=attr.getNamedItem("href").getNodeValue();
+          if ("related".equals(rel) && "pdf".equals(attr.getNamedItem("title").getNodeValue())) {
+            pdfLink=Optional.of(new URL(href));
+            LOGGER.info("Fulltext PDF found @ arXiv.");
           }
         }
       }
