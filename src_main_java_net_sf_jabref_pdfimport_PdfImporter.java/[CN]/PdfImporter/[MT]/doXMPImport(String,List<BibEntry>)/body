@@ -1,14 +1,14 @@
 {
   BibEntry entry;
-  List<BibEntry> localRes=null;
+  List<BibEntry> localRes=new ArrayList<>();
   PdfXmpImporter importer=new PdfXmpImporter();
   try (InputStream in=new FileInputStream(fileName)){
-    localRes=importer.importEntries(in,frame);
+    localRes.addAll(importer.importEntries(in,frame));
   }
  catch (  IOException ex) {
     LOGGER.warn("Cannot import entries",ex);
   }
-  if ((localRes == null) || localRes.isEmpty()) {
+  if (localRes.isEmpty()) {
     LOGGER.info("Import failed");
     entry=createNewBlankEntry(fileName);
     res.add(entry);
