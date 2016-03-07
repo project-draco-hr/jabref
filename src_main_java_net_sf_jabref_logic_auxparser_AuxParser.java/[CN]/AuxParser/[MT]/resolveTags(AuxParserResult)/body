@@ -1,16 +1,16 @@
 {
-  for (  String key : result.uniqueKeys) {
+  for (  String key : result.getUniqueKeys()) {
     BibEntry entry=masterDatabase.getEntryByKey(key);
     if (entry == null) {
-      result.unresolvedKeys.add(key);
+      result.getUnresolvedKeys().add(key);
     }
  else {
       insertEntry(entry,result);
       resolveCrossReferences(entry,result);
     }
   }
-  if (result.auxDatabase.getEntryCount() > 0) {
-    result.auxDatabase.copyPreamble(masterDatabase);
-    result.auxDatabase.copyStrings(masterDatabase);
+  if (result.getGeneratedBibDatabase().getEntryCount() > 0) {
+    result.getGeneratedBibDatabase().copyPreamble(masterDatabase);
+    result.getGeneratedBibDatabase().copyStrings(masterDatabase);
   }
 }
