@@ -113,13 +113,13 @@
       edition=getSubfield("a",datafield);
     }
     if ("004A".equals(tag)) {
-      final String isbn_10=getSubfield("0",datafield);
-      final String isbn_13=getSubfield("A",datafield);
-      if (isbn_10 != null) {
-        isbn=isbn_10;
+      final String isbn10=getSubfield("0",datafield);
+      final String isbn13=getSubfield("A",datafield);
+      if (isbn10 != null) {
+        isbn=isbn10;
       }
-      if (isbn_13 != null) {
-        isbn=isbn_13;
+      if (isbn13 != null) {
+        isbn=isbn13;
       }
     }
     if ("037C".equals(tag)) {
@@ -130,10 +130,8 @@
         }
       }
       String st=getSubfield("a",datafield);
-      if (st != null) {
-        if (st.contains("Diss")) {
-          entryType="phdthesis";
-        }
+      if ((st != null) && st.contains("Diss")) {
+        entryType="phdthesis";
       }
     }
     if ("027D".equals(tag)) {
@@ -155,25 +153,17 @@
       }
       entryType="proceedings";
     }
-    if ("phdthesis".equals(entryType)) {
-      if (isbn != null) {
-        entryType="book";
-      }
+    if ("phdthesis".equals(entryType) && (isbn != null)) {
+      entryType="book";
     }
     if ("039B".equals(tag)) {
       quelle=getSubfield("8",datafield);
     }
-    if ("046R".equals(tag)) {
-      if ((quelle == null) || quelle.isEmpty()) {
-        quelle=getSubfield("a",datafield);
-      }
+    if ("046R".equals(tag) && ((quelle == null) || quelle.isEmpty())) {
+      quelle=getSubfield("a",datafield);
     }
-    if ("009P".equals(tag)) {
-      if ("03".equals(datafield.getAttribute("occurrence")) || "05".equals(datafield.getAttribute("occurrence"))) {
-        if (url == null) {
-          url=getSubfield("a",datafield);
-        }
-      }
+    if ("009P".equals(tag) && ("03".equals(datafield.getAttribute("occurrence")) || "05".equals(datafield.getAttribute("occurrence"))) && (url == null)) {
+      url=getSubfield("a",datafield);
     }
   }
   if (quelle == null) {
@@ -217,11 +207,11 @@
     result.setField("title",title);
   }
   if (!Strings.isNullOrEmpty(subtitle)) {
-    String newSubtitle=Character.toString(Character.toUpperCase(subtitle.charAt(0)));
+    StringBuilder newSubtitle=new StringBuilder(Character.toString(Character.toUpperCase(subtitle.charAt(0))));
     if (subtitle.length() > 1) {
-      newSubtitle+=subtitle.substring(1);
+      newSubtitle.append(subtitle.substring(1));
     }
-    result.setField("subtitle",newSubtitle);
+    result.setField("subtitle",newSubtitle.toString());
   }
   if (publisher != null) {
     result.setField("publisher",publisher);
@@ -268,15 +258,11 @@
   if (note != null) {
     result.setField("note",note);
   }
-  if ("article".equals(entryType)) {
-    if (journal != null) {
-      result.setField("journal",journal);
-    }
+  if ("article".equals(entryType) && (journal != null)) {
+    result.setField("journal",journal);
   }
- else   if ("incollection".equals(entryType)) {
-    if (booktitle != null) {
-      result.setField("booktitle",booktitle);
-    }
+ else   if ("incollection".equals(entryType) && (booktitle != null)) {
+    result.setField("booktitle",booktitle);
   }
   return result;
 }
