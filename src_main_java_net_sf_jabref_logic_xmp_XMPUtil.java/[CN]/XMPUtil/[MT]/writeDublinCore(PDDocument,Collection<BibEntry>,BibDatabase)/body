@@ -1,6 +1,10 @@
 {
-  if (database != null) {
-    entries=database.resolveForStrings(entries,false);
+  Collection<BibEntry> resolvedEntries;
+  if (database == null) {
+    resolvedEntries=entries;
+  }
+ else {
+    resolvedEntries=database.resolveForStrings(entries,false);
   }
   PDDocumentCatalog catalog=document.getDocumentCatalog();
   PDMetadata metaRaw=catalog.getMetadata();
@@ -15,7 +19,7 @@
   for (  XMPSchema schema : schemas) {
     schema.getElement().getParentNode().removeChild(schema.getElement());
   }
-  for (  BibEntry entry : entries) {
+  for (  BibEntry entry : resolvedEntries) {
     XMPSchemaDublinCore dcSchema=new XMPSchemaDublinCore(meta);
     XMPUtil.writeToDCSchema(dcSchema,entry,null);
     meta.addSchema(dcSchema);

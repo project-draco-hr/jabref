@@ -1,14 +1,18 @@
 {
-  if (database != null) {
-    bibtexEntries=database.resolveForStrings(bibtexEntries,false);
+  Collection<BibEntry> resolvedEntries;
+  if (database == null) {
+    resolvedEntries=bibtexEntries;
+  }
+ else {
+    resolvedEntries=database.resolveForStrings(bibtexEntries,false);
   }
   try (PDDocument document=PDDocument.load(file.getAbsoluteFile())){
     if (document.isEncrypted()) {
       throw new EncryptionNotSupportedException("Error: Cannot add metadata to encrypted document.");
     }
-    if (writePDFInfo && (bibtexEntries.size() == 1)) {
-      XMPUtil.writeDocumentInformation(document,bibtexEntries.iterator().next(),null);
-      XMPUtil.writeDublinCore(document,bibtexEntries,null);
+    if (writePDFInfo && (resolvedEntries.size() == 1)) {
+      XMPUtil.writeDocumentInformation(document,resolvedEntries.iterator().next(),null);
+      XMPUtil.writeDublinCore(document,resolvedEntries,null);
     }
     PDDocumentCatalog catalog=document.getDocumentCatalog();
     PDMetadata metaRaw=catalog.getMetadata();
@@ -25,7 +29,7 @@
       XMPSchemaBibtex bib=(XMPSchemaBibtex)schema;
       bib.getElement().getParentNode().removeChild(bib.getElement());
     }
-    for (    BibEntry e : bibtexEntries) {
+    for (    BibEntry e : resolvedEntries) {
       XMPSchemaBibtex bibtex=new XMPSchemaBibtex(meta);
       meta.addSchema(bibtex);
       bibtex.setBibtexEntry(e,null);

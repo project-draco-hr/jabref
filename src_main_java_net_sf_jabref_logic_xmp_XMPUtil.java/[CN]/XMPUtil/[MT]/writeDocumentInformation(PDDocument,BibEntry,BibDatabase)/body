@@ -1,12 +1,16 @@
 {
   PDDocumentInformation di=document.getDocumentInformation();
-  if (database != null) {
-    entry=database.resolveForStrings(entry,false);
+  BibEntry resolvedEntry;
+  if (database == null) {
+    resolvedEntry=entry;
+  }
+ else {
+    resolvedEntry=database.resolveForStrings(entry,false);
   }
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   boolean useXmpPrivacyFilter=prefs.getBoolean(JabRefPreferences.USE_XMP_PRIVACY_FILTER);
   Set<String> filters=new TreeSet<>(prefs.getStringList(JabRefPreferences.XMP_PRIVACY_FILTERS));
-  Set<String> fields=entry.getFieldNames();
+  Set<String> fields=resolvedEntry.getFieldNames();
   for (  String field : fields) {
     if (useXmpPrivacyFilter && filters.contains(field)) {
       if ("author".equals(field)) {
@@ -27,20 +31,20 @@
       continue;
     }
     if ("author".equals(field)) {
-      di.setAuthor(entry.getField("author"));
+      di.setAuthor(resolvedEntry.getField("author"));
     }
  else     if ("title".equals(field)) {
-      di.setTitle(entry.getField("title"));
+      di.setTitle(resolvedEntry.getField("title"));
     }
  else     if ("keywords".equals(field)) {
-      di.setKeywords(entry.getField("keywords"));
+      di.setKeywords(resolvedEntry.getField("keywords"));
     }
  else     if ("abstract".equals(field)) {
-      di.setSubject(entry.getField("abstract"));
+      di.setSubject(resolvedEntry.getField("abstract"));
     }
  else {
-      di.setCustomMetadataValue("bibtex/" + field,entry.getField(field));
+      di.setCustomMetadataValue("bibtex/" + field,resolvedEntry.getField(field));
     }
   }
-  di.setCustomMetadataValue("bibtex/entrytype",EntryUtil.capitalizeFirst(entry.getType()));
+  di.setCustomMetadataValue("bibtex/entrytype",EntryUtil.capitalizeFirst(resolvedEntry.getType()));
 }
