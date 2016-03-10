@@ -1,22 +1,22 @@
 {
-  if ((bes == null) || (bes.isEmpty())) {
+  if ((entries == null) || (entries.isEmpty())) {
     LOGGER.error("At least one entry must be selected to be able to change the type.");
     return;
   }
-  if (bes.size() > 1) {
-    int choice=JOptionPane.showConfirmDialog(this,Localization.lang("Multiple entries selected. Do you want to change the type of all these to '%0'?",type),Localization.lang("Change entry type"),JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+  if (entries.size() > 1) {
+    int choice=JOptionPane.showConfirmDialog(this,Localization.lang("Multiple entries selected. Do you want to change the type of all these to '%0'?",newType),Localization.lang("Change entry type"),JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
     if (choice == JOptionPane.NO_OPTION) {
       return;
     }
   }
-  NamedCompound ce=new NamedCompound(Localization.lang("Change entry type"));
-  for (  BibEntry be : bes) {
-    ce.addEdit(new UndoableChangeType(be,be.getType(),type));
-    be.setType(type);
+  NamedCompound compound=new NamedCompound(Localization.lang("Change entry type"));
+  for (  BibEntry entry : entries) {
+    compound.addEdit(new UndoableChangeType(entry,entry.getType(),newType));
+    entry.setType(newType);
   }
-  output(formatOutputMessage(Localization.lang("Changed type to '%0' for",type),bes.size()));
-  ce.end();
-  undoManager.addEdit(ce);
+  output(formatOutputMessage(Localization.lang("Changed type to '%0' for",newType),entries.size()));
+  compound.end();
+  undoManager.addEdit(compound);
   markBaseChanged();
   updateEntryEditorIfShowing();
 }
