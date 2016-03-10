@@ -6,6 +6,23 @@
       return result;
     }
     String firstPageContents=getFirstPageContents(document);
+    Optional<DOI> doi=DOI.findInText(firstPageContents);
+    if (doi.isPresent()) {
+      ImportInspector inspector=new ImportInspector(){
+        @Override public void toFront(){
+        }
+        @Override public void setProgress(        int current,        int max){
+        }
+        @Override public void addEntry(        BibEntry entry){
+          result.add(entry);
+        }
+      }
+;
+      doiToBibTeXFetcher.processQuery(doi.get().getDOI(),inspector,status);
+      if (!result.isEmpty()) {
+        return result;
+      }
+    }
     paragraphs=firstPageContents.split(System.lineSeparator());
     proceedToNextNonEmptyLine();
     if (i >= paragraphs.length) {
