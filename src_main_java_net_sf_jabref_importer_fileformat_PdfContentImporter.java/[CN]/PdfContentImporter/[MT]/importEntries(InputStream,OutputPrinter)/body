@@ -1,5 +1,5 @@
 {
-  final ArrayList<BibEntry> res=new ArrayList<>(1);
+  final ArrayList<BibEntry> result=new ArrayList<>(1);
   try (PDDocument document=PDDocument.load(in)){
     if (document.isEncrypted()) {
       LOGGER.error("Encrypted documents are not supported");
@@ -12,30 +12,28 @@
     StringWriter writer=new StringWriter();
     stripper.writeText(document,writer);
     String textResult=writer.toString();
-    String doi=new DOI(textResult).getDOI();
-    if (doi.length() < textResult.length()) {
-      ImportInspector iI=new ImportInspector(){
+    Optional<DOI> doi=DOI.build(textResult);
+    if (doi.isPresent()) {
+      ImportInspector inspector=new ImportInspector(){
         @Override public void toFront(){
         }
         @Override public void setProgress(        int current,        int max){
         }
         @Override public void addEntry(        BibEntry entry){
-          res.add(entry);
+          result.add(entry);
         }
       }
 ;
-      PdfContentImporter.doiToBibTeXFetcher.processQuery(doi,iI,status);
-      if (!res.isEmpty()) {
-        return res;
-      }
- else {
+      doiToBibTeXFetcher.processQuery(doi.get().getDOI(),inspector,status);
+      if (!result.isEmpty()) {
+        return result;
       }
     }
     final String lineBreak=System.lineSeparator();
     split=textResult.split(lineBreak);
     proceedToNextNonEmptyLine();
     if (i >= split.length) {
-      return res;
+      return result;
     }
     curString=split[i];
     i=i + 1;
@@ -236,7 +234,7 @@
       entry.setField("publisher",publisher);
     }
     entry.setField("review",textResult);
-    res.add(entry);
+    result.add(entry);
   }
  catch (  NoClassDefFoundError e) {
     if ("org/bouncycastle/jce/provider/BouncyCastleProvider".equals(e.getMessage())) {
@@ -249,5 +247,5 @@
 catch (  IOException e) {
     LOGGER.error("Could not load document",e);
   }
-  return res;
+  return result;
 }
