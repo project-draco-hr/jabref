@@ -3,16 +3,10 @@
   try (PDDocument document=PDDocument.load(in)){
     if (document.isEncrypted()) {
       LOGGER.error("Encrypted documents are not supported");
+      return result;
     }
-    PDFTextStripper stripper=new PDFTextStripper();
-    stripper.setStartPage(1);
-    stripper.setEndPage(1);
-    stripper.setSortByPosition(true);
-    stripper.setParagraphEnd(System.lineSeparator());
-    StringWriter writer=new StringWriter();
-    stripper.writeText(document,writer);
-    String textResult=writer.toString();
-    Optional<DOI> doi=DOI.build(textResult);
+    String firstPageContents=getFirstPageContents(document);
+    Optional<DOI> doi=DOI.build(firstPageContents);
     if (doi.isPresent()) {
       ImportInspector inspector=new ImportInspector(){
         @Override public void toFront(){
@@ -29,8 +23,7 @@
         return result;
       }
     }
-    final String lineBreak=System.lineSeparator();
-    split=textResult.split(lineBreak);
+    split=firstPageContents.split(System.lineSeparator());
     proceedToNextNonEmptyLine();
     if (i >= split.length) {
       return result;
@@ -94,11 +87,11 @@
           curString="";
         }
  else {
-          curString=curString.substring("Abstract".length() + 1).trim().concat(lineBreak);
+          curString=curString.substring("Abstract".length() + 1).trim().concat(System.lineSeparator());
         }
         i++;
         while ((i < split.length) && !"".equals(split[i])) {
-          curString=curString.concat(split[i]).concat(lineBreak);
+          curString=curString.concat(split[i]).concat(System.lineSeparator());
           i++;
         }
         abstractT=curString;
@@ -233,7 +226,7 @@
     if (publisher != null) {
       entry.setField("publisher",publisher);
     }
-    entry.setField("review",textResult);
+    entry.setField("review",firstPageContents);
     result.add(entry);
   }
  catch (  NoClassDefFoundError e) {
