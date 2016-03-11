@@ -225,8 +225,13 @@
     entry.setField("review",firstPageContents);
     result.add(entry);
   }
- catch (  IOException e) {
-    LOGGER.error("Could not load document",e);
+ catch (  NoClassDefFoundError e) {
+    if ("org/bouncycastle/jce/provider/BouncyCastleProvider".equals(e.getMessage())) {
+      status.showMessage(Localization.lang("Java Bouncy Castle library not found. Please download and install it. For more information see http://www.bouncycastle.org/."));
+    }
+ else {
+      LOGGER.error("Could not find class",e);
+    }
   }
   return result;
 }
