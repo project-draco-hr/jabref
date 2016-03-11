@@ -112,9 +112,22 @@
   groups.add(toggleHighlightAnyItem);
   JRadioButtonMenuItem toggleHighlightAllItem=new JRadioButtonMenuItem(toggleHighlightAll);
   groups.add(toggleHighlightAllItem);
+  JRadioButtonMenuItem toggleHighlightDisableItem=new JRadioButtonMenuItem(toggleHighlightDisable);
+  groups.add(toggleHighlightDisableItem);
   ButtonGroup highlightButtonGroup=new ButtonGroup();
+  highlightButtonGroup.add(toggleHighlightDisableItem);
   highlightButtonGroup.add(toggleHighlightAnyItem);
   highlightButtonGroup.add(toggleHighlightAllItem);
+  String toggleHighlightStatus=Globals.prefs.get(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING);
+  if ("all".equals(toggleHighlightStatus)) {
+    toggleHighlightAllItem.setSelected(true);
+  }
+ else   if ("any".equals(toggleHighlightStatus)) {
+    toggleHighlightAnyItem.setSelected(true);
+  }
+ else {
+    toggleHighlightDisableItem.setSelected(true);
+  }
   mb.add(groups);
   view.add(getBackAction());
   view.add(getForwardAction());
