@@ -2,7 +2,7 @@
   final ArrayList<BibEntry> result=new ArrayList<>(1);
   try (PDDocument document=PDDocument.load(in)){
     if (document.isEncrypted()) {
-      LOGGER.error("Encrypted documents are not supported");
+      LOGGER.info("Encrypted documents are not supported");
       return result;
     }
     String firstPageContents=getFirstPageContents(document);
@@ -225,13 +225,5 @@
     entry.setField("review",firstPageContents);
     result.add(entry);
   }
- catch (  NoClassDefFoundError e) {
-    if ("org/bouncycastle/jce/provider/BouncyCastleProvider".equals(e.getMessage())) {
-      status.showMessage(Localization.lang("Java Bouncy Castle library not found. Please download and install it. For more information see http://www.bouncycastle.org/."));
-    }
- else {
-      LOGGER.error("Could not find class",e);
-    }
-  }
-  return result;
+   return result;
 }
