@@ -4,11 +4,11 @@
   Assert.assertEquals(1,c.size());
   BibEntry e=c.iterator().next();
   XMPUtil.writeXMP(pdfFile,e,null);
-  XMPMetadata metadata=XMPUtil.readRawXMP(pdfFile);
-  Assert.assertNotNull(metadata);
-  List<XMPSchema> schemas=metadata.getSchemas();
+  Optional<XMPMetadata> metadata=XMPUtil.readRawXMP(pdfFile);
+  Assert.assertTrue(metadata.isPresent());
+  List<XMPSchema> schemas=metadata.get().getSchemas();
   Assert.assertEquals(2,schemas.size());
-  schemas=metadata.getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
+  schemas=metadata.get().getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
   Assert.assertEquals(1,schemas.size());
   XMPSchemaBibtex bib=(XMPSchemaBibtex)schemas.get(0);
   List<String> authors=bib.getSequenceList("author");
