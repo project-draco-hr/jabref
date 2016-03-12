@@ -4,7 +4,11 @@
   if (metaRaw == null) {
     return null;
   }
-  XMPMetadata meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+  Document parseResult;
+  try (InputStream is=metaRaw.createInputStream()){
+    parseResult=XMLUtil.parse(is);
+  }
+   XMPMetadata meta=new XMPMetadata(parseResult);
   meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
   return meta;
 }

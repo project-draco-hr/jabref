@@ -1,20 +1,16 @@
 {
   File file=new File(fileName);
-  InputStream in;
   BibEntry entry;
-  try {
-    in=new FileInputStream(file);
-  }
- catch (  FileNotFoundException e) {
-    LOGGER.info("Import failed",e);
-    entry=createNewBlankEntry(fileName);
-    res.add(entry);
-    return;
-  }
-  PdfContentImporter contentImporter=new PdfContentImporter();
-  List<BibEntry> localRes=null;
-  try {
+  try (InputStream in=new FileInputStream(file)){
+    PdfContentImporter contentImporter=new PdfContentImporter();
+    List<BibEntry> localRes=null;
     localRes=contentImporter.importEntries(in,status);
+    if ((localRes == null) || localRes.isEmpty()) {
+      entry=createNewBlankEntry(fileName);
+      res.add(entry);
+      return;
+    }
+    entry=localRes.get(0);
   }
  catch (  IOException e) {
     LOGGER.info("Import failed",e);
@@ -22,20 +18,6 @@
     res.add(entry);
     return;
   }
- finally {
-    try {
-      in.close();
-    }
- catch (    IOException ex) {
-      LOGGER.warn("Problem closing PDF",ex);
-    }
-  }
-  if ((localRes == null) || localRes.isEmpty()) {
-    entry=createNewBlankEntry(fileName);
-    res.add(entry);
-    return;
-  }
-  entry=localRes.get(0);
   panel.database().insertEntry(entry);
   panel.markBaseChanged();
   LabelPatternUtil.makeLabel(panel.getBibDatabaseContext().getMetaData(),panel.database(),entry);
