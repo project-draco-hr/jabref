@@ -1,12 +1,8 @@
 {
   SavePreferences preferences=new SavePreferences().withEncoding(Charsets.US_ASCII);
-  BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
-  MetaData metaData=new MetaData();
   DatabaseLabelPattern labelPattern=new DatabaseLabelPattern();
   labelPattern.setDefaultValue("test");
   metaData.setLabelPattern(labelPattern);
-  BibDatabaseContext context=new BibDatabaseContext(new BibDatabase(),metaData,new Defaults(BibDatabaseMode.BIBTEX));
-  StringWriter stringWriter=new StringWriter();
-  databaseWriter.writePartOfDatabase(stringWriter,context,Collections.emptyList(),preferences);
+  databaseWriter.writePartOfDatabase(stringWriter,bibtexContext,Collections.emptyList(),preferences);
   Assert.assertEquals("% Encoding: US-ASCII" + Globals.NEWLINE + Globals.NEWLINE+ "@Comment{jabref-meta: keypatterndefault:test;}"+ Globals.NEWLINE,stringWriter.toString());
 }
