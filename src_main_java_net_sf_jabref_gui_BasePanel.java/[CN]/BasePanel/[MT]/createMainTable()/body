@@ -21,10 +21,11 @@
   mainTable.addFocusListener(selectionListener);
   groupsHighlightListener=new ListEventListener<BibEntry>(){
     @Override public void listChanged(    ListEvent<BibEntry> listEvent){
-      if (Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ANY)) {
+      HighlightMatchingGroupPreferences highlightMatchingGroupPreferences=new HighlightMatchingGroupPreferences(Globals.prefs);
+      if (highlightMatchingGroupPreferences.isAny()) {
         getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),false);
       }
- else       if (Globals.prefs.getBoolean(JabRefPreferences.HIGHLIGHT_GROUPS_MATCHING_ALL)) {
+ else       if (highlightMatchingGroupPreferences.isAll()) {
         getGroupSelector().showMatchingGroups(mainTable.getSelectedEntries(),true);
       }
  else {
