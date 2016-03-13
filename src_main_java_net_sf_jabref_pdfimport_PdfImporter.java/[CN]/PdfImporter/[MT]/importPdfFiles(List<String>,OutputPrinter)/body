@@ -8,10 +8,9 @@
   int globalChoice=Globals.prefs.getInt(ImportSettingsTab.PREF_IMPORT_DEFAULT_PDF_IMPORT_STYLE);
   List<BibEntry> res=new ArrayList<>();
   for (  String fileName : fileNames) {
-    List<BibEntry> xmpEntriesInFile=readXmpEntries(fileName);
     if (!neverShow && !doNotShowAgain) {
       importDialog=new ImportDialog(dropRow >= 0,fileName);
-      if (!hasXmpEntries(xmpEntriesInFile)) {
+      if (!XMPUtil.hasMetadata(Paths.get(fileName))) {
         importDialog.disableXMPChoice();
       }
       centerRelativeToWindow(importDialog,frame);
