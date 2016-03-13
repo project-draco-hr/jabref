@@ -1,0 +1,29 @@
+{
+  Map<String,String> serializedMetaData=new TreeMap<>();
+  for (  Map.Entry<String,List<String>> metaItem : metaData.entrySet()) {
+    StringBuilder stringBuilder=new StringBuilder();
+    for (    String dataItem : metaItem.getValue()) {
+      stringBuilder.append(StringUtil.quote(dataItem,";",'\\')).append(";");
+      if (metaItem.getKey().equals(SaveActions.META_KEY) && "enabled".equals(dataItem)) {
+        stringBuilder.append(Globals.NEWLINE);
+      }
+    }
+    String serializedItem=stringBuilder.toString();
+    if (!serializedItem.isEmpty() && !serializedItem.equals(";")) {
+      serializedMetaData.put(metaItem.getKey(),serializedItem);
+    }
+  }
+  if ((groupsRoot != null) && (groupsRoot.getChildCount() > 0)) {
+    serializedMetaData.put(MetaData.GROUPSVERSION,Integer.toString(VersionHandling.CURRENT_VERSION) + ";");
+    StringBuilder stringBuilder=new StringBuilder();
+    stringBuilder.append(Globals.NEWLINE);
+    StringTokenizer tok=new StringTokenizer(groupsRoot.getTreeAsString(),Globals.NEWLINE);
+    while (tok.hasMoreTokens()) {
+      stringBuilder.append(StringUtil.quote(tok.nextToken(),";",'\\'));
+      stringBuilder.append(";");
+      stringBuilder.append(Globals.NEWLINE);
+    }
+    serializedMetaData.put(MetaData.GROUPSTREE,stringBuilder.toString());
+  }
+  return serializedMetaData;
+}

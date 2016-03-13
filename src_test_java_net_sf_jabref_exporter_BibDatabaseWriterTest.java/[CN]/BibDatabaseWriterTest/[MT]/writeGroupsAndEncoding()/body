@@ -1,12 +1,8 @@
 {
   SavePreferences preferences=new SavePreferences().withEncoding(Charsets.US_ASCII);
-  BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
-  MetaData metaData=new MetaData();
   GroupTreeNode groupRoot=new GroupTreeNode(new AllEntriesGroup());
   groupRoot.add(new GroupTreeNode(new ExplicitGroup("test",GroupHierarchyType.INCLUDING)));
   metaData.setGroups(groupRoot);
-  BibDatabaseContext context=new BibDatabaseContext(new BibDatabase(),metaData,new Defaults(BibDatabaseMode.BIBTEX));
-  StringWriter stringWriter=new StringWriter();
-  databaseWriter.writePartOfDatabase(stringWriter,context,Collections.emptyList(),preferences);
-  Assert.assertEquals("% Encoding: US-ASCII" + Globals.NEWLINE + Globals.NEWLINE+ "@Comment{jabref-meta: groupsversion:3;}"+ Globals.NEWLINE+ Globals.NEWLINE+ "@Comment{jabref-meta: groupstree:"+ Globals.NEWLINE+ "0 AllEntriesGroup:;"+ Globals.NEWLINE+ "1 ExplicitGroup:test\\;2\\;;"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE,stringWriter.toString());
+  databaseWriter.writePartOfDatabase(stringWriter,bibtexContext,Collections.emptyList(),preferences);
+  Assert.assertEquals("% Encoding: US-ASCII" + Globals.NEWLINE + Globals.NEWLINE+ "@Comment{jabref-meta: groupstree:"+ Globals.NEWLINE+ "0 AllEntriesGroup:;"+ Globals.NEWLINE+ "1 ExplicitGroup:test\\;2\\;;"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE+ Globals.NEWLINE+ "@Comment{jabref-meta: groupsversion:3;}"+ Globals.NEWLINE,stringWriter.toString());
 }
