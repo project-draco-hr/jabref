@@ -1,13 +1,7 @@
 {
   ArrayList<FieldChange> fieldChanges=new ArrayList<>();
   for (  String fieldKey : entry.getFieldNames()) {
-    String oldValue=entry.getField(fieldKey);
-    String newValue=formatter.format(oldValue);
-    if (!oldValue.equals(newValue)) {
-      entry.setField(fieldKey,newValue);
-      FieldChange change=new FieldChange(entry,fieldKey,oldValue,newValue);
-      fieldChanges.add(change);
-    }
+    fieldChanges.addAll(cleanupSingleField(fieldKey,entry));
   }
   return fieldChanges;
 }
