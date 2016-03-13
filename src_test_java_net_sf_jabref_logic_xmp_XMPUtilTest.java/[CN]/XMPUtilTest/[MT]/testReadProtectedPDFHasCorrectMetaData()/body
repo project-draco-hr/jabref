@@ -1,0 +1,11 @@
+{
+  try (InputStream is=XMPUtilTest.class.getResourceAsStream("/pdfs/write-protected.pdf")){
+    List<BibEntry> readEntries=XMPUtil.readXMP(is);
+    BibEntry entry=new BibEntry();
+    entry.setType("misc");
+    entry.setField("author","Firstname Lastname");
+    List<BibEntry> expected=new ArrayList<>(1);
+    expected.add(entry);
+    BibtexEntryAssert.assertEquals(expected,readEntries);
+  }
+ }

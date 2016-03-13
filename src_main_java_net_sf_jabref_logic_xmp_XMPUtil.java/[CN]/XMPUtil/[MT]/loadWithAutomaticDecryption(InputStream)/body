@@ -1,0 +1,23 @@
+{
+  PDDocument doc=PDDocument.load(inputStream);
+  if (doc.isEncrypted()) {
+    StandardDecryptionMaterial sdm=new StandardDecryptionMaterial("");
+    try {
+      doc.openProtection(sdm);
+    }
+ catch (    BadSecurityHandlerException|CryptographyException e) {
+      LOGGER.error("Cannot handle encrypted PDF: " + e.getMessage());
+      throw new EncryptedPdfsNotSupportedException();
+    }
+catch (    NoClassDefFoundError e) {
+      if (e.getMessage().equals("org/bouncycastle/jce/provider/BouncyCastleProvider")) {
+        LOGGER.warn("Java Bouncy Castle library not found. This might have been removed due redistribution restrictions. Please download and install it. For more information see http://www.bouncycastle.org/.");
+        throw new EncryptedPdfsNotSupportedException();
+      }
+ else {
+        throw e;
+      }
+    }
+  }
+  return doc;
+}
