@@ -2,34 +2,16 @@
   if (file == null) {
     return;
   }
-  Runtime runtime=Runtime.getRuntime();
   String absolutePath=file.getAbsolutePath();
   absolutePath=absolutePath.substring(0,absolutePath.lastIndexOf(File.separator) + 1);
   if (OS.LINUX) {
-    Process p=runtime.exec("readlink /etc/alternatives/x-terminal-emulator");
-    BufferedReader reader=new BufferedReader(new InputStreamReader(p.getInputStream()));
-    String emulatorName=reader.readLine();
-    if (emulatorName != null) {
-      emulatorName=emulatorName.substring(emulatorName.lastIndexOf(File.separator) + 1);
-      if (emulatorName.contains("gnome")) {
-        runtime.exec("gnome-terminal --working-directory=" + absolutePath);
-      }
- else       if (emulatorName.contains("xfce4")) {
-        runtime.exec("xfce4-terminal --working-directory=" + absolutePath);
-      }
- else       if (emulatorName.contains("konsole")) {
-        runtime.exec("konsole --workdir=" + absolutePath);
-      }
- else {
-        runtime.exec(emulatorName,null,new File(absolutePath));
-      }
-    }
+    Linux.openConsole(absolutePath);
   }
  else   if (OS.WINDOWS) {
-    runtime.exec("cmd.exe /c start",null,new File(absolutePath));
+    Windows.openConsole(absolutePath);
   }
  else   if (OS.OS_X) {
-    runtime.exec("open -a Terminal " + absolutePath,null,new File(absolutePath));
+    OSX.openConsole(absolutePath);
   }
  else {
     LOGGER.info("Operating system is not supported by this feature.");

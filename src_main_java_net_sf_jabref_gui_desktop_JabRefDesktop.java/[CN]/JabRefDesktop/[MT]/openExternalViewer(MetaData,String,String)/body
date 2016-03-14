@@ -42,13 +42,10 @@
  else   if ("ps".equals(fieldName)) {
     try {
       if (OS.OS_X) {
-        ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("ps");
-        String viewer=type == null ? Globals.prefs.get(JabRefPreferences.PSVIEWER) : type.getOpenWith();
-        String[] cmd={"/usr/bin/open","-a",viewer,link};
-        Runtime.getRuntime().exec(cmd);
+        OSX.openFile(link);
       }
  else       if (OS.WINDOWS) {
-        openFileOnWindows(link);
+        Windows.openFile(link);
       }
  else {
         ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("ps");
@@ -66,21 +63,13 @@
  else   if ("pdf".equals(fieldName)) {
     try {
       if (OS.OS_X) {
-        ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("pdf");
-        String viewer=type == null ? Globals.prefs.get(JabRefPreferences.PSVIEWER) : type.getOpenWith();
-        String[] cmd={"/usr/bin/open","-a",viewer,link};
-        Runtime.getRuntime().exec(cmd);
+        OSX.openFile(link,"pdf");
       }
  else       if (OS.WINDOWS) {
-        openFileOnWindows(link);
+        Windows.openFile(link);
       }
  else {
-        ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("pdf");
-        String viewer=type == null ? Globals.prefs.get(JabRefPreferences.PSVIEWER) : type.getOpenWith();
-        String[] cmdArray=new String[2];
-        cmdArray[0]=viewer;
-        cmdArray[1]=link;
-        Runtime.getRuntime().exec(cmdArray);
+        Linux.openFile(link,"pdf");
       }
     }
  catch (    IOException e) {
