@@ -1,0 +1,14 @@
+{
+  String desktopSession=System.getenv("DESKTOP_SESSION").toLowerCase();
+  String cmd;
+  if (desktopSession.contains("gnome")) {
+    cmd="nautilus " + filePath;
+  }
+ else   if (desktopSession.contains("kde")) {
+    cmd="dolphin --select " + filePath;
+  }
+ else {
+    cmd="xdg-open " + filePath.substring(0,filePath.lastIndexOf(File.separator));
+  }
+  Runtime.getRuntime().exec(cmd);
+}
