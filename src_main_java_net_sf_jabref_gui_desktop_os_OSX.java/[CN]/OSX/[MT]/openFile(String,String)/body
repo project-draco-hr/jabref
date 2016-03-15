@@ -1,6 +1,5 @@
 {
   ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt(fileType);
-  String viewer=type == null ? Globals.prefs.get(JabRefPreferences.PSVIEWER) : type.getOpenWith();
-  String[] cmd={"/usr/bin/open","-a",viewer,filePath};
+  String[] cmd=type != null ? new String[]{"/usr/bin/open","-a",type.getOpenWith(),filePath} : new String[]{"/usr/bin/open",filePath};
   Runtime.getRuntime().exec(cmd);
 }
