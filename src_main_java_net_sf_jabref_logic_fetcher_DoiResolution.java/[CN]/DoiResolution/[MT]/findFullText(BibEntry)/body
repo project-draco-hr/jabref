@@ -4,8 +4,8 @@
   Optional<DOI> doi=DOI.build(entry.getField("doi"));
   if (doi.isPresent()) {
     String sciLink=doi.get().getURLAsASCIIString();
-    try {
-      if (!sciLink.isEmpty()) {
+    if (!sciLink.isEmpty()) {
+      try {
         Connection connection=Jsoup.connect(sciLink);
         connection.followRedirects(true);
         connection.ignoreHttpErrors(true);
@@ -15,10 +15,8 @@
         List<Optional<URL>> links=new ArrayList<>();
         for (        Element element : elements) {
           String href=element.attr("abs:href");
-          if (href.contains("pdf")) {
-            if (MimeTypeDetector.isPdfContentType(href)) {
-              links.add(Optional.of(new URL(href)));
-            }
+          if (href.contains("pdf") && MimeTypeDetector.isPdfContentType(href)) {
+            links.add(Optional.of(new URL(href)));
           }
         }
         if (links.size() == 1) {
@@ -26,9 +24,9 @@
           pdfLink=links.get(0);
         }
       }
-    }
- catch (    IOException e) {
-      LOGGER.warn("DoiResolution fetcher failed: ",e);
+ catch (      IOException e) {
+        LOGGER.warn("DoiResolution fetcher failed: ",e);
+      }
     }
   }
   return pdfLink;

@@ -1,0 +1,23 @@
+{
+  parseButton.setEnabled(false);
+  BasePanel bp=(BasePanel)parentTabbedPane.getComponentAt(dbChooser.getSelectedIndex());
+  notFoundList.removeAll();
+  statusInfos.setText(null);
+  BibDatabase refBase=bp.getDatabase();
+  String auxName=auxFileField.getText();
+  if ((auxName != null) && (refBase != null) && !auxName.isEmpty()) {
+    auxParser=new AuxParser(auxName,refBase);
+    AuxParserResult result=auxParser.parse();
+    notFoundList.setListData(result.getUnresolvedKeys().toArray(new String[result.getUnresolvedKeys().size()]));
+    statusInfos.append(result.getInformation(false));
+    generateButton.setEnabled(true);
+    if (result.getGeneratedBibDatabase().isEmpty()) {
+      statusInfos.append("\n" + Localization.lang("empty database"));
+      generateButton.setEnabled(false);
+    }
+  }
+ else {
+    generateButton.setEnabled(false);
+  }
+  parseButton.setEnabled(true);
+}

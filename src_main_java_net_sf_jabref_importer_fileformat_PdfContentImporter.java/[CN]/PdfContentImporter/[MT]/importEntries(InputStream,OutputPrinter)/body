@@ -1,47 +1,37 @@
 {
-  final ArrayList<BibEntry> res=new ArrayList<>(1);
+  final ArrayList<BibEntry> result=new ArrayList<>(1);
   try (PDDocument document=PDDocument.load(in)){
     if (document.isEncrypted()) {
-      LOGGER.error("Encrypted documents are not supported");
+      LOGGER.info("Encrypted documents are not supported");
+      return result;
     }
-    PDFTextStripper stripper=new PDFTextStripper();
-    stripper.setStartPage(1);
-    stripper.setEndPage(1);
-    stripper.setSortByPosition(true);
-    stripper.setParagraphEnd(System.lineSeparator());
-    StringWriter writer=new StringWriter();
-    stripper.writeText(document,writer);
-    String textResult=writer.toString();
-    String doi=new DOI(textResult).getDOI();
-    if (doi.length() < textResult.length()) {
-      ImportInspector iI=new ImportInspector(){
+    String firstPageContents=getFirstPageContents(document);
+    Optional<DOI> doi=DOI.findInText(firstPageContents);
+    if (doi.isPresent()) {
+      ImportInspector inspector=new ImportInspector(){
         @Override public void toFront(){
         }
         @Override public void setProgress(        int current,        int max){
         }
         @Override public void addEntry(        BibEntry entry){
-          res.add(entry);
+          result.add(entry);
         }
       }
 ;
-      PdfContentImporter.doiToBibTeXFetcher.processQuery(doi,iI,status);
-      if (!res.isEmpty()) {
-        return res;
-      }
- else {
+      doiToBibTeXFetcher.processQuery(doi.get().getDOI(),inspector,status);
+      if (!result.isEmpty()) {
+        return result;
       }
     }
-    final String lineBreak=System.lineSeparator();
-    split=textResult.split(lineBreak);
+    lines=firstPageContents.split(System.lineSeparator());
     proceedToNextNonEmptyLine();
-    if (i >= split.length) {
-      return res;
+    if (i >= lines.length) {
+      return result;
     }
-    curString=split[i];
+    curString=lines[i];
     i=i + 1;
     String author;
     String editor=null;
-    String institution=null;
     String abstractT=null;
     String keywords=null;
     String title;
@@ -73,8 +63,8 @@
     title=streamlineTitle(curString);
     curString="";
     author=null;
-    while ((i < split.length) && !"".equals(split[i])) {
-      curString=streamlineNames(split[i]);
+    while ((i < lines.length) && !"".equals(lines[i])) {
+      curString=streamlineNames(lines[i]);
       if (author == null) {
         author=curString;
       }
@@ -89,21 +79,21 @@
     }
     curString="";
     i++;
-    while (i < split.length) {
-      curString=split[i];
+    while (i < lines.length) {
+      curString=lines[i];
       if ((curString.length() >= "Abstract".length()) && "Abstract".equalsIgnoreCase(curString.substring(0,"Abstract".length()))) {
         if (curString.length() == "Abstract".length()) {
           curString="";
         }
  else {
-          curString=curString.substring("Abstract".length() + 1).trim().concat(lineBreak);
+          curString=curString.substring("Abstract".length() + 1).trim().concat(System.lineSeparator());
         }
         i++;
-        while ((i < split.length) && !"".equals(split[i])) {
-          curString=curString.concat(split[i]).concat(lineBreak);
+        while ((i < lines.length) && !"".equals(lines[i])) {
+          curString=curString.concat(lines[i]).concat(System.lineSeparator());
           i++;
         }
-        abstractT=curString;
+        abstractT=curString.trim();
         i++;
       }
  else       if ((curString.length() >= "Keywords".length()) && "Keywords".equalsIgnoreCase(curString.substring(0,"Keywords".length()))) {
@@ -131,7 +121,7 @@
         proceedToNextNonEmptyLine();
       }
     }
-    i=split.length - 1;
+    i=lines.length - 1;
     while (i >= 0) {
       readLastBlock();
       extractYear();
@@ -199,13 +189,10 @@
     if (editor != null) {
       entry.setField("editor",editor);
     }
-    if (institution != null) {
-      entry.setField("institution",institution);
-    }
     if (abstractT != null) {
       entry.setField("abstract",abstractT);
     }
-    if (keywords != null) {
+    if (!Strings.isNullOrEmpty(keywords)) {
       entry.setField("keywords",keywords);
     }
     if (title != null) {
@@ -235,19 +222,7 @@
     if (publisher != null) {
       entry.setField("publisher",publisher);
     }
-    entry.setField("review",textResult);
-    res.add(entry);
+    result.add(entry);
   }
- catch (  NoClassDefFoundError e) {
-    if ("org/bouncycastle/jce/provider/BouncyCastleProvider".equals(e.getMessage())) {
-      status.showMessage(Localization.lang("Java Bouncy Castle library not found. Please download and install it. For more information see http://www.bouncycastle.org/."));
-    }
- else {
-      LOGGER.error("Could not find class",e);
-    }
-  }
-catch (  IOException e) {
-    LOGGER.error("Could not load document",e);
-  }
-  return res;
+   return result;
 }

@@ -1,0 +1,20 @@
+{
+  if (!entry.hasField(field)) {
+    return new ArrayList<>();
+  }
+  String oldValue=entry.getField(field);
+  String newValue=formatter.format(oldValue);
+  if (oldValue.equals(newValue)) {
+    return new ArrayList<>();
+  }
+ else {
+    if (newValue.isEmpty()) {
+      entry.clearField(field);
+    }
+ else {
+      entry.setField(field,newValue);
+    }
+    FieldChange change=new FieldChange(entry,field,oldValue,newValue);
+    return Collections.singletonList(change);
+  }
+}

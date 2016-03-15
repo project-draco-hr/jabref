@@ -4,13 +4,13 @@
   XMPUtil.writeXMP(pdfFile,l,null,true);
   try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
     if (document.isEncrypted()) {
-      System.err.println("Error: Cannot add metadata to encrypted document.");
+      Assert.fail("Cannot add metadata to encrypted document.");
     }
     Assert.assertEquals("Kelly Clarkson and Ozzy Osbourne",document.getDocumentInformation().getAuthor());
     Assert.assertEquals("Hypersonic ultra-sound",document.getDocumentInformation().getTitle());
     Assert.assertEquals("Huey Duck and Dewey Duck and Louie Duck",document.getDocumentInformation().getCustomMetadataValue("bibtex/editor"));
     Assert.assertEquals("Clarkson06",document.getDocumentInformation().getCustomMetadataValue("bibtex/bibtexkey"));
-    Assert.assertEquals("peanut,butter,jelly",document.getDocumentInformation().getKeywords());
+    Assert.assertEquals("peanut, butter, jelly",document.getDocumentInformation().getKeywords());
     assertEqualsBibtexEntry(t3BibtexEntry(),XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation()).get());
     PDDocumentCatalog catalog=document.getDocumentCatalog();
     PDMetadata metaRaw=catalog.getMetadata();

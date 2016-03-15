@@ -1,10 +1,6 @@
 {
-  BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
   SavePreferences preferences=new SavePreferences().withEncoding(Charsets.US_ASCII);
-  BibDatabase database=new BibDatabase();
   database.addString(new BibtexString("id","name","content"));
-  BibDatabaseContext context=new BibDatabaseContext(database,new Defaults(BibDatabaseMode.BIBTEX));
-  StringWriter stringWriter=new StringWriter();
-  databaseWriter.writePartOfDatabase(stringWriter,context,Collections.emptyList(),preferences);
+  databaseWriter.writePartOfDatabase(stringWriter,bibtexContext,Collections.emptyList(),preferences);
   Assert.assertEquals("% Encoding: US-ASCII" + Globals.NEWLINE + Globals.NEWLINE+ "@String{name = {content}}"+ Globals.NEWLINE,stringWriter.toString());
 }

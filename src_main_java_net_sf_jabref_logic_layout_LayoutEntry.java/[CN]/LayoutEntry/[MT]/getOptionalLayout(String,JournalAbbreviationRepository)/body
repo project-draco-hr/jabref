@@ -1,0 +1,37 @@
+{
+  List<List<String>> formatterStrings=parseMethodsCalls(formatterName);
+  List<LayoutFormatter> results=new ArrayList<>(formatterStrings.size());
+  Map<String,String> userNameFormatter=NameFormatter.getNameFormatters();
+  for (  List<String> strings : formatterStrings) {
+    String className=strings.get(0).trim();
+    if (Globals.prefs.customExportNameFormatters != null) {
+      String contents=Globals.prefs.customExportNameFormatters.get(className);
+      if (contents != null) {
+        NameFormatter nf=new NameFormatter();
+        nf.setParameter(contents);
+        results.add(nf);
+        continue;
+      }
+    }
+    try {
+      LayoutFormatter f=LayoutEntry.getLayoutFormatterByClassName(className,repository);
+      if ((f instanceof ParamLayoutFormatter) && (strings.size() >= 2)) {
+        ((ParamLayoutFormatter)f).setArgument(strings.get(1));
+      }
+      results.add(f);
+      continue;
+    }
+ catch (    Exception ex) {
+      LOGGER.info("Problem with formatter",ex);
+    }
+    String formatterParameter=userNameFormatter.get(className);
+    if (formatterParameter != null) {
+      NameFormatter nf=new NameFormatter();
+      nf.setParameter(formatterParameter);
+      results.add(nf);
+      continue;
+    }
+    results.add(new NotFoundFormatter(className));
+  }
+  return results;
+}

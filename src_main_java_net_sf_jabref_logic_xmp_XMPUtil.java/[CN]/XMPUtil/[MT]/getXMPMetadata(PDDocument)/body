@@ -2,9 +2,13 @@
   PDDocumentCatalog catalog=document.getDocumentCatalog();
   PDMetadata metaRaw=catalog.getMetadata();
   if (metaRaw == null) {
-    return null;
+    return Optional.empty();
   }
-  XMPMetadata meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+  Document parseResult;
+  try (InputStream is=metaRaw.createInputStream()){
+    parseResult=XMLUtil.parse(is);
+  }
+   XMPMetadata meta=new XMPMetadata(parseResult);
   meta.addXMLNSMapping(XMPSchemaBibtex.NAMESPACE,XMPSchemaBibtex.class);
-  return meta;
+  return Optional.of(meta);
 }
