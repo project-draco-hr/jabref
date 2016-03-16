@@ -1,10 +1,12 @@
 {
-  for (int i=0; (i < (bes.length - 1)) && !finished; i++) {
-    for (int j=i + 1; (j < bes.length) && !finished; j++) {
-      boolean eq=DuplicateCheck.isDuplicate(bes[i],bes[j],panel.getBibDatabaseContext().getMode());
+  for (int i=0; (i < (bes.size() - 1)) && !finished; i++) {
+    for (int j=i + 1; (j < bes.size()) && !finished; j++) {
+      BibEntry first=bes.get(i);
+      BibEntry second=bes.get(j);
+      boolean eq=DuplicateCheck.isDuplicate(first,second,panel.getBibDatabaseContext().getMode());
       if (eq) {
 synchronized (duplicates) {
-          duplicates.add(new BibEntry[]{bes[i],bes[j]});
+          duplicates.add(new BibEntry[]{first,second});
           duplicates.notifyAll();
         }
       }

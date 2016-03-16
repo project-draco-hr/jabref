@@ -1,0 +1,13 @@
+{
+  if (bibDatabaseContext.getMetaData() == null) {
+    List<BibEntry> result=new LinkedList<>();
+    result.addAll(bibDatabaseContext.getDatabase().getEntries());
+    return result;
+  }
+  List<Comparator<BibEntry>> comparators=BibDatabaseWriter.getSaveComparators(preferences,bibDatabaseContext.getMetaData());
+  FieldComparatorStack<BibEntry> comparatorStack=new FieldComparatorStack<>(comparators);
+  List<BibEntry> sorted=new ArrayList<>();
+  sorted.addAll(entriesToSort);
+  Collections.sort(sorted,comparatorStack);
+  return sorted;
+}

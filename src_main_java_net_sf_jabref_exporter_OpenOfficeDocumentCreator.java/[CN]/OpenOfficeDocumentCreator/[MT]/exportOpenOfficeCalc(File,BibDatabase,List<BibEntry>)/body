@@ -1,0 +1,10 @@
+{
+  File tmpFile=File.createTempFile("oocalc",null);
+  OpenOfficeDocumentCreator.exportOpenOfficeCalcXML(tmpFile,database,entries);
+  try (BufferedInputStream in=new BufferedInputStream(new FileInputStream(tmpFile))){
+    OpenOfficeDocumentCreator.storeOpenOfficeFile(file,in);
+  }
+   if (!tmpFile.delete()) {
+    LOGGER.info("Cannot delete temporary export file");
+  }
+}

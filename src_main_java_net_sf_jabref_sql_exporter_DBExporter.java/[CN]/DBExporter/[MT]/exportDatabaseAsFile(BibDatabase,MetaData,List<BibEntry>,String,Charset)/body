@@ -1,0 +1,10 @@
+{
+  File outfile=new File(file);
+  if (outfile.exists() && !outfile.delete()) {
+    LOGGER.warn("Cannot delete/overwrite file.");
+    return;
+  }
+  try (BufferedOutputStream writer=new BufferedOutputStream(new FileOutputStream(outfile));PrintStream fout=new PrintStream(writer)){
+    performExport(database,metaData,entriesToExport,fout,"file");
+  }
+ }
