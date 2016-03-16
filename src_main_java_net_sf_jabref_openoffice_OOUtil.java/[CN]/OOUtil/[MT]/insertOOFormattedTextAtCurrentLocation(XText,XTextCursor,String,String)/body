@@ -7,7 +7,7 @@
  catch (  IllegalArgumentException ex) {
     throw new UndefinedParagraphFormatException(parStyle);
   }
-  BitSet formatting=new BitSet(TOTAL_FORMAT_COUNT);
+  Set<Formatting> formatting=EnumSet.noneOf(Formatting.class);
   int piv=0;
   Matcher m=OOUtil.HTML_TAG.matcher(lText);
   while (m.find()) {
@@ -17,52 +17,52 @@
     }
     String tag=m.group();
     if ("<b>".equals(tag)) {
-      formatting.set(FORMAT_BOLD);
+      formatting.add(Formatting.BOLD);
     }
  else     if ("</b>".equals(tag)) {
-      formatting.clear(FORMAT_BOLD);
+      formatting.remove(Formatting.BOLD);
     }
  else     if ("<i>".equals(tag) || "<em>".equals(tag)) {
-      formatting.set(FORMAT_ITALIC);
+      formatting.add(Formatting.ITALIC);
     }
  else     if ("</i>".equals(tag) || "</em>".equals(tag)) {
-      formatting.clear(FORMAT_ITALIC);
+      formatting.remove(Formatting.ITALIC);
     }
  else     if ("<tt>".equals(tag)) {
-      formatting.set(FORMAT_MONOSPACE);
+      formatting.add(Formatting.MONOSPACE);
     }
  else     if ("</tt>".equals(tag)) {
-      formatting.clear(FORMAT_MONOSPACE);
+      formatting.remove(Formatting.MONOSPACE);
     }
  else     if ("<smallcaps>".equals(tag)) {
-      formatting.set(FORMAT_SMALLCAPS);
+      formatting.add(Formatting.SMALLCAPS);
     }
  else     if ("</smallcaps>".equals(tag)) {
-      formatting.clear(FORMAT_SMALLCAPS);
+      formatting.remove(Formatting.SMALLCAPS);
     }
  else     if ("<sup>".equals(tag)) {
-      formatting.set(FORMAT_SUPERSCRIPT);
+      formatting.add(Formatting.SUPERSCRIPT);
     }
  else     if ("</sup>".equals(tag)) {
-      formatting.clear(FORMAT_SUPERSCRIPT);
+      formatting.remove(Formatting.SUPERSCRIPT);
     }
  else     if ("<sub>".equals(tag)) {
-      formatting.set(FORMAT_SUBSCRIPT);
+      formatting.add(Formatting.SUBSCRIPT);
     }
  else     if ("</sub>".equals(tag)) {
-      formatting.clear(FORMAT_SUBSCRIPT);
+      formatting.remove(Formatting.SUBSCRIPT);
     }
  else     if ("<u>".equals(tag)) {
-      formatting.set(FORMAT_UNDERLINE);
+      formatting.add(Formatting.UNDERLINE);
     }
  else     if ("</u>".equals(tag)) {
-      formatting.clear(FORMAT_UNDERLINE);
+      formatting.remove(Formatting.UNDERLINE);
     }
  else     if ("<s>".equals(tag)) {
-      formatting.set(FORMAT_STRIKEOUT);
+      formatting.add(Formatting.STRIKEOUT);
     }
  else     if ("</s>".equals(tag)) {
-      formatting.clear(FORMAT_STRIKEOUT);
+      formatting.remove(Formatting.STRIKEOUT);
     }
     piv=m.end();
   }
