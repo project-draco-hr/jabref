@@ -28,16 +28,16 @@
     boolean isDepartment=false;
     boolean isSchool=false;
     for (    String k : part) {
-      if ((k.length() >= 5) && "univ".equalsIgnoreCase(k.substring(0,5))) {
+      if (k.matches("^[Uu][Nn][Ii].*")) {
         isUniversity=true;
       }
-      if ((k.length() >= 6) && "techn".equalsIgnoreCase(k.substring(0,6))) {
+      if (k.matches("^[Tt][Ee][Cc][Hh].*")) {
         isTechnology=true;
       }
       if ("school".equalsIgnoreCase(k)) {
         isSchool=true;
       }
-      if (((k.length() >= 7) && k.toLowerCase().substring(0,7).matches("d[ei]part")) || ((k.length() >= 4) && "lab".equalsIgnoreCase(k.substring(0,4)))) {
+      if (k.matches("^[Dd][EeIi][Pp].*") || k.matches("^[Ll][Aa][Bb].*")) {
         isDepartment=true;
       }
     }
@@ -48,7 +48,7 @@
       StringBuilder universitySB=new StringBuilder();
       universitySB.append("Uni");
       for (      String k : part) {
-        if ((k.length() >= 5) && !"univ".equalsIgnoreCase(k.substring(0,5))) {
+        if (!k.matches("^[Uu][Nn][Ii].*")) {
           universitySB.append(k);
         }
       }
@@ -61,7 +61,7 @@
       StringBuilder schoolSB=new StringBuilder();
       StringBuilder departmentSB=new StringBuilder();
       for (      String k : part) {
-        if ((k.length() >= 7) && !k.toLowerCase().substring(0,7).matches("d[ei]part") && !"school".equalsIgnoreCase(k)&& !"faculty".equalsIgnoreCase(k)&& !(k.replaceAll(STARTING_CAPITAL_PATTERN,"").isEmpty())) {
+        if (!k.matches("^[Dd][EeIi][Pp].*") && !"school".equalsIgnoreCase(k) && !"faculty".equalsIgnoreCase(k)&& !(k.replaceAll(STARTING_CAPITAL_PATTERN,"").isEmpty())) {
           if (isSchool) {
             schoolSB.append(k.replaceAll(STARTING_CAPITAL_PATTERN,""));
           }
