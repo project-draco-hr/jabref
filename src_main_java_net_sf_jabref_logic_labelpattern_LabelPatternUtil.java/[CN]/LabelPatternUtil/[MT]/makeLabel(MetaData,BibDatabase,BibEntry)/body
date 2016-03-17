@@ -55,11 +55,11 @@
   boolean firstLetterA=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_FIRST_LETTER_A);
   if (!alwaysAddLetter && (occurrences == 0)) {
     if (!key.equals(oldKey)) {
-      if (database.getEntryById(entry.getId()) == null) {
+      if (!database.containsEntryWithId(entry.getId())) {
         entry.setField(BibEntry.KEY_FIELD,key);
       }
  else {
-        database.setCiteKeyForEntry(entry.getId(),key);
+        database.setCiteKeyForEntry(entry,key);
       }
     }
   }
@@ -82,11 +82,11 @@
       }
     }
     if (!moddedKey.equals(oldKey)) {
-      if (database.getEntryById(entry.getId()) == null) {
+      if (!database.containsEntryWithId(entry.getId())) {
         entry.setField(BibEntry.KEY_FIELD,moddedKey);
       }
  else {
-        database.setCiteKeyForEntry(entry.getId(),moddedKey);
+        database.setCiteKeyForEntry(entry,moddedKey);
       }
     }
   }

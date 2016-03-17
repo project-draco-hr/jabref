@@ -1,9 +1,8 @@
 {
-  Collection<BibEntry> c=BibtexParser.fromString("@article{test,author={Ed von Test}}");
-  assertEquals(1,c.size());
-  BibEntry e=c.iterator().next();
-  assertEquals("article",e.getType());
-  assertEquals("test",e.getCiteKey());
-  assertEquals(2,e.getFieldNames().size());
-  assertEquals("Ed von Test",e.getField("author"));
+  List<BibEntry> parsed=BibtexParser.fromString("@article{test,author={Ed von Test}}");
+  BibEntry expected=new BibEntry();
+  expected.setType("article");
+  expected.setCiteKey("test");
+  expected.setField("author","Ed von Test");
+  BibtexEntryAssert.assertEquals(Arrays.asList(expected),parsed);
 }

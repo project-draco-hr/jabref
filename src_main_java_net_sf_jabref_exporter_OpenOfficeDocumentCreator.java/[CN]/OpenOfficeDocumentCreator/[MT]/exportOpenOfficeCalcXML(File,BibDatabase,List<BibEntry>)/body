@@ -1,0 +1,13 @@
+{
+  OOCalcDatabase od=new OOCalcDatabase(database,entries);
+  try (Writer ps=new OutputStreamWriter(new FileOutputStream(tmpFile),StandardCharsets.UTF_8)){
+    DOMSource source=new DOMSource(od.getDOMrepresentation());
+    StreamResult result=new StreamResult(ps);
+    Transformer trans=TransformerFactory.newInstance().newTransformer();
+    trans.setOutputProperty(OutputKeys.INDENT,"yes");
+    trans.transform(source,result);
+  }
+ catch (  Exception e) {
+    throw new Error(e);
+  }
+}

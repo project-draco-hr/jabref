@@ -1,7 +1,9 @@
 {
-  BibEntry e=BibtexParser.singleFromString("@article{canh05," + "  author = {Crowston, K. and Annabi, H.},\n" + "  title = {Title A}}\n");
-  assertEquals("article",e.getType());
-  assertEquals("canh05",e.getCiteKey());
-  assertEquals("Crowston, K. and Annabi, H.",e.getField("author"));
-  assertEquals("Title A",e.getField("title"));
+  BibEntry parsed=BibtexParser.singleFromString("@article{canh05," + "  author = {Crowston, K. and Annabi, H.},\n" + "  title = {Title A}}\n");
+  BibEntry expected=new BibEntry();
+  expected.setType("article");
+  expected.setCiteKey("canh05");
+  expected.setField("author","Crowston, K. and Annabi, H.");
+  expected.setField("title","Title A");
+  BibtexEntryAssert.assertEquals(expected,parsed);
 }

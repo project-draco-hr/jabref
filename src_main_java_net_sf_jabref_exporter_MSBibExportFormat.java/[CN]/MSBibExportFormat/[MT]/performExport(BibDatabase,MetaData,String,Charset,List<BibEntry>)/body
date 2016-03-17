@@ -1,0 +1,20 @@
+{
+  SaveSession ss=new SaveSession(StandardCharsets.UTF_8,false);
+  MSBibDatabase md=new MSBibDatabase(database,entries);
+  try (VerifyingWriter ps=ss.getWriter()){
+    try {
+      DOMSource source=new DOMSource(md.getDOMrepresentation());
+      StreamResult result=new StreamResult(ps);
+      Transformer trans=TransformerFactory.newInstance().newTransformer();
+      trans.setOutputProperty(OutputKeys.INDENT,"yes");
+      trans.transform(source,result);
+    }
+ catch (    TransformerException|IllegalArgumentException|TransformerFactoryConfigurationError e) {
+      throw new Error(e);
+    }
+    finalizeSaveSession(ss,new File(file));
+  }
+ catch (  SaveException|IOException ex) {
+    throw new IOException(ex.getMessage());
+  }
+}
