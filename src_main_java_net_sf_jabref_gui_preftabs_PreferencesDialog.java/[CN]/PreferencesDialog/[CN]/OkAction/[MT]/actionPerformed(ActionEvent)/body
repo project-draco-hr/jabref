@@ -1,10 +1,8 @@
 {
-  boolean ready=true;
   int count=main.getComponentCount();
   Component[] comps=main.getComponents();
   for (int i=0; i < count; i++) {
     if (!((PrefsTab)comps[i]).validateSettings()) {
-      ready=false;
       return;
     }
   }
@@ -12,9 +10,6 @@
     ((PrefsTab)comps[i]).storeSettings();
   }
   Globals.prefs.flush();
-  if (!ready) {
-    return;
-  }
   setVisible(false);
   MainTable.updateRenderers();
   GUIGlobals.updateEntryEditorColors();
