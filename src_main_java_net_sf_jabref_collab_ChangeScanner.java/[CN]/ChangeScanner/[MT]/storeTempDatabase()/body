@@ -1,17 +1,2 @@
 {
-  JabRefExecutorService.INSTANCE.execute(new Runnable(){
-    @Override public void run(){
-      try {
-        SavePreferences prefs=SavePreferences.loadForSaveFromPreferences(Globals.prefs).withMakeBackup(false).withEncoding(panel.getEncoding());
-        Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_DEFAULT_MODE)));
-        BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
-        SaveSession ss=databaseWriter.saveDatabase(new BibDatabaseContext(inTemp,mdInTemp,defaults),prefs);
-        ss.commit(Globals.fileUpdateMonitor.getTempFile(panel.fileMonitorHandle()));
-      }
- catch (      SaveException ex) {
-        LOGGER.warn("Problem updating tmp file after accepting external changes",ex);
-      }
-    }
-  }
-);
 }
