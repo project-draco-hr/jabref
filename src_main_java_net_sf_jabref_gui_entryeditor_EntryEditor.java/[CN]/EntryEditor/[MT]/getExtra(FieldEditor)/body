@@ -1,31 +1,31 @@
 {
   final String fieldName=editor.getFieldName();
-  final String fieldExtras=InternalBibtexFields.getFieldExtras(fieldName);
-  if (Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD).equals(fieldName) || InternalBibtexFields.EXTRA_DATEPICKER.equals(fieldExtras)) {
-    return FieldExtraComponents.getDateTimeExtraComponent(editor,InternalBibtexFields.EXTRA_DATEPICKER.equals(fieldExtras));
+  final Set<BibtexSingleFieldProperties> fieldExtras=InternalBibtexFields.getFieldExtras(fieldName);
+  if (Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD).equals(fieldName) || fieldExtras.contains(BibtexSingleFieldProperties.DATEPICKER)) {
+    return FieldExtraComponents.getDateTimeExtraComponent(editor,fieldExtras.contains(BibtexSingleFieldProperties.DATEPICKER));
   }
- else   if (InternalBibtexFields.EXTRA_EXTERNAL.equals(fieldExtras)) {
+ else   if (fieldExtras.contains(BibtexSingleFieldProperties.EXTERNAL)) {
     return FieldExtraComponents.getExternalExtraComponent(editor,this);
   }
- else   if (InternalBibtexFields.EXTRA_JOURNAL_NAMES.equals(fieldExtras)) {
+ else   if (fieldExtras.contains(BibtexSingleFieldProperties.JOURNAL_NAMES)) {
     return FieldExtraComponents.getJournalExtraComponent(frame,panel,editor,entry,contentSelectors,getStoreFieldAction());
   }
  else   if (panel.getBibDatabaseContext().getMetaData().getData(Globals.SELECTOR_META_PREFIX + fieldName) != null) {
     return FieldExtraComponents.getSelectorExtraComponent(frame,panel,editor,contentSelectors,getStoreFieldAction());
   }
- else   if (InternalBibtexFields.EXTRA_BROWSE.equals(fieldExtras)) {
+ else   if (fieldExtras.contains(BibtexSingleFieldProperties.BROWSE)) {
     return FieldExtraComponents.getBrowseExtraComponent(frame,editor,this);
   }
- else   if (InternalBibtexFields.EXTRA_URL.equals(fieldExtras)) {
+ else   if (fieldExtras.contains(BibtexSingleFieldProperties.URL)) {
     return FieldExtraComponents.getURLExtraComponent(editor,getStoreFieldAction());
   }
- else   if (InternalBibtexFields.EXTRA_SET_OWNER.equals(fieldExtras)) {
+ else   if (fieldExtras.contains(BibtexSingleFieldProperties.SET_OWNER)) {
     return FieldExtraComponents.getSetOwnerExtraComponent(editor,getStoreFieldAction());
   }
- else   if (InternalBibtexFields.EXTRA_YES_NO.equals(fieldExtras)) {
+ else   if (fieldExtras.contains(BibtexSingleFieldProperties.YES_NO)) {
     return FieldExtraComponents.getYesNoExtraComponent(editor,this);
   }
- else   if (InternalBibtexFields.EXTRA_MONTH.equals(fieldExtras)) {
+ else   if (fieldExtras.contains(BibtexSingleFieldProperties.MONTH)) {
     return FieldExtraComponents.getMonthExtraComponent(editor,this,this.frame.getCurrentBasePanel().getBibDatabaseContext().getMode());
   }
   return Optional.empty();
