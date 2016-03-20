@@ -1,6 +1,6 @@
 {
   InputStream originalStream=AuxParserTest.class.getResourceAsStream("config.bib");
-  File auxFile=new File(AuxParserTest.class.getResource("paper.aux").getFile());
+  File auxFile=Paths.get(AuxParserTest.class.getResource("paper.aux").toURI()).toFile();
   try (InputStreamReader originalReader=new InputStreamReader(originalStream)){
     ParserResult result=BibtexParser.parse(originalReader);
     AuxParser auxParser=new AuxParser(auxFile.getAbsolutePath(),result.getDatabase());
