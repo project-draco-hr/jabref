@@ -1,7 +1,7 @@
 {
-  ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt(fileType);
-  if (type != null && !type.getOpenWithApplication().isEmpty()) {
-    openFileWithApplication(filePath,type.getOpenWithApplication());
+  Optional<ExternalFileType> type=ExternalFileTypes.getInstance().getExternalFileTypeByExt(fileType);
+  if (type.isPresent() && type.get().getOpenWithApplication().isEmpty()) {
+    openFileWithApplication(filePath,type.get().getOpenWithApplication());
   }
  else {
     String[] cmd={"/usr/bin/open",filePath};
