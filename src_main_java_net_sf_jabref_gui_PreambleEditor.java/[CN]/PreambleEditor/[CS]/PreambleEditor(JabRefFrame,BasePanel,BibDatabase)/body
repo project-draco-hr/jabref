@@ -17,8 +17,6 @@
     }
   }
 );
-  int prefHeight=(int)(GUIGlobals.PE_HEIGHT * GUIGlobals.FORM_HEIGHT[prefs.getInt(JabRefPreferences.ENTRY_TYPE_FORM_HEIGHT_FACTOR)]);
-  setSize(GUIGlobals.FORM_WIDTH[prefs.getInt(JabRefPreferences.ENTRY_TYPE_FORM_WIDTH)],prefHeight);
   JPanel pan=new JPanel();
   GridBagLayout gbl=new GridBagLayout();
   pan.setLayout(gbl);
@@ -37,4 +35,15 @@
   Container conPane=getContentPane();
   conPane.add(pan,BorderLayout.CENTER);
   setTitle(Localization.lang("Edit preamble"));
+  pw=new PositionWindow(this,JabRefPreferences.PREAMBLE_POS_X,JabRefPreferences.PREAMBLE_POS_Y,JabRefPreferences.PREAMBLE_SIZE_X,JabRefPreferences.PREAMBLE_SIZE_Y);
+  pw.setWindowPosition();
+  addComponentListener(new ComponentAdapter(){
+    @Override public void componentResized(    ComponentEvent e){
+      pw.storeWindowPosition();
+    }
+    @Override public void componentMoved(    ComponentEvent e){
+      pw.storeWindowPosition();
+    }
+  }
+);
 }
