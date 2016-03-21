@@ -9,27 +9,27 @@
     BibEntry first=sortedList.get(row);
     Optional<BibEntry> other=DuplicateCheck.containsDuplicate(panel.database(),first,panel.getBibDatabaseContext().getMode());
     if (other.isPresent()) {
-      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,other.get(),first,DuplicateResolverDialog.INSPECTION);
+      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,other.get(),first,DuplicateResolverDialog.DuplicateResolverType.INSPECTION);
       PositionWindow.placeDialog(diag,ImportInspectionDialog.this);
       diag.setVisible(true);
       ImportInspectionDialog.this.toFront();
-      if (diag.getSelected() == DuplicateResolverDialog.KEEP_UPPER) {
+      if (diag.getSelected() == DuplicateResolverResult.KEEP_UPPER) {
         entriesToDelete.add(other.get());
         entries.getReadWriteLock().writeLock().lock();
         first.setGroupHit(false);
         entries.getReadWriteLock().writeLock().unlock();
       }
- else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_LOWER) {
+ else       if (diag.getSelected() == DuplicateResolverResult.KEEP_LOWER) {
         entries.getReadWriteLock().writeLock().lock();
         entries.remove(first);
         entries.getReadWriteLock().writeLock().unlock();
       }
- else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_BOTH) {
+ else       if (diag.getSelected() == DuplicateResolverResult.KEEP_BOTH) {
         entries.getReadWriteLock().writeLock().lock();
         first.setGroupHit(false);
         entries.getReadWriteLock().writeLock().unlock();
       }
- else       if (diag.getSelected() == DuplicateResolverDialog.KEEP_MERGE) {
+ else       if (diag.getSelected() == DuplicateResolverResult.KEEP_MERGE) {
         entriesToDelete.add(other.get());
         entries.getReadWriteLock().writeLock().lock();
         diag.getMergedEntry().setGroupHit(false);
@@ -42,22 +42,22 @@
     }
     other=internalDuplicate(entries,first);
     if (other.isPresent()) {
-      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,first,other.get(),DuplicateResolverDialog.DUPLICATE_SEARCH);
+      DuplicateResolverDialog diag=new DuplicateResolverDialog(ImportInspectionDialog.this,first,other.get(),DuplicateResolverDialog.DuplicateResolverType.DUPLICATE_SEARCH);
       PositionWindow.placeDialog(diag,ImportInspectionDialog.this);
       diag.setVisible(true);
       ImportInspectionDialog.this.toFront();
-      int answer=diag.getSelected();
-      if (answer == DuplicateResolverDialog.KEEP_UPPER) {
+      DuplicateResolverResult answer=diag.getSelected();
+      if (answer == DuplicateResolverResult.KEEP_UPPER) {
         entries.remove(other.get());
         first.setGroupHit(false);
       }
- else       if (answer == DuplicateResolverDialog.KEEP_LOWER) {
+ else       if (answer == DuplicateResolverResult.KEEP_LOWER) {
         entries.remove(first);
       }
- else       if (answer == DuplicateResolverDialog.KEEP_BOTH) {
+ else       if (answer == DuplicateResolverResult.KEEP_BOTH) {
         first.setGroupHit(false);
       }
- else       if (answer == DuplicateResolverDialog.KEEP_MERGE) {
+ else       if (answer == DuplicateResolverResult.KEEP_MERGE) {
         diag.getMergedEntry().setGroupHit(false);
         diag.getMergedEntry().setSearchHit(true);
         entries.add(diag.getMergedEntry());
