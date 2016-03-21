@@ -1,0 +1,17 @@
+{
+  BibDatabase db=new BibDatabase();
+  Map<String,IExportFormat> exportFormats=ExportFormats.getExportFormats();
+  IExportFormat exportFormat=exportFormats.get("html");
+  try {
+    File tmpFile=File.createTempFile("exporttest","html");
+    tmpFile.deleteOnExit();
+    String filename=tmpFile.getCanonicalPath();
+    List<BibEntry> entries=Collections.emptyList();
+    Charset charset=Charsets.UTF_8;
+    MetaData metaData=new MetaData();
+    exportFormat.performExport(db,metaData,filename,charset,entries);
+  }
+ catch (  IOException e) {
+    Assert.fail("Exception caught: " + e.toString() + e.getMessage());
+  }
+}
