@@ -1,17 +1,17 @@
 {
-  BibDatabase db=new BibDatabase();
+  BibDatabase database=new BibDatabase();
   Map<String,IExportFormat> exportFormats=ExportFormats.getExportFormats();
   IExportFormat exportFormat=exportFormats.get("oocalc");
-  try {
-    File tmpFile=File.createTempFile("exporttest","oocalc");
-    tmpFile.deleteOnExit();
-    String filename=tmpFile.getCanonicalPath();
-    List<BibEntry> entries=Collections.emptyList();
-    Charset charset=Charsets.UTF_8;
-    MetaData metaData=new MetaData();
-    exportFormat.performExport(db,metaData,filename,charset,entries);
+  File tmpFile=File.createTempFile("exporttest","oocalc");
+  tmpFile.deleteOnExit();
+  String filename=tmpFile.getCanonicalPath();
+  List<BibEntry> entries=Collections.emptyList();
+  Charset charset=Charsets.UTF_8;
+  MetaData metaData=new MetaData();
+  exportFormat.performExport(database,metaData,filename,charset,entries);
+  assertTrue(tmpFile.exists());
+  try (FileReader fileReader=new FileReader(tmpFile)){
+    char[] buffer=new char[512];
+    assertEquals(-1,fileReader.read(buffer));
   }
- catch (  IOException e) {
-    Assert.fail("Exception caught: " + e.toString() + e.getMessage());
-  }
-}
+ }
