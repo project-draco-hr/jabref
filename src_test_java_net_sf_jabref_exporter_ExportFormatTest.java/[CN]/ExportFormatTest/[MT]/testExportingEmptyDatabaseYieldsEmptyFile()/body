@@ -1,0 +1,18 @@
+{
+  BibDatabase database=new BibDatabase();
+  for (  Map.Entry<String,IExportFormat> exportFormats : ExportFormats.getExportFormats().entrySet()) {
+    IExportFormat exportFormat=exportFormats.getValue();
+    File tmpFile=testFolder.newFile();
+    tmpFile.deleteOnExit();
+    String filename=tmpFile.getCanonicalPath();
+    List<BibEntry> entries=Collections.emptyList();
+    Charset charset=Charsets.UTF_8;
+    MetaData metaData=new MetaData();
+    exportFormat.performExport(database,metaData,filename,charset,entries);
+    assertTrue(exportFormats.getKey() + " failed -- no file",tmpFile.exists());
+    try (FileReader fileReader=new FileReader(tmpFile)){
+      char[] buffer=new char[512];
+      assertEquals(exportFormats.getKey() + " failed -- non-empty file",-1,fileReader.read(buffer));
+    }
+   }
+}

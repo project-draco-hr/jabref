@@ -1,0 +1,17 @@
+{
+  BibDatabase database=new BibDatabase();
+  Charset charset=Charsets.UTF_8;
+  MetaData metaData=new MetaData();
+  for (  Map.Entry<String,IExportFormat> exportFormats : ExportFormats.getExportFormats().entrySet()) {
+    try {
+      IExportFormat exportFormat=exportFormats.getValue();
+      File tmpFile=testFolder.newFile();
+      tmpFile.deleteOnExit();
+      String filename=tmpFile.getCanonicalPath();
+      exportFormat.performExport(database,metaData,filename,charset,null);
+      fail();
+    }
+ catch (    NullPointerException expected) {
+    }
+  }
+}
