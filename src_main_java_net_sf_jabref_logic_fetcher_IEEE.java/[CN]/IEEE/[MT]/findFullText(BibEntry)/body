@@ -1,0 +1,21 @@
+{
+  Objects.requireNonNull(entry);
+  Optional<URL> pdfLink=Optional.empty();
+  Optional<DOI> doi=DOI.build(entry.getField("doi"));
+  if (doi.isPresent() && doi.get().getDOI().startsWith(IEEE_DOI)) {
+    URLDownload urlDownload=new URLDownload(doi.get().getURI().get().toURL());
+    String firstResult=urlDownload.downloadToString();
+    Matcher matcher=STAMP_PATTERN.matcher(firstResult);
+    if (matcher.find()) {
+      URL stampURL=new URL(BASE_URL + matcher.group(1));
+      String secondResult=new URLDownload(stampURL).downloadToString();
+      matcher=PDF_PATTERN.matcher(secondResult);
+      if (matcher.find()) {
+        String pdfURLText=matcher.group(1);
+        pdfLink=Optional.of(new URL(pdfURLText));
+        LOGGER.debug("Full text document found on IEEE Xplore");
+      }
+    }
+  }
+  return pdfLink;
+}
