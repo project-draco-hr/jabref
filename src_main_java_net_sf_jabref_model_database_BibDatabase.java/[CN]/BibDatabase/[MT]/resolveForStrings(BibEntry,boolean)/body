@@ -1,9 +1,13 @@
 {
-  if (!inPlace) {
-    entry=(BibEntry)entry.clone();
+  BibEntry resultingEntry;
+  if (inPlace) {
+    resultingEntry=entry;
   }
-  for (  String field : entry.getFieldNames()) {
-    entry.setField(field,this.resolveForStrings(entry.getField(field)));
+ else {
+    resultingEntry=(BibEntry)entry.clone();
   }
-  return entry;
+  for (  String field : resultingEntry.getFieldNames()) {
+    resultingEntry.setField(field,this.resolveForStrings(resultingEntry.getField(field)));
+  }
+  return resultingEntry;
 }

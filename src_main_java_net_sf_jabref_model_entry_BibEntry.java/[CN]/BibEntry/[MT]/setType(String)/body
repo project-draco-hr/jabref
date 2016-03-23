@@ -1,12 +1,16 @@
 {
+  String newType;
   if (type == null) {
-    type=DEFAULT_TYPE;
+    newType=DEFAULT_TYPE;
+  }
+ else {
+    newType=type;
   }
   String oldType=this.type;
   try {
-    this.type=type.toLowerCase();
+    this.type=newType.toLowerCase(Locale.ENGLISH);
     changed=true;
-    firePropertyChangedEvent(TYPE_HEADER,oldType == null ? null : oldType,type);
+    firePropertyChangedEvent(TYPE_HEADER,oldType,newType);
   }
  catch (  PropertyVetoException pve) {
     LOGGER.warn(pve);
