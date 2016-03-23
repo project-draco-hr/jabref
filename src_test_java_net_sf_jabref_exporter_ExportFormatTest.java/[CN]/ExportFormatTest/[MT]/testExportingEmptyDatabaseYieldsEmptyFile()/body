@@ -1,0 +1,9 @@
+{
+  File tmpFile=testFolder.newFile();
+  String filename=tmpFile.getCanonicalPath();
+  exportFormat.performExport(database,metaData,filename,charset,entries);
+  try (FileReader fileReader=new FileReader(tmpFile)){
+    char[] buffer=new char[512];
+    assertEquals(-1,fileReader.read(buffer));
+  }
+ }
