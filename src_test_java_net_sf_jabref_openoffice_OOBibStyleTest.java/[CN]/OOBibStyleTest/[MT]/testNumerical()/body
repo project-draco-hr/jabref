@@ -1,7 +1,6 @@
 {
-  try {
-    URL defPath=JabRef.class.getResource(OpenOfficePanel.DEFAULT_NUMERICAL_STYLE_PATH);
-    Reader r=new InputStreamReader(defPath.openStream());
+  URL defPath=JabRef.class.getResource(OpenOfficePanel.DEFAULT_NUMERICAL_STYLE_PATH);
+  try (Reader r=new InputStreamReader(defPath.openStream())){
     OOBibStyle style=new OOBibStyle(r,mock(JournalAbbreviationRepository.class));
     assertTrue(style.isValid());
     assertFalse(style.isBibtexKeyCiteMarkers());
@@ -11,7 +10,4 @@
     assertTrue(style.isNumberEntries());
     assertTrue(style.isSortByPosition());
   }
- catch (  IOException e) {
-    fail();
-  }
-}
+ }
