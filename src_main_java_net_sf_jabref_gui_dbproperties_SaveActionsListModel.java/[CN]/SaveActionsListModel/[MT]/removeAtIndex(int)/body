@@ -1,9 +1,8 @@
 {
-  if (index < 0 || index > saveActions.size()) {
-    throw new IndexOutOfBoundsException("Index must be within 0 and " + saveActions.size() + " but was "+ index);
-  }
-  FieldFormatterCleanup action=saveActions.remove(index);
-  for (  ListDataListener listener : listeners) {
-    listener.intervalAdded(new ListDataEvent(action,ListDataEvent.INTERVAL_REMOVED,index,index));
+  if ((index >= 0) && (index < saveActions.size())) {
+    FieldFormatterCleanup action=saveActions.remove(index);
+    for (    ListDataListener listener : listeners) {
+      listener.intervalRemoved(new ListDataEvent(action,ListDataEvent.INTERVAL_REMOVED,index,index));
+    }
   }
 }
