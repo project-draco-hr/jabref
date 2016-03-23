@@ -1,2 +1,27 @@
 {
+  List<String> fieldNames=new ArrayList<>(InternalBibtexFields.getAllFieldNames());
+  fieldNames.add(BibEntry.KEY_FIELD);
+  Collections.sort(fieldNames);
+  String[] allPlusKey=fieldNames.toArray(new String[fieldNames.size()]);
+  savePriSort=new JComboBox<>(allPlusKey);
+  savePriSort.setEditable(true);
+  saveSecSort=new JComboBox<>(allPlusKey);
+  saveSecSort.setEditable(true);
+  saveTerSort=new JComboBox<>(allPlusKey);
+  saveTerSort.setEditable(true);
+  savePriDesc=new JCheckBox(Localization.lang("Descending"));
+  saveSecDesc=new JCheckBox(Localization.lang("Descending"));
+  saveTerDesc=new JCheckBox(Localization.lang("Descending"));
+  FormLayout layout=new FormLayout("right:pref, 8dlu, fill:pref, 4dlu, fill:60dlu, 4dlu, left:pref","pref, 2dlu, pref, 2dlu, pref");
+  FormBuilder builder=FormBuilder.create().layout(layout);
+  builder.add(Localization.lang("Primary sort criterion")).xy(1,1);
+  builder.add(savePriSort).xy(3,1);
+  builder.add(savePriDesc).xy(5,1);
+  builder.add(Localization.lang("Secondary sort criterion")).xy(1,3);
+  builder.add(saveSecSort).xy(3,3);
+  builder.add(saveSecDesc).xy(5,3);
+  builder.add(Localization.lang("Tertiary sort criterion")).xy(1,5);
+  builder.add(saveTerSort).xy(3,5);
+  builder.add(saveTerDesc).xy(5,5);
+  panel=builder.build();
 }
