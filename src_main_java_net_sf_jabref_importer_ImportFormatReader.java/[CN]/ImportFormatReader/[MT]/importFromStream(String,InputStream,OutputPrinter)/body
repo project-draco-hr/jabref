@@ -1,9 +1,9 @@
 {
-  ImportFormat importer=getByCliId(format);
-  if (importer == null) {
+  Optional<ImportFormat> importer=getByCliId(format);
+  if (!importer.isPresent()) {
     throw new IllegalArgumentException("Unknown import format: " + format);
   }
-  List<BibEntry> res=importer.importEntries(in,status);
+  List<BibEntry> res=importer.get().importEntries(in,status);
   if (res != null) {
     BibDatabases.purgeEmptyEntries(res);
   }
