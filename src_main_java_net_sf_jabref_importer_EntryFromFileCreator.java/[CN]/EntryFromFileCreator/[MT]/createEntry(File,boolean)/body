@@ -1,10 +1,10 @@
 {
   if ((f == null) || !f.exists()) {
-    return null;
+    return Optional.empty();
   }
   Optional<BibEntry> newEntry=createBibtexEntry(f);
   if (!(newEntry.isPresent())) {
-    return null;
+    return newEntry;
   }
   if (addPathTokensAsKeywords) {
     appendToField(newEntry.get(),"keywords",extractPathesToKeyWordsfield(f.getAbsolutePath()));
@@ -13,5 +13,5 @@
     newEntry.get().setField("title",f.getName());
   }
   addFileInfo(newEntry.get(),f);
-  return newEntry.get();
+  return newEntry;
 }

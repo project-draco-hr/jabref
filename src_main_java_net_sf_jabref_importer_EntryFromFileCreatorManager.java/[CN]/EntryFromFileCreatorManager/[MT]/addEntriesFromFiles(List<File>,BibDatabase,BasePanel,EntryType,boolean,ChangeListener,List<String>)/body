@@ -7,25 +7,25 @@
       importGUIMessages.add("Problem importing " + f.getPath() + ": Unknown filetype.");
     }
  else {
-      BibEntry entry=creator.createEntry(f,generateKeywordsFromPathToFile);
-      if (entry == null) {
+      Optional<BibEntry> entry=creator.createEntry(f,generateKeywordsFromPathToFile);
+      if (entry.isPresent()) {
         importGUIMessages.add("Problem importing " + f.getPath() + ": Entry could not be created.");
         continue;
       }
       if (entryType != null) {
-        entry.setType(entryType);
+        entry.get().setType(entryType);
       }
-      if (entry.getId() == null) {
-        entry.setId(IdGenerator.next());
+      if (entry.get().getId() == null) {
+        entry.get().setId(IdGenerator.next());
       }
-      if (!database.containsEntryWithId(entry.getId())) {
-        if (database.insertEntry(entry)) {
+      if (!database.containsEntryWithId(entry.get().getId())) {
+        if (database.insertEntry(entry.get())) {
           importGUIMessages.add("Problem importing " + f.getPath() + ": Insert into BibDatabase failed.");
         }
  else {
           count++;
           if (panel != null) {
-            ce.addEdit(new UndoableInsertEntry(database,entry,panel));
+            ce.addEdit(new UndoableInsertEntry(database,entry.get(),panel));
           }
         }
       }
