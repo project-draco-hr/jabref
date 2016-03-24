@@ -1,11 +1,16 @@
 {
-  Optional<ExternalFileType> fileType=ExternalFileTypes.getInstance().getExternalFileTypeByExt("pdf");
+  Optional<ExternalFileType> optFileType=ExternalFileTypes.getInstance().getExternalFileTypeByExt("pdf");
+  if (!optFileType.isPresent()) {
+    LOGGER.warn("No file type with extension 'pdf' registered.");
+    return;
+  }
+  ExternalFileType fileType=optFileType.get();
   if (!showLinkMoveCopyRenameDialog(fileName,fileType,entry,panel.database())) {
     return;
   }
   boolean success=true;
   String destFilename;
-  NamedCompound edits=new NamedCompound(Localization.lang("Drop %0",fileType.get().getExtension()));
+  NamedCompound edits=new NamedCompound(Localization.lang("Drop %0",fileType.getExtension()));
   if (linkInPlace.isSelected()) {
     destFilename=FileUtil.shortenFileName(new File(fileName),panel.getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD)).toString();
   }
