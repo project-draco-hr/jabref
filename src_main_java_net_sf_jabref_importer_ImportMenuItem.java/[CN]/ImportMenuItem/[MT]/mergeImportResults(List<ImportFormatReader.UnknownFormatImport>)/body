@@ -27,8 +27,12 @@
       ParserResult pr=importResult.parserResult;
       Collection<BibEntry> entries=pr.getDatabase().getEntries();
       anythingUseful=anythingUseful | !entries.isEmpty();
-      Util.setAutomaticFields(entries,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),!openInNew && Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
+      UpdateField.setAutomaticFields(entries,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
+      boolean markEntries=!openInNew && Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES) && (Globals.prefs.getBoolean(JabRefPreferences.USE_OWNER) || Globals.prefs.getBoolean(JabRefPreferences.USE_TIME_STAMP));
       for (      BibEntry entry : entries) {
+        if (markEntries) {
+          EntryMarker.markEntry(entry,EntryMarker.IMPORT_MARK_LEVEL,false,new NamedCompound(""));
+        }
         database.insertEntry(entry);
       }
     }

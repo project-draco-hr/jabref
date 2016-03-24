@@ -13,14 +13,12 @@
   }
  else {
     if (newValue == null) {
-      return;
+      return Optional.empty();
     }
  else {
       writtenValue=newValue;
       be.setField(field,newValue);
     }
   }
-  if (ce != null) {
-    ce.addEdit(new UndoableFieldChange(be,field,oldValue,writtenValue));
-  }
+  return Optional.of(new FieldChange(be,field,oldValue,writtenValue));
 }
