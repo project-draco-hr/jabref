@@ -1,13 +1,14 @@
 {
-  ArrayList<BibEntry> bibitems=new ArrayList<>();
+  List<BibEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  String str;
-  while ((str=in.readLine()) != null) {
-    sb.append(str);
-    sb.append('\n');
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    String str;
+    while ((str=in.readLine()) != null) {
+      sb.append(str);
+      sb.append('\n');
+    }
   }
-  String[] entries=sb.toString().replace("\u2013","-").replace("\u2014","--").replace("\u2015","--").split("\\n\\n");
+   String[] entries=sb.toString().replace("\u2013","-").replace("\u2014","--").replace("\u2015","--").split("\\n\\n");
   for (  String entry1 : entries) {
     if (entry1.trim().isEmpty() || !entry1.contains("-")) {
       continue;

@@ -3,8 +3,8 @@
   BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
   String line;
   Map<String,String> hm=new HashMap<>();
-  Map<String,StringBuffer> lines=new HashMap<>();
-  StringBuffer previousLine=null;
+  Map<String,StringBuilder> lines=new HashMap<>();
+  StringBuilder previousLine=null;
   while ((line=in.readLine()) != null) {
     if (line.isEmpty()) {
       continue;
@@ -17,7 +17,7 @@
       String titleST=null;
       String titleTI=null;
       List<String> comments=new ArrayList<>();
-      for (      Map.Entry<String,StringBuffer> entry : lines.entrySet()) {
+      for (      Map.Entry<String,StringBuilder> entry : lines.entrySet()) {
         if ("AU".equals(entry.getKey())) {
           hm.put("author",entry.getValue().toString());
         }
@@ -204,11 +204,12 @@
       continue;
     }
     if (line.startsWith("--") && (line.length() >= 7) && "-- ".equals(line.substring(4,7))) {
-      lines.put(line.substring(2,4),previousLine=new StringBuffer(line.substring(7)));
+      previousLine=new StringBuilder(line.substring(7));
+      lines.put(line.substring(2,4),previousLine);
       continue;
     }
     if (previousLine == null) {
-      return null;
+      return Collections.emptyList();
     }
     previousLine.append(line.trim());
   }
