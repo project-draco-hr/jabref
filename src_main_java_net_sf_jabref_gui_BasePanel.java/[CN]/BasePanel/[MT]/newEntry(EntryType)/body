@@ -1,20 +1,21 @@
 {
-  if (type == null) {
+  EntryType actualType=type;
+  if (actualType == null) {
     final EntryTypeDialog etd=new EntryTypeDialog(frame);
     etd.setLocationRelativeTo(frame);
     etd.setVisible(true);
-    type=etd.getChoice();
+    actualType=etd.getChoice();
   }
-  if (type != null) {
+  if (actualType != null) {
     String id=IdGenerator.next();
-    final BibEntry be=new BibEntry(id,type.getName());
+    final BibEntry be=new BibEntry(id,actualType.getName());
     try {
       database.insertEntry(be);
       List<BibEntry> list=new ArrayList<>();
       list.add(be);
       UpdateField.setAutomaticFields(list,true,true);
       undoManager.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
-      output(Localization.lang("Added new '%0' entry.",type.getName().toLowerCase()));
+      output(Localization.lang("Added new '%0' entry.",actualType.getName().toLowerCase()));
       if (mode != BasePanelMode.SHOWING_EDITOR) {
         mode=BasePanelMode.WILL_SHOW_EDITOR;
       }
