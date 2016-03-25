@@ -5,7 +5,7 @@
     sb.append((char)c);
   }
   String[] lines=sb.toString().split("\n");
-  int mode=OOBibStyle.MODE_NONE;
+  BibStyleMode mode=BibStyleMode.NONE;
   for (  String line1 : lines) {
     String line=line1;
     if (!line.isEmpty() && (line.charAt(line.length() - 1) == '\r')) {
@@ -15,48 +15,48 @@
       continue;
     }
     if (line.equals(OOBibStyle.NAME_MARK)) {
-      mode=OOBibStyle.MODE_NAME;
+      mode=BibStyleMode.NAME;
       continue;
     }
  else     if (line.equals(OOBibStyle.LAYOUT_MRK)) {
-      mode=OOBibStyle.MODE_LAYOUT;
+      mode=BibStyleMode.LAYOUT;
       continue;
     }
  else     if (line.equals(OOBibStyle.PROPERTIES_MARK)) {
-      mode=OOBibStyle.MODE_PROPERTIES;
+      mode=BibStyleMode.PROPERTIES;
       continue;
     }
  else     if (line.equals(OOBibStyle.CITATION_MARK)) {
-      mode=OOBibStyle.MODE_CITATION;
+      mode=BibStyleMode.CITATION;
       continue;
     }
  else     if (line.equals(OOBibStyle.JOURNALS_MARK)) {
-      mode=OOBibStyle.MODE_JOURNALS;
+      mode=BibStyleMode.JOURNALS;
       continue;
     }
 switch (mode) {
-case MODE_NAME:
+case NAME:
       if (!line.trim().isEmpty()) {
         name=line.trim();
       }
     break;
-case MODE_LAYOUT:
+case LAYOUT:
   handleStructureLine(line);
 break;
-case MODE_PROPERTIES:
+case PROPERTIES:
 handlePropertiesLine(line,properties);
 break;
-case MODE_CITATION:
+case CITATION:
 handlePropertiesLine(line,citProperties);
 break;
-case MODE_JOURNALS:
+case JOURNALS:
 handleJournalsLine(line);
 break;
 default :
 break;
 }
 }
-if (mode != OOBibStyle.MODE_NONE) {
+if (mode != BibStyleMode.NONE) {
 valid=true;
 }
 }
