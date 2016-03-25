@@ -1,0 +1,14 @@
+{
+  URL defPath=JabRef.class.getResource(OpenOfficePanel.DEFAULT_NUMERICAL_STYLE_PATH);
+  Reader r=new InputStreamReader(defPath.openStream());
+  OOBibStyle style=new OOBibStyle(r,mock(JournalAbbreviationRepository.class));
+  Map<BibEntry,BibDatabase> entryDBMap=new HashMap<>();
+  List<BibEntry> entries=new ArrayList<>();
+  BibDatabase database=new BibDatabase();
+  BibEntry entry=new BibEntry();
+  entry.setType("article");
+  database.insertEntry(entry);
+  entries.add(entry);
+  entryDBMap.put(entry,database);
+  assertEquals("[, ]",style.getCitationMarker(entries,entryDBMap,true,null,null));
+}
