@@ -2,10 +2,10 @@
   int longestFound=-1;
   ExternalFileType foundType=null;
   for (  ExternalFileType type : externalFileTypes) {
-    if ((type.getExtension() != null) && filename.toLowerCase().endsWith(type.getExtension().toLowerCase()) && (type.getExtension().length() > longestFound)) {
+    if (!type.getExtension().isEmpty() && filename.toLowerCase().endsWith(type.getExtension().toLowerCase()) && (type.getExtension().length() > longestFound)) {
       longestFound=type.getExtension().length();
       foundType=type;
     }
   }
-  return foundType;
+  return Optional.ofNullable(foundType);
 }
