@@ -1,0 +1,24 @@
+{
+  File dirF=new File(dir);
+  if (dirF.isDirectory()) {
+    File[] fileArray=dirF.listFiles();
+    List<File> files;
+    if (fileArray == null) {
+      files=Collections.emptyList();
+    }
+ else {
+      files=Arrays.asList(fileArray);
+    }
+    for (    File file : files) {
+      if (!file.isDirectory() && (file.getName().endsWith(STYLE_FILE_EXTENSION))) {
+        addSingleFile(file,encoding,styles);
+      }
+ else       if (file.isDirectory() && recurse) {
+        addStyles(file.getPath(),recurse,encoding,styles);
+      }
+    }
+  }
+ else {
+    addSingleFile(dirF,encoding,styles);
+  }
+}

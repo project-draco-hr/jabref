@@ -14,19 +14,21 @@
   }
   StringBuilder sb=new StringBuilder();
   for (int i=0; i < entries.size(); i++) {
-    int unlimA=unlimAuthors == null ? -1 : unlimAuthors[i];
-    int maxAuthors=unlimA > 0 ? unlimA : maxA;
-    if (entries.get(i) == null) {
+    BibEntry currentEntry=entries.get(i);
+    if (currentEntry == null) {
       continue;
     }
+    BibDatabase currentDatabase=database.get(currentEntry);
+    int unlimA=unlimAuthors == null ? -1 : unlimAuthors[i];
+    int maxAuthors=unlimA > 0 ? unlimA : maxA;
     if (i > 0) {
       sb.append(citationSeparator);
     }
-    String author=getCitationMarkerField(entries.get(i),database.get(entries.get(i)),authorField);
+    String author=getCitationMarkerField(currentEntry,currentDatabase,authorField);
     String authorString=createAuthorList(author,maxAuthors,authorSep,andString,etAlString,yearSep);
     sb.append(authorString);
     sb.append(startBrace);
-    String year=getCitationMarkerField(entries.get(i),database.get(entries.get(i)),yearField);
+    String year=getCitationMarkerField(currentEntry,currentDatabase,yearField);
     if (year != null) {
       sb.append(year);
     }
