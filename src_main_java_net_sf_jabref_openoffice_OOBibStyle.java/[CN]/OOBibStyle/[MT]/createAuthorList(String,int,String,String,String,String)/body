@@ -1,21 +1,21 @@
 {
   StringBuilder sb=new StringBuilder();
   if (author != null) {
-    AuthorList al=AuthorList.getAuthorList(author);
+    AuthorList al=AuthorList.getAuthors(author);
     if (!al.isEmpty()) {
       sb.append(getAuthorLastName(al,0));
     }
-    if ((al.size() > 1) && ((al.size() <= maxAuthors) || (maxAuthors < 0))) {
+    if ((al.getNumberOfAuthors() > 1) && ((al.getNumberOfAuthors() <= maxAuthors) || (maxAuthors < 0))) {
       int j=1;
-      while (j < (al.size() - 1)) {
+      while (j < (al.getNumberOfAuthors() - 1)) {
         sb.append(authorSep);
         sb.append(getAuthorLastName(al,j));
         j++;
       }
       sb.append(andString);
-      sb.append(getAuthorLastName(al,al.size() - 1));
+      sb.append(getAuthorLastName(al,al.getNumberOfAuthors() - 1));
     }
- else     if (al.size() > maxAuthors) {
+ else     if (al.getNumberOfAuthors() > maxAuthors) {
       sb.append(etAlString);
     }
     sb.append(yearSep);
