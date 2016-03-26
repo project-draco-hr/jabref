@@ -1,8 +1,12 @@
 {
-  ArrayList<File> res=new ArrayList<>();
+  List<File> res=new ArrayList<>();
+  File actualDirectory;
   if (file.startsWith("/")) {
-    directory=new File(".");
+    actualDirectory=new File(".");
     file=file.substring(1);
+  }
+ else {
+    actualDirectory=directory;
   }
   Matcher m=ESCAPE_PATTERN.matcher(file);
   StringBuffer s=new StringBuffer();
@@ -20,18 +24,18 @@
       String dirToProcess=fileParts[i];
       dirToProcess=Util.expandBrackets(dirToProcess,entry,null);
       if (dirToProcess.matches("^.:$")) {
-        directory=new File(dirToProcess + '/');
+        actualDirectory=new File(dirToProcess + '/');
         continue;
       }
       if (".".equals(dirToProcess)) {
         continue;
       }
       if ("..".equals(dirToProcess)) {
-        directory=new File(directory.getParent());
+        actualDirectory=new File(actualDirectory.getParent());
         continue;
       }
       if ("*".equals(dirToProcess)) {
-        File[] subDirs=directory.listFiles();
+        File[] subDirs=actualDirectory.listFiles();
         if (subDirs != null) {
           String restOfFileString=StringUtil.join(fileParts,"/",i + 1,fileParts.length);
           for (          File subDir : subDirs) {
@@ -43,7 +47,7 @@
       }
       if ("**".equals(dirToProcess)) {
         List<File> toDo=new LinkedList<>();
-        toDo.add(directory);
+        toDo.add(actualDirectory);
         String restOfFileString=StringUtil.join(fileParts,"/",i + 1,fileParts.length);
         while (!toDo.isEmpty()) {
           File[] subDirs=toDo.remove(0).listFiles();
@@ -64,7 +68,7 @@
   String filePart=fileParts[fileParts.length - 1].replace("[extension]",RegExpFileSearch.EXT_MARKER);
   String filenameToLookFor=Util.expandBrackets(filePart,entry,null).replaceAll(RegExpFileSearch.EXT_MARKER,extensionRegExp);
   final Pattern toMatch=Pattern.compile('^' + filenameToLookFor.replaceAll("\\\\\\\\","\\\\") + '$',Pattern.CASE_INSENSITIVE);
-  File[] matches=directory.listFiles(new FilenameFilter(){
+  File[] matches=actualDirectory.listFiles(new FilenameFilter(){
     @Override public boolean accept(    File arg0,    String arg1){
       return toMatch.matcher(arg1).matches();
     }
