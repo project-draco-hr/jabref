@@ -12,12 +12,12 @@
     if (!f.exists()) {
       throw new FileNotFoundException(f.getAbsolutePath());
     }
-    try (FileWriter fw=new FileWriter(f,false)){
+    try (FileOutputStream stream=new FileOutputStream(f,false);OutputStreamWriter writer=new OutputStreamWriter(stream,Globals.prefs.getDefaultEncoding())){
       for (      JournalEntry entry : tableModel.getJournals()) {
-        fw.write(entry.getName());
-        fw.write(" = ");
-        fw.write(entry.getAbbreviation());
-        fw.write(Globals.NEWLINE);
+        writer.write(entry.getName());
+        writer.write(" = ");
+        writer.write(entry.getAbbreviation());
+        writer.write(Globals.NEWLINE);
       }
     }
  catch (    IOException e) {
