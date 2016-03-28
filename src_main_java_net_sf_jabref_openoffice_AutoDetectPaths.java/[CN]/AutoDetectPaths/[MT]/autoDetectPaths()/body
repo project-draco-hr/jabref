@@ -1,18 +1,12 @@
 {
+  fileSearch.resetFileSearch();
   if (OS.WINDOWS) {
-    List<File> progFiles=new OpenOfficeFileSearch().findWindowsProgramFilesDir();
-    File sOffice=null;
-    List<File> sofficeFiles=new ArrayList<>();
-    for (    File dir : progFiles) {
-      if (fileSearchCancelled) {
-        return false;
-      }
-      sOffice=findFileDir(dir,"soffice.exe");
-      if (sOffice != null) {
-        sofficeFiles.add(sOffice);
-      }
+    List<File> progFiles=fileSearch.findWindowsProgramFilesDir();
+    List<File> sofficeFiles=new ArrayList<>(fileSearch.findFileDir(progFiles,SOFFICE_EXE));
+    if (fileSearchCancelled) {
+      return false;
     }
-    if (sOffice == null) {
+    if (sofficeFiles.isEmpty()) {
       JOptionPane.showMessageDialog(parent,Localization.lang("Unable to autodetect OpenOffice/LibreOffice installation. Please choose the installation directory manually."),Localization.lang("Could not find OpenOffice/LibreOffice installation"),JOptionPane.INFORMATION_MESSAGE);
       JFileChooser fileChooser=new JFileChooser(new File(System.getenv("ProgramFiles")));
       fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
@@ -31,64 +25,41 @@
         sofficeFiles.add(fileChooser.getSelectedFile());
       }
     }
-    if (sOffice == null) {
+    Optional<File> actualFile=checkAndSelectAmongMultipleInstalls(sofficeFiles);
+    if (actualFile.isPresent()) {
+      setupPreferencesForOO(actualFile.get().getParentFile(),actualFile.get(),SOFFICE_EXE);
+    }
+ else {
       return false;
     }
-    if (sofficeFiles.size() > 1) {
-      DefaultListModel<File> mod=new DefaultListModel<>();
-      for (      File tmpfile : sofficeFiles) {
-        mod.addElement(tmpfile);
-      }
-      JList<File> fileList=new JList<>(mod);
-      fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      fileList.setSelectedIndex(0);
-      FormBuilder builder=FormBuilder.create().layout(new FormLayout("left:pref","pref, 2dlu, pref, 4dlu, pref"));
-      builder.add(Localization.lang("Found more than one OpenOffice/LibreOffice executable.")).xy(1,1);
-      builder.add(Localization.lang("Please choose which one to connect to:")).xy(1,3);
-      builder.add(fileList).xy(1,5);
-      int answer=JOptionPane.showConfirmDialog(null,builder.getPanel(),Localization.lang("Choose OpenOffice/LibreOffice executable"),JOptionPane.OK_CANCEL_OPTION);
-      if (answer == JOptionPane.CANCEL_OPTION) {
-        return false;
-      }
- else {
-        sOffice=fileList.getSelectedValue();
-      }
-    }
- else {
-      sOffice=sofficeFiles.get(0);
-    }
-    return setupPreferencesForOO(sOffice.getParentFile(),sOffice,"soffice.exe");
   }
  else   if (OS.OS_X) {
-    File rootDir=new File("/Applications");
-    File[] files=rootDir.listFiles();
-    if (files != null) {
-      for (      File file : files) {
-        if (file.isDirectory() && ("OpenOffice.org.app".equals(file.getName()) || "LibreOffice.app".equals(file.getName()))) {
-          rootDir=file;
-          break;
-        }
-      }
-    }
-    File sOffice=findFileDir(rootDir,SOFFICE_BIN);
+    List<File> dirList=fileSearch.findOSXProgramFilesDir();
+    List<File> sofficeFiles=new ArrayList<>(fileSearch.findFileDir(dirList,SOFFICE_BIN));
     if (fileSearchCancelled) {
       return false;
     }
-    if (sOffice == null) {
+    Optional<File> actualFile=checkAndSelectAmongMultipleInstalls(sofficeFiles);
+    if (actualFile.isPresent()) {
+      for (      File rootdir : dirList) {
+        if (actualFile.get().getPath().startsWith(rootdir.getPath())) {
+          return setupPreferencesForOO(rootdir,actualFile.get(),SOFFICE_BIN);
+        }
+      }
       return false;
     }
  else {
-      return setupPreferencesForOO(rootDir,sOffice,SOFFICE_BIN);
+      return false;
     }
   }
  else {
     String usrRoot="/usr/lib";
-    File inUsr=findFileDir(new File(usrRoot),SOFFICE);
+    File inUsr=fileSearch.findFileInDir(new File(usrRoot),SOFFICE);
     if (fileSearchCancelled) {
       return false;
     }
     if (inUsr == null) {
-      inUsr=findFileDir(new File("/usr/lib64"),SOFFICE);
+      inUsr=fileSearch.findFileInDir(new File("/usr/lib64"),SOFFICE);
       if (inUsr != null) {
         usrRoot="/usr/lib64";
       }
@@ -96,7 +67,7 @@
     if (fileSearchCancelled) {
       return false;
     }
-    File inOpt=findFileDir(new File("/opt"),SOFFICE);
+    File inOpt=fileSearch.findFileInDir(new File("/opt"),SOFFICE);
     if (fileSearchCancelled) {
       return false;
     }
