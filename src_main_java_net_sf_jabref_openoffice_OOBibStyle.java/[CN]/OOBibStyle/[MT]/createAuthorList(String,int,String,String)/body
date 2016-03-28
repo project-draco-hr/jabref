@@ -1,4 +1,7 @@
 {
+  String etAlString=getStringCitProperty(ET_AL_STRING);
+  String authorSep=getStringCitProperty(AUTHOR_SEPARATOR);
+  String oxfordComma=getStringCitProperty(OXFORD_COMMA);
   StringBuilder sb=new StringBuilder();
   if (author != null) {
     AuthorList al=AuthorList.parse(author);
@@ -11,6 +14,9 @@
         sb.append(authorSep);
         sb.append(getAuthorLastName(al,j));
         j++;
+      }
+      if (al.getNumberOfAuthors() > 2) {
+        sb.append(oxfordComma);
       }
       sb.append(andString);
       sb.append(getAuthorLastName(al,al.getNumberOfAuthors() - 1));
