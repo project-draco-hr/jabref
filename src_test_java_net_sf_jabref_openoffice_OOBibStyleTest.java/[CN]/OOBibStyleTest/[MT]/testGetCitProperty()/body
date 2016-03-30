@@ -1,12 +1,10 @@
 {
-  URL defPath=JabRef.class.getResource(OpenOfficePanel.DEFAULT_NUMERICAL_STYLE_PATH);
-  Reader r=new InputStreamReader(defPath.openStream(),StandardCharsets.UTF_8);
-  OOBibStyle style=new OOBibStyle(r,mock(JournalAbbreviationRepository.class));
+  OOBibStyle style=new OOBibStyle(OpenOfficePanel.DEFAULT_NUMERICAL_STYLE_PATH,mock(JournalAbbreviationRepository.class));
   assertEquals(", ",style.getStringCitProperty("AuthorSeparator"));
   assertEquals(3,style.getIntCitProperty("MaxAuthors"));
   assertTrue(style.getBooleanCitProperty(OOBibStyle.MULTI_CITE_CHRONOLOGICAL));
   assertEquals("Default",style.getCitationCharacterFormat());
-  assertEquals("Example style file for JabRef-OO connection.",style.getName());
+  assertEquals("Example style file for JabRef-OO connection. [number]",style.getName());
   Set<String> journals=style.getJournals();
   assertTrue(journals.contains("Journal name 1"));
 }

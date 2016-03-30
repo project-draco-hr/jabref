@@ -3,8 +3,8 @@
   if (row >= 0) {
     FileListEntry entry=tableModel.getEntry(row);
     try {
-      ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByName(entry.type.getName());
-      JabRefDesktop.openExternalFileAnyFormat(metaData,entry.link,type == null ? entry.type : type);
+      Optional<ExternalFileType> type=ExternalFileTypes.getInstance().getExternalFileTypeByName(entry.type.get().getName());
+      JabRefDesktop.openExternalFileAnyFormat(metaData,entry.link,type.isPresent() ? type : entry.type);
     }
  catch (    IOException e) {
       LOGGER.warn("Cannot open selected file.",e);

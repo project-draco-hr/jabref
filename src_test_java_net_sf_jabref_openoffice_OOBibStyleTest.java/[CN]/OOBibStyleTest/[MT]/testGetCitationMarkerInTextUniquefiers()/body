@@ -1,0 +1,28 @@
+{
+  OOBibStyle style=new OOBibStyle(OpenOfficePanel.DEFAULT_NUMERICAL_STYLE_PATH,mock(JournalAbbreviationRepository.class));
+  Map<BibEntry,BibDatabase> entryDBMap=new HashMap<>();
+  List<BibEntry> entries=new ArrayList<>();
+  BibDatabase database=new BibDatabase();
+  BibEntry entry1=new BibEntry();
+  entry1.setField("author","Alpha Beta");
+  entry1.setField("title","Paper 1");
+  entry1.setField("year","2000");
+  entries.add(entry1);
+  database.insertEntry(entry1);
+  BibEntry entry3=new BibEntry();
+  entry3.setField("author","Alpha Beta");
+  entry3.setField("title","Paper 2");
+  entry3.setField("year","2000");
+  entries.add(entry3);
+  database.insertEntry(entry3);
+  BibEntry entry2=new BibEntry();
+  entry2.setField("author","Gamma Epsilon");
+  entry2.setField("year","2001");
+  entries.add(entry2);
+  database.insertEntry(entry2);
+  for (  BibEntry entry : database.getEntries()) {
+    entryDBMap.put(entry,database);
+  }
+  assertEquals("Beta [2000]; Beta [2000]; Epsilon [2001]",style.getCitationMarker(entries,entryDBMap,false,null,null));
+  assertEquals("Beta [2000a,b]; Epsilon [2001]",style.getCitationMarker(entries,entryDBMap,false,new String[]{"a","b",""},new int[]{1,1,1}));
+}

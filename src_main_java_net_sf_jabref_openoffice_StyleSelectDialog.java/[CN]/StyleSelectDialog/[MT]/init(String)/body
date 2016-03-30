@@ -46,14 +46,14 @@
       if (i == -1) {
         return;
       }
-      ExternalFileType type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("jstyle");
+      Optional<ExternalFileType> type=ExternalFileTypes.getInstance().getExternalFileTypeByExt("jstyle");
       String link=tableModel.getElementAt(i).getFile().getPath();
       try {
-        if (type == null) {
-          JabRefDesktop.openExternalFileUnknown(frame,new BibEntry(),new MetaData(),link,new UnknownExternalFileType("jstyle"));
+        if (type.isPresent()) {
+          JabRefDesktop.openExternalFileAnyFormat(new MetaData(),link,type);
         }
  else {
-          JabRefDesktop.openExternalFileAnyFormat(new MetaData(),link,type);
+          JabRefDesktop.openExternalFileUnknown(frame,new BibEntry(),new MetaData(),link,new UnknownExternalFileType("jstyle"));
         }
       }
  catch (      IOException e) {

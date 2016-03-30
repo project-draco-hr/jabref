@@ -4,15 +4,15 @@
   List<String> bibFiles=new ArrayList<>();
   for (  String fileName : fileNames) {
     Optional<String> extension=FileUtil.getFileExtension(fileName);
-    ExternalFileType fileType;
+    Optional<ExternalFileType> fileType;
     if (extension.isPresent() && "bib".equals(extension.get())) {
       bibFiles.add(fileName);
       continue;
     }
     fileType=ExternalFileTypes.getInstance().getExternalFileTypeByExt(extension.orElse(""));
-    if ((fileType != null) && (dropRow >= 0)) {
+    if ((fileType.isPresent()) && (dropRow >= 0)) {
       DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
-      dfh.handleDroppedfile(fileName,fileType,entryTable,dropRow);
+      dfh.handleDroppedfile(fileName,fileType.get(),entryTable,dropRow);
       continue;
     }
     notBibFiles.add(fileName);
