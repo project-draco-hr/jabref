@@ -6,10 +6,10 @@
       try {
         List<BibEntry> entries;
         if (OS.WINDOWS) {
-          entries=Globals.importFormatReader.importFromFile(data[1],data[0],JabRef.jrf);
+          entries=Globals.IMPORT_FORMAT_READER.importFromFile(data[1],data[0],JabRef.jrf);
         }
  else {
-          entries=Globals.importFormatReader.importFromFile(data[1],data[0].replace("~",System.getProperty("user.home")),JabRef.jrf);
+          entries=Globals.IMPORT_FORMAT_READER.importFromFile(data[1],data[0].replace("~",System.getProperty("user.home")),JabRef.jrf);
         }
         return Optional.of(new ParserResult(entries));
       }
@@ -22,10 +22,10 @@
       System.out.println(Localization.lang("Importing in unknown format") + ": " + data[0]);
       ImportFormatReader.UnknownFormatImport importResult;
       if (OS.WINDOWS) {
-        importResult=Globals.importFormatReader.importUnknownFormat(data[0]);
+        importResult=Globals.IMPORT_FORMAT_READER.importUnknownFormat(data[0]);
       }
  else {
-        importResult=Globals.importFormatReader.importUnknownFormat(data[0].replace("~",System.getProperty("user.home")));
+        importResult=Globals.IMPORT_FORMAT_READER.importUnknownFormat(data[0].replace("~",System.getProperty("user.home")));
       }
       if (importResult == null) {
         System.out.println(Localization.lang("Could not find a suitable import format."));
