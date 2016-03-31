@@ -1,0 +1,45 @@
+{
+  int piv=-1;
+  String tmpMarker=null;
+  if (uniquefiers != null) {
+    for (int i=0; i < uniquefiers.length; i++) {
+      if ((uniquefiers[i] == null) || uniquefiers[i].isEmpty()) {
+        if ((piv > -1) && (i > (piv + 1))) {
+          group(entries,uniquefiers,piv,i - 1);
+        }
+        piv=-1;
+      }
+ else {
+        BibEntry currentEntry=entries.get(i);
+        if (piv == -1) {
+          piv=i;
+          tmpMarker=getAuthorYearParenthesisMarker(Collections.singletonList(currentEntry),database,null,unlimAuthors);
+        }
+ else {
+          String thisMarker=getAuthorYearParenthesisMarker(Collections.singletonList(currentEntry),database,null,unlimAuthors);
+          String authorField=getStringCitProperty(AUTHOR_FIELD);
+          int maxAuthors=getIntCitProperty(MAX_AUTHORS);
+          String author=getCitationMarkerField(currentEntry,database.get(currentEntry),authorField);
+          AuthorList al=AuthorList.parse(author);
+          int prevALim=unlimAuthors[i - 1];
+          if (!thisMarker.equals(tmpMarker) || ((al.getNumberOfAuthors() > maxAuthors) && (unlimAuthors[i] != prevALim))) {
+            if ((piv > -1) && (i > (piv + 1))) {
+              group(entries,uniquefiers,piv,i - 1);
+            }
+            tmpMarker=thisMarker;
+            piv=i;
+          }
+        }
+      }
+    }
+    if (piv >= 0) {
+      group(entries,uniquefiers,piv,uniquefiers.length - 1);
+    }
+  }
+  if (inParenthesis) {
+    return getAuthorYearParenthesisMarker(entries,database,uniquefiers,unlimAuthors);
+  }
+ else {
+    return getAuthorYearInTextMarker(entries,database,uniquefiers,unlimAuthors);
+  }
+}

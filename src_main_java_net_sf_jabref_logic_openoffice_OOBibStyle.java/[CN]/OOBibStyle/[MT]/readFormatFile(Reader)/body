@@ -1,0 +1,62 @@
+{
+  StringBuilder sb=new StringBuilder();
+  int c;
+  while ((c=in.read()) != -1) {
+    sb.append((char)c);
+  }
+  localCopy=sb.toString();
+  String[] lines=sb.toString().split("\n");
+  BibStyleMode mode=BibStyleMode.NONE;
+  for (  String line1 : lines) {
+    String line=line1;
+    if (!line.isEmpty() && (line.charAt(line.length() - 1) == '\r')) {
+      line=line.substring(0,line.length() - 1);
+    }
+    if (line.trim().isEmpty() || (line.charAt(0) == '#')) {
+      continue;
+    }
+switch (line) {
+case NAME_MARK:
+      mode=BibStyleMode.NAME;
+    continue;
+case LAYOUT_MRK:
+  mode=BibStyleMode.LAYOUT;
+continue;
+case PROPERTIES_MARK:
+mode=BibStyleMode.PROPERTIES;
+continue;
+case CITATION_MARK:
+mode=BibStyleMode.CITATION;
+continue;
+case JOURNALS_MARK:
+mode=BibStyleMode.JOURNALS;
+continue;
+default :
+break;
+}
+switch (mode) {
+case NAME:
+if (!line.trim().isEmpty()) {
+name=line.trim();
+}
+break;
+case LAYOUT:
+handleStructureLine(line);
+break;
+case PROPERTIES:
+handlePropertiesLine(line,properties);
+break;
+case CITATION:
+handlePropertiesLine(line,citProperties);
+break;
+case JOURNALS:
+handleJournalsLine(line);
+break;
+default :
+break;
+}
+}
+if (mode != BibStyleMode.NONE) {
+valid=true;
+}
+}
