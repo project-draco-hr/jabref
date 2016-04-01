@@ -1,17 +1,10 @@
 {
-  FieldFormatterCleanups actions=new FieldFormatterCleanups(true,"pages[PageNumbersFormatter,DateFormatter]title[LowerCaseChanger]");
+  FieldFormatterCleanups actions=new FieldFormatterCleanups(true,"pages[normalize_page_numbers,normalize_date]title[lower_case]");
   List<FieldFormatterCleanup> formatterCleanups=actions.getConfiguredActions();
-  assertEquals(3,formatterCleanups.size());
-  for (  FieldFormatterCleanup cleanup : formatterCleanups) {
-    if (cleanup.getField().equals("title")) {
-      assertEquals("LowerCaseChanger",cleanup.getFormatter().getKey());
-    }
- else     if (cleanup.getField().equals("pages")) {
-      if (!("PageNumbersFormatter".equals(cleanup.getFormatter().getKey()) || "DateFormatter".equals(cleanup.getFormatter().getKey()))) {
-        fail("Wrong formatter for pages field: " + cleanup.getFormatter().getKey());
-      }
-    }
-  }
+  FieldFormatterCleanup normalizePages=new FieldFormatterCleanup("pages",new NormalizePagesFormatter());
+  FieldFormatterCleanup normalizeDatesInPages=new FieldFormatterCleanup("pages",new NormalizeDateFormatter());
+  FieldFormatterCleanup lowerCaseTitle=new FieldFormatterCleanup("title",new LowerCaseFormatter());
+  assertEquals(Arrays.asList(normalizePages,normalizeDatesInPages,lowerCaseTitle),formatterCleanups);
   actions.applySaveActions(entry);
   assertEquals("educational session 1",entry.getField("title"));
   assertEquals("1--7",entry.getField("pages"));
