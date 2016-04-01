@@ -4,13 +4,12 @@
   writeKeyField(entry,out);
   HashSet<String> written=new HashSet<>();
   written.add(BibEntry.KEY_FIELD);
-  boolean hasWritten=false;
   int indentation=getLengthOfLongestFieldName(entry);
   EntryType type=EntryTypes.getTypeOrDefault(entry.getType(),bibDatabaseMode);
   List<String> fields=type.getRequiredFieldsFlat();
   if (fields != null) {
     for (    String value : fields) {
-      hasWritten=hasWritten | writeField(entry,out,value,hasWritten,indentation);
+      writeField(entry,out,value,indentation);
       written.add(value);
     }
   }
@@ -18,7 +17,7 @@
   if (fields != null) {
     for (    String value : fields) {
       if (!written.contains(value)) {
-        hasWritten=hasWritten | writeField(entry,out,value,hasWritten,indentation);
+        writeField(entry,out,value,indentation);
         written.add(value);
       }
     }
@@ -31,7 +30,7 @@
     }
   }
   for (  String field : remainingFields) {
-    hasWritten=hasWritten | writeField(entry,out,field,hasWritten,indentation);
+    writeField(entry,out,field,indentation);
   }
-  out.write((hasWritten ? "," + Globals.NEWLINE : "") + '}');
+  out.write('}');
 }
