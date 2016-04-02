@@ -14,13 +14,14 @@
     if ((ks.getModifiers() & InputEvent.ALT_MASK) != 0) {
       modifiers=modifiers | InputEvent.ALT_MASK;
     }
-    if (SHORTCUT_MASK == -1) {
+    if (shortcutMask == -1) {
       try {
-        SHORTCUT_MASK=Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        shortcutMask=Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
       }
- catch (      Throwable ignored) {
+ catch (      AWTError|HeadlessException e) {
+        LOGGER.warn("Problem geting shortcut mask",e);
       }
     }
-    return KeyStroke.getKeyStroke(keyCode,SHORTCUT_MASK + modifiers);
+    return KeyStroke.getKeyStroke(keyCode,shortcutMask + modifiers);
   }
 }

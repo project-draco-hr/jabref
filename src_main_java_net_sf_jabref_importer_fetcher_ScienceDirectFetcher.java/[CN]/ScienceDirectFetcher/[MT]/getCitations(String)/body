@@ -1,17 +1,12 @@
 {
   String urlQuery;
-  ArrayList<String> ids=new ArrayList<>();
-  try {
-    urlQuery=ScienceDirectFetcher.SEARCH_URL + URLEncoder.encode(query,StandardCharsets.UTF_8.name());
-    int count=1;
-    String nextPage;
-    while (((nextPage=getCitationsFromUrl(urlQuery,ids)) != null) && (count < ScienceDirectFetcher.MAX_PAGES_TO_LOAD)) {
-      urlQuery=nextPage;
-      count++;
-    }
-    return ids;
+  List<String> ids=new ArrayList<>();
+  urlQuery=ScienceDirectFetcher.SEARCH_URL + URLEncoder.encode(query,StandardCharsets.UTF_8.name());
+  int count=1;
+  String nextPage;
+  while (((nextPage=getCitationsFromUrl(urlQuery,ids)) != null) && (count < ScienceDirectFetcher.MAX_PAGES_TO_LOAD)) {
+    urlQuery=nextPage;
+    count++;
   }
- catch (  UnsupportedEncodingException e) {
-    throw new RuntimeException(e);
-  }
+  return ids;
 }
