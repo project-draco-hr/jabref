@@ -1,0 +1,16 @@
+{
+  ListSelectionModel lsm=(ListSelectionModel)e.getSource();
+  int index=lsm.getAnchorSelectionIndex();
+  if (index != lastIndex) {
+    boolean isAdjusting=e.getValueIsAdjusting();
+    if (!isAdjusting) {
+      if (lastIndex > -1) {
+        String tag1=fieldList.getModel().getElementAt(lastIndex);
+        markedTextStore.setStyleForTag(tag1,"used",document);
+      }
+      String tag2=fieldList.getModel().getElementAt(index);
+      markedTextStore.setStyleForTag(tag2,"marked",document);
+      lastIndex=index;
+    }
+  }
+}

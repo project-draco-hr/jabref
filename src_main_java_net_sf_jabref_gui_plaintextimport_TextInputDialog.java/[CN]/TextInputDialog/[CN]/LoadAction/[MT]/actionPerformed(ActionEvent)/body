@@ -1,0 +1,19 @@
+{
+  try {
+    String chosen=FileDialogs.getNewFile(frame,null,null,".txt",JFileChooser.OPEN_DIALOG,false);
+    if (chosen != null) {
+      File newFile=new File(chosen);
+      document.remove(0,document.getLength());
+      EditorKit eKit=textPane.getEditorKit();
+      if (eKit != null) {
+        try (FileInputStream fis=new FileInputStream(newFile)){
+          eKit.read(fis,document,0);
+          document.setLogicalStyle(0,document.getStyle("regular"));
+        }
+       }
+    }
+  }
+ catch (  BadLocationException|IOException ex) {
+    LOGGER.warn("Problem reading or inserting file",ex);
+  }
+}

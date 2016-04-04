@@ -1,0 +1,36 @@
+{
+  String fieldName=fieldList.getSelectedValue();
+  if (fieldName != null) {
+    String txt=textPane.getSelectedText();
+    if (txt != null) {
+      int selectionStart=textPane.getSelectionStart();
+      int selectionEnd=textPane.getSelectionEnd();
+      textPane.setSelectionEnd(selectionStart);
+      document.setCharacterAttributes(selectionStart,selectionEnd - selectionStart,document.getStyle("marked"),true);
+      if (override.isSelected()) {
+        entry.setField(fieldName,txt);
+        markedTextStore.setStyleForTag(fieldName,"regular",document);
+        markedTextStore.insertPosition(fieldName,selectionStart,selectionEnd);
+      }
+ else {
+        markedTextStore.appendPosition(fieldName,selectionStart,selectionEnd);
+        String old=entry.getField(fieldName);
+        if (old == null) {
+          entry.setField(fieldName,txt);
+        }
+ else {
+          if (InternalBibtexFields.getFieldExtras(fieldName).contains(BibtexSingleFieldProperties.PERSON_NAMES)) {
+            entry.setField(fieldName,old + " and " + txt);
+          }
+ else           if ("keywords".equals(fieldName)) {
+            entry.addKeyword(txt);
+          }
+ else {
+            entry.setField(fieldName,old + txt);
+          }
+        }
+      }
+      updateSourceView();
+    }
+  }
+}
