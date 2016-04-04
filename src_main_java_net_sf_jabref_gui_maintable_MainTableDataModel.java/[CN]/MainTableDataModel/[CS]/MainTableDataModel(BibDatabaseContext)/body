@@ -1,0 +1,20 @@
+{
+  List<BibEntry> entries=context.getDatabase().getEntries();
+  eventList=new GlazedEntrySorter(entries);
+  EventList<BibEntry> initialEventList=eventList.getTheList();
+  sortedForTable=new SortedList<>(initialEventList,null);
+  sortedForMarking=new SortedList<>(sortedForTable,null);
+  sortedForSearch=new SortedList<>(sortedForMarking,null);
+  sortedForGrouping=new SortedList<>(sortedForSearch,null);
+  FilterList<BibEntry> groupFilterList=new FilterList<>(sortedForGrouping,EverythingMatcher.INSTANCE);
+  filterGroupToggle=new StartStopListAction<>(groupFilterList,GroupMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+  filterGroupToggle.updateFilterList(groupFilterList);
+  FilterList<BibEntry> searchFilterList=new FilterList<>(groupFilterList,EverythingMatcher.INSTANCE);
+  filterSearchToggle=new StartStopListAction<>(searchFilterList,SearchMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+  filterSearchToggle.updateFilterList(searchFilterList);
+  finalList=searchFilterList;
+  searchMatcher=null;
+  groupMatcher=null;
+  searchComparator=null;
+  groupComparator=null;
+}

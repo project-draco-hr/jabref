@@ -1,18 +1,9 @@
 {
-  final GlazedEntrySorter eventList=new GlazedEntrySorter(database.getEntries());
-  database.addDatabaseChangeListener(eventList);
+  database.addDatabaseChangeListener(tableModel.getEventList());
   database.addDatabaseChangeListener(SpecialFieldDatabaseChangeListener.getInstance());
-  groupFilterList=new FilterList<>(eventList.getTheList(),EverythingMatcher.INSTANCE);
-  if (filterGroupToggle != null) {
-    filterGroupToggle.updateFilterList(groupFilterList);
-  }
-  searchFilterList=new FilterList<>(groupFilterList,EverythingMatcher.INSTANCE);
-  if (filterSearchToggle != null) {
-    filterSearchToggle.updateFilterList(searchFilterList);
-  }
   tableFormat=new MainTableFormat(database);
   tableFormat.updateTableFormat();
-  mainTable=new MainTable(tableFormat,searchFilterList,frame,this);
+  mainTable=new MainTable(tableFormat,tableModel,frame,this);
   selectionListener=new MainTableSelectionListener(this,mainTable);
   mainTable.updateFont();
   mainTable.addSelectionListener(selectionListener);

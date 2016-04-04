@@ -5,24 +5,24 @@
   for (  BibEntry entry : basePanel.getDatabase().getEntries()) {
     entry.setSearchHit(false);
   }
-  for (  BibEntry entry : this.matchedEntries) {
+  for (  BibEntry entry : matchedEntries) {
     entry.setSearchHit(true);
   }
-  basePanel.stopShowingFloatSearch();
-  basePanel.getFilterSearchToggle().stop();
+  basePanel.mainTable.getTableModel().stopShowingFloatSearch();
+  basePanel.mainTable.getTableModel().getFilterSearchToggle().stop();
 switch (mode) {
 case FLOAT:
-    basePanel.getFilterSearchToggle().stop();
-  basePanel.startShowingFloatSearch();
+    basePanel.mainTable.getTableModel().getFilterSearchToggle().stop();
+  basePanel.mainTable.getTableModel().showFloatSearch();
 break;
 case FILTER:
-basePanel.stopShowingFloatSearch();
-basePanel.getFilterSearchToggle().start();
+basePanel.mainTable.getTableModel().stopShowingFloatSearch();
+basePanel.mainTable.getTableModel().getFilterSearchToggle().start();
 break;
 default :
 break;
 }
-int hits=this.matchedEntries.size();
+int hits=matchedEntries.size();
 if ((hits > 0) && (basePanel.mainTable.getRowCount() > 0)) {
 basePanel.mainTable.setSelected(0);
 }

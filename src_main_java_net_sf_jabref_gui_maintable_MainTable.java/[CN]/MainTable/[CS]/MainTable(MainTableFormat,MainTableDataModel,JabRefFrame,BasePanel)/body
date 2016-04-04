@@ -1,21 +1,13 @@
 {
   super();
+  this.model=model;
   addFocusListener(Globals.focusListener);
   setAutoResizeMode(Globals.prefs.getInt(JabRefPreferences.AUTO_RESIZE_MODE));
   this.tableFormat=tableFormat;
   this.panel=panel;
-  sortedForTable=new SortedList<>(list,null);
-  sortedForMarking=new SortedList<>(sortedForTable,null);
-  sortedForSearch=new SortedList<>(sortedForMarking,null);
-  sortedForGrouping=new SortedList<>(sortedForSearch,null);
-  searchMatcher=null;
-  groupMatcher=null;
-  searchComparator=null;
-  groupComparator=null;
-  DefaultEventTableModel<BibEntry> tableModel=(DefaultEventTableModel<BibEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedForGrouping,tableFormat);
-  setModel(tableModel);
+  setModel(GlazedListsSwing.eventTableModelWithThreadProxyList(model.getTableRows(),tableFormat));
   tableColorCodes=Globals.prefs.getBoolean(JabRefPreferences.TABLE_COLOR_CODES_ON);
-  localSelectionModel=(DefaultEventSelectionModel<BibEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(sortedForGrouping);
+  localSelectionModel=(DefaultEventSelectionModel<BibEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(model.getTableRows());
   setSelectionModel(localSelectionModel);
   pane=new JScrollPane(this);
   pane.setBorder(BorderFactory.createEmptyBorder());
@@ -29,7 +21,7 @@
     setIntercellSpacing(new Dimension(0,0));
   }
   this.setTableHeader(new PreventDraggingJTableHeader(this,tableFormat));
-  comparatorChooser=this.createTableComparatorChooser(this,sortedForTable,TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  comparatorChooser=this.createTableComparatorChooser(this,model.getSortedForTable(),TableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
   this.tableColumnListener=new PersistenceTableColumnListener(this);
   this.getTableHeader().setDefaultRenderer(new MainTableHeaderRenderer(this.getTableHeader().getDefaultRenderer()));
   getSelected();
@@ -38,6 +30,6 @@
   setTransferHandler(xfer);
   pane.setTransferHandler(xfer);
   setupComparatorChooser();
-  refreshSorting();
+  model.refreshSorting();
   setWidths();
 }

@@ -1,4 +1,7 @@
 {
+  if (worker != null) {
+    worker.cancel(true);
+  }
   if (searchField.getText().isEmpty()) {
     clearSearch();
     return;
@@ -9,7 +12,6 @@
     informUserAboutInvalidSearchQuery();
     return;
   }
-  SearchWorker worker=new SearchWorker(basePanel,searchQuery,searchMode);
-  worker.getWorker().run();
-  worker.getCallBack().update();
+  worker=new SearchWorker(basePanel,searchQuery,searchMode);
+  worker.execute();
 }
