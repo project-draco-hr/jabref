@@ -1,16 +1,15 @@
 {
   String data=ClipBoardManager.CLIPBOARD.getClipboardContents();
-  if (data != null) {
-    int selStart=textPane.getSelectionStart();
-    int selEnd=textPane.getSelectionEnd();
-    if ((selEnd - selStart) > 0) {
-      textPane.replaceSelection("");
-    }
-    int cPos=textPane.getCaretPosition();
-    try {
-      document.insertString(cPos,data,document.getStyle("regular"));
-    }
- catch (    BadLocationException ignored) {
-    }
+  int selStart=textPane.getSelectionStart();
+  int selEnd=textPane.getSelectionEnd();
+  if ((selEnd - selStart) > 0) {
+    textPane.replaceSelection("");
+  }
+  int cPos=textPane.getCaretPosition();
+  try {
+    document.insertString(cPos,data,document.getStyle("regular"));
+  }
+ catch (  BadLocationException ex) {
+    LOGGER.warn("Could not paste text",ex);
   }
 }
