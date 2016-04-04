@@ -1,36 +1,6 @@
 {
-  sortedForMarking.getReadWriteLock().writeLock().lock();
-  try {
-    Comparator<BibEntry> newComparator;
-    if (Globals.prefs.getBoolean(JabRefPreferences.FLOAT_MARKED_ENTRIES)) {
-      newComparator=markingComparator;
-    }
- else {
-      newComparator=null;
-    }
-    if (sortedForMarking.getComparator() != newComparator) {
-      sortedForMarking.setComparator(newComparator);
-    }
-  }
-  finally {
-    sortedForMarking.getReadWriteLock().writeLock().unlock();
-  }
-  sortedForSearch.getReadWriteLock().writeLock().lock();
-  try {
-    if (sortedForSearch.getComparator() != searchComparator) {
-      sortedForSearch.setComparator(searchComparator);
-    }
-  }
-  finally {
-    sortedForSearch.getReadWriteLock().writeLock().unlock();
-  }
-  sortedForGrouping.getReadWriteLock().writeLock().lock();
-  try {
-    if (sortedForGrouping.getComparator() != groupComparator) {
-      sortedForGrouping.setComparator(groupComparator);
-    }
-  }
-  finally {
-    sortedForGrouping.getReadWriteLock().writeLock().unlock();
-  }
+  updateMarkingComparator();
+  update(sortedForMarking,markingComparator);
+  update(sortedForSearch,searchComparator);
+  update(sortedForGrouping,groupComparator);
 }
