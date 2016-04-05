@@ -1,20 +1,23 @@
 {
-  if (this.searchState == searchState) {
+  Objects.requireNonNull(searchState);
+  if (filterAndSortingState.searchState == searchState) {
     return;
   }
-  if (this.searchState == DisplayOption.FLOAT) {
-    stopShowingFloatSearch();
-    refreshSorting();
+  boolean updateSortOrder=false;
+  if (filterAndSortingState.searchState == DisplayOption.FLOAT) {
+    updateSortOrder=true;
   }
- else   if (this.searchState == DisplayOption.FILTER) {
+ else   if (filterAndSortingState.searchState == DisplayOption.FILTER) {
     filterSearchToggle.stop();
   }
   if (searchState == DisplayOption.FLOAT) {
-    showFloatSearch();
-    refreshSorting();
+    updateSortOrder=true;
   }
  else   if (searchState == DisplayOption.FILTER) {
     filterSearchToggle.start();
   }
-  this.searchState=searchState;
+  filterAndSortingState.searchState=searchState;
+  if (updateSortOrder) {
+    updateSortOrder();
+  }
 }

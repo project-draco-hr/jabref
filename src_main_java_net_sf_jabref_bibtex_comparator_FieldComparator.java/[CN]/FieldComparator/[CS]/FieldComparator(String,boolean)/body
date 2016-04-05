@@ -1,10 +1,12 @@
 {
   this.fieldName=Objects.requireNonNull(field);
-  this.field=field.split(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
-  multiplier=reversed ? -1 : 1;
-  isTypeHeader=this.field[0].equals(BibEntry.TYPE_HEADER);
-  isNameField="author".equals(this.field[0]) || "editor".equals(this.field[0]);
-  isYearField="year".equals(this.field[0]);
-  isMonthField="month".equals(this.field[0]);
+  this.field=fieldName.split(MainTableFormat.COL_DEFINITION_FIELD_SEPARATOR);
+  fieldType=determineFieldType(this.field[0]);
   isNumeric=InternalBibtexFields.isNumeric(this.field[0]);
+  if (fieldType == FieldType.MONTH) {
+    multiplier=reversed ? 1 : -1;
+  }
+ else {
+    multiplier=reversed ? -1 : 1;
+  }
 }

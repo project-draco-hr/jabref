@@ -1,21 +1,13 @@
 {
   List<BibEntry> entries=context.getDatabase().getEntries();
-  eventList=new GlazedEntrySorter(entries);
-  EventList<BibEntry> initialEventList=eventList.getTheList();
-  sortedForTable=new SortedList<>(initialEventList,null);
-  sortedForMarking=new SortedList<>(sortedForTable,null);
-  sortedForSearch=new SortedList<>(sortedForMarking,null);
-  sortedForGrouping=new SortedList<>(sortedForSearch,null);
-  FilterList<BibEntry> groupFilterList=new FilterList<>(sortedForGrouping,EverythingMatcher.INSTANCE);
-  filterGroupToggle=new StartStopListAction<>(groupFilterList,GroupMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+  EventList<BibEntry> initialEventList=new BasicEventList<>();
+  initialEventList.addAll(entries);
+  listSynchronizer=new ListSynchronizer(initialEventList);
+  sortedForUserDefinedTableColumnSorting=new SortedList<>(initialEventList,null);
+  sortedForMarkingSearchGrouping=new SortedList<>(sortedForUserDefinedTableColumnSorting,null);
+  FilterList<BibEntry> groupFilterList=new FilterList<>(sortedForMarkingSearchGrouping,EverythingMatcher.INSTANCE);
+  filterGroupToggle=new StartStopListFilterAction(groupFilterList,GroupMatcher.INSTANCE,EverythingMatcher.INSTANCE);
   FilterList<BibEntry> searchFilterList=new FilterList<>(groupFilterList,EverythingMatcher.INSTANCE);
-  filterSearchToggle=new StartStopListAction<>(searchFilterList,SearchMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+  filterSearchToggle=new StartStopListFilterAction(searchFilterList,SearchMatcher.INSTANCE,EverythingMatcher.INSTANCE);
   finalList=searchFilterList;
-  searchMatcher=null;
-  groupMatcher=null;
-  searchComparator=null;
-  groupComparator=null;
-  markingComparator=null;
-  updateSearchState(DisplayOption.DISABLED);
-  updateGroupingState(DisplayOption.DISABLED);
 }

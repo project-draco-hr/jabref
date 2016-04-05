@@ -1,20 +1,23 @@
 {
-  if (this.groupingState == groupingState) {
+  Objects.requireNonNull(groupingState);
+  if (filterAndSortingState.groupingState == groupingState) {
     return;
   }
-  if (this.groupingState == DisplayOption.FLOAT) {
-    stopShowingFloatGrouping();
-    refreshSorting();
+  boolean updateSortOrder=false;
+  if (filterAndSortingState.groupingState == DisplayOption.FLOAT) {
+    updateSortOrder=true;
   }
- else   if (this.groupingState == DisplayOption.FILTER) {
+ else   if (filterAndSortingState.groupingState == DisplayOption.FILTER) {
     filterGroupToggle.stop();
   }
   if (groupingState == DisplayOption.FLOAT) {
-    showFloatGrouping();
-    refreshSorting();
+    updateSortOrder=true;
   }
  else   if (groupingState == DisplayOption.FILTER) {
     filterGroupToggle.start();
   }
-  this.groupingState=groupingState;
+  filterAndSortingState.groupingState=groupingState;
+  if (updateSortOrder) {
+    updateSortOrder();
+  }
 }
