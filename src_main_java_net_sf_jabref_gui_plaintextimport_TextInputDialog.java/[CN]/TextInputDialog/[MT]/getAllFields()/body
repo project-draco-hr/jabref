@@ -1,0 +1,15 @@
+{
+  Optional<EntryType> type=EntryTypes.getType(entry.getType(),frame.getCurrentBasePanel().getBibDatabaseContext().getMode());
+  if (type.isPresent()) {
+    allFields.addAll(type.get().getAllFields());
+    requiredFields.addAll(type.get().getRequiredFieldsFlat());
+    optionalFields.addAll(type.get().getPrimaryOptionalFields());
+  }
+  List<String> internalFields=InternalBibtexFields.getAllFieldNames();
+  for (  String field : internalFields) {
+    if (!allFields.contains(field)) {
+      allFields.add(field);
+    }
+  }
+  return allFields.toArray(new String[allFields.size()]);
+}
