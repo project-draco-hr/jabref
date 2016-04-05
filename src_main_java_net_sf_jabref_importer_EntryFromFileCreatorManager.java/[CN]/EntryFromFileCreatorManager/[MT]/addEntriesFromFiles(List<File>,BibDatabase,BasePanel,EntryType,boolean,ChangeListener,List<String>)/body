@@ -8,7 +8,7 @@
     }
  else {
       Optional<BibEntry> entry=creator.createEntry(f,generateKeywordsFromPathToFile);
-      if (entry.isPresent()) {
+      if (!entry.isPresent()) {
         importGUIMessages.add("Problem importing " + f.getPath() + ": Entry could not be created.");
         continue;
       }
@@ -34,9 +34,7 @@
       changeListener.stateChanged(new ChangeEvent(this));
     }
   }
-  System.out.println("count = " + count);
   if ((count > 0) && (panel != null)) {
-    System.out.println("adding edit");
     ce.end();
     panel.undoManager.addEdit(ce);
   }
