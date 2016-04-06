@@ -1,14 +1,14 @@
 {
   try {
     String lookFeel;
-    String systemLnF=UIManager.getSystemLookAndFeelClassName();
+    String systemLookFeel=UIManager.getSystemLookAndFeelClassName();
     if (Globals.prefs.getBoolean(JabRefPreferences.USE_DEFAULT_LOOK_AND_FEEL)) {
-      lookFeel=systemLnF;
+      lookFeel=systemLookFeel;
     }
  else {
       lookFeel=Globals.prefs.get(JabRefPreferences.WIN_LOOK_AND_FEEL);
     }
-    if ("javax.swing.plaf.metal.MetalLookAndFeel".equals(lookFeel)) {
+    if (UIManager.getCrossPlatformLookAndFeelClassName().equals(lookFeel)) {
       Plastic3DLookAndFeel lnf=new Plastic3DLookAndFeel();
       Plastic3DLookAndFeel.setCurrentTheme(new SkyBluer());
       com.jgoodies.looks.Options.setPopupDropShadowEnabled(true);
@@ -19,9 +19,9 @@
         UIManager.setLookAndFeel(lookFeel);
       }
  catch (      ClassNotFoundException|InstantiationException|IllegalAccessException|UnsupportedLookAndFeelException e) {
-        UIManager.setLookAndFeel(systemLnF);
-        Globals.prefs.put(JabRefPreferences.WIN_LOOK_AND_FEEL,systemLnF);
-        JOptionPane.showMessageDialog(JabRef.jrf,Localization.lang("Unable to find the requested Look & Feel and thus the default one is used."),Localization.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+        UIManager.setLookAndFeel(systemLookFeel);
+        Globals.prefs.put(JabRefPreferences.WIN_LOOK_AND_FEEL,systemLookFeel);
+        JOptionPane.showMessageDialog(JabRef.mainFrame,Localization.lang("Unable to find the requested Look & Feel and thus the default one is used."),Localization.lang("Warning"),JOptionPane.WARNING_MESSAGE);
       }
     }
   }
