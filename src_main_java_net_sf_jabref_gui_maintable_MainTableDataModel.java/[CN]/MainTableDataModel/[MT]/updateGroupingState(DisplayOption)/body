@@ -1,0 +1,23 @@
+{
+  Objects.requireNonNull(groupingState);
+  if (filterAndSortingState.groupingState == groupingState) {
+    return;
+  }
+  boolean updateSortOrder=false;
+  if (filterAndSortingState.groupingState == DisplayOption.FLOAT) {
+    updateSortOrder=true;
+  }
+ else   if (filterAndSortingState.groupingState == DisplayOption.FILTER) {
+    filterGroupToggle.stop();
+  }
+  if (groupingState == DisplayOption.FLOAT) {
+    updateSortOrder=true;
+  }
+ else   if (groupingState == DisplayOption.FILTER) {
+    filterGroupToggle.start();
+  }
+  filterAndSortingState.groupingState=groupingState;
+  if (updateSortOrder) {
+    updateSortOrder();
+  }
+}

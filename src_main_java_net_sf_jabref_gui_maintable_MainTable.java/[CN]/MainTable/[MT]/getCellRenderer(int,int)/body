@@ -2,10 +2,10 @@
   int score=-3;
   DefaultTableCellRenderer renderer=MainTable.defRenderer;
   CellRendererMode status=getCellStatus(row,column);
-  if (!isFloatSearchActive || matches(row,searchMatcher)) {
+  if (!(model.getSearchState() == MainTableDataModel.DisplayOption.FLOAT) || matches(row,model.getSearchState() != MainTableDataModel.DisplayOption.DISABLED ? SearchMatcher.INSTANCE : null)) {
     score++;
   }
-  if (!isFloatGroupingActive || matches(row,groupMatcher)) {
+  if (!(model.getGroupingState() == MainTableDataModel.DisplayOption.FLOAT) || matches(row,model.getGroupingState() != MainTableDataModel.DisplayOption.DISABLED ? GroupMatcher.INSTANCE : null)) {
     score+=2;
   }
   if (score < -1) {
