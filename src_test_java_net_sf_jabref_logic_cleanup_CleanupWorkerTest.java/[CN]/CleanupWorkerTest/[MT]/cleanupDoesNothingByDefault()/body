@@ -1,6 +1,4 @@
 {
-  CleanupPreset preset=new CleanupPreset(EnumSet.noneOf(CleanupPreset.CleanupStep.class));
-  CleanupWorker worker=new CleanupWorker(preset);
   BibEntry entry=new BibEntry();
   entry.setField(BibEntry.KEY_FIELD,"Toot");
   entry.setField("pdf","aPdfFile");
@@ -15,9 +13,9 @@
   entry.setField("journal","test");
   entry.setField("title","<b>hallo</b> units 1 A case AlGaAs and latex $\\alpha$$\\beta$");
   entry.setField("abstract","R??flexions");
-  File tempFile=testFolder.newFile();
-  FileField.ParsedFileField fileField=new FileField.ParsedFileField("",tempFile.getAbsolutePath(),"");
+  File tempFile=bibFolder.newFile();
+  ParsedFileField fileField=new ParsedFileField("",tempFile.getAbsolutePath(),"");
   entry.setField("file",FileField.getStringRepresentation(fileField));
-  List<FieldChange> changes=worker.cleanup(entry);
+  List<FieldChange> changes=worker.cleanup(emptyPreset,entry);
   Assert.assertEquals(Collections.emptyList(),changes);
 }

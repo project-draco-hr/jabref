@@ -1,0 +1,12 @@
+{
+  CleanupPreset preset=new CleanupPreset(CleanupPreset.CleanupStep.MOVE_PDF);
+  File subfolder=bibFolder.newFolder();
+  File tempFile=new File(subfolder,"test.pdf");
+  tempFile.createNewFile();
+  BibEntry entry=new BibEntry();
+  ParsedFileField fileField=new ParsedFileField("",tempFile.getAbsolutePath(),"");
+  entry.setField("file",FileField.getStringRepresentation(fileField));
+  worker.cleanup(preset,entry);
+  ParsedFileField newFileField=new ParsedFileField("",tempFile.getName(),"");
+  Assert.assertEquals(FileField.getStringRepresentation(newFileField),entry.getField("file"));
+}
