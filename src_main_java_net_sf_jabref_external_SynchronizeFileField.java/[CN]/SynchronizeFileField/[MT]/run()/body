@@ -14,7 +14,7 @@
   Set<BibEntry> changedEntries=new HashSet<>();
   if (autoSet) {
     Collection<BibEntry> entries=new ArrayList<>(sel);
-    Runnable r=Util.autoSetLinks(entries,ce,changedEntries,null,panel.getBibDatabaseContext().getMetaData(),null,null);
+    Runnable r=Util.autoSetLinks(entries,ce,changedEntries,null,panel.getBibDatabaseContext(),null,null);
     JabRefExecutorService.INSTANCE.executeAndWait(r);
   }
   progress+=sel.size() * weightAutoSet;
@@ -27,7 +27,7 @@
       if ((old != null) && !(old.isEmpty())) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old);
-        List<String> dirsS=panel.getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD);
+        List<String> dirsS=panel.getBibDatabaseContext().getFileDirectory();
         List<File> dirs=new ArrayList<>();
         for (        String dirs1 : dirsS) {
           dirs.add(new File(dirs1));
@@ -50,7 +50,7 @@
             }
 switch (answer) {
 case 1:
-              FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext().getMetaData());
+              FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext());
             flEditor.setVisible(true,true);
           break;
 case 2:
@@ -87,7 +87,7 @@ panel.mainTable.repaint();
 }
 }
  else {
-FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext().getMetaData());
+FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext());
 editor.setVisible(true,false);
 }
 }

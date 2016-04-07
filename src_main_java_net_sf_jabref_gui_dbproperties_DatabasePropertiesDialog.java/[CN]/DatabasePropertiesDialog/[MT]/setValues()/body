@@ -24,14 +24,12 @@
     saveOrderPanel.setSaveOrderConfig(saveOrderConfig);
   }
   saveOrderPanel.setEnabled(selected);
-  List<String> fileD=metaData.getData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR));
-  if (fileD == null) {
-    fileDir.setText("");
+  Optional<String> fileD=metaData.getDefaultFileDirectory();
+  if (fileD.isPresent()) {
+    fileDir.setText(fileD.get().trim());
   }
  else {
-    if (!(fileD.isEmpty())) {
-      fileDir.setText((fileD.get(0)).trim());
-    }
+    fileDir.setText("");
   }
   List<String> fileDI=metaData.getData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL));
   List<String> fileDIL=metaData.getData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_IND_LEGACY));
