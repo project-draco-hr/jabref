@@ -3,25 +3,22 @@
   if (!caseSensitive) {
     searchString=searchString.toLowerCase();
   }
-  List<String> words=new SentenceAnalyzer(searchString).getWords();
-  boolean[] matchFound=new boolean[words.size()];
-  for (  String field : bibEntry.getFieldNames()) {
-    if (bibEntry.hasField(field)) {
-      String fieldContent=ContainBasedSearchRule.REMOVE_LATEX_COMMANDS.format(bibEntry.getField(field));
-      if (!caseSensitive) {
-        fieldContent=fieldContent.toLowerCase();
-      }
-      int index=0;
-      for (      String word : words) {
-        matchFound[index]=matchFound[index] || fieldContent.contains(word);
-        index++;
+  List<String> unmatchedWords=new SentenceAnalyzer(searchString).getWords();
+  for (  String fieldContent : bibEntry.getFieldValues()) {
+    String formattedFieldContent=ContainBasedSearchRule.REMOVE_LATEX_COMMANDS.format(fieldContent);
+    if (!caseSensitive) {
+      formattedFieldContent=formattedFieldContent.toLowerCase();
+    }
+    Iterator<String> unmatchedWordsIterator=unmatchedWords.iterator();
+    while (unmatchedWordsIterator.hasNext()) {
+      String word=unmatchedWordsIterator.next();
+      if (formattedFieldContent.contains(word)) {
+        unmatchedWordsIterator.remove();
       }
     }
-  }
-  for (  boolean aMatchFound : matchFound) {
-    if (!aMatchFound) {
-      return false;
+    if (unmatchedWords.isEmpty()) {
+      return true;
     }
   }
-  return true;
+  return false;
 }

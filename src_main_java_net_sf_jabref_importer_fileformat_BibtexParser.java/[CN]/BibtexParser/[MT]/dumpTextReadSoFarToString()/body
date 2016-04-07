@@ -1,12 +1,8 @@
 {
-  StringBuilder entry=new StringBuilder();
-  while (!pureTextFromFile.isEmpty()) {
-    entry.append(pureTextFromFile.pollFirst());
-  }
-  String result=entry.toString();
-  int indexOfAt=entry.indexOf("@");
+  String result=getPureTextFromFile();
+  int indexOfAt=result.indexOf("@");
   if (indexOfAt == -1) {
-    return purgeEOFCharacters(entry);
+    return purgeEOFCharacters(result);
   }
  else {
     int runningIndex=indexOfAt - 1;
@@ -24,7 +20,6 @@
         runningIndex++;
       }
     }
-    result=result.substring(runningIndex + 1);
-    return result;
+    return result.substring(runningIndex + 1);
   }
 }
