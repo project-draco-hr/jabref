@@ -1,3 +1,9 @@
 {
-  Runtime.getRuntime().exec("cmd.exe /c start " + filePath.replace("&","\"&\"").replace(" ","\" \""));
+  Optional<ExternalFileType> type=ExternalFileTypes.getInstance().getExternalFileTypeByExt(fileType);
+  if (type.isPresent() && !type.get().getOpenWithApplication().isEmpty()) {
+    openFileWithApplication(filePath,type.get().getOpenWithApplication());
+  }
+ else {
+    Runtime.getRuntime().exec(new String[]{"explorer.exe",filePath});
+  }
 }
