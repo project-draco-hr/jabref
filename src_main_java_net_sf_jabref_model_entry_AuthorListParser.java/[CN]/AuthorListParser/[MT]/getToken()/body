@@ -15,6 +15,10 @@
     tokenEnd++;
     return TOKEN_COMMA;
   }
+  if (original.charAt(tokenStart) == ';') {
+    tokenEnd++;
+    return TOKEN_AND;
+  }
   tokenAbbr=-1;
   tokenTerm=' ';
   tokenCase=true;
@@ -54,7 +58,7 @@
     if (c == '\\') {
       currentBackslash=tokenEnd;
     }
-    if ((bracesLevel == 0) && ((",~-".indexOf(c) != -1) || Character.isWhitespace(c))) {
+    if ((bracesLevel == 0) && ((",;~-".indexOf(c) != -1) || Character.isWhitespace(c))) {
       break;
     }
     tokenEnd++;

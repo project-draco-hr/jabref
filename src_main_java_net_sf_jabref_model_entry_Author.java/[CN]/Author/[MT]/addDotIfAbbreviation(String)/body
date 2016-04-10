@@ -1,0 +1,58 @@
+{
+  if (name == null || name.isEmpty()) {
+    return name;
+  }
+  if ((name.length() == 1) && Character.isLetter(name.charAt(0)) && Character.isUpperCase(name.charAt(0))) {
+    return name + ".";
+  }
+  StringBuilder sb=new StringBuilder();
+  char lastChar=name.charAt(0);
+  for (int i=0; i < name.length(); i++) {
+    if (i > 0) {
+      lastChar=name.charAt(i - 1);
+    }
+    char currentChar=name.charAt(i);
+    sb.append(currentChar);
+    if (currentChar == '.') {
+      if (i + 1 < name.length() && Character.isUpperCase(name.charAt(i + 1))) {
+        sb.append(' ');
+      }
+    }
+    boolean currentIsUppercaseLetter=Character.isLetter(currentChar) && Character.isUpperCase(currentChar);
+    if (!currentIsUppercaseLetter) {
+      continue;
+    }
+    boolean lastIsLowercaseLetter=Character.isLetter(lastChar) && Character.isLowerCase(lastChar);
+    if (lastIsLowercaseLetter) {
+      continue;
+    }
+    if (i + 1 >= name.length()) {
+      sb.append('.');
+      continue;
+    }
+    char nextChar=name.charAt(i + 1);
+    if ('-' == nextChar) {
+      sb.append(".");
+      continue;
+    }
+    if ('.' == nextChar) {
+      continue;
+    }
+    boolean nextWordIsUppercase=true;
+    for (int j=i + 1; j < name.length(); j++) {
+      char furtherChar=name.charAt(j);
+      if (Character.isWhitespace(furtherChar) || furtherChar == '-' || furtherChar == '~' || furtherChar == '.') {
+        break;
+      }
+      boolean furtherIsUppercaseLetter=Character.isLetter(furtherChar) && Character.isUpperCase(furtherChar);
+      if (!furtherIsUppercaseLetter) {
+        nextWordIsUppercase=false;
+        break;
+      }
+    }
+    if (nextWordIsUppercase) {
+      sb.append(". ");
+    }
+  }
+  return sb.toString().trim();
+}
