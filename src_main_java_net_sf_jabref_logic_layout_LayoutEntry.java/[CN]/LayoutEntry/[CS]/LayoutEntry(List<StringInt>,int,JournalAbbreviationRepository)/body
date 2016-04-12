@@ -1,8 +1,6 @@
 {
   this.repository=repository;
-  List<StringInt> blockEntries=null;
   List<LayoutEntry> tmpEntries=new ArrayList<>();
-  LayoutEntry le;
   String blockStart=parsedEntries.get(0).s;
   String blockEnd=parsedEntries.get(parsedEntries.size() - 1).s;
   if (!blockStart.equals(blockEnd)) {
@@ -10,6 +8,7 @@
   }
   type=layoutType;
   text=blockEnd;
+  List<StringInt> blockEntries=null;
   for (  StringInt parsedEntry : parsedEntries.subList(1,parsedEntries.size() - 1)) {
 switch (parsedEntry.i) {
 case LayoutHelper.IS_FIELD_START:
@@ -21,7 +20,8 @@ case LayoutHelper.IS_FIELD_END:
 case LayoutHelper.IS_GROUP_END:
 if (blockStart.equals(parsedEntry.s)) {
   blockEntries.add(parsedEntry);
-  le=new LayoutEntry(blockEntries,parsedEntry.i == LayoutHelper.IS_GROUP_END ? LayoutHelper.IS_GROUP_START : LayoutHelper.IS_FIELD_START,repository);
+  int groupType=parsedEntry.i == LayoutHelper.IS_GROUP_END ? LayoutHelper.IS_GROUP_START : LayoutHelper.IS_FIELD_START;
+  LayoutEntry le=new LayoutEntry(blockEntries,groupType,repository);
   tmpEntries.add(le);
   blockEntries=null;
 }
