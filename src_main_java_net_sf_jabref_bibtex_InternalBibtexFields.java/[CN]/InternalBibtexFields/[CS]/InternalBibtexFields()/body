@@ -3,27 +3,23 @@
   BibtexSingleField dummy;
   add(new BibtexSingleField("address",true,BibtexSingleField.SMALL_W));
   add(new BibtexSingleField("annote",true,BibtexSingleField.LARGE_W));
-  dummy=new BibtexSingleField("author",true,BibtexSingleField.MEDIUM_W,280);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.PERSON_NAMES));
-  add(dummy);
+  add(new BibtexSingleField("author",true,BibtexSingleField.MEDIUM_W,280));
   add(new BibtexSingleField("booktitle",true,175));
   add(new BibtexSingleField("chapter",true,BibtexSingleField.SMALL_W));
   add(new BibtexSingleField("crossref",true,BibtexSingleField.SMALL_W));
   add(new BibtexSingleField("edition",true,BibtexSingleField.SMALL_W));
-  dummy=new BibtexSingleField("editor",true,BibtexSingleField.MEDIUM_W,280);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.PERSON_NAMES));
-  add(dummy);
+  add(new BibtexSingleField("editor",true,BibtexSingleField.MEDIUM_W,280));
   add(new BibtexSingleField("howpublished",true,BibtexSingleField.MEDIUM_W));
   add(new BibtexSingleField("institution",true,BibtexSingleField.MEDIUM_W));
   dummy=new BibtexSingleField("journal",true,BibtexSingleField.SMALL_W);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.JOURNAL_NAMES));
+  dummy.setExtras(EnumSet.of(FieldProperties.JOURNAL_NAME));
   add(dummy);
   dummy=new BibtexSingleField("journaltitle",true,BibtexSingleField.SMALL_W);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.JOURNAL_NAMES));
+  dummy.setExtras(EnumSet.of(FieldProperties.JOURNAL_NAME));
   add(dummy);
   add(new BibtexSingleField("key",true));
   dummy=new BibtexSingleField("month",true,BibtexSingleField.SMALL_W);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.MONTH));
+  dummy.setExtras(EnumSet.of(FieldProperties.MONTH));
   add(dummy);
   add(new BibtexSingleField("note",true,BibtexSingleField.MEDIUM_W));
   add(new BibtexSingleField("number",true,BibtexSingleField.SMALL_W,60).setNumeric(true));
@@ -83,7 +79,7 @@
   dummy.setPrivate();
   add(dummy);
   dummy=new BibtexSingleField("doi",true,BibtexSingleField.SMALL_W);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.DOI));
+  dummy.setExtras(EnumSet.of(FieldProperties.DOI));
   add(dummy);
   add(new BibtexSingleField("eid",true,BibtexSingleField.SMALL_W));
   dummy=new BibtexSingleField("date",true);
@@ -93,25 +89,28 @@
   add(new BibtexSingleField("location",false));
   add(new BibtexSingleField("abstract",false,BibtexSingleField.LARGE_W,400));
   dummy=new BibtexSingleField("url",false,BibtexSingleField.SMALL_W);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.EXTERNAL));
+  dummy.setExtras(EnumSet.of(FieldProperties.EXTERNAL));
   add(dummy);
   add(new BibtexSingleField("comment",false,BibtexSingleField.MEDIUM_W));
   add(new BibtexSingleField("keywords",false,BibtexSingleField.SMALL_W));
   dummy=new BibtexSingleField(Globals.FILE_FIELD,false);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.FILE_EDITOR));
+  dummy.setExtras(EnumSet.of(FieldProperties.FILE_EDITOR));
   add(dummy);
   add(new BibtexSingleField("search",false,75));
+  dummy=new BibtexSingleField("gender",true,BibtexSingleField.SMALL_W);
+  dummy.getExtras().add(FieldProperties.GENDER);
+  add(dummy);
   dummy=new BibtexSingleField(InternalBibtexFields.NUMBER_COL,false,32);
   dummy.setPrivate();
   dummy.setWriteable(false);
   dummy.setDisplayable(false);
   add(dummy);
   dummy=new BibtexSingleField(InternalBibtexFields.OWNER,false,BibtexSingleField.SMALL_W);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.SET_OWNER));
+  dummy.setExtras(EnumSet.of(FieldProperties.OWNER));
   dummy.setPrivate();
   add(dummy);
   dummy=new BibtexSingleField(InternalBibtexFields.TIMESTAMP,false,BibtexSingleField.SMALL_W);
-  dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.DATEPICKER));
+  dummy.setExtras(EnumSet.of(FieldProperties.DATE));
   dummy.setPrivate();
   add(dummy);
   dummy=new BibtexSingleField(InternalBibtexFields.ENTRYTYPE,false,75);
@@ -132,13 +131,31 @@
   dummy.setWriteable(true);
   dummy.setDisplayable(false);
   add(dummy);
-  for (  String yesNoField : IEEETranEntryTypes.IEEETRANBSTCTL_YES_NO_FIELDS) {
+  for (  String yesNoField : IEEETRANBSTCTL_YES_NO_FIELDS) {
     dummy=new BibtexSingleField(yesNoField,false);
-    dummy.setExtras(EnumSet.of(BibtexSingleFieldProperties.YES_NO));
+    dummy.setExtras(EnumSet.of(FieldProperties.YES_NO));
     add(dummy);
   }
-  for (  String numericField : IEEETranEntryTypes.IEEETRANBSTCTL_NUMERIC_FIELDS) {
-    add(new BibtexSingleField(numericField,false).setNumeric(true));
+  for (  String numericField : IEEETRANBSTCTL_NUMERIC_FIELDS) {
+    dummy=new BibtexSingleField(numericField,false).setNumeric(true);
+    dummy.getExtras().add(FieldProperties.INTEGER);
+    add(dummy);
+  }
+  for (  String fieldText : BIBLATEX_PERSON_NAME_FIELDS) {
+    BibtexSingleField field=fieldSet.get(fieldText);
+    if (field == null) {
+      field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
+    }
+    field.getExtras().add(FieldProperties.PERSON_NAMES);
+    add(field);
+  }
+  for (  String fieldText : BIBLATEX_DATE_FIELDS) {
+    BibtexSingleField field=fieldSet.get(fieldText);
+    if (field == null) {
+      field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
+    }
+    field.getExtras().add(FieldProperties.DATE);
+    add(field);
   }
   for (  BibtexSingleField sField : fieldSet.values()) {
     if (!sField.isPrivate()) {
