@@ -5,8 +5,12 @@
   text=text.replace("/".concat(Globals.NEWLINE),"/");
   text=text.replace(Globals.NEWLINE," ");
   text=text.replace("##NEWLINE##",Globals.NEWLINE);
-  List<BibEntry> importedEntries=fimp.importEntries(text,frame);
-  if (importedEntries == null) {
+  ParserResult importerResult=fimp.importEntries(text);
+  if (importerResult.hasWarnings()) {
+    frame.showMessage(importerResult.getErrorMessage());
+  }
+  List<BibEntry> importedEntries=importerResult.getDatabase().getEntries();
+  if (importedEntries.isEmpty()) {
     return false;
   }
  else {

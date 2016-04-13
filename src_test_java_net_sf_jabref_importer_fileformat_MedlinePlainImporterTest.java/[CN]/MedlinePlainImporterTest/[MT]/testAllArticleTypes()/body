@@ -1,8 +1,9 @@
 {
-  try (InputStream stream=streamForString("PMID-22664795" + "\n" + "PT  - journal article"+ "\n"+ "PT  - classical article"+ "\n"+ "PT  - corrected and republished article"+ "\n"+ "PT  - introductory journal article"+ "\n"+ "PT  - newspaper article")){
+  try (InputStream stream=streamForString("PMID-22664795" + "\n" + "MH  - Female\n"+ "PT  - journal article"+ "\n"+ "PT  - classical article"+ "\n"+ "PT  - corrected and republished article"+ "\n"+ "PT  - introductory journal article"+ "\n"+ "PT  - newspaper article")){
     List<BibEntry> actualEntries=importer.importEntries(stream,new OutputPrinterToNull());
     BibEntry expectedEntry=new BibEntry();
     expectedEntry.setType("article");
+    expectedEntry.setField("keywords","Female");
     BibtexEntryAssert.assertEquals(Arrays.asList(expectedEntry),actualEntries);
   }
  }

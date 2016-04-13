@@ -1,0 +1,55 @@
+{
+  if (!dirOnly && OS.OS_X) {
+    return FileDialogs.getNewFileForMac(owner,directory,dialogType,updateWorkingDirectory);
+  }
+  JFileChooser fc;
+  try {
+    fc=new JFileChooser(directory);
+    if (accessory != null) {
+      fc.setAccessory(accessory);
+    }
+  }
+ catch (  InternalError errl) {
+    return FileDialogs.getNewFileForMac(owner,directory,dialogType,updateWorkingDirectory);
+  }
+  if (dirOnly) {
+    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+  }
+  fc.setMultiSelectionEnabled(multipleSelection);
+  fc.addChoosableFileFilter(off);
+  fc.setDialogType(dialogType);
+  int dialogResult;
+  if (dialogType == JFileChooser.OPEN_DIALOG) {
+    dialogResult=fc.showOpenDialog(owner);
+  }
+ else   if (dialogType == JFileChooser.SAVE_DIALOG) {
+    dialogResult=fc.showSaveDialog(owner);
+  }
+ else {
+    dialogResult=fc.showDialog(owner,description);
+  }
+  if (dialogResult != JFileChooser.APPROVE_OPTION) {
+    return null;
+  }
+  File selectedFile=fc.getSelectedFile();
+  if (selectedFile == null) {
+    return null;
+  }
+  if ((!extensions.isEmpty()) && (dialogType == JFileChooser.SAVE_DIALOG) && (fc.getFileFilter() == off)&& !off.accept(selectedFile)) {
+    selectedFile=new File(selectedFile.getPath() + extensions.get(0));
+  }
+  if (updateWorkingDirectory) {
+    Globals.prefs.put(JabRefPreferences.WORKING_DIRECTORY,selectedFile.getPath());
+  }
+  if (multipleSelection) {
+    File[] files=fc.getSelectedFiles();
+    String[] filenames=new String[files.length];
+    for (int i=0; i < files.length; i++) {
+      filenames[i]=files[i].getAbsolutePath();
+    }
+    return filenames;
+  }
+ else {
+    return selectedFile.getAbsolutePath();
+  }
+}

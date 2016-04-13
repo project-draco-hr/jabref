@@ -1,0 +1,18 @@
+{
+  Objects.requireNonNull(extensions);
+  OpenFileFilter off;
+  if (extensions.isEmpty()) {
+    off=new OpenFileFilter();
+  }
+ else {
+    off=new OpenFileFilter(extensions);
+  }
+  Object files=FileDialogs.getNewFileImpl(owner,directory,extensions,null,off,JFileChooser.OPEN_DIALOG,updateWorkingdirectory,false,true,null);
+  if (files instanceof String[]) {
+    return Arrays.asList((String[])files);
+  }
+  if (files != null) {
+    return Arrays.asList((String)files);
+  }
+  return Collections.emptyList();
+}

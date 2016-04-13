@@ -4,6 +4,7 @@
   }
   List<ImportFormatReader.UnknownFormatImport> imports=new ArrayList<>();
   for (  String filename : filenames) {
+    Path file=Paths.get(filename);
     try {
       if (importer == null) {
         frame.output(Localization.lang("Importing in unknown format") + "...");
@@ -11,7 +12,10 @@
       }
  else {
         frame.output(Localization.lang("Importing in %0 format",importer.getFormatName()) + "...");
-        ParserResult pr=new ParserResult(Globals.IMPORT_FORMAT_READER.importFromFile(importer,filename,frame));
+        ParserResult pr=Globals.IMPORT_FORMAT_READER.importFromFile(importer,file);
+        if (pr.hasWarnings()) {
+          frame.showMessage(pr.getErrorMessage());
+        }
         imports.add(new ImportFormatReader.UnknownFormatImport(importer.getFormatName(),pr));
       }
     }
