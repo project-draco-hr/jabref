@@ -8,7 +8,7 @@
   }
   try (PDDocument document=PDDocument.load(file.getAbsoluteFile())){
     if (document.isEncrypted()) {
-      throw new EncryptionNotSupportedException("Error: Cannot add metadata to encrypted document.");
+      throw new EncryptedPdfsNotSupportedException();
     }
     if (writePDFInfo && (resolvedEntries.size() == 1)) {
       XMPUtil.writeDocumentInformation(document,resolvedEntries.iterator().next(),null);
@@ -43,7 +43,8 @@
       document.save(file.getAbsolutePath());
     }
  catch (    COSVisitorException e) {
-      throw new TransformerException("Could not write XMP-metadata: " + e.getLocalizedMessage());
+      LOGGER.debug("Could not write XMP metadata",e);
+      throw new TransformerException("Could not write XMP metadata: " + e.getLocalizedMessage(),e);
     }
   }
  }

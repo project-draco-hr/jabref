@@ -1,9 +1,6 @@
 {
   List<BibEntry> result=new LinkedList<>();
-  try (PDDocument document=PDDocument.load(inputStream)){
-    if (document.isEncrypted()) {
-      throw new EncryptionNotSupportedException("Error: Cannot read metadata from encrypted document.");
-    }
+  try (PDDocument document=loadWithAutomaticDecryption(inputStream)){
     Optional<XMPMetadata> meta=XMPUtil.getXMPMetadata(document);
     if (meta.isPresent()) {
       List<XMPSchema> schemas=meta.get().getSchemasByNamespaceURI(XMPSchemaBibtex.NAMESPACE);
