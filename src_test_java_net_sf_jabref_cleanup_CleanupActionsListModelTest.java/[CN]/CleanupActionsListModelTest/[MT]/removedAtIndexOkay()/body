@@ -1,0 +1,9 @@
+{
+  CleanupActionsListModel model=new CleanupActionsListModel(getDefaultFieldFormatterCleanups());
+  ListDataListener listener=mock(ListDataListener.class);
+  model.addListDataListener(listener);
+  model.removeAtIndex(0);
+  ArgumentCaptor<ListDataEvent> argument=ArgumentCaptor.forClass(ListDataEvent.class);
+  verify(listener).intervalRemoved(argument.capture());
+  assertEquals(ListDataEvent.INTERVAL_REMOVED,argument.getValue().getType());
+}
