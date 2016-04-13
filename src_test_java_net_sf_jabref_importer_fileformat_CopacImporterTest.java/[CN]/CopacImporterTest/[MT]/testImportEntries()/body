@@ -2,7 +2,7 @@
   Globals.prefs.put("defaultEncoding",StandardCharsets.UTF_8.name());
   CopacImporter importer=new CopacImporter();
   try (InputStream stream=CopacImporterTest.class.getResourceAsStream("CopacImporterTest1.txt")){
-    List<BibEntry> entries=importer.importEntries(stream,new OutputPrinterToNull());
+    List<BibEntry> entries=importer.importDatabase(stream).getDatabase().getEntries();
     Assert.assertEquals(1,entries.size());
     BibEntry entry=entries.get(0);
     Assert.assertEquals("The SIS project : software reuse with a natural language approach",entry.getField("title"));

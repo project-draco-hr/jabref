@@ -1,6 +1,6 @@
 {
   try (InputStream stream=streamForString("PMID-22664795" + "\n" + "MH  - Female"+ "\n"+ "OT  - Male")){
-    List<BibEntry> actualEntries=importer.importEntries(stream,new OutputPrinterToNull());
+    List<BibEntry> actualEntries=importer.importDatabase(stream).getDatabase().getEntries();
     BibEntry expectedEntry=new BibEntry();
     expectedEntry.setField("keywords","Female, Male");
     BibtexEntryAssert.assertEquals(Arrays.asList(expectedEntry),actualEntries);

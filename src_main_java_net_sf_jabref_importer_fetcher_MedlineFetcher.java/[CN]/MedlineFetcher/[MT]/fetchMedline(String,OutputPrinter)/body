@@ -3,7 +3,11 @@
   try {
     URL url=new URL(baseUrl);
     URLConnection data=url.openConnection();
-    return new MedlineImporter().importEntries(data.getInputStream(),status);
+    ParserResult result=new MedlineImporter().importDatabase(data.getInputStream());
+    if (result.hasWarnings()) {
+      status.showMessage(result.getErrorMessage());
+    }
+    return result.getDatabase().getEntries();
   }
  catch (  IOException e) {
     return new ArrayList<>();

@@ -4,7 +4,7 @@
   shouldBeEntry.setType("Misc");
   shouldBeEntry.setField("author","Prechelt, Lutz");
   try (InputStream inStream=new ByteArrayInputStream(testInput.getBytes())){
-    List<BibEntry> entries=inspecImp.importEntries(inStream,new OutputPrinterToNull());
+    List<BibEntry> entries=inspecImp.importDatabase(inStream).getDatabase().getEntries();
     assertEquals(1,entries.size());
     BibEntry entry=entries.get(0);
     BibtexEntryAssert.assertEquals(shouldBeEntry,entry);
