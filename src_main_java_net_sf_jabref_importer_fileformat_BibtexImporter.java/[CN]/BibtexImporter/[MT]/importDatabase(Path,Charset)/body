@@ -1,0 +1,17 @@
+{
+  Optional<Charset> suppliedEncoding;
+  try (BufferedReader utf8Reader=getUTF8Reader(filePath)){
+    suppliedEncoding=getSuppliedEncoding(utf8Reader);
+  }
+   if (!suppliedEncoding.isPresent()) {
+    try (BufferedReader utf16Reader=getUTF16Reader(filePath)){
+      suppliedEncoding=getSuppliedEncoding(utf16Reader);
+    }
+   }
+  if (suppliedEncoding.isPresent()) {
+    return super.importDatabase(filePath,suppliedEncoding.get());
+  }
+ else {
+    return super.importDatabase(filePath,defaultEncoding);
+  }
+}

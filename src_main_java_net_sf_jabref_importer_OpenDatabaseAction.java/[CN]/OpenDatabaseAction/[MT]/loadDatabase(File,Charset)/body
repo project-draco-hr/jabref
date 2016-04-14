@@ -1,28 +1,14 @@
 {
-  Optional<Charset> suppliedEncoding;
-  try (Reader utf8Reader=ImportFormatReader.getUTF8Reader(fileToOpen)){
-    suppliedEncoding=OpenDatabaseAction.getSuppliedEncoding(utf8Reader);
+  ParserResult result=new BibtexImporter().importDatabase(fileToOpen.toPath(),defaultEncoding);
+  if (SpecialFieldsUtils.keywordSyncEnabled()) {
+    NamedCompound compound=new NamedCompound("SpecialFieldSync");
+    for (    BibEntry entry : result.getDatabase().getEntries()) {
+      SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,compound);
+    }
+    LOGGER.info("Synchronized special fields based on keywords");
   }
-   if (!suppliedEncoding.isPresent()) {
-    try (Reader utf16Reader=ImportFormatReader.getUTF16Reader(fileToOpen)){
-      suppliedEncoding=OpenDatabaseAction.getSuppliedEncoding(utf16Reader);
-    }
-   }
-  try (InputStreamReader reader=openFile(fileToOpen,suppliedEncoding,defaultEncoding)){
-    BibtexParser parser=new BibtexParser(reader);
-    ParserResult result=parser.parse();
-    result.setEncoding(Charset.forName(reader.getEncoding()));
-    result.setFile(fileToOpen);
-    if (SpecialFieldsUtils.keywordSyncEnabled()) {
-      NamedCompound compound=new NamedCompound("SpecialFieldSync");
-      for (      BibEntry entry : result.getDatabase().getEntries()) {
-        SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,compound);
-      }
-      LOGGER.info("Synchronized special fields based on keywords");
-    }
-    if (!result.getMetaData().isGroupTreeValid()) {
-      result.addWarning(Localization.lang("Group tree could not be parsed. If you save the BibTeX database, all groups will be lost."));
-    }
-    return result;
+  if (!result.getMetaData().isGroupTreeValid()) {
+    result.addWarning(Localization.lang("Group tree could not be parsed. If you save the BibTeX database, all groups will be lost."));
   }
- }
+  return result;
+}

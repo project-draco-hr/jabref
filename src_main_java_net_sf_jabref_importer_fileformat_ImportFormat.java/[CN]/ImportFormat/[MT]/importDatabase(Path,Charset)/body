@@ -1,5 +1,8 @@
 {
-  try (InputStream stream=new FileInputStream(filePath.toFile());BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(stream,defaultEncoding))){
-    return importDatabase(bufferedReader);
+  try (BufferedReader bufferedReader=getReader(filePath,encoding)){
+    ParserResult parserResult=importDatabase(bufferedReader);
+    parserResult.setEncoding(encoding);
+    parserResult.setFile(filePath.toFile());
+    return parserResult;
   }
  }
