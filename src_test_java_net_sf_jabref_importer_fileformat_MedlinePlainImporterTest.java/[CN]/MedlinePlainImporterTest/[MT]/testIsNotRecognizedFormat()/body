@@ -1,8 +1,7 @@
 {
   List<String> list=Arrays.asList("MedlinePlainImporterTestMultipleEntries.txt","MedlinePlainImporterTestCompleteEntry.txt","MedlinePlainImporterTestMultiAbstract.txt","MedlinePlainImporterTestMultiTitle.txt","MedlinePlainImporterTestDOI.txt","MedlinePlainImporterTestInproceeding.txt");
   for (  String str : list) {
-    try (InputStream is=MedlinePlainImporter.class.getResourceAsStream(str)){
-      Assert.assertTrue(importer.isRecognizedFormat(is));
-    }
-   }
+    Path file=Paths.get(MedlinePlainImporter.class.getResource(str).toURI());
+    Assert.assertTrue(importer.isRecognizedFormat(file,Charset.defaultCharset()));
+  }
 }

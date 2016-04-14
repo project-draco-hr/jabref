@@ -2,8 +2,7 @@
   MsBibImporter testImporter=new MsBibImporter();
   List<String> notAccepted=Arrays.asList("CopacImporterTest1.txt","IsiImporterTest1.isi","IsiImporterTestInspec.isi","emptyFile.xml","IsiImporterTestWOS.isi");
   for (  String s : notAccepted) {
-    try (InputStream stream=MsBibImporter.class.getResourceAsStream(s)){
-      Assert.assertFalse(testImporter.isRecognizedFormat(stream));
-    }
-   }
+    Path file=Paths.get(MsBibImporter.class.getResource(s).toURI());
+    Assert.assertFalse(testImporter.isRecognizedFormat(file,Charset.defaultCharset()));
+  }
 }

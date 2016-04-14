@@ -1,8 +1,7 @@
 {
   List<String> testList=Arrays.asList("CopacImporterTest1.txt","CopacImporterTest2.txt","IEEEImport1.txt","IsiImporterTest1.isi","IsiImporterTestInspec.isi","IsiImporterTestWOS.isi","IsiImporterTestMedline.isi","RisImporterTest1.ris","InspecImportTestFalse.txt");
   for (  String str : testList) {
-    try (InputStream inStream=InspecImportTest.class.getResourceAsStream(str)){
-      assertFalse(inspecImp.isRecognizedFormat(inStream));
-    }
-   }
+    Path file=Paths.get(InspecImportTest.class.getResource(str).toURI());
+    assertFalse(inspecImp.isRecognizedFormat(file,Charset.defaultCharset()));
+  }
 }

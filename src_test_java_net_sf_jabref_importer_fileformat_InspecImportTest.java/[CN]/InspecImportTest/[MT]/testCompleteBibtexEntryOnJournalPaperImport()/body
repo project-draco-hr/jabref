@@ -9,10 +9,9 @@
   shouldBeEntry.setField("journal","10000");
   shouldBeEntry.setField("pages","20");
   shouldBeEntry.setField("volume","19");
-  try (InputStream inStream=InspecImportTest.class.getResourceAsStream("InspecImportTest2.txt")){
-    List<BibEntry> entries=inspecImp.importDatabase(inStream).getDatabase().getEntries();
-    assertEquals(1,entries.size());
-    BibEntry entry=entries.get(0);
-    BibtexEntryAssert.assertEquals(shouldBeEntry,entry);
-  }
- }
+  Path file=Paths.get(InspecImportTest.class.getResource("InspecImportTest2.txt").toURI());
+  List<BibEntry> entries=inspecImp.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  assertEquals(1,entries.size());
+  BibEntry entry=entries.get(0);
+  BibtexEntryAssert.assertEquals(shouldBeEntry,entry);
+}

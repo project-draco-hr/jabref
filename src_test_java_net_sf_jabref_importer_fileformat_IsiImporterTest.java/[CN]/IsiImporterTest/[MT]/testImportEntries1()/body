@@ -1,16 +1,15 @@
 {
   IsiImporter importer=new IsiImporter();
-  try (InputStream is=IsiImporterTest.class.getResourceAsStream("IsiImporterTest1.isi")){
-    List<BibEntry> entries=importer.importDatabase(is).getDatabase().getEntries();
-    Assert.assertEquals(1,entries.size());
-    BibEntry entry=entries.get(0);
-    Assert.assertEquals("Optical properties of MgO doped LiNbO$_3$ single crystals",entry.getField("title"));
-    Assert.assertEquals("James Brown and James Marc Brown and Brown, J. M. and Brown, J. and Brown, J. M. and Brown, J.",entry.getField("author"));
-    Assert.assertEquals("article",entry.getType());
-    Assert.assertEquals("Optical Materials",entry.getField("journal"));
-    Assert.assertEquals("2006",entry.getField("year"));
-    Assert.assertEquals("28",entry.getField("volume"));
-    Assert.assertEquals("5",entry.getField("number"));
-    Assert.assertEquals("467--72",entry.getField("pages"));
-  }
- }
+  Path file=Paths.get(IsiImporterTest.class.getResource("IsiImporterTest1.isi").toURI());
+  List<BibEntry> entries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  Assert.assertEquals(1,entries.size());
+  BibEntry entry=entries.get(0);
+  Assert.assertEquals("Optical properties of MgO doped LiNbO$_3$ single crystals",entry.getField("title"));
+  Assert.assertEquals("James Brown and James Marc Brown and Brown, J. M. and Brown, J. and Brown, J. M. and Brown, J.",entry.getField("author"));
+  Assert.assertEquals("article",entry.getType());
+  Assert.assertEquals("Optical Materials",entry.getField("journal"));
+  Assert.assertEquals("2006",entry.getField("year"));
+  Assert.assertEquals("28",entry.getField("volume"));
+  Assert.assertEquals("5",entry.getField("number"));
+  Assert.assertEquals("467--72",entry.getField("pages"));
+}

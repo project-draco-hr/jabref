@@ -1,17 +1,16 @@
 {
-  try (InputStream is=EndnoteImporterTest.class.getResourceAsStream("Endnote.book.example.enw")){
-    List<BibEntry> bibEntries=importer.importDatabase(is).getDatabase().getEntries();
-    assertEquals(1,bibEntries.size());
-    BibEntry be=bibEntries.get(0);
-    assertEquals("book",be.getType());
-    assertEquals("Heidelberg",be.getField("address"));
-    assertEquals("Prei??el, Ren?? and Stachmann, Bj??rn",be.getField("author"));
-    assertEquals("3., aktualisierte und erweiterte Auflage",be.getField("edition"));
-    assertEquals("Versionsverwaltung",be.getField("keywords"));
-    assertEquals("XX, 327",be.getField("pages"));
-    assertEquals("dpunkt.verlag",be.getField("publisher"));
-    assertEquals("Git : dezentrale Versionsverwaltung im Team : Grundlagen und Workflows",be.getField("title"));
-    assertEquals("http://d-nb.info/107601965X",be.getField("url"));
-    assertEquals("2016",be.getField("year"));
-  }
- }
+  Path file=Paths.get(EndnoteImporterTest.class.getResource("Endnote.book.example.enw").toURI());
+  List<BibEntry> bibEntries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  assertEquals(1,bibEntries.size());
+  BibEntry be=bibEntries.get(0);
+  assertEquals("book",be.getType());
+  assertEquals("Heidelberg",be.getField("address"));
+  assertEquals("Prei??el, Ren?? and Stachmann, Bj??rn",be.getField("author"));
+  assertEquals("3., aktualisierte und erweiterte Auflage",be.getField("edition"));
+  assertEquals("Versionsverwaltung",be.getField("keywords"));
+  assertEquals("XX, 327",be.getField("pages"));
+  assertEquals("dpunkt.verlag",be.getField("publisher"));
+  assertEquals("Git : dezentrale Versionsverwaltung im Team : Grundlagen und Workflows",be.getField("title"));
+  assertEquals("http://d-nb.info/107601965X",be.getField("url"));
+  assertEquals("2016",be.getField("year"));
+}

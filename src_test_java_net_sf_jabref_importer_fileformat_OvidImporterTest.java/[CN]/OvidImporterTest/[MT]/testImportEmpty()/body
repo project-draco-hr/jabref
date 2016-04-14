@@ -1,6 +1,5 @@
 {
-  try (InputStream is=OvidImporter.class.getResourceAsStream("Empty.txt")){
-    List<BibEntry> entries=importer.importDatabase(is).getDatabase().getEntries();
-    Assert.assertEquals(Collections.emptyList(),entries);
-  }
- }
+  Path file=Paths.get(OvidImporter.class.getResource("Empty.txt").toURI());
+  List<BibEntry> entries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  Assert.assertEquals(Collections.emptyList(),entries);
+}

@@ -1,16 +1,12 @@
 {
   List<BibEntry> localRes=new ArrayList<>();
   PdfXmpImporter importer=new PdfXmpImporter();
-  try (InputStream in=new FileInputStream(fileName)){
-    ParserResult result=importer.importDatabase(in);
-    if (result.hasWarnings()) {
-      frame.showMessage(result.getErrorMessage());
-    }
-    localRes.addAll(result.getDatabase().getEntries());
+  Path filePath=Paths.get(fileName);
+  ParserResult result=importer.importDatabase(filePath,Globals.prefs.getDefaultEncoding());
+  if (result.hasWarnings()) {
+    frame.showMessage(result.getErrorMessage());
   }
- catch (  IOException ex) {
-    LOGGER.warn("Cannot import entries",ex);
-  }
+  localRes.addAll(result.getDatabase().getEntries());
   BibEntry entry;
   if (localRes.isEmpty()) {
     LOGGER.info("Import failed");

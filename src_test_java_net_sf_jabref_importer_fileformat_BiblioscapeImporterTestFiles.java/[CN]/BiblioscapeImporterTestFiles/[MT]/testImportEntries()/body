@@ -1,7 +1,5 @@
 {
-  try (InputStream bsStream=BiblioscapeImporterTest.class.getResourceAsStream(fileName + ".txt")){
-    List<BibEntry> bsEntries=bsImporter.importDatabase(bsStream).getDatabase().getEntries();
-    Assert.assertEquals(1,bsEntries.size());
-    BibtexEntryAssert.assertEquals(BiblioscapeImporterTest.class,fileName + ".bib",bsEntries);
-  }
- }
+  List<BibEntry> bsEntries=bsImporter.importDatabase(importFile,Charset.defaultCharset()).getDatabase().getEntries();
+  Assert.assertEquals(1,bsEntries.size());
+  BibtexEntryAssert.assertEquals(BiblioscapeImporterTest.class,bibFile,bsEntries);
+}

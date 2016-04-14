@@ -1,7 +1,6 @@
 {
   PdfContentImporter importer=new PdfContentImporter();
-  try (InputStream is=PdfContentImporter.class.getResourceAsStream("/pdfs/encrypted.pdf")){
-    List<BibEntry> result=importer.importDatabase(is).getDatabase().getEntries();
-    assertEquals(Collections.emptyList(),result);
-  }
- }
+  Path file=Paths.get(PdfContentImporter.class.getResource("/pdfs/encrypted.pdf").toURI());
+  List<BibEntry> result=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  assertEquals(Collections.emptyList(),result);
+}

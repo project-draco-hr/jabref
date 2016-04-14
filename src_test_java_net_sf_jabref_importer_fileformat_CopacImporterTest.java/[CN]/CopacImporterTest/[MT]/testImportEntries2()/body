@@ -1,11 +1,10 @@
 {
   CopacImporter importer=new CopacImporter();
-  try (InputStream stream=CopacImporterTest.class.getResourceAsStream("CopacImporterTest2.txt")){
-    List<BibEntry> entries=importer.importDatabase(stream).getDatabase().getEntries();
-    Assert.assertEquals(2,entries.size());
-    BibEntry one=entries.get(0);
-    Assert.assertEquals("Computing and operational research at the London Hospital",one.getField("title"));
-    BibEntry two=entries.get(1);
-    Assert.assertEquals("Real time systems : management and design",two.getField("title"));
-  }
- }
+  Path file=Paths.get(CopacImporterTest.class.getResource("CopacImporterTest2.txt").toURI());
+  List<BibEntry> entries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  Assert.assertEquals(2,entries.size());
+  BibEntry one=entries.get(0);
+  Assert.assertEquals("Computing and operational research at the London Hospital",one.getField("title"));
+  BibEntry two=entries.get(1);
+  Assert.assertEquals("Real time systems : management and design",two.getField("title"));
+}

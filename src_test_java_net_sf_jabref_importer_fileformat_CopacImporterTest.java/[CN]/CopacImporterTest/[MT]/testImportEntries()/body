@@ -1,15 +1,14 @@
 {
   Globals.prefs.put("defaultEncoding",StandardCharsets.UTF_8.name());
   CopacImporter importer=new CopacImporter();
-  try (InputStream stream=CopacImporterTest.class.getResourceAsStream("CopacImporterTest1.txt")){
-    List<BibEntry> entries=importer.importDatabase(stream).getDatabase().getEntries();
-    Assert.assertEquals(1,entries.size());
-    BibEntry entry=entries.get(0);
-    Assert.assertEquals("The SIS project : software reuse with a natural language approach",entry.getField("title"));
-    Assert.assertEquals("Prechelt, Lutz and Universit??t Karlsruhe. Fakult??t f??r Informatik",entry.getField("author"));
-    Assert.assertEquals("Interner Bericht ; Nr.2/92",entry.getField("series"));
-    Assert.assertEquals("1992",entry.getField("year"));
-    Assert.assertEquals("Karlsruhe :  Universitat Karlsruhe, Fakultat fur Informatik",entry.getField("publisher"));
-    Assert.assertEquals("book",entry.getType());
-  }
- }
+  Path file=Paths.get(CopacImporterTest.class.getResource("CopacImporterTest1.txt").toURI());
+  List<BibEntry> entries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  Assert.assertEquals(1,entries.size());
+  BibEntry entry=entries.get(0);
+  Assert.assertEquals("The SIS project : software reuse with a natural language approach",entry.getField("title"));
+  Assert.assertEquals("Prechelt, Lutz and Universit??t Karlsruhe. Fakult??t f??r Informatik",entry.getField("author"));
+  Assert.assertEquals("Interner Bericht ; Nr.2/92",entry.getField("series"));
+  Assert.assertEquals("1992",entry.getField("year"));
+  Assert.assertEquals("Karlsruhe :  Universitat Karlsruhe, Fakultat fur Informatik",entry.getField("publisher"));
+  Assert.assertEquals("book",entry.getType());
+}

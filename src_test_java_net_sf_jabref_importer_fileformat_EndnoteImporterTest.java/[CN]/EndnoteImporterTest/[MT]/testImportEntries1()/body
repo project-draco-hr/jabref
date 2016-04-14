@@ -1,7 +1,6 @@
 {
   String s="%O Artn\\\\s testO\n%A testA,\n%E testE0, testE1";
-  InputStream is=new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-  List<BibEntry> bibEntries=importer.importDatabase(is).getDatabase().getEntries();
+  List<BibEntry> bibEntries=importer.importDatabase(new BufferedReader(new StringReader(s))).getDatabase().getEntries();
   assertEquals(1,bibEntries.size());
   BibEntry be=bibEntries.get(0);
   assertEquals("misc",be.getType());

@@ -1,25 +1,16 @@
 {
-  File file=new File(fileName);
-  BibEntry entry;
-  try (InputStream in=new FileInputStream(file)){
-    PdfContentImporter contentImporter=new PdfContentImporter();
-    ParserResult result=contentImporter.importDatabase(in);
-    if (result.hasWarnings()) {
-      frame.showMessage(result.getErrorMessage());
-    }
-    if (!result.getDatabase().hasEntries()) {
-      entry=createNewBlankEntry(fileName);
-      res.add(entry);
-      return;
-    }
-    entry=result.getDatabase().getEntries().get(0);
+  PdfContentImporter contentImporter=new PdfContentImporter();
+  Path filePath=Paths.get(fileName);
+  ParserResult result=contentImporter.importDatabase(filePath,Globals.prefs.getDefaultEncoding());
+  if (result.hasWarnings()) {
+    frame.showMessage(result.getErrorMessage());
   }
- catch (  IOException e) {
-    LOGGER.info("Import failed",e);
-    entry=createNewBlankEntry(fileName);
+  if (!result.getDatabase().hasEntries()) {
+    BibEntry entry=createNewBlankEntry(fileName);
     res.add(entry);
     return;
   }
+  BibEntry entry=result.getDatabase().getEntries().get(0);
   panel.getDatabase().insertEntry(entry);
   panel.markBaseChanged();
   LabelPatternUtil.makeLabel(panel.getBibDatabaseContext().getMetaData(),panel.getDatabase(),entry);
