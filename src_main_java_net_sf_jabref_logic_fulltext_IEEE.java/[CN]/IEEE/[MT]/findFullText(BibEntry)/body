@@ -10,7 +10,7 @@
   if (stampString.isEmpty()) {
     Optional<DOI> doi=DOI.build(entry.getField("doi"));
     if (doi.isPresent() && doi.get().getDOI().startsWith(IEEE_DOI) && doi.get().getURI().isPresent()) {
-      String resolvedDOIPage=new URLDownload(doi.get().getURI().get().toURL()).downloadToString(Charsets.UTF_8);
+      String resolvedDOIPage=new URLDownload(doi.get().getURI().get().toURL()).downloadToString(StandardCharsets.UTF_8);
       Matcher matcher=STAMP_PATTERN.matcher(resolvedDOIPage);
       if (matcher.find()) {
         stampString=matcher.group(1);
@@ -20,7 +20,7 @@
   if (stampString.isEmpty()) {
     return Optional.empty();
   }
-  String framePage=new URLDownload(new URL(BASE_URL + stampString)).downloadToString(Charsets.UTF_8);
+  String framePage=new URLDownload(new URL(BASE_URL + stampString)).downloadToString(StandardCharsets.UTF_8);
   Matcher matcher=PDF_PATTERN.matcher(framePage);
   if (matcher.find()) {
     LOGGER.debug("Full text document found on IEEE Xplore");
