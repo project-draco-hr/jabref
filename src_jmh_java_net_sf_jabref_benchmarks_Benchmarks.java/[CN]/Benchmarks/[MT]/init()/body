@@ -15,4 +15,14 @@
   StringWriter stringWriter=new StringWriter();
   databaseWriter.writePartOfDatabase(stringWriter,new BibDatabaseContext(database,new MetaData(),new Defaults()),database.getEntries(),new SavePreferences());
   bibtexString=stringWriter.toString();
+  List<String> latexSymbols=new ArrayList<>(HTMLUnicodeConversionMaps.UNICODE_LATEX_CONVERSION_MAP.values());
+  int symbolcount=latexSymbols.size();
+  StringBuilder sb=new StringBuilder();
+  sb.append("{A} \\textbf{bold} ");
+  sb.append(latexSymbols.get(Math.abs(randomizer.nextInt()) % symbolcount));
+  sb.append(" {\\it italic} {");
+  sb.append(latexSymbols.get(Math.abs(randomizer.nextInt()) % symbolcount));
+  sb.append(latexSymbols.get(Math.abs(randomizer.nextInt()) % symbolcount));
+  sb.append("} abc");
+  conversionStrings.add(sb.toString());
 }
