@@ -41,10 +41,14 @@
     }
     message+=e.getMessage();
     LOGGER.error(message,e);
-    if (!(e instanceof IOException)) {
-      e=new IOException(message);
+    IOException toThrow;
+    if (e instanceof IOException) {
+      toThrow=(IOException)e;
     }
-    throw (IOException)e;
+ else {
+      toThrow=new IOException(message);
+    }
+    throw toThrow;
   }
   return bibitems;
 }
