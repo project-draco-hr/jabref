@@ -2,7 +2,7 @@
   TypedBibEntry typedEntry=new TypedBibEntry(entry,Optional.empty(),bibDatabaseMode);
   out.write('@' + typedEntry.getTypeForDisplay() + '{');
   writeKeyField(entry,out);
-  HashSet<String> written=new HashSet<>();
+  Set<String> written=new HashSet<>();
   written.add(BibEntry.KEY_FIELD);
   int indentation=getLengthOfLongestFieldName(entry);
   EntryType type=EntryTypes.getTypeOrDefault(entry.getType(),bibDatabaseMode);
@@ -22,7 +22,7 @@
       }
     }
   }
-  TreeSet<String> remainingFields=new TreeSet<>();
+  Set<String> remainingFields=new TreeSet<>();
   for (  String key : entry.getFieldNames()) {
     boolean writeIt=write ? InternalBibtexFields.isWriteableField(key) : InternalBibtexFields.isDisplayableField(key);
     if (!written.contains(key) && writeIt) {
