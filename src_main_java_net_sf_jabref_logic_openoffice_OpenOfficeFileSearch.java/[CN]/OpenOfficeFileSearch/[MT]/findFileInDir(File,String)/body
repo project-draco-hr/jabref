@@ -1,25 +1,24 @@
 {
   if (fileSearchCancelled) {
-    return null;
+    return Optional.empty();
   }
   File[] files=startDir.listFiles();
   if (files == null) {
-    return null;
+    return Optional.empty();
   }
-  File result=null;
+  Optional<File> result=Optional.empty();
   for (  File file : files) {
     if (fileSearchCancelled) {
-      return null;
+      return Optional.empty();
     }
     if (file.isDirectory()) {
       result=findFileInDir(file,filename);
-      if (result != null) {
-        break;
+      if (result.isPresent()) {
+        return result;
       }
     }
  else     if (file.getName().equals(filename)) {
-      result=startDir;
-      break;
+      return Optional.of(startDir);
     }
   }
   return result;

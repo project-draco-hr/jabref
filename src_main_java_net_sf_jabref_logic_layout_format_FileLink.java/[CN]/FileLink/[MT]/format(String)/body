@@ -20,14 +20,14 @@
   if (link == null) {
     return "";
   }
-  String[] dirs;
+  List<String> dirs;
   if (Globals.prefs.fileDirForDatabase == null) {
-    dirs=new String[]{Globals.prefs.get(Globals.FILE_FIELD + Globals.DIR_SUFFIX)};
+    dirs=Arrays.asList(Globals.prefs.get(Globals.FILE_FIELD + Globals.DIR_SUFFIX));
   }
  else {
     dirs=Globals.prefs.fileDirForDatabase;
   }
-  Optional<File> f=FileUtil.expandFilename(link,Arrays.asList(dirs));
+  Optional<File> f=FileUtil.expandFilename(link,dirs);
   if (f.isPresent()) {
     try {
       return f.get().getCanonicalPath();

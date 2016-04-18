@@ -1,14 +1,14 @@
 {
   preferences.setExecutablePath(new File(inUsr,sofficeName).getPath());
-  File jurt=fileSearch.findFileInDir(rootDir,"jurt.jar");
+  Optional<File> jurt=fileSearch.findFileInDir(rootDir,"jurt.jar");
   if (fileSearchCanceled) {
     return false;
   }
-  if (jurt == null) {
-    return false;
+  if (jurt.isPresent()) {
+    preferences.setJarsPath(jurt.get().getPath());
+    return true;
   }
  else {
-    preferences.setJarsPath(jurt.getPath());
-    return true;
+    return false;
   }
 }
