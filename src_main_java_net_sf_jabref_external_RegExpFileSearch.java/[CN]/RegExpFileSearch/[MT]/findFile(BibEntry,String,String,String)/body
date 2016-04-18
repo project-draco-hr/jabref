@@ -9,20 +9,19 @@
   if (!root.exists()) {
     return Collections.emptyList();
   }
-  List<File> res=RegExpFileSearch.findFile(entry,root,file,extensionRegExp);
-  if (!res.isEmpty()) {
-    for (int i=0; i < res.size(); i++) {
-      try {
-        String tmp=res.get(i).getCanonicalPath().substring(root.getCanonicalPath().length());
-        if ((tmp.length() > 1) && (tmp.charAt(0) == File.separatorChar)) {
-          tmp=tmp.substring(1);
-        }
-        res.set(i,new File(tmp));
+  List<File> fileList=RegExpFileSearch.findFile(entry,root,file,extensionRegExp);
+  List<File> result=new ArrayList<>();
+  for (  File tmpFile : fileList) {
+    try {
+      String tmp=tmpFile.getCanonicalPath().substring(root.getCanonicalPath().length());
+      if ((tmp.length() > 1) && (tmp.charAt(0) == File.separatorChar)) {
+        tmp=tmp.substring(1);
       }
- catch (      IOException e) {
-        LOGGER.warn("Problem searching",e);
-      }
+      result.add(new File(tmp));
+    }
+ catch (    IOException e) {
+      LOGGER.warn("Problem searching",e);
     }
   }
-  return res;
+  return result;
 }
