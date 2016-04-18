@@ -1,0 +1,25 @@
+{
+  Objects.requireNonNull(comparator);
+  if (this.isLeaf()) {
+    return;
+  }
+  int j=getNumberOfChildren() - 1;
+  int lastModified;
+  while (j > 0) {
+    lastModified=j + 1;
+    j=-1;
+    for (int i=1; i < lastModified; ++i) {
+      T child1=getChildAt(i - 1).get();
+      T child2=getChildAt(i).get();
+      if (comparator.compare(child1,child2) > 0) {
+        child1.moveTo((T)this,i);
+        j=i;
+      }
+    }
+  }
+  if (recursive) {
+    for (    T child : getChildren()) {
+      child.sortChildren(comparator,true);
+    }
+  }
+}

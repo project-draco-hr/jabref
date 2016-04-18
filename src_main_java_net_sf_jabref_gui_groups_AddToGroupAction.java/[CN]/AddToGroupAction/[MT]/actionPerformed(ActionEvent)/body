@@ -1,0 +1,16 @@
+{
+  final List<BibEntry> entries=panel.getSelectedEntries();
+  panel.storeCurrentEdit();
+  NamedCompound undoAll=new NamedCompound(Localization.lang("change assignment of entries"));
+  if (move) {
+    moveToGroup(entries,undoAll);
+  }
+ else {
+    addToGroup(entries,undoAll);
+  }
+  undoAll.end();
+  panel.undoManager.addEdit(undoAll);
+  panel.markBaseChanged();
+  panel.updateEntryEditorIfShowing();
+  panel.getGroupSelector().valueChanged(null);
+}

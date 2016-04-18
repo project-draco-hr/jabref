@@ -1,0 +1,11 @@
+{
+  final GroupTreeNode parent=node.getParent().get();
+  final Optional<GroupTreeNode> grandParent=parent.getParent();
+  final int index=node.getPositionInParent();
+  if (!grandParent.isPresent()) {
+    return Optional.empty();
+  }
+  final int indexOfParent=grandParent.get().getIndexOfChild(parent).get();
+  node.moveTo(grandParent.get(),indexOfParent + 1);
+  return Optional.of(new MoveGroupChange(parent,index,grandParent.get(),indexOfParent + 1));
+}

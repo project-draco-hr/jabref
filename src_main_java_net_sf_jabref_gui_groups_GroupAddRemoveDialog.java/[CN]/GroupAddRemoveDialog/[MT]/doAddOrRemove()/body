@@ -1,0 +1,23 @@
+{
+  TreePath path=tree.getSelectionPath();
+  if (path == null) {
+    return false;
+  }
+ else {
+    GroupTreeNodeViewModel node=(GroupTreeNodeViewModel)path.getLastPathComponent();
+    if (checkGroupEnable(node)) {
+      if (add) {
+        AddToGroupAction action=new AddToGroupAction(node,move,panel);
+        action.actionPerformed(new ActionEvent(node,0,"add"));
+      }
+ else {
+        RemoveFromGroupAction action=new RemoveFromGroupAction(node,panel);
+        action.actionPerformed(new ActionEvent(node,0,"remove"));
+      }
+      return true;
+    }
+ else {
+      return false;
+    }
+  }
+}

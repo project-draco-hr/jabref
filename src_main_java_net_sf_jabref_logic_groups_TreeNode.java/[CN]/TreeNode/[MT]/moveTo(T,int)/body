@@ -1,0 +1,11 @@
+{
+  Objects.requireNonNull(target);
+  if (this.isAncestorOf(target)) {
+    throw new UnsupportedOperationException("the target cannot be a descendant of this node");
+  }
+  Optional<T> oldParent=getParent();
+  if (oldParent.isPresent()) {
+    oldParent.get().removeChild((T)this);
+  }
+  target.addChild((T)this,targetIndex);
+}

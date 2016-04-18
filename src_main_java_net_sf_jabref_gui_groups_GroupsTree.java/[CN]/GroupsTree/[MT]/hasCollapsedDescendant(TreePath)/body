@@ -1,0 +1,13 @@
+{
+  GroupTreeNodeViewModel node=(GroupTreeNodeViewModel)path.getLastPathComponent();
+  for (  GroupTreeNodeViewModel child : node.getChildren()) {
+    if (child.isLeaf()) {
+      continue;
+    }
+    TreePath pathToChild=path.pathByAddingChild(child);
+    if (isCollapsed(pathToChild) || hasCollapsedDescendant(pathToChild)) {
+      return true;
+    }
+  }
+  return false;
+}

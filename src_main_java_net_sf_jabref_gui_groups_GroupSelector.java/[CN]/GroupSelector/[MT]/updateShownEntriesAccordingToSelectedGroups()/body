@@ -1,0 +1,11 @@
+{
+  final MatcherSet searchRules=MatcherSets.build(andCb.isSelected() ? MatcherSets.MatcherType.AND : MatcherSets.MatcherType.OR);
+  for (  GroupTreeNodeViewModel node : getLeafsOfSelection()) {
+    SearchMatcher searchRule=node.getNode().getSearchRule();
+    searchRules.addRule(searchRule);
+  }
+  SearchMatcher searchRule=invCb.isSelected() ? new NotMatcher(searchRules) : searchRules;
+  GroupingWorker worker=new GroupingWorker(searchRule);
+  worker.getWorker().run();
+  worker.getCallBack().update();
+}

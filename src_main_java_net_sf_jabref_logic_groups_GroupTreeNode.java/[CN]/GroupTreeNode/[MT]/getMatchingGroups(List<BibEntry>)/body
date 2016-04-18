@@ -1,0 +1,14 @@
+{
+  List<GroupTreeNode> groups=new ArrayList<>();
+  SearchMatcher matcher=getSearchRule();
+  for (  BibEntry entry : entries) {
+    if (matcher.isMatch(entry)) {
+      groups.add(this);
+      break;
+    }
+  }
+  for (  GroupTreeNode child : getChildren()) {
+    groups.addAll(child.getMatchingGroups(entries));
+  }
+  return groups;
+}

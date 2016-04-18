@@ -1,0 +1,19 @@
+{
+  if (!supportsRemove()) {
+    return Optional.empty();
+  }
+  if ((entriesToRemove != null) && (entriesToRemove.size() > 0)) {
+    List<FieldChange> changes=new ArrayList<>();
+    boolean modified=false;
+    for (    BibEntry entry : entriesToRemove) {
+      if (contains(entry)) {
+        String oldContent=entry.getField(searchField);
+        removeMatches(entry);
+        changes.add(new FieldChange(entry,searchField,oldContent,entry.getField(searchField)));
+        modified=true;
+      }
+    }
+    return modified ? Optional.of(new EntriesGroupChange(changes)) : Optional.empty();
+  }
+  return Optional.empty();
+}

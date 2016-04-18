@@ -1,0 +1,10 @@
+{
+  Objects.requireNonNull(child);
+  if (child.getParent().isPresent()) {
+    throw new UnsupportedOperationException("Cannot add a node which already has a parent, use moveTo instead");
+  }
+  child.setParent((T)this);
+  children.add(index,child);
+  notifyAboutDescendantChange((T)this);
+  return child;
+}
