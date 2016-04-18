@@ -2,35 +2,33 @@
   if (!doneBuilding) {
     return;
   }
-  if (!identical[0]) {
-    if (rb[0][0].isSelected()) {
-      mergedEntry.setType(one.getType());
+  if (!identicalTypes) {
+    if (typeRadioButtons.get(0).isSelected()) {
+      mergedEntry.setType(leftEntry.getType());
     }
  else {
-      mergedEntry.setType(two.getType());
+      mergedEntry.setType(rightEntry.getType());
     }
   }
-  for (int i=0; i < joint.size(); i++) {
-    if (!identical[i + 1]) {
-      if (rb[0][i + 1].isSelected()) {
-        mergedEntry.setField(jointStrings[i],one.getField(jointStrings[i]));
-      }
- else       if (rb[2][i + 1].isSelected()) {
-        mergedEntry.setField(jointStrings[i],two.getField(jointStrings[i]));
-      }
+  for (  String field : differentFields) {
+    if (radioButtons.get(field).get(0).isSelected()) {
+      mergedEntry.setField(field,leftEntry.getField(field));
+    }
+ else     if (radioButtons.get(field).get(2).isSelected()) {
+      mergedEntry.setField(field,rightEntry.getField(field));
+    }
  else {
-        mergedEntry.clearField(jointStrings[i]);
-      }
+      mergedEntry.clearField(field);
     }
   }
-  pp.setEntry(mergedEntry);
-  StringWriter sw=new StringWriter();
+  entryPreview.setEntry(mergedEntry);
+  StringWriter writer=new StringWriter();
   try {
-    new BibEntryWriter(new LatexFieldFormatter(),false).write(mergedEntry,sw,type);
+    new BibEntryWriter(new LatexFieldFormatter(),false).write(mergedEntry,writer,databaseType);
   }
  catch (  IOException ex) {
-    LOGGER.error("Error in entry" + ": " + ex.getMessage(),ex);
+    LOGGER.error("Error in entry",ex);
   }
-  jta.setText(sw.getBuffer().toString());
-  jta.setCaretPosition(0);
+  sourceView.setText(writer.getBuffer().toString());
+  sourceView.setCaretPosition(0);
 }
