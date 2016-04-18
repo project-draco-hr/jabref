@@ -7,9 +7,7 @@
     bp.output(Localization.lang("Select at least one entry to manage keywords."));
     return;
   }
-  if (diag == null) {
-    createDialog();
-  }
+  createDialog();
   cancelled=true;
   fillKeyWordList();
   diag.pack();
@@ -37,59 +35,9 @@
     return;
   }
   if (SpecialFieldsUtils.keywordSyncEnabled() && !keywordsToAdd.isEmpty()) {
-    Set<String> clone;
-    clone=createClone(keywordsToAdd);
-    clone.retainAll(Priority.getInstance().getKeyWords());
-    if (!clone.isEmpty()) {
-      keywordsToRemove.addAll(Priority.getInstance().getKeyWords());
-    }
-    clone=createClone(keywordsToAdd);
-    clone.retainAll(Quality.getInstance().getKeyWords());
-    if (!clone.isEmpty()) {
-      keywordsToRemove.addAll(Quality.getInstance().getKeyWords());
-    }
-    clone=createClone(keywordsToAdd);
-    clone.retainAll(Rank.getInstance().getKeyWords());
-    if (!clone.isEmpty()) {
-      keywordsToRemove.addAll(Rank.getInstance().getKeyWords());
-    }
-    clone=createClone(keywordsToAdd);
-    clone.retainAll(Relevance.getInstance().getKeyWords());
-    if (!clone.isEmpty()) {
-      keywordsToRemove.addAll(Relevance.getInstance().getKeyWords());
-    }
-    clone=createClone(keywordsToAdd);
-    clone.retainAll(ReadStatus.getInstance().getKeyWords());
-    if (!clone.isEmpty()) {
-      keywordsToRemove.addAll(ReadStatus.getInstance().getKeyWords());
-    }
-    clone=createClone(keywordsToAdd);
-    clone.retainAll(Printed.getInstance().getKeyWords());
-    if (!clone.isEmpty()) {
-      keywordsToRemove.addAll(Printed.getInstance().getKeyWords());
-    }
+    synchronizeSpecialFields(keywordsToAdd,keywordsToRemove);
   }
-  List<BibEntry> entries=bp.getSelectedEntries();
-  NamedCompound ce=new NamedCompound(Localization.lang("Update keywords"));
-  for (  BibEntry entry : entries) {
-    List<String> separatedKeywords=entry.getSeparatedKeywords();
-    Set<String> keywords=new TreeSet<>();
-    keywords.addAll(separatedKeywords);
-    keywords.removeAll(keywordsToRemove);
-    keywords.addAll(keywordsToAdd);
-    separatedKeywords.clear();
-    separatedKeywords.addAll(keywords);
-    String oldValue=entry.getField("keywords");
-    entry.putKeywords(separatedKeywords);
-    String updatedValue=entry.getField("keywords");
-    if ((oldValue == null) || !oldValue.equals(updatedValue)) {
-      ce.addEdit(new UndoableFieldChange(entry,"keywords",oldValue,updatedValue));
-    }
-    if (SpecialFieldsUtils.keywordSyncEnabled()) {
-      SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,ce);
-    }
-  }
-  ce.end();
+  NamedCompound ce=updateKeywords(bp.getSelectedEntries(),keywordsToAdd,keywordsToRemove);
   bp.undoManager.addEdit(ce);
   bp.markBaseChanged();
 }
