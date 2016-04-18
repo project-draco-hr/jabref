@@ -1,0 +1,13 @@
+{
+  SavePreferences savePrefs=SavePreferences.loadForExportFromPreferences(Globals.prefs);
+  List<BibEntry> entries=BibDatabaseWriter.getSortedEntries(databaseContext,entriesToExport,savePrefs);
+  GroupTreeNode gtn=databaseContext.getMetaData().getGroups();
+  final int databaseID=DatabaseUtil.getDatabaseIDByName(databaseContext,out,dbName);
+  DatabaseUtil.removeAllRecordsForAGivenDB(out,databaseID);
+  populateEntryTypesTable(out,databaseContext.getMode());
+  populateEntriesTable(databaseID,entries,out);
+  populateStringTable(databaseContext.getDatabase(),out,databaseID);
+  populateGroupTypesTable(out);
+  populateGroupsTable(gtn,0,1,out,databaseID);
+  populateEntryGroupsTable(gtn,0,1,out,databaseID);
+}

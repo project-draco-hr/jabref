@@ -6,26 +6,27 @@
   DBConnectDialog dbd=new DBConnectDialog(panel.frame(),dbs);
   dbd.setLocationRelativeTo(panel);
   dbd.setVisible(true);
-  if (dbd.isConnectedToDB()) {
-    dbs=dbd.getDBStrings();
-    try {
-      panel.frame().output(Localization.lang("Establishing SQL connection..."));
-      DBExporter exporter=(new DBExporterAndImporterFactory()).getExporter(dbs.getServerType());
-      try (Connection conn=exporter.connectToDB(dbs)){
-      }
-       dbs.isConfigValid(true);
-      panel.frame().output(Localization.lang("SQL connection established."));
+  if (!dbd.isConnectedToDB()) {
+    return;
+  }
+  dbs=dbd.getDBStrings();
+  try {
+    panel.frame().output(Localization.lang("Establishing SQL connection..."));
+    DatabaseExporter exporter=new DBExporterAndImporterFactory().getExporter(dbs.getDbPreferences().getServerType());
+    try (Connection conn=exporter.connectToDB(dbs)){
     }
- catch (    Exception ex) {
-      String errorMessage=SQLUtil.getExceptionMessage(ex);
-      dbs.isConfigValid(false);
-      String preamble=Localization.lang("Could not connect to SQL database for the following reason:");
-      panel.frame().output(preamble + "  " + errorMessage);
-      JOptionPane.showMessageDialog(panel.frame(),preamble + '\n' + errorMessage,Localization.lang("Connect to SQL database"),JOptionPane.ERROR_MESSAGE);
-    }
+     dbs.isConfigValid(true);
+    panel.frame().output(Localization.lang("SQL connection established."));
+  }
+ catch (  Exception ex) {
+    String errorMessage=SQLUtil.getExceptionMessage(ex);
+    dbs.isConfigValid(false);
+    String preamble=Localization.lang("Could not connect to SQL database for the following reason:");
+    panel.frame().output(preamble + "  " + errorMessage);
+    JOptionPane.showMessageDialog(panel.frame(),preamble + '\n' + errorMessage,Localization.lang("Connect to SQL database"),JOptionPane.ERROR_MESSAGE);
+  }
  finally {
-      panel.getBibDatabaseContext().getMetaData().setDBStrings(dbs);
-      dbd.dispose();
-    }
+    panel.getBibDatabaseContext().getMetaData().setDBStrings(dbs);
+    dbd.dispose();
   }
 }

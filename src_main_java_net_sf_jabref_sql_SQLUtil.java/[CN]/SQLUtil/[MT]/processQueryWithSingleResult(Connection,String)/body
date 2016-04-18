@@ -1,8 +1,6 @@
 {
-  try (Statement sm=SQLUtil.executeQueryWithResults(conn,query);ResultSet rs=sm.getResultSet()){
+  try (Statement sm=conn.createStatement();ResultSet rs=sm.executeQuery(query)){
     rs.next();
-    String result=rs.getString(1);
-    rs.getStatement().close();
-    return result;
+    return rs.getString(1);
   }
  }
