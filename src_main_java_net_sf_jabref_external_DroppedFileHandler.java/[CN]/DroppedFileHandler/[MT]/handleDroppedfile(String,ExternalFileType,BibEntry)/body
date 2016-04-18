@@ -5,14 +5,13 @@
     panel.undoManager.addEdit(edits);
     return;
   }
-  boolean newEntry=false;
-  if (!showLinkMoveCopyRenameDialog(fileName,fileType,entry,newEntry,false,panel.database())) {
+  if (!showLinkMoveCopyRenameDialog(fileName,fileType,entry,panel.getDatabase())) {
     return;
   }
   boolean success=true;
   String destFilename;
   if (linkInPlace.isSelected()) {
-    destFilename=FileUtil.shortenFileName(new File(fileName),panel.getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD)).toString();
+    destFilename=FileUtil.shortenFileName(new File(fileName),panel.getBibDatabaseContext().getFileDirectory()).toString();
   }
  else {
     destFilename=renameCheckBox.isSelected() ? renameToTextBox.getText() : new File(fileName).getName();

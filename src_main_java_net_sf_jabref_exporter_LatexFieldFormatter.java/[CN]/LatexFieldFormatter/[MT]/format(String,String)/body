@@ -2,17 +2,19 @@
   if (content == null) {
     return valueDelimiterStartOfValue + String.valueOf(valueDelimiterEndOfValue);
   }
+  String result=content;
   boolean shouldWrapWithBraces=Globals.prefs.putBracesAroundCapitals(fieldName) && !BIBTEX_STRING.equals(fieldName);
   if (shouldWrapWithBraces) {
-    content=StringUtil.putBracesAroundCapitals(content);
+    result=StringUtil.putBracesAroundCapitals(result);
   }
-  boolean shouldNormalizeNewlines=!content.contains(Globals.NEWLINE) && content.contains("\n");
+  boolean shouldNormalizeNewlines=!result.contains(Globals.NEWLINE) && result.contains("\n");
   if (shouldNormalizeNewlines) {
-    content=content.replace("\n",Globals.NEWLINE);
+    result=result.replace("\n",Globals.NEWLINE);
   }
   boolean resolveStrings=shouldResolveStrings(fieldName);
   if (!resolveStrings) {
-    return formatWithoutResolvingStrings(content,fieldName);
+    return formatWithoutResolvingStrings(result,fieldName);
   }
-  return formatAndResolveStrings(content,fieldName);
+  result=result.trim();
+  return formatAndResolveStrings(result,fieldName);
 }

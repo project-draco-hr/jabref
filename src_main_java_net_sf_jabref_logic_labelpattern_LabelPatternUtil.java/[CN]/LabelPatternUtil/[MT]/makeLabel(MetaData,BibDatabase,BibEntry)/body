@@ -1,5 +1,5 @@
 {
-  LabelPatternUtil.database=dBase;
+  database=dBase;
   String key;
   StringBuilder stringBuilder=new StringBuilder();
   boolean forceUpper=false;
@@ -19,10 +19,10 @@
         field=false;
       }
  else       if (field) {
-        String[] parts=LabelPatternUtil.parseFieldMarker(typeListEntry);
-        String label=LabelPatternUtil.makeLabel(entry,parts[0]);
+        String[] parts=parseFieldMarker(typeListEntry);
+        String label=makeLabel(entry,parts[0]);
         if (parts.length > 1) {
-          label=LabelPatternUtil.applyModifiers(label,parts,1);
+          label=applyModifiers(label,parts,1);
         }
         stringBuilder.append(label);
       }
@@ -34,7 +34,7 @@
  catch (  Exception e) {
     LOGGER.warn("Cannot make label",e);
   }
-  key=Util.checkLegalKey(stringBuilder.toString());
+  key=checkLegalKey(stringBuilder.toString());
   String regex=Globals.prefs.get(JabRefPreferences.KEY_PATTERN_REGEX);
   if ((regex != null) && !regex.trim().isEmpty()) {
     String replacement=Globals.prefs.get(JabRefPreferences.KEY_PATTERN_REPLACEMENT);
@@ -47,7 +47,7 @@
     key=key.toLowerCase();
   }
   String oldKey=entry.getCiteKey();
-  int occurrences=LabelPatternUtil.database.getNumberOfKeyOccurrences(key);
+  int occurrences=database.getNumberOfKeyOccurrences(key);
   if ((oldKey != null) && oldKey.equals(key)) {
     occurrences--;
   }
@@ -55,11 +55,11 @@
   boolean firstLetterA=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_FIRST_LETTER_A);
   if (!alwaysAddLetter && (occurrences == 0)) {
     if (!key.equals(oldKey)) {
-      if (LabelPatternUtil.database.getEntryById(entry.getId()) == null) {
+      if (!database.containsEntryWithId(entry.getId())) {
         entry.setField(BibEntry.KEY_FIELD,key);
       }
  else {
-        LabelPatternUtil.database.setCiteKeyForEntry(entry.getId(),key);
+        database.setCiteKeyForEntry(entry,key);
       }
     }
   }
@@ -68,25 +68,25 @@
     if (!alwaysAddLetter && !firstLetterA) {
       number=1;
     }
-    String moddedKey=key + LabelPatternUtil.getAddition(number);
-    occurrences=LabelPatternUtil.database.getNumberOfKeyOccurrences(moddedKey);
+    String moddedKey=key + getAddition(number);
+    occurrences=database.getNumberOfKeyOccurrences(moddedKey);
     if ((oldKey != null) && oldKey.equals(moddedKey)) {
       occurrences--;
     }
     while (occurrences > 0) {
       number++;
-      moddedKey=key + LabelPatternUtil.getAddition(number);
-      occurrences=LabelPatternUtil.database.getNumberOfKeyOccurrences(moddedKey);
+      moddedKey=key + getAddition(number);
+      occurrences=database.getNumberOfKeyOccurrences(moddedKey);
       if ((oldKey != null) && oldKey.equals(moddedKey)) {
         occurrences--;
       }
     }
     if (!moddedKey.equals(oldKey)) {
-      if (LabelPatternUtil.database.getEntryById(entry.getId()) == null) {
+      if (!database.containsEntryWithId(entry.getId())) {
         entry.setField(BibEntry.KEY_FIELD,moddedKey);
       }
  else {
-        LabelPatternUtil.database.setCiteKeyForEntry(entry.getId(),moddedKey);
+        database.setCiteKeyForEntry(entry,moddedKey);
       }
     }
   }

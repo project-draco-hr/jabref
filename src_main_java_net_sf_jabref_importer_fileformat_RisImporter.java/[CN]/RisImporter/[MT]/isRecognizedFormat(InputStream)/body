@@ -1,10 +1,11 @@
 {
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  String str;
-  while ((str=in.readLine()) != null) {
-    if (RECOGNIZED_FORMAT_PATTERN.matcher(str).find()) {
-      return true;
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    String str;
+    while ((str=in.readLine()) != null) {
+      if (RECOGNIZED_FORMAT_PATTERN.matcher(str).find()) {
+        return true;
+      }
     }
   }
-  return false;
+   return false;
 }

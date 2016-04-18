@@ -1,0 +1,25 @@
+{
+  Map<BibEntry,BibDatabase> correctEntries;
+  if (style.isSortByPosition()) {
+    correctEntries=entries;
+  }
+ else {
+    Map<BibEntry,BibDatabase> newMap=new TreeMap<>(entryComparator);
+    newMap.putAll(entries);
+    correctEntries=newMap;
+  }
+  int number=1;
+  for (  Map.Entry<BibEntry,BibDatabase> entry : correctEntries.entrySet()) {
+    if (entry.getKey() instanceof UndefinedBibtexEntry) {
+      continue;
+    }
+    OOUtil.insertParagraphBreak(text,cursor);
+    if (style.isNumberEntries()) {
+      int minGroupingCount=style.getIntCitProperty(OOBibStyle.MINIMUM_GROUPING_COUNT);
+      OOUtil.insertTextAtCurrentLocation(text,cursor,style.getNumCitationMarker(Arrays.asList(number++),minGroupingCount,true),EnumSet.noneOf(OOUtil.Formatting.class));
+    }
+    Layout layout=style.getReferenceFormat(entry.getKey().getType());
+    layout.setPostFormatter(POSTFORMATTER);
+    OOUtil.insertFullReferenceAtCurrentLocation(text,cursor,layout,parFormat,entry.getKey(),entry.getValue(),uniquefiers.get(entry.getKey().getCiteKey()));
+  }
+}

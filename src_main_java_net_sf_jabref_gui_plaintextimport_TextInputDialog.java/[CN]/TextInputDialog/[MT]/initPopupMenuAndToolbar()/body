@@ -1,0 +1,24 @@
+{
+  PasteAction pasteAction=new PasteAction();
+  ClearAction clearAction=new ClearAction();
+  JMenuItem pasteMI=new JMenuItem(pasteAction);
+  inputMenu.add(clearAction);
+  inputMenu.addSeparator();
+  inputMenu.add(pasteMI);
+  inputMenu.addSeparator();
+  JMenu appendMenu=new JMenu(Localization.lang("Append"));
+  appendMenu.setToolTipText(Localization.lang("Append the selected text to BibTeX field"));
+  JMenu overrideMenu=new JMenu(Localization.lang("Override"));
+  overrideMenu.setToolTipText(Localization.lang("Override the BibTeX field by the selected text"));
+  for (  String field : allFields) {
+    appendMenu.add(new JMenuItem(new MenuTextForTagAction(field,false)));
+    overrideMenu.add(new JMenuItem(new MenuTextForTagAction(field,true)));
+  }
+  inputMenu.add(appendMenu);
+  inputMenu.add(overrideMenu);
+  toolBar.add(clearAction);
+  toolBar.setBorderPainted(false);
+  toolBar.addSeparator();
+  toolBar.add(pasteAction);
+  toolBar.add(new LoadAction());
+}

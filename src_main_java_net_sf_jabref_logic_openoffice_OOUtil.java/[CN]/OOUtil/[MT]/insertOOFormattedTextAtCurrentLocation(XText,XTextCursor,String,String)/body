@@ -1,0 +1,73 @@
+{
+  XParagraphCursor parCursor=UnoRuntime.queryInterface(XParagraphCursor.class,cursor);
+  XPropertySet props=UnoRuntime.queryInterface(XPropertySet.class,parCursor);
+  try {
+    props.setPropertyValue(PARA_STYLE_NAME,parStyle);
+  }
+ catch (  IllegalArgumentException ex) {
+    throw new UndefinedParagraphFormatException(parStyle);
+  }
+  Set<Formatting> formatting=EnumSet.noneOf(Formatting.class);
+  int piv=0;
+  Matcher m=OOUtil.HTML_TAG.matcher(lText);
+  while (m.find()) {
+    String ss=lText.substring(piv,m.start());
+    if (!ss.isEmpty()) {
+      OOUtil.insertTextAtCurrentLocation(text,cursor,ss,formatting);
+    }
+    String tag=m.group();
+    if ("<b>".equals(tag)) {
+      formatting.add(Formatting.BOLD);
+    }
+ else     if ("</b>".equals(tag)) {
+      formatting.remove(Formatting.BOLD);
+    }
+ else     if ("<i>".equals(tag) || "<em>".equals(tag)) {
+      formatting.add(Formatting.ITALIC);
+    }
+ else     if ("</i>".equals(tag) || "</em>".equals(tag)) {
+      formatting.remove(Formatting.ITALIC);
+    }
+ else     if ("<tt>".equals(tag)) {
+      formatting.add(Formatting.MONOSPACE);
+    }
+ else     if ("</tt>".equals(tag)) {
+      formatting.remove(Formatting.MONOSPACE);
+    }
+ else     if ("<smallcaps>".equals(tag)) {
+      formatting.add(Formatting.SMALLCAPS);
+    }
+ else     if ("</smallcaps>".equals(tag)) {
+      formatting.remove(Formatting.SMALLCAPS);
+    }
+ else     if ("<sup>".equals(tag)) {
+      formatting.add(Formatting.SUPERSCRIPT);
+    }
+ else     if ("</sup>".equals(tag)) {
+      formatting.remove(Formatting.SUPERSCRIPT);
+    }
+ else     if ("<sub>".equals(tag)) {
+      formatting.add(Formatting.SUBSCRIPT);
+    }
+ else     if ("</sub>".equals(tag)) {
+      formatting.remove(Formatting.SUBSCRIPT);
+    }
+ else     if ("<u>".equals(tag)) {
+      formatting.add(Formatting.UNDERLINE);
+    }
+ else     if ("</u>".equals(tag)) {
+      formatting.remove(Formatting.UNDERLINE);
+    }
+ else     if ("<s>".equals(tag)) {
+      formatting.add(Formatting.STRIKEOUT);
+    }
+ else     if ("</s>".equals(tag)) {
+      formatting.remove(Formatting.STRIKEOUT);
+    }
+    piv=m.end();
+  }
+  if (piv < lText.length()) {
+    OOUtil.insertTextAtCurrentLocation(text,cursor,lText.substring(piv),formatting);
+  }
+  cursor.collapseToEnd();
+}

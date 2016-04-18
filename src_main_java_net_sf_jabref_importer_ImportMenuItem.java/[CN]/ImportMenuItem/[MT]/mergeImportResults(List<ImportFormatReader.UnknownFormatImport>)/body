@@ -8,7 +8,7 @@
     }
     if (ImportFormatReader.BIBTEX_FORMAT.equals(importResult.format)) {
       ParserResult pr=importResult.parserResult;
-      anythingUseful=anythingUseful || (pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0);
+      anythingUseful=anythingUseful || pr.getDatabase().hasEntries() || (!pr.getDatabase().hasNoStrings());
       if (directParserResult == null) {
         directParserResult=pr;
       }
@@ -27,8 +27,12 @@
       ParserResult pr=importResult.parserResult;
       Collection<BibEntry> entries=pr.getDatabase().getEntries();
       anythingUseful=anythingUseful | !entries.isEmpty();
-      Util.setAutomaticFields(entries,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP),!openInNew && Globals.prefs.getBoolean(JabRefPreferences.MARK_IMPORTED_ENTRIES));
+      UpdateField.setAutomaticFields(entries,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
+      boolean markEntries=!openInNew && EntryMarker.shouldMarkEntries();
       for (      BibEntry entry : entries) {
+        if (markEntries) {
+          EntryMarker.markEntry(entry,EntryMarker.IMPORT_MARK_LEVEL,false,new NamedCompound(""));
+        }
         database.insertEntry(entry);
       }
     }

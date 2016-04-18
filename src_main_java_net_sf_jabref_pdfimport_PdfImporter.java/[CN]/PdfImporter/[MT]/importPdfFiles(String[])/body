@@ -1,0 +1,13 @@
+{
+  List<String> files=new ArrayList<>(Arrays.asList(fileNames));
+  List<String> noPdfFiles=new ArrayList<>();
+  PdfFileFilter pdfFilter=PdfFileFilter.INSTANCE;
+  for (  String file : files) {
+    if (!pdfFilter.accept(file)) {
+      noPdfFiles.add(file);
+    }
+  }
+  files.removeAll(noPdfFiles);
+  List<BibEntry> entries=importPdfFiles(files);
+  return new ImportPdfFilesResult(noPdfFiles,entries);
+}

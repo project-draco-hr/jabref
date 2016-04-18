@@ -12,13 +12,13 @@
       f=null;
     }
   }
-  if (chosenFile != null) {
+  if (f != null) {
     File oldFile=panel.getBibDatabaseContext().getDatabaseFile();
-    panel.getBibDatabaseContext().getMetaData().setFile(f);
+    panel.getBibDatabaseContext().setDatabaseFile(f);
     Globals.prefs.put(JabRefPreferences.WORKING_DIRECTORY,f.getParent());
     runCommand();
     if (!success) {
-      panel.getBibDatabaseContext().getMetaData().setFile(oldFile);
+      panel.getBibDatabaseContext().setDatabaseFile(oldFile);
       return;
     }
     try {
@@ -29,4 +29,5 @@
     }
     frame.getFileHistory().newFile(panel.getBibDatabaseContext().getDatabaseFile().getPath());
   }
+  frame.updateEnabledState();
 }

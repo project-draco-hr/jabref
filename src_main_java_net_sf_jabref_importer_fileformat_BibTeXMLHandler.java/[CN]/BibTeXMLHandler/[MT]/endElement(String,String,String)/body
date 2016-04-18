@@ -1,9 +1,13 @@
 {
-  if ("bibtex:entry".equals(raw)) {
-    bibitems.add(b);
-  }
- else   if (raw.startsWith("bibtex:")) {
-    b.setField(local,currentChars);
+  if (BIBTEXML_URI.equals(uri)) {
+    if ("entry".equals(local)) {
+      bibitems.add(b);
+    }
+ else {
+      if (!currentChars.trim().isEmpty()) {
+        b.setField(local,currentChars);
+      }
+    }
   }
   currentChars="";
 }

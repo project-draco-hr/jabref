@@ -1,0 +1,24 @@
+{
+  if (stack.isEmpty()) {
+    throw new VMException("Not enough operands on stack for operation add.period$");
+  }
+  Object o1=stack.pop();
+  if (!(o1 instanceof String)) {
+    throw new VMException("Can only add a period to a string for add.period$");
+  }
+  String s=(String)o1;
+  Matcher m=ADD_PERIOD_PATTERN.matcher(s);
+  if (m.find()) {
+    StringBuffer sb=new StringBuffer();
+    m.appendReplacement(sb,m.group(1));
+    sb.append('.');
+    String group2=m.group(2);
+    if (group2 != null) {
+      sb.append(m.group(2));
+    }
+    stack.push(sb.toString());
+  }
+ else {
+    stack.push(s);
+  }
+}

@@ -2,31 +2,32 @@
   if (stream == null) {
     throw new IOException("No stream given.");
   }
-  ArrayList<BibEntry> bibitems=new ArrayList<>();
+  List<BibEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  String str;
-  while ((str=in.readLine()) != null) {
-    if (str.length() < 3) {
-      continue;
-    }
-    if ("PT ".equals(str.substring(0,3))) {
-      sb.append("::").append(str);
-    }
- else {
-      String beg=str.substring(0,3).trim();
-      if (beg.length() == 2) {
-        sb.append(" ## ");
-        sb.append(str);
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    String str;
+    while ((str=in.readLine()) != null) {
+      if (str.length() < 3) {
+        continue;
+      }
+      if ("PT ".equals(str.substring(0,3))) {
+        sb.append("::").append(str);
       }
  else {
-        sb.append("EOLEOL");
-        sb.append(str.trim());
+        String beg=str.substring(0,3).trim();
+        if (beg.length() == 2) {
+          sb.append(" ## ");
+          sb.append(str);
+        }
+ else {
+          sb.append("EOLEOL");
+          sb.append(str.trim());
+        }
       }
     }
   }
-  String[] entries=sb.toString().split("::");
-  HashMap<String,String> hm=new HashMap<>();
+   String[] entries=sb.toString().split("::");
+  Map<String,String> hm=new HashMap<>();
   for (  String entry : entries) {
     String[] fields=entry.split(" ## ");
     if (fields.length == 0) {
@@ -77,7 +78,7 @@
         hm.put("title",value.replace("EOLEOL"," "));
       }
  else       if ("SO".equals(beg) || "JA".equals(beg)) {
-        hm.put("journal",value.replaceAll("EOLEOL"," "));
+        hm.put("journal",value.replace("EOLEOL"," "));
       }
  else       if ("ID".equals(beg) || "KW".equals(beg)) {
         value=value.replace("EOLEOL"," ");

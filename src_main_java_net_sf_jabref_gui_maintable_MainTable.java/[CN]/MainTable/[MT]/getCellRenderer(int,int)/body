@@ -1,11 +1,11 @@
 {
   int score=-3;
   DefaultTableCellRenderer renderer=MainTable.defRenderer;
-  int status=getCellStatus(row,column);
-  if (!isFloatSearchActive || matches(row,searchMatcher)) {
+  CellRendererMode status=getCellStatus(row,column);
+  if (!(model.getSearchState() == MainTableDataModel.DisplayOption.FLOAT) || matches(row,model.getSearchState() != MainTableDataModel.DisplayOption.DISABLED ? SearchMatcher.INSTANCE : null)) {
     score++;
   }
-  if (!isFloatGroupingActive || matches(row,groupMatcher)) {
+  if (!(model.getGroupingState() == MainTableDataModel.DisplayOption.FLOAT) || matches(row,model.getGroupingState() != MainTableDataModel.DisplayOption.DISABLED ? GroupMatcher.INSTANCE : null)) {
     score+=2;
   }
   if (score < -1) {
@@ -46,14 +46,11 @@
     renderer.setHorizontalAlignment(JLabel.CENTER);
   }
  else   if (tableColorCodes) {
-    if (status == MainTable.REQUIRED) {
+    if (status == CellRendererMode.REQUIRED) {
       renderer=MainTable.reqRenderer;
     }
- else     if (status == MainTable.OPTIONAL) {
+ else     if (status == CellRendererMode.OPTIONAL) {
       renderer=MainTable.optRenderer;
-    }
- else     if (status == MainTable.BOOLEAN) {
-      renderer=(DefaultTableCellRenderer)getDefaultRenderer(Boolean.class);
     }
   }
   int marking=isMarked(row);

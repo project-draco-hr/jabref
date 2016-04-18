@@ -1,18 +1,19 @@
 {
-  ArrayList<BibEntry> bibitems=new ArrayList<>();
+  List<BibEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  String line;
-  while ((line=in.readLine()) != null) {
-    if (!line.isEmpty() && (line.charAt(0) != ' ')) {
-      sb.append("__NEWFIELD__");
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    String line;
+    while ((line=in.readLine()) != null) {
+      if (!line.isEmpty() && (line.charAt(0) != ' ')) {
+        sb.append("__NEWFIELD__");
+      }
+      sb.append(line);
+      sb.append('\n');
     }
-    sb.append(line);
-    sb.append('\n');
   }
-  String[] items=sb.toString().split("<[0-9]+>");
+   String[] items=sb.toString().split(OVID_PATTERN_STRING);
   for (int i=1; i < items.length; i++) {
-    HashMap<String,String> h=new HashMap<>();
+    Map<String,String> h=new HashMap<>();
     String[] fields=items[i].split("__NEWFIELD__");
     for (    String field : fields) {
       int linebreak=field.indexOf('\n');
@@ -37,20 +38,20 @@
       }
  else       if (fieldName.startsWith("Source")) {
         Matcher matcher;
-        if ((matcher=OvidImporter.ovid_src_pat.matcher(content)).find()) {
+        if ((matcher=OvidImporter.OVID_SOURCE_PATTERN.matcher(content)).find()) {
           h.put("journal",matcher.group(1));
           h.put("volume",matcher.group(2));
           h.put("issue",matcher.group(3));
           h.put("pages",matcher.group(4));
           h.put("year",matcher.group(5));
         }
- else         if ((matcher=OvidImporter.ovid_src_pat_no_issue.matcher(content)).find()) {
+ else         if ((matcher=OvidImporter.OVID_SOURCE_PATTERN_NO_ISSUE.matcher(content)).find()) {
           h.put("journal",matcher.group(1));
           h.put("volume",matcher.group(2));
           h.put("pages",matcher.group(3));
           h.put("year",matcher.group(4));
         }
- else         if ((matcher=OvidImporter.ovid_src_pat_2.matcher(content)).find()) {
+ else         if ((matcher=OvidImporter.OVID_SOURCE_PATTERN_2.matcher(content)).find()) {
           h.put("journal",matcher.group(1));
           h.put("volume",matcher.group(2));
           h.put("issue",matcher.group(3));
@@ -58,7 +59,7 @@
           h.put("year",matcher.group(5));
           h.put("pages",matcher.group(6));
         }
- else         if ((matcher=OvidImporter.incollection_pat.matcher(content)).find()) {
+ else         if ((matcher=OvidImporter.INCOLLECTION_PATTERN.matcher(content)).find()) {
           h.put("editor",matcher.group(1).replace(" (Ed)",""));
           h.put("year",matcher.group(2));
           h.put("booktitle",matcher.group(3));
@@ -66,7 +67,7 @@
           h.put("address",matcher.group(5));
           h.put("publisher",matcher.group(6));
         }
- else         if ((matcher=OvidImporter.book_pat.matcher(content)).find()) {
+ else         if ((matcher=OvidImporter.BOOK_PATTERN.matcher(content)).find()) {
           h.put("year",matcher.group(1));
           h.put("pages",matcher.group(2));
           h.put("address",matcher.group(3));

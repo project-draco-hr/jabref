@@ -1,27 +1,28 @@
 {
-  ArrayList<BibEntry> bibitems=new ArrayList<>();
+  List<BibEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  String str;
-  boolean first=true;
-  while ((str=in.readLine()) != null) {
-    str=str.trim();
-    if (str.indexOf("%0") == 0) {
-      if (first) {
-        first=false;
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    String str;
+    boolean first=true;
+    while ((str=in.readLine()) != null) {
+      str=str.trim();
+      if (str.indexOf("%0") == 0) {
+        if (first) {
+          first=false;
+        }
+ else {
+          sb.append(ENDOFRECORD);
+        }
+        sb.append(str);
       }
  else {
-        sb.append(ENDOFRECORD);
+        sb.append(str);
       }
-      sb.append(str);
+      sb.append('\n');
     }
- else {
-      sb.append(str);
-    }
-    sb.append('\n');
   }
-  String[] entries=sb.toString().split(ENDOFRECORD);
-  HashMap<String,String> hm=new HashMap<>();
+   String[] entries=sb.toString().split(ENDOFRECORD);
+  Map<String,String> hm=new HashMap<>();
   String author;
   String type;
   String editor;
@@ -168,7 +169,7 @@
         }
       }
  else       if ("F".equals(prefix)) {
-        hm.put(BibEntry.KEY_FIELD,Util.checkLegalKey(val));
+        hm.put(BibEntry.KEY_FIELD,LabelPatternUtil.checkLegalKey(val));
       }
     }
     if (isEditedBook && "".equals(editor)) {

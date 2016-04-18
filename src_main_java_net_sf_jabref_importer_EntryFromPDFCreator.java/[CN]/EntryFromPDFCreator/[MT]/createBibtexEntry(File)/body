@@ -1,2 +1,14 @@
 {
+  if (!accept(pdfFile)) {
+    return Optional.empty();
+  }
+  PdfImporter pi=new PdfImporter(JabRef.mainFrame,JabRef.mainFrame.getCurrentBasePanel(),JabRef.mainFrame.getCurrentBasePanel().mainTable,-1);
+  String[] fileNames={pdfFile.toString()};
+  ImportPdfFilesResult res=pi.importPdfFiles(fileNames);
+  if (res.getEntries().size() == 1) {
+    return Optional.of(res.getEntries().get(0));
+  }
+ else {
+    return Optional.empty();
+  }
 }

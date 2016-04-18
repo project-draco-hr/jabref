@@ -1,0 +1,22 @@
+{
+  if (stack.size() < 2) {
+    throw new VMException("Not enough operands on stack for operation while$");
+  }
+  Object f2=stack.pop();
+  Object f1=stack.pop();
+  if (!((f1 instanceof Identifier) || (f1 instanceof Tree)) && ((f2 instanceof Identifier) || (f2 instanceof Tree))) {
+    throw new VMException("Expecting two functions for while$.");
+  }
+  do {
+    VM.this.executeInContext(f1,context);
+    Object i=stack.pop();
+    if (!(i instanceof Integer)) {
+      throw new VMException("First parameter to while has to return an integer but was " + i);
+    }
+    if ((Integer)i <= 0) {
+      break;
+    }
+    VM.this.executeInContext(f2,context);
+  }
+ while (true);
+}

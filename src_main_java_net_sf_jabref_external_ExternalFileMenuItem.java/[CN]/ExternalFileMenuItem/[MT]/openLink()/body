@@ -1,8 +1,8 @@
 {
   frame.output(Localization.lang("External viewer called") + ".");
   try {
-    ExternalFileType type=fileType;
-    if (this.fileType == null) {
+    Optional<ExternalFileType> type=fileType;
+    if (!this.fileType.isPresent()) {
       if (this.fieldName == null) {
         File file=new File(link);
         String name=file.getName();
@@ -12,20 +12,20 @@
         fileType=type;
       }
  else {
-        JabRefDesktop.openExternalViewer(frame.getCurrentBasePanel().getBibDatabaseContext().getMetaData(),link,fieldName);
+        JabRefDesktop.openExternalViewer(databaseContext,link,fieldName);
         return true;
       }
     }
-    if (type instanceof UnknownExternalFileType) {
-      return JabRefDesktop.openExternalFileUnknown(frame,entry,metaData,link,(UnknownExternalFileType)type);
+    if (type.isPresent() && (type.get() instanceof UnknownExternalFileType)) {
+      return JabRefDesktop.openExternalFileUnknown(frame,entry,databaseContext,link,(UnknownExternalFileType)type.get());
     }
  else {
-      return JabRefDesktop.openExternalFileAnyFormat(metaData,link,type);
+      return JabRefDesktop.openExternalFileAnyFormat(databaseContext,link,type);
     }
   }
  catch (  IOException e1) {
-    if ((fileType != null) && (fileType.getOpenWith() != null) && !fileType.getOpenWith().isEmpty()&& e1.getMessage().contains(fileType.getOpenWith())) {
-      JOptionPane.showMessageDialog(frame,Localization.lang("Unable to open link. " + "The application '%0' associated with the file type '%1' could not be called.",fileType.getOpenWith(),fileType.getName()),Localization.lang("Could not open link"),JOptionPane.ERROR_MESSAGE);
+    if ((fileType.isPresent()) && (!fileType.get().getOpenWithApplication().isEmpty()) && e1.getMessage().contains(fileType.get().getOpenWithApplication())) {
+      JOptionPane.showMessageDialog(frame,Localization.lang("Unable to open link. " + "The application '%0' associated with the file type '%1' could not be called.",fileType.get().getOpenWithApplication(),fileType.get().getName()),Localization.lang("Could not open link"),JOptionPane.ERROR_MESSAGE);
       return false;
     }
     LOGGER.warn("Unable to open link",e1);

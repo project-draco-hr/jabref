@@ -1,0 +1,13 @@
+{
+  List<BibEntry> entries=context.getDatabase().getEntries();
+  EventList<BibEntry> initialEventList=new BasicEventList<>();
+  initialEventList.addAll(entries);
+  listSynchronizer=new ListSynchronizer(initialEventList);
+  sortedForUserDefinedTableColumnSorting=new SortedList<>(initialEventList,null);
+  sortedForMarkingSearchGrouping=new SortedList<>(sortedForUserDefinedTableColumnSorting,null);
+  FilterList<BibEntry> groupFilterList=new FilterList<>(sortedForMarkingSearchGrouping,EverythingMatcher.INSTANCE);
+  filterGroupToggle=new StartStopListFilterAction(groupFilterList,GroupMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+  FilterList<BibEntry> searchFilterList=new FilterList<>(groupFilterList,EverythingMatcher.INSTANCE);
+  filterSearchToggle=new StartStopListFilterAction(searchFilterList,SearchMatcher.INSTANCE,EverythingMatcher.INSTANCE);
+  finalList=searchFilterList;
+}

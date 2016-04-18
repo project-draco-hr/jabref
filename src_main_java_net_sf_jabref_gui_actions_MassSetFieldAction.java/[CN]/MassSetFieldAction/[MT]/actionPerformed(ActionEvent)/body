@@ -10,7 +10,7 @@
   cancelled=true;
   prepareDialog(!entries.isEmpty());
   if (diag != null) {
-    PositionWindow.placeDialog(diag,frame);
+    diag.setLocationRelativeTo(frame);
     diag.setVisible(true);
   }
   if (cancelled) {
@@ -18,7 +18,7 @@
   }
   Collection<BibEntry> entryList;
   if (all.isSelected()) {
-    entryList=bp.database().getEntries();
+    entryList=bp.getDatabase().getEntries();
   }
  else {
     entryList=entries;
@@ -31,6 +31,8 @@
   NamedCompound ce=new NamedCompound(Localization.lang("Set field"));
   if (rename.isSelected()) {
     if (fields.length > 1) {
+      JOptionPane.showMessageDialog(diag,Localization.lang("You can only rename one field at a time"),"",JOptionPane.ERROR_MESSAGE);
+      return;
     }
  else {
       ce.addEdit(MassSetFieldAction.massRenameField(entryList,fields[0],renameTo.getText(),overwrite.isSelected()));

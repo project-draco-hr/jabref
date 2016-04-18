@@ -1,0 +1,78 @@
+{
+  tokenStart=tokenEnd;
+  while (tokenStart < original.length()) {
+    char c=original.charAt(tokenStart);
+    if (!((c == '~') || (c == '-') || Character.isWhitespace(c))) {
+      break;
+    }
+    tokenStart++;
+  }
+  tokenEnd=tokenStart;
+  if (tokenStart >= original.length()) {
+    return TOKEN_EOF;
+  }
+  if (original.charAt(tokenStart) == ',') {
+    tokenEnd++;
+    return TOKEN_COMMA;
+  }
+  if (original.charAt(tokenStart) == ';') {
+    tokenEnd++;
+    return TOKEN_AND;
+  }
+  tokenAbbr=-1;
+  tokenTerm=' ';
+  tokenCase=true;
+  int bracesLevel=0;
+  int currentBackslash=-1;
+  boolean firstLetterIsFound=false;
+  while (tokenEnd < original.length()) {
+    char c=original.charAt(tokenEnd);
+    if (c == '{') {
+      bracesLevel++;
+    }
+    if ((c == '}') && (bracesLevel > 0)) {
+      bracesLevel--;
+    }
+    if (firstLetterIsFound && (tokenAbbr < 0) && (bracesLevel == 0)) {
+      tokenAbbr=tokenEnd;
+    }
+    if (!firstLetterIsFound && (currentBackslash < 0) && Character.isLetter(c)) {
+      if (bracesLevel == 0) {
+        tokenCase=Character.isUpperCase(c);
+      }
+ else {
+        tokenCase=true;
+      }
+      firstLetterIsFound=true;
+    }
+    if ((currentBackslash >= 0) && !Character.isLetter(c)) {
+      if (!firstLetterIsFound) {
+        String texCmdName=original.substring(currentBackslash + 1,tokenEnd);
+        if (TEX_NAMES.contains(texCmdName)) {
+          tokenCase=Character.isUpperCase(texCmdName.charAt(0));
+          firstLetterIsFound=true;
+        }
+      }
+      currentBackslash=-1;
+    }
+    if (c == '\\') {
+      currentBackslash=tokenEnd;
+    }
+    if ((bracesLevel == 0) && ((",;~-".indexOf(c) != -1) || Character.isWhitespace(c))) {
+      break;
+    }
+    tokenEnd++;
+  }
+  if (tokenAbbr < 0) {
+    tokenAbbr=tokenEnd;
+  }
+  if ((tokenEnd < original.length()) && (original.charAt(tokenEnd) == '-')) {
+    tokenTerm='-';
+  }
+  if ("and".equalsIgnoreCase(original.substring(tokenStart,tokenEnd))) {
+    return TOKEN_AND;
+  }
+ else {
+    return TOKEN_WORD;
+  }
+}

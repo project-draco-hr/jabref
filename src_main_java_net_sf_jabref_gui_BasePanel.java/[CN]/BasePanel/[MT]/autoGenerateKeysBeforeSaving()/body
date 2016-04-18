@@ -1,12 +1,12 @@
 {
   if (Globals.prefs.getBoolean(JabRefPreferences.GENERATE_KEYS_BEFORE_SAVING)) {
-    NamedCompound ce=new NamedCompound(Localization.lang("autogenerate keys"));
+    NamedCompound ce=new NamedCompound(Localization.lang("Autogenerate BibTeX keys"));
     boolean any=false;
     for (    BibEntry bes : database.getEntries()) {
       String oldKey=bes.getCiteKey();
       if ((oldKey == null) || oldKey.isEmpty()) {
         LabelPatternUtil.makeLabel(bibDatabaseContext.getMetaData(),database,bes);
-        ce.addEdit(new UndoableKeyChange(database,bes.getId(),null,bes.getCiteKey()));
+        ce.addEdit(new UndoableKeyChange(database,bes,null,bes.getCiteKey()));
         any=true;
       }
     }

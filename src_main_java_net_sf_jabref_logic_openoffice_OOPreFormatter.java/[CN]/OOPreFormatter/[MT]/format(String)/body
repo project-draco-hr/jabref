@@ -1,0 +1,128 @@
+{
+  int i;
+  String finalResult=field.replaceAll("&|\\\\&","&").replace("\\$","&dollar;").replaceAll("\\$([^\\$]*)\\$","\\{$1\\}");
+  StringBuilder sb=new StringBuilder();
+  StringBuilder currentCommand=null;
+  char c;
+  boolean escaped=false;
+  boolean incommand=false;
+  for (i=0; i < finalResult.length(); i++) {
+    c=finalResult.charAt(i);
+    if (escaped && (c == '\\')) {
+      sb.append('\\');
+      escaped=false;
+    }
+ else     if (c == '\\') {
+      if (incommand) {
+        String command=currentCommand.toString();
+        String result=OOPreFormatter.CHARS.get(command);
+        if (result == null) {
+          sb.append(command);
+        }
+ else {
+          sb.append(result);
+        }
+      }
+      escaped=true;
+      incommand=true;
+      currentCommand=new StringBuilder();
+    }
+ else     if (!incommand && ((c == '{') || (c == '}'))) {
+    }
+ else     if (Character.isLetter(c) || (c == '%') || Globals.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c))) {
+      escaped=false;
+      if (!incommand) {
+        sb.append(c);
+      }
+ else {
+        currentCommand.append(c);
+        testCharCom:         if ((currentCommand.length() == 1) && Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString())) {
+          if (i >= (finalResult.length() - 1)) {
+            break testCharCom;
+          }
+          String command=currentCommand.toString();
+          i++;
+          c=finalResult.charAt(i);
+          String combody;
+          if (c == '{') {
+            String part=StringUtil.getPart(finalResult,i,false);
+            i+=part.length();
+            combody=part;
+          }
+ else {
+            combody=finalResult.substring(i,i + 1);
+          }
+          String result=OOPreFormatter.CHARS.get(command + combody);
+          if (result != null) {
+            sb.append(result);
+          }
+          incommand=false;
+          escaped=false;
+        }
+ else {
+          if ((i + 1) == finalResult.length()) {
+            String command=currentCommand.toString();
+            Object result=OOPreFormatter.CHARS.get(command);
+            if (result == null) {
+              sb.append(command);
+            }
+ else {
+              sb.append((String)result);
+            }
+          }
+        }
+      }
+    }
+ else {
+      String argument;
+      if (!incommand) {
+        sb.append(c);
+      }
+ else       if (Character.isWhitespace(c) || (c == '{') || (c == '}')) {
+        String command=currentCommand.toString();
+        String tag=getHTMLTag(command);
+        if (!tag.isEmpty()) {
+          String part=StringUtil.getPart(finalResult,i,true);
+          i+=part.length();
+          sb.append('<').append(tag).append('>').append(part).append("</").append(tag).append('>');
+        }
+ else         if (c == '{') {
+          String part=StringUtil.getPart(finalResult,i,true);
+          i+=part.length();
+          argument=part;
+          String result=OOPreFormatter.CHARS.get(command + argument);
+          if (result == null) {
+            sb.append(argument);
+          }
+ else {
+            sb.append(result);
+          }
+        }
+ else         if (c == '}') {
+          String result=OOPreFormatter.CHARS.get(command);
+          if (result == null) {
+            sb.append(command);
+          }
+ else {
+            sb.append(result);
+          }
+        }
+ else {
+          String result=OOPreFormatter.CHARS.get(command);
+          if (result == null) {
+            sb.append(command);
+          }
+ else {
+            sb.append(result);
+          }
+          sb.append(' ');
+        }
+      }
+ else {
+      }
+      incommand=false;
+      escaped=false;
+    }
+  }
+  return sb.toString().replace("&dollar;","$");
+}

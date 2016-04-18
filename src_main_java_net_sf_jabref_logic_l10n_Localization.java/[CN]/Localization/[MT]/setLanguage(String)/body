@@ -5,7 +5,17 @@
     setLanguage("en");
     return;
   }
-  Locale locale=new Locale(knownLanguage.get());
+  String[] languageParts=knownLanguage.get().split("_");
+  Locale locale;
+  if (languageParts.length == 1) {
+    locale=new Locale(languageParts[0]);
+  }
+ else   if (languageParts.length == 2) {
+    locale=new Locale(languageParts[0],languageParts[1]);
+  }
+ else {
+    locale=Locale.ENGLISH;
+  }
   Locale.setDefault(locale);
   javax.swing.JComponent.setDefaultLocale(locale);
   try {

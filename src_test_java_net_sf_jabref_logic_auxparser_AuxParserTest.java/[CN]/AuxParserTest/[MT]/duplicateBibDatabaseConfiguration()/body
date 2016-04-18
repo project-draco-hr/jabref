@@ -1,0 +1,12 @@
+{
+  InputStream originalStream=AuxParserTest.class.getResourceAsStream("config.bib");
+  File auxFile=Paths.get(AuxParserTest.class.getResource("paper.aux").toURI()).toFile();
+  try (InputStreamReader originalReader=new InputStreamReader(originalStream,StandardCharsets.UTF_8)){
+    ParserResult result=BibtexParser.parse(originalReader);
+    AuxParser auxParser=new AuxParser(auxFile.getAbsolutePath(),result.getDatabase());
+    AuxParserResult auxResult=auxParser.parse();
+    BibDatabase db=auxResult.getGeneratedBibDatabase();
+    assertEquals("\"Maintained by \" # maintainer",db.getPreamble());
+    assertEquals(1,db.getStringCount());
+  }
+ }

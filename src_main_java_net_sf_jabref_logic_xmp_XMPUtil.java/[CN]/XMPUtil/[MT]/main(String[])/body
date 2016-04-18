@@ -34,12 +34,12 @@ if (args[0].endsWith(".pdf")) {
 break;
 case 2:
 if ("-x".equals(args[0]) && args[1].endsWith(".pdf")) {
-XMPMetadata meta=XMPUtil.readRawXMP(new File(args[1]));
-if (meta == null) {
-System.err.println("The given pdf does not contain any XMP-metadata.");
+Optional<XMPMetadata> meta=XMPUtil.readRawXMP(new File(args[1]));
+if (meta.isPresent()) {
+XMLUtil.save(meta.get().getXMPDocument(),System.out,StandardCharsets.UTF_8.name());
 }
  else {
-XMLUtil.save(meta.getXMPDocument(),System.out,StandardCharsets.UTF_8.name());
+System.err.println("The given pdf does not contain any XMP-metadata.");
 }
 break;
 }
@@ -63,12 +63,12 @@ XMPUtil.usage();
 break;
 }
 ParserResult result=BibtexParser.parse(new FileReader(args[1]));
-BibEntry e=result.getDatabase().getEntryByKey(args[0]);
-if (e == null) {
+BibEntry bibEntry=result.getDatabase().getEntryByKey(args[0]);
+if (bibEntry == null) {
 System.err.println("Could not find BibEntry " + args[0] + " in "+ args[0]);
 }
  else {
-XMPUtil.writeXMP(new File(args[2]),e,result.getDatabase());
+XMPUtil.writeXMP(new File(args[2]),bibEntry,result.getDatabase());
 System.out.println("XMP written.");
 }
 break;

@@ -1,0 +1,27 @@
+{
+switch (type) {
+case LayoutHelper.IS_LAYOUT_TEXT:
+    return text;
+case LayoutHelper.IS_SIMPLE_FIELD:
+  String value=BibDatabase.getResolvedField(text,bibtex,database);
+if (value == null) {
+  value="";
+}
+if (postFormatter != null) {
+value=postFormatter.format(value);
+}
+return value;
+case LayoutHelper.IS_FIELD_START:
+case LayoutHelper.IS_GROUP_START:
+return handleFieldOrGroupStart(bibtex,database,highlightPattern);
+case LayoutHelper.IS_FIELD_END:
+case LayoutHelper.IS_GROUP_END:
+return "";
+case LayoutHelper.IS_OPTION_FIELD:
+return handleOptionField(bibtex,database);
+case LayoutHelper.IS_ENCODING_NAME:
+return BibDatabase.getResolvedField("encoding",bibtex,database);
+default :
+return "";
+}
+}

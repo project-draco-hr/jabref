@@ -1,8 +1,8 @@
 {
-  String description=this.description.getText().trim();
+  String descriptionText=this.description.getText().trim();
   String link="";
   try {
-    List<String> dirs=metaData.getFileDirectory(Globals.FILE_FIELD);
+    List<String> dirs=databaseContext.getFileDirectory();
     if (dirs.isEmpty()) {
       link=this.link.getText().trim();
     }
@@ -30,7 +30,7 @@
     link=this.link.getText().trim();
   }
   ExternalFileType type=(ExternalFileType)types.getSelectedItem();
-  entry.description=description;
-  entry.type=type;
+  entry.description=descriptionText;
+  entry.type=Optional.ofNullable(type);
   entry.link=link;
 }

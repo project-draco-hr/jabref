@@ -1,8 +1,5 @@
 {
-  try (PDDocument document=PDDocument.load(inputStream)){
-    if (document.isEncrypted()) {
-      throw new EncryptionNotSupportedException("Error: Cannot read metadata from encrypted document.");
-    }
+  try (PDDocument document=loadWithAutomaticDecryption(inputStream)){
     return XMPUtil.getXMPMetadata(document);
   }
  }

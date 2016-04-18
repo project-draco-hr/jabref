@@ -1,0 +1,12 @@
+{
+  Optional<ExternalFileType> type=ExternalFileTypes.getInstance().getExternalFileTypeByExt(fileType);
+  String viewer;
+  if (type.isPresent() && !type.get().getOpenWithApplication().isEmpty()) {
+    viewer=type.get().getOpenWithApplication();
+  }
+ else {
+    viewer="xdg-open";
+  }
+  String[] cmdArray={viewer,filePath};
+  Runtime.getRuntime().exec(cmdArray);
+}

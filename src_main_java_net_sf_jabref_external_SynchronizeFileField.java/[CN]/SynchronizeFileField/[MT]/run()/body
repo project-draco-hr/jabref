@@ -1,6 +1,6 @@
 {
   if (!goOn) {
-    panel.output(Localization.lang("No entries selected."));
+    panel.output(Localization.lang("This operation requires one or more entries to be selected."));
     return;
   }
   entriesChangedCount=0;
@@ -10,11 +10,11 @@
   int progressBarMax=(autoSet ? weightAutoSet * sel.size() : 0) + (checkExisting ? sel.size() : 0);
   panel.frame().setProgressBarMaximum(progressBarMax);
   int progress=0;
-  final NamedCompound ce=new NamedCompound(Localization.lang("Autoset %0 field",Globals.FILE_FIELD));
+  final NamedCompound ce=new NamedCompound(Localization.lang("Automatically set file links"));
   Set<BibEntry> changedEntries=new HashSet<>();
   if (autoSet) {
     Collection<BibEntry> entries=new ArrayList<>(sel);
-    Runnable r=Util.autoSetLinks(entries,ce,changedEntries,null,panel.getBibDatabaseContext().getMetaData(),null,null);
+    Runnable r=Util.autoSetLinks(entries,ce,changedEntries,null,panel.getBibDatabaseContext(),null,null);
     JabRefExecutorService.INSTANCE.executeAndWait(r);
   }
   progress+=sel.size() * weightAutoSet;
@@ -27,14 +27,14 @@
       if ((old != null) && !(old.isEmpty())) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old);
-        List<String> dirsS=panel.getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD);
+        List<String> dirsS=panel.getBibDatabaseContext().getFileDirectory();
         List<File> dirs=new ArrayList<>();
         for (        String dirs1 : dirsS) {
           dirs.add(new File(dirs1));
         }
         for (int j=0; j < tableModel.getRowCount(); j++) {
           FileListEntry flEntry=tableModel.getEntry(j);
-          boolean httpLink=flEntry.link.toLowerCase().startsWith("http");
+          boolean httpLink=flEntry.link.toLowerCase(Locale.ENGLISH).startsWith("http");
           if (httpLink) {
             continue;
           }
@@ -50,7 +50,7 @@
             }
 switch (answer) {
 case 1:
-              FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext().getMetaData());
+              FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext());
             flEditor.setVisible(true,true);
           break;
 case 2:
@@ -68,14 +68,14 @@ default :
 break mainLoop;
 }
 }
-if (!deleted && (flEntry.type instanceof UnknownExternalFileType)) {
-String[] options=new String[]{Localization.lang("Define '%0'",flEntry.type.getName()),Localization.lang("Change file type"),Localization.lang("Cancel")};
+if (!deleted && flEntry.type.isPresent() && (flEntry.type.get() instanceof UnknownExternalFileType)) {
+String[] options=new String[]{Localization.lang("Define '%0'",flEntry.type.get().getName()),Localization.lang("Change file type"),Localization.lang("Cancel")};
 String defOption=options[0];
-int answer=JOptionPane.showOptionDialog(panel.frame(),Localization.lang("One or more file links are of the type '%0', which is undefined. What do you want to do?",flEntry.type.getName()),Localization.lang("Undefined file type"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,defOption);
+int answer=JOptionPane.showOptionDialog(panel.frame(),Localization.lang("One or more file links are of the type '%0', which is undefined. What do you want to do?",flEntry.type.get().getName()),Localization.lang("Undefined file type"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,defOption);
 if (answer == JOptionPane.CANCEL_OPTION) {
 }
  else if (answer == JOptionPane.YES_OPTION) {
-ExternalFileType newType=new ExternalFileType(flEntry.type.getName(),"","","","new",IconTheme.JabRefIcon.FILE.getSmallIcon());
+ExternalFileType newType=new ExternalFileType(flEntry.type.get().getName(),"","","","new",IconTheme.JabRefIcon.FILE.getSmallIcon());
 ExternalFileTypeEntryEditor editor=new ExternalFileTypeEntryEditor(panel.frame(),newType);
 editor.setVisible(true);
 if (editor.okPressed()) {
@@ -87,7 +87,7 @@ panel.mainTable.repaint();
 }
 }
  else {
-FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext().getMetaData());
+FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext());
 editor.setVisible(true,false);
 }
 }

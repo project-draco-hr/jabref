@@ -1,0 +1,23 @@
+{
+  FreeCiteImporter fimp=new FreeCiteImporter();
+  String text=textPane.getText();
+  text=text.replace(Globals.NEWLINE.concat(Globals.NEWLINE),"##NEWLINE##");
+  text=text.replace("/".concat(Globals.NEWLINE),"/");
+  text=text.replace(Globals.NEWLINE," ");
+  text=text.replace("##NEWLINE##",Globals.NEWLINE);
+  List<BibEntry> importedEntries=fimp.importEntries(text,frame);
+  if (importedEntries == null) {
+    return false;
+  }
+ else {
+    UpdateField.setAutomaticFields(importedEntries,false,false);
+    boolean markEntries=EntryMarker.shouldMarkEntries();
+    for (    BibEntry e : importedEntries) {
+      if (markEntries) {
+        EntryMarker.markEntry(entry,EntryMarker.IMPORT_MARK_LEVEL,false,new NamedCompound(""));
+      }
+      frame.getCurrentBasePanel().insertEntry(e);
+    }
+    return true;
+  }
+}

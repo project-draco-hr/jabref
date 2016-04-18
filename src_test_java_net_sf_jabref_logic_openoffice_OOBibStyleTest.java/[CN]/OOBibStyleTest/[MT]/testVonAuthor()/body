@@ -1,0 +1,13 @@
+{
+  OOBibStyle style=new OOBibStyle(StyleLoader.DEFAULT_NUMERICAL_STYLE_PATH,mock(JournalAbbreviationRepository.class));
+  BibDatabase database=new BibDatabase();
+  Layout l=style.getReferenceFormat("article");
+  l.setPostFormatter(new OOPreFormatter());
+  BibEntry entry=new BibEntry();
+  entry.setType("article");
+  entry.setField("author","Alpha von Beta");
+  entry.setField("title","JabRef Manual");
+  entry.setField("year","2016");
+  database.insertEntry(entry);
+  assertEquals("<b>von Beta, A.</b> (<b>2016</b>). <i>JabRef Manual</i>,  .",l.doLayout(entry,database));
+}

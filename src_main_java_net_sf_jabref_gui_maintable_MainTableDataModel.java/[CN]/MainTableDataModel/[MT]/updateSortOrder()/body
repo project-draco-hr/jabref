@@ -1,0 +1,15 @@
+{
+  Comparator<BibEntry> markingComparator=filterAndSortingState.markingState ? IsMarkedComparator.INSTANCE : null;
+  Comparator<BibEntry> searchComparator=getSearchState() == DisplayOption.FLOAT ? new HitOrMissComparator(SearchMatcher.INSTANCE) : null;
+  Comparator<BibEntry> groupingComparator=getGroupingState() == DisplayOption.FLOAT ? new HitOrMissComparator(GroupMatcher.INSTANCE) : null;
+  GenericCompositeComparator comparator=new GenericCompositeComparator(markingComparator,searchComparator,groupingComparator);
+  sortedForMarkingSearchGrouping.getReadWriteLock().writeLock().lock();
+  try {
+    if (sortedForMarkingSearchGrouping.getComparator() != comparator) {
+      sortedForMarkingSearchGrouping.setComparator(comparator);
+    }
+  }
+  finally {
+    sortedForMarkingSearchGrouping.getReadWriteLock().writeLock().unlock();
+  }
+}

@@ -19,12 +19,11 @@
   DefaultFormBuilder builder=new DefaultFormBuilder(new FormLayout(colSpec,rowSpec),panel);
   for (int i=0; i < fields.size(); i++) {
     String field=fields.get(i);
-    int editorType=InternalBibtexFields.getEditorType(field);
     FieldEditor fieldEditor;
     int defaultHeight;
     int wHeight=(int)(50.0 * InternalBibtexFields.getFieldWeight(field));
-    if (editorType == GUIGlobals.FILE_LIST_EDITOR) {
-      fieldEditor=new FileListEditor(frame,bPanel.getBibDatabaseContext().getMetaData(),field,null,parent);
+    if (InternalBibtexFields.getFieldExtras(field).contains(FieldProperties.FILE_EDITOR)) {
+      fieldEditor=new FileListEditor(frame,bPanel.getBibDatabaseContext(),field,null,parent);
       fileListEditor=(FileListEditor)fieldEditor;
       defaultHeight=0;
     }

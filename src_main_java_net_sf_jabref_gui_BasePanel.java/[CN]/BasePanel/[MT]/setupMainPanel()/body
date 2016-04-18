@@ -1,7 +1,7 @@
 {
   splitPane=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
   splitPane.setDividerSize(GUIGlobals.SPLIT_PANE_DIVIDER_SIZE);
-  boolean floatSearchActive=(mainTable != null) && isShowingFloatSearch();
+  boolean floatSearchActive=(mainTable != null) && (this.tableModel.getSearchState() == MainTableDataModel.DisplayOption.FLOAT);
   createMainTable();
   for (  EntryEditor ee : entryEditors.values()) {
     ee.validateAllFields();
@@ -9,15 +9,15 @@
   splitPane.setTopComponent(mainTable.getPane());
   splitPane.setBorder(BorderFactory.createEmptyBorder());
   setBorder(BorderFactory.createEmptyBorder());
-  if (mode == BasePanel.SHOWING_PREVIEW) {
-    mode=BasePanel.SHOWING_NOTHING;
+  if (mode == BasePanelMode.SHOWING_PREVIEW) {
+    mode=BasePanelMode.SHOWING_NOTHING;
     int row=mainTable.findEntry(currentPreview.getEntry());
     if (row >= 0) {
       mainTable.setRowSelectionInterval(row,row);
     }
   }
- else   if (mode == BasePanel.SHOWING_EDITOR) {
-    mode=BasePanel.SHOWING_NOTHING;
+ else   if (mode == BasePanelMode.SHOWING_EDITOR) {
+    mode=BasePanelMode.SHOWING_NOTHING;
   }
  else {
     splitPane.setBottomComponent(null);
@@ -37,7 +37,7 @@
     autoCompleters=new ContentAutoCompleters(Globals.journalAbbreviationLoader);
   }
   if (floatSearchActive) {
-    startShowingFloatSearch();
+    mainTable.showFloatSearch();
   }
   splitPane.revalidate();
   revalidate();

@@ -1,12 +1,11 @@
 {
   CleanupPreset preset=new CleanupPreset(CleanupPreset.CleanupStep.RENAME_PDF);
-  File tempFile=testFolder.newFile();
+  File tempFile=bibFolder.newFile();
   BibEntry entry=new BibEntry();
   entry.setField(BibEntry.KEY_FIELD,"Toot");
-  FileField.ParsedFileField fileField=new FileField.ParsedFileField("",tempFile.getAbsolutePath(),"");
+  ParsedFileField fileField=new ParsedFileField("",tempFile.getAbsolutePath(),"");
   entry.setField("file",FileField.getStringRepresentation(fileField));
-  CleanupWorker worker=new CleanupWorker(preset,Collections.singletonList(testFolder.getRoot().getAbsolutePath()));
-  worker.cleanup(entry);
-  FileField.ParsedFileField newFileField=new FileField.ParsedFileField("","Toot.tmp","");
+  worker.cleanup(preset,entry);
+  ParsedFileField newFileField=new ParsedFileField("","Toot.tmp","");
   Assert.assertEquals(FileField.getStringRepresentation(newFileField),entry.getField("file"));
 }

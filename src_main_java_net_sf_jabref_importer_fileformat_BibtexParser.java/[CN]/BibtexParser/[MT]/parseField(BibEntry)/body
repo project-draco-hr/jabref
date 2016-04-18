@@ -7,16 +7,16 @@
     content=StringUtil.removeBracesAroundCapitals(content);
   }
   if (!content.isEmpty()) {
-    if (!entry.hasField(key)) {
-      entry.setField(key,content);
-    }
- else {
-      if ("author".equals(key) || "editor".equals(key)) {
+    if (entry.hasField(key)) {
+      if (InternalBibtexFields.getFieldExtras(key).contains(FieldProperties.PERSON_NAMES)) {
         entry.setField(key,entry.getField(key) + " and " + content);
       }
  else       if ("keywords".equals(key)) {
         entry.addKeyword(content);
       }
+    }
+ else {
+      entry.setField(key,content);
     }
   }
 }

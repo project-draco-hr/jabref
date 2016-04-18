@@ -1,0 +1,61 @@
+{
+  String link=initialLink;
+  String fieldName=initialFieldName;
+  if ("ps".equals(fieldName) || "pdf".equals(fieldName)) {
+    List<String> dir=databaseContext.getFileDirectory(fieldName);
+    Optional<File> file=FileUtil.expandFilename(link,dir);
+    if (!file.isPresent() || !file.get().exists()) {
+      throw new IOException("File not found (" + fieldName + "): '"+ link+ "'.");
+    }
+    link=file.get().getCanonicalPath();
+    String[] split=file.get().getName().split("\\.");
+    if (split.length >= 2) {
+      if ("pdf".equalsIgnoreCase(split[split.length - 1])) {
+        fieldName="pdf";
+      }
+ else       if ("ps".equalsIgnoreCase(split[split.length - 1]) || ((split.length >= 3) && "ps".equalsIgnoreCase(split[split.length - 2]))) {
+        fieldName="ps";
+      }
+    }
+  }
+ else   if ("doi".equals(fieldName)) {
+    Optional<DOI> doiUrl=DOI.build(link);
+    if (doiUrl.isPresent()) {
+      link=doiUrl.get().getURLAsASCIIString();
+    }
+    fieldName="url";
+  }
+ else   if ("eprint".equals(fieldName)) {
+    fieldName="url";
+    if (!link.startsWith("http://")) {
+      link=Util.ARXIV_LOOKUP_PREFIX + link;
+    }
+  }
+  if ("url".equals(fieldName)) {
+    try {
+      openBrowser(link);
+    }
+ catch (    IOException e) {
+      LOGGER.error("Error opening file '" + link + "'",e);
+    }
+  }
+ else   if ("ps".equals(fieldName)) {
+    try {
+      NATIVE_DESKTOP.openFile(link,"ps");
+    }
+ catch (    IOException e) {
+      LOGGER.error("An error occured on the command: " + link,e);
+    }
+  }
+ else   if ("pdf".equals(fieldName)) {
+    try {
+      NATIVE_DESKTOP.openFile(link,"pdf");
+    }
+ catch (    IOException e) {
+      LOGGER.error("An error occured on the command: " + link,e);
+    }
+  }
+ else {
+    LOGGER.info("Message: currently only PDF, PS and HTML files can be opened by double clicking");
+  }
+}

@@ -1,0 +1,14 @@
+{
+  PDDocument doc=PDDocument.load(inputStream);
+  if (doc.isEncrypted()) {
+    StandardDecryptionMaterial sdm=new StandardDecryptionMaterial("");
+    try {
+      doc.openProtection(sdm);
+    }
+ catch (    BadSecurityHandlerException|CryptographyException e) {
+      LOGGER.error("Cannot handle encrypted PDF: " + e.getMessage());
+      throw new EncryptedPdfsNotSupportedException();
+    }
+  }
+  return doc;
+}

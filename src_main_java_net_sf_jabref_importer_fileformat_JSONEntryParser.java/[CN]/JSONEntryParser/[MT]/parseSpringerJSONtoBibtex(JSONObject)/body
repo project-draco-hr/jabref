@@ -1,0 +1,71 @@
+{
+  String[] singleFieldStrings={"issn","volume","abstract","doi","title","number","publisher"};
+  BibEntry entry=new BibEntry();
+  String nametype;
+  String isbn=springerJsonEntry.optString("isbn");
+  if (com.google.common.base.Strings.isNullOrEmpty(isbn)) {
+    entry.setType("article");
+    nametype="journal";
+  }
+ else {
+    entry.setType("incollection");
+    nametype="booktitle";
+    entry.setField("isbn",isbn);
+  }
+  if (springerJsonEntry.has("creators")) {
+    JSONArray authors=springerJsonEntry.getJSONArray("creators");
+    List<String> authorList=new ArrayList<>();
+    for (int i=0; i < authors.length(); i++) {
+      if (authors.getJSONObject(i).has("creator")) {
+        authorList.add(authors.getJSONObject(i).getString("creator"));
+      }
+ else {
+        LOGGER.info("Empty author name.");
+      }
+    }
+    entry.setField("author",String.join(" and ",authorList));
+  }
+ else {
+    LOGGER.info("No author found.");
+  }
+  for (  String field : singleFieldStrings) {
+    if (springerJsonEntry.has(field)) {
+      String text=springerJsonEntry.getString(field);
+      if (!text.isEmpty()) {
+        entry.setField(field,text);
+      }
+    }
+  }
+  if (springerJsonEntry.has("startingPage") && !(springerJsonEntry.getString("startingPage").isEmpty())) {
+    if (springerJsonEntry.has("endPage") && !(springerJsonEntry.getString("endPage").isEmpty())) {
+      entry.setField("pages",springerJsonEntry.getString("startingPage") + "--" + springerJsonEntry.getString("endPage"));
+    }
+ else {
+      entry.setField("pages",springerJsonEntry.getString("startingPage"));
+    }
+  }
+  if (springerJsonEntry.has("publicationName")) {
+    entry.setField(nametype,springerJsonEntry.getString("publicationName"));
+  }
+  if (springerJsonEntry.has("url")) {
+    JSONArray urlarray=springerJsonEntry.optJSONArray("url");
+    if (urlarray == null) {
+      entry.setField("url",springerJsonEntry.optString("url"));
+    }
+ else {
+      entry.setField("url",urlarray.getJSONObject(0).optString("value"));
+    }
+  }
+  if (springerJsonEntry.has("publicationDate")) {
+    String date=springerJsonEntry.getString("publicationDate");
+    entry.setField("date",date);
+    String[] dateparts=date.split("-");
+    entry.setField("year",dateparts[0]);
+    entry.setField("month",MonthUtil.getMonthByNumber(Integer.parseInt(dateparts[1])).bibtexFormat);
+  }
+  String abstr=entry.getField("abstract");
+  if ((abstr != null) && abstr.startsWith("Abstract")) {
+    entry.setField("abstract",abstr.substring(8));
+  }
+  return entry;
+}

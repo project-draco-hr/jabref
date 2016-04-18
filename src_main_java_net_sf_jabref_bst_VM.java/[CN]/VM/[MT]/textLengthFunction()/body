@@ -1,0 +1,45 @@
+{
+  if (stack.isEmpty()) {
+    throw new VMException("Not enough operands on stack for operation text.length$");
+  }
+  Object o1=stack.pop();
+  if (!(o1 instanceof String)) {
+    throw new VMException("Can only perform operation on a string text.length$");
+  }
+  String s=(String)o1;
+  char[] c=s.toCharArray();
+  int result=0;
+  int i=0;
+  int n=s.length();
+  int braceLevel=0;
+  while (i < n) {
+    i++;
+    if (c[i - 1] == '{') {
+      braceLevel++;
+      if ((braceLevel == 1) && (i < n)) {
+        if (c[i] == '\\') {
+          i++;
+          while ((i < n) && (braceLevel > 0)) {
+            if (c[i] == '}') {
+              braceLevel--;
+            }
+ else             if (c[i] == '{') {
+              braceLevel++;
+            }
+            i++;
+          }
+          result++;
+        }
+      }
+    }
+ else     if (c[i - 1] == '}') {
+      if (braceLevel > 0) {
+        braceLevel--;
+      }
+    }
+ else {
+      result++;
+    }
+  }
+  stack.push(result);
+}

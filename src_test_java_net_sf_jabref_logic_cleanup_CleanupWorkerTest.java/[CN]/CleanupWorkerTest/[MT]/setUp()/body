@@ -1,0 +1,13 @@
+{
+  if (Globals.prefs == null) {
+    Globals.prefs=JabRefPreferences.getInstance();
+  }
+  if (Globals.journalAbbreviationLoader == null) {
+    Globals.journalAbbreviationLoader=mock(JournalAbbreviationLoader.class);
+  }
+  pdfFolder=bibFolder.newFolder();
+  MetaData metaData=new MetaData();
+  metaData.setDefaultFileDirectory(pdfFolder.getAbsolutePath());
+  BibDatabaseContext context=new BibDatabaseContext(new BibDatabase(),metaData,bibFolder.newFile("test.bib"));
+  worker=new CleanupWorker(context,mock(JournalAbbreviationRepository.class));
+}

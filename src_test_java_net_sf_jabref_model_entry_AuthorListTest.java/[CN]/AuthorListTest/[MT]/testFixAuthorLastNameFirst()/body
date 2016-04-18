@@ -1,0 +1,17 @@
+{
+  Assert.assertEquals("Smith, John",AuthorList.fixAuthorLastNameFirst("John Smith"));
+  Assert.assertEquals("Smith, John and Black Brown, Peter",AuthorList.fixAuthorLastNameFirst("John Smith and Black Brown, Peter"));
+  Assert.assertEquals("von Neumann, John and Smith, John and Black Brown, Peter",AuthorList.fixAuthorLastNameFirst("John von Neumann and John Smith and Black Brown, Peter"));
+  Assert.assertEquals("von Last, Jr, First",AuthorList.fixAuthorLastNameFirst("von Last, Jr ,First"));
+  Assert.assertTrue(AuthorList.fixAuthorLastNameFirst("John von Neumann and John Smith and Black Brown, Peter").equals(AuthorList.fixAuthorLastNameFirst("John von Neumann" + (0 == 1 ? "" : " and ") + "John Smith and Black Brown, Peter")));
+  Assert.assertEquals("Smith, John",AuthorList.fixAuthorLastNameFirst("John Smith",false));
+  Assert.assertEquals("Smith, John and Black Brown, Peter",AuthorList.fixAuthorLastNameFirst("John Smith and Black Brown, Peter",false));
+  Assert.assertEquals("von Neumann, John and Smith, John and Black Brown, Peter",AuthorList.fixAuthorLastNameFirst("John von Neumann and John Smith and Black Brown, Peter",false));
+  Assert.assertEquals("von Last, Jr, First",AuthorList.fixAuthorLastNameFirst("von Last, Jr ,First",false));
+  Assert.assertTrue(AuthorList.fixAuthorLastNameFirst("John von Neumann and John Smith and Black Brown, Peter",false).equals(AuthorList.fixAuthorLastNameFirst("John von Neumann" + (0 == 1 ? "" : " and ") + "John Smith and Black Brown, Peter",false)));
+  Assert.assertEquals("Smith, J.",AuthorList.fixAuthorLastNameFirst("John Smith",true));
+  Assert.assertEquals("Smith, J. and Black Brown, P.",AuthorList.fixAuthorLastNameFirst("John Smith and Black Brown, Peter",true));
+  Assert.assertEquals("von Neumann, J. and Smith, J. and Black Brown, P.",AuthorList.fixAuthorLastNameFirst("John von Neumann and John Smith and Black Brown, Peter",true));
+  Assert.assertEquals("von Last, Jr, F.",AuthorList.fixAuthorLastNameFirst("von Last, Jr ,First",true));
+  Assert.assertTrue(AuthorList.fixAuthorLastNameFirst("John von Neumann and John Smith and Black Brown, Peter",true).equals(AuthorList.fixAuthorLastNameFirst("John von Neumann" + (0 == 1 ? "" : " and ") + "John Smith and Black Brown, Peter",true)));
+}

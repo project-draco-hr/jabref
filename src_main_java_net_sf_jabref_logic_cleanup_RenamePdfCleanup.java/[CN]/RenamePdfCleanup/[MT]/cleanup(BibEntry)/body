@@ -1,51 +1,52 @@
 {
-  Optional<String> oldValue=entry.getFieldOptional(Globals.FILE_FIELD);
-  if (!oldValue.isPresent()) {
-    return new ArrayList<>();
-  }
-  List<FileField.ParsedFileField> fileList=FileField.parse(oldValue.get());
-  List<FileField.ParsedFileField> newFileList=new ArrayList<>();
+  TypedBibEntry typedEntry=new TypedBibEntry(entry,databaseContext);
+  List<ParsedFileField> fileList=typedEntry.getFiles();
+  List<ParsedFileField> newFileList=new ArrayList<>();
   boolean changed=false;
-  for (  FileField.ParsedFileField flEntry : fileList) {
-    String realOldFilename=flEntry.link;
+  for (  ParsedFileField flEntry : fileList) {
+    String realOldFilename=flEntry.getLink();
     if (onlyRelativePaths && (new File(realOldFilename).isAbsolute())) {
       continue;
     }
-    StringBuilder newFilename=new StringBuilder(Util.getLinkedFileName(database,entry));
+    StringBuilder newFilename=new StringBuilder(Util.getLinkedFileName(databaseContext.getDatabase(),entry,repository));
     newFilename.append('.').append(FileUtil.getFileExtension(realOldFilename).orElse("pdf"));
-    Optional<File> expandedOldFile=FileUtil.expandFilename(realOldFilename,paths);
+    Optional<File> expandedOldFile=FileUtil.expandFilename(realOldFilename,databaseContext.getFileDirectory());
     if ((!expandedOldFile.isPresent()) || (expandedOldFile.get().getParent() == null)) {
       continue;
     }
     String newPath=expandedOldFile.get().getParent().concat(System.getProperty("file.separator")).concat(newFilename.toString());
-    if (new File(newPath).exists()) {
+    String expandedOldFilePath=expandedOldFile.get().toString();
+    Boolean pathsDifferOnlyByCase=newPath.equalsIgnoreCase(expandedOldFilePath) && !newPath.equals(expandedOldFilePath);
+    if (new File(newPath).exists() && !pathsDifferOnlyByCase) {
       continue;
     }
-    boolean renameSuccessful=FileUtil.renameFile(expandedOldFile.get().toString(),newPath);
+    boolean renameSuccessful=FileUtil.renameFile(expandedOldFilePath,newPath);
     if (renameSuccessful) {
       changed=true;
-      String description=flEntry.description;
-      String type=flEntry.fileType;
+      String description=flEntry.getDescription();
+      String type=flEntry.getFileType();
       File parent=(new File(realOldFilename)).getParentFile();
       String newFileEntryFileName;
-      if ((parent == null) || paths.contains(parent.getAbsolutePath())) {
+      if ((parent == null) || databaseContext.getFileDirectory().contains(parent.getAbsolutePath())) {
         newFileEntryFileName=newFilename.toString();
       }
  else {
         newFileEntryFileName=parent.toString().concat(System.getProperty("file.separator")).concat(newFilename.toString());
       }
-      newFileList.add(new FileField.ParsedFileField(description,newFileEntryFileName,type));
+      newFileList.add(new ParsedFileField(description,newFileEntryFileName,type));
     }
  else {
       unsuccessfulRenames++;
     }
   }
   if (changed) {
-    String newValue=FileField.getStringRepresentation(newFileList);
-    assert(!oldValue.get().equals(newValue));
-    entry.setField(Globals.FILE_FIELD,newValue);
-    FieldChange change=new FieldChange(entry,Globals.FILE_FIELD,oldValue.get(),newValue);
-    return Collections.singletonList(change);
+    Optional<FieldChange> change=typedEntry.setFiles(newFileList);
+    if (change.isPresent()) {
+      return Collections.singletonList(change.get());
+    }
+ else {
+      return Collections.emptyList();
+    }
   }
   return new ArrayList<>();
 }

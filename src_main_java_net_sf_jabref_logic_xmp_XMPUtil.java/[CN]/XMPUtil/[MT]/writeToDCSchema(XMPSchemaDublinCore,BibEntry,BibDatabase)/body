@@ -1,28 +1,31 @@
 {
-  if (database != null) {
-    entry=database.resolveForStrings(entry,false);
+  BibEntry resolvedEntry;
+  if (database == null) {
+    resolvedEntry=entry;
+  }
+ else {
+    resolvedEntry=database.resolveForStrings(entry,false);
   }
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   boolean useXmpPrivacyFilter=prefs.getBoolean(JabRefPreferences.USE_XMP_PRIVACY_FILTER);
   Set<String> filters=new TreeSet<>(prefs.getStringList(JabRefPreferences.XMP_PRIVACY_FILTERS));
-  for (  String field : entry.getFieldNames()) {
+  for (  String field : resolvedEntry.getFieldNames()) {
     if (useXmpPrivacyFilter && filters.contains(field)) {
       continue;
     }
     if ("editor".equals(field)) {
-      String authors=entry.getField(field);
-      AuthorList list=AuthorList.getAuthorList(authors);
-      for (      AuthorList.Author author : list.getAuthorList()) {
+      String authors=resolvedEntry.getField(field);
+      AuthorList list=AuthorList.parse(authors);
+      for (      Author author : list.getAuthors()) {
         dcSchema.addContributor(author.getFirstLast(false));
       }
       continue;
     }
     if ("author".equals(field)) {
-      String authors=entry.getField(field);
-      AuthorList list=AuthorList.getAuthorList(authors);
-      int n=list.size();
-      for (int i=0; i < n; i++) {
-        dcSchema.addCreator(list.getAuthor(i).getFirstLast(false));
+      String authors=resolvedEntry.getField(field);
+      AuthorList list=AuthorList.parse(authors);
+      for (      Author author : list.getAuthors()) {
+        dcSchema.addCreator(author.getFirstLast(false));
       }
       continue;
     }
@@ -37,12 +40,12 @@
       continue;
     }
     if ("abstract".equals(field)) {
-      String o=entry.getField(field);
+      String o=resolvedEntry.getField(field);
       dcSchema.setDescription(o);
       continue;
     }
     if ("doi".equals(field)) {
-      String o=entry.getField(field);
+      String o=resolvedEntry.getField(field);
       dcSchema.setIdentifier(o);
       continue;
     }

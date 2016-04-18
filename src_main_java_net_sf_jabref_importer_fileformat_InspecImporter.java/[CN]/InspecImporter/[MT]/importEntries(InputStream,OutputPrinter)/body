@@ -1,5 +1,5 @@
 {
-  ArrayList<BibEntry> bibitems=new ArrayList<>();
+  List<BibEntry> bibitems=new ArrayList<>();
   StringBuilder sb=new StringBuilder();
   String str;
   try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
@@ -17,7 +17,7 @@
   }
    String[] entries=sb.toString().split("__::__");
   String type="";
-  HashMap<String,String> h=new HashMap<>();
+  Map<String,String> h=new HashMap<>();
   for (  String entry : entries) {
     if (entry.indexOf("Record") != 0) {
       continue;
@@ -34,7 +34,7 @@
         h.put("year",frest);
       }
  else       if ("AU".equals(f3)) {
-        h.put("author",AuthorList.fixAuthor_lastNameFirst(frest.replace(",-",", ").replace(";"," and ")));
+        h.put("author",AuthorList.fixAuthorLastNameFirst(frest.replace(",-",", ").replace(";"," and ")));
       }
  else       if ("AB".equals(f3)) {
         h.put("abstract",frest);
@@ -50,14 +50,15 @@
           frest=frest.substring(m);
           m=frest.indexOf(';');
           if (m >= 5) {
-            String yr=frest.substring(m - 5,m);
+            String yr=frest.substring(m - 5,m).trim();
             h.put("year",yr);
             frest=frest.substring(m);
             m=frest.indexOf(':');
             if (m >= 0) {
               String pg=frest.substring(m + 1).trim();
               h.put("pages",pg);
-              h.put("volume",frest.substring(1,m));
+              String vol=frest.substring(1,m).trim();
+              h.put("volume",vol);
             }
           }
         }

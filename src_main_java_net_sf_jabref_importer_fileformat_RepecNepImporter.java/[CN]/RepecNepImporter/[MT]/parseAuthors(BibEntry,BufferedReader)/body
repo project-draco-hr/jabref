@@ -1,0 +1,34 @@
+{
+  List<String> authors=new ArrayList<>();
+  StringBuilder institutions=new StringBuilder();
+  while ((this.lastLine != null) && !"".equals(this.lastLine) && !startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS)) {
+    String author;
+    StringBuilder institution=new StringBuilder();
+    boolean institutionDone;
+    if (this.lastLine.indexOf('(') >= 0) {
+      author=this.lastLine.substring(0,this.lastLine.indexOf('(')).trim();
+      institutionDone=this.lastLine.indexOf(')') >= 1;
+      institution.append(this.lastLine.substring(this.lastLine.indexOf('(') + 1,institutionDone && (this.lastLine.indexOf(')') > (this.lastLine.indexOf('(') + 1)) ? this.lastLine.indexOf(')') : this.lastLine.length()).trim());
+    }
+ else {
+      author=this.lastLine.substring(0,this.lastLine.length()).trim();
+      institutionDone=true;
+    }
+    readLine(in);
+    while (!institutionDone && (this.lastLine != null)) {
+      institutionDone=this.lastLine.indexOf(')') >= 1;
+      institution.append(this.lastLine.substring(0,institutionDone ? this.lastLine.indexOf(')') : this.lastLine.length()).trim());
+      readLine(in);
+    }
+    authors.add(author);
+    if (institution.length() > 0) {
+      institutions.append((institutions.length() == 0) ? institution.toString() : " and " + institution.toString());
+    }
+  }
+  if (!authors.isEmpty()) {
+    be.setField("author",String.join(" and ",authors));
+  }
+  if (institutions.length() > 0) {
+    be.setField("institution",institutions.toString());
+  }
+}

@@ -1,10 +1,9 @@
 {
-  ArrayList<BibEntry> bibitems=new ArrayList<>();
+  List<BibEntry> bibitems=new ArrayList<>();
   String paperNoStr=null;
   this.line=0;
-  try {
-    this.in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-    readLine();
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    readLine(in);
     while (this.lastLine != null) {
       if (this.lastLine.startsWith("-----------------------------")) {
         this.inOverviewSection=this.preLine.startsWith("In this issue we have");
@@ -13,25 +12,25 @@
         BibEntry be=new BibEntry(IdGenerator.next());
         be.setType("techreport");
         paperNoStr=this.lastLine.substring(0,this.lastLine.indexOf('.'));
-        parseTitleString(be);
+        parseTitleString(be,in);
         if (startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS)) {
-          parseAdditionalFields(be,false);
+          parseAdditionalFields(be,false,in);
         }
  else {
-          readLine();
-          parseAuthors(be);
-          readLine();
+          readLine(in);
+          parseAuthors(be,in);
+          readLine(in);
         }
         if (!startsWithKeyword(RepecNepImporter.RECOGNIZED_FIELDS)) {
-          parseAbstract(be);
+          parseAbstract(be,in);
         }
-        parseAdditionalFields(be,true);
+        parseAdditionalFields(be,true,in);
         bibitems.add(be);
         paperNoStr=null;
       }
  else {
         this.preLine=this.lastLine;
-        readLine();
+        readLine(in);
       }
     }
   }
@@ -42,10 +41,14 @@
     }
     message+=e.getMessage();
     LOGGER.error(message,e);
-    if (!(e instanceof IOException)) {
-      e=new IOException(message);
+    IOException toThrow;
+    if (e instanceof IOException) {
+      toThrow=(IOException)e;
     }
-    throw (IOException)e;
+ else {
+      toThrow=new IOException(message);
+    }
+    throw toThrow;
   }
   return bibitems;
 }

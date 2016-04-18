@@ -1,0 +1,10 @@
+{
+  try (FileInputStream stream=new FileInputStream("src/test/resources/net/sf/jabref/util/twente.bib");InputStreamReader fr=new InputStreamReader(stream,StandardCharsets.UTF_8)){
+    ParserResult result=BibtexParser.parse(fr);
+    BibDatabase db=result.getDatabase();
+    assertEquals("Arvind",db.resolveForStrings("#Arvind#"));
+    assertEquals("Patterson, David",db.resolveForStrings("#Patterson#"));
+    assertEquals("Arvind and Patterson, David",db.resolveForStrings("#Arvind# and #Patterson#"));
+    assertEquals("#unknown#",db.resolveForStrings("#unknown#"));
+  }
+ }

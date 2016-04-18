@@ -1,0 +1,10 @@
+{
+  FieldFormatterCleanups actions=new FieldFormatterCleanups(true,"pages[normalize_page_numbers]title[lower_case]");
+  List<FieldFormatterCleanup> formatterCleanups=actions.getConfiguredActions();
+  FieldFormatterCleanup normalizePages=new FieldFormatterCleanup("pages",new NormalizePagesFormatter());
+  FieldFormatterCleanup lowerCaseTitle=new FieldFormatterCleanup("title",new LowerCaseFormatter());
+  assertEquals(Arrays.asList(normalizePages,lowerCaseTitle),formatterCleanups);
+  actions.applySaveActions(entry);
+  assertEquals("educational session 1",entry.getField("title"));
+  assertEquals("1--7",entry.getField("pages"));
+}

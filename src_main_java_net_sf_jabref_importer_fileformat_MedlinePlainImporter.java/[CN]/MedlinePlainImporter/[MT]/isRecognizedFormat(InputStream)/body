@@ -1,10 +1,11 @@
 {
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  String str;
-  while ((str=in.readLine()) != null) {
-    if (PMID_PATTERN.matcher(str).find() || PMC_PATTERN.matcher(str).find() || PMCR_PATTERN.matcher(str).find()) {
-      return true;
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    String str;
+    while ((str=in.readLine()) != null) {
+      if (PMID_PATTERN.matcher(str).find() || PMC_PATTERN.matcher(str).find() || PMCR_PATTERN.matcher(str).find()) {
+        return true;
+      }
     }
   }
-  return false;
+   return false;
 }

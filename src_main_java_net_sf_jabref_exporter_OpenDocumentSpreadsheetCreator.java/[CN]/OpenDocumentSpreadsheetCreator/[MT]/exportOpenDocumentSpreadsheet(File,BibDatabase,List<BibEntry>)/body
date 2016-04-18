@@ -1,0 +1,10 @@
+{
+  File tmpFile=File.createTempFile("opendocument",null);
+  OpenDocumentSpreadsheetCreator.exportOpenDocumentSpreadsheetXML(tmpFile,database,entries);
+  try (BufferedInputStream in=new BufferedInputStream(new FileInputStream(tmpFile))){
+    OpenDocumentSpreadsheetCreator.storeOpenDocumentSpreadsheetFile(file,in);
+  }
+   if (!tmpFile.delete()) {
+    LOGGER.info("Cannot delete temporary export file");
+  }
+}

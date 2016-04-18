@@ -1,0 +1,26 @@
+{
+  BibEntry entry;
+  List<BibEntry> localRes=new ArrayList<>();
+  PdfXmpImporter importer=new PdfXmpImporter();
+  try (InputStream in=new FileInputStream(fileName)){
+    localRes.addAll(importer.importEntries(in,frame));
+  }
+ catch (  IOException ex) {
+    LOGGER.warn("Cannot import entries",ex);
+  }
+  if (localRes.isEmpty()) {
+    LOGGER.info("Import failed");
+    entry=createNewBlankEntry(fileName);
+    res.add(entry);
+    return;
+  }
+  entry=localRes.get(0);
+  panel.getDatabase().insertEntry(entry);
+  panel.markBaseChanged();
+  FileListTableModel tm=new FileListTableModel();
+  File toLink=new File(fileName);
+  List<String> dirsS=panel.getBibDatabaseContext().getFileDirectory();
+  tm.addEntry(0,new FileListEntry(toLink.getName(),FileUtil.shortenFileName(toLink,dirsS).getPath(),ExternalFileTypes.getInstance().getExternalFileTypeByName("PDF")));
+  entry.setField(Globals.FILE_FIELD,tm.getStringRepresentation());
+  res.add(entry);
+}

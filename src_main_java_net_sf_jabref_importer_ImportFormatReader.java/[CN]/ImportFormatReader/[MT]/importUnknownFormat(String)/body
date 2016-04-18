@@ -1,7 +1,8 @@
 {
+  Objects.requireNonNull(filename);
   try {
     ParserResult pr=OpenDatabaseAction.loadDatabase(new File(filename),Globals.prefs.getDefaultEncoding());
-    if ((pr.getDatabase().getEntryCount() > 0) || (pr.getDatabase().getStringCount() > 0)) {
+    if (pr.getDatabase().hasEntries() || !pr.getDatabase().hasNoStrings()) {
       pr.setFile(new File(filename));
       return new UnknownFormatImport(ImportFormatReader.BIBTEX_FORMAT,pr);
     }
@@ -16,13 +17,8 @@
     try {
       List<BibEntry> entries=importFromFile(imFo,filename,nullOutput);
       int entryCount;
-      if (entries == null) {
-        entryCount=0;
-      }
- else {
-        BibDatabases.purgeEmptyEntries(entries);
-        entryCount=entries.size();
-      }
+      BibDatabases.purgeEmptyEntries(entries);
+      entryCount=entries.size();
       if (entryCount > bestResultCount) {
         bestResult=entries;
         bestResultCount=bestResult.size();

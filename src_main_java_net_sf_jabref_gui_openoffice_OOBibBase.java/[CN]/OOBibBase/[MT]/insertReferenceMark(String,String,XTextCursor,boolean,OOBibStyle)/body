@@ -1,0 +1,41 @@
+{
+  Optional<String> pageInfo=getCustomProperty(name);
+  String citText;
+  if ((pageInfo.isPresent()) && !pageInfo.get().isEmpty()) {
+    citText=style.insertPageInfo(citationText,pageInfo.get());
+  }
+ else {
+    citText=citationText;
+  }
+  Object bookmark=mxDocFactory.createInstance("com.sun.star.text.ReferenceMark");
+  XNamed xNamed=UnoRuntime.queryInterface(XNamed.class,bookmark);
+  xNamed.setName(name);
+  if (withText) {
+    position.setString(citText);
+    XPropertySet xCursorProps=UnoRuntime.queryInterface(XPropertySet.class,position);
+    xCursorProps.setPropertyValue("CharLocale",new Locale("zxx","",""));
+    if (style.isFormatCitations()) {
+      String charStyle=style.getCitationCharacterFormat();
+      try {
+        xCursorProps.setPropertyValue(CHAR_STYLE_NAME,charStyle);
+      }
+ catch (      UnknownPropertyException|PropertyVetoException|IllegalArgumentException|WrappedTargetException ex) {
+        throw new UndefinedCharacterFormatException(charStyle);
+      }
+    }
+  }
+ else {
+    position.setString("");
+  }
+  XTextContent xTextContent=UnoRuntime.queryInterface(XTextContent.class,bookmark);
+  position.getText().insertTextContent(position,xTextContent,true);
+  boolean italicize=style.getBooleanCitProperty(OOBibStyle.ITALIC_ET_AL);
+  if (italicize) {
+    String etAlString=style.getStringCitProperty(OOBibStyle.ET_AL_STRING);
+    int index=citText.indexOf(etAlString);
+    if (index >= 0) {
+      italicizeOrBold(position,true,index,index + etAlString.length());
+    }
+  }
+  position.collapseToEnd();
+}

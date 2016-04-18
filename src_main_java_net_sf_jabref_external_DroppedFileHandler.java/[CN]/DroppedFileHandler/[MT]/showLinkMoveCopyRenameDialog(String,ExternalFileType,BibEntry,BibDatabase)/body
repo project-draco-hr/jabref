@@ -1,0 +1,62 @@
+{
+  String dialogTitle=Localization.lang("Link to file %0",linkFileName);
+  List<String> dirs=panel.getBibDatabaseContext().getFileDirectory();
+  int found=-1;
+  for (int i=0; i < dirs.size(); i++) {
+    if (new File(dirs.get(i)).exists()) {
+      found=i;
+      break;
+    }
+  }
+  if (found < 0) {
+    destDirLabel.setText(Localization.lang("File directory is not set or does not exist!"));
+    copyRadioButton.setEnabled(false);
+    moveRadioButton.setEnabled(false);
+    renameToTextBox.setEnabled(false);
+    renameCheckBox.setEnabled(false);
+    linkInPlace.setSelected(true);
+  }
+ else {
+    destDirLabel.setText(Localization.lang("File directory is '%0':",dirs.get(found)));
+    copyRadioButton.setEnabled(true);
+    moveRadioButton.setEnabled(true);
+    renameToTextBox.setEnabled(true);
+    renameCheckBox.setEnabled(true);
+  }
+  ChangeListener cl=new ChangeListener(){
+    @Override public void stateChanged(    ChangeEvent arg0){
+      renameCheckBox.setEnabled(!linkInPlace.isSelected());
+      renameToTextBox.setEnabled(!linkInPlace.isSelected());
+    }
+  }
+;
+  linkInPlace.setText(Localization.lang("Leave file in its current directory"));
+  copyRadioButton.setText(Localization.lang("Copy file to file directory"));
+  moveRadioButton.setText(Localization.lang("Move file to file directory"));
+  renameCheckBox.setText(Localization.lang("Rename file to").concat(": "));
+  String targetName=Util.getLinkedFileName(database,entry,Globals.journalAbbreviationLoader.getRepository());
+  renameToTextBox.setText(targetName.concat(".").concat(fileType.getExtension()));
+  linkInPlace.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_LEAVE));
+  copyRadioButton.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_COPY));
+  moveRadioButton.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_MOVE));
+  renameCheckBox.setSelected(frame.prefs().getBoolean(DroppedFileHandler.DFH_RENAME));
+  linkInPlace.addChangeListener(cl);
+  cl.stateChanged(new ChangeEvent(linkInPlace));
+  try {
+    Object[] messages={Localization.lang("How would you like to link to '%0'?",linkFileName),optionsPanel};
+    int reply=JOptionPane.showConfirmDialog(frame,messages,dialogTitle,JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
+    if (reply == JOptionPane.OK_OPTION) {
+      frame.prefs().putBoolean(DroppedFileHandler.DFH_LEAVE,linkInPlace.isSelected());
+      frame.prefs().putBoolean(DroppedFileHandler.DFH_COPY,copyRadioButton.isSelected());
+      frame.prefs().putBoolean(DroppedFileHandler.DFH_MOVE,moveRadioButton.isSelected());
+      frame.prefs().putBoolean(DroppedFileHandler.DFH_RENAME,renameCheckBox.isSelected());
+      return true;
+    }
+ else {
+      return false;
+    }
+  }
+  finally {
+    linkInPlace.removeChangeListener(cl);
+  }
+}

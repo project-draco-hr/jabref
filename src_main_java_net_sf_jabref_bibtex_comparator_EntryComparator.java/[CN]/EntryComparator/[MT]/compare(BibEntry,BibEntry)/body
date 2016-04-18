@@ -1,5 +1,5 @@
 {
-  if (e1 == e2) {
+  if (Objects.equals(e1,e2)) {
     return 0;
   }
   Object f1=e1.getField(sortField);
@@ -12,7 +12,7 @@
       return f2 == null ? -1 : (next == null ? idCompare(e1,e2) : next.compare(e1,e2));
     }
   }
-  if ("author".equals(sortField) || "editor".equals(sortField)) {
+  if (InternalBibtexFields.getFieldExtras(sortField).contains(FieldProperties.PERSON_NAMES)) {
     if (f1 != null) {
       f1=AuthorList.fixAuthorForAlphabetization((String)f1).toLowerCase();
     }
@@ -40,7 +40,7 @@
   if ((f1 != null) && (f2 == null)) {
     return -1;
   }
-  if ((f1 == null) && (f2 != null)) {
+  if (f1 == null) {
     return 1;
   }
   int result;

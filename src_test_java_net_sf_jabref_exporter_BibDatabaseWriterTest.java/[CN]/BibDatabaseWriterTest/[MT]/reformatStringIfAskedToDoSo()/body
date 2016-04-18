@@ -1,12 +1,8 @@
 {
-  BibDatabaseWriter databaseWriter=new BibDatabaseWriter();
-  BibDatabase database=new BibDatabase();
   BibtexString string=new BibtexString("id","name","content");
   string.setParsedSerialization("wrong serialization");
   database.addString(string);
-  BibDatabaseContext context=new BibDatabaseContext(database,new Defaults(BibDatabaseMode.BIBTEX));
   SavePreferences preferences=new SavePreferences().withReformatFile(true);
-  StringWriter stringWriter=new StringWriter();
-  databaseWriter.writePartOfDatabase(stringWriter,context,Collections.emptyList(),preferences);
-  Assert.assertEquals(Globals.NEWLINE + "@String{name = {content}}" + Globals.NEWLINE,stringWriter.toString());
+  databaseWriter.writePartOfDatabase(stringWriter,bibtexContext,Collections.emptyList(),preferences);
+  assertEquals(Globals.NEWLINE + "@String{name = {content}}" + Globals.NEWLINE,stringWriter.toString());
 }

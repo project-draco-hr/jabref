@@ -5,12 +5,7 @@
   System.setProperty("apple.laf.useScreenMenuBar","true");
   System.setProperty("swing.aatext","true");
   System.setProperty("awt.useSystemAAFontSettings","lcd");
-  try {
-    setLookAndFeel();
-  }
- catch (  Throwable e) {
-    LOGGER.error("Swing look and feel could not be loaded.",e);
-  }
+  setLookAndFeel();
   if (!cli.isBlank() && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED) && (Globals.prefs.get(JabRefPreferences.LAST_EDITED) != null)) {
     List<String> names=Globals.prefs.getStringList(JabRefPreferences.LAST_EDITED);
     lastEdLoop:     for (    String name : names) {
@@ -35,9 +30,9 @@
     }
   }
   GUIGlobals.init();
-  GUIGlobals.CURRENTFONT=new Font(Globals.prefs.get(JabRefPreferences.FONT_FAMILY),Globals.prefs.getInt(JabRefPreferences.FONT_STYLE),Globals.prefs.getInt(JabRefPreferences.FONT_SIZE));
+  GUIGlobals.currentFont=new Font(Globals.prefs.get(JabRefPreferences.FONT_FAMILY),Globals.prefs.getInt(JabRefPreferences.FONT_STYLE),Globals.prefs.getInt(JabRefPreferences.FONT_SIZE));
   LOGGER.debug("Initializing frame");
-  JabRef.jrf=new JabRefFrame(this);
+  JabRef.mainFrame=new JabRefFrame(this);
   boolean first=true;
   List<File> postponed=new ArrayList<>();
   List<ParserResult> failed=new ArrayList<>();
@@ -57,7 +52,7 @@
           toOpenTab.add(pr);
         }
  else {
-          JabRef.jrf.addParserResult(pr,first);
+          JabRef.mainFrame.addParserResult(pr,first);
           first=false;
         }
       }
@@ -68,39 +63,39 @@
     }
   }
   for (  ParserResult pr : toOpenTab) {
-    JabRef.jrf.addParserResult(pr,first);
+    JabRef.mainFrame.addParserResult(pr,first);
     first=false;
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_SAVE)) {
-    Globals.startAutoSaveManager(JabRef.jrf);
+    Globals.startAutoSaveManager(JabRef.mainFrame);
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
-    JabRef.jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    JabRef.mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
-  JabRef.jrf.setVisible(true);
+  JabRef.mainFrame.setVisible(true);
   if (Globals.prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
-    JabRef.jrf.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    JabRef.mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
   for (  ParserResult pr : failed) {
     String message="<html>" + Localization.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
-    JOptionPane.showMessageDialog(JabRef.jrf,message,Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
+    JOptionPane.showMessageDialog(JabRef.mainFrame,message,Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
   }
   for (int i=0; i < loaded.size(); i++) {
     if (Globals.prefs.getBoolean(JabRefPreferences.DISPLAY_KEY_WARNING_DIALOG_AT_STARTUP)) {
-      ParserResultWarningDialog.showParserResultWarningDialog(loaded.get(i),JabRef.jrf,i);
+      ParserResultWarningDialog.showParserResultWarningDialog(loaded.get(i),mainFrame,i);
     }
   }
-  for (int i=0; (i < loaded.size()) && (i < JabRef.jrf.getBasePanelCount()); i++) {
+  for (int i=0; (i < loaded.size()) && (i < JabRef.mainFrame.getBasePanelCount()); i++) {
     ParserResult pr=loaded.get(i);
-    BasePanel panel=JabRef.jrf.getBasePanelAt(i);
+    BasePanel panel=JabRef.mainFrame.getBasePanelAt(i);
     OpenDatabaseAction.performPostOpenActions(panel,pr,true);
   }
   LOGGER.debug("Finished adding panels");
   if (!postponed.isEmpty()) {
-    AutosaveStartupPrompter asp=new AutosaveStartupPrompter(JabRef.jrf,postponed);
+    AutosaveStartupPrompter asp=new AutosaveStartupPrompter(JabRef.mainFrame,postponed);
     SwingUtilities.invokeLater(asp);
   }
   if (!loaded.isEmpty()) {
-    new FocusRequester(JabRef.jrf.getCurrentBasePanel().mainTable);
+    new FocusRequester(JabRef.mainFrame.getCurrentBasePanel().mainTable);
   }
 }

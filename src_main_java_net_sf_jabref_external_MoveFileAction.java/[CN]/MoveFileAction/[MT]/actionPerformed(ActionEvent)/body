@@ -5,10 +5,10 @@
   }
   FileListEntry flEntry=editor.getTableModel().getEntry(selected);
   String ln=flEntry.link;
-  boolean httpLink=ln.toLowerCase().startsWith("http");
+  boolean httpLink=ln.toLowerCase(Locale.ENGLISH).startsWith("http");
   if (httpLink) {
   }
-  List<String> dirs=frame.getCurrentBasePanel().getBibDatabaseContext().getMetaData().getFileDirectory(Globals.FILE_FIELD);
+  List<String> dirs=frame.getCurrentBasePanel().getBibDatabaseContext().getFileDirectory();
   int found=-1;
   for (int i=0; i < dirs.size(); i++) {
     if (new File(dirs.get(i)).exists()) {
@@ -26,8 +26,8 @@
   }
   if ((file != null) && file.exists()) {
     String extension=null;
-    if (flEntry.type != null) {
-      extension="." + flEntry.type.getExtension();
+    if (flEntry.type.isPresent()) {
+      extension="." + flEntry.type.get().getExtension();
     }
     File newFile=null;
     boolean repeat=true;
@@ -35,7 +35,7 @@
       repeat=false;
       String chosenFile;
       if (toFileDir) {
-        String suggName=Util.getLinkedFileName(eEditor.getDatabase(),eEditor.getEntry()).concat(flEntry.type == null ? "" : "." + flEntry.type.getExtension());
+        String suggName=Util.getLinkedFileName(eEditor.getDatabase(),eEditor.getEntry(),Globals.journalAbbreviationLoader.getRepository()).concat(flEntry.type.isPresent() ? "." + flEntry.type.get().getExtension() : "");
         CheckBoxMessage cbm=new CheckBoxMessage(Localization.lang("Move file to file directory?"),Localization.lang("Rename to '%0'",suggName),Globals.prefs.getBoolean(JabRefPreferences.RENAME_ON_MOVE_FILE_TO_FILE_DIR));
         int answer;
         if (suggName.equals(file.getName())) {

@@ -1,0 +1,9 @@
+{
+  FieldFormatterCleanups actions=new FieldFormatterCleanups(true,"title[lower_case,identity,normalize_date]");
+  FieldFormatterCleanup lowerCaseTitle=new FieldFormatterCleanup("title",new LowerCaseFormatter());
+  FieldFormatterCleanup identityInTitle=new FieldFormatterCleanup("title",new IdentityFormatter());
+  FieldFormatterCleanup normalizeDatesInTitle=new FieldFormatterCleanup("title",new NormalizeDateFormatter());
+  assertEquals(Arrays.asList(lowerCaseTitle,identityInTitle,normalizeDatesInTitle),actions.getConfiguredActions());
+  actions.applySaveActions(entry);
+  assertEquals("educational session 1",entry.getField("title"));
+}

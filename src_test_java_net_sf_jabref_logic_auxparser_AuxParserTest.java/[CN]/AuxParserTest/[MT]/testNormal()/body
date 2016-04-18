@@ -1,0 +1,17 @@
+{
+  InputStream originalStream=AuxParserTest.class.getResourceAsStream("origin.bib");
+  File auxFile=Paths.get(AuxParserTest.class.getResource("paper.aux").toURI()).toFile();
+  try (InputStreamReader originalReader=new InputStreamReader(originalStream,StandardCharsets.UTF_8)){
+    ParserResult result=BibtexParser.parse(originalReader);
+    AuxParser auxParser=new AuxParser(auxFile.getAbsolutePath(),result.getDatabase());
+    AuxParserResult auxResult=auxParser.parse();
+    assertTrue(auxResult.getGeneratedBibDatabase().hasEntries());
+    assertEquals(0,auxResult.getUnresolvedKeysCount());
+    BibDatabase newDB=auxResult.getGeneratedBibDatabase();
+    assertEquals(2,newDB.getEntries().size());
+    assertEquals(2,auxResult.getResolvedKeysCount());
+    assertEquals(2,auxResult.getFoundKeysInAux());
+    assertEquals(auxResult.getFoundKeysInAux(),auxResult.getResolvedKeysCount() + auxResult.getUnresolvedKeysCount());
+    assertEquals(0,auxResult.getCrossRefEntriesCount());
+  }
+ }

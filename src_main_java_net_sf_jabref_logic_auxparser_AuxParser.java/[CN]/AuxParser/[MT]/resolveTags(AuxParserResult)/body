@@ -1,0 +1,16 @@
+{
+  for (  String key : result.getUniqueKeys()) {
+    BibEntry entry=masterDatabase.getEntryByKey(key);
+    if (entry == null) {
+      result.getUnresolvedKeys().add(key);
+    }
+ else {
+      insertEntry(entry,result);
+      resolveCrossReferences(entry,result);
+    }
+  }
+  if (result.getGeneratedBibDatabase().hasEntries()) {
+    result.getGeneratedBibDatabase().copyPreamble(masterDatabase);
+    result.getGeneratedBibDatabase().copyStrings(masterDatabase);
+  }
+}

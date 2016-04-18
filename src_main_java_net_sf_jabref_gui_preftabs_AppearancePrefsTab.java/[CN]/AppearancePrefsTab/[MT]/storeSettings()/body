@@ -1,10 +1,15 @@
 {
+  prefs.putBoolean(JabRefPreferences.USE_DEFAULT_LOOK_AND_FEEL,!customLAF.isSelected());
+  prefs.put(JabRefPreferences.WIN_LOOK_AND_FEEL,classNamesLAF.getSelectedItem().toString());
+  if (customLAF.isSelected() == useDefaultLAF || !currentLAF.equals(classNamesLAF.getSelectedItem().toString())) {
+    JOptionPane.showMessageDialog(null,Localization.lang("You have changed the look and feel setting.").concat(" ").concat(Localization.lang("You must restart JabRef for this to come into effect.")),Localization.lang("Changed look and feel settings"),JOptionPane.WARNING_MESSAGE);
+  }
   prefs.putBoolean(JabRefPreferences.TABLE_COLOR_CODES_ON,colorCodes.isSelected());
-  prefs.put(JabRefPreferences.FONT_FAMILY,font.getFamily());
-  prefs.putInt(JabRefPreferences.FONT_STYLE,font.getStyle());
-  prefs.putInt(JabRefPreferences.FONT_SIZE,font.getSize());
+  prefs.put(JabRefPreferences.FONT_FAMILY,usedFont.getFamily());
+  prefs.putInt(JabRefPreferences.FONT_STYLE,usedFont.getStyle());
+  prefs.putInt(JabRefPreferences.FONT_SIZE,usedFont.getSize());
   prefs.putBoolean(JabRefPreferences.OVERRIDE_DEFAULT_FONTS,overrideFonts.isSelected());
-  GUIGlobals.CURRENTFONT=font;
+  GUIGlobals.currentFont=usedFont;
   colorPanel.storeSettings();
   prefs.putBoolean(JabRefPreferences.TABLE_SHOW_GRID,showGrid.isSelected());
   try {

@@ -4,16 +4,17 @@
   Objects.requireNonNull(bibDatabaseContext);
   this.encoding=encoding;
   this.bibDatabaseContext=bibDatabaseContext;
-  this.sidePaneManager=GUIGlobals.sidePaneManager;
+  this.sidePaneManager=frame.getSidePaneManager();
   this.frame=frame;
   this.database=bibDatabaseContext.getDatabase();
+  this.tableModel=new MainTableDataModel(getBibDatabaseContext());
   searchBar=new SearchBar(this);
   setupMainPanel();
   setupActions();
   File file=bibDatabaseContext.getDatabaseFile();
   this.database.addDatabaseChangeListener(new GroupTreeUpdater());
   if (file == null) {
-    if (!database.getEntries().isEmpty()) {
+    if (database.hasEntries()) {
       this.baseChanged=true;
     }
   }
@@ -25,6 +26,4 @@
       LOGGER.warn("Could not register FileUpdateMonitor",ex);
     }
   }
-  filterSearchToggle=new StartStopListAction<>(searchFilterList,SearchMatcher.INSTANCE,EverythingMatcher.INSTANCE);
-  filterGroupToggle=new StartStopListAction<>(groupFilterList,GroupMatcher.INSTANCE,EverythingMatcher.INSTANCE);
 }

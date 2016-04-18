@@ -1,0 +1,12 @@
+{
+  String bsInput="--AU-- Baklouti, F.\n" + "--YP-- 1999\n" + "--KW-- Cells; Rna; Isoforms\n"+ "--TI-- Blood\n"+ "--RT-- " + biblioscapeType + "\n"+ "------";
+  List<BibEntry> bibEntries=bsImporter.importEntries(new ByteArrayInputStream(bsInput.getBytes(StandardCharsets.UTF_8)),new OutputPrinterToNull());
+  BibEntry entry=new BibEntry();
+  entry.setField("author","Baklouti, F.");
+  entry.setField("keywords","Cells; Rna; Isoforms");
+  entry.setField("title","Blood");
+  entry.setField("year","1999");
+  entry.setType(expectedBibType);
+  Assert.assertEquals(1,bibEntries.size());
+  BibtexEntryAssert.assertEquals(entry,bibEntries.get(0));
+}

@@ -1,0 +1,24 @@
+{
+  String fieldEntry;
+  if ("bibtextype".equals(text)) {
+    fieldEntry=bibtex.getType();
+  }
+ else {
+    String fieldText=text.startsWith("\\") ? BibDatabase.getResolvedField(text.substring(1),bibtex,database) : BibDatabase.getText(text,database);
+    if (fieldText == null) {
+      fieldEntry="";
+    }
+ else {
+      fieldEntry=fieldText;
+    }
+  }
+  if (option != null) {
+    for (    LayoutFormatter anOption : option) {
+      fieldEntry=anOption.format(fieldEntry);
+    }
+  }
+  if (postFormatter != null) {
+    fieldEntry=postFormatter.format(fieldEntry);
+  }
+  return fieldEntry;
+}

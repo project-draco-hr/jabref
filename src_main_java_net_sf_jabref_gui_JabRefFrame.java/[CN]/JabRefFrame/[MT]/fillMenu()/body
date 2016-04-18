@@ -4,16 +4,16 @@
   JMenu edit=JabRefFrame.subMenu(Localization.menuTitle("Edit"));
   JMenu search=JabRefFrame.subMenu(Localization.menuTitle("Search"));
   JMenu groups=JabRefFrame.subMenu(Localization.menuTitle("Groups"));
-  JMenu bibtex=JabRefFrame.subMenu(Localization.menuTitle("BibTeX"));
+  JMenu bibtex=JabRefFrame.subMenu("&BibTeX");
   JMenu quality=JabRefFrame.subMenu(Localization.menuTitle("Quality"));
   JMenu view=JabRefFrame.subMenu(Localization.menuTitle("View"));
   JMenu tools=JabRefFrame.subMenu(Localization.menuTitle("Tools"));
   JMenu options=JabRefFrame.subMenu(Localization.menuTitle("Options"));
-  JMenu newSpec=JabRefFrame.subMenu(Localization.menuTitle("New entry..."));
+  JMenu newSpec=JabRefFrame.subMenu(Localization.menuTitle("New entry by type..."));
   JMenu helpMenu=JabRefFrame.subMenu(Localization.menuTitle("Help"));
   file.add(newBibtexDatabaseAction);
   file.add(newBiblatexDatabaseAction);
-  file.add(open);
+  file.add(getOpenDatabaseAction());
   file.add(mergeDatabaseAction);
   file.add(save);
   file.add(saveAs);
@@ -88,31 +88,49 @@
     }
     edit.addSeparator();
   }
-  edit.add(manageKeywords);
+  edit.add(getManageKeywords());
+  edit.add(getMassSetField());
   edit.addSeparator();
   edit.add(selectAll);
   mb.add(edit);
   search.add(normalSearch);
   search.add(replaceAll);
-  search.add(massSetField);
   search.addSeparator();
-  search.add(generalFetcher.getAction());
+  search.add(new JCheckBoxMenuItem(generalFetcher.getAction()));
   if (prefs.getBoolean(JabRefPreferences.WEB_SEARCH_VISIBLE)) {
     sidePaneManager.register(generalFetcher.getTitle(),generalFetcher);
     sidePaneManager.show(generalFetcher.getTitle());
   }
   mb.add(search);
-  groups.add(toggleGroups);
+  groups.add(new JCheckBoxMenuItem(toggleGroups));
   groups.addSeparator();
   groups.add(addToGroup);
   groups.add(removeFromGroup);
   groups.add(moveToGroup);
   groups.addSeparator();
-  groups.add(toggleHighlightAny);
-  groups.add(toggleHighlightAll);
+  JRadioButtonMenuItem toggleHighlightAnyItem=new JRadioButtonMenuItem(toggleHighlightAny);
+  groups.add(toggleHighlightAnyItem);
+  JRadioButtonMenuItem toggleHighlightAllItem=new JRadioButtonMenuItem(toggleHighlightAll);
+  groups.add(toggleHighlightAllItem);
+  JRadioButtonMenuItem toggleHighlightDisableItem=new JRadioButtonMenuItem(toggleHighlightDisable);
+  groups.add(toggleHighlightDisableItem);
+  ButtonGroup highlightButtonGroup=new ButtonGroup();
+  highlightButtonGroup.add(toggleHighlightDisableItem);
+  highlightButtonGroup.add(toggleHighlightAnyItem);
+  highlightButtonGroup.add(toggleHighlightAllItem);
+  HighlightMatchingGroupPreferences highlightMatchingGroupPreferences=new HighlightMatchingGroupPreferences(Globals.prefs);
+  if (highlightMatchingGroupPreferences.isAll()) {
+    toggleHighlightAllItem.setSelected(true);
+  }
+ else   if (highlightMatchingGroupPreferences.isAny()) {
+    toggleHighlightAnyItem.setSelected(true);
+  }
+ else {
+    toggleHighlightDisableItem.setSelected(true);
+  }
   mb.add(groups);
-  view.add(back);
-  view.add(forward);
+  view.add(getBackAction());
+  view.add(getForwardAction());
   view.add(focusTable);
   view.add(nextTab);
   view.add(prevTab);
@@ -121,11 +139,11 @@
   view.add(increaseFontSize);
   view.add(decreseFontSize);
   view.addSeparator();
-  view.add(toggleToolbar);
-  view.add(generalFetcher.getAction());
-  view.add(toggleGroups);
-  view.add(togglePreview);
-  view.add(switchPreview);
+  view.add(new JCheckBoxMenuItem(toggleToolbar));
+  view.add(new JCheckBoxMenuItem(enableToggle(generalFetcher.getAction())));
+  view.add(new JCheckBoxMenuItem(toggleGroups));
+  view.add(new JCheckBoxMenuItem(togglePreview));
+  view.add(getSwitchPreviewAction());
   mb.add(view);
   bibtex.add(newEntryAction);
   for (  NewEntryAction a : newSpecificEntryAction) {
@@ -165,6 +183,7 @@
   tools.add(openFolder);
   tools.add(openFile);
   tools.add(openUrl);
+  tools.add(openConsole);
   tools.addSeparator();
   tools.add(abbreviateIso);
   tools.add(abbreviateMedline);

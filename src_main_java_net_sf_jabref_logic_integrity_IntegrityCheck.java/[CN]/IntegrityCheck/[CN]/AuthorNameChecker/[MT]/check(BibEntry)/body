@@ -1,0 +1,19 @@
+{
+  List<IntegrityMessage> result=new ArrayList<>();
+  for (  String field : entry.getFieldNames()) {
+    if (InternalBibtexFields.getFieldExtras(field).contains(FieldProperties.PERSON_NAMES)) {
+      Optional<String> value=entry.getFieldOptional(field);
+      if (!value.isPresent()) {
+        return Collections.emptyList();
+      }
+      String valueTrimmedAndLowerCase=value.get().trim().toLowerCase();
+      if (valueTrimmedAndLowerCase.startsWith("and ") || valueTrimmedAndLowerCase.startsWith(",")) {
+        result.add(new IntegrityMessage(Localization.lang("should start with a name"),entry,field));
+      }
+ else       if (valueTrimmedAndLowerCase.endsWith(" and") || valueTrimmedAndLowerCase.endsWith(",")) {
+        result.add(new IntegrityMessage(Localization.lang("should end with a name"),entry,field));
+      }
+    }
+  }
+  return result;
+}

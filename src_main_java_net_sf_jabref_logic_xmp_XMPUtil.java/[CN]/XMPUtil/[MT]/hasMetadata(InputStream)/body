@@ -1,9 +1,14 @@
 {
   try {
-    List<BibEntry> l=XMPUtil.readXMP(is);
-    return !l.isEmpty();
+    List<BibEntry> bibEntries=XMPUtil.readXMP(inputStream);
+    return !bibEntries.isEmpty();
   }
- catch (  IOException e) {
+ catch (  EncryptedPdfsNotSupportedException ex) {
+    LOGGER.info("Encryption not supported by XMPUtil");
+    return false;
+  }
+catch (  IOException e) {
+    LOGGER.error("XMP reading failed",e);
     return false;
   }
 }

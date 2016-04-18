@@ -1,12 +1,13 @@
 {
-  BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream));
-  String str;
-  int i=0;
-  while (((str=in.readLine()) != null) && (i < 50)) {
-    if (OvidImporter.ovidPattern.matcher(str).find()) {
-      return true;
+  try (BufferedReader in=new BufferedReader(ImportFormatReader.getReaderDefaultEncoding(stream))){
+    String str;
+    int i=0;
+    while (((str=in.readLine()) != null) && (i < MAX_ITEMS)) {
+      if (OvidImporter.OVID_PATTERN.matcher(str).find()) {
+        return true;
+      }
+      i++;
     }
-    i++;
   }
-  return false;
+   return false;
 }

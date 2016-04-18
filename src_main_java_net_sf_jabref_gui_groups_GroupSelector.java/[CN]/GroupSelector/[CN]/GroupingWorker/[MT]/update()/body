@@ -1,12 +1,13 @@
 {
   if (hideNonHits.isSelected()) {
-    panel.mainTable.stopShowingFloatGrouping();
-    panel.getFilterGroupToggle().start();
+    panel.mainTable.getTableModel().updateGroupingState(MainTableDataModel.DisplayOption.FILTER);
   }
  else   if (grayOut.isSelected()) {
-    panel.getFilterGroupToggle().stop();
-    panel.mainTable.showFloatGrouping();
+    panel.mainTable.getTableModel().updateGroupingState(MainTableDataModel.DisplayOption.FLOAT);
   }
+  panel.mainTable.getTableModel().updateSortOrder();
+  panel.mainTable.getTableModel().updateGroupFilter();
+  panel.mainTable.scrollTo(0);
   if (showOverlappingGroupsP) {
     showOverlappingGroups(matches);
   }

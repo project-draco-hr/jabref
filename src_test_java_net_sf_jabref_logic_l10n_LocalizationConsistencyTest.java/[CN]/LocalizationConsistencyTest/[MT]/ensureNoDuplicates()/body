@@ -1,0 +1,16 @@
+{
+  for (  String bundle : Arrays.asList("JabRef","Menu")) {
+    for (    String lang : Languages.LANGUAGES.values()) {
+      String propertyFilePath=String.format("/l10n/%s_%s.properties",bundle,lang);
+      DuplicationDetectionProperties properties=new DuplicationDetectionProperties();
+      try (InputStream is=LocalizationConsistencyTest.class.getResourceAsStream(propertyFilePath);InputStreamReader reader=new InputStreamReader(is,StandardCharsets.UTF_8)){
+        properties.load(reader);
+      }
+ catch (      IOException e) {
+        throw new RuntimeException(e);
+      }
+      List<String> duplicates=properties.getDuplicates();
+      assertEquals("Duplicate keys of " + lang,Collections.emptyList(),duplicates);
+    }
+  }
+}

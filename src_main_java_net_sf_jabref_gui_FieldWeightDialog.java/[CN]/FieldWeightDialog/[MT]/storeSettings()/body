@@ -1,9 +1,8 @@
 {
-  for (  JSlider slider : sliders.keySet()) {
-    SliderInfo sInfo=sliders.get(slider);
-    if (sInfo.originalValue != slider.getValue()) {
-      double weight=(GUIGlobals.MAX_FIELD_WEIGHT * slider.getValue()) / 100d;
-      InternalBibtexFields.setFieldWeight(sInfo.fieldName,weight);
+  for (  Map.Entry<JSlider,SliderInfo> sliderEntry : sliders.entrySet()) {
+    if (sliderEntry.getValue().originalValue != sliderEntry.getKey().getValue()) {
+      double weight=(BibtexSingleField.MAX_FIELD_WEIGHT * sliderEntry.getKey().getValue()) / 100d;
+      InternalBibtexFields.setFieldWeight(sliderEntry.getValue().fieldName,weight);
     }
   }
   frame.removeCachedEntryEditors();
