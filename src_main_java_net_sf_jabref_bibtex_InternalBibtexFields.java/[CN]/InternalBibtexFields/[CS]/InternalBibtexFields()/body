@@ -29,7 +29,9 @@
   add(new BibtexSingleField("school",true,BibtexSingleField.MEDIUM_W));
   add(new BibtexSingleField("series",true,BibtexSingleField.SMALL_W));
   add(new BibtexSingleField("title",true,400));
-  add(new BibtexSingleField("type",true,BibtexSingleField.SMALL_W));
+  dummy=new BibtexSingleField("type",true,BibtexSingleField.SMALL_W);
+  dummy.getExtras().add(FieldProperties.TYPE);
+  add(dummy);
   add(new BibtexSingleField("language",true,BibtexSingleField.SMALL_W));
   add(new BibtexSingleField("volume",true,BibtexSingleField.SMALL_W,60).setNumeric(true));
   add(new BibtexSingleField("year",true,BibtexSingleField.SMALL_W,60).setNumeric(true));
@@ -147,6 +149,22 @@
       field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
     }
     field.getExtras().add(FieldProperties.PERSON_NAMES);
+    add(field);
+  }
+  for (  String fieldText : BIBLATEX_EDITOR_TYPE_FIELDS) {
+    BibtexSingleField field=fieldSet.get(fieldText);
+    if (field == null) {
+      field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
+    }
+    field.getExtras().add(FieldProperties.EDITOR_TYPE);
+    add(field);
+  }
+  for (  String fieldText : BIBLATEX_PAGINATION_FIELDS) {
+    BibtexSingleField field=fieldSet.get(fieldText);
+    if (field == null) {
+      field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
+    }
+    field.getExtras().add(FieldProperties.PAGINATION);
     add(field);
   }
   for (  String fieldText : BIBLATEX_DATE_FIELDS) {
