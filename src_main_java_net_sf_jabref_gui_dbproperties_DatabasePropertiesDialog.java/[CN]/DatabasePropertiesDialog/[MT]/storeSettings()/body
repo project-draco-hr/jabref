@@ -9,18 +9,18 @@
  else {
     metaData.setDefaultFileDirectory(text);
   }
-  text=fileDirIndv.getText().trim();
+  text=fileDirIndv.getText();
   if (text.isEmpty()) {
-    metaData.remove(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL));
+    metaData.clearUserFileDirectory(Globals.prefs.getUser());
   }
  else {
-    metaData.putData(Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL),Arrays.asList(text));
+    metaData.setUserFileDirectory(Globals.prefs.getUser(),text);
   }
   if (protect.isSelected()) {
-    metaData.putData(Globals.PROTECTED_FLAG_META,Arrays.asList("true"));
+    metaData.markAsProtected();
   }
  else {
-    metaData.remove(Globals.PROTECTED_FLAG_META);
+    metaData.markAsNotProtected();
   }
   SaveOrderConfig newSaveOrderConfig=saveOrderPanel.getSaveOrderConfig();
   if (saveInOriginalOrder.isSelected()) {
@@ -37,18 +37,17 @@
     saveOrderConfigChanged=true;
   }
   if (saveOrderConfigChanged) {
-    List<String> serialized=newSaveOrderConfig.getConfigurationList();
     if (newSaveOrderConfig.equals(defaultSaveOrderConfig)) {
-      metaData.remove(MetaData.SAVE_ORDER_CONFIG);
+      metaData.clearSaveOrderConfig();
     }
  else {
-      metaData.putData(MetaData.SAVE_ORDER_CONFIG,serialized);
+      metaData.setSaveOrderConfig(newSaveOrderConfig);
     }
   }
   boolean saveActionsChanged=fieldFormatterCleanupsPanel.hasChanged();
   if (saveActionsChanged) {
     if (fieldFormatterCleanupsPanel.isDefaultSaveActions()) {
-      metaData.remove(MetaData.SAVE_ACTIONS);
+      metaData.clearSaveActions();
     }
  else {
       fieldFormatterCleanupsPanel.storeSettings(metaData);

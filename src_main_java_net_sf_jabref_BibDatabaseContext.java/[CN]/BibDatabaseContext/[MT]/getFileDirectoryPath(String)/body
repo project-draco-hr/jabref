@@ -1,0 +1,16 @@
+{
+  String dir=directoryName;
+  if (!new File(dir).isAbsolute() && (getDatabaseFile() != null)) {
+    String relDir;
+    if (".".equals(dir)) {
+      relDir=getDatabaseFile().getParent();
+    }
+ else {
+      relDir=getDatabaseFile().getParent() + File.separator + dir;
+    }
+    if (new File(relDir).exists()) {
+      dir=relDir;
+    }
+  }
+  return dir;
+}
