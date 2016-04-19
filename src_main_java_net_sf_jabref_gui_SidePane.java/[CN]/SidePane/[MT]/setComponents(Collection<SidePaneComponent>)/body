@@ -1,14 +1,18 @@
 {
   mainPanel.removeAll();
-  constraint.weighty=0;
-  for (  Component c : comps) {
+  int totalWeights=0;
+  for (  SidePaneComponent c : comps) {
+    constraint.weighty=c.getRescalingWeight();
+    totalWeights+=c.getRescalingWeight();
     gridBagLayout.setConstraints(c,constraint);
     mainPanel.add(c);
   }
-  constraint.weighty=1;
-  Component bx=Box.createVerticalGlue();
-  gridBagLayout.setConstraints(bx,constraint);
-  mainPanel.add(bx);
+  if (totalWeights <= 0) {
+    constraint.weighty=1;
+    Component bx=Box.createVerticalGlue();
+    gridBagLayout.setConstraints(bx,constraint);
+    mainPanel.add(bx);
+  }
   revalidate();
   repaint();
 }
