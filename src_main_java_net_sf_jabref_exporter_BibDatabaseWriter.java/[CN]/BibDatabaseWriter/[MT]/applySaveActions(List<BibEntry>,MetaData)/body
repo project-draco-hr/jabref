@@ -1,9 +1,9 @@
 {
   List<FieldChange> changes=new ArrayList<>();
-  if (metaData.getData(MetaData.SAVE_ACTIONS) != null) {
-    FieldFormatterCleanups saveActions=metaData.getSaveActions();
+  Optional<FieldFormatterCleanups> saveActions=metaData.getSaveActions();
+  if (saveActions.isPresent()) {
     for (    BibEntry entry : toChange) {
-      changes.addAll(saveActions.applySaveActions(entry));
+      changes.addAll(saveActions.get().applySaveActions(entry));
     }
   }
   return changes;

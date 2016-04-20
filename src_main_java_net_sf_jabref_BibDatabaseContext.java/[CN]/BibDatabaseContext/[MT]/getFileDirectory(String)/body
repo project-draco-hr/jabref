@@ -1,34 +1,16 @@
 {
   List<String> fileDirs=new ArrayList<>();
-  String key=Globals.prefs.get(JabRefPreferences.USER_FILE_DIR_INDIVIDUAL);
-  List<String> metaDataDirectory=metaData.getData(key);
-  if (metaDataDirectory == null || metaDataDirectory.isEmpty()) {
-    if (metaData.getDefaultFileDirectory().isPresent()) {
-      metaDataDirectory=Collections.singletonList(metaData.getDefaultFileDirectory().get());
-    }
+  Optional<String> userFileDirectory=metaData.getUserFileDirectory(Globals.prefs.getUser());
+  if (userFileDirectory.isPresent()) {
+    fileDirs.add(getFileDirectoryPath(userFileDirectory.get()));
   }
-  if ((metaDataDirectory != null) && !metaDataDirectory.isEmpty()) {
-    String dir;
-    dir=metaDataDirectory.get(0);
-    if (!new File(dir).isAbsolute() && (getDatabaseFile() != null)) {
-      String relDir;
-      if (".".equals(dir)) {
-        relDir=getDatabaseFile().getParent();
-      }
- else {
-        relDir=getDatabaseFile().getParent() + File.separator + dir;
-      }
-      if (new File(relDir).exists()) {
-        dir=relDir;
-      }
-    }
+  Optional<String> metaDataDirectory=metaData.getDefaultFileDirectory();
+  if (metaDataDirectory.isPresent()) {
+    fileDirs.add(getFileDirectoryPath(metaDataDirectory.get()));
+  }
+  String dir=Globals.prefs.get(fieldName + Globals.DIR_SUFFIX);
+  if (dir != null) {
     fileDirs.add(dir);
-  }
- else {
-    String dir=Globals.prefs.get(fieldName + Globals.DIR_SUFFIX);
-    if (dir != null) {
-      fileDirs.add(dir);
-    }
   }
   if (getDatabaseFile() != null) {
     String parentDir=getDatabaseFile().getParent();
