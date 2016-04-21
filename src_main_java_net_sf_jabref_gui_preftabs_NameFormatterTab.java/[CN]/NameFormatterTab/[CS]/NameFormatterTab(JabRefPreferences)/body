@@ -1,26 +1,32 @@
 {
+  this.prefs=Objects.requireNonNull(prefs);
   setLayout(new BorderLayout());
   TableModel tableModel=new AbstractTableModel(){
     @Override public int getRowCount(){
       return rowCount;
     }
     @Override public int getColumnCount(){
-      return 1;
+      return 2;
     }
     @Override public Object getValueAt(    int row,    int column){
       if (row >= tableRows.size()) {
         return "";
       }
-      Object rowContent=tableRows.get(row);
-      if (rowContent == null) {
+      TableRow tr=tableRows.get(row);
+      if (tr == null) {
         return "";
       }
-      return rowContent;
+      if (column == 0) {
+        return tr.getName();
+      }
+ else {
+        return tr.getFormat();
+      }
     }
     @Override public String getColumnName(    int col){
-      return Localization.lang("Field to filter");
+      return col == 0 ? Localization.lang("Formatter Name") : Localization.lang("Format String");
     }
-    @Override public Class<?> getColumnClass(    int column){
+    @Override public Class<String> getColumnClass(    int column){
       return String.class;
     }
     @Override public boolean isCellEditable(    int row,    int col){
@@ -28,38 +34,44 @@
     }
     @Override public void setValueAt(    Object value,    int row,    int col){
       tableChanged=true;
-      if (tableRows.size() <= row) {
-        ((ArrayList<Object>)tableRows).ensureCapacity(row + 1);
+      while (row >= tableRows.size()) {
+        tableRows.add(new TableRow());
       }
-      tableRows.set(row,value);
+      TableRow rowContent=tableRows.get(row);
+      if (col == 0) {
+        rowContent.setName(value.toString());
+      }
+ else {
+        rowContent.setFormat(value.toString());
+      }
     }
   }
 ;
   table=new JTable(tableModel);
   TableColumnModel columnModel=table.getColumnModel();
   columnModel.getColumn(0).setPreferredWidth(140);
+  columnModel.getColumn(1).setPreferredWidth(400);
   FormLayout layout=new FormLayout("1dlu, 8dlu, left:pref, 4dlu, fill:pref","");
   DefaultFormBuilder builder=new DefaultFormBuilder(layout);
   JPanel pan=new JPanel();
-  JPanel tablePanel=new JPanel();
-  tablePanel.setLayout(new BorderLayout());
+  JPanel tabPanel=new JPanel();
+  tabPanel.setLayout(new BorderLayout());
   JScrollPane scrollPane=new JScrollPane(table,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
   table.setPreferredScrollableViewportSize(new Dimension(250,200));
   scrollPane.setMinimumSize(new Dimension(250,300));
-  tablePanel.add(scrollPane,BorderLayout.CENTER);
-  JToolBar toolbar=new OSXCompatibleToolbar(SwingConstants.VERTICAL);
-  toolbar.setFloatable(false);
-  toolbar.setBorder(null);
-  toolbar.add(new AddRowAction());
-  toolbar.add(new DeleteRowAction());
-  tablePanel.add(toolbar,BorderLayout.EAST);
-  builder.appendSeparator(Localization.lang("XMP export privacy settings"));
+  scrollPane.setPreferredSize(new Dimension(600,300));
+  tabPanel.add(scrollPane,BorderLayout.CENTER);
+  JToolBar toolBar=new OSXCompatibleToolbar(SwingConstants.VERTICAL);
+  toolBar.setFloatable(false);
+  toolBar.setBorder(null);
+  toolBar.add(new AddRowAction());
+  toolBar.add(new DeleteRowAction());
+  toolBar.add(new HelpAction(Localization.lang("Help on Name Formatting"),HelpFiles.nameFormatterHelp));
+  tabPanel.add(toolBar,BorderLayout.EAST);
+  builder.appendSeparator(Localization.lang("Special Name Formatters"));
   builder.nextLine();
   builder.append(pan);
-  builder.append(privacyFilterCheckBox);
-  builder.nextLine();
-  builder.append(pan);
-  builder.append(tablePanel);
+  builder.append(tabPanel);
   builder.nextLine();
   pan=builder.getPanel();
   pan.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
