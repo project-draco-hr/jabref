@@ -1,0 +1,30 @@
+{
+  if (cursor == null) {
+    return -1;
+  }
+  if (cursor.getGroup() instanceof ExplicitGroup) {
+    ExplicitGroup grp=(ExplicitGroup)cursor.getGroup();
+    for (    BibEntry be : grp.getEntries()) {
+      SQLUtil.processQuery(connection,"INSERT INTO entry_group (entries_id, groups_id) " + "VALUES (" + "(SELECT entries_id FROM entries WHERE jabref_eid=" + '\'' + be.getId()+ "' AND database_id = "+ database_id+ "), "+ "(SELECT groups_id FROM groups WHERE database_id="+ '\''+ database_id+ "' AND parent_id="+ '\''+ parentID+ "' AND label="+ '\''+ grp.getName()+ "')"+ ");");
+    }
+  }
+  String sql="SELECT groups_id FROM groups WHERE label = ? AND database_id= ? AND parent_id = ? ;";
+  try (PreparedStatement statement=connection.prepareStatement(sql)){
+    statement.setString(1,cursor.getGroup().getName());
+    statement.setInt(2,database_id);
+    statement.setInt(3,parentID);
+    try (ResultSet resultSet=statement.executeQuery()){
+      currentID++;
+      int myID=currentID;
+      resultSet.next();
+      myID=resultSet.getInt("groups_id");
+      for (      GroupTreeNode child : cursor.getChildren()) {
+        currentID=populateEntryGroupsTable(child,myID,currentID,connection,database_id);
+      }
+    }
+   }
+ catch (  SQLException e) {
+    LOGGER.warn("Cannot close resource",e);
+  }
+  return currentID;
+}
