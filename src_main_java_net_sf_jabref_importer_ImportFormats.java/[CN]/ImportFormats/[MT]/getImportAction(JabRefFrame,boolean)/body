@@ -9,13 +9,16 @@ class ImportAction extends MnemonicAwareAction {
       putValue(Action.ACCELERATOR_KEY,openInNew ? Globals.getKeyPrefs().getKey(KeyBinding.IMPORT_INTO_NEW_DATABASE) : Globals.getKeyPrefs().getKey(KeyBinding.IMPORT_INTO_CURRENT_DATABASE));
     }
     @Override public void actionPerformed(    ActionEvent e){
-      JFileChooser fc=ImportFormats.createImportFileChooser(Globals.prefs.get(JabRefPreferences.IMPORT_WORKING_DIRECTORY));
-      fc.showOpenDialog(frame);
-      File file=fc.getSelectedFile();
+      JFileChooser fileChooser=createImportFileChooser(Globals.prefs.get(JabRefPreferences.IMPORT_WORKING_DIRECTORY));
+      int result=fileChooser.showOpenDialog(frame);
+      if (result != JFileChooser.APPROVE_OPTION) {
+        return;
+      }
+      File file=fileChooser.getSelectedFile();
       if (file == null) {
         return;
       }
-      FileFilter ff=fc.getFileFilter();
+      FileFilter ff=fileChooser.getFileFilter();
       ImportFormat format=null;
       if (ff instanceof ImportFileFilter) {
         format=((ImportFileFilter)ff).getImportFormat();
