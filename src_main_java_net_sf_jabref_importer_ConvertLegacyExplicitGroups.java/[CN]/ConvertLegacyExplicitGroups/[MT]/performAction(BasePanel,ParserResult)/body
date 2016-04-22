@@ -1,0 +1,14 @@
+{
+  Objects.requireNonNull(pr);
+  if (pr.getMetaData().getGroups() == null) {
+    return;
+  }
+  for (  ExplicitGroup group : getExplicitGroupsWithLegacyKeys(pr.getMetaData().getGroups())) {
+    for (    String entryKey : group.getLegacyEntryKeys()) {
+      for (      BibEntry entry : pr.getDatabase().getEntriesByKey(entryKey)) {
+        group.add(entry);
+      }
+    }
+    group.clearLegacyEntryKeys();
+  }
+}
