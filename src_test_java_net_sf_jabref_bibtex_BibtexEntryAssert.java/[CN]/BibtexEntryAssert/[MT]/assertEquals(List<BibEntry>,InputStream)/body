@@ -1,9 +1,5 @@
 {
-  Assert.assertNotNull(asIsInputStream);
+  Assert.assertNotNull(actualInputStream);
   Assert.assertNotNull(expectedEntries);
-  try (Reader reader=new InputStreamReader(asIsInputStream,StandardCharsets.UTF_8)){
-    BibtexParser parser=new BibtexParser(reader);
-    ParserResult result=parser.parse();
-    assertEquals(expectedEntries,result.getDatabase().getEntries());
-  }
- }
+  Assert.assertEquals(expectedEntries,getListFromInputStream(actualInputStream));
+}

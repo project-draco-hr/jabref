@@ -1,11 +1,11 @@
 {
   String testInput="Record.*INSPEC.*\n" + "\n" + "RT ~ Misc";
-  BibEntry shouldBeEntry=new BibEntry();
-  shouldBeEntry.setType("Misc");
+  BibEntry expectedEntry=new BibEntry();
+  expectedEntry.setType("Misc");
   try (InputStream inStream=new ByteArrayInputStream(testInput.getBytes())){
     List<BibEntry> entries=inspecImp.importEntries(inStream,new OutputPrinterToNull());
     assertEquals(1,entries.size());
     BibEntry entry=entries.get(0);
-    BibtexEntryAssert.assertEquals(shouldBeEntry,entry);
+    assertEquals(expectedEntry,entry);
   }
  }
