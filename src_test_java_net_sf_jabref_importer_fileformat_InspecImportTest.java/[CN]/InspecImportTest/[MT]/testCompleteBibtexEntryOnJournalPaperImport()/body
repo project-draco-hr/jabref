@@ -1,18 +1,13 @@
 {
-  BibEntry shouldBeEntry=new BibEntry();
-  shouldBeEntry.setType("article");
-  shouldBeEntry.setField("title","The SIS project : software reuse with a natural language approach");
-  shouldBeEntry.setField("author","Prechelt, Lutz");
-  shouldBeEntry.setField("year","1992");
-  shouldBeEntry.setField("abstract","Abstrakt");
-  shouldBeEntry.setField("keywords","key");
-  shouldBeEntry.setField("journal","10000");
-  shouldBeEntry.setField("pages","20");
-  shouldBeEntry.setField("volume","19");
-  try (InputStream inStream=InspecImportTest.class.getResourceAsStream("InspecImportTest2.txt")){
-    List<BibEntry> entries=inspecImp.importEntries(inStream,new OutputPrinterToNull());
-    assertEquals(1,entries.size());
-    BibEntry entry=entries.get(0);
-    BibtexEntryAssert.assertEquals(shouldBeEntry,entry);
-  }
- }
+  BibEntry expectedEntry=new BibEntry();
+  expectedEntry.setType("article");
+  expectedEntry.setField("title","The SIS project : software reuse with a natural language approach");
+  expectedEntry.setField("author","Prechelt, Lutz");
+  expectedEntry.setField("year","1992");
+  expectedEntry.setField("abstract","Abstrakt");
+  expectedEntry.setField("keywords","key");
+  expectedEntry.setField("journal","10000");
+  expectedEntry.setField("pages","20");
+  expectedEntry.setField("volume","19");
+  BibEntryAssert.assertEquals(Collections.singletonList(expectedEntry),InspecImportTest.class.getResourceAsStream("InspecImportTest2.txt"),inspecImp);
+}
