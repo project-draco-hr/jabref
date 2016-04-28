@@ -5,9 +5,12 @@
     if (externalStyles.contains(newStyle)) {
       LOGGER.info("External style file " + filename + " already existing.");
     }
- else {
+ else     if (newStyle.isValid()) {
       externalStyles.add(newStyle);
       storeExternalStyles();
+    }
+ else {
+      LOGGER.error(String.format("Style with filename %s is invalid",filename));
     }
   }
  catch (  FileNotFoundException e) {
