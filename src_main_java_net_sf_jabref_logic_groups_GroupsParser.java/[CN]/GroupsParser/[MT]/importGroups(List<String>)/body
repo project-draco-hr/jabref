@@ -1,0 +1,29 @@
+{
+  GroupTreeNode cursor=null;
+  GroupTreeNode root=null;
+  for (  String string : orderedData) {
+    string=string.trim();
+    if (string.isEmpty()) {
+      continue;
+    }
+    int spaceIndex=string.indexOf(' ');
+    if (spaceIndex <= 0) {
+      throw new Exception("bad format");
+    }
+    int level=Integer.parseInt(string.substring(0,spaceIndex));
+    AbstractGroup group=AbstractGroup.fromString(string.substring(spaceIndex + 1));
+    GroupTreeNode newNode=new GroupTreeNode(group);
+    if (cursor == null) {
+      cursor=newNode;
+      root=cursor;
+    }
+ else {
+      while (level <= cursor.getLevel()) {
+        cursor=cursor.getParent().get();
+      }
+      cursor.addChild(newNode);
+      cursor=newNode;
+    }
+  }
+  return root;
+}
