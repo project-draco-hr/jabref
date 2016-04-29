@@ -30,7 +30,13 @@
     GroupTreeNode newGroups=meta.getGroups();
     if (newGroups != null) {
       if (newGroups.getGroup() instanceof AllEntriesGroup) {
-        ExplicitGroup group=new ExplicitGroup("Imported",GroupHierarchyType.INDEPENDENT);
+        ExplicitGroup group=null;
+        try {
+          group=new ExplicitGroup("Imported",GroupHierarchyType.INDEPENDENT);
+        }
+ catch (        ParseException e) {
+          LOGGER.error(e);
+        }
         newGroups.setGroup(group);
         group.add(appendedEntries);
       }

@@ -23,7 +23,12 @@
     }
     skipWhitespace();
   }
-  parserResult.setMetaData(new MetaData(meta));
+  try {
+    parserResult.setMetaData(new MetaData(meta));
+  }
+ catch (  ParseException exception) {
+    parserResult.addWarning(exception.getLocalizedMessage());
+  }
   parseRemainingContent();
   return parserResult;
 }
