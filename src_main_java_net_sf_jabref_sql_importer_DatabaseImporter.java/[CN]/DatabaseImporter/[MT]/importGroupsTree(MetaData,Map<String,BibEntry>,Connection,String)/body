@@ -7,21 +7,26 @@
     while (rsGroups.next()) {
       AbstractGroup group=null;
       String typeId=findGroupTypeName(rsGroups.getString("group_types_id"),conn);
+      try {
 switch (typeId) {
 case AllEntriesGroup.ID:
-        groups.put(rsGroups.getString("groups_id"),rootNode);
-      break;
+          groups.put(rsGroups.getString("groups_id"),rootNode);
+        break;
 case ExplicitGroup.ID:
-    group=new ExplicitGroup(rsGroups.getString("label"),GroupHierarchyType.getByNumber(rsGroups.getInt("hierarchical_context")));
-  break;
+      group=new ExplicitGroup(rsGroups.getString("label"),GroupHierarchyType.getByNumber(rsGroups.getInt("hierarchical_context")));
+    break;
 case KeywordGroup.ID:
-LOGGER.debug("Keyw: " + rsGroups.getBoolean("case_sensitive"));
+  LOGGER.debug("Keyw: " + rsGroups.getBoolean("case_sensitive"));
 group=new KeywordGroup(rsGroups.getString("label"),StringUtil.unquote(rsGroups.getString("search_field"),'\\'),StringUtil.unquote(rsGroups.getString("search_expression"),'\\'),rsGroups.getBoolean("case_sensitive"),rsGroups.getBoolean("reg_exp"),GroupHierarchyType.getByNumber(rsGroups.getInt("hierarchical_context")));
 break;
 case SearchGroup.ID:
 LOGGER.debug("Search: " + rsGroups.getBoolean("case_sensitive"));
 group=new SearchGroup(rsGroups.getString("label"),StringUtil.unquote(rsGroups.getString("search_expression"),'\\'),rsGroups.getBoolean("case_sensitive"),rsGroups.getBoolean("reg_exp"),GroupHierarchyType.getByNumber(rsGroups.getInt("hierarchical_context")));
 break;
+}
+}
+ catch (ParseException e) {
+LOGGER.error(e);
 }
 if (group != null) {
 GroupTreeNode node=new GroupTreeNode(group);

@@ -1,9 +1,5 @@
 {
   Objects.requireNonNull(inData);
-  boolean groupsTreePresent=false;
-  List<String> flatGroupsData=null;
-  List<String> treeGroupsData=null;
-  int groupsVersionOnDisk=0;
   for (  Map.Entry<String,String> entry : inData.entrySet()) {
     StringReader data=new StringReader(entry.getValue());
     List<String> orderedData=new ArrayList<>();
@@ -16,32 +12,11 @@
  catch (    IOException ex) {
       LOGGER.error("Weird error while parsing meta data.",ex);
     }
-    if (GROUPSVERSION.equals(entry.getKey())) {
-      if (!orderedData.isEmpty()) {
-        groupsVersionOnDisk=Integer.parseInt(orderedData.get(0));
-      }
-    }
- else     if (GROUPSTREE.equals(entry.getKey())) {
-      groupsTreePresent=true;
-      treeGroupsData=orderedData;
-    }
- else     if (GROUPS.equals(entry.getKey())) {
-      flatGroupsData=orderedData;
+    if (GROUPSTREE.equals(entry.getKey())) {
+      putGroups(orderedData);
     }
  else {
       putData(entry.getKey(),orderedData);
-    }
-  }
-  if (groupsTreePresent) {
-    putGroups(treeGroupsData,groupsVersionOnDisk);
-  }
-  if (!groupsTreePresent && (flatGroupsData != null)) {
-    try {
-      groupsRoot=VersionHandling.importFlatGroups(flatGroupsData);
-      groupTreeValid=true;
-    }
- catch (    IllegalArgumentException ex) {
-      groupTreeValid=true;
     }
   }
 }
