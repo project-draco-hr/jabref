@@ -10,24 +10,25 @@
 switch (delta.getType()) {
 case CHANGE:
         for (        String line : lines) {
-          stringList.set(startPos + offset,(offset == 0 ? CHANGE_REMOVAL_START : "") + line);
+          stringList.set(startPos + offset,(offset == 0 ? CHANGE_START : "") + line);
           offset++;
         }
-      stringList.set((startPos + offset) - 1,stringList.get((startPos + offset) - 1) + TAG_END + CHANGE_ADDITION_START+ String.join(separator,delta.getRevised().getLines())+ TAG_END);
+      stringList.set((startPos + offset) - 1,stringList.get((startPos + offset) - 1) + TAG_END);
     break;
 case DELETE:
-  for (offset=0; offset <= (lines.size() - 1); offset++) {
-    stringList.set(startPos + offset,"");
+  for (  String line : lines) {
+    stringList.set(startPos + offset,(offset == 0 ? ADDITION_START : "") + line);
+    offset++;
   }
+stringList.set((startPos + offset) - 1,stringList.get((startPos + offset) - 1) + TAG_END);
 break;
 case INSERT:
-stringList.add(delta.getOriginal().getPosition(),ADDITION_START + String.join(separator,delta.getRevised().getLines()) + TAG_END);
 break;
 default :
 break;
 }
 }
-return HTML_START + String.join("",stringList) + HTML_END;
+return String.join(separator,stringList);
 }
 return modifiedString;
 }
