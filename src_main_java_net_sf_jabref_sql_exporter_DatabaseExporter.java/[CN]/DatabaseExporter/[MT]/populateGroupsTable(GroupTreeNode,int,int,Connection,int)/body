@@ -26,7 +26,7 @@
     searchExpr=StringUtil.quote(searchExpr,"'",'\\');
   }
   SQLUtil.processQuery(out,"INSERT INTO groups (label, parent_id, group_types_id, search_field, " + "search_expression, case_sensitive, reg_exp, hierarchical_context, database_id) " + "VALUES ('" + group.getName() + "', "+ parentID+ ", (SELECT group_types_id FROM group_types where label='"+ group.getTypeId()+ "')"+ ", "+ (searchField != null ? '\'' + searchField + '\'' : "NULL")+ ", "+ (searchExpr != null ? '\'' + searchExpr + '\'' : "NULL")+ ", "+ (caseSens != null ? '\'' + caseSens + '\'' : "NULL")+ ", "+ (regExp != null ? '\'' + regExp + '\'' : "NULL")+ ", "+ hierContext.ordinal()+ ", '"+ database_id+ "');");
-  try (Statement statement=((Connection)out).createStatement();ResultSet rs=statement.executeQuery("SELECT groups_id FROM groups WHERE label='" + cursor.getGroup().getName() + "' AND database_id='"+ database_id+ "' AND parent_id='"+ parentID+ "';")){
+  try (Statement statement=out.createStatement();ResultSet rs=statement.executeQuery("SELECT groups_id FROM groups WHERE label='" + cursor.getGroup().getName() + "' AND database_id='"+ database_id+ "' AND parent_id='"+ parentID+ "';")){
     int myID=currentID;
     rs.next();
     myID=rs.getInt("groups_id");
