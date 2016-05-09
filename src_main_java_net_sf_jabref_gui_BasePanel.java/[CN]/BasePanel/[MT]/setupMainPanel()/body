@@ -27,11 +27,11 @@
   add(searchBar,BorderLayout.NORTH);
   add(splitPane,BorderLayout.CENTER);
   instantiateSearchAutoCompleter();
-  this.getDatabase().addDatabaseChangeListener(new SearchAutoCompleterUpdater());
+  this.getDatabase().registerListener(new SearchAutoCompleteListener());
   AutoCompletePreferences autoCompletePreferences=new AutoCompletePreferences(Globals.prefs);
   if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_COMPLETE)) {
     autoCompleters=new ContentAutoCompleters(getDatabase(),bibDatabaseContext.getMetaData(),autoCompletePreferences,Globals.journalAbbreviationLoader);
-    this.getDatabase().addDatabaseChangeListener(new AutoCompletersUpdater());
+    this.getDatabase().registerListener(new AutoCompleteListener());
   }
  else {
     autoCompleters=new ContentAutoCompleters(Globals.journalAbbreviationLoader);

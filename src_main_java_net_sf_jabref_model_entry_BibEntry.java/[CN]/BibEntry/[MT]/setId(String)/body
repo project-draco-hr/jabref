@@ -1,11 +1,6 @@
 {
   Objects.requireNonNull(id,"Every BibEntry must have an ID");
-  try {
-    firePropertyChangedEvent(BibEntry.ID_FIELD,this.id,id);
-  }
- catch (  PropertyVetoException pv) {
-    throw new IllegalStateException("Couldn't change ID: " + pv);
-  }
+  eventBus.post(new FieldChangedEvent(this,BibEntry.ID_FIELD,id));
   this.id=id;
   changed=true;
 }

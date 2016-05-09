@@ -10,13 +10,6 @@
     throw new IllegalArgumentException("The field name '" + name + "' is reserved");
   }
   changed=true;
-  String oldValue=fields.get(fieldName);
-  try {
-    fields.put(fieldName,value);
-    firePropertyChangedEvent(fieldName,oldValue,value);
-  }
- catch (  PropertyVetoException pve) {
-    fields.put(fieldName,oldValue);
-    throw new IllegalArgumentException("Change rejected: " + pve);
-  }
+  fields.put(fieldName,value);
+  eventBus.post(new FieldChangedEvent(this,fieldName,value));
 }
