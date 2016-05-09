@@ -6,18 +6,21 @@
   for (  ParsedFileField flEntry : fileList) {
     String realOldFilename=flEntry.getLink();
     if (onlyRelativePaths && (new File(realOldFilename).isAbsolute())) {
+      newFileList.add(flEntry);
       continue;
     }
     StringBuilder newFilename=new StringBuilder(FileUtil.getLinkedFileName(databaseContext.getDatabase(),entry,repository));
     newFilename.append('.').append(FileUtil.getFileExtension(realOldFilename).orElse("pdf"));
     Optional<File> expandedOldFile=FileUtil.expandFilename(realOldFilename,databaseContext.getFileDirectory());
     if ((!expandedOldFile.isPresent()) || (expandedOldFile.get().getParent() == null)) {
+      newFileList.add(flEntry);
       continue;
     }
     String newPath=expandedOldFile.get().getParent().concat(System.getProperty("file.separator")).concat(newFilename.toString());
     String expandedOldFilePath=expandedOldFile.get().toString();
-    Boolean pathsDifferOnlyByCase=newPath.equalsIgnoreCase(expandedOldFilePath) && !newPath.equals(expandedOldFilePath);
+    boolean pathsDifferOnlyByCase=newPath.equalsIgnoreCase(expandedOldFilePath) && !newPath.equals(expandedOldFilePath);
     if (new File(newPath).exists() && !pathsDifferOnlyByCase) {
+      newFileList.add(flEntry);
       continue;
     }
     boolean renameSuccessful=FileUtil.renameFile(expandedOldFilePath,newPath);
@@ -48,5 +51,5 @@
       return Collections.emptyList();
     }
   }
-  return new ArrayList<>();
+  return Collections.emptyList();
 }
