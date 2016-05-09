@@ -48,7 +48,7 @@
   }
   String oldKey=entry.getCiteKey();
   int occurrences=database.getNumberOfKeyOccurrences(key);
-  if ((oldKey != null) && oldKey.equals(key)) {
+  if (Objects.equals(oldKey,key)) {
     occurrences--;
   }
   boolean alwaysAddLetter=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_ALWAYS_ADD_LETTER);
@@ -70,14 +70,14 @@
     }
     String moddedKey=key + getAddition(number);
     occurrences=database.getNumberOfKeyOccurrences(moddedKey);
-    if ((oldKey != null) && oldKey.equals(moddedKey)) {
+    if (Objects.equals(oldKey,moddedKey)) {
       occurrences--;
     }
     while (occurrences > 0) {
       number++;
       moddedKey=key + getAddition(number);
       occurrences=database.getNumberOfKeyOccurrences(moddedKey);
-      if ((oldKey != null) && oldKey.equals(moddedKey)) {
+      if (Objects.equals(oldKey,moddedKey)) {
         occurrences--;
       }
     }
