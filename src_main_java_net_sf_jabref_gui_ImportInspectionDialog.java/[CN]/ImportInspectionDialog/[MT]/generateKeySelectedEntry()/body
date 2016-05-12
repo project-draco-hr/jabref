@@ -4,20 +4,24 @@
   }
   BibEntry entry=selectionModel.getSelected().get(0);
   entries.getReadWriteLock().writeLock().lock();
-  BibDatabase database;
-  MetaData localMetaData;
-  if (panel == null) {
-    database=new BibDatabase();
-    localMetaData=new MetaData();
-  }
+  try {
+    BibDatabase database;
+    MetaData localMetaData;
+    if (panel == null) {
+      database=new BibDatabase();
+      localMetaData=new MetaData();
+    }
  else {
-    database=panel.getDatabase();
-    localMetaData=panel.getBibDatabaseContext().getMetaData();
+      database=panel.getDatabase();
+      localMetaData=panel.getBibDatabaseContext().getMetaData();
+    }
+    entry.setId(IdGenerator.next());
+    database.insertEntry(entry);
+    LabelPatternUtil.makeLabel(localMetaData,database,entry);
+    database.removeEntry(entry);
   }
-  entry.setId(IdGenerator.next());
-  database.insertEntry(entry);
-  LabelPatternUtil.makeLabel(localMetaData,database,entry);
-  database.removeEntry(entry);
-  entries.getReadWriteLock().writeLock().lock();
+  finally {
+    entries.getReadWriteLock().writeLock().unlock();
+  }
   glTable.repaint();
 }

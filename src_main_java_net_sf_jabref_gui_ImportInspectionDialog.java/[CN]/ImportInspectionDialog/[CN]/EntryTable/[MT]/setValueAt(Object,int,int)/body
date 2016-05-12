@@ -1,6 +1,10 @@
 {
   entries.getReadWriteLock().writeLock().lock();
-  BibEntry entry=sortedList.get(row);
-  entry.setSearchHit((Boolean)value);
-  entries.getReadWriteLock().writeLock().unlock();
+  try {
+    BibEntry entry=sortedList.get(row);
+    entry.setSearchHit((Boolean)value);
+  }
+  finally {
+    entries.getReadWriteLock().writeLock().unlock();
+  }
 }

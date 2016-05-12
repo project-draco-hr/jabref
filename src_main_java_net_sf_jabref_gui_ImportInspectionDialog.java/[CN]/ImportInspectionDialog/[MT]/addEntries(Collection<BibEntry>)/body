@@ -6,7 +6,11 @@
       deselectAllDuplicates.setEnabled(true);
     }
     this.entries.getReadWriteLock().writeLock().lock();
-    this.entries.add(entry);
-    this.entries.getReadWriteLock().writeLock().unlock();
+    try {
+      this.entries.add(entry);
+    }
+  finally {
+      this.entries.getReadWriteLock().writeLock().unlock();
+    }
   }
 }
