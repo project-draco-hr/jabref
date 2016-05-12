@@ -5,8 +5,7 @@
   int pageNumber=1;
   String postData=makeSearchPostRequestPayload(pageNumber,terms);
   try {
-    URL url=new URL(IEEEXploreFetcher.URL_SEARCH);
-    URLDownload dl=new URLDownload(url);
+    URLDownload dl=new URLDownload(IEEEXploreFetcher.URL_SEARCH);
     dl.addParameters("Accept","application/json");
     dl.addParameters("Content-Type","application/json");
     dl.setPostData(postData);
@@ -24,8 +23,7 @@
     if (hits > IEEEXploreFetcher.MAX_FETCH) {
       status.showMessage(Localization.lang("%0 entries found. To reduce server load, only %1 will be downloaded.",String.valueOf(hits),String.valueOf(IEEEXploreFetcher.MAX_FETCH)),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
     }
-    URL bibtexURL=new URL(createBibtexQueryURL(searchResultsJson));
-    String bibtexPage=new URLDownload(bibtexURL).downloadToString();
+    String bibtexPage=new URLDownload(createBibtexQueryURL(searchResultsJson)).downloadToString();
     bibtexPage=preprocessBibtexResultsPage(bibtexPage);
     Collection<BibEntry> parsedBibtexCollection=BibtexParser.fromString(bibtexPage);
     if (parsedBibtexCollection == null) {

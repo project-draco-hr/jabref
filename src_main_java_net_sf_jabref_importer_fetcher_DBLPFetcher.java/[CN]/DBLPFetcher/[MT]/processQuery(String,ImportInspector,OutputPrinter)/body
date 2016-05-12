@@ -6,8 +6,7 @@
   double saveThreshold=DuplicateCheck.duplicateThreshold;
   try {
     String address=makeSearchURL();
-    URL url=new URL(address);
-    URLDownload dl=new URLDownload(url);
+    URLDownload dl=new URLDownload(address);
     String page=dl.downloadToString();
     String[] lines=page.split("\n");
     List<String> bibtexUrlList=new ArrayList<>();
@@ -24,8 +23,7 @@
       if (!shouldContinue) {
         break;
       }
-      final URL bibUrl=new URL(urlStr);
-      final String bibtexHTMLPage=new URLDownload(bibUrl).downloadToString();
+      final String bibtexHTMLPage=new URLDownload(urlStr).downloadToString();
       final String[] htmlLines=bibtexHTMLPage.split("\n");
       for (      final String line : htmlLines) {
         if (line.contains("biburl")) {
@@ -33,8 +31,7 @@
           int eidx=line.indexOf('}');
           String bibtexUrl=line.substring(sidx + 1,eidx);
           bibtexUrl=bibtexUrl.replace("dblp.uni-trier.de","www.dblp.org");
-          final URL bibFileURL=new URL(bibtexUrl);
-          final String bibtexPage=new URLDownload(bibFileURL).downloadToString();
+          final String bibtexPage=new URLDownload(bibtexUrl).downloadToString();
           Collection<BibEntry> bibtexEntries=BibtexParser.fromString(bibtexPage);
           for (          BibEntry be : bibtexEntries) {
             if (!bibentryKnown.containsKey(be.getCiteKey())) {
