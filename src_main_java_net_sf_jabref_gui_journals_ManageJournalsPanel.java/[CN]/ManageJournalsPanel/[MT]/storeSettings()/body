@@ -1,18 +1,15 @@
 {
-  File f=null;
+  Path filePath=null;
   if (newFile.isSelected()) {
     if (!newNameTf.getText().isEmpty()) {
-      f=new File(newNameTf.getText());
+      filePath=Paths.get(newNameTf.getText());
     }
   }
  else {
-    f=new File(personalFile.getText());
+    filePath=Paths.get(personalFile.getText());
   }
-  if (f != null) {
-    if (!f.exists()) {
-      throw new FileNotFoundException(f.getAbsolutePath());
-    }
-    try (FileOutputStream stream=new FileOutputStream(f,false);OutputStreamWriter writer=new OutputStreamWriter(stream,Globals.prefs.getDefaultEncoding())){
+  if (filePath != null) {
+    try (OutputStream stream=Files.newOutputStream(filePath,StandardOpenOption.CREATE);OutputStreamWriter writer=new OutputStreamWriter(stream,Globals.prefs.getDefaultEncoding())){
       for (      JournalEntry entry : tableModel.getJournals()) {
         writer.write(entry.getName());
         writer.write(" = ");
@@ -23,7 +20,7 @@
  catch (    IOException e) {
       LOGGER.warn("Problem writing abbreviation file",e);
     }
-    String filename=f.getPath();
+    String filename=filePath.toString();
     if ("".equals(filename)) {
       filename=null;
     }
