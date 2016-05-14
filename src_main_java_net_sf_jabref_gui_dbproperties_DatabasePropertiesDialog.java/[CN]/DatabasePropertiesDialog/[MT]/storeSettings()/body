@@ -22,11 +22,12 @@
  else {
     metaData.markAsNotProtected();
   }
-  SaveOrderConfig newSaveOrderConfig=saveOrderPanel.getSaveOrderConfig();
+  SaveOrderConfig newSaveOrderConfig;
   if (saveInOriginalOrder.isSelected()) {
-    newSaveOrderConfig.setSaveInOriginalOrder();
+    newSaveOrderConfig=SaveOrderConfig.getDefaultSaveOrder();
   }
  else {
+    newSaveOrderConfig=saveOrderPanel.getSaveOrderConfig();
     newSaveOrderConfig.setSaveInSpecifiedOrder();
   }
   boolean saveOrderConfigChanged;
@@ -37,7 +38,7 @@
     saveOrderConfigChanged=true;
   }
   if (saveOrderConfigChanged) {
-    if (newSaveOrderConfig.equals(defaultSaveOrderConfig)) {
+    if (newSaveOrderConfig.equals(SaveOrderConfig.getDefaultSaveOrder())) {
       metaData.clearSaveOrderConfig();
     }
  else {

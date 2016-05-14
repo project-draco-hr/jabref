@@ -3,11 +3,16 @@
   if (value.isEmpty()) {
     return value;
   }
-  String cleanValue=value.replaceAll("\u2013|\u2014","-").replaceAll(REJECT_LITERALS,"");
+  String cleanValue=value.replace("pp.","").replace("p.","");
+  cleanValue=cleanValue.replaceAll("\u2013|\u2014","-").replaceAll(REJECT_LITERALS,"");
   Matcher matcher=PAGES_DETECT_PATTERN.matcher(cleanValue);
-  String newValue=matcher.replaceFirst(PAGES_REPLACE_PATTERN);
   if (matcher.matches()) {
-    return newValue;
+    if (Strings.isNullOrEmpty(matcher.group(2))) {
+      return matcher.replaceFirst(SINGLE_PAGE_REPLACE_PATTERN);
+    }
+ else {
+      return matcher.replaceFirst(PAGES_REPLACE_PATTERN);
+    }
   }
   return value;
 }
