@@ -1,13 +1,15 @@
 {
   Object activeTab=tabs.get(tabbed.getSelectedIndex());
   if (activeTab instanceof EntryEditorTab) {
-    EntryEditorTab fp=(EntryEditorTab)activeTab;
-    FieldEditor fe=fp.getActive();
-    fe.clearAutoCompleteSuggestion();
-    updateField(fe);
+    EntryEditorTab tab=(EntryEditorTab)activeTab;
+    FieldEditor fieldEditor=tab.getActive();
+    fieldEditor.clearAutoCompleteSuggestion();
+    updateField(fieldEditor);
   }
  else {
     updateField(activeTab);
   }
-  panel.runCommand(Actions.SAVE);
+  if (validEntry) {
+    panel.runCommand(Actions.SAVE);
+  }
 }
