@@ -4,11 +4,11 @@
   if (entries.isEmpty()) {
     return;
   }
-  SaveSession ss=new SaveSession(StandardCharsets.UTF_8,false);
-  MSBibDatabase md=new MSBibDatabase(databaseContext.getDatabase(),entries);
-  try (VerifyingWriter ps=ss.getWriter()){
+  SaveSession session=new SaveSession(StandardCharsets.UTF_8,false);
+  MSBibDatabase msBibDatabase=new MSBibDatabase(databaseContext.getDatabase(),entries);
+  try (VerifyingWriter ps=session.getWriter()){
     try {
-      DOMSource source=new DOMSource(md.getDOMrepresentation());
+      DOMSource source=new DOMSource(msBibDatabase.getDOMrepresentation());
       StreamResult result=new StreamResult(ps);
       Transformer trans=TransformerFactory.newInstance().newTransformer();
       trans.setOutputProperty(OutputKeys.INDENT,"yes");
@@ -17,7 +17,7 @@
  catch (    TransformerException|IllegalArgumentException|TransformerFactoryConfigurationError e) {
       throw new Error(e);
     }
-    finalizeSaveSession(ss,new File(file));
+    finalizeSaveSession(session,new File(file));
   }
  catch (  SaveException|IOException ex) {
     throw new IOException(ex.getMessage());
