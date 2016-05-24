@@ -1,6 +1,4 @@
 {
-  try (InputStream risStream=RISImporterTest.class.getResourceAsStream(fileName + ".ris")){
-    List<BibEntry> risEntries=risImporter.importEntries(risStream,new OutputPrinterToNull());
-    BibEntryAssert.assertEquals(RISImporterTest.class,fileName + ".bib",risEntries);
-  }
- }
+  List<BibEntry> risEntries=risImporter.importDatabase(risFile,Charset.defaultCharset()).getDatabase().getEntries();
+  BibEntryAssert.assertEquals(RISImporterTest.class,fileName + ".bib",risEntries);
+}

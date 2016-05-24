@@ -1,9 +1,6 @@
 {
-  String xmlFileName=fileName + ".xml";
   String bibFileName=fileName + ".bib";
   MsBibImporter testImporter=new MsBibImporter();
-  try (InputStream is=MsBibImporter.class.getResourceAsStream(xmlFileName)){
-    List<BibEntry> result=testImporter.importEntries(is,new OutputPrinterToNull());
-    BibEntryAssert.assertEquals(MsBibImporterTest.class,bibFileName,result);
-  }
- }
+  List<BibEntry> result=testImporter.importDatabase(xmlFile,Charset.defaultCharset()).getDatabase().getEntries();
+  BibEntryAssert.assertEquals(MsBibImporterTest.class,bibFileName,result);
+}

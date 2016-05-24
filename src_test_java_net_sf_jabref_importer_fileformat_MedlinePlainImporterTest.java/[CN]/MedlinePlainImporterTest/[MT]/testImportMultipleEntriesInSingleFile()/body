@@ -1,29 +1,32 @@
 {
-  try (InputStream is=MedlinePlainImporter.class.getResourceAsStream("MedlinePlainImporterTestMultipleEntries.txt")){
-    List<BibEntry> entries=importer.importEntries(is,new OutputPrinterToNull());
-    Assert.assertEquals(7,entries.size());
-    BibEntry testEntry=entries.get(0);
-    Assert.assertEquals("article",testEntry.getType());
-    Assert.assertNull(testEntry.getField("month"));
-    Assert.assertEquals("Long, Vicky and Marland, Hilary",testEntry.getField("author"));
-    Assert.assertEquals("From danger and motherhood to health and beauty: health advice for the factory girl in early twentieth-century Britain.",testEntry.getField("title"));
-    testEntry=entries.get(1);
-    Assert.assertEquals("conference",testEntry.getType());
-    Assert.assertEquals("06",testEntry.getField("month"));
-    Assert.assertNull(testEntry.getField("author"));
-    Assert.assertNull(testEntry.getField("title"));
-    testEntry=entries.get(2);
-    Assert.assertEquals("book",testEntry.getType());
-    Assert.assertEquals("This is a Testtitle: This title should be appended: This title should also be appended. Another append to the Title? LastTitle",testEntry.getField("title"));
-    testEntry=entries.get(3);
-    Assert.assertEquals("techreport",testEntry.getType());
-    Assert.assertNotNull(testEntry.getField("doi"));
-    testEntry=entries.get(4);
-    Assert.assertEquals("inproceedings",testEntry.getType());
-    Assert.assertEquals("Inproceedings book title",testEntry.getField("booktitle"));
-    testEntry=entries.get(5);
-    Assert.assertEquals("proceedings",testEntry.getType());
-    testEntry=entries.get(6);
-    Assert.assertEquals("misc",testEntry.getType());
-  }
- }
+  Path inputFile=Paths.get(MedlinePlainImporter.class.getResource("MedlinePlainImporterTestMultipleEntries.txt").toURI());
+  List<BibEntry> entries=importer.importDatabase(inputFile,Charset.defaultCharset()).getDatabase().getEntries();
+  assertEquals(7,entries.size());
+  BibEntry testEntry=entries.get(0);
+  assertEquals("article",testEntry.getType());
+  Assert.assertNull(testEntry.getField("month"));
+  assertEquals("Long, Vicky and Marland, Hilary",testEntry.getField("author"));
+  assertEquals("From danger and motherhood to health and beauty: health advice for the factory girl in early twentieth-century Britain.",testEntry.getField("title"));
+  testEntry=entries.get(1);
+  assertEquals("conference",testEntry.getType());
+  assertEquals("06",testEntry.getField("month"));
+  Assert.assertNull(testEntry.getField("author"));
+  Assert.assertNull(testEntry.getField("title"));
+  testEntry=entries.get(2);
+  assertEquals("book",testEntry.getType());
+  assertEquals("This is a Testtitle: This title should be appended: This title should also be appended. Another append to the Title? LastTitle",testEntry.getField("title"));
+  testEntry=entries.get(3);
+  assertEquals("techreport",testEntry.getType());
+  Assert.assertNotNull(testEntry.getField("doi"));
+  testEntry=entries.get(4);
+  assertEquals("inproceedings",testEntry.getType());
+  assertEquals("Inproceedings book title",testEntry.getField("booktitle"));
+  BibEntry expectedEntry5=new BibEntry();
+  expectedEntry5.setType("proceedings");
+  expectedEntry5.setField("keywords","Female");
+  assertEquals(expectedEntry5,entries.get(5));
+  BibEntry expectedEntry6=new BibEntry();
+  expectedEntry6.setType("misc");
+  expectedEntry6.setField("keywords","Female");
+  assertEquals(expectedEntry6,entries.get(6));
+}

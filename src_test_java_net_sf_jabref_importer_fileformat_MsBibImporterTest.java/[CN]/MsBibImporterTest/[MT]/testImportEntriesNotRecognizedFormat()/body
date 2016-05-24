@@ -1,5 +1,6 @@
 {
   MsBibImporter testImporter=new MsBibImporter();
-  List<BibEntry> entries=testImporter.importEntries(MsBibImporterTest.class.getResourceAsStream("CopacImporterTest1.txt"),new OutputPrinterToNull());
+  Path file=Paths.get(MsBibImporter.class.getResource("CopacImporterTest1.txt").toURI());
+  List<BibEntry> entries=testImporter.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
   Assert.assertEquals(0,entries.size());
 }

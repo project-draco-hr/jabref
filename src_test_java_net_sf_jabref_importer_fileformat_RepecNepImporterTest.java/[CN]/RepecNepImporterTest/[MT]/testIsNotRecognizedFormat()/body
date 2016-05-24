@@ -1,8 +1,7 @@
 {
   List<String> notAccepted=Arrays.asList("RepecNep1.xml","CopacImporterTest1.txt","RisImporterTest1.ris","CopacImporterTest2.txt","IEEEImport1.txt");
   for (  String s : notAccepted) {
-    try (InputStream stream=RepecNepImporter.class.getResourceAsStream(s)){
-      Assert.assertFalse(testImporter.isRecognizedFormat(stream));
-    }
-   }
+    Path file=Paths.get(RepecNepImporter.class.getResource(s).toURI());
+    Assert.assertFalse(testImporter.isRecognizedFormat(file,Charset.defaultCharset()));
+  }
 }

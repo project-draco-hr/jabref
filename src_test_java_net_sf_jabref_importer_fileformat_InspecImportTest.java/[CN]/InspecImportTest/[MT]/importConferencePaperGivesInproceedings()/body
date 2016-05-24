@@ -1,9 +1,10 @@
 {
-  String testInput="Record.*INSPEC.*\n" + "\n" + "RT ~ Conference-Paper";
+  String testInput="Record.*INSPEC.*\n" + "\n" + "RT ~ Conference-Paper\n"+ "AU ~ Prechelt, Lutz";
   BibEntry expectedEntry=new BibEntry();
   expectedEntry.setType("Inproceedings");
-  try (InputStream inStream=new ByteArrayInputStream(testInput.getBytes())){
-    List<BibEntry> entries=inspecImp.importEntries(inStream,new OutputPrinterToNull());
+  expectedEntry.setField("author","Prechelt, Lutz");
+  try (BufferedReader reader=new BufferedReader(new StringReader(testInput))){
+    List<BibEntry> entries=inspecImp.importDatabase(reader).getDatabase().getEntries();
     assertEquals(Collections.singletonList(expectedEntry),entries);
   }
  }

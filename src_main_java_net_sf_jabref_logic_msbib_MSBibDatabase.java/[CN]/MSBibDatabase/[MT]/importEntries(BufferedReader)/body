@@ -1,0 +1,29 @@
+{
+  entries=new HashSet<>();
+  Document inputDocument;
+  try {
+    DocumentBuilder documentBuilder=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    inputDocument=documentBuilder.parse(new InputSource(reader));
+  }
+ catch (  ParserConfigurationException|SAXException|IOException e) {
+    LOGGER.warn("Could not parse document",e);
+    return Collections.emptyList();
+  }
+  String bcol="b:";
+  NodeList rootList=inputDocument.getElementsByTagName("b:Sources");
+  if (rootList.getLength() == 0) {
+    rootList=inputDocument.getElementsByTagName("Sources");
+    bcol="";
+  }
+  List<BibEntry> bibitems=new ArrayList<>();
+  if (rootList.getLength() == 0) {
+    return bibitems;
+  }
+  NodeList sourceList=((Element)rootList.item(0)).getElementsByTagName(bcol + "Source");
+  for (int i=0; i < sourceList.getLength(); i++) {
+    MSBibEntry entry=new MSBibEntry((Element)sourceList.item(i),bcol);
+    entries.add(entry);
+    bibitems.add(entry.getBibtexRepresentation());
+  }
+  return bibitems;
+}

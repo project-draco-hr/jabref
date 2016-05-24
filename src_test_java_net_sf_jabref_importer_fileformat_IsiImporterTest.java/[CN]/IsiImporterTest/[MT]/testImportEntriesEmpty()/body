@@ -1,7 +1,6 @@
 {
   IsiImporter importer=new IsiImporter();
-  try (InputStream is=IsiImporterTest.class.getResourceAsStream("IsiImporterTestEmpty.isi")){
-    List<BibEntry> entries=importer.importEntries(is,new OutputPrinterToNull());
-    Assert.assertEquals(1,entries.size());
-  }
- }
+  Path file=Paths.get(IsiImporterTest.class.getResource("IsiImporterTestEmpty.isi").toURI());
+  List<BibEntry> entries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  Assert.assertEquals(1,entries.size());
+}

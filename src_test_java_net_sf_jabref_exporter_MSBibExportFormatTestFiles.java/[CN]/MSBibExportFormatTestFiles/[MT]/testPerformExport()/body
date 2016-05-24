@@ -1,12 +1,10 @@
 {
   String xmlFileName=filename.replace(".bib",".xml");
+  Path importFile=Paths.get(MSBibExportFormatTestFiles.class.getResource(filename).toURI());
   String tempFilename=tempFile.getCanonicalPath();
-  try (InputStream bibIn=MSBibExportFormat.class.getResourceAsStream(filename)){
-    List<BibEntry> entries=testImporter.importEntries(bibIn,new OutputPrinterToNull());
-    assertNotNull(entries);
-    msBibExportFormat.performExport(databaseContext,tempFile.getPath(),charset,entries);
-  }
-   List<String> expected=Files.readAllLines(Paths.get(PATH_TO_FILE + xmlFileName));
+  List<BibEntry> entries=testImporter.importDatabase(importFile,Charset.defaultCharset()).getDatabase().getEntries();
+  msBibExportFormat.performExport(databaseContext,tempFile.getPath(),charset,entries);
+  List<String> expected=Files.readAllLines(Paths.get(PATH_TO_FILE + xmlFileName));
   List<String> exported=Files.readAllLines(Paths.get(tempFilename));
   assertEquals(expected,exported);
 }

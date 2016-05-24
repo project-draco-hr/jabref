@@ -1,8 +1,9 @@
 {
-  try (InputStream is=MedlinePlainImporter.class.getResourceAsStream(medlineFile);InputStream nis=MedlinePlainImporter.class.getResourceAsStream(bibtexFile)){
-    List<BibEntry> entries=importer.importEntries(is,new OutputPrinterToNull());
+  Path file=Paths.get(MedlinePlainImporter.class.getResource(medlineFile).toURI());
+  try (InputStream nis=MedlinePlainImporter.class.getResourceAsStream(bibtexFile)){
+    List<BibEntry> entries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
     Assert.assertNotNull(entries);
-    Assert.assertEquals(1,entries.size());
+    assertEquals(1,entries.size());
     BibEntryAssert.assertEquals(nis,entries.get(0));
   }
  }

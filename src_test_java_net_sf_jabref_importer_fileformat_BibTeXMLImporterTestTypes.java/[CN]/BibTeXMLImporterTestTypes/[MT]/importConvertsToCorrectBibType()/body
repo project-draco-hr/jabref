@@ -1,6 +1,6 @@
 {
   String bibteXMLInput="<?xml version=\"1.0\" ?>\n" + "<bibtex:file xmlns:bibtex=\"http://bibtexml.sf.net/\">\n" + "<bibtex:entry>\n"+ "<bibtex:" + expectedBibType + ">\n"+ "<bibtex:author>Max Mustermann</bibtex:author>\n"+ "<bibtex:keywords>java</bibtex:keywords>\n"+ "<bibtex:title>Java tricks</bibtex:title>\n"+ "<bibtex:year>2016</bibtex:year>\n"+ "</bibtex:"+ expectedBibType+ ">\n"+ "</bibtex:entry>\n"+ "</bibtex:file>";
-  List<BibEntry> bibEntries=bibteXMLImporter.importEntries(new ByteArrayInputStream(bibteXMLInput.getBytes(StandardCharsets.UTF_8)),new OutputPrinterToNull());
+  List<BibEntry> bibEntries=bibteXMLImporter.importDatabase(new BufferedReader(new StringReader(bibteXMLInput))).getDatabase().getEntries();
   BibEntry entry=new BibEntry();
   entry.setField("author","Max Mustermann");
   entry.setField("keywords","java");

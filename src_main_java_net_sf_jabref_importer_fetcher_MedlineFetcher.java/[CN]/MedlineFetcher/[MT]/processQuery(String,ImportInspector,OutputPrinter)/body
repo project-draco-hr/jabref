@@ -3,7 +3,7 @@
   String cleanQuery=query.trim().replace(';',',');
   if (cleanQuery.matches("\\d+[,\\d+]*")) {
     frameOP.setStatus(Localization.lang("Fetching Medline by id..."));
-    List<BibEntry> bibs=MedlineImporter.fetchMedline(cleanQuery,frameOP);
+    List<BibEntry> bibs=fetchMedline(cleanQuery,frameOP);
     if (bibs.isEmpty()) {
       frameOP.showMessage(Localization.lang("No references found"));
     }
@@ -43,7 +43,7 @@
       }
       int noToFetch=Math.min(MedlineFetcher.PACING,numberToFetch - i);
       result=getIds(searchTerm,i,noToFetch);
-      List<BibEntry> bibs=MedlineImporter.fetchMedline(result.ids,frameOP);
+      List<BibEntry> bibs=fetchMedline(result.ids,frameOP);
       for (      BibEntry entry : bibs) {
         iIDialog.addEntry(entry);
       }

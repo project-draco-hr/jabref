@@ -1,12 +1,10 @@
 {
-  try (InputStream inputStream=MedlineImporterTest.class.getResourceAsStream(fileName)){
-    List<BibEntry> medlineEntries=medlineImporter.importEntries(inputStream,new OutputPrinterToNull());
-    String bibFileName=fileName.replace(".xml",".bib");
-    if (medlineEntries.isEmpty()) {
-      assertEquals(Collections.emptyList(),medlineEntries);
-    }
- else {
-      BibEntryAssert.assertEquals(MedlineImporterTest.class,bibFileName,medlineEntries);
-    }
+  List<BibEntry> medlineEntries=medlineImporter.importDatabase(importFile,Charset.defaultCharset()).getDatabase().getEntries();
+  String bibFileName=importFile.getFileName().toString().replace(".xml",".bib");
+  if (medlineEntries.isEmpty()) {
+    assertEquals(Collections.emptyList(),medlineEntries);
   }
- }
+ else {
+    BibEntryAssert.assertEquals(MedlineImporterTest.class,bibFileName,medlineEntries);
+  }
+}
