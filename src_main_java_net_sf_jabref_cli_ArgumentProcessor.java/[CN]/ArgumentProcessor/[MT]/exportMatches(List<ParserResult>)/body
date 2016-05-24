@@ -2,10 +2,11 @@
   String[] data=cli.getExportMatches().split(",");
   String searchTerm=data[0].replace("\\$"," ");
   ParserResult pr=loaded.get(loaded.size() - 1);
+  BibDatabaseContext databaseContext=pr.getDatabaseContext();
   BibDatabase dataBase=pr.getDatabase();
   SearchQuery query=new SearchQuery(searchTerm,Globals.prefs.getBoolean(JabRefPreferences.SEARCH_CASE_SENSITIVE),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REG_EXP));
-  BibDatabase newBase=new DatabaseSearcher(query,dataBase).getDatabaseFromMatches();
-  if (newBase.hasEntries()) {
+  List<BibEntry> matches=new DatabaseSearcher(query,dataBase).getMatches();
+  if (!matches.isEmpty()) {
     String formatName;
 switch (data.length) {
 case 3:
@@ -26,8 +27,7 @@ System.err.println(Localization.lang("Unknown export format") + ": " + formatNam
  else {
 try {
 System.out.println(Localization.lang("Exporting") + ": " + data[1]);
-BibDatabaseContext databaseContext=new BibDatabaseContext(newBase,pr.getMetaData());
-format.performExport(databaseContext,data[1],pr.getEncoding(),newBase.getEntries());
+format.performExport(databaseContext,data[1],databaseContext.getMetaData().getEncoding(),matches);
 }
  catch (Exception ex) {
 System.err.println(Localization.lang("Could not export file") + " '" + data[1]+ "': "+ ex.getMessage());
