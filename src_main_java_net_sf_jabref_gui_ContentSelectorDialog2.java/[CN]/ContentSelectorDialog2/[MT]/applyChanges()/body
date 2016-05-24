@@ -1,7 +1,7 @@
 {
   boolean changedFieldSet=false;
   for (  String fieldName : removedFields) {
-    metaData.remove(Globals.SELECTOR_META_PREFIX + fieldName);
+    metaData.clearContentSelectors(fieldName);
     changedFieldSet=true;
   }
   for (  String fieldName : wordListModels.keySet()) {
@@ -15,22 +15,14 @@
         start++;
       }
     }
-    List<String> data=metaData.getData(Globals.SELECTOR_META_PREFIX + fieldName);
-    boolean bNewField=false;
-    if (data == null) {
-      bNewField=true;
-      data=new ArrayList<>();
+    if (metaData.getContentSelectors(fieldName).isEmpty()) {
       changedFieldSet=true;
-    }
- else {
-      data.clear();
-    }
-    for (int wrd=start; wrd < lm.size(); wrd++) {
-      String word=lm.get(wrd);
-      data.add(word);
-    }
-    if (bNewField) {
-      metaData.putData(Globals.SELECTOR_META_PREFIX + fieldName,data);
+      List<String> data=new ArrayList<>();
+      for (int wrd=start; wrd < lm.size(); wrd++) {
+        String word=lm.get(wrd);
+        data.add(word);
+      }
+      metaData.setContentSelectors(fieldName,data);
     }
   }
   panel.markNonUndoableBaseChanged();

@@ -20,7 +20,7 @@
     sb.append('\n');
   }
   String[] entries=sb.toString().split(ENDOFRECORD);
-  HashMap<String,String> hm=new HashMap<>();
+  Map<String,String> hm=new HashMap<>();
   String author;
   String type;
   String editor;
@@ -101,9 +101,7 @@
         hm.put("date",val);
       }
  else       if ("J".equals(prefix)) {
-        if (hm.get("journal") == null) {
-          hm.put("journal",val);
-        }
+        hm.putIfAbsent("journal",val);
       }
  else       if ("B".equals(prefix)) {
         if ("article".equals(type)) {

@@ -1,12 +1,12 @@
 {
   String testInput="Record.*INSPEC.*\n" + "\n" + "AU ~ Prechelt, Lutz \n"+ "RT ~ Misc";
-  BibEntry shouldBeEntry=new BibEntry();
-  shouldBeEntry.setType("Misc");
-  shouldBeEntry.setField("author","Prechelt, Lutz");
+  BibEntry expectedEntry=new BibEntry();
+  expectedEntry.setType("Misc");
+  expectedEntry.setField("author","Prechelt, Lutz");
   try (BufferedReader reader=new BufferedReader(new StringReader(testInput))){
     List<BibEntry> entries=inspecImp.importDatabase(reader).getDatabase().getEntries();
     assertEquals(1,entries.size());
     BibEntry entry=entries.get(0);
-    BibtexEntryAssert.assertEquals(shouldBeEntry,entry);
+    assertEquals(expectedEntry,entry);
   }
  }

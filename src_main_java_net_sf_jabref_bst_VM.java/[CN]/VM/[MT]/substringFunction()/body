@@ -1,0 +1,30 @@
+{
+  if (stack.size() < 3) {
+    throw new VMException("Not enough operands on stack for operation substring$");
+  }
+  Object o1=stack.pop();
+  Object o2=stack.pop();
+  Object o3=stack.pop();
+  if (!((o1 instanceof Integer) && (o2 instanceof Integer) && (o3 instanceof String))) {
+    throw new VMException("Expecting two integers and a string for substring$");
+  }
+  Integer len=(Integer)o1;
+  Integer start=(Integer)o2;
+  int lenI=len;
+  int startI=start;
+  if (lenI > (Integer.MAX_VALUE / 2)) {
+    lenI=Integer.MAX_VALUE / 2;
+  }
+  if (startI > (Integer.MAX_VALUE / 2)) {
+    startI=Integer.MAX_VALUE / 2;
+  }
+  if (startI < (Integer.MIN_VALUE / 2)) {
+    startI=-Integer.MIN_VALUE / 2;
+  }
+  String s=(String)o3;
+  if (startI < 0) {
+    startI+=s.length() + 1;
+    startI=Math.max(1,(startI + 1) - lenI);
+  }
+  stack.push(s.substring(startI - 1,Math.min((startI - 1) + lenI,s.length())));
+}

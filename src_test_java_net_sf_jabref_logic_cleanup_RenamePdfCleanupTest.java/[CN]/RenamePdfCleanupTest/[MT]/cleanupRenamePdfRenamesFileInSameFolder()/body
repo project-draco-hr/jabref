@@ -1,0 +1,11 @@
+{
+  when(Globals.prefs.get(JabRefPreferences.PREF_IMPORT_FILENAMEPATTERN)).thenReturn("\\bibtexkey\\begin{title} - \\format[RemoveBrackets]{\\title}\\end{title}");
+  testFolder.newFile("Toot.pdf");
+  ParsedFileField fileField=new ParsedFileField("","Toot.pdf","PDF");
+  entry.setField("file",FileField.getStringRepresentation(fileField));
+  entry.setField("title","test title");
+  RenamePdfCleanup cleanup=new RenamePdfCleanup(false,context,mock(JournalAbbreviationRepository.class));
+  cleanup.cleanup(entry);
+  ParsedFileField newFileField=new ParsedFileField("","Toot - test title.pdf","PDF");
+  assertEquals(FileField.getStringRepresentation(newFileField),entry.getField("file"));
+}

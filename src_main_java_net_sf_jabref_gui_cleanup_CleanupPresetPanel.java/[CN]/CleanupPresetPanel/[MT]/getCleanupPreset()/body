@@ -1,0 +1,29 @@
+{
+  Set<CleanupPreset.CleanupStep> activeJobs=EnumSet.noneOf(CleanupPreset.CleanupStep.class);
+  if (cleanUpMovePDF.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.MOVE_PDF);
+  }
+  if (cleanUpDOI.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CLEAN_UP_DOI);
+  }
+  if (cleanUpMakePathsRelative.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.MAKE_PATHS_RELATIVE);
+  }
+  if (cleanUpRenamePDF.isSelected()) {
+    if (cleanUpRenamePDFonlyRelativePaths.isSelected()) {
+      activeJobs.add(CleanupPreset.CleanupStep.RENAME_PDF_ONLY_RELATIVE_PATHS);
+    }
+ else {
+      activeJobs.add(CleanupPreset.CleanupStep.RENAME_PDF);
+    }
+  }
+  if (cleanUpUpgradeExternalLinks.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CLEAN_UP_UPGRADE_EXTERNAL_LINKS);
+  }
+  if (cleanUpBibLatex.isSelected()) {
+    activeJobs.add(CleanupPreset.CleanupStep.CONVERT_TO_BIBLATEX);
+  }
+  activeJobs.add(CleanupPreset.CleanupStep.FIX_FILE_LINKS);
+  cleanupPreset=new CleanupPreset(activeJobs,cleanUpFormatters.getFormatterCleanups());
+  return cleanupPreset;
+}

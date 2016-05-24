@@ -1,0 +1,16 @@
+{
+  if (content == null) {
+    return valueDelimiterStartOfValue + String.valueOf(valueDelimiterEndOfValue);
+  }
+  String result=content;
+  boolean shouldNormalizeNewlines=!result.contains(Globals.NEWLINE) && result.contains("\n");
+  if (shouldNormalizeNewlines) {
+    result=result.replace("\n",Globals.NEWLINE);
+  }
+  boolean resolveStrings=shouldResolveStrings(fieldName);
+  if (!resolveStrings) {
+    return formatWithoutResolvingStrings(result,fieldName);
+  }
+  result=result.trim();
+  return formatAndResolveStrings(result,fieldName);
+}

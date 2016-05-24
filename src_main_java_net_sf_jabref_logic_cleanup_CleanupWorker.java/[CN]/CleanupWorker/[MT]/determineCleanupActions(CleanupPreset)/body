@@ -3,9 +3,6 @@
   if (preset.isCleanUpUpgradeExternalLinks()) {
     jobs.add(new UpgradePdfPsToFileCleanup(Arrays.asList("pdf","ps")));
   }
-  if (preset.isCleanUpSuperscripts()) {
-    jobs.add(new FormatterCleanup(BibtexFieldFormatters.ORDINALS_TO_LATEX_SUPERSCRIPT));
-  }
   if (preset.isCleanUpDOI()) {
     jobs.add(new DoiCleanup());
   }
@@ -23,12 +20,11 @@
     jobs.add(cleaner);
     unsuccessfulRenames+=cleaner.getUnsuccessfulRenames();
   }
-  if (preset.isConvertUnicodeToLatex()) {
-    jobs.add(new UnicodeCleanup());
-  }
   if (preset.isConvertToBiblatex()) {
     jobs.add(new BiblatexCleanup());
   }
-  jobs.addAll(preset.getFormatterCleanups().getConfiguredActions());
+  if (preset.getFormatterCleanups().isEnabled()) {
+    jobs.addAll(preset.getFormatterCleanups().getConfiguredActions());
+  }
   return jobs;
 }

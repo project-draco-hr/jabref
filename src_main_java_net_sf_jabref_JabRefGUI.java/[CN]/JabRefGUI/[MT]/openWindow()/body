@@ -1,0 +1,81 @@
+{
+  PreferencesMigrations.replaceAbstractField();
+  PreferencesMigrations.upgradeSortOrder();
+  PreferencesMigrations.upgradeFaultyEncodingStrings();
+  if (OS.OS_X) {
+    System.setProperty("apple.laf.useScreenMenuBar","true");
+  }
+  System.setProperty("swing.aatext","true");
+  System.setProperty("awt.useSystemAAFontSettings","lcd");
+  setLookAndFeel();
+  if (!isBlank && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED) && (Globals.prefs.get(JabRefPreferences.LAST_EDITED) != null)) {
+    openLastEditedDatabase();
+  }
+  GUIGlobals.init();
+  GUIGlobals.currentFont=new Font(Globals.prefs.get(JabRefPreferences.FONT_FAMILY),Globals.prefs.getInt(JabRefPreferences.FONT_STYLE),Globals.prefs.getInt(JabRefPreferences.FONT_SIZE));
+  LOGGER.debug("Initializing frame");
+  JabRefGUI.mainFrame=new JabRefFrame();
+  boolean first=true;
+  if (!loaded.isEmpty()) {
+    for (Iterator<ParserResult> i=loaded.iterator(); i.hasNext(); ) {
+      ParserResult pr=i.next();
+      if (new LastFocusedTabPreferences(Globals.prefs).hadLastFocus(pr.getFile())) {
+        first=true;
+      }
+      if (pr.isInvalid()) {
+        failed.add(pr);
+        i.remove();
+      }
+ else       if (!pr.isPostponedAutosaveFound()) {
+        if (pr.toOpenTab()) {
+          toOpenTab.add(pr);
+        }
+ else {
+          JabRefGUI.getMainFrame().addParserResult(pr,first);
+          first=false;
+        }
+      }
+ else {
+        i.remove();
+        postponed.add(pr.getFile());
+      }
+    }
+  }
+  for (  ParserResult pr : toOpenTab) {
+    JabRefGUI.getMainFrame().addParserResult(pr,first);
+    first=false;
+  }
+  if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_SAVE)) {
+    Globals.startAutoSaveManager(JabRefGUI.getMainFrame());
+  }
+  if (Globals.prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
+    JabRefGUI.getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
+  }
+  JabRefGUI.getMainFrame().setVisible(true);
+  if (Globals.prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
+    JabRefGUI.getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
+  }
+  for (  ParserResult pr : failed) {
+    String message="<html>" + Localization.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
+    JOptionPane.showMessageDialog(JabRefGUI.getMainFrame(),message,Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
+  }
+  if (Globals.prefs.getBoolean(JabRefPreferences.DISPLAY_KEY_WARNING_DIALOG_AT_STARTUP)) {
+    int i=0;
+    for (    ParserResult pr : loaded) {
+      ParserResultWarningDialog.showParserResultWarningDialog(pr,JabRefGUI.getMainFrame(),i++);
+    }
+  }
+  for (int i=0; (i < loaded.size()) && (i < JabRefGUI.getMainFrame().getBasePanelCount()); i++) {
+    ParserResult pr=loaded.get(i);
+    BasePanel panel=JabRefGUI.getMainFrame().getBasePanelAt(i);
+    OpenDatabaseAction.performPostOpenActions(panel,pr,true);
+  }
+  LOGGER.debug("Finished adding panels");
+  if (!postponed.isEmpty()) {
+    AutosaveStartupPrompter asp=new AutosaveStartupPrompter(JabRefGUI.getMainFrame(),postponed);
+    SwingUtilities.invokeLater(asp);
+  }
+  if (!loaded.isEmpty()) {
+    new FocusRequester(JabRefGUI.getMainFrame().getCurrentBasePanel().mainTable);
+  }
+}

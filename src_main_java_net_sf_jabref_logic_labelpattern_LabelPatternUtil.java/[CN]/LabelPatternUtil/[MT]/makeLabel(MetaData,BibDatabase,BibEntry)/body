@@ -48,7 +48,7 @@
   }
   String oldKey=entry.getCiteKey();
   int occurrences=database.getNumberOfKeyOccurrences(key);
-  if ((oldKey != null) && oldKey.equals(key)) {
+  if (Objects.equals(oldKey,key)) {
     occurrences--;
   }
   boolean alwaysAddLetter=Globals.prefs.getBoolean(JabRefPreferences.KEY_GEN_ALWAYS_ADD_LETTER);
@@ -56,7 +56,7 @@
   if (!alwaysAddLetter && (occurrences == 0)) {
     if (!key.equals(oldKey)) {
       if (!database.containsEntryWithId(entry.getId())) {
-        entry.setField(BibEntry.KEY_FIELD,key);
+        entry.setCiteKey(key);
       }
  else {
         database.setCiteKeyForEntry(entry,key);
@@ -70,20 +70,20 @@
     }
     String moddedKey=key + getAddition(number);
     occurrences=database.getNumberOfKeyOccurrences(moddedKey);
-    if ((oldKey != null) && oldKey.equals(moddedKey)) {
+    if (Objects.equals(oldKey,moddedKey)) {
       occurrences--;
     }
     while (occurrences > 0) {
       number++;
       moddedKey=key + getAddition(number);
       occurrences=database.getNumberOfKeyOccurrences(moddedKey);
-      if ((oldKey != null) && oldKey.equals(moddedKey)) {
+      if (Objects.equals(oldKey,moddedKey)) {
         occurrences--;
       }
     }
     if (!moddedKey.equals(oldKey)) {
       if (!database.containsEntryWithId(entry.getId())) {
-        entry.setField(BibEntry.KEY_FIELD,moddedKey);
+        entry.setCiteKey(moddedKey);
       }
  else {
         database.setCiteKeyForEntry(entry,moddedKey);

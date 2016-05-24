@@ -1,0 +1,13 @@
+{
+  String field=entry.getField(name);
+  if (!Strings.nullToEmpty(field).trim().isEmpty()) {
+    out.write("  " + getFieldDisplayName(name,indentation));
+    try {
+      out.write(fieldFormatter.format(field,name));
+      out.write(',' + Globals.NEWLINE);
+    }
+ catch (    IOException ex) {
+      throw new IOException("Error in field '" + name + "': "+ ex.getMessage());
+    }
+  }
+}

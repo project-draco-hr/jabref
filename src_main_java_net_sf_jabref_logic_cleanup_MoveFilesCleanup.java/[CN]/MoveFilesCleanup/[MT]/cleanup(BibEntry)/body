@@ -1,12 +1,12 @@
 {
   if (!databaseContext.getMetaData().getDefaultFileDirectory().isPresent()) {
-    return new ArrayList<>();
+    return Collections.emptyList();
   }
   List<String> paths=databaseContext.getFileDirectory();
   String defaultFileDirectory=databaseContext.getMetaData().getDefaultFileDirectory().get();
   Optional<File> targetDirectory=FileUtil.expandFilename(defaultFileDirectory,paths);
   if (!targetDirectory.isPresent()) {
-    return new ArrayList<>();
+    return Collections.emptyList();
   }
   TypedBibEntry typedEntry=new TypedBibEntry(entry,databaseContext);
   List<ParsedFileField> fileList=typedEntry.getFiles();
@@ -16,10 +16,12 @@
     String oldFileName=fileEntry.getLink();
     Optional<File> oldFile=FileUtil.expandFilename(oldFileName,paths);
     if (!oldFile.isPresent() || !oldFile.get().exists()) {
+      newFileList.add(fileEntry);
       continue;
     }
     File targetFile=new File(targetDirectory.get(),oldFile.get().getName());
     if (targetFile.exists()) {
+      newFileList.add(fileEntry);
       continue;
     }
     oldFile.get().renameTo(targetFile);
@@ -40,5 +42,5 @@
       return Collections.emptyList();
     }
   }
-  return new ArrayList<>();
+  return Collections.emptyList();
 }

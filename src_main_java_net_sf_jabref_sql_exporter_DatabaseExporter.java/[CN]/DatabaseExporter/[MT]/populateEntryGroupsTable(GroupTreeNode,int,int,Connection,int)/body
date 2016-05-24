@@ -1,0 +1,24 @@
+{
+  if (cursor == null) {
+    return -1;
+  }
+  String sql="SELECT groups_id FROM groups WHERE label = ? AND database_id= ? AND parent_id = ? ;";
+  try (PreparedStatement statement=connection.prepareStatement(sql)){
+    statement.setString(1,cursor.getGroup().getName());
+    statement.setInt(2,database_id);
+    statement.setInt(3,parentID);
+    try (ResultSet resultSet=statement.executeQuery()){
+      currentID++;
+      int myID=currentID;
+      resultSet.next();
+      myID=resultSet.getInt("groups_id");
+      for (      GroupTreeNode child : cursor.getChildren()) {
+        currentID=populateEntryGroupsTable(child,myID,currentID,connection,database_id);
+      }
+    }
+   }
+ catch (  SQLException e) {
+    LOGGER.warn("Cannot close resource",e);
+  }
+  return currentID;
+}

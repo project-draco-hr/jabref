@@ -1,0 +1,19 @@
+{
+  if (dropStr.startsWith("file:")) {
+    if (handleDraggedFilenames(dropStr,dropRow)) {
+      return true;
+    }
+  }
+ else   if (dropStr.startsWith("http:")) {
+    URL url=new URL(dropStr);
+    return handleDropTransfer(url);
+  }
+  File tmpfile=File.createTempFile("jabrefimport","");
+  tmpfile.deleteOnExit();
+  try (FileWriter fw=new FileWriter(tmpfile)){
+    fw.write(dropStr);
+  }
+   ImportMenuItem importer=new ImportMenuItem(frame,false);
+  importer.automatedImport(Collections.singletonList(tmpfile.getAbsolutePath()));
+  return true;
+}

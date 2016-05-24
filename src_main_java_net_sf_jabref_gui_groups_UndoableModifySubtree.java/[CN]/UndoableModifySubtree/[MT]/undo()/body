@@ -1,0 +1,12 @@
+{
+  super.undo();
+  m_modifiedSubtree.clear();
+  final GroupTreeNode subtreeRoot=m_groupRoot.getDescendant(m_subtreeRootPath).get();
+  for (  GroupTreeNode child : subtreeRoot.getChildren()) {
+    m_modifiedSubtree.add(child);
+  }
+  subtreeRoot.removeAllChildren();
+  for (  GroupTreeNode child : m_subtreeBackup.getChildren()) {
+    child.copySubtree().moveTo(subtreeRoot);
+  }
+}

@@ -1,0 +1,11 @@
+{
+  final GroupTreeNodeViewModel node=getNodeToUse();
+  int conf=JOptionPane.showConfirmDialog(frame,Localization.lang("Remove all subgroups of \"%0\"?",node.getName()),Localization.lang("Remove subgroups"),JOptionPane.YES_NO_OPTION);
+  if (conf == JOptionPane.YES_OPTION) {
+    final UndoableModifySubtree undo=new UndoableModifySubtree(getGroupTreeRoot(),node,"Remove subgroups");
+    node.getNode().removeAllChildren();
+    panel.undoManager.addEdit(undo);
+    panel.markBaseChanged();
+    frame.output(Localization.lang("Removed all subgroups of group \"%0\".",node.getName()));
+  }
+}

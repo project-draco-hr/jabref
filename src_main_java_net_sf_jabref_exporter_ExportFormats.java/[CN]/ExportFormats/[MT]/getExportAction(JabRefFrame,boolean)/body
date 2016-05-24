@@ -29,14 +29,14 @@ class ExportAction extends MnemonicAwareAction {
           }
         }
         final IExportFormat format=eff.getExportFormat();
-        List<BibEntry> entries=null;
+        List<BibEntry> entries;
         if (selectedOnly) {
           entries=frame.getCurrentBasePanel().getSelectedEntries();
         }
  else {
           entries=frame.getCurrentBasePanel().getDatabase().getEntries();
         }
-        Globals.prefs.fileDirForDatabase=frame.getCurrentBasePanel().getBibDatabaseContext().getFileDirectory().toArray(new String[0]);
+        Globals.prefs.fileDirForDatabase=frame.getCurrentBasePanel().getBibDatabaseContext().getFileDirectory();
         Globals.prefs.put(JabRefPreferences.LAST_USED_EXPORT,format.getConsoleName());
         Globals.prefs.put(JabRefPreferences.EXPORT_WORKING_DIRECTORY,file.getParent());
         final File finFile=file;

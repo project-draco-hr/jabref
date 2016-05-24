@@ -5,14 +5,18 @@
   BibEntry entry=selectionModel.getSelected().get(0);
   String result=JOptionPane.showInputDialog(ImportInspectionDialog.this,Localization.lang("Enter URL"),entry.getField(URL_FIELD));
   entries.getReadWriteLock().writeLock().lock();
-  if (result != null) {
-    if (result.isEmpty()) {
-      entry.clearField(URL_FIELD);
-    }
+  try {
+    if (result != null) {
+      if (result.isEmpty()) {
+        entry.clearField(URL_FIELD);
+      }
  else {
-      entry.setField(URL_FIELD,result);
+        entry.setField(URL_FIELD,result);
+      }
     }
   }
-  entries.getReadWriteLock().writeLock().unlock();
+  finally {
+    entries.getReadWriteLock().writeLock().unlock();
+  }
   glTable.repaint();
 }

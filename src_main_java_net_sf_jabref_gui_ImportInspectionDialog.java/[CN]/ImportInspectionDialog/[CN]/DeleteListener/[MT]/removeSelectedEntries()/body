@@ -3,10 +3,14 @@
   List<Object> toRemove=new ArrayList<>();
   toRemove.addAll(selectionModel.getSelected());
   entries.getReadWriteLock().writeLock().lock();
-  for (  Object o : toRemove) {
-    entries.remove(o);
+  try {
+    for (    Object o : toRemove) {
+      entries.remove(o);
+    }
   }
-  entries.getReadWriteLock().writeLock().unlock();
+  finally {
+    entries.getReadWriteLock().writeLock().unlock();
+  }
   glTable.clearSelection();
   if ((row >= 0) && (!entries.isEmpty())) {
     row=Math.min(entries.size() - 1,row);

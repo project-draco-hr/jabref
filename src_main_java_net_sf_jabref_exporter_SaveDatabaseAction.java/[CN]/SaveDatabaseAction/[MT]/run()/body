@@ -1,11 +1,14 @@
 {
-  if (cancelled || (panel.getBibDatabaseContext().getDatabaseFile() == null)) {
+  if (canceled || (panel.getBibDatabaseContext().getDatabaseFile() == null)) {
     return;
   }
   try {
     panel.storeCurrentEdit();
     panel.autoGenerateKeysBeforeSaving();
     if (FileBasedLock.waitForFileLock(panel.getBibDatabaseContext().getDatabaseFile(),10)) {
+      if (checkExternalModification()) {
+        return;
+      }
       success=saveDatabase(panel.getBibDatabaseContext().getDatabaseFile(),false,panel.getEncoding());
       Globals.fileUpdateMonitor.updateTimeStamp(panel.getFileMonitorHandle());
     }

@@ -1,22 +1,2 @@
 {
-  auto.setEnabled(false);
-  Collection<BibEntry> entries=new ArrayList<>();
-  entries.addAll(frame.getCurrentBasePanel().getSelectedEntries());
-  JDialog dialog=new JDialog(frame,true);
-  JabRefExecutorService.INSTANCE.execute(net.sf.jabref.util.Util.autoSetLinks(entries,null,null,tableModel,databaseContext,new ActionListener(){
-    @Override public void actionPerformed(    ActionEvent e){
-      auto.setEnabled(true);
-      if (e.getID() > 0) {
-        entryEditor.updateField(FileListEditor.this);
-        adjustColumnWidth();
-        frame.output(Localization.lang("Finished automatically setting external links."));
-      }
- else {
-        frame.output(Localization.lang("Finished automatically setting external links.") + " " + Localization.lang("No files found."));
-        frame.getCurrentBasePanel().runCommand(Actions.DOWNLOAD_FULL_TEXT);
-      }
-      auto.setEnabled(true);
-    }
-  }
-,dialog));
 }

@@ -1,16 +1,21 @@
 {
-  if ("bibtex:entry".equals(raw)) {
-    String articleID=null;
-    for (int i=0; i < atts.getLength(); i++) {
-      if ("bibtex:id".equals(atts.getQName(i)) || "id".equals(atts.getQName(i))) {
-        articleID=atts.getValue(i);
+  if (BIBTEXML_URI.equals(uri)) {
+    if ("entry".equals(local)) {
+      b=new BibEntry(IdGenerator.next());
+      String bibtexKey=null;
+      for (int i=0; i < atts.getLength(); i++) {
+        String attrURI=atts.getURI(i);
+        if ((BIBTEXML_URI.equals(attrURI) || "".equals(attrURI)) && "id".equals(atts.getLocalName(i))) {
+          bibtexKey=atts.getValue(i);
+        }
+      }
+      if (bibtexKey != null) {
+        b.setCiteKey(bibtexKey);
       }
     }
-    b=new BibEntry(IdGenerator.next());
-    b.setField(BibEntry.KEY_FIELD,articleID);
-  }
- else   if ("bibtex:article".equals(raw) || "bibtex:inbook".equals(raw) || "bibtex:book".equals(raw)|| "bibtex:booklet".equals(raw)|| "bibtex:incollection".equals(raw)|| "bibtex:inproceedings".equals(raw)|| "bibtex:proceedings".equals(raw)|| "bibtex:manual".equals(raw)|| "bibtex:mastersthesis".equals(raw)|| "bibtex:phdthesis".equals(raw)|| "bibtex:techreport".equals(raw)|| "bibtex:unpublished".equals(raw)|| "bibtex:misc".equals(raw)|| "bibtex:other".equals(raw)) {
-    b.setType(local);
+ else     if ("article".equals(local) || "inbook".equals(local) || "book".equals(local)|| "booklet".equals(local)|| "incollection".equals(local)|| "inproceedings".equals(local)|| "proceedings".equals(local)|| "manual".equals(local)|| "mastersthesis".equals(local)|| "phdthesis".equals(local)|| "techreport".equals(local)|| "unpublished".equals(local)|| "misc".equals(local)) {
+      b.setType(local);
+    }
   }
   currentChars="";
 }

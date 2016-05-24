@@ -1,0 +1,17 @@
+{
+  final Point p=dsde.getLocation();
+  if (p != null) {
+    SwingUtilities.convertPointFromScreen(p,this);
+    final TreePath path=getPathForLocation(p.x,p.y);
+    if (path == null) {
+      dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
+      return;
+    }
+    final GroupTreeNodeViewModel target=(GroupTreeNodeViewModel)path.getLastPathComponent();
+    if ((target == null) || dragNode.getNode().isNodeDescendant(target.getNode()) || (dragNode.equals(target))) {
+      dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
+      return;
+    }
+    dsde.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
+  }
+}

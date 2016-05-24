@@ -1,0 +1,10 @@
+{
+  TreeNodeMock root=new TreeNodeMock();
+  TreeNodeMock node=getNodeInComplexTree(root);
+  TreeNodeMock oldParent=node.getParent().get();
+  Consumer<TreeNodeMock> subscriber=mock(Consumer.class);
+  root.subscribeToDescendantChanged(subscriber);
+  node.moveTo(root);
+  verify(subscriber).accept(root);
+  verify(subscriber).accept(oldParent);
+}

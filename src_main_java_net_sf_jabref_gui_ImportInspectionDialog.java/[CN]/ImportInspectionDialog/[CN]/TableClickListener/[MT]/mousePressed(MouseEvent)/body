@@ -16,28 +16,44 @@
       if (diag.getSelected() == DuplicateResolverResult.KEEP_UPPER) {
         entriesToDelete.add(other.get());
         entries.getReadWriteLock().writeLock().lock();
-        first.setGroupHit(false);
-        entries.getReadWriteLock().writeLock().unlock();
+        try {
+          first.setGroupHit(false);
+        }
+  finally {
+          entries.getReadWriteLock().writeLock().unlock();
+        }
       }
  else       if (diag.getSelected() == DuplicateResolverResult.KEEP_LOWER) {
         entries.getReadWriteLock().writeLock().lock();
-        entries.remove(first);
-        entries.getReadWriteLock().writeLock().unlock();
+        try {
+          entries.remove(first);
+        }
+  finally {
+          entries.getReadWriteLock().writeLock().unlock();
+        }
       }
  else       if (diag.getSelected() == DuplicateResolverResult.KEEP_BOTH) {
         entries.getReadWriteLock().writeLock().lock();
-        first.setGroupHit(false);
-        entries.getReadWriteLock().writeLock().unlock();
+        try {
+          first.setGroupHit(false);
+        }
+  finally {
+          entries.getReadWriteLock().writeLock().unlock();
+        }
       }
  else       if (diag.getSelected() == DuplicateResolverResult.KEEP_MERGE) {
         entriesToDelete.add(other.get());
         entries.getReadWriteLock().writeLock().lock();
-        diag.getMergedEntry().setGroupHit(false);
-        diag.getMergedEntry().setSearchHit(true);
-        entries.add(diag.getMergedEntry());
-        entries.remove(first);
-        first=new BibEntry();
-        entries.getReadWriteLock().writeLock().unlock();
+        try {
+          diag.getMergedEntry().setGroupHit(false);
+          diag.getMergedEntry().setSearchHit(true);
+          entries.add(diag.getMergedEntry());
+          entries.remove(first);
+          first=new BibEntry();
+        }
+  finally {
+          entries.getReadWriteLock().writeLock().unlock();
+        }
       }
     }
     other=internalDuplicate(entries,first);

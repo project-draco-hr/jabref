@@ -1,0 +1,23 @@
+{
+  NamedCompound ce=new NamedCompound(Localization.lang("Update keywords"));
+  for (  BibEntry entry : entries) {
+    List<String> separatedKeywords=entry.getSeparatedKeywords();
+    Set<String> keywords=new TreeSet<>();
+    keywords.addAll(separatedKeywords);
+    keywords.removeAll(keywordsToRemove);
+    keywords.addAll(keywordsToAdd);
+    separatedKeywords.clear();
+    separatedKeywords.addAll(keywords);
+    String oldValue=entry.getField(KEYWORDS_FIELD);
+    entry.putKeywords(separatedKeywords);
+    String updatedValue=entry.getField(KEYWORDS_FIELD);
+    if (!Objects.equals(oldValue,updatedValue)) {
+      ce.addEdit(new UndoableFieldChange(entry,KEYWORDS_FIELD,oldValue,updatedValue));
+    }
+    if (SpecialFieldsUtils.keywordSyncEnabled()) {
+      SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,ce);
+    }
+  }
+  ce.end();
+  return ce;
+}

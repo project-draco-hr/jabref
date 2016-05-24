@@ -1,0 +1,60 @@
+{
+  final Point cursor=dtde.getLocation();
+  final long currentTime=System.currentTimeMillis();
+  if (idlePoint == null) {
+    idlePoint=cursor;
+  }
+  final TreePath path=getPathForLocation(cursor.x,cursor.y);
+  final GroupTreeNodeViewModel target=path == null ? null : (GroupTreeNodeViewModel)path.getLastPathComponent();
+  setHighlight1Cell(target);
+  if (dtde.isDataFlavorSupported(GroupTreeNodeViewModel.FLAVOR)) {
+    dtde.acceptDrag(DnDConstants.ACTION_MOVE);
+  }
+ else   if (dtde.isDataFlavorSupported(TransferableEntrySelection.FLAVOR_INTERNAL)) {
+    if (path == null) {
+      dtde.rejectDrag();
+    }
+ else {
+      if (target.getNode().supportsAddingEntries()) {
+        dtde.acceptDrag(DnDConstants.ACTION_LINK);
+      }
+ else {
+        dtde.rejectDrag();
+      }
+    }
+  }
+ else {
+    dtde.rejectDrag();
+  }
+  if ((Math.abs(cursor.x - idlePoint.x) < GroupsTree.IDLE_MARGIN) && (Math.abs(cursor.y - idlePoint.y) < GroupsTree.IDLE_MARGIN)) {
+    if (((currentTime - idleStartTime) >= GroupsTree.IDLE_TIME_TO_EXPAND_NODE) && (path != null)) {
+      expandPath(path);
+    }
+  }
+ else {
+    idlePoint=cursor;
+    idleStartTime=currentTime;
+  }
+  if ((currentTime - GroupsTree.lastDragAutoscroll) < GroupsTree.MIN_AUTOSCROLL_INTERVAL) {
+    return;
+  }
+  final Rectangle r=getVisibleRect();
+  final boolean scrollUp=(cursor.y - r.y) < GroupsTree.DRAG_SCROLL_ACTIVATION_MARGIN;
+  final boolean scrollDown=((r.y + r.height) - cursor.y) < GroupsTree.DRAG_SCROLL_ACTIVATION_MARGIN;
+  final boolean scrollLeft=(cursor.x - r.x) < GroupsTree.DRAG_SCROLL_ACTIVATION_MARGIN;
+  final boolean scrollRight=((r.x + r.width) - cursor.x) < GroupsTree.DRAG_SCROLL_ACTIVATION_MARGIN;
+  if (scrollUp) {
+    r.translate(0,-GroupsTree.DRAG_SCROLL_DISTANCE);
+  }
+ else   if (scrollDown) {
+    r.translate(0,+GroupsTree.DRAG_SCROLL_DISTANCE);
+  }
+  if (scrollLeft) {
+    r.translate(-GroupsTree.DRAG_SCROLL_DISTANCE,0);
+  }
+ else   if (scrollRight) {
+    r.translate(+GroupsTree.DRAG_SCROLL_DISTANCE,0);
+  }
+  scrollRectToVisible(r);
+  GroupsTree.lastDragAutoscroll=currentTime;
+}

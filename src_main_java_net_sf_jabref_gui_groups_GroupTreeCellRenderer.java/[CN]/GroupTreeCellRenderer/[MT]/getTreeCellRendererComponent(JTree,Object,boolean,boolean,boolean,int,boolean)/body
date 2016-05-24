@@ -1,0 +1,52 @@
+{
+  selected=(Objects.equals(highlight1Cell,value)) || sel;
+  Component c=super.getTreeCellRendererComponent(tree,value,selected,expanded,leaf,row,tmpHasFocus);
+  if (!(value instanceof GroupTreeNodeViewModel)) {
+    return c;
+  }
+  if (!(c instanceof JLabel)) {
+    return c;
+  }
+  GroupTreeNodeViewModel viewModel=(GroupTreeNodeViewModel)value;
+  JLabel label=(JLabel)c;
+  if (Objects.equals(highlightBorderCell,value)) {
+    label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+  }
+ else {
+    label.setBorder(BorderFactory.createEmptyBorder());
+  }
+  Boolean red=printInRed(viewModel) && !selected;
+  Boolean underlined=printUnderlined(viewModel);
+  StringBuilder sb=new StringBuilder(60);
+  sb.append("<html>");
+  if (red) {
+    sb.append("<font color=\"#FF0000\">");
+  }
+  if (underlined) {
+    sb.append("<u>");
+  }
+  if (viewModel.printInItalics()) {
+    sb.append("<i>");
+  }
+  sb.append(StringUtil.quoteForHTML(viewModel.getText()));
+  if (viewModel.printInItalics()) {
+    sb.append("</i>");
+  }
+  if (underlined) {
+    sb.append("</u>");
+  }
+  if (red) {
+    sb.append("</font>");
+  }
+  sb.append("</html>");
+  String text=sb.toString();
+  if (!label.getText().equals(text)) {
+    label.setText(text);
+  }
+  label.setToolTipText(viewModel.getDescription());
+  Icon icon=viewModel.getIcon();
+  if (label.getIcon() != icon) {
+    label.setIcon(icon);
+  }
+  return c;
+}

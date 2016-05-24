@@ -1,0 +1,21 @@
+{
+  String s=fieldNameField.getText();
+  fieldNameField.setText("");
+  fieldNameField.setEnabled(false);
+  if (!FIELD_FIRST_LINE.equals(s) && !"".equals(s)) {
+    fieldListModel.remove(0);
+    int pos;
+    if (fieldListModel.contains(s)) {
+      pos=fieldListModel.indexOf(s);
+    }
+ else {
+      pos=findPos(fieldListModel,s);
+      fieldListModel.add(Math.max(0,pos),s);
+    }
+    fieldList.setSelectedIndex(pos);
+    fieldList.ensureIndexIsVisible(pos);
+    currentField=s;
+    setupWordSelector();
+    newWordAction();
+  }
+}

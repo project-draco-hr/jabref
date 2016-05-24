@@ -1,18 +1,12 @@
 {
   String newType;
-  if ((type == null) || type.isEmpty()) {
+  if (Strings.isNullOrEmpty(type)) {
     newType=DEFAULT_TYPE;
   }
  else {
     newType=type;
   }
-  String oldType=this.type;
-  try {
-    this.type=newType.toLowerCase(Locale.ENGLISH);
-    changed=true;
-    firePropertyChangedEvent(TYPE_HEADER,oldType,newType);
-  }
- catch (  PropertyVetoException pve) {
-    LOGGER.warn(pve);
-  }
+  this.type=newType.toLowerCase(Locale.ENGLISH);
+  changed=true;
+  eventBus.post(new FieldChangedEvent(this,TYPE_HEADER,newType));
 }

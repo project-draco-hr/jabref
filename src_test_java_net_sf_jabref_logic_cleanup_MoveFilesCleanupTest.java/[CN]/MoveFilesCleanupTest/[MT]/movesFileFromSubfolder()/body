@@ -1,12 +1,14 @@
 {
   File subfolder=bibFolder.newFolder();
-  File tempFile=new File(subfolder,"test.pdf");
-  tempFile.createNewFile();
+  File fileBefore=new File(subfolder,"test.pdf");
+  assertTrue(fileBefore.createNewFile());
   assertTrue(new File(subfolder,"test.pdf").exists());
   BibEntry entry=new BibEntry();
-  ParsedFileField fileField=new ParsedFileField("",tempFile.getAbsolutePath(),"");
+  ParsedFileField fileField=new ParsedFileField("",fileBefore.getAbsolutePath(),"");
   entry.setField("file",FileField.getStringRepresentation(fileField));
   cleanup.cleanup(entry);
-  assertFalse(new File(subfolder,"test.pdf").exists());
-  assertTrue(new File(pdfFolder,"test.pdf").exists());
+  assertFalse(fileBefore.exists());
+  File fileAfter=new File(pdfFolder,"test.pdf");
+  assertTrue(fileAfter.exists());
+  assertEquals(FileField.getStringRepresentation(new ParsedFileField("",fileAfter.getName(),"")),entry.getField("file"));
 }
