@@ -1,15 +1,13 @@
 {
-  try (InputStream bitexmlStream=BibTeXMLImporterTest.class.getResourceAsStream(fileName)){
-    List<BibEntry> bibtexmlEntries=bibtexmlImporter.importEntries(bitexmlStream,new OutputPrinterToNull());
-    String bibFileName=fileName.replace(".xml",".bib");
-    while (PATTERN.matcher(bibFileName).find()) {
-      bibFileName=bibFileName.replaceFirst("[0123456789]","");
-    }
-    if (bibtexmlEntries.isEmpty()) {
-      Assert.assertEquals(Collections.emptyList(),bibtexmlEntries);
-    }
- else {
-      BibEntryAssert.assertEquals(BibTeXMLImporterTest.class,bibFileName,bibtexmlEntries);
-    }
+  List<BibEntry> bibtexmlEntries=bibtexmlImporter.importDatabase(importFile,Charset.defaultCharset()).getDatabase().getEntries();
+  String bibFileName=importFile.getFileName().toString().replace(".xml",".bib");
+  while (PATTERN.matcher(bibFileName).find()) {
+    bibFileName=bibFileName.replaceFirst("[0123456789]","");
   }
- }
+  if (bibtexmlEntries.isEmpty()) {
+    Assert.assertEquals(Collections.emptyList(),bibtexmlEntries);
+  }
+ else {
+    BibEntryAssert.assertEquals(BibTeXMLImporterTest.class,bibFileName,bibtexmlEntries);
+  }
+}
