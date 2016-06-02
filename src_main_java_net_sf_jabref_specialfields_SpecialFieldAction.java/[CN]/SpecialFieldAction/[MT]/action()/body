@@ -6,7 +6,7 @@
     }
     NamedCompound ce=new NamedCompound(undoText);
     for (    BibEntry be : bes) {
-      SpecialFieldsUtils.updateField(c,value,be,ce,nullFieldIfValueIsTheSame);
+      SpecialFieldsUtils.updateField(specialField,value,be,ce,nullFieldIfValueIsTheSame);
     }
     ce.end();
     if (ce.hasEdits()) {
@@ -14,11 +14,11 @@
       frame.getCurrentBasePanel().markBaseChanged();
       frame.getCurrentBasePanel().updateEntryEditorIfShowing();
       String outText;
-      if (nullFieldIfValueIsTheSame) {
-        outText=Localization.lang(doneTextPattern,Integer.toString(bes.size()));
+      if (nullFieldIfValueIsTheSame || value == null) {
+        outText=specialField.getTextDone(Integer.toString(bes.size()));
       }
  else {
-        outText=Localization.lang(doneTextPattern,value,Integer.toString(bes.size()));
+        outText=specialField.getTextDone(value,Integer.toString(bes.size()));
       }
       frame.output(outText);
     }
