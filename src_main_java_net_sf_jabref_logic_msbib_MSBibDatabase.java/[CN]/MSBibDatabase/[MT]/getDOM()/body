@@ -1,0 +1,22 @@
+{
+  Document document=null;
+  try {
+    DocumentBuilderFactory factory=DocumentBuilderFactory.newInstance();
+    factory.setNamespaceAware(true);
+    DocumentBuilder documentBuilder=factory.newDocumentBuilder();
+    document=documentBuilder.newDocument();
+    Element rootNode=document.createElementNS(NAMESPACE,PREFIX + "Sources");
+    rootNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns",NAMESPACE);
+    rootNode.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:" + PREFIX.substring(0,PREFIX.length() - 1),NAMESPACE);
+    rootNode.setAttribute("SelectedStyle","");
+    for (    MSBibEntry entry : entries) {
+      Node node=entry.getDOM(document);
+      rootNode.appendChild(node);
+    }
+    document.appendChild(rootNode);
+  }
+ catch (  ParserConfigurationException e) {
+    LOGGER.warn("Could not build XML document",e);
+  }
+  return document;
+}
