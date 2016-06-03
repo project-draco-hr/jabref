@@ -12,22 +12,20 @@
       f=null;
     }
   }
-  if (f != null) {
-    File oldFile=panel.getBibDatabaseContext().getDatabaseFile();
-    panel.getBibDatabaseContext().setDatabaseFile(f);
-    Globals.prefs.put(JabRefPreferences.WORKING_DIRECTORY,f.getParent());
-    runCommand();
-    if (!success) {
-      panel.getBibDatabaseContext().setDatabaseFile(oldFile);
-      return;
-    }
-    try {
-      panel.setFileMonitorHandle(Globals.fileUpdateMonitor.addUpdateListener(panel,panel.getBibDatabaseContext().getDatabaseFile()));
-    }
- catch (    IOException ex) {
-      LOGGER.error("Problem registering file change notifications",ex);
-    }
-    frame.getFileHistory().newFile(panel.getBibDatabaseContext().getDatabaseFile().getPath());
+  File oldFile=panel.getBibDatabaseContext().getDatabaseFile();
+  panel.getBibDatabaseContext().setDatabaseFile(f);
+  Globals.prefs.put(JabRefPreferences.WORKING_DIRECTORY,f.getParent());
+  runCommand();
+  if (!success) {
+    panel.getBibDatabaseContext().setDatabaseFile(oldFile);
+    return;
   }
+  try {
+    panel.setFileMonitorHandle(Globals.fileUpdateMonitor.addUpdateListener(panel,panel.getBibDatabaseContext().getDatabaseFile()));
+  }
+ catch (  IOException ex) {
+    LOGGER.error("Problem registering file change notifications",ex);
+  }
+  frame.getFileHistory().newFile(panel.getBibDatabaseContext().getDatabaseFile().getPath());
   frame.updateEnabledState();
 }

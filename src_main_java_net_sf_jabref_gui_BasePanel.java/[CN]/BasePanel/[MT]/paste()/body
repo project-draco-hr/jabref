@@ -1,0 +1,25 @@
+{
+  Collection<BibEntry> bes=new ClipBoardManager().extractBibEntriesFromClipboard();
+  if (!bes.isEmpty()) {
+    NamedCompound ce=new NamedCompound((bes.size() > 1 ? Localization.lang("paste entries") : Localization.lang("paste entry")));
+    BibEntry firstBE=null;
+    for (    BibEntry be1 : bes) {
+      BibEntry be=(BibEntry)be1.clone();
+      if (firstBE == null) {
+        firstBE=be;
+      }
+      UpdateField.setAutomaticFields(be,Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_OWNER),Globals.prefs.getBoolean(JabRefPreferences.OVERWRITE_TIME_STAMP));
+      be.setId(IdGenerator.next());
+      database.insertEntry(be);
+      ce.addEdit(new UndoableInsertEntry(database,be,BasePanel.this));
+    }
+    ce.end();
+    getUndoManager().addEdit(ce);
+    output(formatOutputMessage(Localization.lang("Pasted"),bes.size()));
+    markBaseChanged();
+    if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_OPEN_FORM)) {
+      selectionListener.editSignalled(firstBE);
+    }
+    highlightEntry(firstBE);
+  }
+}

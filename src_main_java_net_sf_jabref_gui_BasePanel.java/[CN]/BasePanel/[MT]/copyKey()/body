@@ -1,0 +1,24 @@
+{
+  List<BibEntry> bes=mainTable.getSelectedEntries();
+  if (!bes.isEmpty()) {
+    storeCurrentEdit();
+    List<String> keys=new ArrayList<>(bes.size());
+    for (    BibEntry be : bes) {
+      if (be.getCiteKey() != null) {
+        keys.add(be.getCiteKey());
+      }
+    }
+    if (keys.isEmpty()) {
+      output(Localization.lang("None of the selected entries have BibTeX keys."));
+      return;
+    }
+    StringSelection ss=new StringSelection(String.join(",",keys));
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
+    if (keys.size() == bes.size()) {
+      output((bes.size() > 1 ? Localization.lang("Copied keys") : Localization.lang("Copied key")) + '.');
+    }
+ else {
+      output(Localization.lang("Warning: %0 out of %1 entries have undefined BibTeX key.",Integer.toString(bes.size() - keys.size()),Integer.toString(bes.size())));
+    }
+  }
+}

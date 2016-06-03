@@ -1,0 +1,20 @@
+{
+  List<BibEntry> bes=mainTable.getSelectedEntries();
+  if (bes.isEmpty()) {
+    int[] rows=mainTable.getSelectedRows();
+    int[] cols=mainTable.getSelectedColumns();
+    if ((cols.length == 1) && (rows.length == 1)) {
+      Object o=mainTable.getValueAt(rows[0],cols[0]);
+      if (o != null) {
+        StringSelection ss=new StringSelection(o.toString());
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
+        output(Localization.lang("Copied cell contents") + '.');
+      }
+    }
+  }
+ else {
+    TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,BasePanel.this);
+    output(formatOutputMessage(Localization.lang("Copied"),bes.size()));
+  }
+}

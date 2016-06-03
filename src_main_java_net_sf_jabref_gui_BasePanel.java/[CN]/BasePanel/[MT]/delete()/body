@@ -1,0 +1,19 @@
+{
+  List<BibEntry> entries=mainTable.getSelectedEntries();
+  if (entries.isEmpty()) {
+    return;
+  }
+  if (!showDeleteConfirmationDialog(entries.size())) {
+    return;
+  }
+  NamedCompound compound=new NamedCompound((entries.size() > 1 ? Localization.lang("delete entries") : Localization.lang("delete entry")));
+  for (  BibEntry entry : entries) {
+    compound.addEdit(new UndoableRemoveEntry(database,entry,BasePanel.this));
+    database.removeEntry(entry);
+    ensureNotShowingBottomPanel(entry);
+  }
+  compound.end();
+  getUndoManager().addEdit(compound);
+  markBaseChanged();
+  frame.output(formatOutputMessage(Localization.lang("Deleted"),entries.size()));
+}
