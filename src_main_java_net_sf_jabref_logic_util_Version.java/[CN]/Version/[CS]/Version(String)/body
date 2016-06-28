@@ -1,0 +1,15 @@
+{
+  if (version == null || "".equals(version) || version.equals(BuildInfo.UNKNOWN_VERSION)) {
+    this.fullVersion=BuildInfo.UNKNOWN_VERSION;
+    this.major=this.minor=this.patch=0;
+    this.isDevelopmentVersion=false;
+    return;
+  }
+  this.fullVersion=version;
+  isDevelopmentVersion=version.contains("dev");
+  String[] versionParts=version.split("dev");
+  String[] versionNumbers=versionParts[0].split(Pattern.quote("."));
+  this.major=Integer.parseInt(versionNumbers[0]);
+  this.minor=versionNumbers.length >= 2 ? Integer.parseInt(versionNumbers[1]) : 0;
+  this.patch=versionNumbers.length >= 3 ? Integer.parseInt(versionNumbers[2]) : 0;
+}
