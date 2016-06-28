@@ -171,12 +171,12 @@
     }
  else     if (val.matches("keyword\\d+")) {
       int num=Integer.parseInt(val.substring(7));
-      List<String> separatedKeywords=entry.getSeparatedKeywords();
+      Set<String> separatedKeywords=entry.getKeywords();
       if (separatedKeywords.size() < num) {
         return "";
       }
  else {
-        return separatedKeywords.get(num - 1);
+        return new ArrayList<>(separatedKeywords).get(num - 1);
       }
     }
  else     if (val.matches("keywords\\d*")) {
@@ -187,12 +187,16 @@
  else {
         num=Integer.MAX_VALUE;
       }
-      List<String> separatedKeywords=entry.getSeparatedKeywords();
+      Set<String> separatedKeywords=entry.getKeywords();
       StringBuilder sb=new StringBuilder();
-      for (int i=0; i < Math.min(separatedKeywords.size(),num); i++) {
-        String keyword=separatedKeywords.get(i);
+      int i=0;
+      for (      String keyword : separatedKeywords) {
         keyword=keyword.replaceAll("\\s+","");
         sb.append(keyword);
+        i++;
+        if (i >= num) {
+          break;
+        }
       }
       return sb.toString();
     }
