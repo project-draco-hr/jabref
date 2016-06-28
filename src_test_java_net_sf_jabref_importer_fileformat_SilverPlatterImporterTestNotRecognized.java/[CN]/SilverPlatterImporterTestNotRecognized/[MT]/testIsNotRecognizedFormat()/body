@@ -1,7 +1,9 @@
 {
-  List<String> notAccept=Arrays.asList("emptyFile.xml","IsiImporterTest1.isi","oai2.xml","RisImporterTest1.ris","InspecImportTest2.txt");
+  List<String> notAccept=Arrays.asList("emptyFile.xml","IsiImporterTest1.isi","RisImporterTest1.ris","InspecImportTest2.txt");
   for (  String s : notAccept) {
-    Path file=Paths.get(SilverPlatterImporter.class.getResource(s).toURI());
+    URL resource=SilverPlatterImporter.class.getResource(s);
+    assertNotNull("resource " + s + " must be available",resource);
+    Path file=Paths.get(resource.toURI());
     Assert.assertFalse(testImporter.isRecognizedFormat(file,Charset.defaultCharset()));
   }
 }
