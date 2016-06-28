@@ -1,22 +1,7 @@
 {
-  ImportFormat importFormatMultipleExtensions=new ImportFormat(){
-    @Override protected boolean isRecognizedFormat(    BufferedReader input) throws IOException {
-      return false;
-    }
-    @Override protected ParserResult importDatabase(    BufferedReader input) throws IOException {
-      return null;
-    }
-    @Override public String getFormatName(){
-      return "Multiple Extensions";
-    }
-    @Override public List<String> getExtensions(){
-      return Arrays.asList(".abc",".xyz");
-    }
-    @Override public String getDescription(){
-      return null;
-    }
-  }
-;
+  ImportFormat importFormatMultipleExtensions=mock(ImportFormat.class);
+  when(importFormatMultipleExtensions.getFormatName()).thenReturn("Multiple Extensions");
+  when(importFormatMultipleExtensions.getExtensions()).thenReturn(Arrays.asList(".abc",".xyz"));
   ImportFileFilter importFileFilter=new ImportFileFilter(importFormatMultipleExtensions);
   assertEquals("Multiple Extensions (*.abc, *.xyz)",importFileFilter.getDescription());
 }

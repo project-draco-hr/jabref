@@ -1,22 +1,7 @@
 {
-  ImportFormat importFormatSingleExtension=new ImportFormat(){
-    @Override protected boolean isRecognizedFormat(    BufferedReader input) throws IOException {
-      return false;
-    }
-    @Override protected ParserResult importDatabase(    BufferedReader input) throws IOException {
-      return null;
-    }
-    @Override public String getFormatName(){
-      return "Single Extension";
-    }
-    @Override public List<String> getExtensions(){
-      return Collections.singletonList(".abc");
-    }
-    @Override public String getDescription(){
-      return null;
-    }
-  }
-;
+  ImportFormat importFormatSingleExtension=mock(ImportFormat.class);
+  when(importFormatSingleExtension.getFormatName()).thenReturn("Single Extension");
+  when(importFormatSingleExtension.getExtensions()).thenReturn(Collections.singletonList(".abc"));
   ImportFileFilter importFileFilter=new ImportFileFilter(importFormatSingleExtension);
   assertEquals("Single Extension (*.abc)",importFileFilter.getDescription());
 }
