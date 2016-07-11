@@ -4,10 +4,14 @@
   }
   Object o=entry.getFieldOrAlias(field);
   if ((o == null) && (database != null) && database.followCrossrefs&& !field.equals(BibEntry.KEY_FIELD)) {
-    if (entry.hasField("crossref")) {
-      BibEntry referred=database.getEntryByKey(entry.getField("crossref"));
+    Optional<String> crossrefKey=entry.getFieldOptional("crossref");
+    if (crossrefKey.isPresent()) {
+      BibEntry referred=database.getEntryByKey(crossrefKey.get());
       if (referred != null) {
-        o=referred.getField(field);
+        Optional<String> crossrefContent=referred.getFieldOptional(field);
+        if (crossrefContent.isPresent()) {
+          o=crossrefContent.get();
+        }
       }
     }
   }
