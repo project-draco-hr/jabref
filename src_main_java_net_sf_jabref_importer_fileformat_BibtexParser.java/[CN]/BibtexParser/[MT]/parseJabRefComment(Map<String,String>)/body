@@ -12,12 +12,12 @@
     }
   }
  else   if (comment.substring(0,Math.min(comment.length(),CustomEntryType.ENTRYTYPE_FLAG.length())).equals(CustomEntryType.ENTRYTYPE_FLAG)) {
-    CustomEntryType typ=CustomEntryType.parse(comment);
-    if (typ == null) {
-      parserResult.addWarning(Localization.lang("Ill-formed entrytype comment in bib file") + ": " + comment);
+    Optional<CustomEntryType> typ=CustomEntryType.parse(comment);
+    if (typ.isPresent()) {
+      entryTypes.put(typ.get().getName(),typ.get());
     }
  else {
-      entryTypes.put(typ.getName(),typ);
+      parserResult.addWarning(Localization.lang("Ill-formed entrytype comment in bib file") + ": " + comment);
     }
     dumpTextReadSoFarToString();
   }

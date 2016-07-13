@@ -6,19 +6,19 @@
       String[] keys=m.group(2).split(",");
       for (      String key : keys) {
         BibDatabase database=linkSourceBase.get(key);
-        BibEntry origEntry=null;
+        Optional<BibEntry> origEntry=Optional.empty();
         if (database != null) {
           origEntry=database.getEntryByKey(key);
         }
-        if (origEntry == null) {
+        if (origEntry.isPresent()) {
+          if (!newList.containsKey(origEntry.get())) {
+            newList.put(origEntry.get(),database);
+          }
+        }
+ else {
           LOGGER.info("BibTeX key not found: '" + key + "'");
           LOGGER.info("Problem with reference mark: '" + name + "'");
           newList.put(new UndefinedBibtexEntry(key),null);
-        }
- else {
-          if (!newList.containsKey(origEntry)) {
-            newList.put(origEntry,database);
-          }
         }
       }
     }

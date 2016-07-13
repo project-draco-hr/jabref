@@ -3,9 +3,9 @@
   for (  String key : keys) {
     boolean found=false;
     for (    BibDatabase database : databases) {
-      BibEntry entry=database.getEntryByKey(key);
-      if (entry != null) {
-        entries.put(entry,database);
+      Optional<BibEntry> entry=database.getEntryByKey(key);
+      if (entry.isPresent()) {
+        entries.put(entry.get(),database);
         linkSourceBase.put(key,database);
         found=true;
         break;

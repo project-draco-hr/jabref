@@ -1,12 +1,12 @@
 {
   for (  String key : result.getUniqueKeys()) {
-    BibEntry entry=masterDatabase.getEntryByKey(key);
-    if (entry == null) {
-      result.getUnresolvedKeys().add(key);
+    Optional<BibEntry> entry=masterDatabase.getEntryByKey(key);
+    if (entry.isPresent()) {
+      insertEntry(entry.get(),result);
+      resolveCrossReferences(entry.get(),result);
     }
  else {
-      insertEntry(entry,result);
-      resolveCrossReferences(entry,result);
+      result.getUnresolvedKeys().add(key);
     }
   }
   if (result.getGeneratedBibDatabase().hasEntries()) {

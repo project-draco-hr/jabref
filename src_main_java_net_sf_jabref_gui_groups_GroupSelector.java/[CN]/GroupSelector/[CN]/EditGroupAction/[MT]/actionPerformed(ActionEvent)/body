@@ -5,9 +5,15 @@
   gd.setVisible(true);
   if (gd.okPressed()) {
     AbstractGroup newGroup=gd.getResultingGroup();
-    AbstractUndoableEdit undoAddPreviousEntries=gd.getUndoForAddPreviousEntries();
+    int i=JOptionPane.showConfirmDialog(panel.frame(),Localization.lang("Assign the original group's entries to this group?"),Localization.lang("Change of Grouping Method"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+    boolean keepPreviousAssignments=i == JOptionPane.YES_OPTION && WarnAssignmentSideEffects.warnAssignmentSideEffects(newGroup,panel.frame());
+    AbstractUndoableEdit undoAddPreviousEntries=null;
     UndoableModifyGroup undo=new UndoableModifyGroup(GroupSelector.this,groupsRoot,node,newGroup);
-    node.getNode().setGroup(newGroup);
+    Optional<EntriesGroupChange> addChange=node.getNode().setGroup(newGroup,keepPreviousAssignments,panel.getDatabase().getEntries());
+    if (addChange.isPresent()) {
+      undoAddPreviousEntries=UndoableChangeEntriesOfGroup.getUndoableEdit(null,addChange.get());
+    }
+    groupsTreeModel.reload();
     revalidateGroups(node);
     if (undoAddPreviousEntries == null) {
       panel.getUndoManager().addEdit(undo);

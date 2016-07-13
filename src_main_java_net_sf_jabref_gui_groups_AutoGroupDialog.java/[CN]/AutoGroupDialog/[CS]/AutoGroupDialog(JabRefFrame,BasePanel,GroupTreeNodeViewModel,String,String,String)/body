@@ -11,7 +11,7 @@
     @Override public void actionPerformed(    ActionEvent e){
       dispose();
       try {
-        GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Localization.lang("Automatically created groups"),GroupHierarchyType.INCLUDING));
+        GroupTreeNode autoGroupsRoot=GroupTreeNode.fromGroup(new ExplicitGroup(Localization.lang("Automatically created groups"),GroupHierarchyType.INCLUDING));
         Set<String> hs;
         String fieldText=field.getText();
         if (keywords.isSelected()) {
@@ -36,7 +36,7 @@
         }
         for (        String keyword : hs) {
           KeywordGroup group=new KeywordGroup(keyword,fieldText,keyword,false,false,GroupHierarchyType.INDEPENDENT);
-          autoGroupsRoot.addChild(new GroupTreeNode(group));
+          autoGroupsRoot.addChild(GroupTreeNode.fromGroup(group));
         }
         autoGroupsRoot.moveTo(m_groupsRoot.getNode());
         NamedCompound ce=new NamedCompound(Localization.lang("Automatically create groups"));
