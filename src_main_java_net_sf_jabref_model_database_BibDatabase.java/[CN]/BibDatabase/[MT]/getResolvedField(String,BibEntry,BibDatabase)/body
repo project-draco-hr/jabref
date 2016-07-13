@@ -2,18 +2,15 @@
   if ("bibtextype".equals(field)) {
     return EntryUtil.capitalizeFirst(entry.getType());
   }
-  Object o=entry.getFieldOrAlias(field);
-  if ((o == null) && (database != null) && !field.equals(BibEntry.KEY_FIELD)) {
+  Optional<String> result=entry.getFieldOrAlias(field);
+  if (!result.isPresent() && (database != null) && !field.equals(BibEntry.KEY_FIELD)) {
     Optional<String> crossrefKey=entry.getFieldOptional("crossref");
     if (crossrefKey.isPresent()) {
-      BibEntry referred=database.getEntryByKey(crossrefKey.get());
-      if (referred != null) {
-        Optional<String> crossrefContent=referred.getFieldOptional(field);
-        if (crossrefContent.isPresent()) {
-          o=crossrefContent.get();
-        }
+      Optional<BibEntry> referred=database.getEntryByKey(crossrefKey.get());
+      if (referred.isPresent()) {
+        result=referred.get().getFieldOptional(field);
       }
     }
   }
-  return BibDatabase.getText((String)o,database);
+  return BibDatabase.getText(result.orElse(null),database);
 }

@@ -47,11 +47,14 @@
       BibEntry[] cEntries=new BibEntry[keys.length];
       for (int j=0; j < cEntries.length; j++) {
         BibDatabase database=linkSourceBase.get(keys[j]);
-        cEntries[j]=null;
+        Optional<BibEntry> tmpEntry=Optional.empty();
         if (database != null) {
-          cEntries[j]=database.getEntryByKey(keys[j]);
+          tmpEntry=database.getEntryByKey(keys[j]);
         }
-        if (cEntries[j] == null) {
+        if (tmpEntry.isPresent()) {
+          cEntries[j]=tmpEntry.get();
+        }
+ else {
           LOGGER.info("BibTeX key not found: '" + keys[j] + '\'');
           LOGGER.info("Problem with reference mark: '" + names.get(i) + '\'');
           cEntries[j]=new UndefinedBibtexEntry(keys[j]);
@@ -182,30 +185,33 @@
           seenBefore.add(currentKey);
         }
         String uniq=uniquefiers.get(currentKey);
+        Optional<BibEntry> tmpEntry=Optional.empty();
         if (uniq == null) {
           if (firstLimAuthors[k] > 0) {
             needsChange=true;
             BibDatabase database=linkSourceBase.get(currentKey);
             if (database != null) {
-              cEntries[k]=database.getEntryByKey(currentKey);
+              tmpEntry=database.getEntryByKey(currentKey);
             }
-            uniquif[k]="";
           }
  else {
             BibDatabase database=linkSourceBase.get(currentKey);
             if (database != null) {
-              cEntries[k]=database.getEntryByKey(currentKey);
+              tmpEntry=database.getEntryByKey(currentKey);
             }
-            uniquif[k]="";
           }
+          uniquif[k]="";
         }
  else {
           needsChange=true;
           BibDatabase database=linkSourceBase.get(currentKey);
           if (database != null) {
-            cEntries[k]=database.getEntryByKey(currentKey);
+            tmpEntry=database.getEntryByKey(currentKey);
           }
           uniquif[k]=uniq;
+        }
+        if (tmpEntry.isPresent()) {
+          cEntries[k]=tmpEntry.get();
         }
       }
       if (needsChange) {
