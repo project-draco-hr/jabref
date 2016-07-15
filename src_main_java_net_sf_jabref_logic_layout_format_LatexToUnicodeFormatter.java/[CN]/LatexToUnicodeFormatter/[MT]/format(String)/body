@@ -39,24 +39,29 @@
       }
  else {
         currentCommand.append(c);
-        testCharCom:         if ((currentCommand.length() == 1) && Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString())) {
-          if (i >= (field.length() - 1)) {
-            break testCharCom;
-          }
+        if ((currentCommand.length() == 1) && Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString()) && !(i >= (field.length() - 1))) {
           String command=currentCommand.toString();
           i++;
           c=field.charAt(i);
-          String combody;
+          String commandBody;
           if (c == '{') {
             String part=StringUtil.getPart(field,i,false);
             i+=part.length();
-            combody=part;
+            commandBody=part;
           }
  else {
-            combody=field.substring(i,i + 1);
+            commandBody=field.substring(i,i + 1);
           }
-          Object result=LatexToUnicodeFormatter.CHARS.get(command + combody);
-          if (result != null) {
+          Object result=LatexToUnicodeFormatter.CHARS.get(command + commandBody);
+          if (result == null) {
+            if (commandBody.length() <= 1) {
+              String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
+              if (accent != null) {
+                sb.append(commandBody).append(accent);
+              }
+            }
+          }
+ else {
             sb.append((String)result);
           }
           incommand=false;
@@ -90,7 +95,18 @@
           if (argument != null) {
             Object result=LatexToUnicodeFormatter.CHARS.get(command + argument);
             if (result == null) {
-              sb.append(argument);
+              if (argument.length() <= 1) {
+                String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
+                if (accent != null) {
+                  sb.append(argument).append(accent);
+                }
+ else {
+                  sb.append(argument);
+                }
+              }
+ else {
+                sb.append(argument);
+              }
             }
  else {
               sb.append((String)result);
