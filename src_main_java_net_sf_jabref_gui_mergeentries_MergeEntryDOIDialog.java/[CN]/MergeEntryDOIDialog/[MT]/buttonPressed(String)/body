@@ -15,19 +15,19 @@
       edited=true;
     }
     for (    String field : jointFields) {
-      String originalString=originalEntry.getField(field);
-      String mergedString=mergedEntry.getField(field);
-      if ((originalString == null) || !originalString.equals(mergedEntry.getField(field))) {
-        originalEntry.setField(field,mergedString);
-        ce.addEdit(new UndoableFieldChange(originalEntry,field,originalString,mergedString));
+      Optional<String> originalString=originalEntry.getFieldOptional(field);
+      Optional<String> mergedString=mergedEntry.getFieldOptional(field);
+      if (!originalString.isPresent() || !originalString.equals(mergedString)) {
+        originalEntry.setField(field,mergedString.get());
+        ce.addEdit(new UndoableFieldChange(originalEntry,field,originalString.orElse(null),mergedString.get()));
         edited=true;
       }
     }
     for (    String field : originalFields) {
-      if (!jointFields.contains(field)) {
-        String originalString=originalEntry.getField(field);
+      if (!jointFields.contains(field) && !InternalBibtexFields.isInternalField(field)) {
+        Optional<String> originalString=originalEntry.getFieldOptional(field);
         originalEntry.clearField(field);
-        ce.addEdit(new UndoableFieldChange(originalEntry,field,originalString,null));
+        ce.addEdit(new UndoableFieldChange(originalEntry,field,originalString.get(),null));
         edited=true;
       }
     }

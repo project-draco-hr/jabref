@@ -1,0 +1,34 @@
+{
+  if ((baseString != null) && (modifiedString != null)) {
+    List<String> stringList=new ArrayList<>(Arrays.asList(baseString.split(separator)));
+    List<Delta<String>> deltaList=new ArrayList<>(DiffUtils.diff(stringList,new ArrayList<>(Arrays.asList(modifiedString.split(separator)))).getDeltas());
+    Collections.reverse(deltaList);
+    for (    Delta<String> delta : deltaList) {
+      int startPos=delta.getOriginal().getPosition();
+      List<String> lines=delta.getOriginal().getLines();
+      int offset=0;
+switch (delta.getType()) {
+case CHANGE:
+        for (        String line : lines) {
+          stringList.set(startPos + offset,(offset == 0 ? DiffHighlighting.CHANGE_START : "") + line);
+          offset++;
+        }
+      stringList.set((startPos + offset) - 1,stringList.get((startPos + offset) - 1) + DiffHighlighting.TAG_END);
+    break;
+case DELETE:
+  for (  String line : lines) {
+    stringList.set(startPos + offset,(offset == 0 ? DiffHighlighting.ADDITION_START : "") + line);
+    offset++;
+  }
+stringList.set((startPos + offset) - 1,stringList.get((startPos + offset) - 1) + DiffHighlighting.TAG_END);
+break;
+case INSERT:
+break;
+default :
+break;
+}
+}
+return String.join(separator,stringList);
+}
+return modifiedString;
+}
