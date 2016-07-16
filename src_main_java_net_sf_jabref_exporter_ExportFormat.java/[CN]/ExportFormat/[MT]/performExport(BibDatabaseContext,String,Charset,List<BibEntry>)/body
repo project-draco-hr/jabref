@@ -4,18 +4,18 @@
   if (entries.isEmpty()) {
     return;
   }
-  File outFile=new File(file);
+  Path outFile=Paths.get(file);
   SaveSession ss=null;
   if (this.encoding != null) {
     try {
-      ss=new SaveSession(this.encoding,false);
+      ss=new FileSaveSession(this.encoding,false);
     }
- catch (    IOException ex) {
+ catch (    SaveException ex) {
       LOGGER.warn("Can not get save session.",ex);
     }
   }
   if (ss == null) {
-    ss=new SaveSession(encoding,false);
+    ss=new FileSaveSession(encoding,false);
   }
   try (VerifyingWriter ps=ss.getWriter()){
     Layout beginLayout=null;

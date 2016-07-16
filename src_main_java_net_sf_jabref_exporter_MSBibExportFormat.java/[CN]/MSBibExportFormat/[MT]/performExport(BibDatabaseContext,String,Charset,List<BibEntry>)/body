@@ -4,7 +4,7 @@
   if (entries.isEmpty()) {
     return;
   }
-  SaveSession session=new SaveSession(StandardCharsets.UTF_8,false);
+  SaveSession session=new FileSaveSession(StandardCharsets.UTF_8,false);
   MSBibDatabase msBibDatabase=new MSBibDatabase(databaseContext.getDatabase(),entries);
   try (VerifyingWriter ps=session.getWriter()){
     try {
@@ -17,9 +17,9 @@
  catch (    TransformerException|IllegalArgumentException|TransformerFactoryConfigurationError e) {
       throw new Error(e);
     }
-    finalizeSaveSession(session,new File(file));
+    finalizeSaveSession(session,Paths.get(file));
   }
- catch (  SaveException|IOException ex) {
-    throw new IOException(ex.getMessage());
+ catch (  IOException ex) {
+    throw new SaveException(ex);
   }
 }

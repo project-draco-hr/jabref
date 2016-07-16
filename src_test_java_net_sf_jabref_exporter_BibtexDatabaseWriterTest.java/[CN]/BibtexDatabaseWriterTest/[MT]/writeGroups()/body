@@ -1,0 +1,7 @@
+{
+  GroupTreeNode groupRoot=GroupTreeNode.fromGroup(new AllEntriesGroup());
+  groupRoot.addSubgroup(new ExplicitGroup("test",GroupHierarchyType.INCLUDING));
+  metaData.setGroups(groupRoot);
+  StringSaveSession session=databaseWriter.savePartOfDatabase(bibtexContext,Collections.emptyList(),new SavePreferences());
+  assertEquals(Globals.NEWLINE + "@Comment{jabref-meta: groupstree:" + Globals.NEWLINE+ "0 AllEntriesGroup:;"+ Globals.NEWLINE+ "1 ExplicitGroup:test\\;2\\;;"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE,session.getStringValue());
+}

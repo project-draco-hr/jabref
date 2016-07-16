@@ -4,7 +4,7 @@
   if (entries.isEmpty()) {
     return;
   }
-  SaveSession ss=new SaveSession(StandardCharsets.UTF_8,false);
+  SaveSession ss=new FileSaveSession(StandardCharsets.UTF_8,false);
   try (VerifyingWriter ps=ss.getWriter()){
     MODSDatabase md=new MODSDatabase(databaseContext.getDatabase(),entries);
     try {
@@ -17,9 +17,9 @@
  catch (    TransformerException|IllegalArgumentException|TransformerFactoryConfigurationError e) {
       throw new Error(e);
     }
-    finalizeSaveSession(ss,new File(file));
+    finalizeSaveSession(ss,Paths.get(file));
   }
- catch (  SaveException|IOException ex) {
-    throw new IOException(ex.getMessage());
+ catch (  IOException ex) {
+    throw new SaveException(ex);
   }
 }
