@@ -1,0 +1,13 @@
+{
+  if (!entry.hasField("isbn")) {
+    return Collections.emptyList();
+  }
+  ISBN isbn=new ISBN(entry.getFieldOptional("isbn").get());
+  if (!isbn.isValidFormat()) {
+    return Collections.singletonList(new IntegrityMessage(Localization.lang("incorrect format"),entry,"isbn"));
+  }
+  if (!isbn.isValidChecksum()) {
+    return Collections.singletonList(new IntegrityMessage(Localization.lang("incorrect control digit"),entry,"isbn"));
+  }
+  return Collections.emptyList();
+}
