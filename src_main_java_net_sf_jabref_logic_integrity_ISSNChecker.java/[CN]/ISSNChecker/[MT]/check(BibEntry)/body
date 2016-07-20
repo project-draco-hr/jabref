@@ -2,7 +2,7 @@
   if (!entry.hasField("issn")) {
     return Collections.emptyList();
   }
-  String issn=entry.getField("issn").trim();
+  String issn=entry.getFieldOptional("issn").get().trim();
   Matcher issnMatcher=ISSN_PATTERN.matcher(issn);
   if (!issnMatcher.matches()) {
     return Collections.singletonList(new IntegrityMessage(Localization.lang("incorrect format"),entry,"issn"));

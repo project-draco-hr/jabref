@@ -28,8 +28,8 @@
     entry.setField("pages",pages);
   }
  else   if ("datestamp".equals(qualifiedName)) {
-    String year=entry.getField("year");
-    if ((year == null) || year.isEmpty()) {
+    Optional<String> year=entry.getFieldOptional("year");
+    if (!year.isPresent() || year.get().isEmpty()) {
       entry.setField("year",content.replaceFirst("-.*",""));
     }
   }

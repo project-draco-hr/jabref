@@ -14,20 +14,20 @@
       }
  else {
         markedTextStore.appendPosition(fieldName,selectionStart,selectionEnd);
-        String old=entry.getField(fieldName);
-        if (old == null) {
-          entry.setField(fieldName,txt);
-        }
- else {
+        Optional<String> old=entry.getFieldOptional(fieldName);
+        if (old.isPresent()) {
           if (InternalBibtexFields.getFieldExtras(fieldName).contains(FieldProperties.PERSON_NAMES)) {
-            entry.setField(fieldName,old + " and " + txt);
+            entry.setField(fieldName,old.get() + " and " + txt);
           }
  else           if ("keywords".equals(fieldName)) {
             entry.addKeyword(txt);
           }
  else {
-            entry.setField(fieldName,old + txt);
+            entry.setField(fieldName,old.get() + txt);
           }
+        }
+ else {
+          entry.setField(fieldName,txt);
         }
       }
       updateSourceView();

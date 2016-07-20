@@ -8,14 +8,14 @@
     return getFieldOptional(aliasForField);
   }
   if ("date".equals(name)) {
-    String year=getField("year");
-    MonthUtil.Month month=MonthUtil.getMonth(getField("month"));
-    if (year != null) {
+    Optional<String> year=getFieldOptional("year");
+    if (year.isPresent()) {
+      MonthUtil.Month month=MonthUtil.getMonth(getFieldOptional("month").orElse(""));
       if (month.isValid()) {
-        return Optional.of(year + '-' + month.twoDigitNumber);
+        return Optional.of(year.get() + '-' + month.twoDigitNumber);
       }
  else {
-        return Optional.of(year);
+        return year;
       }
     }
   }
