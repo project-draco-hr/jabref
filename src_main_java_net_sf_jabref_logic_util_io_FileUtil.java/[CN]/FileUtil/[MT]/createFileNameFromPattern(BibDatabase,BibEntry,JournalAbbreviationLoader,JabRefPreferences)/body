@@ -1,0 +1,16 @@
+{
+  String targetName=entry.getCiteKey() == null ? "default" : entry.getCiteKey();
+  StringReader sr=new StringReader(prefs.get(JabRefPreferences.PREF_IMPORT_FILENAMEPATTERN));
+  Layout layout=null;
+  try {
+    layout=new LayoutHelper(sr,prefs,repositoryLoader).getLayoutFromText();
+  }
+ catch (  IOException e) {
+    LOGGER.info("Wrong format " + e.getMessage(),e);
+  }
+  if (layout != null) {
+    targetName=layout.doLayout(entry,database);
+  }
+  targetName=FileNameCleaner.cleanFileName(targetName);
+  return targetName;
+}

@@ -1,7 +1,7 @@
 {
   SavePreferences preferences=new SavePreferences().withEncoding(Charsets.US_ASCII);
   GroupTreeNode groupRoot=GroupTreeNode.fromGroup(new AllEntriesGroup());
-  groupRoot.addChild(GroupTreeNode.fromGroup(new ExplicitGroup("test",GroupHierarchyType.INCLUDING)));
+  groupRoot.addChild(GroupTreeNode.fromGroup(new ExplicitGroup("test",GroupHierarchyType.INCLUDING,Globals.prefs)));
   metaData.setGroups(groupRoot);
   StringSaveSession session=databaseWriter.savePartOfDatabase(bibtexContext,Collections.emptyList(),preferences);
   assertEquals("% Encoding: US-ASCII" + Globals.NEWLINE + Globals.NEWLINE+ "@Comment{jabref-meta: groupstree:"+ Globals.NEWLINE+ "0 AllEntriesGroup:;"+ Globals.NEWLINE+ "1 ExplicitGroup:test\\;2\\;;"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE,session.getStringValue());

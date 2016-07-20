@@ -8,8 +8,8 @@ case 0:
   break;
 case 1:
 if (args[0].endsWith(".pdf")) {
-  List<BibEntry> l=XMPUtil.readXMP(new File(args[0]));
-  BibEntryWriter bibtexEntryWriter=new BibEntryWriter(new LatexFieldFormatter(),false);
+  List<BibEntry> l=XMPUtil.readXMP(new File(args[0]),Globals.prefs);
+  BibEntryWriter bibtexEntryWriter=new BibEntryWriter(new LatexFieldFormatter(LatexFieldFormatterPreferences.fromPreferences(Globals.prefs)),false);
   for (  BibEntry entry : l) {
     StringWriter sw=new StringWriter();
     bibtexEntryWriter.write(entry,sw,BibDatabaseMode.BIBTEX);

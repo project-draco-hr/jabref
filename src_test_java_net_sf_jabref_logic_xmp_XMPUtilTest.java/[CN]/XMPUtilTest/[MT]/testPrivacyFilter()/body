@@ -4,7 +4,7 @@
     prefs.putBoolean("useXmpPrivacyFilter",true);
     prefs.putStringList(JabRefPreferences.XMP_PRIVACY_FILTERS,Arrays.asList("author","title","note"));
     XMPUtil.writeXMP(pdfFile,e,null);
-    List<BibEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+    List<BibEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile(),Globals.prefs);
     Assert.assertEquals(1,l.size());
     BibEntry x=l.get(0);
     Set<String> expectedFields=new HashSet<>(Arrays.asList("bibtexkey","booktitle","owner","timestamp","url","year"));
@@ -14,7 +14,7 @@
   prefs.putStringList(JabRefPreferences.XMP_PRIVACY_FILTERS,Arrays.asList("author;title;note;booktitle;year;owner;timestamp"));
   BibEntry e=t1BibtexEntry();
   XMPUtil.writeXMP(pdfFile,e,null);
-  List<BibEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+  List<BibEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile(),Globals.prefs);
   Assert.assertEquals(1,l.size());
   BibEntry x=l.get(0);
   Set<String> ts=x.getFieldNames();
