@@ -1,0 +1,34 @@
+{
+  for (  Object object : content) {
+    if (object instanceof Journal) {
+      Journal journal=(Journal)object;
+      putIfValueNotNull(fields,"journal",journal.getTitle());
+      ISSN issn=journal.getISSN();
+      putIfValueNotNull(fields,"issn",issn.getContent());
+      JournalIssue journalIssue=journal.getJournalIssue();
+      putIfValueNotNull(fields,"volume",journalIssue.getVolume());
+      putIfValueNotNull(fields,"issue",journalIssue.getIssue());
+      addPubDate(fields,journalIssue.getPubDate());
+    }
+ else     if (object instanceof ArticleTitle) {
+      ArticleTitle articleTitle=(ArticleTitle)object;
+      fields.put("title",StringUtil.stripBrackets(articleTitle.getContent().toString()));
+    }
+ else     if (object instanceof Pagination) {
+      Pagination pagination=(Pagination)object;
+      addPagination(fields,pagination);
+    }
+ else     if (object instanceof ELocationID) {
+      ELocationID eLocationID=(ELocationID)object;
+      addElocationID(fields,eLocationID);
+    }
+ else     if (object instanceof Abstract) {
+      Abstract abs=(Abstract)object;
+      addAbstract(fields,abs);
+    }
+ else     if (object instanceof AuthorList) {
+      AuthorList authors=(AuthorList)object;
+      handleAuthors(fields,authors);
+    }
+  }
+}

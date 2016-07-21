@@ -1,0 +1,21 @@
+{
+  List<String> authorNames=new ArrayList<>();
+  for (  Author author : authors.getAuthor()) {
+    if (author.getCollectiveName() != null) {
+      Text collectiveNames=author.getCollectiveName();
+      for (      Serializable content : collectiveNames.getContent()) {
+        if (content instanceof String) {
+          authorNames.add((String)content);
+        }
+      }
+    }
+ else {
+      String authorName=author.getLastName();
+      if (author.getForeName() != null) {
+        authorName+=", " + author.getForeName();
+      }
+      authorNames.add(authorName);
+    }
+  }
+  fields.put("author",join(authorNames," and "));
+}

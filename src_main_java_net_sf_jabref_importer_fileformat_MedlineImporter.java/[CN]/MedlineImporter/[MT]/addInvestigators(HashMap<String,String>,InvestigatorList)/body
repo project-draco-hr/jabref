@@ -1,0 +1,26 @@
+{
+  List<String> investigatorNames=new ArrayList<>();
+  List<String> affiliationInfos=new ArrayList<>();
+  String name="";
+  if (investigatorList.getInvestigator() != null) {
+    List<Investigator> investigators=investigatorList.getInvestigator();
+    for (    Investigator investigator : investigators) {
+      name=investigator.getLastName();
+      if (investigator.getForeName() != null) {
+        name+=", " + investigator.getForeName();
+      }
+      investigatorNames.add(name);
+      if (investigator.getAffiliationInfo() != null) {
+        for (        AffiliationInfo info : investigator.getAffiliationInfo()) {
+          for (          Serializable affiliation : info.getAffiliation().getContent()) {
+            if (affiliation instanceof String) {
+              affiliationInfos.add((String)affiliation);
+            }
+          }
+        }
+        fields.put("affiliation",join(affiliationInfos,", "));
+      }
+    }
+    fields.put("investigator",join(investigatorNames," and "));
+  }
+}

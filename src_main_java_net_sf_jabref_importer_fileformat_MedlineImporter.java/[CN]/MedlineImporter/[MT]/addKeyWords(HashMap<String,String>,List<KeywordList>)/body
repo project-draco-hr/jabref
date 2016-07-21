@@ -1,0 +1,22 @@
+{
+  List<String> keywordStrings=new ArrayList<>();
+  for (  KeywordList keywordList : allKeywordLists) {
+    for (    Keyword keyword : keywordList.getKeyword()) {
+      for (      Serializable content : keyword.getContent()) {
+        if (content instanceof String) {
+          keywordStrings.add((String)content);
+        }
+      }
+    }
+  }
+  if (fields.get("keywords") == null) {
+    fields.put("keywords",join(keywordStrings,KEYWORD_SEPARATOR));
+  }
+ else {
+    if (keywordStrings.size() > 0) {
+      String result=join(keywordStrings,"; ");
+      result=fields.get("keywords") + KEYWORD_SEPARATOR + result;
+      fields.put("keywords",result);
+    }
+  }
+}

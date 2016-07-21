@@ -1,0 +1,16 @@
+{
+  if (fields.get("author") == null) {
+    List<String> personalNames=new ArrayList<>();
+    if (personalNameSubjectList.getPersonalNameSubject() != null) {
+      List<PersonalNameSubject> personalNameSubject=personalNameSubjectList.getPersonalNameSubject();
+      for (      PersonalNameSubject personalName : personalNameSubject) {
+        String name=personalName.getLastName();
+        if (personalName.getForeName() != null) {
+          name+=", " + personalName.getForeName().toString();
+        }
+        personalNames.add(name);
+      }
+      fields.put("author",join(personalNames," and "));
+    }
+  }
+}
