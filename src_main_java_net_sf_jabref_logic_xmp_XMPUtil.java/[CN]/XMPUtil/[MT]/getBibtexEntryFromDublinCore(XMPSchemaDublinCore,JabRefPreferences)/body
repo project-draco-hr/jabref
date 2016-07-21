@@ -2,11 +2,11 @@
   BibEntry entry=new BibEntry();
   List<String> contributors=dcSchema.getContributors();
   if ((contributors != null) && !contributors.isEmpty()) {
-    entry.setField("editor",String.join(" and ",contributors));
+    entry.setField(FieldName.EDITOR,String.join(" and ",contributors));
   }
   List<String> creators=dcSchema.getCreators();
   if ((creators != null) && !creators.isEmpty()) {
-    entry.setField("author",String.join(" and ",creators));
+    entry.setField(FieldName.AUTHOR,String.join(" and ",creators));
   }
   List<String> dates=dcSchema.getSequenceList("dc:date");
   if ((dates != null) && !dates.isEmpty()) {
@@ -18,19 +18,19 @@
  catch (    IOException ignored) {
     }
     if (c != null) {
-      entry.setField("year",String.valueOf(c.get(Calendar.YEAR)));
+      entry.setField(FieldName.YEAR,String.valueOf(c.get(Calendar.YEAR)));
       if (date.length() > 4) {
-        entry.setField("month",MonthUtil.getMonthByIndex(c.get(Calendar.MONTH)).bibtexFormat);
+        entry.setField(FieldName.MONTH,MonthUtil.getMonthByIndex(c.get(Calendar.MONTH)).bibtexFormat);
       }
     }
   }
   String s=dcSchema.getDescription();
   if (s != null) {
-    entry.setField("abstract",s);
+    entry.setField(FieldName.ABSTRACT,s);
   }
   s=dcSchema.getIdentifier();
   if (s != null) {
-    entry.setField("doi",s);
+    entry.setField(FieldName.DOI,s);
   }
   List<String> publishers=dcSchema.getPublishers();
   if ((publishers != null) && !publishers.isEmpty()) {
@@ -62,7 +62,7 @@
   }
   s=dcSchema.getTitle();
   if (s != null) {
-    entry.setField("title",s);
+    entry.setField(FieldName.TITLE,s);
   }
   List<String> l=dcSchema.getTypes();
   if ((l != null) && !l.isEmpty()) {

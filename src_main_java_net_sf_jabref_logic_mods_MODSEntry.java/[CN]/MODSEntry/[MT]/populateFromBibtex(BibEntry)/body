@@ -1,18 +1,18 @@
 {
-  if (bibtex.hasField("title")) {
+  if (bibtex.hasField(FieldName.TITLE)) {
     if (CHARFORMAT) {
-      title=chars.format(bibtex.getField("title"));
+      title=chars.format(bibtex.getField(FieldName.TITLE));
     }
  else {
-      title=bibtex.getField("title");
+      title=bibtex.getField(FieldName.TITLE);
     }
   }
-  if (bibtex.hasField("publisher")) {
+  if (bibtex.hasField(FieldName.PUBLISHER)) {
     if (CHARFORMAT) {
-      publisher=chars.format(bibtex.getField("publisher"));
+      publisher=chars.format(bibtex.getField(FieldName.PUBLISHER));
     }
  else {
-      publisher=bibtex.getField("publisher");
+      publisher=bibtex.getField(FieldName.PUBLISHER);
     }
   }
   if (bibtex.hasField(BibEntry.KEY_FIELD)) {
@@ -28,21 +28,21 @@
   }
   date=getDate(bibtex);
   genre=getMODSgenre(bibtex);
-  if (bibtex.hasField("author")) {
-    authors=getAuthors(bibtex.getField("author"));
+  if (bibtex.hasField(FieldName.AUTHOR)) {
+    authors=getAuthors(bibtex.getField(FieldName.AUTHOR));
   }
   if ("article".equals(bibtex.getType()) || "inproceedings".equals(bibtex.getType())) {
     host=new MODSEntry();
     host.entryType="relatedItem";
     host.title=bibtex.getField("booktitle");
-    host.publisher=bibtex.getField("publisher");
-    host.number=bibtex.getField("number");
-    if (bibtex.hasField("volume")) {
-      host.volume=bibtex.getField("volume");
+    host.publisher=bibtex.getField(FieldName.PUBLISHER);
+    host.number=bibtex.getField(FieldName.NUMBER);
+    if (bibtex.hasField(FieldName.VOLUME)) {
+      host.volume=bibtex.getField(FieldName.VOLUME);
     }
     host.issuance="continuing";
-    if (bibtex.hasField("pages")) {
-      host.pages=new PageNumbers(bibtex.getField("pages"));
+    if (bibtex.hasField(FieldName.PAGES)) {
+      host.pages=new PageNumbers(bibtex.getField(FieldName.PAGES));
     }
   }
   populateExtensionFields(bibtex);

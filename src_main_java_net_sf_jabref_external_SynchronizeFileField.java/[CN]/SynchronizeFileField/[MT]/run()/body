@@ -23,7 +23,7 @@
     boolean removeAllBroken=false;
     mainLoop:     for (    BibEntry aSel : sel) {
       panel.frame().setProgressBarValue(progress++);
-      final Optional<String> old=aSel.getFieldOptional(Globals.FILE_FIELD);
+      final Optional<String> old=aSel.getFieldOptional(FieldName.FILE);
       if (old.isPresent() && !(old.get().isEmpty())) {
         FileListTableModel tableModel=new FileListTableModel();
         tableModel.setContentDontGuessTypes(old.get());
@@ -95,12 +95,12 @@ editor.setVisible(true,false);
 if (!tableModel.getStringRepresentation().equals(old.orElse(null))) {
 String toSet=tableModel.getStringRepresentation();
 if (toSet.isEmpty()) {
-ce.addEdit(new UndoableFieldChange(aSel,Globals.FILE_FIELD,old.orElse(null),null));
-aSel.clearField(Globals.FILE_FIELD);
+ce.addEdit(new UndoableFieldChange(aSel,FieldName.FILE,old.orElse(null),null));
+aSel.clearField(FieldName.FILE);
 }
  else {
-ce.addEdit(new UndoableFieldChange(aSel,Globals.FILE_FIELD,old.orElse(null),toSet));
-aSel.setField(Globals.FILE_FIELD,toSet);
+ce.addEdit(new UndoableFieldChange(aSel,FieldName.FILE,old.orElse(null),toSet));
+aSel.setField(FieldName.FILE,toSet);
 }
 changedEntries.add(aSel);
 }

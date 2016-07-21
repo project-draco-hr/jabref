@@ -18,20 +18,20 @@
       }
     }
   }
- else   if ("doi".equals(fieldName)) {
+ else   if (FieldName.DOI.equals(fieldName)) {
     Optional<DOI> doiUrl=DOI.build(link);
     if (doiUrl.isPresent()) {
       link=doiUrl.get().getURIAsASCIIString();
     }
-    fieldName="url";
+    fieldName=FieldName.URL;
   }
  else   if ("eprint".equals(fieldName)) {
-    fieldName="url";
+    fieldName=FieldName.URL;
     if (!link.startsWith("http://")) {
       link=ARXIV_LOOKUP_PREFIX + link;
     }
   }
-  if ("url".equals(fieldName)) {
+  if (FieldName.URL.equals(fieldName)) {
     try {
       openBrowser(link);
     }

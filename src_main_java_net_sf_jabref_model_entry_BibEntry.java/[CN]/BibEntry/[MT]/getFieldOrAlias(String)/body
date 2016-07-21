@@ -7,10 +7,10 @@
   if (aliasForField != null) {
     return getFieldOptional(aliasForField);
   }
-  if ("date".equals(name)) {
-    Optional<String> year=getFieldOptional("year");
+  if (FieldName.DATE.equals(name)) {
+    Optional<String> year=getFieldOptional(FieldName.YEAR);
     if (year.isPresent()) {
-      MonthUtil.Month month=MonthUtil.getMonth(getFieldOptional("month").orElse(""));
+      MonthUtil.Month month=MonthUtil.getMonth(getFieldOptional(FieldName.MONTH).orElse(""));
       if (month.isValid()) {
         return Optional.of(year.get() + '-' + month.twoDigitNumber);
       }
@@ -19,8 +19,8 @@
       }
     }
   }
-  if ("year".equals(name) || "month".equals(name)) {
-    Optional<String> date=getFieldOptional("date");
+  if (FieldName.YEAR.equals(name) || FieldName.MONTH.equals(name)) {
+    Optional<String> date=getFieldOptional(FieldName.DATE);
     if (!date.isPresent()) {
       return Optional.empty();
     }
@@ -44,10 +44,10 @@
       Date parsedDate=df.parse(date.get());
       Calendar calendar=Calendar.getInstance();
       calendar.setTime(parsedDate);
-      if ("year".equals(name)) {
+      if (FieldName.YEAR.equals(name)) {
         return Optional.of(Integer.toString(calendar.get(Calendar.YEAR)));
       }
-      if ("month".equals(name)) {
+      if (FieldName.MONTH.equals(name)) {
         return Optional.of(Integer.toString(calendar.get(Calendar.MONTH) + 1));
       }
     }
@@ -57,7 +57,7 @@
         Date parsedDate=df.parse(date.get());
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(parsedDate);
-        if ("year".equals(name)) {
+        if (FieldName.YEAR.equals(name)) {
           return Optional.of(Integer.toString(calendar.get(Calendar.YEAR)));
         }
       }
