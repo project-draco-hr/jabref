@@ -5,7 +5,7 @@
     AuthorList originalAuthors=AuthorList.parse("Patterson, David and Arvind and Asanov\\'\\i{}c, Krste and Chiou, Derek and Hoe, James and Kozyrakis, Christos and Lu, S{hih-Lien} and Oskin, Mark and Rabaey, Jan and Wawrzynek, John");
     try {
       XMPUtil.writeXMP(pdfFile,result.getDatabase().getEntryByKey("Patterson06").get(),result.getDatabase());
-      BibEntry b=XMPUtil.readXMP(pdfFile).get(0);
+      BibEntry b=XMPUtil.readXMP(pdfFile,Globals.prefs).get(0);
       Assert.assertNotNull(b);
       Assert.assertEquals(originalAuthors,AuthorList.parse(b.getFieldOptional("author").get()));
       try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
@@ -26,7 +26,7 @@
         Assert.assertEquals("David Patterson",dcSchema.getCreators().get(0));
         Assert.assertEquals("Arvind",dcSchema.getCreators().get(1));
         Assert.assertEquals("Krste Asanov\\'\\i{}c",dcSchema.getCreators().get(2));
-        b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema).get();
+        b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema,Globals.prefs).get();
         Assert.assertNotNull(b);
         Assert.assertEquals(originalAuthors,AuthorList.parse(b.getFieldOptional("author").get()));
       }

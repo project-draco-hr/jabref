@@ -1,0 +1,32 @@
+{
+  try {
+    if (!reformatFile && !bibtexString.hasChanged()) {
+      getWriter().write(bibtexString.getParsedSerialization());
+      return;
+    }
+    String userComments=bibtexString.getUserComments();
+    if (!userComments.isEmpty()) {
+      getWriter().write(userComments + Globals.NEWLINE);
+    }
+    if (isFirstString) {
+      getWriter().write(Globals.NEWLINE);
+    }
+    getWriter().write(STRING_PREFIX + "{" + bibtexString.getName()+ StringUtil.repeatSpaces(maxKeyLength - bibtexString.getName().length())+ " = ");
+    if (bibtexString.getContent().isEmpty()) {
+      getWriter().write("{}");
+    }
+ else {
+      try {
+        String formatted=new LatexFieldFormatter(latexFieldFormatterPreferences).format(bibtexString.getContent(),LatexFieldFormatter.BIBTEX_STRING);
+        getWriter().write(formatted);
+      }
+ catch (      IllegalArgumentException ex) {
+        throw new IllegalArgumentException("The # character is not allowed in BibTeX strings unless escaped as in '\\#'.\n" + "Before saving, please edit any strings containing the # character.");
+      }
+    }
+    getWriter().write("}" + Globals.NEWLINE);
+  }
+ catch (  IOException e) {
+    throw new SaveException(e);
+  }
+}

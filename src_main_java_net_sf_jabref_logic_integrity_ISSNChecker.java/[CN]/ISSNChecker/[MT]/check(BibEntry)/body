@@ -1,11 +1,11 @@
 {
-  if (!entry.hasField("issn")) {
+  if (!entry.hasField(FieldName.ISSN)) {
     return Collections.emptyList();
   }
-  String issn=entry.getField("issn").trim();
+  String issn=entry.getFieldOptional(FieldName.ISSN).get().trim();
   Matcher issnMatcher=ISSN_PATTERN.matcher(issn);
   if (!issnMatcher.matches()) {
-    return Collections.singletonList(new IntegrityMessage(Localization.lang("incorrect format"),entry,"issn"));
+    return Collections.singletonList(new IntegrityMessage(Localization.lang("incorrect format"),entry,FieldName.ISSN));
   }
   int sum=0;
   for (int pos=0; pos <= 7; pos++) {
@@ -22,6 +22,6 @@
     return Collections.emptyList();
   }
  else {
-    return Collections.singletonList(new IntegrityMessage(Localization.lang("incorrect control digit"),entry,"issn"));
+    return Collections.singletonList(new IntegrityMessage(Localization.lang("incorrect control digit"),entry,FieldName.ISSN));
   }
 }

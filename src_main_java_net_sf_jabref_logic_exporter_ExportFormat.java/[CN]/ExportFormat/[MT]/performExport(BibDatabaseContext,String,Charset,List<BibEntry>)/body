@@ -22,7 +22,7 @@
     Globals.prefs.customExportNameFormatters=readFormatterFile(lfFileName);
     List<String> missingFormatters=new ArrayList<>(1);
     try (Reader reader=getReader(lfFileName + ".begin.layout")){
-      LayoutHelper layoutHelper=new LayoutHelper(reader,Globals.journalAbbreviationLoader);
+      LayoutHelper layoutHelper=new LayoutHelper(reader,Globals.prefs,Globals.journalAbbreviationLoader);
       beginLayout=layoutHelper.getLayoutFromText();
     }
  catch (    IOException ex) {
@@ -36,7 +36,7 @@
     Layout defLayout;
     LayoutHelper layoutHelper;
     try (Reader reader=getReader(lfFileName + ".layout")){
-      layoutHelper=new LayoutHelper(reader,Globals.journalAbbreviationLoader);
+      layoutHelper=new LayoutHelper(reader,Globals.prefs,Globals.journalAbbreviationLoader);
       defLayout=layoutHelper.getLayoutFromText();
     }
      if (defLayout != null) {
@@ -56,7 +56,7 @@
       }
  else {
         try (Reader reader=getReader(lfFileName + '.' + type+ ".layout")){
-          layoutHelper=new LayoutHelper(reader,Globals.journalAbbreviationLoader);
+          layoutHelper=new LayoutHelper(reader,Globals.prefs,Globals.journalAbbreviationLoader);
           layout=layoutHelper.getLayoutFromText();
           layouts.put(type,layout);
           if (layout != null) {
@@ -71,7 +71,7 @@
     }
     Layout endLayout=null;
     try (Reader reader=getReader(lfFileName + ".end.layout")){
-      layoutHelper=new LayoutHelper(reader,Globals.journalAbbreviationLoader);
+      layoutHelper=new LayoutHelper(reader,Globals.prefs,Globals.journalAbbreviationLoader);
       endLayout=layoutHelper.getLayoutFromText();
     }
  catch (    IOException ex) {

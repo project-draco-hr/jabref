@@ -2,13 +2,13 @@
   if ((value == null) || value.isEmpty()) {
     return;
   }
-  String oVal=entry.getField(field);
-  if (oVal == null) {
-    entry.setField(field,value);
+  Optional<String> oVal=entry.getFieldOptional(field);
+  if (oVal.isPresent()) {
+    if (!oVal.get().contains(value)) {
+      entry.setField(field,oVal.get() + "," + value);
+    }
   }
  else {
-    if (!oVal.contains(value)) {
-      entry.setField(field,oVal + "," + value);
-    }
+    entry.setField(field,value);
   }
 }

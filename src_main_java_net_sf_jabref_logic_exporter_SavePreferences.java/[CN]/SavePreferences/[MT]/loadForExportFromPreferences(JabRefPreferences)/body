@@ -1,8 +1,8 @@
 {
-  Boolean saveInOriginalOrder=Globals.prefs.getBoolean(JabRefPreferences.EXPORT_IN_ORIGINAL_ORDER);
+  Boolean saveInOriginalOrder=preferences.getBoolean(JabRefPreferences.EXPORT_IN_ORIGINAL_ORDER);
   SaveOrderConfig saveOrder=null;
   if (!saveInOriginalOrder) {
-    if (Globals.prefs.getBoolean(JabRefPreferences.EXPORT_IN_SPECIFIED_ORDER)) {
+    if (preferences.getBoolean(JabRefPreferences.EXPORT_IN_SPECIFIED_ORDER)) {
       saveOrder=SaveOrderConfig.loadExportSaveOrderFromPreferences(preferences);
     }
  else {
@@ -14,5 +14,6 @@
   DatabaseSaveType saveType=DatabaseSaveType.ALL;
   Boolean takeMetadataSaveOrderInAccount=false;
   Boolean reformatFile=preferences.getBoolean(JabRefPreferences.REFORMAT_FILE_ON_SAVE_AND_EXPORT);
-  return new SavePreferences(saveInOriginalOrder,saveOrder,encoding,makeBackup,saveType,takeMetadataSaveOrderInAccount,reformatFile);
+  LatexFieldFormatterPreferences latexFieldFormatterPreferences=LatexFieldFormatterPreferences.fromPreferences(preferences);
+  return new SavePreferences(saveInOriginalOrder,saveOrder,encoding,makeBackup,saveType,takeMetadataSaveOrderInAccount,reformatFile,latexFieldFormatterPreferences);
 }

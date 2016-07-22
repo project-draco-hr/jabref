@@ -1,34 +1,45 @@
 {
   Objects.requireNonNull(reader);
-  SAXParserFactory parserFactory=SAXParserFactory.newInstance();
-  parserFactory.setValidating(true);
-  parserFactory.setNamespaceAware(true);
   List<BibEntry> bibItems=new ArrayList<>();
   try {
-    SAXParser parser=parserFactory.newSAXParser();
-    MedlineHandler handler=new MedlineHandler();
-    parser.parse(new InputSource(reader),handler);
-    if (false) {
-      reader.reset();
-      try (FileOutputStream out=new FileOutputStream(new File("/home/alver/ut.txt"))){
-        int c;
-        while ((c=reader.read()) != -1) {
-          out.write((char)c);
+    JAXBContext context=JAXBContext.newInstance("net.sf.jabref.importer.fileformat.medline");
+    XMLInputFactory xmlInputFactory=XMLInputFactory.newFactory();
+    XMLStreamReader xmlStreamReader=xmlInputFactory.createXMLStreamReader(reader);
+    while (!xmlStreamReader.isStartElement()) {
+      xmlStreamReader.next();
+    }
+    Unmarshaller unmarshaller=context.createUnmarshaller();
+    Object unmarshalledObject=unmarshaller.unmarshal(xmlStreamReader);
+    if (unmarshalledObject instanceof PubmedArticleSet) {
+      PubmedArticleSet articleSet=(PubmedArticleSet)unmarshalledObject;
+      for (      Object article : articleSet.getPubmedArticleOrPubmedBookArticle()) {
+        if (article instanceof PubmedArticle) {
+          PubmedArticle currentArticle=(PubmedArticle)article;
+          parseArticle(currentArticle,bibItems);
+        }
+        if (article instanceof PubmedBookArticle) {
+          PubmedBookArticle currentArticle=(PubmedBookArticle)article;
+          parseBookArticle(currentArticle,bibItems);
         }
       }
-     }
-    bibItems.addAll(handler.getItems());
+    }
+ else     if (unmarshalledObject instanceof PubmedArticle) {
+      PubmedArticle article=(PubmedArticle)unmarshalledObject;
+      parseArticle(article,bibItems);
+    }
+ else     if (unmarshalledObject instanceof PubmedBookArticle) {
+      PubmedBookArticle currentArticle=(PubmedBookArticle)unmarshalledObject;
+      parseBookArticle(currentArticle,bibItems);
+    }
+ else {
+      PubmedBookArticleSet bookArticleSet=(PubmedBookArticleSet)unmarshalledObject;
+      for (      PubmedBookArticle bookArticle : bookArticleSet.getPubmedBookArticle()) {
+        parseBookArticle(bookArticle,bibItems);
+      }
+    }
   }
- catch (  javax.xml.parsers.ParserConfigurationException e) {
-    LOGGER.error("Error with XML parser configuration",e);
-    return ParserResult.fromErrorMessage(e.getLocalizedMessage());
-  }
-catch (  org.xml.sax.SAXException e) {
-    LOGGER.error("Error during XML parsing",e);
-    return ParserResult.fromErrorMessage(e.getLocalizedMessage());
-  }
-catch (  IOException e) {
-    LOGGER.error("Error during file import",e);
+ catch (  JAXBException|XMLStreamException e) {
+    LOGGER.debug("could not parse document",e);
     return ParserResult.fromErrorMessage(e.getLocalizedMessage());
   }
   return new ParserResult(bibItems);

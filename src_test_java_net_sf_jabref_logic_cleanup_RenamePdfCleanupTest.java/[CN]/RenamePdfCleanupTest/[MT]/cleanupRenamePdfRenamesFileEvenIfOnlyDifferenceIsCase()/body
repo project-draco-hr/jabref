@@ -3,8 +3,8 @@
   File tempFile=testFolder.newFile("toot.tmp");
   ParsedFileField fileField=new ParsedFileField("",tempFile.getAbsolutePath(),"");
   entry.setField("file",FileField.getStringRepresentation(fileField));
-  RenamePdfCleanup cleanup=new RenamePdfCleanup(false,context,mock(JournalAbbreviationLoader.class));
+  RenamePdfCleanup cleanup=new RenamePdfCleanup(false,context,mock(JournalAbbreviationLoader.class),Globals.prefs);
   cleanup.cleanup(entry);
   ParsedFileField newFileField=new ParsedFileField("","Toot.tmp","");
-  assertEquals(FileField.getStringRepresentation(newFileField),entry.getField("file"));
+  assertEquals(Optional.of(FileField.getStringRepresentation(newFileField)),entry.getFieldOptional("file"));
 }

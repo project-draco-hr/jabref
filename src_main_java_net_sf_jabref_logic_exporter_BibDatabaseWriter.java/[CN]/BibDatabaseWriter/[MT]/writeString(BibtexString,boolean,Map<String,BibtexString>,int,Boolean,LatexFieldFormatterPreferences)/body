@@ -1,0 +1,16 @@
+{
+  remaining.remove(bibtexString.getName());
+  String content=bibtexString.getContent();
+  Matcher m;
+  while ((m=REFERENCE_PATTERN.matcher(content)).find()) {
+    String foundLabel=m.group(1);
+    int restIndex=content.indexOf(foundLabel) + foundLabel.length();
+    content=content.substring(restIndex);
+    String label=foundLabel.substring(1,foundLabel.length() - 1);
+    if (remaining.containsKey(label)) {
+      BibtexString referred=remaining.get(label);
+      writeString(referred,isFirstString,remaining,maxKeyLength,reformatFile,latexFieldFormatterPreferences);
+    }
+  }
+  writeString(bibtexString,isFirstString,maxKeyLength,reformatFile,latexFieldFormatterPreferences);
+}

@@ -1,0 +1,12 @@
+{
+  String expected=Globals.NEWLINE + "@Article{test," + Globals.NEWLINE+ "  author       = {BlaBla},"+ Globals.NEWLINE+ "  journal      = {International Journal of Something},"+ Globals.NEWLINE+ "  number       = {1},"+ Globals.NEWLINE+ "  note         = {some note},"+ Globals.NEWLINE+ "  howpublished = {asdf},"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE;
+  ParserResult result=BibtexParser.parse(new StringReader(expected));
+  Collection<BibEntry> entries=result.getDatabase().getEntries();
+  BibEntry entry=entries.iterator().next();
+  entry.setType("inproceedings");
+  StringWriter stringWriter=new StringWriter();
+  writer.write(entry,stringWriter,BibDatabaseMode.BIBTEX);
+  String actual=stringWriter.toString();
+  String expectedNewEntry=Globals.NEWLINE + "@InProceedings{test," + Globals.NEWLINE+ "  author       = {BlaBla},"+ Globals.NEWLINE+ "  number       = {1},"+ Globals.NEWLINE+ "  note         = {some note},"+ Globals.NEWLINE+ "  howpublished = {asdf},"+ Globals.NEWLINE+ "  journal      = {International Journal of Something},"+ Globals.NEWLINE+ "}"+ Globals.NEWLINE;
+  assertEquals(expectedNewEntry,actual);
+}
