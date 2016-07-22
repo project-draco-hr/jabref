@@ -2,11 +2,11 @@
   if (book.getPublisher() != null) {
     Publisher publisher=book.getPublisher();
     putIfValueNotNull(fields,"publocation",publisher.getPublisherLocation());
-    putStringFromSerializableList(fields,"publisher",publisher.getPublisherName().getContent());
+    putStringFromSerializableList(fields,FieldName.PUBLISHER,publisher.getPublisherName().getContent());
   }
   if (book.getBookTitle() != null) {
     BookTitle title=book.getBookTitle();
-    putStringFromSerializableList(fields,"title",title.getContent());
+    putStringFromSerializableList(fields,FieldName.TITLE,title.getContent());
   }
   if (book.getPubDate() != null) {
     addPubDate(fields,book.getPubDate());
@@ -22,8 +22,8 @@
       LOGGER.info(String.format("Size of authorlist was %s",authorLists.size()));
     }
   }
-  putIfValueNotNull(fields,"volume",book.getVolume());
-  putIfValueNotNull(fields,"edition",book.getEdition());
+  putIfValueNotNull(fields,FieldName.VOLUME,book.getVolume());
+  putIfValueNotNull(fields,FieldName.EDITION,book.getEdition());
   putIfValueNotNull(fields,"medium",book.getMedium());
   putIfValueNotNull(fields,"reportnumber",book.getReportNumber());
   if (book.getELocationID() != null) {
@@ -32,6 +32,6 @@
     }
   }
   if (book.getIsbn() != null) {
-    fields.put("isbn",join(book.getIsbn(),", "));
+    fields.put(FieldName.ISBN,join(book.getIsbn(),", "));
   }
 }

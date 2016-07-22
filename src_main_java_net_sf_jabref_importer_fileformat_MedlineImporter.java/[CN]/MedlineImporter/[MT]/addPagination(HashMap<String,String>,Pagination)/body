@@ -3,15 +3,15 @@
   String endPage="";
   for (  JAXBElement<String> element : pagination.getContent()) {
     if ("MedlinePgn".equals(element.getName().getLocalPart())) {
-      putIfValueNotNull(fields,"pages",fixPageRange(element.getValue()));
+      putIfValueNotNull(fields,FieldName.PAGES,fixPageRange(element.getValue()));
     }
  else     if ("StartPage".equals(element.getName().getLocalPart())) {
       startPage=element.getValue() + endPage;
-      putIfValueNotNull(fields,"pages",startPage);
+      putIfValueNotNull(fields,FieldName.PAGES,startPage);
     }
  else     if ("EndPage".equals(element.getName().getLocalPart())) {
       endPage=element.getValue();
-      fields.put("pages",fixPageRange(startPage + "-" + endPage));
+      fields.put(FieldName.PAGES,fixPageRange(startPage + "-" + endPage));
     }
   }
 }
