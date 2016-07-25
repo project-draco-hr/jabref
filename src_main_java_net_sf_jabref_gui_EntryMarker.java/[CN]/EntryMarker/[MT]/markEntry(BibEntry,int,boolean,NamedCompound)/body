@@ -1,8 +1,8 @@
 {
   int prevMarkLevel;
   String newValue=null;
-  if (be.hasField(InternalBibtexFields.MARKED)) {
-    String markerString=be.getFieldOptional(InternalBibtexFields.MARKED).get();
+  if (be.hasField(FieldName.MARKED)) {
+    String markerString=be.getFieldOptional(FieldName.MARKED).get();
     int index=markerString.indexOf(Globals.prefs.WRAPPED_USERNAME);
     if (index >= 0) {
       prevMarkLevel=1;
@@ -23,6 +23,6 @@
   if (newValue == null) {
     newValue=Globals.prefs.WRAPPED_USERNAME.substring(0,Globals.prefs.WRAPPED_USERNAME.length() - 1) + ":" + markIncrement+ "]";
   }
-  ce.addEdit(new UndoableFieldChange(be,InternalBibtexFields.MARKED,be.getFieldOptional(InternalBibtexFields.MARKED).orElse(null),newValue));
-  be.setField(InternalBibtexFields.MARKED,newValue);
+  ce.addEdit(new UndoableFieldChange(be,FieldName.MARKED,be.getFieldOptional(FieldName.MARKED).orElse(null),newValue));
+  be.setField(FieldName.MARKED,newValue);
 }
