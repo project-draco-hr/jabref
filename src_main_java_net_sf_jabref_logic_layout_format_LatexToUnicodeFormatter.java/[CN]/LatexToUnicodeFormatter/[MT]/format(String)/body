@@ -52,17 +52,20 @@
  else {
             commandBody=field.substring(i,i + 1);
           }
-          Object result=LatexToUnicodeFormatter.CHARS.get(command + commandBody);
+          String result=LatexToUnicodeFormatter.CHARS.get(command + commandBody);
           if (result == null) {
             if (commandBody.length() <= 1) {
               String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
-              if (accent != null) {
+              if (accent == null) {
+                sb.append(commandBody);
+              }
+ else {
                 sb.append(commandBody).append(accent);
               }
             }
           }
  else {
-            sb.append((String)result);
+            sb.append(result);
           }
           incommand=false;
           escaped=false;
@@ -70,12 +73,12 @@
  else {
           if ((i + 1) == field.length()) {
             String command=currentCommand.toString();
-            Object result=LatexToUnicodeFormatter.CHARS.get(command);
+            String result=LatexToUnicodeFormatter.CHARS.get(command);
             if (result == null) {
               sb.append(command);
             }
  else {
-              sb.append((String)result);
+              sb.append(result);
             }
           }
         }
@@ -97,11 +100,16 @@
             if (result == null) {
               if (argument.length() <= 1) {
                 String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
-                if (accent != null) {
-                  sb.append(argument).append(accent);
+                if (accent == null) {
+                  if (argument.length() == 0) {
+                    sb.append(command);
+                  }
+ else {
+                    sb.append(argument);
+                  }
                 }
  else {
-                  sb.append(argument);
+                  sb.append(argument).append(accent);
                 }
               }
  else {
