@@ -34,14 +34,19 @@
     }
  else     if ("expires".equalsIgnoreCase(name)) {
       try {
-        this.expires=whiteSpaceFormat.parse(value);
+        this.expires=ZonedDateTime.parse(value,whiteSpaceFormat);
       }
- catch (      ParseException e) {
+ catch (      DateTimeParseException e) {
         try {
-          this.expires=hyphenFormat.parse(value);
+          this.expires=ZonedDateTime.parse(value,hyphenFormat);
         }
- catch (        ParseException e2) {
-          throw new IllegalArgumentException("Bad date format in header: " + value);
+ catch (        DateTimeParseException e2) {
+          try {
+            this.expires=ZonedDateTime.parse(value,hyphenTwoDigitYearFormat);
+          }
+ catch (          DateTimeParseException e3) {
+            throw new IllegalArgumentException("Bad date format in header: " + value);
+          }
         }
       }
     }
