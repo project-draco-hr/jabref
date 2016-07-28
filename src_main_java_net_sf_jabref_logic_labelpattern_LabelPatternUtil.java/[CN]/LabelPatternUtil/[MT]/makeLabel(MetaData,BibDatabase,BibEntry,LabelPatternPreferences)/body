@@ -34,10 +34,10 @@
  catch (  Exception e) {
     LOGGER.warn("Cannot make label",e);
   }
-  key=checkLegalKey(stringBuilder.toString());
-  String regex=prefs.get(JabRefPreferences.KEY_PATTERN_REGEX);
+  key=checkLegalKey(stringBuilder.toString(),labelPatternPreferences.isEnforceLegalKey());
+  String regex=labelPatternPreferences.getKeyPatternRegex();
   if ((regex != null) && !regex.trim().isEmpty()) {
-    String replacement=prefs.get(JabRefPreferences.KEY_PATTERN_REPLACEMENT);
+    String replacement=labelPatternPreferences.getKeyPatternReplacement();
     key=key.replaceAll(regex,replacement);
   }
   if (forceUpper) {
@@ -51,8 +51,8 @@
   if (Objects.equals(oldKey,key)) {
     occurrences--;
   }
-  boolean alwaysAddLetter=prefs.getBoolean(JabRefPreferences.KEY_GEN_ALWAYS_ADD_LETTER);
-  boolean firstLetterA=prefs.getBoolean(JabRefPreferences.KEY_GEN_FIRST_LETTER_A);
+  boolean alwaysAddLetter=labelPatternPreferences.isAlwaysAddLetter();
+  boolean firstLetterA=labelPatternPreferences.isFirstLetterA();
   if (!alwaysAddLetter && (occurrences == 0)) {
     if (!key.equals(oldKey)) {
       if (!database.containsEntryWithId(entry.getId())) {
