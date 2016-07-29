@@ -10,40 +10,41 @@
   JabRefPreferences prefs=JabRefPreferences.getInstance();
   boolean useXmpPrivacyFilter=prefs.getBoolean(JabRefPreferences.USE_XMP_PRIVACY_FILTER);
   Set<String> filters=new TreeSet<>(prefs.getStringList(JabRefPreferences.XMP_PRIVACY_FILTERS));
-  Set<String> fields=resolvedEntry.getFieldNames();
-  for (  String field : fields) {
-    if (useXmpPrivacyFilter && filters.contains(field)) {
-      if (FieldName.AUTHOR.equals(field)) {
+  for (  Entry<String,String> field : resolvedEntry.getFieldMap().entrySet()) {
+    String fieldName=field.getKey();
+    String fieldContent=field.getValue();
+    if (useXmpPrivacyFilter && filters.contains(fieldName)) {
+      if (FieldName.AUTHOR.equals(fieldName)) {
         di.setAuthor(null);
       }
- else       if (FieldName.TITLE.equals(field)) {
+ else       if (FieldName.TITLE.equals(fieldName)) {
         di.setTitle(null);
       }
- else       if (FieldName.KEYWORDS.equals(field)) {
+ else       if (FieldName.KEYWORDS.equals(fieldName)) {
         di.setKeywords(null);
       }
- else       if (FieldName.ABSTRACT.equals(field)) {
+ else       if (FieldName.ABSTRACT.equals(fieldName)) {
         di.setSubject(null);
       }
  else {
-        di.setCustomMetadataValue("bibtex/" + field,null);
+        di.setCustomMetadataValue("bibtex/" + fieldName,null);
       }
       continue;
     }
-    if (FieldName.AUTHOR.equals(field)) {
-      di.setAuthor(resolvedEntry.getField(FieldName.AUTHOR));
+    if (FieldName.AUTHOR.equals(fieldName)) {
+      di.setAuthor(fieldContent);
     }
- else     if (FieldName.TITLE.equals(field)) {
-      di.setTitle(resolvedEntry.getField(FieldName.TITLE));
+ else     if (FieldName.TITLE.equals(fieldName)) {
+      di.setTitle(fieldContent);
     }
- else     if (FieldName.KEYWORDS.equals(field)) {
-      di.setKeywords(resolvedEntry.getField(FieldName.KEYWORDS));
+ else     if (FieldName.KEYWORDS.equals(fieldName)) {
+      di.setKeywords(fieldContent);
     }
- else     if (FieldName.ABSTRACT.equals(field)) {
-      di.setSubject(resolvedEntry.getField(FieldName.ABSTRACT));
+ else     if (FieldName.ABSTRACT.equals(fieldName)) {
+      di.setSubject(fieldContent);
     }
  else {
-      di.setCustomMetadataValue("bibtex/" + field,resolvedEntry.getField(field));
+      di.setCustomMetadataValue("bibtex/" + fieldName,fieldContent);
     }
   }
   di.setCustomMetadataValue("bibtex/entrytype",EntryUtil.capitalizeFirst(resolvedEntry.getType()));
