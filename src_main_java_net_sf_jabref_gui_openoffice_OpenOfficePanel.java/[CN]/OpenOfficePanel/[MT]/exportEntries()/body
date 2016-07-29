@@ -1,0 +1,27 @@
+{
+  try {
+    if (style == null) {
+      style=loader.getUsedStyle();
+    }
+ else {
+      style.ensureUpToDate();
+    }
+    ooBase.updateSortedReferenceMarks();
+    List<BibDatabase> databases=getBaseList();
+    List<String> unresolvedKeys=ooBase.refreshCiteMarkers(databases,style);
+    BibDatabase newDatabase=ooBase.generateDatabase(databases);
+    if (!unresolvedKeys.isEmpty()) {
+      JOptionPane.showMessageDialog(frame,Localization.lang("Your OpenOffice/LibreOffice document references the BibTeX key '%0', which could not be found in your current database.",unresolvedKeys.get(0)),Localization.lang("Unable to generate new database"),JOptionPane.ERROR_MESSAGE);
+    }
+    Defaults defaults=new Defaults(BibDatabaseMode.fromPreference(Globals.prefs.getBoolean(JabRefPreferences.BIBLATEX_DEFAULT_MODE)));
+    BibDatabaseContext databaseContext=new BibDatabaseContext(newDatabase,defaults);
+    this.frame.addTab(databaseContext,true);
+  }
+ catch (  BibEntryNotFoundException ex) {
+    JOptionPane.showMessageDialog(frame,Localization.lang("Your OpenOffice/LibreOffice document references the BibTeX key '%0', which could not be found in your current database.",ex.getBibtexKey()),Localization.lang("Unable to synchronize bibliography"),JOptionPane.ERROR_MESSAGE);
+    LOGGER.debug("BibEntry not found",ex);
+  }
+catch (  com.sun.star.lang.IllegalArgumentException|UnknownPropertyException|PropertyVetoException|UndefinedCharacterFormatException|NoSuchElementException|WrappedTargetException|IOException|CreationException e) {
+    LOGGER.warn("Problem generating new database.",e);
+  }
+}
