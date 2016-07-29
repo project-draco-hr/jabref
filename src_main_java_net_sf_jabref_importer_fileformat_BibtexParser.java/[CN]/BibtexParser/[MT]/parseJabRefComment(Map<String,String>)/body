@@ -1,5 +1,12 @@
 {
-  StringBuilder buffer=parseBracketedTextExactly();
+  StringBuilder buffer=null;
+  try {
+    buffer=parseBracketedTextExactly();
+  }
+ catch (  IOException e) {
+    LOGGER.info("Found unbracketed comment");
+    return;
+  }
   String comment=buffer.toString().replaceAll("[\\x0d\\x0a]","");
   if (comment.substring(0,Math.min(comment.length(),MetaData.META_FLAG.length())).equals(MetaData.META_FLAG)) {
     if (comment.substring(0,MetaData.META_FLAG.length()).equals(MetaData.META_FLAG)) {
@@ -20,8 +27,5 @@
       parserResult.addWarning(Localization.lang("Ill-formed entrytype comment in BIB file") + ": " + comment);
     }
     dumpTextReadSoFarToString();
-  }
- else {
-    LOGGER.info("Dropped comment from database: " + comment);
   }
 }
