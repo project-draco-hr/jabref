@@ -7,12 +7,12 @@
       PrintStream oldOut=System.out;
       try (ByteArrayOutputStream s=new ByteArrayOutputStream()){
         System.setOut(new PrintStream(s));
-        XMPUtil.main(new String[]{"canh05",tempBib.getAbsolutePath(),pdfFile.getAbsolutePath()});
+        XMPUtilMain.main(new String[]{"canh05",tempBib.getAbsolutePath(),pdfFile.getAbsolutePath()});
       }
   finally {
         System.setOut(oldOut);
       }
-      List<BibEntry> l=XMPUtil.readXMP(pdfFile,Globals.prefs);
+      List<BibEntry> l=XMPUtil.readXMP(pdfFile,xmpPreferences);
       Assert.assertEquals(1,l.size());
       assertEqualsBibtexEntry(t1BibtexEntry(),l.get(0));
     }
@@ -20,13 +20,13 @@
       PrintStream oldOut=System.out;
       System.setOut(new PrintStream(s));
       try {
-        XMPUtil.main(new String[]{"OezbekC06",tempBib.getAbsolutePath(),pdfFile.getAbsolutePath()});
+        XMPUtilMain.main(new String[]{"OezbekC06",tempBib.getAbsolutePath(),pdfFile.getAbsolutePath()});
       }
   finally {
         System.setOut(oldOut);
       }
     }
-     List<BibEntry> l=XMPUtil.readXMP(pdfFile,Globals.prefs);
+     List<BibEntry> l=XMPUtil.readXMP(pdfFile,xmpPreferences);
     Assert.assertEquals(1,l.size());
     assertEqualsBibtexEntry(t2BibtexEntry(),l.get(0));
   }

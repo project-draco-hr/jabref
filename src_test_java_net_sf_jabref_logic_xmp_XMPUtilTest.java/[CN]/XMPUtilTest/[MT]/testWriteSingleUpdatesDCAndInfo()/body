@@ -1,7 +1,7 @@
 {
   List<BibEntry> l=new LinkedList<>();
   l.add(t3BibtexEntry());
-  XMPUtil.writeXMP(pdfFile,l,null,true);
+  XMPUtil.writeXMP(pdfFile,l,null,true,xmpPreferences);
   try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
     if (document.isEncrypted()) {
       Assert.fail("Cannot add metadata to encrypted document.");
@@ -36,6 +36,6 @@
     Assert.assertEquals("butter",dcSchema.getSubjects().get(1));
     Assert.assertEquals("jelly",dcSchema.getSubjects().get(2));
     Assert.assertEquals(4,dcSchema.getRelationships().size());
-    assertEqualsBibtexEntry(t3BibtexEntry(),XMPUtil.getBibtexEntryFromDublinCore(dcSchema,Globals.prefs).get());
+    assertEqualsBibtexEntry(t3BibtexEntry(),XMPUtil.getBibtexEntryFromDublinCore(dcSchema,xmpPreferences).get());
   }
  }

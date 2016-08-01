@@ -1,0 +1,32 @@
+{
+  Collection<BibEntry> resolvedEntries;
+  if (database == null) {
+    resolvedEntries=entries;
+  }
+ else {
+    resolvedEntries=database.resolveForStrings(entries,false);
+  }
+  PDDocumentCatalog catalog=document.getDocumentCatalog();
+  PDMetadata metaRaw=catalog.getMetadata();
+  XMPMetadata meta;
+  if (metaRaw == null) {
+    meta=new XMPMetadata();
+  }
+ else {
+    meta=new XMPMetadata(XMLUtil.parse(metaRaw.createInputStream()));
+  }
+  List<XMPSchema> schemas=meta.getSchemasByNamespaceURI(XMPSchemaDublinCore.NAMESPACE);
+  for (  XMPSchema schema : schemas) {
+    schema.getElement().getParentNode().removeChild(schema.getElement());
+  }
+  for (  BibEntry entry : resolvedEntries) {
+    XMPSchemaDublinCore dcSchema=new XMPSchemaDublinCore(meta);
+    XMPUtil.writeToDCSchema(dcSchema,entry,null,xmpPreferences);
+    meta.addSchema(dcSchema);
+  }
+  ByteArrayOutputStream os=new ByteArrayOutputStream();
+  meta.save(os);
+  ByteArrayInputStream is=new ByteArrayInputStream(os.toByteArray());
+  PDMetadata metadataStream=new PDMetadata(document,is,false);
+  catalog.setMetadata(metadataStream);
+}
