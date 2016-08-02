@@ -1,43 +1,13 @@
 {
-  if (panel == null) {
-    return Collections.emptyList();
-  }
-  ImportDialog importDialog=null;
-  boolean doNotShowAgain=false;
-  boolean neverShow=Globals.prefs.getBoolean(JabRefPreferences.PREF_IMPORT_ALWAYSUSE);
-  int globalChoice=Globals.prefs.getInt(JabRefPreferences.PREF_IMPORT_DEFAULT_PDF_IMPORT_STYLE);
-  List<BibEntry> res=new ArrayList<>();
-  for (  String fileName : fileNames) {
-    if (!neverShow && !doNotShowAgain) {
-      importDialog=new ImportDialog(dropRow >= 0,fileName);
-      if (!XMPUtil.hasMetadata(Paths.get(fileName),XMPPreferences.fromPreferences(Globals.prefs))) {
-        importDialog.disableXMPChoice();
-      }
-      importDialog.setLocationRelativeTo(frame);
-      importDialog.showDialog();
-      doNotShowAgain=importDialog.isDoNotShowAgain();
+  List<String> files=new ArrayList<>(fileNames);
+  List<String> noPdfFiles=new ArrayList<>();
+  PdfFileFilter pdfFilter=PdfFileFilter.INSTANCE;
+  for (  String file : files) {
+    if (!pdfFilter.accept(file)) {
+      noPdfFiles.add(file);
     }
-    if (neverShow || (importDialog.getResult() == JOptionPane.OK_OPTION)) {
-      int choice=neverShow ? globalChoice : importDialog.getChoice();
-switch (choice) {
-case ImportDialog.XMP:
-        doXMPImport(fileName,res);
-      break;
-case ImportDialog.CONTENT:
-    doContentImport(fileName,res);
-  break;
-case ImportDialog.NOMETA:
-BibEntry entry=createNewBlankEntry(fileName);
-res.add(entry);
-break;
-case ImportDialog.ONLYATTACH:
-DroppedFileHandler dfh=new DroppedFileHandler(frame,panel);
-dfh.linkPdfToEntry(fileName,entryTable,dropRow);
-break;
-default :
-break;
-}
-}
-}
-return res;
+  }
+  files.removeAll(noPdfFiles);
+  List<BibEntry> entries=importPdfFilesInternal(files);
+  return new ImportPdfFilesResult(noPdfFiles,entries);
 }

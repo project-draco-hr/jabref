@@ -21,30 +21,30 @@ synchronized (duplicates) {
         }
       }
  else {
-        BibEntry[] be=duplicates.get(current);
+        List<BibEntry> be=duplicates.get(current);
         current++;
-        if (!toRemove.contains(be[0]) && !toRemove.contains(be[1])) {
+        if (!toRemove.contains(be.get(0)) && !toRemove.contains(be.get(1))) {
           boolean askAboutExact=false;
-          if (DuplicateCheck.compareEntriesStrictly(be[0],be[1]) > 1) {
+          if (DuplicateCheck.compareEntriesStrictly(be.get(0),be.get(1)) > 1) {
             if (autoRemoveExactDuplicates) {
-              toRemove.add(be[1]);
+              toRemove.add(be.get(1));
               duplicateCounter++;
               continue;
             }
             askAboutExact=true;
           }
-          DuplicateCallBack cb=new DuplicateCallBack(JabRefGUI.getMainFrame(),be[0],be[1],askAboutExact ? DuplicateResolverType.DUPLICATE_SEARCH_WITH_EXACT : DuplicateResolverType.DUPLICATE_SEARCH);
+          DuplicateCallBack cb=new DuplicateCallBack(JabRefGUI.getMainFrame(),be.get(0),be.get(1),askAboutExact ? DuplicateResolverType.DUPLICATE_SEARCH_WITH_EXACT : DuplicateResolverType.DUPLICATE_SEARCH);
           ((CallBack)Spin.over(cb)).update();
           duplicateCounter++;
           DuplicateResolverResult answer=cb.getSelected();
           if ((answer == DuplicateResolverResult.KEEP_LEFT) || (answer == DuplicateResolverResult.AUTOREMOVE_EXACT)) {
-            toRemove.add(be[1]);
+            toRemove.add(be.get(1));
             if (answer == DuplicateResolverResult.AUTOREMOVE_EXACT) {
               autoRemoveExactDuplicates=true;
             }
           }
  else           if (answer == DuplicateResolverResult.KEEP_RIGHT) {
-            toRemove.add(be[0]);
+            toRemove.add(be.get(0));
           }
  else           if (answer == DuplicateResolverResult.BREAK) {
             st.setFinished();
@@ -52,8 +52,7 @@ synchronized (duplicates) {
             duplicateCounter--;
           }
  else           if (answer == DuplicateResolverResult.KEEP_MERGE) {
-            toRemove.add(be[0]);
-            toRemove.add(be[1]);
+            toRemove.addAll(be);
             toAdd.add(cb.getMergedEntry());
           }
         }
