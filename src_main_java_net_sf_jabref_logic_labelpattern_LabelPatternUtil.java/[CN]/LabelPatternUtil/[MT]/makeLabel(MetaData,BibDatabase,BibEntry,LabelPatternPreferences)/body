@@ -1,0 +1,93 @@
+{
+  database=dBase;
+  String key;
+  StringBuilder stringBuilder=new StringBuilder();
+  boolean forceUpper=false;
+  boolean forceLower=false;
+  try {
+    String entryType=entry.getType();
+    List<String> typeList=new ArrayList<>(metaData.getLabelPattern().getValue(entryType));
+    if (!typeList.isEmpty()) {
+      typeList.remove(0);
+    }
+    boolean field=false;
+    for (    String typeListEntry : typeList) {
+      if ("[".equals(typeListEntry)) {
+        field=true;
+      }
+ else       if ("]".equals(typeListEntry)) {
+        field=false;
+      }
+ else       if (field) {
+        String[] parts=parseFieldMarker(typeListEntry);
+        String label=makeLabel(entry,parts[0]);
+        if (parts.length > 1) {
+          label=applyModifiers(label,parts,1);
+        }
+        stringBuilder.append(label);
+      }
+ else {
+        stringBuilder.append(typeListEntry);
+      }
+    }
+  }
+ catch (  Exception e) {
+    LOGGER.warn("Cannot make label",e);
+  }
+  key=checkLegalKey(stringBuilder.toString(),labelPatternPreferences.isEnforceLegalKey());
+  String regex=labelPatternPreferences.getKeyPatternRegex();
+  if ((regex != null) && !regex.trim().isEmpty()) {
+    String replacement=labelPatternPreferences.getKeyPatternReplacement();
+    key=key.replaceAll(regex,replacement);
+  }
+  if (forceUpper) {
+    key=key.toUpperCase();
+  }
+  if (forceLower) {
+    key=key.toLowerCase();
+  }
+  String oldKey=entry.getCiteKey();
+  int occurrences=database.getNumberOfKeyOccurrences(key);
+  if (Objects.equals(oldKey,key)) {
+    occurrences--;
+  }
+  boolean alwaysAddLetter=labelPatternPreferences.isAlwaysAddLetter();
+  boolean firstLetterA=labelPatternPreferences.isFirstLetterA();
+  if (!alwaysAddLetter && (occurrences == 0)) {
+    if (!key.equals(oldKey)) {
+      if (!database.containsEntryWithId(entry.getId())) {
+        entry.setCiteKey(key);
+      }
+ else {
+        database.setCiteKeyForEntry(entry,key);
+      }
+    }
+  }
+ else {
+    int number=0;
+    if (!alwaysAddLetter && !firstLetterA) {
+      number=1;
+    }
+    String moddedKey=key + getAddition(number);
+    occurrences=database.getNumberOfKeyOccurrences(moddedKey);
+    if (Objects.equals(oldKey,moddedKey)) {
+      occurrences--;
+    }
+    while (occurrences > 0) {
+      number++;
+      moddedKey=key + getAddition(number);
+      occurrences=database.getNumberOfKeyOccurrences(moddedKey);
+      if (Objects.equals(oldKey,moddedKey)) {
+        occurrences--;
+      }
+    }
+    if (!moddedKey.equals(oldKey)) {
+      if (!database.containsEntryWithId(entry.getId())) {
+        entry.setCiteKey(moddedKey);
+      }
+ else {
+        database.setCiteKeyForEntry(entry,moddedKey);
+      }
+    }
+  }
+}

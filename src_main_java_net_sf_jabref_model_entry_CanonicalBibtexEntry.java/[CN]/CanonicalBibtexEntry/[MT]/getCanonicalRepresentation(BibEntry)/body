@@ -4,11 +4,13 @@
   sb.append(String.format("@%s{%s,",e.getType().toLowerCase(Locale.US),citeKey)).append('\n');
   Map<String,String> mapFieldToValue=new HashMap<>();
   SortedSet<String> sortedFields=new TreeSet<>();
-  for (  String fieldName : e.getFieldNames()) {
+  for (  Entry<String,String> field : e.getFieldMap().entrySet()) {
+    String fieldName=field.getKey();
+    String fieldValue=field.getValue();
     if (!fieldName.equals(BibEntry.KEY_FIELD)) {
       String lowerCaseFieldName=fieldName.toLowerCase(Locale.US);
       sortedFields.add(lowerCaseFieldName);
-      mapFieldToValue.put(lowerCaseFieldName,e.getField(fieldName));
+      mapFieldToValue.put(lowerCaseFieldName,fieldValue);
     }
   }
   StringJoiner sj=new StringJoiner(",\n","","\n");

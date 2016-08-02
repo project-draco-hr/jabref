@@ -1,7 +1,12 @@
 {
   Date date=datePicker.getDate();
   if (date != null) {
-    editor.setText(new EasyDateFormat().getDateAt(date));
+    if (isoFormat) {
+      editor.setText(EasyDateFormat.isoDateFormat().getDateAt(date));
+    }
+ else {
+      editor.setText(EasyDateFormat.fromPreferences(Globals.prefs).getDateAt(date));
+    }
     new FocusRequester(editor.getTextComponent());
   }
 }

@@ -32,14 +32,14 @@
     }
  else     if (!incommand && ((c == '{') || (c == '}'))) {
     }
- else     if (Character.isLetter(c) || (c == '%') || Globals.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c))) {
+ else     if (Character.isLetter(c) || (c == '%') || StringUtil.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c))) {
       escaped=false;
       if (!incommand) {
         sb.append(c);
       }
  else {
         currentCommand.append(c);
-        if ((currentCommand.length() == 1) && Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString()) && !(i >= (field.length() - 1))) {
+        if ((currentCommand.length() == 1) && StringUtil.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString()) && !(i >= (field.length() - 1))) {
           String command=currentCommand.toString();
           i++;
           c=field.charAt(i);
@@ -52,17 +52,20 @@
  else {
             commandBody=field.substring(i,i + 1);
           }
-          Object result=LatexToUnicodeFormatter.CHARS.get(command + commandBody);
+          String result=LatexToUnicodeFormatter.CHARS.get(command + commandBody);
           if (result == null) {
             if (commandBody.length() <= 1) {
               String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
-              if (accent != null) {
+              if (accent == null) {
+                sb.append(commandBody);
+              }
+ else {
                 sb.append(commandBody).append(accent);
               }
             }
           }
  else {
-            sb.append((String)result);
+            sb.append(result);
           }
           incommand=false;
           escaped=false;
@@ -70,12 +73,12 @@
  else {
           if ((i + 1) == field.length()) {
             String command=currentCommand.toString();
-            Object result=LatexToUnicodeFormatter.CHARS.get(command);
+            String result=LatexToUnicodeFormatter.CHARS.get(command);
             if (result == null) {
               sb.append(command);
             }
  else {
-              sb.append((String)result);
+              sb.append(result);
             }
           }
         }
@@ -97,11 +100,16 @@
             if (result == null) {
               if (argument.length() <= 1) {
                 String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
-                if (accent != null) {
-                  sb.append(argument).append(accent);
+                if (accent == null) {
+                  if (argument.length() == 0) {
+                    sb.append(command);
+                  }
+ else {
+                    sb.append(argument);
+                  }
                 }
  else {
-                  sb.append(argument);
+                  sb.append(argument).append(accent);
                 }
               }
  else {
@@ -139,5 +147,5 @@
       escaped=false;
     }
   }
-  return sb.toString().replace("&amp;","&").replace("<p>",Globals.NEWLINE).replace("&dollar;","$").replace("~","\u00A0");
+  return sb.toString().replace("&amp;","&").replace("<p>",OS.NEWLINE).replace("&dollar;","$").replace("~","\u00A0");
 }
