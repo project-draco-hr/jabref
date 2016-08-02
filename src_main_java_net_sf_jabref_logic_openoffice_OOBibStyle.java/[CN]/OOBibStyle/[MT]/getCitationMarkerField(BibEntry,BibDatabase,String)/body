@@ -2,12 +2,12 @@
   String authorField=getStringCitProperty(AUTHOR_FIELD);
   String[] fields=field.split(FieldName.FIELD_SEPARATOR);
   for (  String s : fields) {
-    String content=BibDatabase.getResolvedField(s,entry,database);
-    if ((content != null) && !content.trim().isEmpty()) {
-      if (field.equals(authorField) && StringUtil.isInCurlyBrackets(content)) {
-        return "{" + fieldFormatter.format(content) + "}";
+    Optional<String> content=BibDatabase.getResolvedField(s,entry,database);
+    if ((content.isPresent()) && !content.get().trim().isEmpty()) {
+      if (field.equals(authorField) && StringUtil.isInCurlyBrackets(content.get())) {
+        return "{" + fieldFormatter.format(content.get()) + "}";
       }
-      return fieldFormatter.format(content);
+      return fieldFormatter.format(content.get());
     }
   }
   return "";
