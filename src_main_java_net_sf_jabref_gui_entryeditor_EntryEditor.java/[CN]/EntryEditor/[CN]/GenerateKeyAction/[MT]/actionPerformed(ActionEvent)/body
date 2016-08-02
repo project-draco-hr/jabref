@@ -1,6 +1,6 @@
 {
   storeCurrentEdit();
-  Object oldValue=entry.getCiteKey();
+  String oldValue=entry.getCiteKey();
   if (oldValue != null) {
     if (Globals.prefs.getBoolean(JabRefPreferences.AVOID_OVERWRITING_KEY)) {
       panel.output(Localization.lang("Not overwriting existing key. To change this setting, open Options -> Prefererences -> BibTeX key generator"));
@@ -18,7 +18,7 @@
     }
   }
   LabelPatternUtil.makeLabel(panel.getBibDatabaseContext().getMetaData(),panel.getDatabase(),entry,LabelPatternPreferences.fromPreferences(Globals.prefs));
-  panel.getUndoManager().addEdit(new UndoableKeyChange(panel.getDatabase(),entry,(String)oldValue,entry.getCiteKey()));
+  panel.getUndoManager().addEdit(new UndoableKeyChange(panel.getDatabase(),entry,oldValue,entry.getCiteKey()));
   String bibtexKeyData=entry.getCiteKey();
   setField(BibEntry.KEY_FIELD,bibtexKeyData);
   updateSource();
