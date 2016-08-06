@@ -1,0 +1,17 @@
+{
+  Objects.requireNonNull(term);
+  if (internalList) {
+    return false;
+  }
+  Path p=Paths.get(location);
+  String s=OS.NEWLINE + term;
+  try (BufferedWriter writer=Files.newBufferedWriter(p,StandardCharsets.UTF_8,create ? StandardOpenOption.CREATE : StandardOpenOption.APPEND)){
+    writer.write(s);
+    termsList.add(term);
+  }
+ catch (  IOException ioe) {
+    LOGGER.warn("Problem adding protected term to list",ioe);
+    return false;
+  }
+  return true;
+}
