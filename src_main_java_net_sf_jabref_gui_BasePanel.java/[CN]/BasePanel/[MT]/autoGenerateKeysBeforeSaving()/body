@@ -3,10 +3,10 @@
     NamedCompound ce=new NamedCompound(Localization.lang("Autogenerate BibTeX keys"));
     boolean any=false;
     for (    BibEntry bes : database.getEntries()) {
-      String oldKey=bes.getCiteKey();
-      if ((oldKey == null) || oldKey.isEmpty()) {
+      Optional<String> oldKey=bes.getCiteKeyOptional();
+      if (!(oldKey.isPresent()) || oldKey.get().isEmpty()) {
         LabelPatternUtil.makeLabel(bibDatabaseContext.getMetaData(),database,bes,LabelPatternPreferences.fromPreferences(Globals.prefs));
-        ce.addEdit(new UndoableKeyChange(database,bes,null,bes.getCiteKey()));
+        ce.addEdit(new UndoableKeyChange(database,bes,null,bes.getCiteKeyOptional().get()));
         any=true;
       }
     }

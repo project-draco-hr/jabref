@@ -3,15 +3,15 @@
     return;
   }
   entry=selectionModel.getSelected().get(0);
-  String bibtexKey=entry.getCiteKey();
-  if (bibtexKey == null) {
+  Optional<String> bibtexKey=entry.getCiteKeyOptional();
+  if (!bibtexKey.isPresent()) {
     int answer=JOptionPane.showConfirmDialog(frame,Localization.lang("This entry has no BibTeX key. Generate key now?"),Localization.lang("Download file"),JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE);
     if (answer == JOptionPane.OK_OPTION) {
       generateKeySelectedEntry();
-      bibtexKey=entry.getCiteKey();
+      bibtexKey=entry.getCiteKeyOptional();
     }
   }
-  DownloadExternalFile def=new DownloadExternalFile(frame,bibDatabaseContext,bibtexKey);
+  DownloadExternalFile def=new DownloadExternalFile(frame,bibDatabaseContext,bibtexKey.get());
   try {
     def.download(this);
   }
