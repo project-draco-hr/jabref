@@ -3,5 +3,12 @@
   if (text.isEmpty()) {
     return text;
   }
-  return format(text,UnitsToLatexFormatter.UNIT_COMBINATIONS);
+  String result=text.replaceAll("([0-9,\\.]+)-([Bb][Ii][Tt])","$1\\\\mbox\\{-\\}$2");
+  result=result.replaceAll("([0-9,\\.]+) ([Bb][Ii][Tt])","$1~$2");
+  for (  String listOfWord : prefixUnitCombinations) {
+    result=result.replaceAll("([0-9])(" + listOfWord + ")","$1\\{$2\\}");
+    result=result.replaceAll("([0-9])-(" + listOfWord + ")","$1\\\\mbox\\{-\\}\\{$2\\}");
+    result=result.replaceAll("([0-9]) (" + listOfWord + ")","$1~\\{$2\\}");
+  }
+  return result;
 }
