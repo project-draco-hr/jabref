@@ -30,7 +30,7 @@
     add(new GeneralAction(Actions.UNMARK_ENTRIES,Localization.lang("Unmark entries"),IconTheme.JabRefIcon.UNMARK_ENTRIES.getSmallIcon()));
   }
  else   if (be != null) {
-    Optional<String> marked=be.getFieldOptional(FieldName.MARKED);
+    Optional<String> marked=be.getFieldOptional(FieldName.MARKED_INTERNAL);
     if ((!marked.isPresent()) || marked.get().isEmpty()) {
       add(new GeneralAction(Actions.MARK_ENTRIES,Localization.lang("Mark entry"),IconTheme.JabRefIcon.MARK_ENTRIES.getSmallIcon()));
       add(markSpecific);
@@ -93,9 +93,9 @@
 );
   addSeparator();
   add(typeMenu);
-  add(new GeneralAction(Actions.MERGE_DOI,Localization.lang("Get BibTeX data from DOI")){
+  add(new GeneralAction(Actions.MERGE_WITH_FETCHED_ENTRY,Localization.lang("Get BibTeX data from %0",FetchAndMergeEntry.getDisplayNameOfSupportedFields())){
 {
-      if (!(isFieldSetForSelectedEntry(FieldName.DOI))) {
+      if (!(isAnyFieldSetForSelectedEntry(FetchAndMergeEntry.SUPPORTED_FIELDS))) {
         this.setEnabled(false);
       }
     }
