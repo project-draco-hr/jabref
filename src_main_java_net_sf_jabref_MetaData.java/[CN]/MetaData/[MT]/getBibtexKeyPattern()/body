@@ -1,18 +1,18 @@
 {
-  if (labelPattern != null) {
-    return labelPattern;
+  if (bibtexKeyPattern != null) {
+    return bibtexKeyPattern;
   }
-  labelPattern=new DatabaseBibtexKeyPattern(Globals.prefs);
+  bibtexKeyPattern=new DatabaseBibtexKeyPattern(Globals.prefs);
   for (  String key : this) {
     if (key.startsWith(PREFIX_KEYPATTERN)) {
       List<String> value=getData(key);
       String type=key.substring(PREFIX_KEYPATTERN.length());
-      labelPattern.addLabelPattern(type,value.get(0));
+      bibtexKeyPattern.addBibtexKeyPattern(type,value.get(0));
     }
   }
   List<String> defaultPattern=getData(KEYPATTERNDEFAULT);
   if (defaultPattern != null) {
-    labelPattern.setDefaultValue(defaultPattern.get(0));
+    bibtexKeyPattern.setDefaultValue(defaultPattern.get(0));
   }
-  return labelPattern;
+  return bibtexKeyPattern;
 }
