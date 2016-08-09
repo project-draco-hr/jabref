@@ -1,0 +1,13 @@
+{
+  List<BibEntry> expectedBibEntries=Arrays.asList(getBibEntryExample(1),getBibEntryExample(2));
+  dbmsProcessor.insertEntry(expectedBibEntries.get(0));
+  dbmsProcessor.insertEntry(expectedBibEntries.get(1));
+  Assert.assertTrue(bibDatabase.getEntries().isEmpty());
+  dbmsSynchronizer.synchronizeLocalDatabase();
+  Assert.assertEquals(expectedBibEntries,bibDatabase.getEntries());
+  dbmsProcessor.removeEntry(expectedBibEntries.get(0));
+  dbmsProcessor.removeEntry(expectedBibEntries.get(1));
+  expectedBibEntries=new ArrayList<>();
+  dbmsSynchronizer.synchronizeLocalDatabase();
+  Assert.assertEquals(expectedBibEntries,bibDatabase.getEntries());
+}

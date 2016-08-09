@@ -1,0 +1,14 @@
+{
+  connection.createStatement().executeUpdate("TRUNCATE TABLE " + escape("METADATA"));
+  for (  Map.Entry<String,String> metaEntry : data.entrySet()) {
+    StringBuilder query=new StringBuilder().append("INSERT INTO ").append(escape("METADATA")).append("(").append(escape("KEY")).append(", ").append(escape("VALUE")).append(") VALUES(?, ?)");
+    try (PreparedStatement preparedStatement=connection.prepareStatement(query.toString())){
+      preparedStatement.setString(1,metaEntry.getKey());
+      preparedStatement.setString(2,metaEntry.getValue());
+      preparedStatement.executeUpdate();
+    }
+ catch (    SQLException e) {
+      LOGGER.error("SQL Error: ",e);
+    }
+  }
+}

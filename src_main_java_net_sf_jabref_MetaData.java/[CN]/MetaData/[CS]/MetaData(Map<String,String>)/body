@@ -1,25 +1,4 @@
 {
   Objects.requireNonNull(inData);
-  for (  Map.Entry<String,String> entry : inData.entrySet()) {
-    StringReader data=new StringReader(entry.getValue());
-    List<String> orderedData=new ArrayList<>();
-    try {
-      Optional<String> unit;
-      while ((unit=getNextUnit(data)).isPresent()) {
-        orderedData.add(unit.get());
-      }
-    }
- catch (    IOException ex) {
-      LOGGER.error("Weird error while parsing meta data.",ex);
-    }
-    if (GROUPSTREE.equals(entry.getKey())) {
-      putGroups(orderedData);
-    }
- else     if (SAVE_ACTIONS.equals(entry.getKey())) {
-      setSaveActions(FieldFormatterCleanups.parse(orderedData));
-    }
- else {
-      putData(entry.getKey(),orderedData);
-    }
-  }
+  setData(inData);
 }

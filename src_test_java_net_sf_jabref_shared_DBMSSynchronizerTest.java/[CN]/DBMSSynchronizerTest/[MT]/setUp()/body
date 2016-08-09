@@ -1,0 +1,10 @@
+{
+  Globals.prefs=JabRefPreferences.getInstance();
+  connection=TestConnector.getTestConnection(dbmsType);
+  bibDatabase=new BibDatabase();
+  BibDatabaseContext context=new BibDatabaseContext(bibDatabase);
+  dbmsSynchronizer=new DBMSSynchronizer(context);
+  dbmsProcessor=DBMSProcessor.getProcessorInstance(connection,dbmsType);
+  bibDatabase.registerListener(dbmsSynchronizer);
+  dbmsSynchronizer.openSharedDatabase(connection,dbmsType,"TEST");
+}

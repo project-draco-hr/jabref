@@ -1,0 +1,9 @@
+{
+  BibEntry bibEntry=getBibEntryExample(1);
+  bibDatabase.insertEntry(bibEntry);
+  MetaData testMetaData=new MetaData();
+  testMetaData.putData("saveActions",Arrays.asList("enabled","author[lower_case]"));
+  dbmsSynchronizer.setMetaData(testMetaData);
+  dbmsSynchronizer.applyMetaData();
+  Assert.assertEquals("wirthlin, michael j1",bibEntry.getFieldOptional("author").get());
+}

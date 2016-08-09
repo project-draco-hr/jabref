@@ -1,0 +1,8 @@
+{
+  BibEntry bibEntry=getBibEntryExample(1);
+  clientContextA.getDatabase().insertEntry(bibEntry);
+  bibEntry.setField("custom","custom value");
+  bibEntry.clearField("author");
+  clientContextB.getDBSynchronizer().pullChanges();
+  Assert.assertEquals(clientContextA.getDatabase().getEntries(),clientContextB.getDatabase().getEntries());
+}

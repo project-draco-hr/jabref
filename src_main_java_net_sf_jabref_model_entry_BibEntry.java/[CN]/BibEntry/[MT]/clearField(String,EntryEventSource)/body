@@ -1,0 +1,16 @@
+{
+  String fieldName=toLowerCase(name);
+  if (BibEntry.ID_FIELD.equals(fieldName)) {
+    throw new IllegalArgumentException("The field name '" + name + "' is reserved");
+  }
+  Optional<String> oldValue=getFieldOptional(fieldName);
+  if (!oldValue.isPresent()) {
+    return Optional.empty();
+  }
+  changed=true;
+  fields.remove(fieldName);
+  fieldsAsWords.remove(fieldName);
+  FieldChange change=new FieldChange(this,fieldName,oldValue.get(),null);
+  eventBus.post(new FieldChangedEvent(change,eventSource));
+  return Optional.of(change);
+}

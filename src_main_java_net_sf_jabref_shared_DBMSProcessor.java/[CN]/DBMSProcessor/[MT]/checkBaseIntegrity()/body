@@ -1,0 +1,11 @@
+{
+  List<String> requiredTables=new ArrayList<>(Arrays.asList("ENTRY","FIELD","METADATA"));
+  DatabaseMetaData databaseMetaData=connection.getMetaData();
+  try (ResultSet databaseMetaDataResultSet=databaseMetaData.getTables(null,null,null,null)){
+    while (databaseMetaDataResultSet.next()) {
+      String tableName=databaseMetaDataResultSet.getString("TABLE_NAME").toUpperCase();
+      requiredTables.remove(tableName);
+    }
+    return requiredTables.isEmpty();
+  }
+ }

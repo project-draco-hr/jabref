@@ -1,14 +1,20 @@
 {
   StringBuilder title=new StringBuilder();
-  if (getBibDatabaseContext().getDatabaseFile() == null) {
-    title.append(GUIGlobals.UNTITLED_TITLE);
-    if (getDatabase().hasEntries()) {
-      title.append('*');
+  DatabaseLocation databaseLocation=this.bibDatabaseContext.getLocation();
+  if (databaseLocation == DatabaseLocation.LOCAL) {
+    if (this.bibDatabaseContext.getDatabaseFile() == null) {
+      title.append(GUIGlobals.UNTITLED_TITLE);
+      if (getDatabase().hasEntries()) {
+        title.append('*');
+      }
+    }
+ else {
+      String changeFlag=isModified() ? "*" : "";
+      title.append(this.bibDatabaseContext.getDatabaseFile().getName()).append(changeFlag);
     }
   }
- else {
-    String changeFlag=isModified() ? "*" : "";
-    title.append(getBibDatabaseContext().getDatabaseFile().getName()).append(changeFlag);
+ else   if (databaseLocation == DatabaseLocation.SHARED) {
+    title.append(this.bibDatabaseContext.getDBSynchronizer().getDBName() + " [shared]");
   }
   return title.toString();
 }

@@ -1,0 +1,15 @@
+{
+  BibEntry bibEntry=getBibEntryExample(1);
+  bibDatabase.insertEntry(bibEntry);
+  List<BibEntry> actualEntries=dbmsProcessor.getSharedEntries();
+  Assert.assertEquals(1,actualEntries.size());
+  Assert.assertEquals(bibEntry,actualEntries.get(0));
+  bibDatabase.removeEntry(bibEntry);
+  actualEntries=dbmsProcessor.getSharedEntries();
+  Assert.assertEquals(0,actualEntries.size());
+  bibDatabase.insertEntry(bibEntry);
+  bibDatabase.removeEntry(bibEntry,EntryEventSource.SHARED);
+  actualEntries=dbmsProcessor.getSharedEntries();
+  Assert.assertEquals(1,actualEntries.size());
+  Assert.assertEquals(bibEntry,actualEntries.get(0));
+}

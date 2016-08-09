@@ -1,0 +1,37 @@
+{
+  if (!checkCurrentConnection()) {
+    return;
+  }
+  List<BibEntry> localEntries=bibDatabase.getEntries();
+  Map<Integer,Integer> idVersionMap=dbmsProcessor.getSharedIDVersionMapping();
+  removeNotSharedEntries(localEntries,idVersionMap.keySet());
+  for (  Map.Entry<Integer,Integer> idVersionEntry : idVersionMap.entrySet()) {
+    boolean match=false;
+    for (    BibEntry localEntry : localEntries) {
+      if (idVersionEntry.getKey() == localEntry.getSharedBibEntryData().getSharedID()) {
+        match=true;
+        if (idVersionEntry.getValue() > localEntry.getSharedBibEntryData().getVersion()) {
+          Optional<BibEntry> sharedEntry=dbmsProcessor.getSharedEntry(idVersionEntry.getKey());
+          if (sharedEntry.isPresent()) {
+            localEntry.setType(sharedEntry.get().getType(),EntryEventSource.SHARED);
+            localEntry.getSharedBibEntryData().setVersion(sharedEntry.get().getSharedBibEntryData().getVersion());
+            for (            String field : sharedEntry.get().getFieldNames()) {
+              localEntry.setField(field,sharedEntry.get().getFieldOptional(field),EntryEventSource.SHARED);
+            }
+            Set<String> redundantLocalEntryFields=localEntry.getFieldNames();
+            redundantLocalEntryFields.removeAll(sharedEntry.get().getFieldNames());
+            for (            String redundantField : redundantLocalEntryFields) {
+              localEntry.clearField(redundantField,EntryEventSource.SHARED);
+            }
+          }
+        }
+      }
+    }
+    if (!match) {
+      Optional<BibEntry> bibEntry=dbmsProcessor.getSharedEntry(idVersionEntry.getKey());
+      if (bibEntry.isPresent()) {
+        bibDatabase.insertEntry(bibEntry.get(),EntryEventSource.SHARED);
+      }
+    }
+  }
+}

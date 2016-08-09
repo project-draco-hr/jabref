@@ -1,0 +1,13 @@
+{
+  try {
+    if (!dbmsProcessor.checkBaseIntegrity()) {
+      LOGGER.info(Localization.lang("Integrity check failed. Fixing..."));
+      dbmsProcessor.setUpSharedDatabase();
+    }
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error: ",e);
+  }
+  synchronizeLocalMetaData();
+  synchronizeLocalDatabase();
+}

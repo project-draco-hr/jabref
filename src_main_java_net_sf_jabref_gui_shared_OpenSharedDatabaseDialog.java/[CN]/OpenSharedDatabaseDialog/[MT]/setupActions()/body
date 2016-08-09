@@ -1,0 +1,51 @@
+{
+  Action openAction=new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      try {
+        checkFields();
+        BibDatabaseMode selectedMode=Globals.prefs.getDefaultBibDatabaseMode();
+        BibDatabaseContext bibDatabaseContext=new BibDatabaseContext(new Defaults(selectedMode),DatabaseLocation.SHARED);
+        DBMSConnectionProperties connectionProperties=new DBMSConnectionProperties();
+        connectionProperties.setType((DBMSType)dbmsTypeDropDown.getSelectedItem());
+        connectionProperties.setHost(hostField.getText());
+        connectionProperties.setPort(Integer.parseInt(portField.getText()));
+        connectionProperties.setDatabase(databaseField.getText());
+        connectionProperties.setUser(userField.getText());
+        connectionProperties.setPassword(new String(passwordField.getPassword()));
+        bibDatabaseContext.getDBSynchronizer().openSharedDatabase(connectionProperties);
+        frame.addTab(bibDatabaseContext,true);
+        setGlobalPrefs();
+        bibDatabaseContext.getDBSynchronizer().registerListener(new SharedDatabaseUIManager(frame));
+        frame.output(Localization.lang("Connection_to_%0_server_stablished.",connectionProperties.getType().toString()));
+        dispose();
+      }
+ catch (      ClassNotFoundException exception) {
+        JOptionPane.showMessageDialog(OpenSharedDatabaseDialog.this,exception.getMessage(),Localization.lang("Driver error"),JOptionPane.ERROR_MESSAGE);
+      }
+catch (      SQLException exception) {
+        JOptionPane.showMessageDialog(OpenSharedDatabaseDialog.this,exception.getMessage(),Localization.lang("Connection error"),JOptionPane.ERROR_MESSAGE);
+      }
+catch (      JabRefException exception) {
+        JOptionPane.showMessageDialog(OpenSharedDatabaseDialog.this,exception.getMessage(),Localization.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+      }
+    }
+  }
+;
+  connectButton.addActionListener(openAction);
+  Action cancelAction=new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+;
+  cancelButton.addActionListener(cancelAction);
+  Action dbmsTypeDropDownAction=new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      portField.setText(Integer.toString(((DBMSType)dbmsTypeDropDown.getSelectedItem()).getDefaultPort()));
+    }
+  }
+;
+  dbmsTypeDropDown.addActionListener(dbmsTypeDropDownAction);
+  connectButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"Enter_pressed");
+  connectButton.getActionMap().put("Enter_pressed",openAction);
+}

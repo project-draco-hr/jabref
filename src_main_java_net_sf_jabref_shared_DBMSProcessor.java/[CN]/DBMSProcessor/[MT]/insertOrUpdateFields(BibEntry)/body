@@ -1,0 +1,34 @@
+{
+  for (  String fieldName : localBibEntry.getFieldNames()) {
+    Optional<String> valueOptional=localBibEntry.getFieldOptional(fieldName);
+    String value=null;
+    if (valueOptional.isPresent()) {
+      value=valueOptional.get();
+    }
+    StringBuilder selectFieldQuery=new StringBuilder().append("SELECT * FROM ").append(escape("FIELD")).append(" WHERE ").append(escape("NAME")).append(" = ? AND ").append(escape("ENTRY_SHARED_ID")).append(" = ?");
+    try (PreparedStatement preparedSelectFieldStatement=connection.prepareStatement(selectFieldQuery.toString())){
+      preparedSelectFieldStatement.setString(1,fieldName);
+      preparedSelectFieldStatement.setInt(2,localBibEntry.getSharedBibEntryData().getSharedID());
+      try (ResultSet selectFieldResultSet=preparedSelectFieldStatement.executeQuery()){
+        if (selectFieldResultSet.next()) {
+          StringBuilder updateFieldQuery=new StringBuilder().append("UPDATE ").append(escape("FIELD")).append(" SET ").append(escape("VALUE")).append(" = ? WHERE ").append(escape("NAME")).append(" = ? AND ").append(escape("ENTRY_SHARED_ID")).append(" = ?");
+          try (PreparedStatement preparedUpdateFieldStatement=connection.prepareStatement(updateFieldQuery.toString())){
+            preparedUpdateFieldStatement.setString(1,value);
+            preparedUpdateFieldStatement.setString(2,fieldName);
+            preparedUpdateFieldStatement.setInt(3,localBibEntry.getSharedBibEntryData().getSharedID());
+            preparedUpdateFieldStatement.executeUpdate();
+          }
+         }
+ else {
+          StringBuilder insertFieldQuery=new StringBuilder().append("INSERT INTO ").append(escape("FIELD")).append("(").append(escape("ENTRY_SHARED_ID")).append(", ").append(escape("NAME")).append(", ").append(escape("VALUE")).append(") VALUES(?, ?, ?)");
+          try (PreparedStatement preparedFieldStatement=connection.prepareStatement(insertFieldQuery.toString())){
+            preparedFieldStatement.setInt(1,localBibEntry.getSharedBibEntryData().getSharedID());
+            preparedFieldStatement.setString(2,fieldName);
+            preparedFieldStatement.setString(3,value);
+            preparedFieldStatement.executeUpdate();
+          }
+         }
+      }
+     }
+   }
+}
