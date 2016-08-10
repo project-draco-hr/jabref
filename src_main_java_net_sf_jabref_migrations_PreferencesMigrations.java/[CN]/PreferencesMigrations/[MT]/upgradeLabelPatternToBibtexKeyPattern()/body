@@ -1,0 +1,21 @@
+{
+  try {
+    Preferences mainPrefsNode=Preferences.userNodeForPackage(JabRefMain.class);
+    if (mainPrefsNode.nodeExists("bibtexkeypatterns")) {
+      return;
+    }
+    if (mainPrefsNode.nodeExists("logic/labelpattern")) {
+      LOGGER.info("Found old Bibtex Key patterns which will be migrated to new version.");
+      JabRefPreferences prefs=Globals.prefs;
+      GlobalBibtexKeyPattern keyPattern=new GlobalBibtexKeyPattern(AbstractBibtexKeyPattern.split(prefs.get(JabRefPreferences.DEFAULT_BIBTEX_KEY_PATTERN)));
+      Preferences oldPatternPrefs=mainPrefsNode.node("logic/labelpattern");
+      for (      String key : oldPatternPrefs.keys()) {
+        keyPattern.addBibtexKeyPattern(key,oldPatternPrefs.get(key,null));
+      }
+      prefs.putKeyPattern(keyPattern);
+    }
+  }
+ catch (  BackingStoreException e) {
+    LOGGER.error("Migrating old bibtexKeyPatterns failed.",e);
+  }
+}
