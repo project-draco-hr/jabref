@@ -5,7 +5,8 @@
   if (Globals.journalAbbreviationLoader == null) {
     Globals.journalAbbreviationLoader=mock(JournalAbbreviationLoader.class);
   }
-  ProtectedTermsLoader protectedTermsLoader=new ProtectedTermsLoader(ProtectedTermsPreferences.fromPreferences(Globals.prefs));
+  ProtectedTermsLoader protectedTermsLoader=new ProtectedTermsLoader(new ProtectedTermsPreferences(ProtectedTermsLoader.getInternalLists(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList()));
+  Assert.assertNotEquals(Collections.emptyList(),protectedTermsLoader.getProtectedTerms());
   ProtectTermsFormatter.setProtectedTermsLoader(protectedTermsLoader);
   pdfFolder=bibFolder.newFolder();
   MetaData metaData=new MetaData();
