@@ -7,12 +7,20 @@
   this.currentField=fieldName;
   initLayout();
   setupFieldSelector();
+  if (currentField != null) {
+    int fieldInd=fieldListModel.indexOf(currentField);
+    if (fieldInd >= 0) {
+      fieldList.setSelectedIndex(fieldInd);
+    }
+  }
+ else {
+    if (!fieldListModel.isEmpty()) {
+      fieldList.setSelectedIndex(0);
+      currentField=fieldList.getSelectedValue();
+    }
+  }
   setupWordSelector();
   setupActions();
   KeyBinder.bindCloseDialogKeyToCancelAction(this.rootPane,cancel.getAction());
-  int fieldInd=fieldListModel.indexOf(currentField);
-  if (fieldInd >= 0) {
-    fieldList.setSelectedIndex(fieldInd);
-  }
   pack();
 }
