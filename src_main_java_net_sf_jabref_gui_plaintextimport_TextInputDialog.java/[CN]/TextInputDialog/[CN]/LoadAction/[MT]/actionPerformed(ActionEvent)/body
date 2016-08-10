@@ -1,8 +1,8 @@
 {
   try {
-    String chosen=FileDialogs.getNewFile(frame,null,Collections.emptyList(),".txt",JFileChooser.OPEN_DIALOG,false);
-    if (chosen != null) {
-      File newFile=new File(chosen);
+    Optional<Path> path=new NewFileDialogs(frame).withExtension(FileExtensions.TXT).openDlgAndGetSelectedFile();
+    if (path.isPresent()) {
+      File newFile=path.get().toFile();
       document.remove(0,document.getLength());
       EditorKit eKit=textPane.getEditorKit();
       if (eKit != null) {

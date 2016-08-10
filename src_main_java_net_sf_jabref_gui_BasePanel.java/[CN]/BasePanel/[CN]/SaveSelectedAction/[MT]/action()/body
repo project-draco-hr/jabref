@@ -1,11 +1,9 @@
 {
-  String chosenFile=FileDialogs.getNewFile(frame,new File(Globals.prefs.get(JabRefPreferences.WORKING_DIRECTORY)),Collections.singletonList(".bib"),JFileChooser.SAVE_DIALOG,false);
-  if (chosenFile != null) {
-    File expFile=new File(chosenFile);
-    if (!expFile.exists() || (JOptionPane.showConfirmDialog(frame,Localization.lang("'%0' exists. Overwrite file?",expFile.getName()),Localization.lang("Save database"),JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION)) {
-      saveDatabase(expFile,true,Globals.prefs.getDefaultEncoding(),saveType);
-      frame.getFileHistory().newFile(expFile.getPath());
-      frame.output(Localization.lang("Saved selected to '%0'.",expFile.getPath()));
-    }
+  Optional<Path> chosenFile=new NewFileDialogs(frame).withExtension(FileExtensions.BIBTEX_DB).saveNewFile();
+  if (chosenFile.isPresent()) {
+    Path path=chosenFile.get();
+    saveDatabase(path.toFile(),true,Globals.prefs.getDefaultEncoding(),saveType);
+    frame.getFileHistory().newFile(path.toString());
+    frame.output(Localization.lang("Saved selected to '%0'.",path.toString()));
   }
 }

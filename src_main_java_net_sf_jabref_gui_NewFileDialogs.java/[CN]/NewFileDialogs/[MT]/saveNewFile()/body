@@ -1,0 +1,11 @@
+{
+  fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+  if (showDialogAndIsAccepted()) {
+    File file=fileChooser.getSelectedFile();
+    if (!extensions.isEmpty() && !fileChooser.accept(file)) {
+      return Optional.of(Paths.get(file.getPath() + extensions.iterator().next().getFirstExtensionWithDot()));
+    }
+    return Optional.of(file.toPath());
+  }
+  return Optional.empty();
+}
