@@ -1,0 +1,16 @@
+{
+  keyPattern=pattern;
+  Preferences pre=Preferences.userNodeForPackage(JabRefMain.class).node(BIBTEX_KEY_PATTERNS_NODE);
+  try {
+    pre.clear();
+  }
+ catch (  BackingStoreException ex) {
+    LOGGER.info("BackingStoreException in JabRefPreferences.putKeyPattern",ex);
+  }
+  Set<String> allKeys=pattern.getAllKeys();
+  for (  String key : allKeys) {
+    if (!pattern.isDefaultValue(key)) {
+      pre.put(key,pattern.getValue(key).get(0));
+    }
+  }
+}
