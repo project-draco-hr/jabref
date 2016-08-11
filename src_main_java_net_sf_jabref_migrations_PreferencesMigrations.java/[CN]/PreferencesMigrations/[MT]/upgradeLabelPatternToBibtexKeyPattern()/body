@@ -9,17 +9,17 @@
         LOGGER.info("Upgraded old default key generator pattern '" + oldDefault + "' to new version.");
       }
     }
-    if (mainPrefsNode.nodeExists("bibtexkeypatterns")) {
+    if (mainPrefsNode.nodeExists(JabRefPreferences.BIBTEX_KEY_PATTERNS_NODE)) {
       return;
     }
     if (mainPrefsNode.nodeExists("logic/labelpattern")) {
-      LOGGER.info("Found old Bibtex Key patterns which will be migrated to new version.");
-      GlobalBibtexKeyPattern keyPattern=new GlobalBibtexKeyPattern(AbstractBibtexKeyPattern.split(prefs.get(JabRefPreferences.DEFAULT_BIBTEX_KEY_PATTERN)));
-      Preferences oldPatternPrefs=mainPrefsNode.node("logic/labelpattern");
-      for (      String key : oldPatternPrefs.keys()) {
-        keyPattern.addBibtexKeyPattern(key,oldPatternPrefs.get(key,null));
-      }
-      prefs.putKeyPattern(keyPattern);
+      migrateTypedKeyPrefs(prefs,mainPrefsNode.node("logic/labelpattern"));
+    }
+ else     if (mainPrefsNode.nodeExists("logic/labelPattern")) {
+      migrateTypedKeyPrefs(prefs,mainPrefsNode.node("logic/labelPattern"));
+    }
+ else     if (mainPrefsNode.nodeExists("labelPattern")) {
+      migrateTypedKeyPrefs(prefs,mainPrefsNode.node("labelPattern"));
     }
   }
  catch (  BackingStoreException e) {
