@@ -43,48 +43,15 @@
   add(new BibtexSingleField(FieldName.LANGUAGE,true,BibtexSingleField.SMALL_W));
   add(new BibtexSingleField(FieldName.VOLUME,true,BibtexSingleField.SMALL_W,60).setNumeric(true));
   add(new BibtexSingleField(FieldName.YEAR,true,BibtexSingleField.SMALL_W,60).setNumeric(true));
-  dummy=new BibtexSingleField(SpecialFieldsUtils.FIELDNAME_RANKING,false);
-  if (!serializeSpecialFields) {
-    dummy.setPrivate();
-    dummy.setWriteable(false);
-    dummy.setDisplayable(false);
+  for (  String fieldName : SPECIAL_FIELDS) {
+    dummy=new BibtexSingleField(fieldName,false);
+    if (!serializeSpecialFields) {
+      dummy.setPrivate();
+      dummy.setWriteable(false);
+      dummy.setDisplayable(false);
+    }
+    add(dummy);
   }
-  add(dummy);
-  dummy=new BibtexSingleField(SpecialFieldsUtils.FIELDNAME_PRIORITY,false);
-  if (!serializeSpecialFields) {
-    dummy.setPrivate();
-    dummy.setWriteable(false);
-    dummy.setDisplayable(false);
-  }
-  add(dummy);
-  dummy=new BibtexSingleField(SpecialFieldsUtils.FIELDNAME_RELEVANCE,false);
-  if (!serializeSpecialFields) {
-    dummy.setPrivate();
-    dummy.setWriteable(false);
-    dummy.setDisplayable(false);
-  }
-  add(dummy);
-  dummy=new BibtexSingleField(SpecialFieldsUtils.FIELDNAME_QUALITY,false);
-  if (!serializeSpecialFields) {
-    dummy.setPrivate();
-    dummy.setWriteable(false);
-    dummy.setDisplayable(false);
-  }
-  add(dummy);
-  dummy=new BibtexSingleField(SpecialFieldsUtils.FIELDNAME_READ,false);
-  if (!serializeSpecialFields) {
-    dummy.setPrivate();
-    dummy.setWriteable(false);
-    dummy.setDisplayable(false);
-  }
-  add(dummy);
-  dummy=new BibtexSingleField(SpecialFieldsUtils.FIELDNAME_PRINTED,false);
-  if (!serializeSpecialFields) {
-    dummy.setPrivate();
-    dummy.setWriteable(false);
-    dummy.setDisplayable(false);
-  }
-  add(dummy);
   dummy=new BibtexSingleField(BibEntry.KEY_FIELD,true);
   dummy.setPrivate();
   add(dummy);
@@ -120,7 +87,8 @@
   dummy.setExtras(EnumSet.of(FieldProperties.OWNER));
   dummy.setPrivate();
   add(dummy);
-  dummy=new BibtexSingleField(Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD),false,BibtexSingleField.SMALL_W);
+  dummy=new BibtexSingleField(timeStampFieldName,false,BibtexSingleField.SMALL_W);
+  timeStampField=timeStampFieldName;
   dummy.setExtras(EnumSet.of(FieldProperties.DATE));
   dummy.setPrivate();
   add(dummy);
@@ -185,10 +153,4 @@
     field.getExtras().add(FieldProperties.ISO_DATE);
     add(field);
   }
-  for (  BibtexSingleField sField : fieldSet.values()) {
-    if (!sField.isPrivate()) {
-      PUBLIC_FIELDS.add(sField.getFieldName());
-    }
-  }
-  Collections.sort(PUBLIC_FIELDS);
 }
