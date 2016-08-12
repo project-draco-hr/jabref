@@ -1,8 +1,10 @@
 {
   try {
+    String commentsAndEntryTypeDefinition=dumpTextReadSoFarToString();
     BibEntry entry=parseEntry(type);
+    entry.setCommentsBeforeEntry(commentsAndEntryTypeDefinition.substring(0,commentsAndEntryTypeDefinition.lastIndexOf('@')));
+    entry.setParsedSerialization(commentsAndEntryTypeDefinition + dumpTextReadSoFarToString());
     boolean duplicateKey=database.insertEntry(entry);
-    entry.setParsedSerialization(dumpTextReadSoFarToString());
     if (duplicateKey) {
       parserResult.addDuplicateKey(entry.getCiteKey());
     }
