@@ -1,10 +1,10 @@
 {
   FreeCiteImporter fimp=new FreeCiteImporter();
   String text=textPane.getText();
-  text=text.replace(Globals.NEWLINE.concat(Globals.NEWLINE),"##NEWLINE##");
-  text=text.replace("/".concat(Globals.NEWLINE),"/");
-  text=text.replace(Globals.NEWLINE," ");
-  text=text.replace("##NEWLINE##",Globals.NEWLINE);
+  text=text.replace(OS.NEWLINE.concat(OS.NEWLINE),"##NEWLINE##");
+  text=text.replace("/".concat(OS.NEWLINE),"/");
+  text=text.replace(OS.NEWLINE," ");
+  text=text.replace("##NEWLINE##",OS.NEWLINE);
   ParserResult importerResult=fimp.importEntries(text);
   if (importerResult.hasWarnings()) {
     frame.showMessage(importerResult.getErrorMessage());
@@ -14,7 +14,7 @@
     return false;
   }
  else {
-    UpdateField.setAutomaticFields(importedEntries,false,false);
+    UpdateField.setAutomaticFields(importedEntries,false,false,Globals.prefs);
     boolean markEntries=EntryMarker.shouldMarkEntries();
     for (    BibEntry e : importedEntries) {
       if (markEntries) {

@@ -1,45 +1,47 @@
 {
-  String s1=one.getField(field);
-  String s2=two.getField(field);
-  if (s1 == null) {
-    if (s2 == null) {
+  Optional<String> optionalStringOne=one.getFieldOptional(field);
+  Optional<String> optionalStringTwo=two.getFieldOptional(field);
+  if (!optionalStringOne.isPresent()) {
+    if (!optionalStringTwo.isPresent()) {
       return EMPTY_IN_BOTH;
     }
     return EMPTY_IN_ONE;
   }
- else   if (s2 == null) {
+ else   if (!optionalStringTwo.isPresent()) {
     return EMPTY_IN_TWO;
   }
+  String stringOne=optionalStringOne.get();
+  String stringTwo=optionalStringTwo.get();
   if (InternalBibtexFields.getFieldExtras(field).contains(FieldProperties.PERSON_NAMES)) {
-    String auth1=AuthorList.fixAuthorLastNameOnlyCommas(s1,false).replace(" and "," ").toLowerCase();
-    String auth2=AuthorList.fixAuthorLastNameOnlyCommas(s2,false).replace(" and "," ").toLowerCase();
-    double similarity=DuplicateCheck.correlateByWords(auth1,auth2);
+    String authorOne=AuthorList.fixAuthorLastNameOnlyCommas(stringOne,false).replace(" and "," ").toLowerCase();
+    String authorTwo=AuthorList.fixAuthorLastNameOnlyCommas(stringTwo,false).replace(" and "," ").toLowerCase();
+    double similarity=DuplicateCheck.correlateByWords(authorOne,authorTwo);
     if (similarity > 0.8) {
       return EQUAL;
     }
     return NOT_EQUAL;
   }
- else   if ("pages".equals(field)) {
-    s1=s1.replaceAll("[- ]+","-");
-    s2=s2.replaceAll("[- ]+","-");
-    if (s1.equals(s2)) {
+ else   if (FieldName.PAGES.equals(field)) {
+    stringOne=stringOne.replaceAll("[- ]+","-");
+    stringTwo=stringTwo.replaceAll("[- ]+","-");
+    if (stringOne.equals(stringTwo)) {
       return EQUAL;
     }
     return NOT_EQUAL;
   }
- else   if ("journal".equals(field)) {
-    s1=s1.replace(".","").toLowerCase();
-    s2=s2.replace(".","").toLowerCase();
-    double similarity=DuplicateCheck.correlateByWords(s1,s2);
+ else   if (FieldName.JOURNAL.equals(field)) {
+    stringOne=stringOne.replace(".","").toLowerCase();
+    stringTwo=stringTwo.replace(".","").toLowerCase();
+    double similarity=DuplicateCheck.correlateByWords(stringOne,stringTwo);
     if (similarity > 0.8) {
       return EQUAL;
     }
     return NOT_EQUAL;
   }
  else {
-    s1=s1.toLowerCase();
-    s2=s2.toLowerCase();
-    double similarity=DuplicateCheck.correlateByWords(s1,s2);
+    stringOne=stringOne.toLowerCase();
+    stringTwo=stringTwo.toLowerCase();
+    double similarity=DuplicateCheck.correlateByWords(stringOne,stringTwo);
     if (similarity > 0.8) {
       return EQUAL;
     }

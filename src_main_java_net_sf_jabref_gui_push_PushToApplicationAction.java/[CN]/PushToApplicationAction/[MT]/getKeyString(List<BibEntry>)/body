@@ -1,0 +1,19 @@
+{
+  StringBuilder result=new StringBuilder();
+  Optional<String> citeKey;
+  boolean first=true;
+  for (  BibEntry bes : bibentries) {
+    citeKey=bes.getCiteKeyOptional();
+    if (!(citeKey.isPresent()) || citeKey.get().isEmpty()) {
+      continue;
+    }
+    if (first) {
+      result.append(citeKey.get());
+      first=false;
+    }
+ else {
+      result.append(',').append(citeKey.get());
+    }
+  }
+  return result.toString();
+}

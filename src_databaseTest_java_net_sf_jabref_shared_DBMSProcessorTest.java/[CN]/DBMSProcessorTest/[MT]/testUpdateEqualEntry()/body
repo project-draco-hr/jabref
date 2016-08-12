@@ -1,0 +1,13 @@
+{
+  BibEntry expectedBibEntry=getBibEntryExample();
+  dbmsProcessor.insertEntry(expectedBibEntry);
+  expectedBibEntry.getSharedBibEntryData().setVersion(0);
+  dbmsProcessor.updateEntry(expectedBibEntry);
+  Optional<BibEntry> actualBibEntryOptional=dbmsProcessor.getSharedEntry(expectedBibEntry.getSharedBibEntryData().getSharedID());
+  if (actualBibEntryOptional.isPresent()) {
+    Assert.assertEquals(expectedBibEntry,actualBibEntryOptional.get());
+  }
+ else {
+    Assert.fail();
+  }
+}

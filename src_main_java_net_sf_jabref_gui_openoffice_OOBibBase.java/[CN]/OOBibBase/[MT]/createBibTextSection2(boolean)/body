@@ -4,7 +4,13 @@
     mxDocCursor.gotoEnd(false);
   }
   OOUtil.insertParagraphBreak(text,mxDocCursor);
-  XNamed xChildNamed=UnoRuntime.queryInterface(XNamed.class,mxDocFactory.createInstance("com.sun.star.text.TextSection"));
+  XNamed xChildNamed;
+  try {
+    xChildNamed=UnoRuntime.queryInterface(XNamed.class,mxDocFactory.createInstance("com.sun.star.text.TextSection"));
+  }
+ catch (  Exception e) {
+    throw new CreationException(e.getMessage());
+  }
   xChildNamed.setName(OOBibBase.BIB_SECTION_NAME);
   XTextContent xChildSection=UnoRuntime.queryInterface(XTextContent.class,xChildNamed);
   text.insertTextContent(mxDocCursor,xChildSection,false);

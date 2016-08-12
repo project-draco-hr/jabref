@@ -1,0 +1,8 @@
+{
+  String testEntry="@article{test,author={Ed von Test}}";
+  ParserResult result=BibtexParser.parse(new StringReader(SavePreferences.ENCODING_PREFIX + OS.NEWLINE + OS.NEWLINE+ OS.NEWLINE+ testEntry));
+  Collection<BibEntry> c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibEntry e=c.iterator().next();
+  assertEquals(OS.NEWLINE + OS.NEWLINE + testEntry,e.getParsedSerialization());
+}

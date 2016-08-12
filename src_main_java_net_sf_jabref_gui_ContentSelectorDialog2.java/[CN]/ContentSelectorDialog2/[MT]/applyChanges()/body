@@ -4,25 +4,25 @@
     metaData.clearContentSelectors(fieldName);
     changedFieldSet=true;
   }
-  for (  String fieldName : wordListModels.keySet()) {
-    if ((fieldName == null) || FIELD_FIRST_LINE.equals(fieldName)) {
+  for (  Map.Entry<String,DefaultListModel<String>> entry : wordListModels.entrySet()) {
+    if ((entry.getKey() == null) || FIELD_FIRST_LINE.equals(entry.getKey())) {
       continue;
     }
-    DefaultListModel<String> lm=wordListModels.get(fieldName);
+    DefaultListModel<String> lm=entry.getValue();
     int start=0;
     if (!lm.isEmpty()) {
       while ((start < lm.size()) && lm.get(start).equals(WORD_FIRSTLINE_TEXT)) {
         start++;
       }
     }
-    if (metaData.getContentSelectors(fieldName).isEmpty()) {
+    if (metaData.getContentSelectors(entry.getKey()).isEmpty()) {
       changedFieldSet=true;
       List<String> data=new ArrayList<>();
       for (int wrd=start; wrd < lm.size(); wrd++) {
         String word=lm.get(wrd);
         data.add(word);
       }
-      metaData.setContentSelectors(fieldName,data);
+      metaData.setContentSelectors(entry.getKey(),data);
     }
   }
   panel.markNonUndoableBaseChanged();

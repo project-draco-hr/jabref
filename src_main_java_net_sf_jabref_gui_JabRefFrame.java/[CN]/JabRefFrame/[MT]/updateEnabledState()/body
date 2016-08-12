@@ -9,6 +9,7 @@
     getBackAction().setEnabled(false);
     getForwardAction().setEnabled(false);
     setEnabled(openAndSavedDatabasesOnlyActions,false);
+    setEnabled(sharedDatabaseOnlyActions,false);
   }
   if (tabCount > 0) {
     BasePanel current=getCurrentBasePanel();
@@ -16,5 +17,8 @@
       boolean saved=current.getBibDatabaseContext().getDatabaseFile() != null;
       setEnabled(openAndSavedDatabasesOnlyActions,saved);
     }
+    boolean isShared=current.getBibDatabaseContext().getLocation() == DatabaseLocation.SHARED;
+    setEnabled(sharedDatabaseOnlyActions,isShared);
+    setEnabled(noSharedDatabaseActions,!isShared);
   }
 }

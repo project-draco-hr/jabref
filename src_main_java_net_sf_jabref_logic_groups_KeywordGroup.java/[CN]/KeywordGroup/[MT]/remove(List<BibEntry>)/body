@@ -2,14 +2,14 @@
   if (!supportsRemove()) {
     return Optional.empty();
   }
-  if ((entriesToRemove != null) && (entriesToRemove.size() > 0)) {
+  if ((entriesToRemove != null) && (!entriesToRemove.isEmpty())) {
     List<FieldChange> changes=new ArrayList<>();
     boolean modified=false;
     for (    BibEntry entry : entriesToRemove) {
       if (contains(entry)) {
-        String oldContent=entry.getField(searchField);
+        String oldContent=entry.getFieldOptional(searchField).orElse(null);
         removeMatches(entry);
-        changes.add(new FieldChange(entry,searchField,oldContent,entry.getField(searchField)));
+        changes.add(new FieldChange(entry,searchField,oldContent,entry.getFieldOptional(searchField).orElse(null)));
         modified=true;
       }
     }

@@ -1,7 +1,9 @@
 {
-  CleanupPreset preset=new CleanupPreset(new FieldFormatterCleanups(true,Collections.singletonList(new FieldFormatterCleanup("title",new ProtectTermsFormatter()))));
+  ProtectedTermsLoader protectedTermsLoader=new ProtectedTermsLoader(new ProtectedTermsPreferences(ProtectedTermsLoader.getInternalLists(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList()));
+  Assert.assertNotEquals(Collections.emptyList(),protectedTermsLoader.getProtectedTerms());
+  CleanupPreset preset=new CleanupPreset(new FieldFormatterCleanups(true,Collections.singletonList(new FieldFormatterCleanup("title",new ProtectTermsFormatter(protectedTermsLoader)))));
   BibEntry entry=new BibEntry();
   entry.setField("title","AlGaAs");
   worker.cleanup(preset,entry);
-  Assert.assertEquals("{AlGaAs}",entry.getField("title"));
+  Assert.assertEquals(Optional.of("{AlGaAs}"),entry.getFieldOptional("title"));
 }

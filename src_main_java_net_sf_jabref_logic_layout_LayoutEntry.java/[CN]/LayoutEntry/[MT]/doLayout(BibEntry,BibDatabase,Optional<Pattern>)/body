@@ -3,12 +3,9 @@ switch (type) {
 case LayoutHelper.IS_LAYOUT_TEXT:
     return text;
 case LayoutHelper.IS_SIMPLE_FIELD:
-  String value=BibDatabase.getResolvedField(text,bibtex,database);
-if (value == null) {
-  value="";
-}
+  String value=BibDatabase.getResolvedField(text,bibtex,database).orElse("");
 if (postFormatter != null) {
-value=postFormatter.format(value);
+  value=postFormatter.format(value);
 }
 return value;
 case LayoutHelper.IS_FIELD_START:
@@ -20,7 +17,7 @@ return "";
 case LayoutHelper.IS_OPTION_FIELD:
 return handleOptionField(bibtex,database);
 case LayoutHelper.IS_ENCODING_NAME:
-return BibDatabase.getResolvedField("encoding",bibtex,database);
+return BibDatabase.getResolvedField("encoding",bibtex,database).orElse(null);
 default :
 return "";
 }

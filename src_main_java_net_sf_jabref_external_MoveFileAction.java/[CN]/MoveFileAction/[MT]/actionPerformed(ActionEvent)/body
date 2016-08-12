@@ -36,7 +36,7 @@
       repeat=false;
       String chosenFile;
       if (toFileDir) {
-        String suggName=FileUtil.createFileNameFromPattern(eEditor.getDatabase(),eEditor.getEntry(),Globals.journalAbbreviationLoader).concat(entry.type.isPresent() ? "." + entry.type.get().getExtension() : "");
+        String suggName=FileUtil.createFileNameFromPattern(eEditor.getDatabase(),eEditor.getEntry(),Globals.journalAbbreviationLoader,Globals.prefs).concat(entry.type.isPresent() ? "." + entry.type.get().getExtension() : "");
         CheckBoxMessage cbm=new CheckBoxMessage(Localization.lang("Move file to file directory?"),Localization.lang("Rename to '%0'",suggName),Globals.prefs.getBoolean(JabRefPreferences.RENAME_ON_MOVE_FILE_TO_FILE_DIR));
         int answer;
         if (suggName.equals(file.getName())) {
@@ -62,20 +62,15 @@
         chosenFile=sb.toString();
       }
  else {
-        chosenFile=FileDialogs.getNewFile(frame,file,Collections.singletonList(extension),JFileChooser.SAVE_DIALOG,false);
-      }
-      if (chosenFile == null) {
-        return;
-      }
-      newFile=new File(chosenFile);
-      if (newFile.exists() && (JOptionPane.showConfirmDialog(frame,Localization.lang("'%0' exists. Overwrite file?",newFile.getName()),MOVE_RENAME,JOptionPane.OK_CANCEL_OPTION) != JOptionPane.OK_OPTION)) {
-        if (toFileDir) {
-          return;
+        Optional<Path> path=new NewFileDialogs(frame,file.getPath()).saveNewFile();
+        if (path.isPresent()) {
+          chosenFile=path.get().toString();
         }
  else {
-          repeat=true;
+          return;
         }
       }
+      newFile=new File(chosenFile);
     }
     if (!newFile.equals(file)) {
       try {
@@ -84,9 +79,7 @@
           success=FileUtil.copyFile(file,newFile,true);
         }
         if (success) {
-          if (!file.delete()) {
-            LOGGER.info("Cannot delete original file");
-          }
+          Files.deleteIfExists(file.toPath());
           String canPath=new File(dirs.get(found)).getCanonicalPath();
           if (newFile.getCanonicalPath().startsWith(canPath)) {
             if ((newFile.getCanonicalPath().length() > canPath.length()) && (newFile.getCanonicalPath().charAt(canPath.length()) == File.separatorChar)) {

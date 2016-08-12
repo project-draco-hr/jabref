@@ -1,12 +1,12 @@
 {
   String bibtex="<bibtex:year>2003</bibtex:year>\n" + "<bibtex:title>Beach sand convolution by surf-wave optimzation</bibtex:title>\n" + "<bibtex:bibtexkey>OezbekC06</bibtex:bibtexkey>\n";
   writeManually(pdfFile,XMPUtilTest.bibtexXPacket(XMPUtilTest.bibtexDescription(bibtex)));
-  List<BibEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile());
+  List<BibEntry> l=XMPUtil.readXMP(pdfFile.getAbsoluteFile(),xmpPreferences);
   Assert.assertEquals(1,l.size());
   BibEntry e=l.get(0);
   Assert.assertNotNull(e);
-  Assert.assertEquals("OezbekC06",e.getCiteKey());
-  Assert.assertEquals("2003",e.getField("year"));
-  Assert.assertEquals("Beach sand convolution by surf-wave optimzation",e.getField("title"));
+  Assert.assertEquals(Optional.of("OezbekC06"),e.getCiteKeyOptional());
+  Assert.assertEquals(Optional.of("2003"),e.getFieldOptional("year"));
+  Assert.assertEquals(Optional.of("Beach sand convolution by surf-wave optimzation"),e.getFieldOptional("title"));
   Assert.assertEquals("misc",e.getType());
 }

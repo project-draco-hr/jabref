@@ -1,0 +1,13 @@
+{
+  Map<Integer,Integer> sharedIDVersionMapping=new HashMap<>();
+  StringBuilder selectEntryQuery=new StringBuilder().append("SELECT * FROM ").append(escape("ENTRY")).append(" ORDER BY ").append(escape("SHARED_ID"));
+  try (ResultSet selectEntryResultSet=connection.createStatement().executeQuery(selectEntryQuery.toString())){
+    while (selectEntryResultSet.next()) {
+      sharedIDVersionMapping.put(selectEntryResultSet.getInt("SHARED_ID"),selectEntryResultSet.getInt("VERSION"));
+    }
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error",e);
+  }
+  return sharedIDVersionMapping;
+}

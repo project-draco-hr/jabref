@@ -1,0 +1,10 @@
+{
+  StringBuilder query=new StringBuilder().append("DELETE FROM ").append(escape("ENTRY")).append(" WHERE ").append(escape("SHARED_ID")).append(" = ?");
+  try (PreparedStatement preparedStatement=connection.prepareStatement(query.toString())){
+    preparedStatement.setInt(1,bibEntry.getSharedBibEntryData().getSharedID());
+    preparedStatement.executeUpdate();
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error: ",e);
+  }
+}

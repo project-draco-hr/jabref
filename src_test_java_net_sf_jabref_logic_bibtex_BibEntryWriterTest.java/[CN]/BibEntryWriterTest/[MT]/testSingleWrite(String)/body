@@ -1,13 +1,7 @@
 {
   ParserResult result=BibtexParser.parse(new StringReader(bibtexEntry));
   Collection<BibEntry> entries=result.getDatabase().getEntries();
-  assertEquals(1,entries.size());
   BibEntry entry=entries.iterator().next();
-  assertEquals("test",entry.getCiteKey());
-  assertEquals(5,entry.getFieldNames().size());
-  Set<String> fields=entry.getFieldNames();
-  assertTrue(fields.contains("author"));
-  assertEquals("Foo Bar",entry.getField("author"));
   StringWriter stringWriter=new StringWriter();
   writer.write(entry,stringWriter,BibDatabaseMode.BIBTEX);
   String actual=stringWriter.toString();

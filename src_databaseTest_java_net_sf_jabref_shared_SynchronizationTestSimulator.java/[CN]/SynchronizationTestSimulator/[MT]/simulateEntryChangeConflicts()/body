@@ -1,0 +1,11 @@
+{
+  BibEntry bibEntryOfClientA=getBibEntryExample(1);
+  clientContextA.getDatabase().insertEntry(bibEntryOfClientA);
+  clientContextB.getDBSynchronizer().pullChanges();
+  bibEntryOfClientA.setField("year","2001");
+  Assert.assertFalse(clientContextB.getDatabase().getEntries().isEmpty());
+  Assert.assertNull(eventListenerB.getUpdateRefusedEvent());
+  BibEntry bibEntryOfClientB=clientContextB.getDatabase().getEntries().get(0);
+  bibEntryOfClientB.setField("year","2016");
+  Assert.assertNotNull(eventListenerB.getUpdateRefusedEvent());
+}

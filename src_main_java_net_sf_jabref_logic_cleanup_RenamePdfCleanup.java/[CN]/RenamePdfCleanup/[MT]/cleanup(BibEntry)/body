@@ -9,14 +9,14 @@
       newFileList.add(flEntry);
       continue;
     }
-    StringBuilder newFilename=new StringBuilder(FileUtil.createFileNameFromPattern(databaseContext.getDatabase(),entry,repositoryLoader));
+    StringBuilder newFilename=new StringBuilder(FileUtil.createFileNameFromPattern(databaseContext.getDatabase(),entry,repositoryLoader,prefs).trim());
     newFilename.append('.').append(FileUtil.getFileExtension(realOldFilename).orElse("pdf"));
     Optional<File> expandedOldFile=FileUtil.expandFilename(realOldFilename,databaseContext.getFileDirectory());
     if ((!expandedOldFile.isPresent()) || (expandedOldFile.get().getParent() == null)) {
       newFileList.add(flEntry);
       continue;
     }
-    String newPath=expandedOldFile.get().getParent().concat(System.getProperty("file.separator")).concat(newFilename.toString());
+    String newPath=expandedOldFile.get().getParent().concat(OS.FILE_SEPARATOR).concat(newFilename.toString());
     String expandedOldFilePath=expandedOldFile.get().toString();
     boolean pathsDifferOnlyByCase=newPath.equalsIgnoreCase(expandedOldFilePath) && !newPath.equals(expandedOldFilePath);
     if (new File(newPath).exists() && !pathsDifferOnlyByCase) {
@@ -34,7 +34,7 @@
         newFileEntryFileName=newFilename.toString();
       }
  else {
-        newFileEntryFileName=parent.toString().concat(System.getProperty("file.separator")).concat(newFilename.toString());
+        newFileEntryFileName=parent.toString().concat(OS.FILE_SEPARATOR).concat(newFilename.toString());
       }
       newFileList.add(new ParsedFileField(description,newFileEntryFileName,type));
     }

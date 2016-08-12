@@ -1,0 +1,65 @@
+{
+  HashMap<String,String> fields=new HashMap<>();
+  if (article.getPubmedData() != null) {
+    if (article.getMedlineCitation().getDateRevised() != null) {
+      DateRevised dateRevised=article.getMedlineCitation().getDateRevised();
+      addDateRevised(fields,dateRevised);
+      putIfValueNotNull(fields,"pubstatus",article.getPubmedData().getPublicationStatus());
+    }
+  }
+  if (article.getMedlineCitation() != null) {
+    MedlineCitation medlineCitation=article.getMedlineCitation();
+    fields.put("status",medlineCitation.getStatus());
+    DateCreated dateCreated=medlineCitation.getDateCreated();
+    fields.put("created",convertToDateFormat(dateCreated.getYear(),dateCreated.getMonth(),dateCreated.getDay()));
+    fields.put("pubmodel",medlineCitation.getArticle().getPubModel());
+    if (medlineCitation.getDateCompleted() != null) {
+      DateCompleted dateCompleted=medlineCitation.getDateCompleted();
+      fields.put("completed",convertToDateFormat(dateCompleted.getYear(),dateCompleted.getMonth(),dateCompleted.getDay()));
+    }
+    fields.put("pmid",medlineCitation.getPMID().getContent());
+    fields.put(FieldName.OWNER,medlineCitation.getOwner());
+    addArticleInformation(fields,medlineCitation.getArticle().getContent());
+    MedlineJournalInfo medlineJournalInfo=medlineCitation.getMedlineJournalInfo();
+    putIfValueNotNull(fields,"country",medlineJournalInfo.getCountry());
+    putIfValueNotNull(fields,"journal-abbreviation",medlineJournalInfo.getMedlineTA());
+    putIfValueNotNull(fields,"nlm-id",medlineJournalInfo.getNlmUniqueID());
+    putIfValueNotNull(fields,"issn-linking",medlineJournalInfo.getISSNLinking());
+    if (medlineCitation.getChemicalList() != null) {
+      if (medlineCitation.getChemicalList().getChemical() != null) {
+        addChemicals(fields,medlineCitation.getChemicalList().getChemical());
+      }
+    }
+    if (medlineCitation.getCitationSubset() != null) {
+      fields.put("citation-subset",join(medlineCitation.getCitationSubset(),", "));
+    }
+    if (medlineCitation.getGeneSymbolList() != null) {
+      addGeneSymbols(fields,medlineCitation.getGeneSymbolList());
+    }
+    if (medlineCitation.getMeshHeadingList() != null) {
+      addMeashHeading(fields,medlineCitation.getMeshHeadingList());
+    }
+    putIfValueNotNull(fields,"references",medlineCitation.getNumberOfReferences());
+    if (medlineCitation.getPersonalNameSubjectList() != null) {
+      addPersonalNames(fields,medlineCitation.getPersonalNameSubjectList());
+    }
+    if (medlineCitation.getOtherID() != null) {
+      addOtherId(fields,medlineCitation.getOtherID());
+    }
+    if (medlineCitation.getKeywordList() != null) {
+      addKeyWords(fields,medlineCitation.getKeywordList());
+    }
+    if (medlineCitation.getSpaceFlightMission() != null) {
+      fields.put("space-flight-mission",join(medlineCitation.getSpaceFlightMission(),", "));
+    }
+    if (medlineCitation.getInvestigatorList() != null) {
+      addInvestigators(fields,medlineCitation.getInvestigatorList());
+    }
+    if (medlineCitation.getGeneralNote() != null) {
+      addNotes(fields,medlineCitation.getGeneralNote());
+    }
+  }
+  BibEntry entry=new BibEntry(IdGenerator.next(),"article");
+  entry.setField(fields);
+  bibItems.add(entry);
+}

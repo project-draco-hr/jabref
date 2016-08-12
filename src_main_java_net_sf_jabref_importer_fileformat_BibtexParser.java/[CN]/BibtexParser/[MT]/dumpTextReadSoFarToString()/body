@@ -4,22 +4,23 @@
   if (indexOfAt == -1) {
     return purgeEOFCharacters(result);
   }
- else {
-    int runningIndex=indexOfAt - 1;
-    while (runningIndex >= 0) {
-      if (!Character.isWhitespace(result.charAt(runningIndex))) {
+ else   if (result.contains(SavePreferences.ENCODING_PREFIX)) {
+    int runningIndex=result.indexOf(SavePreferences.ENCODING_PREFIX);
+    while (runningIndex < indexOfAt) {
+      if (result.charAt(runningIndex) == '\n') {
         break;
       }
-      runningIndex--;
-    }
-    if (runningIndex > -1) {
-      if (result.charAt(runningIndex + 1) == '\r') {
-        runningIndex++;
+ else       if (result.charAt(runningIndex) == '\r') {
+        if (result.charAt(runningIndex + 1) == '\n') {
+          runningIndex++;
+        }
+        break;
       }
-      if (result.charAt(runningIndex + 1) == '\n') {
-        runningIndex++;
-      }
+      runningIndex++;
     }
     return result.substring(runningIndex + 1);
+  }
+ else {
+    return result;
   }
 }

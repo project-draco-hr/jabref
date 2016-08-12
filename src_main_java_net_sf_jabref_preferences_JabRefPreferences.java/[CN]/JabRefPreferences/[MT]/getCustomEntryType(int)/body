@@ -1,0 +1,16 @@
+{
+  String nr=String.valueOf(number);
+  String name=get(JabRefPreferences.CUSTOM_TYPE_NAME + nr);
+  if (name == null) {
+    return Optional.empty();
+  }
+  List<String> req=getStringList(JabRefPreferences.CUSTOM_TYPE_REQ + nr);
+  List<String> opt=getStringList(JabRefPreferences.CUSTOM_TYPE_OPT + nr);
+  List<String> priOpt=getStringList(JabRefPreferences.CUSTOM_TYPE_PRIOPT + nr);
+  if (priOpt.isEmpty()) {
+    return Optional.of(new CustomEntryType(EntryUtil.capitalizeFirst(name),req,opt));
+  }
+  List<String> secondary=new ArrayList<>(opt);
+  secondary.removeAll(priOpt);
+  return Optional.of(new CustomEntryType(EntryUtil.capitalizeFirst(name),req,priOpt,secondary));
+}

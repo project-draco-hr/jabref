@@ -1,12 +1,14 @@
 {
   List<IntegrityMessage> results=new ArrayList<>();
-  for (  Map.Entry<String,String> field : entry.getFieldMap().entrySet()) {
+  Map<String,String> fields=entry.getFieldMap();
+  fields.remove(FieldName.URL);
+  for (  Map.Entry<String,String> field : fields.entrySet()) {
     Matcher hashMatcher=UNESCAPED_HASH.matcher(field.getValue());
     int hashCount=0;
     while (hashMatcher.find()) {
       hashCount++;
     }
-    if ((hashCount % 2) == 1) {
+    if ((hashCount & 1) == 1) {
       results.add(new IntegrityMessage(Localization.lang("odd number of unescaped '#'"),entry,field.getKey()));
     }
   }

@@ -1,0 +1,27 @@
+{
+  Iterator<String> iterator=this.iterator();
+  while (iterator.hasNext()) {
+    String key=iterator.next();
+    if (key.startsWith(PREFIX_KEYPATTERN)) {
+      iterator.remove();
+    }
+  }
+  Set<String> allKeys=bibtexKeyPattern.getAllKeys();
+  for (  String key : allKeys) {
+    String metaDataKey=PREFIX_KEYPATTERN + key;
+    if (!bibtexKeyPattern.isDefaultValue(key)) {
+      List<String> data=new ArrayList<>();
+      data.add(bibtexKeyPattern.getValue(key).get(0));
+      this.putData(metaDataKey,data);
+    }
+  }
+  if (bibtexKeyPattern.getDefaultValue() == null) {
+    this.remove(KEYPATTERNDEFAULT);
+  }
+ else {
+    List<String> data=new ArrayList<>();
+    data.add(bibtexKeyPattern.getDefaultValue().get(0));
+    this.putData(KEYPATTERNDEFAULT,data);
+  }
+  this.bibtexKeyPattern=bibtexKeyPattern;
+}

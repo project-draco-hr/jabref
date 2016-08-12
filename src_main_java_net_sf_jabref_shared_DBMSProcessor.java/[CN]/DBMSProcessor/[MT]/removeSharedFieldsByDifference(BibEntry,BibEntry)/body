@@ -1,0 +1,12 @@
+{
+  Set<String> nullFields=new HashSet<>(sharedBibEntry.getFieldNames());
+  nullFields.removeAll(localBibEntry.getFieldNames());
+  for (  String nullField : nullFields) {
+    StringBuilder deleteFieldQuery=new StringBuilder().append("DELETE FROM ").append(escape("FIELD")).append(" WHERE ").append(escape("NAME")).append(" = ? AND ").append(escape("ENTRY_SHARED_ID")).append(" = ?");
+    try (PreparedStatement preparedDeleteFieldStatement=connection.prepareStatement(deleteFieldQuery.toString())){
+      preparedDeleteFieldStatement.setString(1,nullField);
+      preparedDeleteFieldStatement.setInt(2,localBibEntry.getSharedBibEntryData().getSharedID());
+      preparedDeleteFieldStatement.executeUpdate();
+    }
+   }
+}

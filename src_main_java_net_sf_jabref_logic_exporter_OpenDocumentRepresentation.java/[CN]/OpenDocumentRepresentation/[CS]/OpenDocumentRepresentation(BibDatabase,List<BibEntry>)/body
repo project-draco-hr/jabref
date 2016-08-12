@@ -1,0 +1,16 @@
+{
+  this.database=database;
+  List<FieldComparator> comparators=new ArrayList<>();
+  comparators.add(new FieldComparator(FieldName.AUTHOR));
+  comparators.add(new FieldComparator(FieldName.YEAR));
+  comparators.add(new FieldComparator(BibEntry.KEY_FIELD));
+  List<BibEntry> entryList=new ArrayList<>();
+  if (entries == null) {
+    entryList.addAll(database.getEntries());
+  }
+ else {
+    entryList.addAll(entries);
+  }
+  Collections.sort(entryList,new FieldComparatorStack<>(comparators));
+  this.entries=entryList;
+}

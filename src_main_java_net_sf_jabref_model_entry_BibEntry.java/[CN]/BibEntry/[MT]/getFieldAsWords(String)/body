@@ -1,0 +1,18 @@
+{
+  String fieldName=toLowerCase(field);
+  Set<String> storedList=fieldsAsWords.get(fieldName);
+  if (storedList != null) {
+    return storedList;
+  }
+ else {
+    String fieldValue=fields.get(fieldName);
+    if (fieldValue == null) {
+      return Collections.emptySet();
+    }
+ else {
+      HashSet<String> words=new HashSet<>(EntryUtil.getStringAsWords(fieldValue));
+      fieldsAsWords.put(fieldName,words);
+      return words;
+    }
+  }
+}

@@ -1,10 +1,13 @@
 {
   List<CleanupJob> jobs=new ArrayList<>();
   if (preset.isCleanUpUpgradeExternalLinks()) {
-    jobs.add(new UpgradePdfPsToFileCleanup(Arrays.asList("pdf","ps")));
+    jobs.add(new UpgradePdfPsToFileCleanup(Arrays.asList(FieldName.PDF,FieldName.PS)));
   }
   if (preset.isCleanUpDOI()) {
     jobs.add(new DoiCleanup());
+  }
+  if (preset.isCleanUpISSN()) {
+    jobs.add(new ISSNCleanup());
   }
   if (preset.isFixFileLinks()) {
     jobs.add(new FileLinksCleanup());
@@ -16,7 +19,7 @@
     jobs.add(new RelativePathsCleanup(databaseContext));
   }
   if (preset.isRenamePDF()) {
-    RenamePdfCleanup cleaner=new RenamePdfCleanup(preset.isRenamePdfOnlyRelativePaths(),databaseContext,repositoryLoader);
+    RenamePdfCleanup cleaner=new RenamePdfCleanup(preset.isRenamePdfOnlyRelativePaths(),databaseContext,repositoryLoader,prefs);
     jobs.add(cleaner);
     unsuccessfulRenames+=cleaner.getUnsuccessfulRenames();
   }

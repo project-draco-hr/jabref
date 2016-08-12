@@ -1,25 +1,25 @@
 {
   for (  String field : fields) {
-    String val1=e1.getField(field);
-    String val2=e2.getField(field);
-    if (val1 == null) {
-      if (val2 != null) {
-        return 1;
+    Optional<String> val1=e1.getFieldOptional(field);
+    Optional<String> val2=e2.getFieldOptional(field);
+    if (val1.isPresent()) {
+      if (val2.isPresent()) {
+        int compareToRes=val1.get().compareTo(val2.get());
+        if (compareToRes == 0) {
+        }
+ else {
+          return compareToRes;
+        }
       }
  else {
+        return -1;
       }
     }
  else {
-      if (val2 == null) {
-        return -1;
+      if (val2.isPresent()) {
+        return 1;
       }
  else {
-        int compareToRes=val1.compareTo(val2);
-        if (compareToRes != 0) {
-          return compareToRes;
-        }
- else {
-        }
       }
     }
   }

@@ -7,7 +7,13 @@
  else {
     citText=citationText;
   }
-  Object bookmark=mxDocFactory.createInstance("com.sun.star.text.ReferenceMark");
+  Object bookmark;
+  try {
+    bookmark=mxDocFactory.createInstance("com.sun.star.text.ReferenceMark");
+  }
+ catch (  Exception e) {
+    throw new CreationException(e.getMessage());
+  }
   XNamed xNamed=UnoRuntime.queryInterface(XNamed.class,bookmark);
   xNamed.setName(name);
   if (withText) {

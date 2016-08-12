@@ -1,0 +1,12 @@
+{
+  BibEntry bibEntry=getBibEntryExample(1);
+  bibDatabase.insertEntry(bibEntry);
+  Assert.assertEquals(1,bibDatabase.getEntries().size());
+  BibEntry modifiedBibEntry=getBibEntryExample(1);
+  modifiedBibEntry.setField("custom","custom value");
+  modifiedBibEntry.clearField("title");
+  modifiedBibEntry.setType("article");
+  dbmsProcessor.updateEntry(modifiedBibEntry);
+  dbmsSynchronizer.synchronizeLocalDatabase();
+  Assert.assertEquals(bibDatabase.getEntries(),dbmsProcessor.getSharedEntries());
+}

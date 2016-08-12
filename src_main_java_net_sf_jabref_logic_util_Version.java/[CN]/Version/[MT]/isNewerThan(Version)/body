@@ -3,22 +3,24 @@
   if (Objects.equals(this,otherVersion)) {
     return false;
   }
-  if (this.getFullVersion().equals(BuildInfo.UNKNOWN_VERSION)) {
+ else   if (this.getFullVersion().equals(BuildInfo.UNKNOWN_VERSION)) {
     return false;
   }
-  if (otherVersion.getFullVersion().equals(BuildInfo.UNKNOWN_VERSION)) {
+ else   if (otherVersion.getFullVersion().equals(BuildInfo.UNKNOWN_VERSION)) {
+    return false;
+  }
+ else   if (this.getMajor() > otherVersion.getMajor()) {
     return true;
   }
-  if (this.getMajor() > otherVersion.getMajor()) {
-    return true;
-  }
-  if (this.getMajor() == otherVersion.getMajor()) {
+ else   if (this.getMajor() == otherVersion.getMajor()) {
     if (this.getMinor() > otherVersion.getMinor()) {
       return true;
     }
-    if (this.getMinor() == otherVersion.getMinor() && this.getPatch() > otherVersion.getPatch()) {
-      return true;
+ else {
+      return (this.getMinor() == otherVersion.getMinor()) && (this.getPatch() > otherVersion.getPatch());
     }
   }
-  return false;
+ else {
+    return false;
+  }
 }

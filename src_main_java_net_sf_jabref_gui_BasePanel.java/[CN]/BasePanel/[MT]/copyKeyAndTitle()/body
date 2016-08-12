@@ -5,7 +5,7 @@
     StringReader sr=new StringReader("\\bibtexkey - \\begin{title}\\format[RemoveBrackets]{\\title}\\end{title}\n");
     Layout layout;
     try {
-      layout=new LayoutHelper(sr,Globals.journalAbbreviationLoader).getLayoutFromText();
+      layout=new LayoutHelper(sr,LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader)).getLayoutFromText();
     }
  catch (    IOException e) {
       LOGGER.info("Could not get layout",e);
@@ -14,7 +14,7 @@
     StringBuilder sb=new StringBuilder();
     int copied=0;
     for (    BibEntry be : bes) {
-      if (be.getCiteKey() != null) {
+      if (be.hasCiteKey()) {
         copied++;
         sb.append(layout.doLayout(be,database));
       }

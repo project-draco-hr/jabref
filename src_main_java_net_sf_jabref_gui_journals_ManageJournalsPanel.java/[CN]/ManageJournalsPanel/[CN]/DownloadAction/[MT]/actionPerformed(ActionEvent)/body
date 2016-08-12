@@ -1,17 +1,17 @@
 {
   String chosen;
   chosen=JOptionPane.showInputDialog(Localization.lang("Choose the URL to download."),"");
-  if (chosen == null) {
+  if ((chosen == null) || comp.getText().isEmpty()) {
     return;
   }
   File toFile;
   try {
-    String toName=FileDialogs.getNewFile(frame,new File(System.getProperty("user.home")),null,JFileChooser.SAVE_DIALOG,false);
-    if (toName == null) {
-      return;
+    Optional<Path> path=new NewFileDialogs(frame,System.getProperty("user.home")).saveNewFile();
+    if (path.isPresent()) {
+      toFile=new File(path.get().toString());
     }
  else {
-      toFile=new File(toName);
+      return;
     }
     URL url=new URL(chosen);
     MonitoredURLDownload.buildMonitoredDownload(comp,url).downloadToFile(toFile);

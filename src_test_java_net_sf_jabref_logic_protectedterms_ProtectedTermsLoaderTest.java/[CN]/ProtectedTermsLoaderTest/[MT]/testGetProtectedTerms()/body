@@ -1,0 +1,10 @@
+{
+  List<ProtectedTermsList> backupList=new ArrayList<>(loader.getProtectedTermsLists());
+  for (  ProtectedTermsList list : backupList) {
+    loader.removeProtectedTermsList(list);
+  }
+  assertTrue(loader.getProtectedTermsLists().isEmpty());
+  String filename=Paths.get(ProtectedTermsLoader.class.getResource("/net/sf/jabref/logic/protectedterms/namedterms.terms").toURI()).toFile().getPath();
+  loader.addProtectedTermsListFromFile(filename,true);
+  assertEquals(Arrays.asList("Einstein"),loader.getProtectedTerms());
+}

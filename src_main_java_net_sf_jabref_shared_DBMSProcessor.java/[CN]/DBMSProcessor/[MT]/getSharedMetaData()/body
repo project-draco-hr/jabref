@@ -1,0 +1,12 @@
+{
+  Map<String,String> data=new HashMap<>();
+  try (ResultSet resultSet=connection.createStatement().executeQuery("SELECT * FROM " + escape("METADATA"))){
+    while (resultSet.next()) {
+      data.put(resultSet.getString("KEY"),resultSet.getString("VALUE"));
+    }
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error",e);
+  }
+  return data;
+}

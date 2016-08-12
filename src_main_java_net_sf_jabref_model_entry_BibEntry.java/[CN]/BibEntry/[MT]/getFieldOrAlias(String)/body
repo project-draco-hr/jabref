@@ -1,28 +1,28 @@
 {
-  String fieldValue=getField(toLowerCase(name));
-  if (!Strings.isNullOrEmpty(fieldValue)) {
+  Optional<String> fieldValue=getFieldOptional(toLowerCase(name));
+  if (fieldValue.isPresent() && !fieldValue.get().isEmpty()) {
     return fieldValue;
   }
   String aliasForField=EntryConverter.FIELD_ALIASES.get(name);
   if (aliasForField != null) {
-    return getField(aliasForField);
+    return getFieldOptional(aliasForField);
   }
-  if ("date".equals(name)) {
-    String year=getField("year");
-    MonthUtil.Month month=MonthUtil.getMonth(getField("month"));
-    if (year != null) {
+  if (FieldName.DATE.equals(name)) {
+    Optional<String> year=getFieldOptional(FieldName.YEAR);
+    if (year.isPresent()) {
+      MonthUtil.Month month=MonthUtil.getMonth(getFieldOptional(FieldName.MONTH).orElse(""));
       if (month.isValid()) {
-        return year + '-' + month.twoDigitNumber;
+        return Optional.of(year.get() + '-' + month.twoDigitNumber);
       }
  else {
         return year;
       }
     }
   }
-  if ("year".equals(name) || "month".equals(name)) {
-    String date=getField("date");
-    if (date == null) {
-      return null;
+  if (FieldName.YEAR.equals(name) || FieldName.MONTH.equals(name)) {
+    Optional<String> date=getFieldOptional(FieldName.DATE);
+    if (!date.isPresent()) {
+      return Optional.empty();
     }
     DateFormat df=new DateFormat(){
       static final String FORMAT1="yyyy-MM-dd";
@@ -41,31 +41,31 @@
     }
 ;
     try {
-      Date parsedDate=df.parse(date);
+      Date parsedDate=df.parse(date.get());
       Calendar calendar=Calendar.getInstance();
       calendar.setTime(parsedDate);
-      if ("year".equals(name)) {
-        return Integer.toString(calendar.get(Calendar.YEAR));
+      if (FieldName.YEAR.equals(name)) {
+        return Optional.of(Integer.toString(calendar.get(Calendar.YEAR)));
       }
-      if ("month".equals(name)) {
-        return Integer.toString(calendar.get(Calendar.MONTH) + 1);
+      if (FieldName.MONTH.equals(name)) {
+        return Optional.of(Integer.toString(calendar.get(Calendar.MONTH) + 1));
       }
     }
  catch (    ParseException e) {
       df=new SimpleDateFormat("yyyy");
       try {
-        Date parsedDate=df.parse(date);
+        Date parsedDate=df.parse(date.get());
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(parsedDate);
-        if ("year".equals(name)) {
-          return Integer.toString(calendar.get(Calendar.YEAR));
+        if (FieldName.YEAR.equals(name)) {
+          return Optional.of(Integer.toString(calendar.get(Calendar.YEAR)));
         }
       }
  catch (      ParseException e2) {
         LOGGER.warn("Could not parse entry " + name,e2);
-        return null;
+        return Optional.empty();
       }
     }
   }
-  return null;
+  return Optional.empty();
 }

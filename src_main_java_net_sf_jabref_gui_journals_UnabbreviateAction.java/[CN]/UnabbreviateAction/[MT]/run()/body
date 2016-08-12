@@ -3,14 +3,14 @@
   if (entries == null) {
     return;
   }
-  UndoableUnabbreviator undoableAbbreviator=new UndoableUnabbreviator(Globals.journalAbbreviationLoader.getRepository());
+  UndoableUnabbreviator undoableAbbreviator=new UndoableUnabbreviator(Globals.journalAbbreviationLoader.getRepository(JournalAbbreviationPreferences.fromPreferences(Globals.prefs)));
   NamedCompound ce=new NamedCompound(Localization.lang("Unabbreviate journal names"));
   int count=0;
   for (  BibEntry entry : entries) {
-    if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,"journal",ce)) {
+    if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,FieldName.JOURNAL,ce)) {
       count++;
     }
-    if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,"journaltitle",ce)) {
+    if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,FieldName.JOURNALTITLE,ce)) {
       count++;
     }
   }

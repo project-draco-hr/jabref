@@ -11,7 +11,7 @@
     @Override public void actionPerformed(    ActionEvent e){
       dispose();
       try {
-        GroupTreeNode autoGroupsRoot=new GroupTreeNode(new ExplicitGroup(Localization.lang("Automatically created groups"),GroupHierarchyType.INCLUDING));
+        GroupTreeNode autoGroupsRoot=GroupTreeNode.fromGroup(new ExplicitGroup(Localization.lang("Automatically created groups"),GroupHierarchyType.INCLUDING,Globals.prefs));
         Set<String> hs;
         String fieldText=field.getText();
         if (keywords.isSelected()) {
@@ -24,19 +24,20 @@
         }
  else         if (authors.isSelected()) {
           List<String> fields=new ArrayList<>(2);
-          fields.add("author");
+          fields.add(FieldName.AUTHOR);
           hs=GroupsUtil.findAuthorLastNames(panel.getDatabase(),fields);
-          fieldText="author";
+          fieldText=FieldName.AUTHOR;
         }
  else {
           List<String> fields=new ArrayList<>(2);
-          fields.add("editor");
+          fields.add(FieldName.EDITOR);
           hs=GroupsUtil.findAuthorLastNames(panel.getDatabase(),fields);
-          fieldText="editor";
+          fieldText=FieldName.EDITOR;
         }
+        LatexToUnicodeFormatter formatter=new LatexToUnicodeFormatter();
         for (        String keyword : hs) {
-          KeywordGroup group=new KeywordGroup(keyword,fieldText,keyword,false,false,GroupHierarchyType.INDEPENDENT);
-          autoGroupsRoot.addChild(new GroupTreeNode(group));
+          KeywordGroup group=new KeywordGroup(formatter.format(keyword),fieldText,keyword,false,false,GroupHierarchyType.INDEPENDENT,Globals.prefs);
+          autoGroupsRoot.addChild(GroupTreeNode.fromGroup(group));
         }
         autoGroupsRoot.moveTo(m_groupsRoot.getNode());
         NamedCompound ce=new NamedCompound(Localization.lang("Automatically create groups"));

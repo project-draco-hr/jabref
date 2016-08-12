@@ -1,0 +1,13 @@
+{
+  Set<DBMSType> dbmsTypes=new HashSet<>();
+  for (  DBMSType dbms : DBMSType.values()) {
+    try {
+      Class.forName(dbms.getDriverClassPath());
+      dbmsTypes.add(dbms);
+    }
+ catch (    ClassNotFoundException e) {
+      LOGGER.info(Localization.lang("%0 driver not available.",dbms.toString()));
+    }
+  }
+  return dbmsTypes;
+}

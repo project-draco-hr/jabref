@@ -1,0 +1,10 @@
+{
+  List<BibEntry> entries=Collections.singletonList(entry);
+  List<String> extensions=Arrays.asList("jpg","pdf");
+  List<File> dirs=Arrays.asList(rootDir.resolve("graphicsDir").toFile(),rootDir.resolve("pdfs").toFile());
+  Map<BibEntry,List<File>> results=FileUtil.findAssociatedFiles(entries,extensions,dirs,false);
+  assertEquals(2,results.get(entry).size());
+  assertTrue(results.get(entry).contains(rootDir.resolve(Paths.get("graphicsDir","subDir","HipKro03test.jpg")).toFile()));
+  assertFalse(results.get(entry).contains(rootDir.resolve(Paths.get("graphicsDir","subDir","HipKro03test.png")).toFile()));
+  assertTrue(results.get(entry).contains(rootDir.resolve(Paths.get("pdfs","sub","HipKro03-sub.pdf")).toFile()));
+}

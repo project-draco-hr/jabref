@@ -11,12 +11,12 @@
       database=panel.getDatabase();
       localMetaData=panel.getBibDatabaseContext().getMetaData();
     }
-    List<String> keys=new ArrayList<>(entries.size());
+    List<Optional<String>> keys=new ArrayList<>(entries.size());
     for (    BibEntry entry : entries) {
       entry.setId(IdGenerator.next());
       database.insertEntry(entry);
-      LabelPatternUtil.makeLabel(localMetaData,database,entry);
-      keys.add(entry.getCiteKey());
+      BibtexKeyPatternUtil.makeLabel(localMetaData,database,entry,BibtexKeyPatternPreferences.fromPreferences(Globals.prefs));
+      keys.add(entry.getCiteKeyOptional());
     }
     preview.update();
     preview.repaint();

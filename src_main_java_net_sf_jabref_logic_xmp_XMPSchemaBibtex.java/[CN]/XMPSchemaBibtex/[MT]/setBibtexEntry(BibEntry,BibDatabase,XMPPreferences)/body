@@ -1,0 +1,17 @@
+{
+  Set<String> fields=entry.getFieldNames();
+  if (xmpPreferences != null && xmpPreferences.isUseXMPPrivacyFilter()) {
+    Set<String> filters=new TreeSet<>(xmpPreferences.getXmpPrivacyFilter());
+    fields.removeAll(filters);
+  }
+  for (  String field : fields) {
+    String value=BibDatabase.getResolvedField(field,entry,database).orElse("");
+    if (InternalBibtexFields.getFieldExtras(field).contains(FieldProperties.PERSON_NAMES)) {
+      setPersonList(field,value);
+    }
+ else {
+      setTextProperty(field,value);
+    }
+  }
+  setTextProperty("entrytype",entry.getType());
+}

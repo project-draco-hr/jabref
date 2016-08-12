@@ -1,0 +1,19 @@
+{
+  if (Globals.prefs.get(JabRefPreferences.LAST_EDITED) == null) {
+    return;
+  }
+  List<String> lastFiles=Globals.prefs.getStringList(JabRefPreferences.LAST_EDITED);
+  for (  String fileName : lastFiles) {
+    File dbFile=new File(fileName);
+    if (isLoaded(dbFile) || !dbFile.exists()) {
+      continue;
+    }
+    ParserResult parsedDatabase=OpenDatabaseAction.loadDatabaseOrAutoSave(fileName,false);
+    if (parsedDatabase.isNullResult()) {
+      LOGGER.error(Localization.lang("Error opening file") + " '" + dbFile.getPath()+ "'");
+    }
+ else {
+      bibDatabases.add(parsedDatabase);
+    }
+  }
+}

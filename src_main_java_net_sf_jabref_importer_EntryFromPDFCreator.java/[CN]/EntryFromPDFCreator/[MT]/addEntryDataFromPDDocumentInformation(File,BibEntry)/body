@@ -7,8 +7,8 @@
         addEntryDataToEntry(entry,entryDI.get());
         Calendar creationDate=pdfDocInfo.getCreationDate();
         if (creationDate != null) {
-          String date=new SimpleDateFormat("yyyy-MM-dd").format(creationDate.getTime());
-          appendToField(entry,"timestamp",date);
+          String date=LocalDate.of(creationDate.YEAR,creationDate.MONTH + 1,creationDate.DAY_OF_MONTH).format(DateTimeFormatter.ISO_LOCAL_DATE);
+          appendToField(entry,Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD),date);
         }
         if (pdfDocInfo.getCustomMetadataValue("bibtex/bibtexkey") != null) {
           entry.setId(pdfDocInfo.getCustomMetadataValue("bibtex/bibtexkey"));

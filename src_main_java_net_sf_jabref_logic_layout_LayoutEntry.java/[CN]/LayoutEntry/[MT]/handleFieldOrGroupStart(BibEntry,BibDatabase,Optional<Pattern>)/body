@@ -1,34 +1,34 @@
 {
-  String field;
+  Optional<String> field;
   if (type == LayoutHelper.IS_GROUP_START) {
     field=BibDatabase.getResolvedField(text,bibtex,database);
   }
  else   if (text.matches(".*(;|(\\&+)).*")) {
     String[] parts=text.split("\\s*(;|(\\&+))\\s*");
-    field=null;
+    field=Optional.empty();
     for (    String part : parts) {
       field=BibDatabase.getResolvedField(part,bibtex,database);
-      if (field == null) {
+      if (!field.isPresent()) {
         break;
       }
     }
   }
  else {
     String[] parts=text.split("\\s*(\\|+)\\s*");
-    field=null;
+    field=Optional.empty();
     for (    String part : parts) {
       field=BibDatabase.getResolvedField(part,bibtex,database);
-      if (field != null) {
+      if (field.isPresent()) {
         break;
       }
     }
   }
-  if ((field == null) || ((type == LayoutHelper.IS_GROUP_START) && field.equalsIgnoreCase(LayoutHelper.getCurrentGroup()))) {
+  if ((!field.isPresent()) || ((type == LayoutHelper.IS_GROUP_START) && field.get().equalsIgnoreCase(LayoutHelper.getCurrentGroup()))) {
     return null;
   }
  else {
     if (type == LayoutHelper.IS_GROUP_START) {
-      LayoutHelper.setCurrentGroup(field);
+      LayoutHelper.setCurrentGroup(field.get());
     }
     StringBuilder sb=new StringBuilder(100);
     String fieldText;

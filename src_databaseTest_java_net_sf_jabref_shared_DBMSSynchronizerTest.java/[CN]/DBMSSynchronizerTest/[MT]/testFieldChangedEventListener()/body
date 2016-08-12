@@ -1,0 +1,11 @@
+{
+  BibEntry expectedEntry=getBibEntryExample(1);
+  expectedEntry.registerListener(dbmsSynchronizer);
+  bibDatabase.insertEntry(expectedEntry);
+  expectedEntry.setField("author","Brad L and Gilson");
+  expectedEntry.setField("title","The micro multiplexer",EntryEventSource.SHARED);
+  List<BibEntry> actualEntries=dbmsProcessor.getSharedEntries();
+  Assert.assertEquals(1,actualEntries.size());
+  Assert.assertEquals(expectedEntry.getFieldOptional("author"),actualEntries.get(0).getFieldOptional("author"));
+  Assert.assertEquals("The nano processor1",actualEntries.get(0).getFieldOptional("title").get());
+}

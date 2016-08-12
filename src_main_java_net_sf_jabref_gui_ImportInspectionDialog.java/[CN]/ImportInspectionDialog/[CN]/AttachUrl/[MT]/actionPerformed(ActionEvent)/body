@@ -3,15 +3,15 @@
     return;
   }
   BibEntry entry=selectionModel.getSelected().get(0);
-  String result=JOptionPane.showInputDialog(ImportInspectionDialog.this,Localization.lang("Enter URL"),entry.getField(URL_FIELD));
+  String result=JOptionPane.showInputDialog(ImportInspectionDialog.this,Localization.lang("Enter URL"),entry.getFieldOptional(FieldName.URL).orElse(""));
   entries.getReadWriteLock().writeLock().lock();
   try {
     if (result != null) {
       if (result.isEmpty()) {
-        entry.clearField(URL_FIELD);
+        entry.clearField(FieldName.URL);
       }
  else {
-        entry.setField(URL_FIELD,result);
+        entry.setField(FieldName.URL,result);
       }
     }
   }

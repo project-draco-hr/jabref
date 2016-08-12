@@ -2,7 +2,7 @@
   final String fieldName=editor.getFieldName();
   final Set<FieldProperties> fieldExtras=InternalBibtexFields.getFieldExtras(fieldName);
   if (Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD).equals(fieldName) || fieldExtras.contains(FieldProperties.DATE)) {
-    return FieldExtraComponents.getDateTimeExtraComponent(editor,fieldExtras.contains(FieldProperties.DATE));
+    return FieldExtraComponents.getDateTimeExtraComponent(editor,fieldExtras.contains(FieldProperties.DATE),fieldExtras.contains(FieldProperties.ISO_DATE));
   }
  else   if (fieldExtras.contains(FieldProperties.EXTERNAL)) {
     return FieldExtraComponents.getExternalExtraComponent(panel,editor);
@@ -18,6 +18,12 @@
   }
  else   if (fieldExtras.contains(FieldProperties.DOI)) {
     return FieldExtraComponents.getDoiExtraComponent(panel,this,editor);
+  }
+ else   if (fieldExtras.contains(FieldProperties.EPRINT)) {
+    return FieldExtraComponents.getEprintExtraComponent(panel,this,editor);
+  }
+ else   if (fieldExtras.contains(FieldProperties.ISBN)) {
+    return FieldExtraComponents.getIsbnExtraComponent(panel,this,editor);
   }
  else   if (fieldExtras.contains(FieldProperties.OWNER)) {
     return FieldExtraComponents.getSetOwnerExtraComponent(editor,getStoreFieldAction());
@@ -38,7 +44,10 @@
     return FieldExtraComponents.getPaginationExtraComponent(editor,this);
   }
  else   if (fieldExtras.contains(FieldProperties.TYPE)) {
-    return FieldExtraComponents.getTypeExtraComponent(editor,this,"patent".equals(entry.getType().toLowerCase(Locale.ENGLISH)));
+    return FieldExtraComponents.getTypeExtraComponent(editor,this,"patent".equalsIgnoreCase(entry.getType()));
+  }
+ else   if (fieldExtras.contains(FieldProperties.CROSSREF)) {
+    return FieldExtraComponents.getCrossrefExtraComponent(editor,frame.getCurrentBasePanel());
   }
   return Optional.empty();
 }

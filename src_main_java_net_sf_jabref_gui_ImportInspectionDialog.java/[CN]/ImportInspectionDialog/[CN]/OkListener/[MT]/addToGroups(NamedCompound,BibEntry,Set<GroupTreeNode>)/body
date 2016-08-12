@@ -1,6 +1,6 @@
 {
   boolean groupingCanceled=false;
-  if (entry.getCiteKey() == null) {
+  if (!entry.hasCiteKey()) {
     int answer=JOptionPane.showConfirmDialog(ImportInspectionDialog.this,Localization.lang("Cannot add entries to group without generating keys. Generate keys now?"),Localization.lang("Add to group"),JOptionPane.YES_NO_OPTION);
     if (answer == JOptionPane.YES_OPTION) {
       generateKeys();
@@ -9,7 +9,7 @@
       groupingCanceled=true;
     }
   }
-  if (entry.getCiteKey() != null) {
+  if (entry.hasCiteKey()) {
     for (    GroupTreeNode node : groups) {
       if (node.supportsAddingEntries()) {
         Optional<EntriesGroupChange> undo=node.getGroup().add(Collections.singletonList(entry));

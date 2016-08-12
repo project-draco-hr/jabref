@@ -1,8 +1,12 @@
 {
-  if (dir) {
-    return FileDialogs.getNewDir(frame,new File(comp.getText()),extension,JFileChooser.OPEN_DIALOG,false);
+  if (dirsOnly) {
+    Path path=new NewFileDialogs(frame,comp.getText()).dirsOnly().withExtensions(extensions).openDlgAndGetSelectedFile().orElse(Paths.get(""));
+    String file=path.toString();
+    return file;
   }
  else {
-    return FileDialogs.getNewFile(frame,new File(comp.getText()),extension,JFileChooser.OPEN_DIALOG,false);
+    Path path=new NewFileDialogs(frame,comp.getText()).withExtensions(extensions).openDlgAndGetSelectedFile().orElse(Paths.get(""));
+    String file=path.toString();
+    return file;
   }
 }
