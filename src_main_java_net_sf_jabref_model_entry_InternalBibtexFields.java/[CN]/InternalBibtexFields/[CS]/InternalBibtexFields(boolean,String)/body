@@ -7,7 +7,7 @@
   add(new BibtexSingleField(FieldName.BOOKTITLE,true,175));
   add(new BibtexSingleField(FieldName.CHAPTER,true,BibtexSingleField.SMALL_W));
   dummy=new BibtexSingleField(FieldName.CROSSREF,true,BibtexSingleField.SMALL_W);
-  dummy.setExtras(EnumSet.of(FieldProperties.CROSSREF));
+  dummy.setExtras(EnumSet.of(FieldProperties.CROSSREF,FieldProperties.SINGLE_ENTRY_LINK));
   add(dummy);
   add(new BibtexSingleField(FieldName.EDITION,true,BibtexSingleField.SMALL_W));
   add(new BibtexSingleField(FieldName.EDITOR,true,BibtexSingleField.MEDIUM_W,280));
@@ -75,8 +75,11 @@
   dummy.setExtras(EnumSet.of(FieldProperties.FILE_EDITOR));
   add(dummy);
   add(new BibtexSingleField("search",false,75));
-  dummy=new BibtexSingleField("gender",true,BibtexSingleField.SMALL_W);
+  dummy=new BibtexSingleField(FieldName.GENDER,true,BibtexSingleField.SMALL_W);
   dummy.getExtras().add(FieldProperties.GENDER);
+  add(dummy);
+  dummy=new BibtexSingleField(FieldName.PUBSTATE,true,BibtexSingleField.SMALL_W);
+  dummy.getExtras().add(FieldProperties.PUBLICATION_STATE);
   add(dummy);
   dummy=new BibtexSingleField(FieldName.NUMBER_COL,false,32);
   dummy.setPrivate();
@@ -115,7 +118,7 @@
     dummy.setExtras(EnumSet.of(FieldProperties.YES_NO));
     add(dummy);
   }
-  for (  String numericField : IEEETRANBSTCTL_NUMERIC_FIELDS) {
+  for (  String numericField : INTEGER_FIELDS) {
     dummy=new BibtexSingleField(numericField,false).setNumeric(true);
     dummy.getExtras().add(FieldProperties.INTEGER);
     add(dummy);
@@ -151,6 +154,38 @@
     }
     field.getExtras().add(FieldProperties.DATE);
     field.getExtras().add(FieldProperties.ISO_DATE);
+    add(field);
+  }
+  for (  String fieldText : BIBLATEX_JOURNAL_NAME_FIELDS) {
+    BibtexSingleField field=fieldSet.get(fieldText);
+    if (field == null) {
+      field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
+    }
+    field.getExtras().add(FieldProperties.JOURNAL_NAME);
+    add(field);
+  }
+  for (  String fieldText : BIBLATEX_BOOK_NAME_FIELDS) {
+    BibtexSingleField field=fieldSet.get(fieldText);
+    if (field == null) {
+      field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
+    }
+    field.getExtras().add(FieldProperties.BOOK_NAME);
+    add(field);
+  }
+  for (  String fieldText : BIBLATEX_LANGUAGE_FIELDS) {
+    BibtexSingleField field=fieldSet.get(fieldText);
+    if (field == null) {
+      field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
+    }
+    field.getExtras().add(FieldProperties.LANGUAGE);
+    add(field);
+  }
+  for (  String fieldText : BIBLATEX_MULTI_KEY_FIELDS) {
+    BibtexSingleField field=fieldSet.get(fieldText);
+    if (field == null) {
+      field=new BibtexSingleField(fieldText,true,BibtexSingleField.SMALL_W);
+    }
+    field.getExtras().add(FieldProperties.MULTIPLE_ENTRY_LINK);
     add(field);
   }
 }

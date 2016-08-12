@@ -7,11 +7,10 @@
   NamedCompound ce=new NamedCompound(Localization.lang("Unabbreviate journal names"));
   int count=0;
   for (  BibEntry entry : entries) {
-    if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,FieldName.JOURNAL,ce)) {
-      count++;
-    }
-    if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,FieldName.JOURNALTITLE,ce)) {
-      count++;
+    for (    String journalField : InternalBibtexFields.getJournalNameFields()) {
+      if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,journalField,ce)) {
+        count++;
+      }
     }
   }
   if (count > 0) {
