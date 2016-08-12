@@ -1,0 +1,37 @@
+{
+  Optional<DOI> doi=DOI.build(doiStr);
+  if (!doi.isPresent()) {
+    if (parserResult != null) {
+      parserResult.addWarning(Localization.lang("Invalid DOI: '%0'.",doiStr));
+    }
+    return Optional.empty();
+  }
+  try {
+    URL doiURL=new URL(doi.get().getURIAsASCIIString());
+    URLDownload download=new URLDownload(doiURL);
+    download.addParameters("Accept","application/x-bibtex");
+    String bibtexString=download.downloadToString(StandardCharsets.UTF_8);
+    bibtexString=cleanupEncoding(bibtexString);
+    BibEntry entry=BibtexParser.singleFromString(bibtexString,importFormatPreferences);
+    if (entry == null) {
+      return Optional.empty();
+    }
+    formatTitleField(entry,importFormatPreferences);
+    return Optional.of(entry);
+  }
+ catch (  MalformedURLException e) {
+    LOGGER.warn("Bad DOI URL",e);
+    return Optional.empty();
+  }
+catch (  FileNotFoundException e) {
+    if (parserResult != null) {
+      parserResult.addWarning(Localization.lang("Unknown DOI: '%0'.",doi.get().getDOI()));
+    }
+    LOGGER.debug("Unknown DOI",e);
+    return Optional.empty();
+  }
+catch (  IOException e) {
+    LOGGER.warn("Communication problems",e);
+    return Optional.empty();
+  }
+}

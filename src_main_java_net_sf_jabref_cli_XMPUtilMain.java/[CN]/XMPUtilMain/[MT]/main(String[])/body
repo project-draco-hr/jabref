@@ -3,6 +3,7 @@
     Globals.prefs=JabRefPreferences.getInstance();
   }
   XMPPreferences xmpPreferences=XMPPreferences.fromPreferences(Globals.prefs);
+  ImportFormatPreferences importFormatPreferences=ImportFormatPreferences.fromPreferences(Globals.prefs);
 switch (args.length) {
 case 0:
     usage();
@@ -19,7 +20,7 @@ if (args[0].endsWith(".pdf")) {
 }
  else if (args[0].endsWith(".bib")) {
   try (FileReader fr=new FileReader(args[0])){
-    ParserResult result=BibtexParser.parse(fr);
+    ParserResult result=BibtexParser.parse(fr,importFormatPreferences);
     Collection<BibEntry> entries=result.getDatabase().getEntries();
     if (entries.isEmpty()) {
       System.err.println("Could not find BibEntry in " + args[0]);
@@ -45,7 +46,7 @@ System.err.println("The given pdf does not contain any XMP-metadata.");
 break;
 }
 if (args[0].endsWith(".bib") && args[1].endsWith(".pdf")) {
-ParserResult result=BibtexParser.parse(new FileReader(args[0]));
+ParserResult result=BibtexParser.parse(new FileReader(args[0]),importFormatPreferences);
 Collection<BibEntry> entries=result.getDatabase().getEntries();
 if (entries.isEmpty()) {
 System.err.println("Could not find BibEntry in " + args[0]);
@@ -63,7 +64,7 @@ if (!args[1].endsWith(".bib") && !args[2].endsWith(".pdf")) {
 usage();
 break;
 }
-ParserResult result=BibtexParser.parse(new FileReader(args[1]));
+ParserResult result=BibtexParser.parse(new FileReader(args[1]),importFormatPreferences);
 Optional<BibEntry> bibEntry=result.getDatabase().getEntryByKey(args[0]);
 if (bibEntry.isPresent()) {
 XMPUtil.writeXMP(new File(args[2]),bibEntry.get(),result.getDatabase(),xmpPreferences);

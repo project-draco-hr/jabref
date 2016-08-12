@@ -1,10 +1,11 @@
 {
   try {
     Path tempFile=Globals.getFileUpdateMonitor().getTempFile(panel.fileMonitorHandle());
-    ParserResult pr=OpenDatabaseAction.loadDatabase(tempFile.toFile(),Globals.prefs.getDefaultEncoding());
+    ImportFormatPreferences importFormatPreferences=ImportFormatPreferences.fromPreferences(Globals.prefs);
+    ParserResult pr=OpenDatabase.loadDatabase(tempFile.toFile(),importFormatPreferences);
     inTemp=pr.getDatabase();
     mdInTemp=pr.getMetaData();
-    pr=OpenDatabaseAction.loadDatabase(f,Globals.prefs.getDefaultEncoding());
+    pr=OpenDatabase.loadDatabase(f,importFormatPreferences);
     BibDatabase onDisk=pr.getDatabase();
     MetaData mdOnDisk=pr.getMetaData();
     EntryComparator comp=new EntryComparator(false,true,SORT_BY[2]);

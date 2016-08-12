@@ -1,0 +1,12 @@
+{
+  String jsonString="{\r\n" + "            \"identifier\":\"doi:10.1007/BF01201962\",\r\n" + "            \"title\":\"Book reviews\",\r\n"+ "            \"publicationName\":\"World Journal of Microbiology & Biotechnology\",\r\n"+ "            \"issn\":\"1573-0972\",\r\n"+ "            \"isbn\":\"\",\r\n"+ "            \"doi\":\"10.1007/BF01201962\",\r\n"+ "            \"publisher\":\"Springer\",\r\n"+ "            \"publicationDate\":\"1992-09-01\",\r\n"+ "            \"volume\":\"8\",\r\n"+ "            \"number\":\"5\",\r\n"+ "            \"startingPage\":\"550\",\r\n"+ "            \"url\":\"http://dx.doi.org/10.1007/BF01201962\",\"copyright\":\"??1992 Rapid Communications of Oxford Ltd.\"\r\n"+ "        }";
+  JSONObject jsonObject=new JSONObject(jsonString);
+  BibEntry bibEntry=JSONEntryParser.parseSpringerJSONtoBibtex(jsonObject);
+  Assert.assertEquals(Optional.of("1992"),bibEntry.getFieldOptional("year"));
+  Assert.assertEquals(Optional.of("5"),bibEntry.getFieldOptional("number"));
+  Assert.assertEquals(Optional.of("#sep#"),bibEntry.getFieldOptional("month"));
+  Assert.assertEquals(Optional.of("10.1007/BF01201962"),bibEntry.getFieldOptional("doi"));
+  Assert.assertEquals(Optional.of("8"),bibEntry.getFieldOptional("volume"));
+  Assert.assertEquals(Optional.of("Springer"),bibEntry.getFieldOptional("publisher"));
+  Assert.assertEquals(Optional.of("1992-09-01"),bibEntry.getFieldOptional("date"));
+}

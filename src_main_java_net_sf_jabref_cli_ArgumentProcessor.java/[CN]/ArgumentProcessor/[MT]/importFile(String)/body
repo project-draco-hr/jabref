@@ -1,5 +1,6 @@
 {
   String[] data=argument.split(",");
+  OutputPrinter printer=new SystemOutputPrinter();
   try {
     if ((data.length > 1) && !"*".equals(data[1])) {
       System.out.println(Localization.lang("Importing") + ": " + data[0]);
@@ -13,7 +14,7 @@
         }
         ParserResult result=Globals.IMPORT_FORMAT_READER.importFromFile(data[1],file);
         if (result.hasWarnings()) {
-          JabRefGUI.getMainFrame().showMessage(result.getErrorMessage());
+          printer.showMessage(result.getErrorMessage());
         }
         return Optional.of(result);
       }

@@ -1,0 +1,8 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{test,a = {a\n\nb}," + "b = {a\n \nb}," + "c = {a \n \n b}}"),importFormatPreferences);
+  Collection<BibEntry> c=result.getDatabase().getEntries();
+  BibEntry e=c.iterator().next();
+  assertEquals(Optional.of("a b"),e.getFieldOptional("a"));
+  assertEquals(Optional.of("a b"),e.getFieldOptional("b"));
+  assertEquals(Optional.of("a b"),e.getFieldOptional("c"));
+}

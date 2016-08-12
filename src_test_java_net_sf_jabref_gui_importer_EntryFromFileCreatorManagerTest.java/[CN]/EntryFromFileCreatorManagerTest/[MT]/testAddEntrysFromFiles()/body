@@ -1,0 +1,25 @@
+{
+  try (FileInputStream stream=new FileInputStream(ImportDataTest.UNLINKED_FILES_TEST_BIB);InputStreamReader reader=new InputStreamReader(stream,StandardCharsets.UTF_8)){
+    ParserResult result=BibtexParser.parse(reader,ImportFormatPreferences.fromPreferences(Globals.prefs));
+    BibDatabase database=result.getDatabase();
+    List<File> files=new ArrayList<>();
+    files.add(ImportDataTest.FILE_NOT_IN_DATABASE);
+    files.add(ImportDataTest.NOT_EXISTING_PDF);
+    EntryFromFileCreatorManager manager=new EntryFromFileCreatorManager();
+    List<String> errors=manager.addEntrysFromFiles(files,database,null,true);
+    Assert.assertEquals(1,errors.size());
+    boolean file1Found=false;
+    boolean file2Found=false;
+    for (    BibEntry entry : database.getEntries()) {
+      String filesInfo=entry.getFieldOptional("file").get();
+      if (filesInfo.contains(files.get(0).getName())) {
+        file1Found=true;
+      }
+      if (filesInfo.contains(files.get(1).getName())) {
+        file2Found=true;
+      }
+    }
+    Assert.assertTrue(file1Found);
+    Assert.assertFalse(file2Found);
+  }
+ }

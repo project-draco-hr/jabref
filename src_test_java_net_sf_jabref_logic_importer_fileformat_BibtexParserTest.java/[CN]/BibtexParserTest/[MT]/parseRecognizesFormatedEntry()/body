@@ -1,0 +1,16 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("" + "@INPROCEEDINGS{CroAnnHow05," + "\n"+ "  author = {Crowston, K. and Annabi, H. and Howison, J. and Masango, C.},"+ "\n"+ "  title = {Effective work practices for floss development: A model and propositions},"+ "\n"+ "  booktitle = {Hawaii International Conference On System Sciences (HICSS)},"+ "\n"+ "  year = {2005},"+ "\n"+ "  owner = {oezbek},"+ "\n"+ "  timestamp = {2006.05.29},"+ "\n"+ "  url = {http://james.howison.name/publications.html}"+ "\n"+ "}))"),importFormatPreferences);
+  Collection<BibEntry> c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibEntry e=c.iterator().next();
+  assertEquals("inproceedings",e.getType());
+  assertEquals(8,e.getFieldNames().size());
+  assertEquals(Optional.of("CroAnnHow05"),e.getCiteKeyOptional());
+  assertEquals(Optional.of("Crowston, K. and Annabi, H. and Howison, J. and Masango, C."),e.getFieldOptional("author"));
+  assertEquals(Optional.of("Effective work practices for floss development: A model and propositions"),e.getFieldOptional("title"));
+  assertEquals(Optional.of("Hawaii International Conference On System Sciences (HICSS)"),e.getFieldOptional("booktitle"));
+  assertEquals(Optional.of("2005"),e.getFieldOptional("year"));
+  assertEquals(Optional.of("oezbek"),e.getFieldOptional("owner"));
+  assertEquals(Optional.of("2006.05.29"),e.getFieldOptional("timestamp"));
+  assertEquals(Optional.of("http://james.howison.name/publications.html"),e.getFieldOptional("url"));
+}

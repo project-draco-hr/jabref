@@ -1,0 +1,17 @@
+{
+  if (filesToOpen.isEmpty()) {
+    return;
+  }
+  for (  File file : filesToOpen) {
+    try {
+      Globals.prefs.put(JabRefPreferences.WORKING_DIRECTORY,file.getPath());
+      ParserResult pr=OpenDatabase.loadDatabase(file,ImportFormatPreferences.fromPreferences(Globals.prefs));
+      AppendDatabaseAction.mergeFromBibtex(frame,panel,pr,importEntries,importStrings,importGroups,importSelectorWords);
+      panel.output(Localization.lang("Imported from database") + " '" + file.getPath()+ "'");
+    }
+ catch (    IOException|KeyCollisionException ex) {
+      LOGGER.warn("Could not open database",ex);
+      JOptionPane.showMessageDialog(panel,ex.getMessage(),Localization.lang("Open database"),JOptionPane.ERROR_MESSAGE);
+    }
+  }
+}

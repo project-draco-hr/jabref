@@ -4,15 +4,14 @@
   this.bibDatabaseContext=bibDatabaseContext;
   this.sidePaneManager=frame.getSidePaneManager();
   this.frame=frame;
-  this.database=bibDatabaseContext.getDatabase();
   this.tableModel=new MainTableDataModel(getBibDatabaseContext());
   searchBar=new SearchBar(this);
   setupMainPanel();
   setupActions();
   File file=bibDatabaseContext.getDatabaseFile();
-  this.database.registerListener(new GroupTreeListener());
+  this.bibDatabaseContext.getDatabase().registerListener(new GroupTreeListener());
   if (file == null) {
-    if (database.hasEntries()) {
+    if (bibDatabaseContext.getDatabase().hasEntries()) {
       this.baseChanged=true;
     }
   }
