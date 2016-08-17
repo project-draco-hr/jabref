@@ -19,19 +19,18 @@
     panel.setSaving(false);
     if (success) {
       panel.getUndoManager().markUnchanged();
-      if (!AutoSaveManager.deleteAutoSaveFile(panel)) {
-      }
+      AutoSaveManager.deleteAutoSaveFile(panel);
       panel.setNonUndoableChange(false);
       panel.setBaseChanged(false);
       panel.setUpdatedExternally(false);
     }
   }
- catch (  SaveException ex2) {
-    if (ex2 == SaveException.FILE_LOCKED) {
+ catch (  SaveException ex) {
+    if (ex == SaveException.FILE_LOCKED) {
       success=false;
       fileLockedError=true;
       return;
     }
-    LOGGER.error("Problem saving file",ex2);
+    LOGGER.error("Problem saving file",ex);
   }
 }
