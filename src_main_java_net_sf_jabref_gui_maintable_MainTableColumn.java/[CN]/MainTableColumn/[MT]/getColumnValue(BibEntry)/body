@@ -2,32 +2,19 @@
   if (bibtexFields.isEmpty()) {
     return null;
   }
-  String content=null;
+  Optional<String> content=Optional.empty();
   for (  String field : bibtexFields) {
-    if (field.equals(BibEntry.TYPE_HEADER)) {
-      TypedBibEntry typedEntry=new TypedBibEntry(entry,BibDatabaseMode.BIBLATEX);
-      content=typedEntry.getTypeForDisplay();
-    }
- else {
-      Optional<String> newContent=entry.getFieldOrAlias(field);
-      if (newContent.isPresent()) {
-        if (database.isPresent() && "Author".equalsIgnoreCase(columnName)) {
-          content=database.get().resolveForStrings(newContent.get());
-        }
- else {
-          content=newContent.get();
-        }
-      }
-    }
-    if (content != null) {
+    content=BibDatabase.getResolvedField(field,entry,database.orElse(null));
+    if (content.isPresent()) {
       break;
     }
   }
+  String result=content.orElse(null);
   if (isNameColumn()) {
-    content=MainTableNameFormatter.formatName(content);
+    result=MainTableNameFormatter.formatName(result);
   }
-  if (content != null) {
-    content=toUnicode.format(content).trim();
+  if (result != null) {
+    result=toUnicode.format(result).trim();
   }
-  return content;
+  return result;
 }

@@ -1,6 +1,9 @@
 {
   try {
     BibEntry be=getEntryAt(row);
+    if (checkResolved && tableFormat.getTableColumn(col).isResolved(be)) {
+      return CellRendererMode.RESOLVED;
+    }
     Optional<EntryType> type=EntryTypes.getType(be.getType(),panel.getBibDatabaseContext().getMode());
     if (type.isPresent()) {
       String columnName=getColumnName(col).toLowerCase();
