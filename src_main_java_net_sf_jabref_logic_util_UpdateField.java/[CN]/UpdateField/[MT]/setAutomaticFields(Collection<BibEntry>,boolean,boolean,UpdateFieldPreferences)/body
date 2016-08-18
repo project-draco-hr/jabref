@@ -1,12 +1,12 @@
 {
-  boolean globalSetOwner=prefs.getBoolean(JabRefPreferences.USE_OWNER);
-  boolean globalSetTimeStamp=prefs.getBoolean(JabRefPreferences.USE_TIME_STAMP);
+  boolean globalSetOwner=prefs.isUseOwner();
+  boolean globalSetTimeStamp=prefs.isUseTimeStamp();
   if (!(globalSetOwner || globalSetTimeStamp)) {
     return;
   }
-  String timeStampField=prefs.get(JabRefPreferences.TIME_STAMP_FIELD);
-  String defaultOwner=prefs.get(JabRefPreferences.DEFAULT_OWNER);
-  String timestamp=EasyDateFormat.fromPreferences(prefs).getCurrentDate();
+  String timeStampField=prefs.getTimeStampField();
+  String defaultOwner=prefs.getDefaultOwner();
+  String timestamp=EasyDateFormat.fromTimeStampFormat(prefs.getTimeStampFormat()).getCurrentDate();
   for (  BibEntry curEntry : bibs) {
     boolean setOwner=globalSetOwner && (overwriteOwner || (!curEntry.hasField(FieldName.OWNER)));
     boolean setTimeStamp=globalSetTimeStamp && (overwriteTimestamp || (!curEntry.hasField(timeStampField)));
