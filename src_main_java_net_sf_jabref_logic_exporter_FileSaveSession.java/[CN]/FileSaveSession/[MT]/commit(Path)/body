@@ -14,17 +14,15 @@
     }
   }
   try {
-    if (useLockFile) {
-      try {
-        if (FileBasedLock.createLockFile(file)) {
-          if (!FileBasedLock.waitForFileLock(file)) {
-            throw SaveException.FILE_LOCKED;
-          }
+    try {
+      if (FileBasedLock.createLockFile(file)) {
+        if (!FileBasedLock.waitForFileLock(file)) {
+          throw SaveException.FILE_LOCKED;
         }
       }
- catch (      IOException ex) {
-        LOGGER.error("Error when creating lock file.",ex);
-      }
+    }
+ catch (    IOException ex) {
+      LOGGER.error("Error when creating lock file.",ex);
     }
     FileUtil.copyFile(temporaryFile.toFile(),file.toFile(),true);
   }
@@ -32,9 +30,7 @@
     throw new SaveException("Save failed while committing changes: " + ex2.getMessage(),Localization.lang("Save failed while committing changes: %0",ex2.getMessage()));
   }
  finally {
-    if (useLockFile) {
-      FileBasedLock.deleteLockFile(file);
-    }
+    FileBasedLock.deleteLockFile(file);
   }
   try {
     Files.delete(temporaryFile);
