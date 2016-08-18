@@ -1,5 +1,7 @@
 {
-  Optional<Path> chosenFile=new NewFileDialog(frame).withExtension(FileExtensions.BIBTEX_DB).saveNewFile();
+  NewFileDialog dialog=new NewFileDialog(frame).withExtension(FileExtensions.BIBTEX_DB);
+  dialog.setDefaultExtension(FileExtensions.BIBTEX_DB);
+  Optional<Path> chosenFile=dialog.saveNewFile();
   if (chosenFile.isPresent()) {
     Path path=chosenFile.get();
     saveDatabase(path.toFile(),true,Globals.prefs.getDefaultEncoding(),saveType);
