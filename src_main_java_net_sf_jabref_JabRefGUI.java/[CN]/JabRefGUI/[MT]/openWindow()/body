@@ -58,11 +58,9 @@
     String message="<html>" + Localization.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
     JOptionPane.showMessageDialog(JabRefGUI.getMainFrame(),message,Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
   }
-  if (Globals.prefs.getBoolean(JabRefPreferences.DISPLAY_KEY_WARNING_DIALOG_AT_STARTUP)) {
-    int i=0;
-    for (    ParserResult pr : bibDatabases) {
-      ParserResultWarningDialog.showParserResultWarningDialog(pr,JabRefGUI.getMainFrame(),i++);
-    }
+  int tabNumber=0;
+  for (  ParserResult pr : bibDatabases) {
+    ParserResultWarningDialog.showParserResultWarningDialog(pr,JabRefGUI.getMainFrame(),tabNumber++);
   }
   for (int i=0; (i < bibDatabases.size()) && (i < JabRefGUI.getMainFrame().getBasePanelCount()); i++) {
     ParserResult pr=bibDatabases.get(i);
