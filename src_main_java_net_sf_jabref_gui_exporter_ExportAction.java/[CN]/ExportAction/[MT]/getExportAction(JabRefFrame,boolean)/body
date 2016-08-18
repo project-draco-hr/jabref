@@ -8,7 +8,10 @@ class InternalExportAction extends MnemonicAwareAction {
       putValue(Action.NAME,selectedOnly ? Localization.menuTitle("Export selected entries") : Localization.menuTitle("Export"));
     }
     @Override public void actionPerformed(    ActionEvent e){
-      ExportFormats.initAllExports(Globals.prefs.customExports.getCustomExportFormats(Globals.prefs));
+      Map<String,ExportFormat> customFormats=Globals.prefs.customExports.getCustomExportFormats(Globals.prefs,Globals.journalAbbreviationLoader);
+      LayoutFormatterPreferences layoutPreferences=LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader);
+      SavePreferences savePreferences=SavePreferences.loadForExportFromPreferences(Globals.prefs);
+      ExportFormats.initAllExports(customFormats,layoutPreferences,savePreferences);
       JFileChooser fc=ExportAction.createExportFileChooser(Globals.prefs.get(JabRefPreferences.EXPORT_WORKING_DIRECTORY));
       fc.showSaveDialog(frame);
       File file=fc.getSelectedFile();

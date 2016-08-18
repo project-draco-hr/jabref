@@ -1,5 +1,4 @@
 {
-  Map<String,String> formatters=new HashMap<>();
   File formatterFile=new File(lfFileName + ".formatters");
   if (formatterFile.exists()) {
     try (Reader in=new FileReader(formatterFile)){
@@ -18,7 +17,7 @@
         if ((index > 0) && ((index + 1) < line.length())) {
           String formatterName=line.substring(0,index);
           String contents=line.substring(index + 1);
-          formatters.put(formatterName,contents);
+          layoutPreferences.getCustomExportNameFormatters().put(formatterName,contents);
         }
       }
     }
@@ -26,5 +25,4 @@
       LOGGER.warn("Problem opening formatter file.",ex);
     }
   }
-  return formatters;
 }
