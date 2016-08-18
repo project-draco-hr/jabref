@@ -1,0 +1,24 @@
+{
+  Method[] declaredMethods=entryType.getClass().getDeclaredMethods();
+  for (  Method method : declaredMethods) {
+    try {
+      if (method.getName().equals("getYear")) {
+        putYear(fields,(XMLGregorianCalendar)method.invoke(entryType));
+        continue;
+      }
+ else       if (method.getName().equals("getNumber")) {
+        putNumber(fields,(BigInteger)method.invoke(entryType));
+        continue;
+      }
+ else       if (isMethodToIgnore(method.getName())) {
+        continue;
+      }
+ else       if (method.getName().startsWith("get")) {
+        putIfValueNotNull(fields,method.getName().replace("get",""),(String)method.invoke(entryType));
+      }
+    }
+ catch (    IllegalArgumentException|InvocationTargetException|IllegalAccessException e) {
+      LOGGER.error("Could not invoke method",e);
+    }
+  }
+}
