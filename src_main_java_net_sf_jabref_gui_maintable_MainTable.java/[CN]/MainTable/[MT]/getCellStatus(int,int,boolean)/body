@@ -1,0 +1,22 @@
+{
+  try {
+    BibEntry be=getEntryAt(row);
+    if (checkResolved && tableFormat.getTableColumn(col).isResolved(be)) {
+      return CellRendererMode.RESOLVED;
+    }
+    Optional<EntryType> type=EntryTypes.getType(be.getType(),panel.getBibDatabaseContext().getMode());
+    if (type.isPresent()) {
+      String columnName=getColumnName(col).toLowerCase();
+      if (columnName.equals(BibEntry.KEY_FIELD) || type.get().getRequiredFieldsFlat().contains(columnName)) {
+        return CellRendererMode.REQUIRED;
+      }
+      if (type.get().getOptionalFields().contains(columnName)) {
+        return CellRendererMode.OPTIONAL;
+      }
+    }
+    return CellRendererMode.OTHER;
+  }
+ catch (  NullPointerException ex) {
+    return CellRendererMode.OTHER;
+  }
+}

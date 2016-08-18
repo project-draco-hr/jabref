@@ -1,0 +1,34 @@
+{
+  List<JAXBElement<?>> content=inbook.getContent();
+  for (  JAXBElement<?> element : content) {
+    String localName=element.getName().getLocalPart();
+    Object elementValue=element.getValue();
+    if (elementValue instanceof String) {
+      String value=(String)elementValue;
+      putIfValueNotNull(fields,localName,value);
+    }
+ else     if (elementValue instanceof BigInteger) {
+      BigInteger value=(BigInteger)elementValue;
+      if (value != null) {
+        if (FieldName.NUMBER.equals(localName)) {
+          fields.put(FieldName.NUMBER,String.valueOf(value));
+        }
+ else         if (FieldName.CHAPTER.equals(localName)) {
+          fields.put(FieldName.CHAPTER,String.valueOf(value));
+        }
+      }
+    }
+ else     if (elementValue instanceof XMLGregorianCalendar) {
+      XMLGregorianCalendar value=(XMLGregorianCalendar)elementValue;
+      if (FieldName.YEAR.equals(localName)) {
+        putYear(fields,value);
+      }
+ else {
+        LOGGER.info("Unexpected field was found");
+      }
+    }
+ else {
+      LOGGER.info("Unexpected field was found");
+    }
+  }
+}

@@ -1,7 +1,6 @@
 {
   int score=-3;
   DefaultTableCellRenderer renderer=MainTable.defRenderer;
-  CellRendererMode status=getCellStatus(row,column);
   if ((model.getSearchState() != MainTableDataModel.DisplayOption.FLOAT) || matches(row,SearchMatcher.INSTANCE)) {
     score++;
   }
@@ -45,12 +44,16 @@
     }
     renderer.setHorizontalAlignment(JLabel.CENTER);
   }
- else   if (tableColorCodes) {
+ else   if (tableColorCodes || tableResolvedColorCodes) {
+    CellRendererMode status=getCellStatus(row,column,tableResolvedColorCodes);
     if (status == CellRendererMode.REQUIRED) {
       renderer=MainTable.reqRenderer;
     }
  else     if (status == CellRendererMode.OPTIONAL) {
       renderer=MainTable.optRenderer;
+    }
+ else     if (status == CellRendererMode.RESOLVED) {
+      renderer=MainTable.resolvedRenderer;
     }
   }
   int marking=isMarked(row);
