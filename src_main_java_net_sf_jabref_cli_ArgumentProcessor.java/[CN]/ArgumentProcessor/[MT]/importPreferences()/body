@@ -2,7 +2,10 @@
   try {
     Globals.prefs.importPreferences(cli.getPreferencesImport());
     CustomEntryTypesManager.loadCustomEntryTypes(Globals.prefs);
-    ExportFormats.initAllExports(Globals.prefs.customExports.getCustomExportFormats(Globals.prefs));
+    Map<String,ExportFormat> customFormats=Globals.prefs.customExports.getCustomExportFormats(Globals.prefs,Globals.journalAbbreviationLoader);
+    LayoutFormatterPreferences layoutPreferences=LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader);
+    SavePreferences savePreferences=SavePreferences.loadForExportFromPreferences(Globals.prefs);
+    ExportFormats.initAllExports(customFormats,layoutPreferences,savePreferences);
   }
  catch (  JabRefException ex) {
     LOGGER.error("Cannot import preferences",ex);

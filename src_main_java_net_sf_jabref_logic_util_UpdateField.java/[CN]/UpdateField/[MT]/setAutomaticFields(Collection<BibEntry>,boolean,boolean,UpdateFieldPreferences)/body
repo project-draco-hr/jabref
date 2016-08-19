@@ -1,0 +1,15 @@
+{
+  boolean globalSetOwner=prefs.isUseOwner();
+  boolean globalSetTimeStamp=prefs.isUseTimeStamp();
+  if (!(globalSetOwner || globalSetTimeStamp)) {
+    return;
+  }
+  String timeStampField=prefs.getTimeStampField();
+  String defaultOwner=prefs.getDefaultOwner();
+  String timestamp=EasyDateFormat.fromTimeStampFormat(prefs.getTimeStampFormat()).getCurrentDate();
+  for (  BibEntry curEntry : bibs) {
+    boolean setOwner=globalSetOwner && (overwriteOwner || (!curEntry.hasField(FieldName.OWNER)));
+    boolean setTimeStamp=globalSetTimeStamp && (overwriteTimestamp || (!curEntry.hasField(timeStampField)));
+    setAutomaticFields(curEntry,setOwner,defaultOwner,setTimeStamp,timeStampField,timestamp);
+  }
+}

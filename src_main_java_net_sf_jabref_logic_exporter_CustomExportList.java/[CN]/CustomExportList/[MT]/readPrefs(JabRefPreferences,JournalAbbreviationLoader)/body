@@ -1,0 +1,22 @@
+{
+  Objects.requireNonNull(prefs);
+  Objects.requireNonNull(loader);
+  formats.clear();
+  list.clear();
+  int i=0;
+  List<String> s;
+  LayoutFormatterPreferences layoutPreferences=LayoutFormatterPreferences.fromPreferences(prefs,loader);
+  SavePreferences savePreferences=SavePreferences.loadForExportFromPreferences(prefs);
+  while (!((s=prefs.getStringList(JabRefPreferences.CUSTOM_EXPORT_FORMAT + i)).isEmpty())) {
+    Optional<ExportFormat> format=createFormat(s,layoutPreferences,savePreferences);
+    if (format.isPresent()) {
+      formats.put(format.get().getConsoleName(),format.get());
+      list.add(s);
+    }
+ else {
+      String customExportFormat=prefs.get(JabRefPreferences.CUSTOM_EXPORT_FORMAT + i);
+      LOGGER.error("Error initializing custom export format from string " + customExportFormat);
+    }
+    i++;
+  }
+}

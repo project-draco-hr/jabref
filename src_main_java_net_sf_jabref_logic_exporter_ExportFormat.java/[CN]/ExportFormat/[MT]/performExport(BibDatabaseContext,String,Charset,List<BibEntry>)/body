@@ -19,10 +19,10 @@
   }
   try (VerifyingWriter ps=ss.getWriter()){
     Layout beginLayout=null;
-    Globals.prefs.customExportNameFormatters=readFormatterFile(lfFileName);
+    readFormatterFile();
     List<String> missingFormatters=new ArrayList<>(1);
     try (Reader reader=getReader(lfFileName + ".begin.layout")){
-      LayoutHelper layoutHelper=new LayoutHelper(reader,LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader));
+      LayoutHelper layoutHelper=new LayoutHelper(reader,layoutPreferences);
       beginLayout=layoutHelper.getLayoutFromText();
     }
  catch (    IOException ex) {
@@ -31,12 +31,11 @@
       ps.write(beginLayout.doLayout(databaseContext,encoding));
       missingFormatters.addAll(beginLayout.getMissingFormatters());
     }
-    SavePreferences savePrefs=SavePreferences.loadForExportFromPreferences(Globals.prefs);
-    List<BibEntry> sorted=BibDatabaseWriter.getSortedEntries(databaseContext,entries,savePrefs);
+    List<BibEntry> sorted=BibDatabaseWriter.getSortedEntries(databaseContext,entries,savePreferences);
     Layout defLayout;
     LayoutHelper layoutHelper;
     try (Reader reader=getReader(lfFileName + ".layout")){
-      layoutHelper=new LayoutHelper(reader,LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader));
+      layoutHelper=new LayoutHelper(reader,layoutPreferences);
       defLayout=layoutHelper.getLayoutFromText();
     }
      if (defLayout != null) {
@@ -56,7 +55,7 @@
       }
  else {
         try (Reader reader=getReader(lfFileName + '.' + type+ ".layout")){
-          layoutHelper=new LayoutHelper(reader,LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader));
+          layoutHelper=new LayoutHelper(reader,layoutPreferences);
           layout=layoutHelper.getLayoutFromText();
           layouts.put(type,layout);
           if (layout != null) {
@@ -71,7 +70,7 @@
     }
     Layout endLayout=null;
     try (Reader reader=getReader(lfFileName + ".end.layout")){
-      layoutHelper=new LayoutHelper(reader,LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader));
+      layoutHelper=new LayoutHelper(reader,layoutPreferences);
       endLayout=layoutHelper.getLayoutFromText();
     }
  catch (    IOException ex) {
@@ -80,7 +79,7 @@
       ps.write(endLayout.doLayout(databaseContext,this.encoding));
       missingFormatters.addAll(endLayout.getMissingFormatters());
     }
-    Globals.prefs.customExportNameFormatters=null;
+    layoutPreferences.getCustomExportNameFormatters().clear();
     if (!missingFormatters.isEmpty()) {
       StringBuilder sb=new StringBuilder("The following formatters could not be found: ");
       sb.append(String.join(", ",missingFormatters));

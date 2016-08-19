@@ -1,0 +1,28 @@
+{
+  File formatterFile=new File(lfFileName + ".formatters");
+  if (formatterFile.exists()) {
+    try (Reader in=new FileReader(formatterFile)){
+      StringBuilder sb=new StringBuilder();
+      int c;
+      while ((c=in.read()) != -1) {
+        sb.append((char)c);
+      }
+      String[] lines=sb.toString().split("\n");
+      for (      String line1 : lines) {
+        String line=line1.trim();
+        if (line.isEmpty()) {
+          continue;
+        }
+        int index=line.indexOf(':');
+        if ((index > 0) && ((index + 1) < line.length())) {
+          String formatterName=line.substring(0,index);
+          String contents=line.substring(index + 1);
+          layoutPreferences.getCustomExportNameFormatters().put(formatterName,contents);
+        }
+      }
+    }
+ catch (    IOException ex) {
+      LOGGER.warn("Problem opening formatter file.",ex);
+    }
+  }
+}
