@@ -1,0 +1,17 @@
+{
+  if (StringUtil.isBlank(query)) {
+    return Collections.emptyList();
+  }
+  try (InputStream is=getQueryURL(query).openStream()){
+    return (new GVKParser()).parseEntries(is);
+  }
+ catch (  URISyntaxException e) {
+    throw new FetcherException("URI malformed error",e);
+  }
+catch (  IOException e) {
+    throw new FetcherException("An I/O exception occurred",e);
+  }
+catch (  SAXException|ParserConfigurationException e) {
+    throw new FetcherException("An internal parser error occurred",e);
+  }
+}
