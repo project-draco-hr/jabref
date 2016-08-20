@@ -30,15 +30,14 @@
     GroupTreeNode newGroups=meta.getGroups();
     if (newGroups != null) {
       if (newGroups.getGroup() instanceof AllEntriesGroup) {
-        ExplicitGroup group=null;
         try {
-          group=new ExplicitGroup("Imported",GroupHierarchyType.INDEPENDENT,Globals.prefs);
+          ExplicitGroup group=new ExplicitGroup("Imported",GroupHierarchyType.INDEPENDENT,Globals.prefs);
+          newGroups.setGroup(group);
+          group.add(appendedEntries);
         }
  catch (        ParseException e) {
           LOGGER.error(e);
         }
-        newGroups.setGroup(group);
-        group.add(appendedEntries);
       }
       frame.getGroupSelector().addGroups(newGroups,ce);
     }

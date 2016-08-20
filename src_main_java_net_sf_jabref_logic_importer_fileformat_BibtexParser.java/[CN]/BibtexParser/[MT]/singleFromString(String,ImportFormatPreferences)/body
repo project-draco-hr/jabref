@@ -1,3 +1,7 @@
 {
-  return BibtexParser.singleFromStringOptional(bibtexString,importFormatPreferences).orElse(null);
+  Collection<BibEntry> entries=BibtexParser.fromString(bibtexString,importFormatPreferences);
+  if ((entries == null) || entries.isEmpty()) {
+    return Optional.empty();
+  }
+  return Optional.of(entries.iterator().next());
 }

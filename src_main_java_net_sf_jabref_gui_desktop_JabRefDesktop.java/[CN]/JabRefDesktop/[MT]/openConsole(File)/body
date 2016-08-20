@@ -13,22 +13,15 @@
     if (!command.isEmpty()) {
       command=command.replaceAll("\\s+"," ");
       String[] subcommands=command.split(" ");
-      StringBuilder commandLoggingText=new StringBuilder();
-      for (int i=0; i < subcommands.length; i++) {
-        subcommands[i]=subcommands[i].replace("%DIR",absolutePath);
-        commandLoggingText.append(subcommands[i]);
-        if (i < (subcommands.length - 1)) {
-          commandLoggingText.append(" ");
-        }
-      }
-      JabRefGUI.getMainFrame().output(Localization.lang("Executing command \"%0\"...",commandLoggingText.toString()));
-      LOGGER.info("Executing command \"" + commandLoggingText.toString() + "\"...");
+      String commandLoggingText=command.replace("%DIR",absolutePath);
+      JabRefGUI.getMainFrame().output(Localization.lang("Executing command \"%0\"...",commandLoggingText));
+      LOGGER.info("Executing command \"" + commandLoggingText + "\"...");
       try {
         new ProcessBuilder(subcommands).start();
       }
  catch (      IOException exception) {
         LOGGER.error("Open console",exception);
-        JOptionPane.showMessageDialog(JabRefGUI.getMainFrame(),Localization.lang("Error_occured_while_executing_the_command_\"%0\".",commandLoggingText.toString()),Localization.lang("Open console") + " - " + Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(JabRefGUI.getMainFrame(),Localization.lang("Error_occured_while_executing_the_command_\"%0\".",commandLoggingText),Localization.lang("Open console") + " - " + Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
         JabRefGUI.getMainFrame().output(null);
       }
     }
