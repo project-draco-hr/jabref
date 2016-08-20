@@ -1,28 +1,2 @@
 {
-  EntryTypeDialog etd=new EntryTypeDialog(frame);
-  etd.setLocationRelativeTo(frame);
-  etd.setVisible(true);
-  EntryType type=etd.getChoice();
-  if (type != null) {
-    String id=IdGenerator.next();
-    final BibEntry be=new BibEntry(id,type.getName());
-    try {
-      panel.getDatabase().insertEntry(be);
-      List<BibEntry> list=new ArrayList<>();
-      list.add(be);
-      UpdateField.setAutomaticFields(list,true,true,Globals.prefs.getUpdateFieldPreferences());
-      panel.getUndoManager().addEdit(new UndoableInsertEntry(panel.getDatabase(),be,panel));
-      panel.output(Localization.lang("Added new") + " '" + type.getName().toLowerCase()+ "' "+ Localization.lang("entry")+ ".");
-      if (panel.getMode() != BasePanelMode.SHOWING_EDITOR) {
-        panel.setMode(BasePanelMode.WILL_SHOW_EDITOR);
-      }
-      panel.showEntry(be);
-      panel.markBaseChanged();
-      return be;
-    }
- catch (    KeyCollisionException ex) {
-      LOGGER.info("Key collision occurred",ex);
-    }
-  }
-  return null;
 }
