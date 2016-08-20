@@ -14,11 +14,11 @@
     boolean changesMade=true;
     if (defaulted.contains(stringListEntry.getKey())) {
       String nm=EntryUtil.capitalizeFirst(stringListEntry.getKey());
-      EntryTypes.removeType(nm,bibDatabaseContext.getMode());
+      EntryTypes.removeType(nm,bibDatabaseMode);
       updateTypesForEntries(nm);
       continue;
     }
-    Optional<EntryType> oldType=EntryTypes.getType(stringListEntry.getKey(),bibDatabaseContext.getMode());
+    Optional<EntryType> oldType=EntryTypes.getType(stringListEntry.getKey(),bibDatabaseMode);
     if (oldType.isPresent()) {
       List<String> oldReq=oldType.get().getRequiredFieldsFlat();
       List<String> oldOpt=oldType.get().getOptionalFields();
@@ -40,7 +40,7 @@
     }
   }
   Set<Object> toRemove=new HashSet<>();
-  for (  String o : EntryTypes.getAllTypes(bibDatabaseContext.getMode())) {
+  for (  String o : EntryTypes.getAllTypes(bibDatabaseMode)) {
     if (!types.contains(o)) {
       toRemove.add(o);
     }
