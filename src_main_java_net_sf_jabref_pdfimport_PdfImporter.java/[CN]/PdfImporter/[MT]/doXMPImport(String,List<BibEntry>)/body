@@ -1,26 +1,2 @@
 {
-  List<BibEntry> localRes=new ArrayList<>();
-  PdfXmpImporter importer=new PdfXmpImporter(XMPPreferences.fromPreferences(Globals.prefs));
-  Path filePath=Paths.get(fileName);
-  ParserResult result=importer.importDatabase(filePath,Globals.prefs.getDefaultEncoding());
-  if (result.hasWarnings()) {
-    frame.showMessage(result.getErrorMessage());
-  }
-  localRes.addAll(result.getDatabase().getEntries());
-  BibEntry entry;
-  if (localRes.isEmpty()) {
-    LOGGER.info("Import failed");
-    entry=createNewBlankEntry(fileName);
-    res.add(entry);
-    return;
-  }
-  entry=localRes.get(0);
-  panel.getDatabase().insertEntry(entry);
-  panel.markBaseChanged();
-  FileListTableModel tm=new FileListTableModel();
-  File toLink=new File(fileName);
-  List<String> dirsS=panel.getBibDatabaseContext().getFileDirectory();
-  tm.addEntry(0,new FileListEntry(toLink.getName(),FileUtil.shortenFileName(toLink,dirsS).getPath(),ExternalFileTypes.getInstance().getExternalFileTypeByName("PDF")));
-  entry.setField(FieldName.FILE,tm.getStringRepresentation());
-  res.add(entry);
 }

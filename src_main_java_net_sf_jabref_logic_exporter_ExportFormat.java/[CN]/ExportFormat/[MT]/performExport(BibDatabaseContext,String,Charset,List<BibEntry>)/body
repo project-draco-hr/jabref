@@ -66,7 +66,9 @@
           layout=defLayout;
         }
       }
-      ps.write(layout.doLayout(entry,databaseContext.getDatabase()));
+      if (layout != null) {
+        ps.write(layout.doLayout(entry,databaseContext.getDatabase()));
+      }
     }
     Layout endLayout=null;
     try (Reader reader=getReader(lfFileName + ".end.layout")){
@@ -79,7 +81,7 @@
       ps.write(endLayout.doLayout(databaseContext,this.encoding));
       missingFormatters.addAll(endLayout.getMissingFormatters());
     }
-    layoutPreferences.getCustomExportNameFormatters().clear();
+    layoutPreferences.clearCustomExportNameFormatters();
     if (!missingFormatters.isEmpty()) {
       StringBuilder sb=new StringBuilder("The following formatters could not be found: ");
       sb.append(String.join(", ",missingFormatters));
