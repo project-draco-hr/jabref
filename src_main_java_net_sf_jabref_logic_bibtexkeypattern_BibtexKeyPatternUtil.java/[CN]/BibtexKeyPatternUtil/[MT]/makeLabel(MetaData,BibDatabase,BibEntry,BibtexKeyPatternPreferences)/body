@@ -41,12 +41,12 @@
     key=key.replaceAll(regex,replacement);
   }
   if (forceUpper) {
-    key=key.toUpperCase();
+    key=key.toUpperCase(Locale.ENGLISH);
   }
   if (forceLower) {
-    key=key.toLowerCase();
+    key=key.toLowerCase(Locale.ENGLISH);
   }
-  String oldKey=entry.getCiteKey();
+  String oldKey=entry.getCiteKeyOptional().orElse(null);
   int occurrences=database.getNumberOfKeyOccurrences(key);
   if (Objects.equals(oldKey,key)) {
     occurrences--;
@@ -55,11 +55,11 @@
   boolean firstLetterA=bibtexKeyPatternPreferences.isFirstLetterA();
   if (!alwaysAddLetter && (occurrences == 0)) {
     if (!key.equals(oldKey)) {
-      if (!database.containsEntryWithId(entry.getId())) {
-        entry.setCiteKey(key);
+      if (database.containsEntryWithId(entry.getId())) {
+        database.setCiteKeyForEntry(entry,key);
       }
  else {
-        database.setCiteKeyForEntry(entry,key);
+        entry.setCiteKey(key);
       }
     }
   }
@@ -82,11 +82,11 @@
       }
     }
     if (!moddedKey.equals(oldKey)) {
-      if (!database.containsEntryWithId(entry.getId())) {
-        entry.setCiteKey(moddedKey);
+      if (database.containsEntryWithId(entry.getId())) {
+        database.setCiteKeyForEntry(entry,moddedKey);
       }
  else {
-        database.setCiteKeyForEntry(entry,moddedKey);
+        entry.setCiteKey(moddedKey);
       }
     }
   }

@@ -1,18 +1,2 @@
 {
-  final String entryTitle=removeLaTeX(entry.getField(FieldName.TITLE));
-  try {
-    JSONObject data=result.getJSONObject(0);
-    String dataTitle=data.getJSONArray("title").getString(0);
-    if (editDistanceIgnoreCase(entryTitle,dataTitle) <= METRIC_THRESHOLD) {
-      return true;
-    }
-    if (data.getJSONArray("subtitle").length() > 0) {
-      String dataWithSubTitle=dataTitle + " " + data.getJSONArray("subtitle").getString(0);
-      return editDistanceIgnoreCase(entryTitle,dataWithSubTitle) <= METRIC_THRESHOLD;
-    }
-    return false;
-  }
- catch (  JSONException ex) {
-    return false;
-  }
 }
