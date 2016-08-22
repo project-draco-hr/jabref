@@ -1,26 +1,2 @@
 {
-  Objects.requireNonNull(frame);
-  Objects.requireNonNull(bibDatabaseContext);
-  this.bibDatabaseContext=bibDatabaseContext;
-  this.sidePaneManager=frame.getSidePaneManager();
-  this.frame=frame;
-  this.tableModel=new MainTableDataModel(getBibDatabaseContext());
-  searchBar=new SearchBar(this);
-  setupMainPanel();
-  setupActions();
-  File file=bibDatabaseContext.getDatabaseFile();
-  this.bibDatabaseContext.getDatabase().registerListener(new GroupTreeListener());
-  if (file == null) {
-    if (bibDatabaseContext.getDatabase().hasEntries()) {
-      this.baseChanged=true;
-    }
-  }
- else {
-    try {
-      fileMonitorHandle=Globals.getFileUpdateMonitor().addUpdateListener(this,file);
-    }
- catch (    IOException ex) {
-      LOGGER.warn("Could not register FileUpdateMonitor",ex);
-    }
-  }
 }
