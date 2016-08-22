@@ -1,10 +1,10 @@
 {
-  when(Globals.prefs.get("importFileNamePattern")).thenReturn("\\bibtexkey - \\title");
+  String fileNamePattern="\\bibtexkey - \\title";
   File tempFile=testFolder.newFile("Toot.tmp");
   ParsedFileField fileField=new ParsedFileField("",tempFile.getAbsolutePath(),"");
   entry.setField("file",FileField.getStringRepresentation(fileField));
   entry.setField("title","test title");
-  RenamePdfCleanup cleanup=new RenamePdfCleanup(false,context,mock(JournalAbbreviationLoader.class),Globals.prefs);
+  RenamePdfCleanup cleanup=new RenamePdfCleanup(false,context,fileNamePattern,mock(LayoutFormatterPreferences.class));
   cleanup.cleanup(entry);
   ParsedFileField newFileField=new ParsedFileField("","Toot - test title.tmp","");
   assertEquals(Optional.of(FileField.getStringRepresentation(newFileField)),entry.getFieldOptional("file"));

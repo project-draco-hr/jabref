@@ -1,7 +1,7 @@
 {
-  when(prefs.get(JabRefPreferences.IMPORT_FILENAMEPATTERN)).thenReturn("\\bibtexkey\\begin{title} - \\format[RemoveBrackets]{\\title}\\end{title}");
+  String fileNamePattern="\\bibtexkey\\begin{title} - \\format[RemoveBrackets]{\\title}\\end{title}";
   BibEntry entry=new BibEntry();
   entry.setCiteKey("1234");
   entry.setField("title","mytitle");
-  assertEquals("1234 - mytitle",FileUtil.createFileNameFromPattern(null,entry,mock(JournalAbbreviationLoader.class),prefs));
+  assertEquals("1234 - mytitle",FileUtil.createFileNameFromPattern(null,entry,fileNamePattern,LayoutFormatterPreferences.fromPreferences(JabRefPreferences.getInstance(),mock(JournalAbbreviationLoader.class))));
 }
