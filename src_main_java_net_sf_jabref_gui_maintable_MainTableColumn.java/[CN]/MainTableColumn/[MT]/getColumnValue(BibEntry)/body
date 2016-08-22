@@ -2,15 +2,17 @@
   if (bibtexFields.isEmpty()) {
     return null;
   }
+  boolean isNameColumn=false;
   Optional<String> content=Optional.empty();
   for (  String field : bibtexFields) {
     content=BibDatabase.getResolvedField(field,entry,database.orElse(null));
     if (content.isPresent()) {
+      isNameColumn=InternalBibtexFields.getFieldExtras(field).contains(FieldProperties.PERSON_NAMES);
       break;
     }
   }
   String result=content.orElse(null);
-  if (isNameColumn()) {
+  if (isNameColumn) {
     result=MainTableNameFormatter.formatName(result);
   }
   if (result != null) {
