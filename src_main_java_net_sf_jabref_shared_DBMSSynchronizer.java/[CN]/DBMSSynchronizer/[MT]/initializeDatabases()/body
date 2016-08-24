@@ -1,12 +1,10 @@
 {
-  try {
-    if (!dbmsProcessor.checkBaseIntegrity()) {
-      LOGGER.info(Localization.lang("Integrity check failed. Fixing..."));
-      dbmsProcessor.setUpSharedDatabase();
+  if (!dbmsProcessor.checkBaseIntegrity()) {
+    LOGGER.info("Integrity check failed. Fixing...");
+    dbmsProcessor.setupSharedDatabase();
+    if (dbmsProcessor.checkForPre3Dot6Intergrity()) {
+      throw new DatabaseNotSupportedException();
     }
-  }
- catch (  SQLException e) {
-    LOGGER.error("SQL Error: ",e);
   }
   synchronizeLocalMetaData();
   synchronizeLocalDatabase();
