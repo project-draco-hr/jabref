@@ -1,16 +1,14 @@
 {
   String fieldEntry;
-  if ("bibtextype".equals(text)) {
+  if (BibEntry.TYPE_HEADER.equals(text)) {
+    fieldEntry=bibtex.getType();
+  }
+ else   if (BibEntry.OBSOLETE_TYPE_HEADER.equals(text)) {
+    LOGGER.warn("'" + BibEntry.OBSOLETE_TYPE_HEADER + "' is an obsolete name for the entry type. Please update your layout to use '"+ BibEntry.TYPE_HEADER+ "' instead.");
     fieldEntry=bibtex.getType();
   }
  else {
-    String fieldText=text.startsWith("\\") ? BibDatabase.getResolvedField(text.substring(1),bibtex,database) : BibDatabase.getText(text,database);
-    if (fieldText == null) {
-      fieldEntry="";
-    }
- else {
-      fieldEntry=fieldText;
-    }
+    fieldEntry=text.startsWith("\\") ? BibDatabase.getResolvedField(text.substring(1),bibtex,database).orElse("") : BibDatabase.getText(text,database);
   }
   if (option != null) {
     for (    LayoutFormatter anOption : option) {

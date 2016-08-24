@@ -2,7 +2,7 @@
   int[] sel=table.getSelectedRows();
   if (sel.length > 0) {
     assureNotEditing();
-    String msg=(sel.length > 1 ? Localization.lang("Really delete the selected %0 entries?",Integer.toString(sel.length)) : Localization.lang("Really delete the selected entry?"));
+    String msg=(sel.length > 1 ? Localization.lang("Really delete the %0 selected entries?",Integer.toString(sel.length)) : Localization.lang("Really delete the selected entry?"));
     int answer=JOptionPane.showConfirmDialog(parent,msg,Localization.lang("Delete strings"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
     if (answer == JOptionPane.YES_OPTION) {
       CompoundEdit ce=new CompoundEdit();
@@ -12,7 +12,7 @@
         base.removeString(subject.getId());
       }
       ce.end();
-      panel.undoManager.addEdit(ce);
+      panel.getUndoManager().addEdit(ce);
       refreshTable();
       if (!base.hasNoStrings()) {
         table.setRowSelectionInterval(0,0);

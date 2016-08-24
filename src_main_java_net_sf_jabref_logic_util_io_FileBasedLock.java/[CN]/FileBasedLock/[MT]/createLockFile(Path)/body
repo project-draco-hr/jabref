@@ -1,0 +1,14 @@
+{
+  Path lockFile=getLockFilePath(file);
+  if (Files.exists(lockFile)) {
+    return true;
+  }
+  try {
+    Files.write(lockFile,"0".getBytes());
+  }
+ catch (  IOException ex) {
+    LOGGER.error("Error when creating lock file.",ex);
+  }
+  lockFile.toFile().deleteOnExit();
+  return false;
+}

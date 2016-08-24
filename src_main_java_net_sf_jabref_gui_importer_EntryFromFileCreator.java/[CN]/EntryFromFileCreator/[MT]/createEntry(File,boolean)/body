@@ -1,0 +1,17 @@
+{
+  if ((f == null) || !f.exists()) {
+    return Optional.empty();
+  }
+  Optional<BibEntry> newEntry=createBibtexEntry(f);
+  if (!(newEntry.isPresent())) {
+    return newEntry;
+  }
+  if (addPathTokensAsKeywords) {
+    appendToField(newEntry.get(),FieldName.KEYWORDS,extractPathesToKeyWordsfield(f.getAbsolutePath()));
+  }
+  if (!newEntry.get().hasField(FieldName.TITLE)) {
+    newEntry.get().setField(FieldName.TITLE,f.getName());
+  }
+  addFileInfo(newEntry.get(),f);
+  return newEntry;
+}

@@ -1,13 +1,16 @@
 {
   List<IntegrityMessage> results=new ArrayList<>();
-  for (  Map.Entry<String,String> field : entry.getFieldMap().entrySet()) {
-    Matcher hashMatcher=UNESCAPED_HASH.matcher(field.getValue());
-    int hashCount=0;
-    while (hashMatcher.find()) {
-      hashCount++;
-    }
-    if ((hashCount % 2) == 1) {
-      results.add(new IntegrityMessage(Localization.lang("odd number of unescaped '#'"),entry,field.getKey()));
+  Map<String,String> fields=entry.getFieldMap();
+  for (  Map.Entry<String,String> field : fields.entrySet()) {
+    if (!InternalBibtexFields.getFieldExtras(field.getKey()).contains(FieldProperties.VERBATIM)) {
+      Matcher hashMatcher=UNESCAPED_HASH.matcher(field.getValue());
+      int hashCount=0;
+      while (hashMatcher.find()) {
+        hashCount++;
+      }
+      if ((hashCount & 1) == 1) {
+        results.add(new IntegrityMessage(Localization.lang("odd number of unescaped '#'"),entry,field.getKey()));
+      }
     }
   }
   return results;

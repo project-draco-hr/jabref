@@ -1,0 +1,35 @@
+{
+  List<BibEntry> bes=mainTable.getSelectedEntries();
+  if (!bes.isEmpty()) {
+    storeCurrentEdit();
+    StringReader sr=new StringReader("\\bibtexkey - \\begin{title}\\format[RemoveBrackets]{\\title}\\end{title}\n");
+    Layout layout;
+    try {
+      layout=new LayoutHelper(sr,LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader)).getLayoutFromText();
+    }
+ catch (    IOException e) {
+      LOGGER.info("Could not get layout",e);
+      return;
+    }
+    StringBuilder sb=new StringBuilder();
+    int copied=0;
+    for (    BibEntry be : bes) {
+      if (be.hasCiteKey()) {
+        copied++;
+        sb.append(layout.doLayout(be,bibDatabaseContext.getDatabase()));
+      }
+    }
+    if (copied == 0) {
+      output(Localization.lang("None of the selected entries have BibTeX keys."));
+      return;
+    }
+    final StringSelection ss=new StringSelection(sb.toString());
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,BasePanel.this);
+    if (copied == bes.size()) {
+      output((bes.size() > 1 ? Localization.lang("Copied keys") : Localization.lang("Copied key")) + '.');
+    }
+ else {
+      output(Localization.lang("Warning: %0 out of %1 entries have undefined BibTeX key.",Integer.toString(bes.size() - copied),Integer.toString(bes.size())));
+    }
+  }
+}

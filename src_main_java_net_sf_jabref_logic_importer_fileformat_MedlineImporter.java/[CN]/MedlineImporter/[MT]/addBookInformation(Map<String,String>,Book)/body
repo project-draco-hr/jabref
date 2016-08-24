@@ -1,0 +1,37 @@
+{
+  if (book.getPublisher() != null) {
+    Publisher publisher=book.getPublisher();
+    putIfValueNotNull(fields,"publocation",publisher.getPublisherLocation());
+    putStringFromSerializableList(fields,FieldName.PUBLISHER,publisher.getPublisherName().getContent());
+  }
+  if (book.getBookTitle() != null) {
+    BookTitle title=book.getBookTitle();
+    putStringFromSerializableList(fields,FieldName.TITLE,title.getContent());
+  }
+  if (book.getPubDate() != null) {
+    addPubDate(fields,book.getPubDate());
+  }
+  if (book.getAuthorList() != null) {
+    List<AuthorList> authorLists=book.getAuthorList();
+    if (authorLists.size() == 1) {
+      for (      AuthorList authorList : authorLists) {
+        handleAuthors(fields,authorList);
+      }
+    }
+ else {
+      LOGGER.info(String.format("Size of authorlist was %s",authorLists.size()));
+    }
+  }
+  putIfValueNotNull(fields,FieldName.VOLUME,book.getVolume());
+  putIfValueNotNull(fields,FieldName.EDITION,book.getEdition());
+  putIfValueNotNull(fields,"medium",book.getMedium());
+  putIfValueNotNull(fields,"reportnumber",book.getReportNumber());
+  if (book.getELocationID() != null) {
+    for (    ELocationID id : book.getELocationID()) {
+      addElocationID(fields,id);
+    }
+  }
+  if (book.getIsbn() != null) {
+    fields.put(FieldName.ISBN,join(book.getIsbn(),", "));
+  }
+}

@@ -3,8 +3,8 @@
   JMenu typeMenu=new ChangeEntryTypeMenu().getChangeEntryTypeMenu(panel);
   boolean multiple=areMultipleEntriesSelected();
   BibEntry be=null;
-  if (panel.mainTable.getSelectedRowCount() == 1) {
-    be=panel.mainTable.getSelected().get(0);
+  if (panel.getMainTable().getSelectedRowCount() == 1) {
+    be=panel.getMainTable().getSelected().get(0);
   }
   addPopupMenuListener(this);
   JMenu copySpecialMenu=new JMenu(Localization.lang("Copy") + "...");
@@ -17,6 +17,7 @@
   add(new GeneralAction(Actions.PASTE,Localization.lang("Paste"),IconTheme.JabRefIcon.PASTE.getSmallIcon()));
   add(new GeneralAction(Actions.CUT,Localization.lang("Cut"),IconTheme.JabRefIcon.CUT.getSmallIcon()));
   add(new GeneralAction(Actions.DELETE,Localization.lang("Delete"),IconTheme.JabRefIcon.DELETE_ENTRY.getSmallIcon()));
+  add(new GeneralAction(Actions.PRINT_PREVIEW,Localization.lang("Print entry preview"),IconTheme.JabRefIcon.PRINTED.getSmallIcon()));
   addSeparator();
   add(new GeneralAction(Actions.SEND_AS_EMAIL,Localization.lang("Send as email"),IconTheme.JabRefIcon.EMAIL.getSmallIcon()));
   addSeparator();
@@ -30,8 +31,8 @@
     add(new GeneralAction(Actions.UNMARK_ENTRIES,Localization.lang("Unmark entries"),IconTheme.JabRefIcon.UNMARK_ENTRIES.getSmallIcon()));
   }
  else   if (be != null) {
-    String marked=be.getField(InternalBibtexFields.MARKED);
-    if ((marked == null) || marked.isEmpty()) {
+    Optional<String> marked=be.getFieldOptional(FieldName.MARKED_INTERNAL);
+    if ((!marked.isPresent()) || marked.get().isEmpty()) {
       add(new GeneralAction(Actions.MARK_ENTRIES,Localization.lang("Mark entry"),IconTheme.JabRefIcon.MARK_ENTRIES.getSmallIcon()));
       add(markSpecific);
     }
@@ -40,27 +41,27 @@
       add(new GeneralAction(Actions.UNMARK_ENTRIES,Localization.lang("Unmark entry"),IconTheme.JabRefIcon.UNMARK_ENTRIES.getSmallIcon()));
     }
   }
-  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.SPECIALFIELDSENABLED)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_RANKING)) {
       JMenu rankingMenu=new JMenu();
       RightClickMenu.populateSpecialFieldMenu(rankingMenu,Rank.getInstance(),frame);
       add(rankingMenu);
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_RELEVANCE)) {
       add(Relevance.getInstance().getValues().get(0).getMenuAction(frame));
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_QUALITY)) {
       add(Quality.getInstance().getValues().get(0).getMenuAction(frame));
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_PRINTED)) {
       add(Printed.getInstance().getValues().get(0).getMenuAction(frame));
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_PRIORITY)) {
       JMenu priorityMenu=new JMenu();
       RightClickMenu.populateSpecialFieldMenu(priorityMenu,Priority.getInstance(),frame);
       add(priorityMenu);
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_READ)) {
       JMenu readStatusMenu=new JMenu();
       RightClickMenu.populateSpecialFieldMenu(readStatusMenu,ReadStatus.getInstance(),frame);
       add(readStatusMenu);
@@ -69,7 +70,7 @@
   addSeparator();
   add(new GeneralAction(Actions.OPEN_FOLDER,Localization.lang("Open folder")){
 {
-      if (!isFieldSetForSelectedEntry(Globals.FILE_FIELD)) {
+      if (!isFieldSetForSelectedEntry(FieldName.FILE)) {
         this.setEnabled(false);
       }
     }
@@ -77,7 +78,7 @@
 );
   add(new GeneralAction(Actions.OPEN_EXTERNAL_FILE,Localization.lang("Open file"),getFileIconForSelectedEntry()){
 {
-      if (!isFieldSetForSelectedEntry(Globals.FILE_FIELD)) {
+      if (!isFieldSetForSelectedEntry(FieldName.FILE)) {
         this.setEnabled(false);
       }
     }
@@ -85,7 +86,7 @@
 );
   add(new GeneralAction(Actions.OPEN_URL,Localization.lang("Open URL or DOI"),IconTheme.JabRefIcon.WWW.getSmallIcon()){
 {
-      if (!(isFieldSetForSelectedEntry("url") || isFieldSetForSelectedEntry("doi"))) {
+      if (!(isFieldSetForSelectedEntry(FieldName.URL) || isFieldSetForSelectedEntry(FieldName.DOI))) {
         this.setEnabled(false);
       }
     }
@@ -93,9 +94,9 @@
 );
   addSeparator();
   add(typeMenu);
-  add(new GeneralAction(Actions.MERGE_DOI,Localization.lang("Get BibTeX data from DOI")){
+  add(new GeneralAction(Actions.MERGE_WITH_FETCHED_ENTRY,Localization.lang("Get BibTeX data from %0",FetchAndMergeEntry.getDisplayNameOfSupportedFields())){
 {
-      if (!(isFieldSetForSelectedEntry("doi"))) {
+      if (!(isAnyFieldSetForSelectedEntry(FetchAndMergeEntry.SUPPORTED_FIELDS))) {
         this.setEnabled(false);
       }
     }

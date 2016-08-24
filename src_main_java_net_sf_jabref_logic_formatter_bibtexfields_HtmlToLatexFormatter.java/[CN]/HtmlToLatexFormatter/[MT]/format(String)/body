@@ -4,14 +4,8 @@
     return result;
   }
   StringBuilder sb=new StringBuilder();
-  if (Globals.prefs.getBoolean(JabRefPreferences.USE_CONVERT_TO_EQUATION)) {
-    result=result.replaceAll("<[ ]?sup>([^<]+)</sup>","\\$\\^\\{$1\\}\\$");
-    result=result.replaceAll("<[ ]?sub>([^<]+)</sub>","\\$_\\{$1\\}\\$");
-  }
- else {
-    result=result.replaceAll("<[ ]?sup>([^<]+)</sup>","\\\\textsuperscript\\{$1\\}");
-    result=result.replaceAll("<[ ]?sub>([^<]+)</sub>","\\\\textsubscript\\{$1\\}");
-  }
+  result=result.replaceAll("<[ ]?sup>([^<]+)</sup>","\\\\textsuperscript\\{$1\\}");
+  result=result.replaceAll("<[ ]?sub>([^<]+)</sub>","\\\\textsubscript\\{$1\\}");
   for (int i=0; i < result.length(); i++) {
     int c=result.charAt(i);
     if (c == '<') {
@@ -24,13 +18,13 @@
   result=sb.toString();
   Set<String> patterns=HTMLUnicodeConversionMaps.HTML_LATEX_CONVERSION_MAP.keySet();
   for (  String pattern : patterns) {
-    result=result.replaceAll(pattern,HTMLUnicodeConversionMaps.HTML_LATEX_CONVERSION_MAP.get(pattern));
+    result=result.replace(pattern,HTMLUnicodeConversionMaps.HTML_LATEX_CONVERSION_MAP.get(pattern));
   }
   Matcher m=ESCAPED_PATTERN.matcher(result);
   while (m.find()) {
     int num=Integer.decode(m.group(1).replace("x","#") + m.group(3));
     if (HTMLUnicodeConversionMaps.NUMERICAL_LATEX_CONVERSION_MAP.containsKey(num)) {
-      result=result.replaceAll("&#" + m.group(1) + m.group(2)+ m.group(3)+ ";",HTMLUnicodeConversionMaps.NUMERICAL_LATEX_CONVERSION_MAP.get(num));
+      result=result.replace("&#" + m.group(1) + m.group(2)+ m.group(3)+ ";",HTMLUnicodeConversionMaps.NUMERICAL_LATEX_CONVERSION_MAP.get(num));
     }
   }
   m=ESCAPED_PATTERN2.matcher(result);
@@ -38,13 +32,13 @@
     int num=Integer.decode(m.group(2).replace("x","#") + m.group(4));
     if (HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.containsKey(num)) {
       if ("i".equals(m.group(1))) {
-        result=result.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "\\{\\\\i\\}\\}");
+        result=result.replace(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","{\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "{\\i}}");
       }
  else       if ("j".equals(m.group(1))) {
-        result=result.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "\\{\\\\j\\}\\}");
+        result=result.replace(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","{\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "{\\j}}");
       }
  else {
-        result=result.replaceAll(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","\\{\\\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "\\{"+ m.group(1)+ "\\}\\}");
+        result=result.replace(m.group(1) + "&#" + m.group(2)+ m.group(3)+ m.group(4)+ ";","{\\" + HTMLUnicodeConversionMaps.ESCAPED_ACCENTS.get(num) + "{"+ m.group(1)+ "}}");
       }
     }
   }

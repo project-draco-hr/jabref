@@ -1,0 +1,23 @@
+{
+  try {
+    String cleanURL=entryUrl.replace("%","%25").replace(":","%3A").replace("/","%2F").replace("?","%3F").replace("&","%26").replace("=","%3D");
+    URL url=new URL(BibsonomyScraper.BIBSONOMY_SCRAPER + cleanURL + BibsonomyScraper.BIBSONOMY_SCRAPER_POST);
+    String bibtex=new URLDownload(url).downloadToString(StandardCharsets.UTF_8);
+    BibtexParser bp=new BibtexParser(new StringReader(bibtex),importFormatPreferences);
+    ParserResult pr=bp.parse();
+    if ((pr != null) && pr.getDatabase().hasEntries()) {
+      return Optional.of(pr.getDatabase().getEntries().iterator().next());
+    }
+ else {
+      return Optional.empty();
+    }
+  }
+ catch (  IOException ex) {
+    LOGGER.warn("Could not download entry",ex);
+    return Optional.empty();
+  }
+catch (  RuntimeException ex) {
+    LOGGER.warn("Could not get entry",ex);
+    return Optional.empty();
+  }
+}

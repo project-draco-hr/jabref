@@ -1,0 +1,14 @@
+{
+  Optional<String> issnString=entry.getFieldOptional(FieldName.ISSN);
+  if (!issnString.isPresent()) {
+    return Collections.emptyList();
+  }
+  ISSN issn=new ISSN(issnString.get());
+  if (issn.isCanBeCleaned()) {
+    String newValue=issn.getCleanedISSN();
+    FieldChange change=new FieldChange(entry,FieldName.ISSN,issnString.get(),newValue);
+    entry.setField(FieldName.ISSN,newValue);
+    return Collections.singletonList(change);
+  }
+  return Collections.emptyList();
+}

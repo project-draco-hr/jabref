@@ -1,0 +1,25 @@
+{
+  String path=getAbsolutePath(TEST_FILE_NAME);
+  importBibIntoNewDatabase(path);
+  JTableFixture entryTable=mainFrame.table();
+  Pattern pattern=Pattern.compile("256.*");
+  JTableCellFixture firstCell=entryTable.cell(pattern);
+  entryTable.selectRows(0).doubleClick();
+  robot().settings().delayBetweenEvents(0);
+  firstCell.doubleClick();
+  robot().settings().delayBetweenEvents(SPEED_NORMAL);
+  firstCell.click();
+  assertColumnValue(entryTable,0,TITLE_COLUMN_INDEX,entryTable.selectionValue());
+  for (int i=0; i < SCROLL_ACTION_EXECUTION; i++) {
+    robot().pressAndReleaseKey(DOWN);
+    Assert.assertTrue(entryTable.selectionValue() != null);
+    assertColumnValue(entryTable,i + 1,TITLE_COLUMN_INDEX,entryTable.selectionValue());
+  }
+  for (int i=SCROLL_ACTION_EXECUTION; i > 0; i--) {
+    robot().pressAndReleaseKey(UP);
+    Assert.assertTrue(entryTable.selectionValue() != null);
+    assertColumnValue(entryTable,i - 1,TITLE_COLUMN_INDEX,entryTable.selectionValue());
+  }
+  closeDatabase();
+  exitJabRef();
+}

@@ -1,0 +1,10 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader(bibtexEntry),importFormatPreferences);
+  Collection<BibEntry> entries=result.getDatabase().getEntries();
+  BibEntry entry=entries.iterator().next();
+  StringWriter stringWriter=new StringWriter();
+  writer.write(entry,stringWriter,BibDatabaseMode.BIBTEX);
+  String actual=stringWriter.toString();
+  assertEquals(bibtexEntry,actual);
+  return actual;
+}

@@ -1,6 +1,6 @@
 {
-  try (FileReader fr=new FileReader("src/test/resources/testbib/testjabref.bib")){
-    ParserResult result=BibtexParser.parse(fr);
+  try (BufferedReader fr=Files.newBufferedReader(Paths.get("src/test/resources/testbib/testjabref.bib"),StandardCharsets.UTF_8)){
+    ParserResult result=BibtexParser.parse(fr,ImportFormatPreferences.fromPreferences(JabRefPreferences.getInstance()));
     BibDatabase db=result.getDatabase();
     List<String> fieldList=new ArrayList<>();
     fieldList.add("author");

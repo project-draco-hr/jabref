@@ -1,0 +1,16 @@
+{
+  Globals.prefs=JabRefPreferences.getInstance();
+  JournalAbbreviationLoader journalAbbreviationLoader=new JournalAbbreviationLoader();
+  Map<String,ExportFormat> customFormats=Globals.prefs.customExports.getCustomExportFormats(Globals.prefs,journalAbbreviationLoader);
+  LayoutFormatterPreferences layoutPreferences=LayoutFormatterPreferences.fromPreferences(Globals.prefs,journalAbbreviationLoader);
+  SavePreferences savePreferences=SavePreferences.loadForExportFromPreferences(Globals.prefs);
+  ExportFormats.initAllExports(customFormats,layoutPreferences,savePreferences);
+  exportFormat=ExportFormats.getExportFormat("html");
+  databaseContext=new BibDatabaseContext();
+  charset=Charsets.UTF_8;
+  BibEntry entry=new BibEntry();
+  entry.setField("title","my paper title");
+  entry.setField("author","Stefan Kolb");
+  entry.setCiteKey("mykey");
+  entries=Arrays.asList(entry);
+}

@@ -1,0 +1,56 @@
+{
+  shouldContinue=true;
+  String cleanQuery=query.trim().replace(';',',');
+  if (cleanQuery.matches("\\d+[,\\d+]*")) {
+    frameOP.setStatus(Localization.lang("Fetching Medline by id..."));
+    List<BibEntry> bibs=fetchMedline(cleanQuery,frameOP);
+    if (bibs.isEmpty()) {
+      frameOP.showMessage(Localization.lang("No references found"));
+    }
+    for (    BibEntry entry : bibs) {
+      iIDialog.addEntry(entry);
+    }
+    return true;
+  }
+  if (!query.isEmpty()) {
+    frameOP.setStatus(Localization.lang("Fetching Medline by term..."));
+    String searchTerm=toSearchTerm(query);
+    SearchResult result=getIds(searchTerm,0,1);
+    if (result.count == 0) {
+      frameOP.showMessage(Localization.lang("No references found"));
+      return false;
+    }
+    int numberToFetch=result.count;
+    if (numberToFetch > MedlineFetcher.PACING) {
+      while (true) {
+        String strCount=JOptionPane.showInputDialog(Localization.lang("References found") + ": " + numberToFetch+ "  "+ Localization.lang("Number of references to fetch?"),Integer.toString(numberToFetch));
+        if (strCount == null) {
+          frameOP.setStatus(Localization.lang("%0 import canceled","Medline"));
+          return false;
+        }
+        try {
+          numberToFetch=Integer.parseInt(strCount.trim());
+          break;
+        }
+ catch (        NumberFormatException ex) {
+          frameOP.showMessage(Localization.lang("Please enter a valid number"));
+        }
+      }
+    }
+    for (int i=0; i < numberToFetch; i+=MedlineFetcher.PACING) {
+      if (!shouldContinue) {
+        break;
+      }
+      int noToFetch=Math.min(MedlineFetcher.PACING,numberToFetch - i);
+      result=getIds(searchTerm,i,noToFetch);
+      List<BibEntry> bibs=fetchMedline(result.ids,frameOP);
+      for (      BibEntry entry : bibs) {
+        iIDialog.addEntry(entry);
+      }
+      iIDialog.setProgress(i + noToFetch,numberToFetch);
+    }
+    return true;
+  }
+  frameOP.showMessage(Localization.lang("Please enter a comma separated list of Medline IDs (numbers) or search terms."),Localization.lang("Input error"),JOptionPane.ERROR_MESSAGE);
+  return false;
+}

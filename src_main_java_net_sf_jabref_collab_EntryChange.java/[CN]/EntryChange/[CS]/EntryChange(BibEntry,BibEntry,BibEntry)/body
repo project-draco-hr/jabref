@@ -1,15 +1,15 @@
 {
   super();
-  String key=tmpEntry.getCiteKey();
-  if (key == null) {
-    name=Localization.lang("Modified entry");
+  Optional<String> key=tmpEntry.getCiteKeyOptional();
+  if (key.isPresent()) {
+    name=Localization.lang("Modified entry") + ": '" + key.get()+ '\'';
   }
  else {
-    name=Localization.lang("Modified entry") + ": '" + key+ '\'';
+    name=Localization.lang("Modified entry");
   }
   boolean isModifiedLocally=(DuplicateCheck.compareEntriesStrictly(memEntry,tmpEntry) <= 1);
   boolean modificationsAgree=(DuplicateCheck.compareEntriesStrictly(memEntry,diskEntry) > 1);
-  LOGGER.debug("Modified entry: " + memEntry.getCiteKey() + "\n Modified locally: "+ isModifiedLocally+ " Modifications agree: "+ modificationsAgree);
+  LOGGER.debug("Modified entry: " + memEntry.getCiteKeyOptional().orElse("<no BibTeX key set>") + "\n Modified locally: "+ isModifiedLocally+ " Modifications agree: "+ modificationsAgree);
   Set<String> allFields=new TreeSet<>();
   allFields.addAll(memEntry.getFieldNames());
   allFields.addAll(tmpEntry.getFieldNames());

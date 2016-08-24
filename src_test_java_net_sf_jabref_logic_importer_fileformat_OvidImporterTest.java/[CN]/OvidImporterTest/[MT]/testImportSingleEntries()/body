@@ -1,0 +1,11 @@
+{
+  for (int n=3; n <= 7; n++) {
+    Path file=Paths.get(OvidImporter.class.getResource("OvidImporterTest" + n + ".txt").toURI());
+    try (InputStream nis=OvidImporter.class.getResourceAsStream("OvidImporterTestBib" + n + ".bib")){
+      List<BibEntry> entries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+      Assert.assertNotNull(entries);
+      Assert.assertEquals(1,entries.size());
+      BibEntryAssert.assertEquals(nis,entries.get(0));
+    }
+   }
+}

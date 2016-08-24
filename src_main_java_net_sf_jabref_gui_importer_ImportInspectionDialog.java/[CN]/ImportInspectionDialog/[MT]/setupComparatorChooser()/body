@@ -1,0 +1,28 @@
+{
+  List<Comparator> comparators=comparatorChooser.getComparatorsForColumn(0);
+  comparators.clear();
+  comparators=comparatorChooser.getComparatorsForColumn(1);
+  comparators.clear();
+  for (int i=2; i < PAD; i++) {
+    comparators=comparatorChooser.getComparatorsForColumn(i);
+    comparators.clear();
+    if (i == FILE_COL) {
+      comparators.add(new IconComparator(Collections.singletonList(FieldName.FILE)));
+    }
+ else     if (i == URL_COL) {
+      comparators.add(new IconComparator(Collections.singletonList(FieldName.URL)));
+    }
+  }
+  for (int i=PAD; i < (PAD + INSPECTION_FIELDS.size()); i++) {
+    comparators=comparatorChooser.getComparatorsForColumn(i);
+    comparators.clear();
+    comparators.add(new FieldComparator(INSPECTION_FIELDS.get(i - PAD)));
+  }
+  sortedList.getReadWriteLock().writeLock().lock();
+  try {
+    comparatorChooser.appendComparator(PAD,0,false);
+  }
+  finally {
+    sortedList.getReadWriteLock().writeLock().unlock();
+  }
+}

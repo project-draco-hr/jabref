@@ -1,0 +1,15 @@
+{
+  boolean resolveStrings=true;
+  if (prefs.isResolveStringsAllFields()) {
+    for (    String exception : prefs.getDoNotResolveStringsFor()) {
+      if (exception.equals(fieldName)) {
+        resolveStrings=false;
+        break;
+      }
+    }
+  }
+ else {
+    resolveStrings=InternalBibtexFields.isStandardField(fieldName) || BIBTEX_STRING.equals(fieldName);
+  }
+  return resolveStrings;
+}

@@ -14,7 +14,7 @@
         writer.write(entry.getName());
         writer.write(" = ");
         writer.write(entry.getAbbreviation());
-        writer.write(Globals.NEWLINE);
+        writer.write(OS.NEWLINE);
       }
     }
  catch (    IOException e) {
@@ -33,7 +33,5 @@
     }
   }
   Globals.prefs.putStringList(JabRefPreferences.EXTERNAL_JOURNAL_LISTS,extFiles);
-  for (  BasePanel basePanel : frame.getBasePanelList()) {
-    basePanel.getAutoCompleters().addJournalListToAutoCompleter();
-  }
+  Globals.journalAbbreviationLoader.update(JournalAbbreviationPreferences.fromPreferences(Globals.prefs));
 }

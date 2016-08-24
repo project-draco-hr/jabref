@@ -1,36 +1,36 @@
 {
-  if (be.hasField(InternalBibtexFields.MARKED)) {
-    String s=be.getField(InternalBibtexFields.MARKED);
-    if ("0".equals(s)) {
+  if (be.hasField(FieldName.MARKED_INTERNAL)) {
+    String markerString=be.getFieldOptional(FieldName.MARKED_INTERNAL).get();
+    if ("0".equals(markerString)) {
       if (!onlyMaxLevel) {
         unmarkOldStyle(be,database,ce);
       }
       return;
     }
     String newValue=null;
-    int index=s.indexOf(Globals.prefs.WRAPPED_USERNAME);
+    int index=markerString.indexOf(Globals.prefs.getWrappedUsername());
     if (index >= 0) {
       if (onlyMaxLevel) {
         return;
       }
  else {
-        newValue=s.substring(0,index) + s.substring(index + Globals.prefs.WRAPPED_USERNAME.length());
+        newValue=markerString.substring(0,index) + markerString.substring(index + Globals.prefs.getWrappedUsername().length());
       }
     }
  else {
-      Matcher m=MARK_NUMBER_PATTERN.matcher(s);
+      Matcher m=MARK_NUMBER_PATTERN.matcher(markerString);
       if (m.find()) {
         try {
           int prevMarkLevel=Integer.parseInt(m.group(1));
           if (!onlyMaxLevel || (prevMarkLevel == MARK_COLOR_LEVELS)) {
             if (prevMarkLevel > 1) {
-              newValue=s.substring(0,m.start(1)) + s.substring(m.end(1));
+              newValue=markerString.substring(0,m.start(1)) + markerString.substring(m.end(1));
             }
  else {
-              String toRemove=Globals.prefs.WRAPPED_USERNAME.substring(0,Globals.prefs.WRAPPED_USERNAME.length() - 1) + ":1]";
-              index=s.indexOf(toRemove);
+              String toRemove=Globals.prefs.getWrappedUsername().substring(0,Globals.prefs.getWrappedUsername().length() - 1) + ":1]";
+              index=markerString.indexOf(toRemove);
               if (index >= 0) {
-                newValue=s.substring(0,index) + s.substring(index + toRemove.length());
+                newValue=markerString.substring(0,index) + markerString.substring(index + toRemove.length());
               }
             }
           }
@@ -42,12 +42,12 @@
         }
       }
     }
-    ce.addEdit(new UndoableFieldChange(be,InternalBibtexFields.MARKED,be.getField(InternalBibtexFields.MARKED),newValue));
+    ce.addEdit(new UndoableFieldChange(be,FieldName.MARKED_INTERNAL,be.getFieldOptional(FieldName.MARKED_INTERNAL).get(),newValue));
     if (newValue == null) {
-      be.clearField(InternalBibtexFields.MARKED);
+      be.clearField(FieldName.MARKED_INTERNAL);
     }
  else {
-      be.setField(InternalBibtexFields.MARKED,newValue);
+      be.setField(FieldName.MARKED_INTERNAL,newValue);
     }
   }
 }

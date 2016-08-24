@@ -1,0 +1,130 @@
+{
+  List<BibEntry> bibitems=new ArrayList<>();
+  StringBuilder sb=new StringBuilder();
+  String line;
+  while ((line=reader.readLine()) != null) {
+    if (!line.isEmpty() && (line.charAt(0) != ' ')) {
+      sb.append("__NEWFIELD__");
+    }
+    sb.append(line);
+    sb.append('\n');
+  }
+  String[] items=sb.toString().split(OVID_PATTERN_STRING);
+  for (int i=1; i < items.length; i++) {
+    Map<String,String> h=new HashMap<>();
+    String[] fields=items[i].split("__NEWFIELD__");
+    for (    String field : fields) {
+      int linebreak=field.indexOf('\n');
+      String fieldName=field.substring(0,linebreak).trim();
+      String content=field.substring(linebreak).trim();
+      boolean isAuthor=(fieldName.indexOf("Author") == 0) && !fieldName.contains("Author Keywords") && !fieldName.contains("Author e-mail");
+      if (!isAuthor && content.endsWith(".")) {
+        content=content.substring(0,content.length() - 1);
+      }
+      if (isAuthor) {
+        h.put(FieldName.AUTHOR,content);
+      }
+ else       if (fieldName.startsWith("Title")) {
+        content=content.replaceAll("\\[.+\\]","").trim();
+        if (content.endsWith(".")) {
+          content=content.substring(0,content.length() - 1);
+        }
+        h.put(FieldName.TITLE,content);
+      }
+ else       if (fieldName.startsWith("Chapter Title")) {
+        h.put("chaptertitle",content);
+      }
+ else       if (fieldName.startsWith("Source")) {
+        Matcher matcher;
+        if ((matcher=OvidImporter.OVID_SOURCE_PATTERN.matcher(content)).find()) {
+          h.put(FieldName.JOURNAL,matcher.group(1));
+          h.put(FieldName.VOLUME,matcher.group(2));
+          h.put(FieldName.ISSUE,matcher.group(3));
+          h.put(FieldName.PAGES,matcher.group(4));
+          h.put(FieldName.YEAR,matcher.group(5));
+        }
+ else         if ((matcher=OvidImporter.OVID_SOURCE_PATTERN_NO_ISSUE.matcher(content)).find()) {
+          h.put(FieldName.JOURNAL,matcher.group(1));
+          h.put(FieldName.VOLUME,matcher.group(2));
+          h.put(FieldName.PAGES,matcher.group(3));
+          h.put(FieldName.YEAR,matcher.group(4));
+        }
+ else         if ((matcher=OvidImporter.OVID_SOURCE_PATTERN_2.matcher(content)).find()) {
+          h.put(FieldName.JOURNAL,matcher.group(1));
+          h.put(FieldName.VOLUME,matcher.group(2));
+          h.put(FieldName.ISSUE,matcher.group(3));
+          h.put(FieldName.MONTH,matcher.group(4));
+          h.put(FieldName.YEAR,matcher.group(5));
+          h.put(FieldName.PAGES,matcher.group(6));
+        }
+ else         if ((matcher=OvidImporter.INCOLLECTION_PATTERN.matcher(content)).find()) {
+          h.put(FieldName.EDITOR,matcher.group(1).replace(" (Ed)",""));
+          h.put(FieldName.YEAR,matcher.group(2));
+          h.put(FieldName.BOOKTITLE,matcher.group(3));
+          h.put(FieldName.PAGES,matcher.group(4));
+          h.put(FieldName.ADDRESS,matcher.group(5));
+          h.put(FieldName.PUBLISHER,matcher.group(6));
+        }
+ else         if ((matcher=OvidImporter.BOOK_PATTERN.matcher(content)).find()) {
+          h.put(FieldName.YEAR,matcher.group(1));
+          h.put(FieldName.PAGES,matcher.group(2));
+          h.put(FieldName.ADDRESS,matcher.group(3));
+          h.put(FieldName.PUBLISHER,matcher.group(4));
+        }
+        if (h.get(FieldName.PAGES) != null) {
+          h.put(FieldName.PAGES,h.get(FieldName.PAGES).replace("-","--"));
+        }
+      }
+ else       if ("Abstract".equals(fieldName)) {
+        h.put(FieldName.ABSTRACT,content);
+      }
+ else       if ("Publication Type".equals(fieldName)) {
+        if (content.contains("Book")) {
+          h.put("entrytype","book");
+        }
+ else         if (content.contains("Journal")) {
+          h.put("entrytype","article");
+        }
+ else         if (content.contains("Conference Paper")) {
+          h.put("entrytype","inproceedings");
+        }
+      }
+ else       if (fieldName.startsWith("Language")) {
+        h.put(FieldName.LANGUAGE,content);
+      }
+ else       if (fieldName.startsWith("Author Keywords")) {
+        content=content.replace(";",",").replace("  "," ");
+        h.put(FieldName.KEYWORDS,content);
+      }
+ else       if (fieldName.startsWith("ISSN")) {
+        h.put(FieldName.ISSN,content);
+      }
+ else       if (fieldName.startsWith("DOI Number")) {
+        h.put(FieldName.DOI,content);
+      }
+    }
+    String auth=h.get(FieldName.AUTHOR);
+    if ((auth != null) && auth.contains(" [Ed]")) {
+      h.remove(FieldName.AUTHOR);
+      h.put(FieldName.EDITOR,auth.replace(" [Ed]",""));
+    }
+    auth=h.get(FieldName.AUTHOR);
+    if (auth != null) {
+      h.put(FieldName.AUTHOR,fixNames(auth));
+    }
+    auth=h.get(FieldName.EDITOR);
+    if (auth != null) {
+      h.put(FieldName.EDITOR,fixNames(auth));
+    }
+    String entryType=h.containsKey("entrytype") ? h.get("entrytype") : BibEntry.DEFAULT_TYPE;
+    h.remove("entrytype");
+    if ("book".equals(entryType) && h.containsKey("chaptertitle")) {
+      entryType="incollection";
+      h.put(FieldName.TITLE,h.remove("chaptertitle"));
+    }
+    BibEntry b=new BibEntry(IdGenerator.next(),entryType);
+    b.setField(h);
+    bibitems.add(b);
+  }
+  return new ParserResult(bibitems);
+}

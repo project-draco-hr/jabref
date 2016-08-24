@@ -1,5 +1,5 @@
 {
-  prefs.put(Globals.FILE_FIELD + Globals.DIR_SUFFIX,fileDir.getText());
+  prefs.put(FieldName.FILE + FileLinkPreferences.DIR_SUFFIX,fileDir.getText());
   prefs.putBoolean(JabRefPreferences.BIB_LOC_AS_PRIMARY_DIR,bibLocAsPrimaryDir.isSelected());
   prefs.putBoolean(JabRefPreferences.RUN_AUTOMATIC_FILE_SEARCH,runAutoFileSearch.isSelected());
   prefs.putBoolean(JabRefPreferences.ALLOW_FILE_AUTO_OPEN_BROWSE,allowFileAutoOpenBrowse.isSelected());
@@ -21,7 +21,7 @@ newline="\r\n";
 break;
 }
 prefs.put(JabRefPreferences.NEWLINE,newline);
-Globals.NEWLINE=newline;
+OS.NEWLINE=newline;
 prefs.putBoolean(JabRefPreferences.REFORMAT_FILE_ON_SAVE_AND_EXPORT,reformatFileOnSaveAndExport.isSelected());
 prefs.putBoolean(JabRefPreferences.BACKUP,backup.isSelected());
 prefs.putBoolean(JabRefPreferences.OPEN_LAST_EDITED,openLast.isSelected());
@@ -30,15 +30,11 @@ prefs.put(JabRefPreferences.DO_NOT_RESOLVE_STRINGS_FOR,doNotResolveStringsFor.ge
 prefs.putBoolean(JabRefPreferences.AUTO_SAVE,autoSave.isSelected());
 prefs.putBoolean(JabRefPreferences.PROMPT_BEFORE_USING_AUTOSAVE,promptBeforeUsingAutoSave.isSelected());
 prefs.putInt(JabRefPreferences.AUTO_SAVE_INTERVAL,(Integer)autoSaveInterval.getValue());
-prefs.putInt(JabRefPreferences.VALUE_DELIMITERS2,valueDelimiter.getSelectedIndex());
 doNotResolveStringsFor.setText(prefs.get(JabRefPreferences.DO_NOT_RESOLVE_STRINGS_FOR));
 boolean updateSpecialFields=false;
 if (!nonWrappableFields.getText().trim().equals(prefs.get(JabRefPreferences.NON_WRAPPABLE_FIELDS))) {
 prefs.put(JabRefPreferences.NON_WRAPPABLE_FIELDS,nonWrappableFields.getText());
 updateSpecialFields=true;
-}
-if (updateSpecialFields) {
-prefs.updateSpecialFieldHandling();
 }
 if (!origAutoSaveSetting && autoSave.isSelected()) {
 Globals.startAutoSaveManager(frame);

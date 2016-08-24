@@ -1,8 +1,8 @@
 {
   InputStream originalStream=AuxCommandLineTest.class.getResourceAsStream("origin.bib");
   File auxFile=Paths.get(AuxCommandLineTest.class.getResource("paper.aux").toURI()).toFile();
-  try (InputStreamReader originalReader=new InputStreamReader(originalStream)){
-    ParserResult result=BibtexParser.parse(originalReader);
+  try (InputStreamReader originalReader=new InputStreamReader(originalStream,StandardCharsets.UTF_8)){
+    ParserResult result=BibtexParser.parse(originalReader,ImportFormatPreferences.fromPreferences(JabRefPreferences.getInstance()));
     AuxCommandLine auxCommandLine=new AuxCommandLine(auxFile.getAbsolutePath(),result.getDatabase());
     BibDatabase newDB=auxCommandLine.perform();
     Assert.assertNotNull(newDB);

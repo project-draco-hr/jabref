@@ -1,0 +1,33 @@
+{
+  List<PersonName> result=null;
+  NodeList nodeLst=authors.getElementsByTagNameNS("*",type);
+  if (nodeLst.getLength() <= 0) {
+    return result;
+  }
+  nodeLst=((Element)nodeLst.item(0)).getElementsByTagNameNS("*","NameList");
+  if (nodeLst.getLength() <= 0) {
+    return result;
+  }
+  NodeList person=((Element)nodeLst.item(0)).getElementsByTagNameNS("*","Person");
+  if (person.getLength() <= 0) {
+    return result;
+  }
+  result=new LinkedList<>();
+  for (int i=0; i < person.getLength(); i++) {
+    NodeList firstName=((Element)person.item(i)).getElementsByTagNameNS("*","First");
+    NodeList lastName=((Element)person.item(i)).getElementsByTagNameNS("*","Last");
+    NodeList middleName=((Element)person.item(i)).getElementsByTagNameNS("*","Middle");
+    PersonName name=new PersonName();
+    if (firstName.getLength() > 0) {
+      name.setFirstname(firstName.item(0).getTextContent());
+    }
+    if (middleName.getLength() > 0) {
+      name.setMiddlename(middleName.item(0).getTextContent());
+    }
+    if (lastName.getLength() > 0) {
+      name.setSurname(lastName.item(0).getTextContent());
+    }
+    result.add(name);
+  }
+  return result;
+}

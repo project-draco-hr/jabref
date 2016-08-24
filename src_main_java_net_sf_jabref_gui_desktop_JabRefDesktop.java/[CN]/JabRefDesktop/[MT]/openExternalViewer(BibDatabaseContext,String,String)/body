@@ -1,7 +1,7 @@
 {
   String link=initialLink;
   String fieldName=initialFieldName;
-  if ("ps".equals(fieldName) || "pdf".equals(fieldName)) {
+  if (FieldName.PS.equals(fieldName) || FieldName.PDF.equals(fieldName)) {
     List<String> dir=databaseContext.getFileDirectory(fieldName);
     Optional<File> file=FileUtil.expandFilename(link,dir);
     if (!file.isPresent() || !file.get().exists()) {
@@ -11,27 +11,27 @@
     String[] split=file.get().getName().split("\\.");
     if (split.length >= 2) {
       if ("pdf".equalsIgnoreCase(split[split.length - 1])) {
-        fieldName="pdf";
+        fieldName=FieldName.PDF;
       }
  else       if ("ps".equalsIgnoreCase(split[split.length - 1]) || ((split.length >= 3) && "ps".equalsIgnoreCase(split[split.length - 2]))) {
-        fieldName="ps";
+        fieldName=FieldName.PS;
       }
     }
   }
- else   if ("doi".equals(fieldName)) {
+ else   if (FieldName.DOI.equals(fieldName)) {
     Optional<DOI> doiUrl=DOI.build(link);
     if (doiUrl.isPresent()) {
-      link=doiUrl.get().getURLAsASCIIString();
+      link=doiUrl.get().getURIAsASCIIString();
     }
-    fieldName="url";
+    fieldName=FieldName.URL;
   }
- else   if ("eprint".equals(fieldName)) {
-    fieldName="url";
+ else   if (FieldName.EPRINT.equals(fieldName)) {
+    fieldName=FieldName.URL;
     if (!link.startsWith("http://")) {
       link=ARXIV_LOOKUP_PREFIX + link;
     }
   }
-  if ("url".equals(fieldName)) {
+  if (FieldName.URL.equals(fieldName)) {
     try {
       openBrowser(link);
     }
@@ -39,17 +39,17 @@
       LOGGER.error("Error opening file '" + link + "'",e);
     }
   }
- else   if ("ps".equals(fieldName)) {
+ else   if (FieldName.PS.equals(fieldName)) {
     try {
-      NATIVE_DESKTOP.openFile(link,"ps");
+      NATIVE_DESKTOP.openFile(link,FieldName.PS);
     }
  catch (    IOException e) {
       LOGGER.error("An error occured on the command: " + link,e);
     }
   }
- else   if ("pdf".equals(fieldName)) {
+ else   if (FieldName.PDF.equals(fieldName)) {
     try {
-      NATIVE_DESKTOP.openFile(link,"pdf");
+      NATIVE_DESKTOP.openFile(link,FieldName.PDF);
     }
  catch (    IOException e) {
       LOGGER.error("An error occured on the command: " + link,e);

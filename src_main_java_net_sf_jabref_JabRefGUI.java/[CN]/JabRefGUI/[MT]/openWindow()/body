@@ -1,30 +1,29 @@
 {
-  PreferencesMigrations.replaceAbstractField();
   PreferencesMigrations.upgradeSortOrder();
   PreferencesMigrations.upgradeFaultyEncodingStrings();
+  PreferencesMigrations.upgradeLabelPatternToBibtexKeyPattern();
   if (OS.OS_X) {
     System.setProperty("apple.laf.useScreenMenuBar","true");
   }
   System.setProperty("swing.aatext","true");
   System.setProperty("awt.useSystemAAFontSettings","lcd");
   setLookAndFeel();
-  if (!isBlank && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED) && (Globals.prefs.get(JabRefPreferences.LAST_EDITED) != null)) {
-    openLastEditedDatabase();
+  if (!isBlank && Globals.prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED)) {
+    openLastEditedDatabases();
   }
   GUIGlobals.init();
-  GUIGlobals.currentFont=new Font(Globals.prefs.get(JabRefPreferences.FONT_FAMILY),Globals.prefs.getInt(JabRefPreferences.FONT_STYLE),Globals.prefs.getInt(JabRefPreferences.FONT_SIZE));
   LOGGER.debug("Initializing frame");
   JabRefGUI.mainFrame=new JabRefFrame();
-  boolean first=true;
-  if (!loaded.isEmpty()) {
-    for (Iterator<ParserResult> i=loaded.iterator(); i.hasNext(); ) {
-      ParserResult pr=i.next();
-      if (new LastFocusedTabPreferences(Globals.prefs).hadLastFocus(pr.getFile())) {
+  boolean first=false;
+  if (!bibDatabases.isEmpty()) {
+    for (Iterator<ParserResult> parserResultIterator=bibDatabases.iterator(); parserResultIterator.hasNext(); ) {
+      ParserResult pr=parserResultIterator.next();
+      if ((focusedFile != null) && pr.getFile().getAbsolutePath().equals(focusedFile)) {
         first=true;
       }
       if (pr.isInvalid()) {
         failed.add(pr);
-        i.remove();
+        parserResultIterator.remove();
       }
  else       if (!pr.isPostponedAutosaveFound()) {
         if (pr.toOpenTab()) {
@@ -36,7 +35,7 @@
         }
       }
  else {
-        i.remove();
+        parserResultIterator.remove();
         postponed.add(pr.getFile());
       }
     }
@@ -59,14 +58,12 @@
     String message="<html>" + Localization.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
     JOptionPane.showMessageDialog(JabRefGUI.getMainFrame(),message,Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
   }
-  if (Globals.prefs.getBoolean(JabRefPreferences.DISPLAY_KEY_WARNING_DIALOG_AT_STARTUP)) {
-    int i=0;
-    for (    ParserResult pr : loaded) {
-      ParserResultWarningDialog.showParserResultWarningDialog(pr,JabRefGUI.getMainFrame(),i++);
-    }
+  int tabNumber=0;
+  for (  ParserResult pr : bibDatabases) {
+    ParserResultWarningDialog.showParserResultWarningDialog(pr,JabRefGUI.getMainFrame(),tabNumber++);
   }
-  for (int i=0; (i < loaded.size()) && (i < JabRefGUI.getMainFrame().getBasePanelCount()); i++) {
-    ParserResult pr=loaded.get(i);
+  for (int i=0; (i < bibDatabases.size()) && (i < JabRefGUI.getMainFrame().getBasePanelCount()); i++) {
+    ParserResult pr=bibDatabases.get(i);
     BasePanel panel=JabRefGUI.getMainFrame().getBasePanelAt(i);
     OpenDatabaseAction.performPostOpenActions(panel,pr,true);
   }
@@ -75,7 +72,7 @@
     AutosaveStartupPrompter asp=new AutosaveStartupPrompter(JabRefGUI.getMainFrame(),postponed);
     SwingUtilities.invokeLater(asp);
   }
-  if (!loaded.isEmpty()) {
-    new FocusRequester(JabRefGUI.getMainFrame().getCurrentBasePanel().mainTable);
+  if (!bibDatabases.isEmpty()) {
+    new FocusRequester(JabRefGUI.getMainFrame().getCurrentBasePanel().getMainTable());
   }
 }

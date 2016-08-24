@@ -2,7 +2,7 @@
   if (!entry.hasField(fieldKey)) {
     return new ArrayList<>();
   }
-  String oldValue=entry.getField(fieldKey);
+  String oldValue=entry.getFieldOptional(fieldKey).orElse(null);
   String newValue=formatter.format(oldValue);
   if (oldValue.equals(newValue)) {
     return new ArrayList<>();
@@ -13,7 +13,7 @@
       newValue=null;
     }
  else {
-      entry.setField(fieldKey,newValue);
+      entry.setField(fieldKey,newValue,EntryEventSource.SAVE_ACTION);
     }
     FieldChange change=new FieldChange(entry,fieldKey,oldValue,newValue);
     return Collections.singletonList(change);

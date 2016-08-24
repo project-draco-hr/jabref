@@ -1,0 +1,17 @@
+{
+  if ((version == null) || "".equals(version) || version.equals(BuildInfo.UNKNOWN_VERSION)|| "${version}".equals(version)) {
+    return;
+  }
+  String[] versionParts=version.split("dev");
+  String[] versionNumbers=versionParts[0].split(Pattern.quote("."));
+  try {
+    this.major=Integer.parseInt(versionNumbers[0]);
+    this.minor=versionNumbers.length >= 2 ? Integer.parseInt(versionNumbers[1]) : 0;
+    this.patch=versionNumbers.length >= 3 ? Integer.parseInt(versionNumbers[2]) : 0;
+    this.fullVersion=version;
+    this.isDevelopmentVersion=version.contains("dev");
+  }
+ catch (  NumberFormatException exception) {
+    LOGGER.warn("Invalid version string used: " + version,exception);
+  }
+}

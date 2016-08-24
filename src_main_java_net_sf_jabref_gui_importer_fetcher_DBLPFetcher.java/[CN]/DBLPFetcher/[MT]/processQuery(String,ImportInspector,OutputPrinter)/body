@@ -1,0 +1,57 @@
+{
+  final HashMap<String,Boolean> bibentryKnown=new HashMap<>();
+  boolean res=false;
+  this.query=newQuery;
+  shouldContinue=true;
+  double saveThreshold=DuplicateCheck.duplicateThreshold;
+  try {
+    String address=makeSearchURL();
+    URLDownload dl=new URLDownload(address);
+    String page=dl.downloadToString(Globals.prefs.getDefaultEncoding());
+    String[] lines=page.split("\n");
+    List<String> bibtexUrlList=new ArrayList<>();
+    for (    final String line : lines) {
+      if (line.startsWith("\"url\"")) {
+        String addr=line.replace("\"url\":\"","");
+        addr=addr.substring(0,addr.length() - 2);
+        bibtexUrlList.add(addr);
+      }
+    }
+    DuplicateCheck.duplicateThreshold=Double.MAX_VALUE;
+    int count=1;
+    for (    String urlStr : bibtexUrlList) {
+      if (!shouldContinue) {
+        break;
+      }
+      final String bibtexHTMLPage=new URLDownload(urlStr).downloadToString(Globals.prefs.getDefaultEncoding());
+      final String[] htmlLines=bibtexHTMLPage.split("\n");
+      for (      final String line : htmlLines) {
+        if (line.contains("biburl")) {
+          int sidx=line.indexOf('{');
+          int eidx=line.indexOf('}');
+          String bibtexUrl=line.substring(sidx + 1,eidx);
+          bibtexUrl=bibtexUrl.replace("dblp.uni-trier.de","www.dblp.org");
+          final String bibtexPage=new URLDownload(bibtexUrl).downloadToString(Globals.prefs.getDefaultEncoding());
+          Collection<BibEntry> bibtexEntries=BibtexParser.fromString(bibtexPage,ImportFormatPreferences.fromPreferences(Globals.prefs));
+          for (          BibEntry be : bibtexEntries) {
+            if (!bibentryKnown.containsKey(be.getCiteKey())) {
+              inspector.addEntry(be);
+              bibentryKnown.put(be.getCiteKey(),true);
+            }
+          }
+        }
+      }
+      inspector.setProgress(count,bibtexUrlList.size());
+      count++;
+    }
+    res=true;
+  }
+ catch (  IOException e) {
+    LOGGER.warn("Communcation problems",e);
+    status.showMessage(e.getMessage());
+  }
+ finally {
+    DuplicateCheck.duplicateThreshold=saveThreshold;
+  }
+  return res;
+}

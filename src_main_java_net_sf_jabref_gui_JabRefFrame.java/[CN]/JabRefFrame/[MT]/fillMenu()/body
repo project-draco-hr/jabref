@@ -26,9 +26,8 @@
   file.add(exportAll);
   file.add(exportSelected);
   file.addSeparator();
-  file.add(dbConnect);
-  file.add(dbImport);
-  file.add(dbExport);
+  file.add(openSharedDatabaseAction);
+  file.add(pullChangesFromSharedDatabase);
   file.addSeparator();
   file.add(databaseProperties);
   file.add(editModeAction);
@@ -60,28 +59,28 @@
   edit.add(unmark);
   edit.add(unmarkAll);
   edit.addSeparator();
-  if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SPECIALFIELDSENABLED)) {
+  if (Globals.prefs.getBoolean(JabRefPreferences.SPECIALFIELDSENABLED)) {
     JMenu m;
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RANKING)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_RANKING)) {
       m=new JMenu();
       RightClickMenu.populateSpecialFieldMenu(m,Rank.getInstance(),this);
       edit.add(m);
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_RELEVANCE)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_RELEVANCE)) {
       edit.add(toggleRelevance);
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_QUALITY)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_QUALITY)) {
       edit.add(toggleQualityAssured);
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRIORITY)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_PRIORITY)) {
       m=new JMenu();
       RightClickMenu.populateSpecialFieldMenu(m,Priority.getInstance(),this);
       edit.add(m);
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_PRINTED)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_PRINTED)) {
       edit.add(togglePrinted);
     }
-    if (Globals.prefs.getBoolean(SpecialFieldsUtils.PREF_SHOWCOLUMN_READ)) {
+    if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_READ)) {
       m=new JMenu();
       RightClickMenu.populateSpecialFieldMenu(m,ReadStatus.getInstance(),this);
       edit.add(m);
@@ -191,21 +190,25 @@
   mb.add(tools);
   options.add(showPrefs);
   AbstractAction genFieldsCustomization=new GenFieldsCustomizationAction();
+  AbstractAction protectTerms=new ProtectedTermsAction();
   options.add(genFieldsCustomization);
   options.add(customExpAction);
   options.add(customImpAction);
   options.add(customFileTypesAction);
   options.add(manageJournals);
   options.add(manageSelectors);
+  options.add(protectTerms);
   options.add(selectKeys);
   mb.add(options);
   helpMenu.add(help);
+  helpMenu.add(openForumAction);
   helpMenu.addSeparator();
   helpMenu.add(errorConsole);
   helpMenu.addSeparator();
   helpMenu.add(forkMeOnGitHubAction);
   helpMenu.add(donationAction);
   helpMenu.addSeparator();
+  helpMenu.add(new SearchForUpdateAction());
   helpMenu.add(about);
   mb.add(helpMenu);
   createDisabledIconsForMenuEntries(mb);

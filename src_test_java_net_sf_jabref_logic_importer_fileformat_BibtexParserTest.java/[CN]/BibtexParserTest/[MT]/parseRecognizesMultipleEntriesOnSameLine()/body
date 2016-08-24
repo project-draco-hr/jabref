@@ -1,0 +1,14 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{canh05}" + "@inProceedings{foo}"),importFormatPreferences);
+  List<BibEntry> parsed=result.getDatabase().getEntries();
+  List<BibEntry> expected=new ArrayList<>();
+  BibEntry firstEntry=new BibEntry();
+  firstEntry.setType("article");
+  firstEntry.setCiteKey("canh05");
+  expected.add(firstEntry);
+  BibEntry secondEntry=new BibEntry();
+  secondEntry.setType("inproceedings");
+  secondEntry.setCiteKey("foo");
+  expected.add(secondEntry);
+  assertEquals(expected,parsed);
+}

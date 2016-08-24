@@ -1,0 +1,19 @@
+{
+  jabRefFrame.output(Localization.lang("Connection lost."));
+  String[] options={Localization.lang("Reconnect"),Localization.lang("Work offline"),Localization.lang("Close database")};
+  int answer=JOptionPane.showOptionDialog(jabRefFrame,Localization.lang("The connection to the server has been determinated.") + "\n\n",Localization.lang("Connection lost"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE,null,options,options[0]);
+  if (answer == 0) {
+    jabRefFrame.closeCurrentTab();
+    OpenSharedDatabaseDialog openSharedDatabaseDialog=new OpenSharedDatabaseDialog(jabRefFrame);
+    openSharedDatabaseDialog.setVisible(true);
+  }
+ else   if (answer == 1) {
+    connectionLostEvent.getBibDatabaseContext().updateDatabaseLocation(DatabaseLocation.LOCAL);
+    jabRefFrame.refreshTitleAndTabs();
+    jabRefFrame.updateEnabledState();
+    jabRefFrame.output(Localization.lang("Working offline."));
+  }
+ else {
+    jabRefFrame.closeCurrentTab();
+  }
+}

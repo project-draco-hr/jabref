@@ -1,0 +1,10 @@
+{
+  List<IntegrityMessage> results=new ArrayList<>();
+  for (  Map.Entry<String,String> field : entry.getFieldMap().entrySet()) {
+    boolean asciiOnly=CharMatcher.ascii().matchesAllOf(field.getValue());
+    if (!asciiOnly) {
+      results.add(new IntegrityMessage(Localization.lang("Non-ASCII encoded character found"),entry,field.getKey()));
+    }
+  }
+  return results;
+}

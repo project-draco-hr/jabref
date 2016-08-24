@@ -5,19 +5,26 @@
   gd.setVisible(true);
   if (gd.okPressed()) {
     AbstractGroup newGroup=gd.getResultingGroup();
-    AbstractUndoableEdit undoAddPreviousEntries=gd.getUndoForAddPreviousEntries();
+    int i=JOptionPane.showConfirmDialog(panel.frame(),Localization.lang("Assign the original group's entries to this group?"),Localization.lang("Change of Grouping Method"),JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+    boolean keepPreviousAssignments=(i == JOptionPane.YES_OPTION) && WarnAssignmentSideEffects.warnAssignmentSideEffects(newGroup,panel.frame());
+    AbstractUndoableEdit undoAddPreviousEntries=null;
     UndoableModifyGroup undo=new UndoableModifyGroup(GroupSelector.this,groupsRoot,node,newGroup);
-    node.getNode().setGroup(newGroup);
+    Optional<EntriesGroupChange> addChange=node.getNode().setGroup(newGroup,keepPreviousAssignments,panel.getDatabase().getEntries());
+    panel.getBibDatabaseContext().getMetaData().postChange();
+    if (addChange.isPresent()) {
+      undoAddPreviousEntries=UndoableChangeEntriesOfGroup.getUndoableEdit(null,addChange.get());
+    }
+    groupsTreeModel.reload();
     revalidateGroups(node);
     if (undoAddPreviousEntries == null) {
-      panel.undoManager.addEdit(undo);
+      panel.getUndoManager().addEdit(undo);
     }
  else {
       NamedCompound nc=new NamedCompound("Modify Group");
       nc.addEdit(undo);
       nc.addEdit(undoAddPreviousEntries);
       nc.end();
-      panel.undoManager.addEdit(nc);
+      panel.getUndoManager().addEdit(nc);
     }
     panel.markBaseChanged();
     frame.output(Localization.lang("Modified group \"%0\".",newGroup.getName()));

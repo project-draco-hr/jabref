@@ -6,21 +6,14 @@
   }
   MetaData metaData=panel.getBibDatabaseContext().getMetaData();
   if (metaData.getGroups() == null) {
-    GroupTreeNode newGroupsRoot=new GroupTreeNode(new AllEntriesGroup());
+    GroupTreeNode newGroupsRoot=GroupTreeNode.fromGroup(new AllEntriesGroup());
     metaData.setGroups(newGroupsRoot);
     setGroups(newGroupsRoot);
   }
  else {
     setGroups(metaData.getGroups());
   }
-  if (Globals.prefs.getBoolean(JabRefPreferences.GROUP_AUTO_SHOW) && !groupsRoot.isLeaf()) {
-    frame.getSidePaneManager().show("groups");
-    frame.groupToggle.setSelected(true);
-  }
- else   if (Globals.prefs.getBoolean(JabRefPreferences.GROUP_AUTO_HIDE) && groupsRoot.isLeaf()) {
-    frame.getSidePaneManager().hide("groups");
-    frame.groupToggle.setSelected(false);
-  }
+  metaData.registerListener(this);
 synchronized (getTreeLock()) {
     validateTree();
   }

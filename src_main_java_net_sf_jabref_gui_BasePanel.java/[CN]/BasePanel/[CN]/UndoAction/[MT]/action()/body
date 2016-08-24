@@ -1,6 +1,6 @@
 {
   try {
-    JComponent focused=Globals.focusListener.getFocused();
+    JComponent focused=Globals.getFocusListener().getFocused();
     if ((focused != null) && (focused instanceof FieldEditor) && focused.hasFocus()) {
       if ((preambleEditor != null) && (focused == preambleEditor.getFieldEditor())) {
         preambleEditor.storeCurrentEdit();
@@ -9,10 +9,9 @@
         storeCurrentEdit();
       }
     }
-    String name=undoManager.getUndoPresentationName();
-    undoManager.undo();
+    getUndoManager().undo();
     markBaseChanged();
-    frame.output(name);
+    frame.output(Localization.lang("Undo"));
   }
  catch (  CannotUndoException ex) {
     LOGGER.warn("Nothing to undo",ex);

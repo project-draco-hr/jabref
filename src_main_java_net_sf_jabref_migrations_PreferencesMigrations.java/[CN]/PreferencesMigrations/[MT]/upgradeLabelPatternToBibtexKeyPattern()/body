@@ -1,0 +1,28 @@
+{
+  JabRefPreferences prefs=Globals.prefs;
+  try {
+    Preferences mainPrefsNode=Preferences.userNodeForPackage(JabRefMain.class);
+    if (mainPrefsNode.get(JabRefPreferences.DEFAULT_BIBTEX_KEY_PATTERN,null) == null) {
+      String oldDefault=mainPrefsNode.get("defaultLabelPattern",null);
+      if (oldDefault != null) {
+        prefs.put(JabRefPreferences.DEFAULT_BIBTEX_KEY_PATTERN,oldDefault);
+        LOGGER.info("Upgraded old default key generator pattern '" + oldDefault + "' to new version.");
+      }
+    }
+    if (mainPrefsNode.nodeExists(JabRefPreferences.BIBTEX_KEY_PATTERNS_NODE)) {
+      return;
+    }
+    if (mainPrefsNode.nodeExists("logic/labelpattern")) {
+      migrateTypedKeyPrefs(prefs,mainPrefsNode.node("logic/labelpattern"));
+    }
+ else     if (mainPrefsNode.nodeExists("logic/labelPattern")) {
+      migrateTypedKeyPrefs(prefs,mainPrefsNode.node("logic/labelPattern"));
+    }
+ else     if (mainPrefsNode.nodeExists("labelPattern")) {
+      migrateTypedKeyPrefs(prefs,mainPrefsNode.node("labelPattern"));
+    }
+  }
+ catch (  BackingStoreException e) {
+    LOGGER.error("Migrating old bibtexKeyPatterns failed.",e);
+  }
+}

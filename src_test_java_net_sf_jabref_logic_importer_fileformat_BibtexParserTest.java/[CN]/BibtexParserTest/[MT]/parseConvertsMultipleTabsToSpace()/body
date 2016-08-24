@@ -1,0 +1,8 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{test,a = {a\t\tb}," + "b = {a\t \tb}," + "c = {a \t \t b}}"),importFormatPreferences);
+  Collection<BibEntry> c=result.getDatabase().getEntries();
+  BibEntry e=c.iterator().next();
+  assertEquals(Optional.of("a b"),e.getFieldOptional("a"));
+  assertEquals(Optional.of("a b"),e.getFieldOptional("b"));
+  assertEquals(Optional.of("a b"),e.getFieldOptional("c"));
+}

@@ -1,0 +1,16 @@
+{
+  Path file=Paths.get(EndnoteImporterTest.class.getResource("Endnote.book.example.enw").toURI());
+  List<BibEntry> bibEntries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+  assertEquals(1,bibEntries.size());
+  BibEntry be=bibEntries.get(0);
+  assertEquals("book",be.getType());
+  assertEquals(Optional.of("Heidelberg"),be.getFieldOptional("address"));
+  assertEquals(Optional.of("Prei??el, Ren?? and Stachmann, Bj??rn"),be.getFieldOptional("author"));
+  assertEquals(Optional.of("3., aktualisierte und erweiterte Auflage"),be.getFieldOptional("edition"));
+  assertEquals(Optional.of("Versionsverwaltung"),be.getFieldOptional("keywords"));
+  assertEquals(Optional.of("XX, 327"),be.getFieldOptional("pages"));
+  assertEquals(Optional.of("dpunkt.verlag"),be.getFieldOptional("publisher"));
+  assertEquals(Optional.of("Git : dezentrale Versionsverwaltung im Team : Grundlagen und Workflows"),be.getFieldOptional("title"));
+  assertEquals(Optional.of("http://d-nb.info/107601965X"),be.getFieldOptional("url"));
+  assertEquals(Optional.of("2016"),be.getFieldOptional("year"));
+}

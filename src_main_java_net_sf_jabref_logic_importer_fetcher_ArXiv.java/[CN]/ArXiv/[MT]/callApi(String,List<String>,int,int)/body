@@ -1,0 +1,29 @@
+{
+  if (maxResults > 2000) {
+    throw new IllegalArgumentException("The arXiv API limits the number of maximal results to be 2000");
+  }
+  try {
+    URIBuilder uriBuilder=new URIBuilder(API_URL);
+    if (StringUtils.isNotBlank(searchQuery)) {
+      uriBuilder.addParameter("search_query",StringUtils.stripAccents(searchQuery));
+    }
+    if (!ids.isEmpty()) {
+      uriBuilder.addParameter("id_list",StringUtils.join(ids,','));
+    }
+    uriBuilder.addParameter("start",String.valueOf(start));
+    uriBuilder.addParameter("max_results",String.valueOf(maxResults));
+    URL url=uriBuilder.build().toURL();
+    DocumentBuilderFactory factory=DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder=factory.newDocumentBuilder();
+    HttpURLConnection connection=(HttpURLConnection)url.openConnection();
+    if (connection.getResponseCode() == 400) {
+      throw getException(builder.parse(connection.getErrorStream()));
+    }
+ else {
+      return builder.parse(connection.getInputStream());
+    }
+  }
+ catch (  SAXException|ParserConfigurationException|IOException|URISyntaxException exception) {
+    throw new FetcherException("arXiv API request failed",exception);
+  }
+}

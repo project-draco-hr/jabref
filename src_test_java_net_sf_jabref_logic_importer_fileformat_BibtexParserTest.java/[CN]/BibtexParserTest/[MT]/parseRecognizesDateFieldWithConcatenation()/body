@@ -1,0 +1,10 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{test,date = {1-4~} # nov}"),importFormatPreferences);
+  Collection<BibEntry> c=result.getDatabase().getEntries();
+  assertEquals(1,c.size());
+  BibEntry e=c.iterator().next();
+  assertEquals("article",e.getType());
+  assertEquals(Optional.of("test"),e.getCiteKeyOptional());
+  assertEquals(2,e.getFieldNames().size());
+  assertEquals(Optional.of("1-4~#nov#"),e.getFieldOptional("date"));
+}

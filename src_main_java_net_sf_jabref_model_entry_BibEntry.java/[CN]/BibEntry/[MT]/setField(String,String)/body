@@ -1,15 +1,3 @@
 {
-  Objects.requireNonNull(name,"field name must not be null");
-  Objects.requireNonNull(value,"field value must not be null");
-  if (value.isEmpty()) {
-    clearField(name);
-    return;
-  }
-  String fieldName=toLowerCase(name);
-  if (BibEntry.ID_FIELD.equals(fieldName)) {
-    throw new IllegalArgumentException("The field name '" + name + "' is reserved");
-  }
-  changed=true;
-  fields.put(fieldName,value);
-  eventBus.post(new FieldChangedEvent(this,fieldName,value));
+  return setField(name,value,EntryEventSource.LOCAL);
 }

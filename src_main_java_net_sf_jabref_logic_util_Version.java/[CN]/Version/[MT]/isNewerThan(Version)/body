@@ -1,0 +1,26 @@
+{
+  Objects.requireNonNull(otherVersion);
+  if (Objects.equals(this,otherVersion)) {
+    return false;
+  }
+ else   if (this.getFullVersion().equals(BuildInfo.UNKNOWN_VERSION)) {
+    return false;
+  }
+ else   if (otherVersion.getFullVersion().equals(BuildInfo.UNKNOWN_VERSION)) {
+    return false;
+  }
+ else   if (this.getMajor() > otherVersion.getMajor()) {
+    return true;
+  }
+ else   if (this.getMajor() == otherVersion.getMajor()) {
+    if (this.getMinor() > otherVersion.getMinor()) {
+      return true;
+    }
+ else {
+      return (this.getMinor() == otherVersion.getMinor()) && (this.getPatch() > otherVersion.getPatch());
+    }
+  }
+ else {
+    return false;
+  }
+}

@@ -1,15 +1,14 @@
 {
-  final String orSeparator="/";
   for (  String field : allFields) {
     String fieldName=toLowerCase(field);
-    if (fieldName.contains(orSeparator)) {
-      String[] altFields=field.split(orSeparator);
+    if (fieldName.contains(FieldName.FIELD_SEPARATOR)) {
+      String[] altFields=field.split(FieldName.FIELD_SEPARATOR);
       if (!atLeastOnePresent(altFields,database)) {
         return false;
       }
     }
  else {
-      if (BibDatabase.getResolvedField(fieldName,this,database) == null) {
+      if (!BibDatabase.getResolvedField(fieldName,this,database).isPresent()) {
         return false;
       }
     }

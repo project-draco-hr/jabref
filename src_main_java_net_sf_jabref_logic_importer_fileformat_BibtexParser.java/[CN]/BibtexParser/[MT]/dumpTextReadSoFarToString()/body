@@ -1,0 +1,26 @@
+{
+  String result=getPureTextFromFile();
+  int indexOfAt=result.indexOf("@");
+  if (indexOfAt == -1) {
+    return purgeEOFCharacters(result);
+  }
+ else   if (result.contains(SavePreferences.ENCODING_PREFIX)) {
+    int runningIndex=result.indexOf(SavePreferences.ENCODING_PREFIX);
+    while (runningIndex < indexOfAt) {
+      if (result.charAt(runningIndex) == '\n') {
+        break;
+      }
+ else       if (result.charAt(runningIndex) == '\r') {
+        if (result.charAt(runningIndex + 1) == '\n') {
+          runningIndex++;
+        }
+        break;
+      }
+      runningIndex++;
+    }
+    return result.substring(runningIndex + 1);
+  }
+ else {
+    return result;
+  }
+}

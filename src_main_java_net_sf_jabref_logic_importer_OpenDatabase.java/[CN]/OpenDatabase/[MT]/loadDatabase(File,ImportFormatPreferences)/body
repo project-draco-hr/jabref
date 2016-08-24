@@ -1,0 +1,10 @@
+{
+  ParserResult result=new BibtexImporter(importFormatPreferences).importDatabase(fileToOpen.toPath(),importFormatPreferences.getEncoding());
+  if (SpecialFieldsUtils.keywordSyncEnabled()) {
+    for (    BibEntry entry : result.getDatabase().getEntries()) {
+      SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry);
+    }
+    LOGGER.debug("Synchronized special fields based on keywords");
+  }
+  return result;
+}

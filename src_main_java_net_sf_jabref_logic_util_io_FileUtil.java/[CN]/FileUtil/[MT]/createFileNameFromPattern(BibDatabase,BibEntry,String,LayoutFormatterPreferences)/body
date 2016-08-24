@@ -1,0 +1,16 @@
+{
+  String targetName=entry.getCiteKeyOptional().orElse("default");
+  StringReader sr=new StringReader(fileNamePattern);
+  Layout layout=null;
+  try {
+    layout=new LayoutHelper(sr,prefs).getLayoutFromText();
+  }
+ catch (  IOException e) {
+    LOGGER.info("Wrong format " + e.getMessage(),e);
+  }
+  if (layout != null) {
+    targetName=layout.doLayout(entry,database);
+  }
+  targetName=FileNameCleaner.cleanFileName(targetName);
+  return targetName;
+}

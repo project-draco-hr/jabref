@@ -19,8 +19,14 @@
   }
   XComponentContext xContext=Bootstrap.bootstrap();
   XMultiComponentFactory xServiceManager=xContext.getServiceManager();
-  Object desktop=xServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop",xContext);
-  XDesktop xD=UnoRuntime.queryInterface(XDesktop.class,desktop);
+  Object desktop;
+  try {
+    desktop=xServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop",xContext);
+  }
+ catch (  Exception e) {
+    throw new CreationException(e.getMessage());
+  }
+  XDesktop xDesktop=UnoRuntime.queryInterface(XDesktop.class,desktop);
   UnoRuntime.queryInterface(XComponentLoader.class,desktop);
-  return xD;
+  return xDesktop;
 }

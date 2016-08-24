@@ -1,0 +1,20 @@
+{
+  if (bibtexFields.isEmpty()) {
+    return false;
+  }
+  Optional<String> resolvedFieldContent=Optional.empty();
+  Optional<String> plainFieldContent=Optional.empty();
+  for (  String field : bibtexFields) {
+    if (BibEntry.TYPE_HEADER.equals(field) || BibEntry.OBSOLETE_TYPE_HEADER.equals(field) || BibEntry.KEY_FIELD.equals(field)) {
+      return false;
+    }
+ else {
+      plainFieldContent=entry.getFieldOptional(field);
+      resolvedFieldContent=BibDatabase.getResolvedField(field,entry,database.orElse(null));
+    }
+    if (resolvedFieldContent.isPresent()) {
+      break;
+    }
+  }
+  return (!resolvedFieldContent.equals(plainFieldContent));
+}

@@ -1,0 +1,30 @@
+{
+  this.importFormatPreferences=newImportFormatPreferences;
+  formats.clear();
+  formats.add(new BiblioscapeImporter());
+  formats.add(new BibtexImporter(importFormatPreferences));
+  formats.add(new BibTeXMLImporter());
+  formats.add(new CopacImporter());
+  formats.add(new EndnoteImporter(importFormatPreferences));
+  formats.add(new FreeCiteImporter(importFormatPreferences));
+  formats.add(new InspecImporter());
+  formats.add(new IsiImporter());
+  formats.add(new MedlineImporter());
+  formats.add(new MedlinePlainImporter());
+  formats.add(new MsBibImporter());
+  formats.add(new OvidImporter());
+  formats.add(new PdfContentImporter(importFormatPreferences));
+  formats.add(new PdfXmpImporter(xmpPreferences));
+  formats.add(new RepecNepImporter(importFormatPreferences));
+  formats.add(new RisImporter());
+  formats.add(new SilverPlatterImporter());
+  for (  CustomImporter importer : importFormatPreferences.getCustomImportList()) {
+    try {
+      ImportFormat imFo=importer.getInstance();
+      formats.add(imFo);
+    }
+ catch (    IOException|ClassNotFoundException|InstantiationException|IllegalAccessException e) {
+      LOGGER.error("Could not instantiate " + importer.getName() + " importer, will ignore it. Please check if the class is still available.",e);
+    }
+  }
+}

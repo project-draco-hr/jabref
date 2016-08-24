@@ -1,0 +1,8 @@
+{
+  SavePreferences preferences=new SavePreferences().withEncoding(Charsets.US_ASCII);
+  DatabaseBibtexKeyPattern bibtexKeyPattern=new DatabaseBibtexKeyPattern(Globals.prefs.getKeyPattern());
+  bibtexKeyPattern.setDefaultValue("test");
+  metaData.setBibtexKeyPattern(bibtexKeyPattern);
+  StringSaveSession session=databaseWriter.savePartOfDatabase(bibtexContext,Collections.emptyList(),preferences);
+  assertEquals("% Encoding: US-ASCII" + OS.NEWLINE + OS.NEWLINE+ "@Comment{jabref-meta: keypatterndefault:test;}"+ OS.NEWLINE,session.getStringValue());
+}

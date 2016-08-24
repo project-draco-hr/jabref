@@ -1,0 +1,10 @@
+{
+  String bibtexEntry="@Article{test," + OS.NEWLINE + "  Author                   = {Foo Bar},"+ OS.NEWLINE+ "  Journal                  = {International Journal of Something},"+ OS.NEWLINE+ "  Note                     = {some note},"+ OS.NEWLINE+ "  Number                   = {1}"+ OS.NEWLINE+ "}\n\n";
+  ParserResult result=BibtexParser.parse(new StringReader(bibtexEntry),importFormatPreferences);
+  Collection<BibEntry> entries=result.getDatabase().getEntries();
+  BibEntry entry=entries.iterator().next();
+  StringWriter stringWriter=new StringWriter();
+  writer.write(entry,stringWriter,BibDatabaseMode.BIBTEX);
+  String actual=stringWriter.toString();
+  assertEquals(bibtexEntry.substring(0,bibtexEntry.length() - 1),actual);
+}

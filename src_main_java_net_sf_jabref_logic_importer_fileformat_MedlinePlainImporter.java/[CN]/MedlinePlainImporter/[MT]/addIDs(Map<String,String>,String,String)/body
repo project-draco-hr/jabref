@@ -1,0 +1,32 @@
+{
+  if ("AID".equals(lab)) {
+    String key="article-id";
+    String idValue=value;
+    if (value.startsWith("doi:")) {
+      idValue=idValue.replaceAll("(?i)doi:","").trim();
+      key=FieldName.DOI;
+    }
+ else     if (value.indexOf('[') > 0) {
+      int startOfIdentifier=value.indexOf('[');
+      int endOfIdentifier=value.indexOf(']');
+      key="article-" + value.substring(startOfIdentifier + 1,endOfIdentifier);
+      idValue=value.substring(0,startOfIdentifier - 1);
+    }
+    hm.put(key,idValue);
+  }
+ else   if ("LID".equals(lab)) {
+    hm.put("location-id",value);
+  }
+ else   if ("MID".equals(lab)) {
+    hm.put("manuscript-id",value);
+  }
+ else   if ("JID".equals(lab)) {
+    hm.put("nlm-unique-id",value);
+  }
+ else   if ("OID".equals(lab)) {
+    hm.put("other-id",value);
+  }
+ else   if ("SI".equals(lab)) {
+    hm.put("second-id",value);
+  }
+}

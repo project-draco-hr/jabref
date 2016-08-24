@@ -2,7 +2,7 @@
   List<String> cited=findCitedKeys();
   Map<String,BibDatabase> linkSourceBase=new HashMap<>();
   Map<BibEntry,BibDatabase> entries=findCitedEntries(databases,cited,linkSourceBase);
-  XNameAccess nameAccess=getReferenceMarks();
+  XNameAccess xReferenceMarks=getReferenceMarks();
   List<String> names;
   if (style.isSortByPosition()) {
     names=sortedReferenceMarks;
@@ -17,7 +17,7 @@
     for (    BibEntry entry : entries.keySet()) {
       cited.add(entry.getCiteKey());
     }
-    names=Arrays.asList(nameAccess.getElementNames());
+    names=Arrays.asList(xReferenceMarks.getElementNames());
   }
  else {
     names=sortedReferenceMarks;
@@ -37,21 +37,24 @@
   int minGroupingCount=style.getIntCitProperty(OOBibStyle.MINIMUM_GROUPING_COUNT);
   int[] types=new int[names.size()];
   for (int i=0; i < names.size(); i++) {
-    Matcher m=CITE_PATTERN.matcher(names.get(i));
-    if (m.find()) {
-      String typeStr=m.group(1);
+    Matcher citeMatcher=CITE_PATTERN.matcher(names.get(i));
+    if (citeMatcher.find()) {
+      String typeStr=citeMatcher.group(1);
       int type=Integer.parseInt(typeStr);
       types[i]=type;
-      String[] keys=m.group(2).split(",");
+      String[] keys=citeMatcher.group(2).split(",");
       bibtexKeys[i]=keys;
       BibEntry[] cEntries=new BibEntry[keys.length];
       for (int j=0; j < cEntries.length; j++) {
         BibDatabase database=linkSourceBase.get(keys[j]);
-        cEntries[j]=null;
+        Optional<BibEntry> tmpEntry=Optional.empty();
         if (database != null) {
-          cEntries[j]=database.getEntryByKey(keys[j]);
+          tmpEntry=database.getEntryByKey(keys[j]);
         }
-        if (cEntries[j] == null) {
+        if (tmpEntry.isPresent()) {
+          cEntries[j]=tmpEntry.get();
+        }
+ else {
           LOGGER.info("BibTeX key not found: '" + keys[j] + '\'');
           LOGGER.info("Problem with reference mark: '" + names.get(i) + '\'');
           cEntries[j]=new UndefinedBibtexEntry(keys[j]);
@@ -81,7 +84,7 @@
  else {
               num.add(j,lastNum + 1);
               if (numbers.containsKey(keys[j])) {
-                num.add(j,numbers.get(keys[j]));
+                num.set(j,numbers.get(keys[j]));
               }
  else {
                 numbers.put(keys[j],num.get(j));
@@ -182,30 +185,33 @@
           seenBefore.add(currentKey);
         }
         String uniq=uniquefiers.get(currentKey);
+        Optional<BibEntry> tmpEntry=Optional.empty();
         if (uniq == null) {
           if (firstLimAuthors[k] > 0) {
             needsChange=true;
             BibDatabase database=linkSourceBase.get(currentKey);
             if (database != null) {
-              cEntries[k]=database.getEntryByKey(currentKey);
+              tmpEntry=database.getEntryByKey(currentKey);
             }
-            uniquif[k]="";
           }
  else {
             BibDatabase database=linkSourceBase.get(currentKey);
             if (database != null) {
-              cEntries[k]=database.getEntryByKey(currentKey);
+              tmpEntry=database.getEntryByKey(currentKey);
             }
-            uniquif[k]="";
           }
+          uniquif[k]="";
         }
  else {
           needsChange=true;
           BibDatabase database=linkSourceBase.get(currentKey);
           if (database != null) {
-            cEntries[k]=database.getEntryByKey(currentKey);
+            tmpEntry=database.getEntryByKey(currentKey);
           }
           uniquif[k]=uniq;
+        }
+        if (tmpEntry.isPresent()) {
+          cEntries[k]=tmpEntry.get();
         }
       }
       if (needsChange) {
@@ -216,9 +222,9 @@
   boolean hadBibSection=getBookmarkRange(OOBibBase.BIB_SECTION_NAME) != null;
   boolean mustTestCharFormat=style.isFormatCitations();
   for (int i=0; i < names.size(); i++) {
-    Object o=nameAccess.getByName(names.get(i));
-    XTextContent bm=UnoRuntime.queryInterface(XTextContent.class,o);
-    XTextCursor cursor=bm.getAnchor().getText().createTextCursorByRange(bm.getAnchor());
+    Object referenceMark=xReferenceMarks.getByName(names.get(i));
+    XTextContent bookmark=UnoRuntime.queryInterface(XTextContent.class,referenceMark);
+    XTextCursor cursor=bookmark.getAnchor().getText().createTextCursorByRange(bookmark.getAnchor());
     if (mustTestCharFormat) {
       mustTestCharFormat=false;
       XPropertySet xCursorProps=UnoRuntime.queryInterface(XPropertySet.class,cursor);
@@ -230,7 +236,7 @@
         throw new UndefinedCharacterFormatException(charStyle);
       }
     }
-    text.removeTextContent(bm);
+    text.removeTextContent(bookmark);
     insertReferenceMark(names.get(i),citMarkers[i],cursor,types[i] != OOBibBase.INVISIBLE_CIT,style);
     if (hadBibSection && (getBookmarkRange(OOBibBase.BIB_SECTION_NAME) == null)) {
       cursor.collapseToEnd();

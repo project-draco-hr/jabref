@@ -1,0 +1,13 @@
+{
+  String newType;
+  if (Strings.isNullOrEmpty(type)) {
+    newType=DEFAULT_TYPE;
+  }
+ else {
+    newType=type;
+  }
+  String oldType=getFieldOptional(TYPE_HEADER).orElse(null);
+  this.type=newType.toLowerCase(Locale.ENGLISH);
+  changed=true;
+  eventBus.post(new FieldChangedEvent(this,TYPE_HEADER,newType,oldType,eventSource));
+}

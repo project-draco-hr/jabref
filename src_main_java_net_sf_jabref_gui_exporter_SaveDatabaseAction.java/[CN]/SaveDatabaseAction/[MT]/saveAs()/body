@@ -1,0 +1,32 @@
+{
+  File file=null;
+  while (file == null) {
+    FileDialog dialog=new FileDialog(frame);
+    dialog.withExtension(FileExtensions.BIBTEX_DB);
+    dialog.setDefaultExtension(FileExtensions.BIBTEX_DB);
+    Optional<Path> path=dialog.saveNewFile();
+    if (path.isPresent()) {
+      file=path.get().toFile();
+    }
+ else {
+      canceled=true;
+      return;
+    }
+  }
+  File oldFile=panel.getBibDatabaseContext().getDatabaseFile();
+  panel.getBibDatabaseContext().setDatabaseFile(file);
+  Globals.prefs.put(JabRefPreferences.WORKING_DIRECTORY,file.getParent());
+  runCommand();
+  if (!success) {
+    panel.getBibDatabaseContext().setDatabaseFile(oldFile);
+    return;
+  }
+  try {
+    panel.setFileMonitorHandle(Globals.getFileUpdateMonitor().addUpdateListener(panel,panel.getBibDatabaseContext().getDatabaseFile()));
+  }
+ catch (  IOException ex) {
+    LOGGER.error("Problem registering file change notifications",ex);
+  }
+  frame.getFileHistory().newFile(panel.getBibDatabaseContext().getDatabaseFile().getPath());
+  frame.updateEnabledState();
+}

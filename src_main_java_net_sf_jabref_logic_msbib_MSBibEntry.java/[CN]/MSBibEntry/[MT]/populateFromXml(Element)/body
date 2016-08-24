@@ -1,0 +1,55 @@
+{
+  for (int i=0; i < entry.getChildNodes().getLength(); i++) {
+    Node node=entry.getChildNodes().item(i);
+    if (node.getNodeType() == Node.ELEMENT_NODE) {
+      String key=node.getLocalName();
+      String value=node.getTextContent();
+      fields.put(key,value);
+    }
+  }
+  String temp=getXmlElementTextContent("Pages",entry);
+  if (temp != null) {
+    pages=new PageNumbers(temp);
+  }
+  standardNumber=getXmlElementTextContent("StandardNumber",entry);
+  conferenceName=getXmlElementTextContent("ConferenceName",entry);
+  String city=getXmlElementTextContent("City",entry);
+  String state=getXmlElementTextContent("StateProvince",entry);
+  String country=getXmlElementTextContent("CountryRegion",entry);
+  StringBuilder addressBuffer=new StringBuilder();
+  if (city != null) {
+    addressBuffer.append(city).append(", ");
+  }
+  if (state != null) {
+    addressBuffer.append(state).append(' ');
+  }
+  if (country != null) {
+    addressBuffer.append(country);
+  }
+  address=addressBuffer.toString().trim();
+  if (address.isEmpty() || ",".equals(address)) {
+    address=null;
+  }
+  internetSiteTitle=getXmlElementTextContent("InternetSiteTitle",entry);
+  String month=getXmlElementTextContent("MonthAccessed",entry);
+  String day=getXmlElementTextContent("DayAccessed",entry);
+  String year=getXmlElementTextContent("YearAccessed",entry);
+  dateAccessed="";
+  if (month != null) {
+    dateAccessed+=month + ' ';
+  }
+  if (day != null) {
+    dateAccessed+=day + ", ";
+  }
+  if (year != null) {
+    dateAccessed+=year;
+  }
+  dateAccessed=dateAccessed.trim();
+  if (dateAccessed.isEmpty() || ",".equals(dateAccessed)) {
+    dateAccessed=null;
+  }
+  NodeList nodeLst=entry.getElementsByTagNameNS("*","Author");
+  if (nodeLst.getLength() > 0) {
+    getAuthors((Element)nodeLst.item(0));
+  }
+}

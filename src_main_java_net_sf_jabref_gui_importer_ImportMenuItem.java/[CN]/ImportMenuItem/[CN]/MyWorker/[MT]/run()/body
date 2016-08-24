@@ -1,0 +1,30 @@
+{
+  if (!fileOk) {
+    return;
+  }
+  List<ImportFormatReader.UnknownFormatImport> imports=new ArrayList<>();
+  for (  String filename : filenames) {
+    Path file=Paths.get(filename);
+    try {
+      if (importer == null) {
+        frame.output(Localization.lang("Importing in unknown format") + "...");
+        imports.add(Globals.IMPORT_FORMAT_READER.importUnknownFormat(filename));
+      }
+ else {
+        frame.output(Localization.lang("Importing in %0 format",importer.getFormatName()) + "...");
+        ParserResult pr=importer.importDatabase(file,Globals.prefs.getDefaultEncoding());
+        imports.add(new ImportFormatReader.UnknownFormatImport(importer.getFormatName(),pr));
+      }
+    }
+ catch (    IOException e) {
+      importError=e;
+    }
+  }
+  bibtexResult=mergeImportResults(imports);
+  for (  ImportFormatReader.UnknownFormatImport p : imports) {
+    if (p != null) {
+      ParserResult pr=p.parserResult;
+      ParserResultWarningDialog.showParserResultWarningDialog(pr,frame);
+    }
+  }
+}

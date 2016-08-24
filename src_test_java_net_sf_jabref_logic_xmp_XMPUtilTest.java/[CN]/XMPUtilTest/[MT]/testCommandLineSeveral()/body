@@ -1,20 +1,20 @@
 {
   File tempBib=File.createTempFile("JabRef",".bib");
-  try (FileWriter fileWriter=new FileWriter(tempBib)){
+  try (BufferedWriter fileWriter=Files.newBufferedWriter(tempBib.toPath(),StandardCharsets.UTF_8)){
     fileWriter.write(t1BibtexString());
     fileWriter.write(t3BibtexString());
     fileWriter.close();
     try (ByteArrayOutputStream s=new ByteArrayOutputStream()){
       PrintStream oldOut=System.out;
       System.setOut(new PrintStream(s));
-      XMPUtil.main(new String[]{tempBib.getAbsolutePath(),pdfFile.getAbsolutePath()});
+      XMPUtilMain.main(new String[]{tempBib.getAbsolutePath(),pdfFile.getAbsolutePath()});
       System.setOut(oldOut);
     }
-     List<BibEntry> l=XMPUtil.readXMP(pdfFile);
+     List<BibEntry> l=XMPUtil.readXMP(pdfFile,xmpPreferences);
     Assert.assertEquals(2,l.size());
     BibEntry a=l.get(0);
     BibEntry b=l.get(1);
-    if (a.getCiteKey().equals("Clarkson06")) {
+    if (a.getCiteKeyOptional().get().equals("Clarkson06")) {
       BibEntry tmp=a;
       a=b;
       b=tmp;

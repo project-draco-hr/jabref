@@ -1,0 +1,10 @@
+{
+  ParserResult result=OpenDatabase.loadDatabase(bibEncodingWithoutNewline,importFormatPreferences);
+  Assert.assertEquals(StandardCharsets.US_ASCII,result.getMetaData().getEncoding().get());
+  BibDatabase db=result.getDatabase();
+  Assert.assertEquals("testPreamble",db.getPreamble());
+  Collection<BibEntry> entries=db.getEntries();
+  Assert.assertEquals(1,entries.size());
+  BibEntry entry=entries.iterator().next();
+  Assert.assertEquals(Optional.of("testArticle"),entry.getCiteKeyOptional());
+}

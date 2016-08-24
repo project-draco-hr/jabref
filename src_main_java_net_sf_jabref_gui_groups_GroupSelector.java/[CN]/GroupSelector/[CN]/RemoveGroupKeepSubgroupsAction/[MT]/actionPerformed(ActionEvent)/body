@@ -7,8 +7,9 @@
     final GroupTreeNodeViewModel parent=(GroupTreeNodeViewModel)node.getParent();
     node.getNode().removeFromParent();
     node.getNode().moveAllChildrenTo(parent.getNode(),parent.getIndex(node));
-    panel.undoManager.addEdit(undo);
+    panel.getUndoManager().addEdit(undo);
     panel.markBaseChanged();
     frame.output(Localization.lang("Removed group \"%0\".",group.getName()));
+    panel.getBibDatabaseContext().getMetaData().postChange();
   }
 }

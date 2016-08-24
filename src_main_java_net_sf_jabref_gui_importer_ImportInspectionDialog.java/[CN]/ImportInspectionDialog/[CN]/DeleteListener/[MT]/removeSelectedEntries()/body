@@ -1,0 +1,19 @@
+{
+  int row=glTable.getSelectedRow();
+  List<BibEntry> toRemove=new ArrayList<>();
+  toRemove.addAll(selectionModel.getSelected());
+  entries.getReadWriteLock().writeLock().lock();
+  try {
+    for (    BibEntry entry : toRemove) {
+      entries.remove(entry);
+    }
+  }
+  finally {
+    entries.getReadWriteLock().writeLock().unlock();
+  }
+  glTable.clearSelection();
+  if ((row >= 0) && (!entries.isEmpty())) {
+    row=Math.min(entries.size() - 1,row);
+    glTable.addRowSelectionInterval(row,row);
+  }
+}

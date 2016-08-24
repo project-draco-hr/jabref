@@ -1,0 +1,28 @@
+{
+  Map<BibEntry,List<File>> result=new HashMap<>();
+  Set<File> filesWithExtension=FileFinder.findFiles(extensions,directories);
+  for (  BibEntry entry : entries) {
+    result.put(entry,new ArrayList<>());
+  }
+  nextFile:   for (  File file : filesWithExtension) {
+    String name=file.getName();
+    int dot=name.lastIndexOf('.');
+    for (    BibEntry entry : entries) {
+      Optional<String> citeKey=entry.getCiteKeyOptional();
+      if ((citeKey.isPresent()) && !citeKey.get().isEmpty() && (dot > 0)&& name.substring(0,dot).equals(citeKey.get())) {
+        result.get(entry).add(file);
+        continue nextFile;
+      }
+    }
+    if (!autolinkExactKeyOnly) {
+      for (      BibEntry entry : entries) {
+        Optional<String> citeKey=entry.getCiteKeyOptional();
+        if ((citeKey.isPresent()) && !citeKey.get().isEmpty() && name.startsWith(citeKey.get())) {
+          result.get(entry).add(file);
+          continue nextFile;
+        }
+      }
+    }
+  }
+  return result;
+}

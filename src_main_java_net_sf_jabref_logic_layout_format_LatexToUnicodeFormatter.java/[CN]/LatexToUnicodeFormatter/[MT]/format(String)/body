@@ -18,12 +18,12 @@
  else     if (c == '\\') {
       if (incommand) {
         String command=currentCommand.toString();
-        Object result=LatexToUnicodeFormatter.CHARS.get(command);
+        String result=LatexToUnicodeFormatter.CHARS.get(command);
         if (result == null) {
           sb.append(command);
         }
  else {
-          sb.append((String)result);
+          sb.append(result);
         }
       }
       escaped=true;
@@ -32,32 +32,40 @@
     }
  else     if (!incommand && ((c == '{') || (c == '}'))) {
     }
- else     if (Character.isLetter(c) || (c == '%') || Globals.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c))) {
+ else     if (Character.isLetter(c) || (c == '%') || StringUtil.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c))) {
       escaped=false;
       if (!incommand) {
         sb.append(c);
       }
  else {
         currentCommand.append(c);
-        testCharCom:         if ((currentCommand.length() == 1) && Globals.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString())) {
-          if (i >= (field.length() - 1)) {
-            break testCharCom;
-          }
+        if ((currentCommand.length() == 1) && StringUtil.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString()) && !(i >= (field.length() - 1))) {
           String command=currentCommand.toString();
           i++;
           c=field.charAt(i);
-          String combody;
+          String commandBody;
           if (c == '{') {
             String part=StringUtil.getPart(field,i,false);
             i+=part.length();
-            combody=part;
+            commandBody=part;
           }
  else {
-            combody=field.substring(i,i + 1);
+            commandBody=field.substring(i,i + 1);
           }
-          Object result=LatexToUnicodeFormatter.CHARS.get(command + combody);
-          if (result != null) {
-            sb.append((String)result);
+          String result=LatexToUnicodeFormatter.CHARS.get(command + commandBody);
+          if (result == null) {
+            if (commandBody.length() <= 1) {
+              String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
+              if (accent == null) {
+                sb.append(commandBody);
+              }
+ else {
+                sb.append(commandBody).append(accent);
+              }
+            }
+          }
+ else {
+            sb.append(result);
           }
           incommand=false;
           escaped=false;
@@ -65,12 +73,12 @@
  else {
           if ((i + 1) == field.length()) {
             String command=currentCommand.toString();
-            Object result=LatexToUnicodeFormatter.CHARS.get(command);
+            String result=LatexToUnicodeFormatter.CHARS.get(command);
             if (result == null) {
               sb.append(command);
             }
  else {
-              sb.append((String)result);
+              sb.append(result);
             }
           }
         }
@@ -88,31 +96,47 @@
           i+=part.length();
           argument=part;
           if (argument != null) {
-            Object result=LatexToUnicodeFormatter.CHARS.get(command + argument);
+            String result=LatexToUnicodeFormatter.CHARS.get(command + argument);
             if (result == null) {
-              sb.append(argument);
+              if (argument.length() <= 1) {
+                String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
+                if (accent == null) {
+                  if (argument.length() == 0) {
+                    sb.append(command);
+                  }
+ else {
+                    sb.append(argument);
+                  }
+                }
+ else {
+                  sb.append(argument).append(accent);
+                }
+              }
+ else {
+                sb.append(argument);
+              }
             }
  else {
-              sb.append((String)result);
+              sb.append(result);
             }
           }
         }
  else         if (c == '}') {
-          Object result=LatexToUnicodeFormatter.CHARS.get(command);
+          String result=LatexToUnicodeFormatter.CHARS.get(command);
           if (result == null) {
             sb.append(command);
           }
  else {
-            sb.append((String)result);
+            sb.append(result);
           }
         }
  else {
-          Object result=LatexToUnicodeFormatter.CHARS.get(command);
+          String result=LatexToUnicodeFormatter.CHARS.get(command);
           if (result == null) {
             sb.append(command);
           }
  else {
-            sb.append((String)result);
+            sb.append(result);
           }
           sb.append(' ');
         }
@@ -123,5 +147,5 @@
       escaped=false;
     }
   }
-  return sb.toString().replace("&amp;","&").replace("<p>",Globals.NEWLINE).replace("&dollar;","$").replace("~","\u00A0");
+  return sb.toString().replace("&amp;","&").replace("<p>",OS.NEWLINE).replace("&dollar;","$").replace("~","\u00A0");
 }

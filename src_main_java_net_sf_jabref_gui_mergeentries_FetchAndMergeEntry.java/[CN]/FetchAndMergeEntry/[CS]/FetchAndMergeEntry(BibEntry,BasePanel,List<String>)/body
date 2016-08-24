@@ -1,0 +1,33 @@
+{
+  for (  String field : fields) {
+    Optional<String> fieldContent=entry.getFieldOptional(field);
+    String type=FieldName.getDisplayName(field);
+    if (fieldContent.isPresent()) {
+      Optional<BibEntry> fetchedEntry=Optional.empty();
+      if (FieldName.DOI.equals(field)) {
+        fetchedEntry=new DOItoBibTeX().getEntryFromDOI(fieldContent.get(),ImportFormatPreferences.fromPreferences(Globals.prefs));
+      }
+ else       if (FieldName.ISBN.equals(field)) {
+        fetchedEntry=new ISBNtoBibTeXFetcher().getEntryFromISBN(fieldContent.get(),null);
+      }
+ else       if (FieldName.EPRINT.equals(field)) {
+        try {
+          fetchedEntry=new ArXiv().performSearchById(fieldContent.get());
+        }
+ catch (        FetcherException e) {
+          panel.frame().setStatus(Localization.lang("Cannot get info based on given %0:_%1",type,fieldContent.get()));
+        }
+      }
+      if (fetchedEntry.isPresent()) {
+        MergeFetchedEntryDialog dialog=new MergeFetchedEntryDialog(panel,entry,fetchedEntry.get(),type);
+        dialog.setVisible(true);
+      }
+ else {
+        panel.frame().setStatus(Localization.lang("Cannot get info based on given %0:_%1",type,fieldContent.get()));
+      }
+    }
+ else {
+      panel.frame().setStatus(Localization.lang("No %0 found",type));
+    }
+  }
+}

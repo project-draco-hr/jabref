@@ -1,0 +1,36 @@
+{
+  if (canceled || (panel.getBibDatabaseContext().getDatabaseFile() == null)) {
+    return;
+  }
+  try {
+    panel.storeCurrentEdit();
+    panel.autoGenerateKeysBeforeSaving();
+    if (FileBasedLock.waitForFileLock(panel.getBibDatabaseContext().getDatabaseFile().toPath())) {
+      if (checkExternalModification()) {
+        return;
+      }
+      success=saveDatabase(panel.getBibDatabaseContext().getDatabaseFile(),false,panel.getBibDatabaseContext().getMetaData().getEncoding().orElse(Globals.prefs.getDefaultEncoding()));
+      Globals.getFileUpdateMonitor().updateTimeStamp(panel.getFileMonitorHandle());
+    }
+ else {
+      success=false;
+      fileLockedError=true;
+    }
+    panel.setSaving(false);
+    if (success) {
+      panel.getUndoManager().markUnchanged();
+      AutoSaveManager.deleteAutoSaveFile(panel);
+      panel.setNonUndoableChange(false);
+      panel.setBaseChanged(false);
+      panel.setUpdatedExternally(false);
+    }
+  }
+ catch (  SaveException ex) {
+    if (ex == SaveException.FILE_LOCKED) {
+      success=false;
+      fileLockedError=true;
+      return;
+    }
+    LOGGER.error("Problem saving file",ex);
+  }
+}

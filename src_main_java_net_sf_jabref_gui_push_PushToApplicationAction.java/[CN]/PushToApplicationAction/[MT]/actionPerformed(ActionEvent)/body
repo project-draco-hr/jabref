@@ -1,0 +1,20 @@
+{
+  panel=frame.getCurrentBasePanel();
+  if (panel == null) {
+    return;
+  }
+  entries=panel.getSelectedEntries();
+  if (entries.isEmpty()) {
+    JOptionPane.showMessageDialog(frame,Localization.lang("This operation requires one or more entries to be selected."),(String)getValue(Action.NAME),JOptionPane.ERROR_MESSAGE);
+    return;
+  }
+  if (operation.requiresBibtexKeys()) {
+    for (    BibEntry entry : entries) {
+      if (!(entry.getCiteKeyOptional().isPresent()) || entry.getCiteKeyOptional().get().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(frame,Localization.lang("This operation requires all selected entries to have BibTeX keys defined."),(String)getValue(Action.NAME),JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+    }
+  }
+  JabRefExecutorService.INSTANCE.execute(this);
+}

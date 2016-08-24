@@ -3,5 +3,27 @@
     return;
   }
   String absolutePath=file.toPath().toAbsolutePath().getParent().toString();
-  NATIVE_DESKTOP.openConsole(absolutePath);
+  boolean usingDefault=Globals.prefs.getBoolean(JabRefPreferences.USE_DEFAULT_CONSOLE_APPLICATION);
+  if (usingDefault) {
+    NATIVE_DESKTOP.openConsole(absolutePath);
+  }
+ else {
+    String command=Globals.prefs.get(JabRefPreferences.CONSOLE_COMMAND);
+    command=command.trim();
+    if (!command.isEmpty()) {
+      command=command.replaceAll("\\s+"," ");
+      String[] subcommands=command.split(" ");
+      String commandLoggingText=command.replace("%DIR",absolutePath);
+      JabRefGUI.getMainFrame().output(Localization.lang("Executing command \"%0\"...",commandLoggingText));
+      LOGGER.info("Executing command \"" + commandLoggingText + "\"...");
+      try {
+        new ProcessBuilder(subcommands).start();
+      }
+ catch (      IOException exception) {
+        LOGGER.error("Open console",exception);
+        JOptionPane.showMessageDialog(JabRefGUI.getMainFrame(),Localization.lang("Error_occured_while_executing_the_command_\"%0\".",commandLoggingText),Localization.lang("Open console") + " - " + Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
+        JabRefGUI.getMainFrame().output(null);
+      }
+    }
+  }
 }

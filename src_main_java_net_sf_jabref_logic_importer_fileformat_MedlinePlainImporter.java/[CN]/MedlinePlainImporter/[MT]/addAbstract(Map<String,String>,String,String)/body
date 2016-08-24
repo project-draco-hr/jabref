@@ -1,0 +1,24 @@
+{
+  String abstractValue="";
+  if ("AB".equals(lab)) {
+    if (value.contains("Copyright")) {
+      int copyrightIndex=value.lastIndexOf("Copyright");
+      String copyrightInfo=value.substring(copyrightIndex,value.length()).replaceAll("Copyright ","");
+      hm.put("copyright",copyrightInfo);
+      abstractValue=value.substring(0,copyrightIndex);
+    }
+ else {
+      abstractValue=value;
+    }
+    String oldAb=hm.get(FieldName.ABSTRACT);
+    if (oldAb == null) {
+      hm.put(FieldName.ABSTRACT,abstractValue);
+    }
+ else {
+      hm.put(FieldName.ABSTRACT,oldAb + OS.NEWLINE + abstractValue);
+    }
+  }
+ else   if ("OAB".equals(lab) || "OABL".equals(lab)) {
+    hm.put("other-abstract",value);
+  }
+}

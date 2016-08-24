@@ -1,0 +1,22 @@
+{
+  Objects.requireNonNull(entry);
+  Optional<DOI> doi=Optional.empty();
+  Optional<String> title=entry.getFieldOptional(FieldName.TITLE);
+  if (!title.isPresent() || title.get().isEmpty()) {
+    return doi;
+  }
+  String query=enhanceQuery(title.get(),entry);
+  try {
+    HttpResponse<JsonNode> response=Unirest.get(API_URL + "/works").queryString("query",query).queryString("rows","1").asJson();
+    JSONArray items=response.getBody().getObject().getJSONObject("message").getJSONArray("items");
+    if (checkValidity(entry,items)) {
+      String dataDOI=items.getJSONObject(0).getString("DOI");
+      LOGGER.debug("DOI " + dataDOI + " for "+ title.get()+ " found.");
+      return DOI.build(dataDOI);
+    }
+  }
+ catch (  UnirestException e) {
+    LOGGER.warn("Unable to query CrossRef API: " + e.getMessage(),e);
+  }
+  return doi;
+}

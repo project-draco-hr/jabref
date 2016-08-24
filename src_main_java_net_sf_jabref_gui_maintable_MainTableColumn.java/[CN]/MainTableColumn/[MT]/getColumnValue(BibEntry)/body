@@ -2,26 +2,21 @@
   if (bibtexFields.isEmpty()) {
     return null;
   }
-  String content=null;
+  boolean isNameColumn=false;
+  Optional<String> content=Optional.empty();
   for (  String field : bibtexFields) {
-    if (field.equals(BibEntry.TYPE_HEADER)) {
-      content=EntryUtil.capitalizeFirst(entry.getType());
-    }
- else {
-      content=entry.getFieldOrAlias(field);
-      if (database.isPresent() && "Author".equalsIgnoreCase(columnName) && (content != null)) {
-        content=database.get().resolveForStrings(content);
-      }
-    }
-    if (content != null) {
+    content=BibDatabase.getResolvedField(field,entry,database.orElse(null));
+    if (content.isPresent()) {
+      isNameColumn=InternalBibtexFields.getFieldExtras(field).contains(FieldProperties.PERSON_NAMES);
       break;
     }
   }
-  if (content != null) {
-    content=toUnicode.format(content);
+  String result=content.orElse(null);
+  if (isNameColumn) {
+    result=MainTableNameFormatter.formatName(result);
   }
-  if (isNameColumn()) {
-    return MainTableNameFormatter.formatName(content);
+  if (result != null) {
+    result=toUnicode.format(result).trim();
   }
-  return content;
+  return result;
 }

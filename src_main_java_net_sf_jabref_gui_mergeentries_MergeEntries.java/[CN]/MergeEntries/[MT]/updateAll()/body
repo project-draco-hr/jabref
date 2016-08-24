@@ -10,10 +10,10 @@
   }
   for (  String field : differentFields) {
     if (radioButtons.get(field).get(0).isSelected()) {
-      mergedEntry.setField(field,leftEntry.getField(field));
+      mergedEntry.setField(field,leftEntry.getFieldOptional(field).get());
     }
  else     if (radioButtons.get(field).get(2).isSelected()) {
-      mergedEntry.setField(field,rightEntry.getField(field));
+      mergedEntry.setField(field,rightEntry.getFieldOptional(field).get());
     }
  else {
       mergedEntry.clearField(field);
@@ -22,7 +22,7 @@
   entryPreview.setEntry(mergedEntry);
   StringWriter writer=new StringWriter();
   try {
-    new BibEntryWriter(new LatexFieldFormatter(),false).write(mergedEntry,writer,databaseType);
+    new BibEntryWriter(new LatexFieldFormatter(LatexFieldFormatterPreferences.fromPreferences(Globals.prefs)),false).write(mergedEntry,writer,databaseType);
   }
  catch (  IOException ex) {
     LOGGER.error("Error in entry",ex);

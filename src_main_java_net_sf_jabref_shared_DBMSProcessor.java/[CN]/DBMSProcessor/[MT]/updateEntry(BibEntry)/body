@@ -1,0 +1,31 @@
+{
+  connection.setAutoCommit(false);
+  try {
+    Optional<BibEntry> sharedEntryOptional=getSharedEntry(localBibEntry.getSharedBibEntryData().getSharedID());
+    if (!sharedEntryOptional.isPresent()) {
+      throw new SharedEntryNotPresentException(localBibEntry);
+    }
+    BibEntry sharedBibEntry=sharedEntryOptional.get();
+    removeSharedFieldsByDifference(localBibEntry,sharedBibEntry);
+    if ((localBibEntry.getSharedBibEntryData().getVersion() >= sharedBibEntry.getSharedBibEntryData().getVersion()) || localBibEntry.equals(sharedBibEntry)) {
+      insertOrUpdateFields(localBibEntry);
+      StringBuilder updateEntryTypeQuery=new StringBuilder().append("UPDATE ").append(escape("ENTRY")).append(" SET ").append(escape("TYPE")).append(" = ?, ").append(escape("VERSION")).append(" = ").append(escape("VERSION")).append(" + 1 WHERE ").append(escape("SHARED_ID")).append(" = ?");
+      try (PreparedStatement preparedUpdateEntryTypeStatement=connection.prepareStatement(updateEntryTypeQuery.toString())){
+        preparedUpdateEntryTypeStatement.setString(1,localBibEntry.getType());
+        preparedUpdateEntryTypeStatement.setInt(2,localBibEntry.getSharedBibEntryData().getSharedID());
+        preparedUpdateEntryTypeStatement.executeUpdate();
+      }
+       connection.commit();
+    }
+ else {
+      throw new OfflineLockException(localBibEntry,sharedBibEntry);
+    }
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error: ",e);
+    connection.rollback();
+  }
+ finally {
+    connection.setAutoCommit(true);
+  }
+}

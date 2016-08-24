@@ -1,0 +1,66 @@
+{
+  Map<String,String> fields=new HashMap<>();
+  if (currentArticle.getBookDocument() != null) {
+    BookDocument bookDocument=currentArticle.getBookDocument();
+    fields.put("pmid",bookDocument.getPMID().getContent());
+    if (bookDocument.getDateRevised() != null) {
+      DateRevised dateRevised=bookDocument.getDateRevised();
+      addDateRevised(fields,dateRevised);
+    }
+    if (bookDocument.getAbstract() != null) {
+      Abstract abs=bookDocument.getAbstract();
+      addAbstract(fields,abs);
+    }
+    if (bookDocument.getPagination() != null) {
+      Pagination pagination=bookDocument.getPagination();
+      addPagination(fields,pagination);
+    }
+    if (bookDocument.getSections() != null) {
+      ArrayList<String> result=new ArrayList<>();
+      Sections sections=bookDocument.getSections();
+      for (      Section section : sections.getSection()) {
+        for (        Serializable content : section.getSectionTitle().getContent()) {
+          if (content instanceof String) {
+            result.add((String)content);
+          }
+        }
+      }
+      fields.put("sections",join(result,"; "));
+    }
+    if (bookDocument.getKeywordList() != null) {
+      addKeyWords(fields,bookDocument.getKeywordList());
+    }
+    if (bookDocument.getContributionDate() != null) {
+      addContributionDate(fields,bookDocument.getContributionDate());
+    }
+    if (bookDocument.getPublicationType() != null) {
+      List<String> result=new ArrayList<>();
+      for (      PublicationType type : bookDocument.getPublicationType()) {
+        if (type.getContent() != null) {
+          result.add(type.getContent());
+        }
+      }
+      fields.put("pubtype",join(result,", "));
+    }
+    if (bookDocument.getArticleTitle() != null) {
+      ArticleTitle articleTitle=bookDocument.getArticleTitle();
+      ArrayList<String> titles=new ArrayList<>();
+      for (      Serializable content : articleTitle.getContent()) {
+        if (content instanceof String) {
+          titles.add((String)content);
+        }
+      }
+      fields.put("article",join(titles,", "));
+    }
+    if (bookDocument.getBook() != null) {
+      addBookInformation(fields,bookDocument.getBook());
+    }
+  }
+  if (currentArticle.getPubmedBookData() != null) {
+    PubmedBookData bookData=currentArticle.getPubmedBookData();
+    putIfValueNotNull(fields,"pubstatus",bookData.getPublicationStatus());
+  }
+  BibEntry entry=new BibEntry(IdGenerator.next(),"article");
+  entry.setField(fields);
+  bibItems.add(entry);
+}

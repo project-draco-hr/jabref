@@ -1,0 +1,21 @@
+{
+  try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
+    PDDocumentInformation pdfDocInfo=document.getDocumentInformation();
+    if (pdfDocInfo != null) {
+      Optional<BibEntry> entryDI=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation());
+      if (entryDI.isPresent()) {
+        addEntryDataToEntry(entry,entryDI.get());
+        Calendar creationDate=pdfDocInfo.getCreationDate();
+        if (creationDate != null) {
+          String date=LocalDate.of(creationDate.YEAR,creationDate.MONTH + 1,creationDate.DAY_OF_MONTH).format(DateTimeFormatter.ISO_LOCAL_DATE);
+          appendToField(entry,Globals.prefs.get(JabRefPreferences.TIME_STAMP_FIELD),date);
+        }
+        if (pdfDocInfo.getCustomMetadataValue("bibtex/bibtexkey") != null) {
+          entry.setId(pdfDocInfo.getCustomMetadataValue("bibtex/bibtexkey"));
+        }
+      }
+    }
+  }
+ catch (  IOException e) {
+  }
+}

@@ -1,0 +1,17 @@
+{
+  String startPage="";
+  String endPage="";
+  for (  JAXBElement<String> element : pagination.getContent()) {
+    if ("MedlinePgn".equals(element.getName().getLocalPart())) {
+      putIfValueNotNull(fields,FieldName.PAGES,fixPageRange(element.getValue()));
+    }
+ else     if ("StartPage".equals(element.getName().getLocalPart())) {
+      startPage=element.getValue() + endPage;
+      putIfValueNotNull(fields,FieldName.PAGES,startPage);
+    }
+ else     if ("EndPage".equals(element.getName().getLocalPart())) {
+      endPage=element.getValue();
+      fields.put(FieldName.PAGES,fixPageRange(startPage + "-" + endPage));
+    }
+  }
+}

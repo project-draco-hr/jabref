@@ -1,0 +1,12 @@
+{
+  StringWriter stringWriter=new StringWriter();
+  BibEntry entry=new BibEntry("1234","article");
+  entry.setField("author","Foo Bar");
+  entry.setField("journal","International Journal of Something");
+  entry.setField("number","1");
+  entry.setField("note","some note");
+  writer.write(entry,stringWriter,BibDatabaseMode.BIBTEX);
+  String actual=stringWriter.toString();
+  String expected=OS.NEWLINE + "@Article{," + OS.NEWLINE+ "  author  = {Foo Bar},"+ OS.NEWLINE+ "  journal = {International Journal of Something},"+ OS.NEWLINE+ "  number  = {1},"+ OS.NEWLINE+ "  note    = {some note},"+ OS.NEWLINE+ "}"+ OS.NEWLINE;
+  assertEquals(expected,actual);
+}

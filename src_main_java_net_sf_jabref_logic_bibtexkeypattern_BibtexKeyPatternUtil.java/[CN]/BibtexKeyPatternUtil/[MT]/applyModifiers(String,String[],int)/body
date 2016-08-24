@@ -1,0 +1,33 @@
+{
+  String resultingLabel=label;
+  if (parts.length > offset) {
+    for (int j=offset; j < parts.length; j++) {
+      String modifier=parts[j];
+      if ("lower".equals(modifier)) {
+        resultingLabel=resultingLabel.toLowerCase(Locale.ENGLISH);
+      }
+ else       if ("upper".equals(modifier)) {
+        resultingLabel=resultingLabel.toUpperCase(Locale.ENGLISH);
+      }
+ else       if ("abbr".equals(modifier)) {
+        StringBuilder abbreviateSB=new StringBuilder();
+        String[] words=resultingLabel.replaceAll("[\\{\\}']","").split("[\\(\\) \r\n\"]");
+        for (        String word : words) {
+          if (!word.isEmpty()) {
+            abbreviateSB.append(word.charAt(0));
+          }
+        }
+        resultingLabel=abbreviateSB.toString();
+      }
+ else       if (!modifier.isEmpty() && (modifier.charAt(0) == '(') && modifier.endsWith(")")) {
+        if (resultingLabel.isEmpty() && (modifier.length() > 2)) {
+          return modifier.substring(1,modifier.length() - 1);
+        }
+      }
+ else {
+        LOGGER.info("Key generator warning: unknown modifier '" + modifier + "'.");
+      }
+    }
+  }
+  return resultingLabel;
+}

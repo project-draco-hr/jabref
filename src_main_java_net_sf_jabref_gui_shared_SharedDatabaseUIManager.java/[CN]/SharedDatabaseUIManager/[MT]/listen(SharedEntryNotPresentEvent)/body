@@ -1,0 +1,12 @@
+{
+  BibEntry bibEntry=sharedEntryNotPresentEvent.getBibEntry();
+  String[] options={Localization.lang("Keep"),Localization.lang("Delete")};
+  int answer=JOptionPane.showOptionDialog(jabRefFrame,Localization.lang("The BibEntry you currently work on has been deleted on the shared side. " + "Hit \"Keep\" to recover the entry.") + "\n\n",Localization.lang("Update refused"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.INFORMATION_MESSAGE,null,options,options[0]);
+  if (answer == 0) {
+    dbmsSynchronizer.getDBProcessor().insertEntry(bibEntry);
+  }
+ else   if (answer == 1) {
+    jabRefFrame.getCurrentBasePanel().hideBottomComponent();
+  }
+  dbmsSynchronizer.pullChanges();
+}

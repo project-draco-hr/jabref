@@ -1,0 +1,34 @@
+{
+  Map<String,String> meta=new HashMap<>();
+  while (!eof) {
+    boolean found=consumeUncritically('@');
+    if (!found) {
+      break;
+    }
+    skipWhitespace();
+    String entryType=parseTextToken().toLowerCase().trim();
+    if ("preamble".equals(entryType)) {
+      database.setPreamble(parsePreamble());
+      skipOneNewline();
+      dumpTextReadSoFarToString();
+    }
+ else     if ("string".equals(entryType)) {
+      parseBibtexString();
+    }
+ else     if ("comment".equals(entryType)) {
+      parseJabRefComment(meta);
+    }
+ else {
+      parseAndAddEntry(entryType);
+    }
+    skipWhitespace();
+  }
+  try {
+    parserResult.setMetaData(MetaData.parse(meta));
+  }
+ catch (  ParseException exception) {
+    parserResult.addWarning(exception.getLocalizedMessage());
+  }
+  parseRemainingContent();
+  return parserResult;
+}

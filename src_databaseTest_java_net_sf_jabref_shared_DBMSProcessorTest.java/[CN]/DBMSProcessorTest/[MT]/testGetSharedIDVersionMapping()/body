@@ -1,0 +1,12 @@
+{
+  BibEntry firstEntry=getBibEntryExample();
+  BibEntry secondEntry=getBibEntryExample();
+  dbmsProcessor.insertEntry(firstEntry);
+  dbmsProcessor.insertEntry(secondEntry);
+  dbmsProcessor.updateEntry(secondEntry);
+  Map<Integer,Integer> expectedIDVersionMap=new HashMap<>();
+  expectedIDVersionMap.put(firstEntry.getSharedBibEntryData().getSharedID(),1);
+  expectedIDVersionMap.put(secondEntry.getSharedBibEntryData().getSharedID(),2);
+  Map<Integer,Integer> actualIDVersionMap=dbmsProcessor.getSharedIDVersionMapping();
+  Assert.assertEquals(expectedIDVersionMap,actualIDVersionMap);
+}

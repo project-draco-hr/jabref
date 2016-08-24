@@ -1,14 +1,14 @@
 {
-  List<XTextDocument> res=new ArrayList<>();
-  XEnumerationAccess enumA=xDesktop.getComponents();
-  XEnumeration e=enumA.createEnumeration();
-  while (e.hasMoreElements()) {
-    Object o=e.nextElement();
-    XComponent comp=UnoRuntime.queryInterface(XComponent.class,o);
-    XTextDocument doc=UnoRuntime.queryInterface(XTextDocument.class,comp);
-    if (doc != null) {
-      res.add(doc);
+  List<XTextDocument> result=new ArrayList<>();
+  XEnumerationAccess enumAccess=xDesktop.getComponents();
+  XEnumeration componentEnumeration=enumAccess.createEnumeration();
+  while (componentEnumeration.hasMoreElements()) {
+    Object nextElement=componentEnumeration.nextElement();
+    XComponent component=UnoRuntime.queryInterface(XComponent.class,nextElement);
+    XTextDocument document=UnoRuntime.queryInterface(XTextDocument.class,component);
+    if (document != null) {
+      result.add(document);
     }
   }
-  return res;
+  return result;
 }

@@ -1,0 +1,8 @@
+{
+  ParserResult result=BibtexParser.parse(new StringReader("@article{test,author={author @ good}}"),importFormatPreferences);
+  Collection<BibEntry> c=result.getDatabase().getEntries();
+  List<BibEntry> entries=new ArrayList<>(1);
+  entries.addAll(c);
+  assertEquals(1,entries.size());
+  assertEquals(Optional.of("author @ good"),entries.get(0).getFieldOptional("author"));
+}

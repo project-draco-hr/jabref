@@ -33,8 +33,8 @@ break;
 }
 if (vonStart < 0) {
 if (!tokenCase) {
-int previousTermToken=tokens.size() - TOKEN_GROUP_LENGTH - TOKEN_GROUP_LENGTH + OFFSET_TOKEN_TERM;
-if (previousTermToken >= 0 && tokens.get(previousTermToken).equals('-')) {
+int previousTermToken=(tokens.size() - TOKEN_GROUP_LENGTH - TOKEN_GROUP_LENGTH) + OFFSET_TOKEN_TERM;
+if ((previousTermToken >= 0) && tokens.get(previousTermToken).equals('-')) {
 break;
 }
 vonStart=tokens.size() - TOKEN_GROUP_LENGTH;
@@ -51,7 +51,7 @@ break;
 }
 }
 if (tokens.isEmpty()) {
-return null;
+return Optional.empty();
 }
 int firstPartStart=-1;
 int vonPartStart=-1;
@@ -138,10 +138,10 @@ String firstAbbr=firstPartStart < 0 ? null : concatTokens(tokens,firstPartStart,
 String vonPart=vonPartStart < 0 ? null : concatTokens(tokens,vonPartStart,vonPartEnd,OFFSET_TOKEN,false);
 String lastPart=lastPartStart < 0 ? null : concatTokens(tokens,lastPartStart,lastPartEnd,OFFSET_TOKEN,false);
 String jrPart=jrPartStart < 0 ? null : concatTokens(tokens,jrPartStart,jrPartEnd,OFFSET_TOKEN,false);
-if (firstPart != null && lastPart != null && lastPart.equals(lastPart.toUpperCase()) && lastPart.length() < 5) {
-return new Author(lastPart,lastPart,vonPart,firstPart,jrPart);
+if ((firstPart != null) && (lastPart != null) && lastPart.equals(lastPart.toUpperCase())&& (lastPart.length() < 5)) {
+return Optional.of(new Author(lastPart,lastPart,vonPart,firstPart,jrPart));
 }
  else {
-return new Author(firstPart,firstAbbr,vonPart,lastPart,jrPart);
+return Optional.of(new Author(firstPart,firstAbbr,vonPart,lastPart,jrPart));
 }
 }

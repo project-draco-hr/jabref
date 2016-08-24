@@ -1,0 +1,8 @@
+{
+  Path file=Paths.get(RepecNepImporter.class.getResource("RepecNepImporterTest2.txt").toURI());
+  try (InputStream bibIn=RepecNepImporter.class.getResourceAsStream("RepecNepImporterTest2.bib")){
+    List<BibEntry> entries=testImporter.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+    Assert.assertEquals(1,entries.size());
+    BibEntryAssert.assertEquals(bibIn,entries.get(0));
+  }
+ }

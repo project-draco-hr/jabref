@@ -3,20 +3,19 @@
   if (entries == null) {
     return;
   }
-  UndoableUnabbreviator undoableAbbreviator=new UndoableUnabbreviator(Globals.journalAbbreviationLoader.getRepository());
+  UndoableUnabbreviator undoableAbbreviator=new UndoableUnabbreviator(Globals.journalAbbreviationLoader.getRepository(JournalAbbreviationPreferences.fromPreferences(Globals.prefs)));
   NamedCompound ce=new NamedCompound(Localization.lang("Unabbreviate journal names"));
   int count=0;
   for (  BibEntry entry : entries) {
-    if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,"journal",ce)) {
-      count++;
-    }
-    if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,"journaltitle",ce)) {
-      count++;
+    for (    String journalField : InternalBibtexFields.getJournalNameFields()) {
+      if (undoableAbbreviator.unabbreviate(panel.getDatabase(),entry,journalField,ce)) {
+        count++;
+      }
     }
   }
   if (count > 0) {
     ce.end();
-    panel.undoManager.addEdit(ce);
+    panel.getUndoManager().addEdit(ce);
     panel.markBaseChanged();
     message=Localization.lang("Unabbreviated %0 journal names.",String.valueOf(count));
   }

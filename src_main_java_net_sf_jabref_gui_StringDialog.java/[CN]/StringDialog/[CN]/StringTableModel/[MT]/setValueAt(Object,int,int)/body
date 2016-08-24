@@ -15,7 +15,7 @@
       }
  else {
         BibtexString subject=strings.get(row);
-        panel.undoManager.addEdit(new UndoableStringChange(panel,subject,true,subject.getName(),(String)value));
+        panel.getUndoManager().addEdit(new UndoableStringChange(panel,subject,true,subject.getName(),(String)value));
         subject.setName((String)value);
         panel.markBaseChanged();
         refreshTable();
@@ -26,12 +26,12 @@
     BibtexString subject=strings.get(row);
     if (!value.equals(subject.getContent())) {
       try {
-        new LatexFieldFormatter().format((String)value,"__dummy");
+        new LatexFieldFormatter(LatexFieldFormatterPreferences.fromPreferences(Globals.prefs)).format((String)value,"__dummy");
       }
  catch (      IllegalArgumentException ex) {
         return;
       }
-      panel.undoManager.addEdit(new UndoableStringChange(panel,subject,false,subject.getContent(),(String)value));
+      panel.getUndoManager().addEdit(new UndoableStringChange(panel,subject,false,subject.getContent(),(String)value));
       subject.setContent((String)value);
       panel.markBaseChanged();
     }

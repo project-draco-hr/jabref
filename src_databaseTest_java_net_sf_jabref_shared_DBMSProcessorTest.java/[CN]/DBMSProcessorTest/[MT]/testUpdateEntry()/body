@@ -1,0 +1,16 @@
+{
+  BibEntry expectedEntry=getBibEntryExample();
+  dbmsProcessor.insertEntry(expectedEntry);
+  expectedEntry.setType("book");
+  expectedEntry.setField("author","Michael J and Hutchings");
+  expectedEntry.setField("customField","custom value");
+  expectedEntry.clearField("booktitle");
+  dbmsProcessor.updateEntry(expectedEntry);
+  Optional<BibEntry> actualEntryOptional=dbmsProcessor.getSharedEntry(expectedEntry.getSharedBibEntryData().getSharedID());
+  if (actualEntryOptional.isPresent()) {
+    Assert.assertEquals(expectedEntry,actualEntryOptional.get());
+  }
+ else {
+    Assert.fail();
+  }
+}

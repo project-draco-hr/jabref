@@ -2,17 +2,17 @@
   if (Globals.prefs.getBoolean(JabRefPreferences.GENERATE_KEYS_BEFORE_SAVING)) {
     NamedCompound ce=new NamedCompound(Localization.lang("Autogenerate BibTeX keys"));
     boolean any=false;
-    for (    BibEntry bes : database.getEntries()) {
-      String oldKey=bes.getCiteKey();
-      if ((oldKey == null) || oldKey.isEmpty()) {
-        LabelPatternUtil.makeLabel(bibDatabaseContext.getMetaData(),database,bes);
-        ce.addEdit(new UndoableKeyChange(database,bes,null,bes.getCiteKey()));
+    for (    BibEntry bes : bibDatabaseContext.getDatabase().getEntries()) {
+      Optional<String> oldKey=bes.getCiteKeyOptional();
+      if (!(oldKey.isPresent()) || oldKey.get().isEmpty()) {
+        BibtexKeyPatternUtil.makeLabel(bibDatabaseContext.getMetaData(),bibDatabaseContext.getDatabase(),bes,BibtexKeyPatternPreferences.fromPreferences(Globals.prefs));
+        ce.addEdit(new UndoableKeyChange(bibDatabaseContext.getDatabase(),bes,null,bes.getCiteKeyOptional().get()));
         any=true;
       }
     }
     if (any) {
       ce.end();
-      undoManager.addEdit(ce);
+      getUndoManager().addEdit(ce);
     }
   }
 }

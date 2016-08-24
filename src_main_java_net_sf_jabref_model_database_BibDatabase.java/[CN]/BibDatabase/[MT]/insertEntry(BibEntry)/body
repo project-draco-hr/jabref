@@ -1,12 +1,3 @@
 {
-  Objects.requireNonNull(entry);
-  String id=entry.getId();
-  if (containsEntryWithId(id)) {
-    throw new KeyCollisionException("ID is already in use, please choose another");
-  }
-  internalIDs.add(id);
-  entries.add(entry);
-  entry.registerListener(this);
-  eventBus.post(new EntryAddedEvent(entry));
-  return duplicationChecker.checkForDuplicateKeyAndAdd(null,entry.getCiteKey());
+  return insertEntry(entry,EntryEventSource.LOCAL);
 }

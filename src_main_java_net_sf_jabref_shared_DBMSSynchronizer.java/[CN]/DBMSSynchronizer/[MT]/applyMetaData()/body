@@ -1,0 +1,21 @@
+{
+  if (!checkCurrentConnection()) {
+    return;
+  }
+  for (  BibEntry bibEntry : bibDatabase.getEntries()) {
+    if (!BibDatabaseWriter.applySaveActions(bibEntry,metaData).isEmpty()) {
+      try {
+        dbmsProcessor.updateEntry(bibEntry);
+      }
+ catch (      OfflineLockException exception) {
+        eventBus.post(new UpdateRefusedEvent(bibDatabaseContext,exception.getLocalBibEntry(),exception.getSharedBibEntry()));
+      }
+catch (      SharedEntryNotPresentException exception) {
+        eventBus.post(new SharedEntryNotPresentEvent(exception.getNonPresentBibEntry()));
+      }
+catch (      SQLException e) {
+        LOGGER.error("SQL Error: ",e);
+      }
+    }
+  }
+}

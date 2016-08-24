@@ -1,0 +1,18 @@
+{
+  try (InputStream is=GVKParser.class.getResourceAsStream("gvk_artificial_subtitle_test.xml")){
+    GVKParser parser=new GVKParser();
+    List<BibEntry> entries=parser.parseEntries(is);
+    Assert.assertNotNull(entries);
+    Assert.assertEquals(5,entries.size());
+    BibEntry entry=entries.get(0);
+    Assert.assertEquals(Optional.empty(),entry.getFieldOptional("subtitle"));
+    entry=entries.get(1);
+    Assert.assertEquals(Optional.of("C"),entry.getFieldOptional("subtitle"));
+    entry=entries.get(2);
+    Assert.assertEquals(Optional.of("Word"),entry.getFieldOptional("subtitle"));
+    entry=entries.get(3);
+    Assert.assertEquals(Optional.of("Word1 word2"),entry.getFieldOptional("subtitle"));
+    entry=entries.get(4);
+    Assert.assertEquals(Optional.of("Word1 word2"),entry.getFieldOptional("subtitle"));
+  }
+ }

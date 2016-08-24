@@ -1,0 +1,36 @@
+{
+  List<BibEntry> sharedEntries=new ArrayList<>();
+  StringBuilder selectEntryQuery=new StringBuilder();
+  selectEntryQuery.append("SELECT * FROM ");
+  selectEntryQuery.append(escape("ENTRY"));
+  if (sharedID != 0) {
+    selectEntryQuery.append(" WHERE ");
+    selectEntryQuery.append(escape("SHARED_ID"));
+    selectEntryQuery.append(" = ");
+    selectEntryQuery.append(sharedID);
+  }
+  selectEntryQuery.append(" ORDER BY ");
+  selectEntryQuery.append(escape("SHARED_ID"));
+  try (ResultSet selectEntryResultSet=connection.createStatement().executeQuery(selectEntryQuery.toString())){
+    while (selectEntryResultSet.next()) {
+      BibEntry bibEntry=new BibEntry();
+      bibEntry.getSharedBibEntryData().setSharedID(selectEntryResultSet.getInt("SHARED_ID"));
+      bibEntry.setType(selectEntryResultSet.getString("TYPE"));
+      bibEntry.getSharedBibEntryData().setVersion(selectEntryResultSet.getInt("VERSION"));
+      StringBuilder selectFieldQuery=new StringBuilder().append("SELECT * FROM ").append(escape("FIELD")).append(" WHERE ").append(escape("ENTRY_SHARED_ID")).append(" = ?");
+      try (PreparedStatement preparedSelectFieldStatement=connection.prepareStatement(selectFieldQuery.toString())){
+        preparedSelectFieldStatement.setInt(1,selectEntryResultSet.getInt("SHARED_ID"));
+        try (ResultSet selectFieldResultSet=preparedSelectFieldStatement.executeQuery()){
+          while (selectFieldResultSet.next()) {
+            bibEntry.setField(selectFieldResultSet.getString("NAME"),Optional.ofNullable(selectFieldResultSet.getString("VALUE")),EntryEventSource.SHARED);
+          }
+        }
+       }
+       sharedEntries.add(bibEntry);
+    }
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error",e);
+  }
+  return sharedEntries;
+}
