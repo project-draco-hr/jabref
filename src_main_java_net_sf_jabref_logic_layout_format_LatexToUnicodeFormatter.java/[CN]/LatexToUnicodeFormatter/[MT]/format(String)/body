@@ -85,40 +85,36 @@
       }
     }
  else {
-      String argument;
       if (!incommand) {
         sb.append(c);
       }
  else       if (Character.isWhitespace(c) || (c == '{') || (c == '}')) {
         String command=currentCommand.toString();
         if (c == '{') {
-          String part=StringUtil.getPart(field,i,true);
-          i+=part.length();
-          argument=part;
-          if (argument != null) {
-            String result=LatexToUnicodeFormatter.CHARS.get(command + argument);
-            if (result == null) {
-              if (argument.length() <= 1) {
-                String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
-                if (accent == null) {
-                  if (argument.length() == 0) {
-                    sb.append(command);
-                  }
- else {
-                    sb.append(argument);
-                  }
+          String argument=StringUtil.getPart(field,i,true);
+          i+=argument.length();
+          String result=LatexToUnicodeFormatter.CHARS.get(command + argument);
+          if (result == null) {
+            if (argument.length() <= 1) {
+              String accent=LatexToUnicodeFormatter.ACCENTS.get(command);
+              if (accent == null) {
+                if (argument.isEmpty()) {
+                  sb.append(command);
                 }
  else {
-                  sb.append(argument).append(accent);
+                  sb.append(argument);
                 }
               }
  else {
-                sb.append(argument);
+                sb.append(argument).append(accent);
               }
             }
  else {
-              sb.append(result);
+              sb.append(argument);
             }
+          }
+ else {
+            sb.append(result);
           }
         }
  else         if (c == '}') {

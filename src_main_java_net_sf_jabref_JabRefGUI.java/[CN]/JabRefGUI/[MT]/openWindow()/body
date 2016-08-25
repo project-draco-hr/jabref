@@ -18,7 +18,7 @@
   if (!bibDatabases.isEmpty()) {
     for (Iterator<ParserResult> parserResultIterator=bibDatabases.iterator(); parserResultIterator.hasNext(); ) {
       ParserResult pr=parserResultIterator.next();
-      if ((focusedFile != null) && pr.getFile().getAbsolutePath().equals(focusedFile)) {
+      if (pr.getFile().get().getAbsolutePath().equals(focusedFile)) {
         first=true;
       }
       if (pr.isInvalid()) {
@@ -36,7 +36,7 @@
       }
  else {
         parserResultIterator.remove();
-        postponed.add(pr.getFile());
+        postponed.add(pr.getFile().get());
       }
     }
   }
@@ -55,7 +55,7 @@
     JabRefGUI.getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
   for (  ParserResult pr : failed) {
-    String message="<html>" + Localization.lang("Error opening file '%0'.",pr.getFile().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
+    String message="<html>" + Localization.lang("Error opening file '%0'.",pr.getFile().get().getName()) + "<p>"+ pr.getErrorMessage()+ "</html>";
     JOptionPane.showMessageDialog(JabRefGUI.getMainFrame(),message,Localization.lang("Error opening file"),JOptionPane.ERROR_MESSAGE);
   }
   int tabNumber=0;

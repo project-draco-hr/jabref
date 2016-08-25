@@ -77,7 +77,6 @@
       }
     }
  else {
-      String argument;
       if (!incommand) {
         sb.append(c);
       }
@@ -90,22 +89,19 @@
           sb.append('<').append(tag).append('>').append(part).append("</").append(tag).append('>');
         }
  else         if (c == '{') {
-          String part=StringUtil.getPart(field,i,true);
-          i+=part.length();
-          argument=part;
-          if (argument != null) {
-            String result=HTML_CHARS.get(command + argument);
-            if (result == null) {
-              if (argument.length() == 0) {
-                sb.append(command);
-              }
- else {
-                sb.append(argument);
-              }
+          String argument=StringUtil.getPart(field,i,true);
+          i+=argument.length();
+          String result=HTML_CHARS.get(command + argument);
+          if (result == null) {
+            if (argument.isEmpty()) {
+              sb.append(command);
             }
  else {
-              sb.append(result);
+              sb.append(argument);
             }
+          }
+ else {
+            sb.append(result);
           }
         }
  else         if (c == '}') {
