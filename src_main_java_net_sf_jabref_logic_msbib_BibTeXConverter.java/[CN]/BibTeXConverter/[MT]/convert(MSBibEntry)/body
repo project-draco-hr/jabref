@@ -1,11 +1,12 @@
 {
   BibEntry result;
   Map<String,String> fieldValues=new HashMap<>();
+  String bibTexEntryType=MSBibMapping.getBibLaTeXEntryType(entry.getType());
   if (entry.getCiteKey() == null) {
-    result=new BibEntry(ImportFormat.DEFAULT_BIBTEXENTRY_ID,MSBibMapping.getBibTeXEntryType(entry.getType()));
+    result=new BibEntry(ImportFormat.DEFAULT_BIBTEXENTRY_ID,bibTexEntryType);
   }
  else {
-    result=new BibEntry(entry.getCiteKey(),MSBibMapping.getBibTeXEntryType(entry.getType()));
+    result=new BibEntry(entry.getCiteKey(),bibTexEntryType);
   }
   for (  Map.Entry<String,String> field : entry.fields.entrySet()) {
     String msField=field.getKey();
@@ -45,6 +46,16 @@
   }
   if (entry.dateAccessed != null) {
     fieldValues.put(MSBIB_PREFIX + "accessed",entry.dateAccessed);
+  }
+  if (entry.journalName != null) {
+    fieldValues.put(FieldName.JOURNALTITLE,entry.journalName);
+  }
+  if (entry.month != null) {
+    Month month=MonthUtil.getMonth(entry.month);
+    fieldValues.put(FieldName.MONTH,month.shortName);
+  }
+  if (entry.number != null) {
+    fieldValues.put(FieldName.NUMBER,entry.number);
   }
   result.setField(fieldValues);
   return result;
