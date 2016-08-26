@@ -11,7 +11,7 @@
     }
     StringBuilder newFilename=new StringBuilder(FileUtil.createFileNameFromPattern(databaseContext.getDatabase(),entry,fileNamePattern,prefs).trim());
     newFilename.append('.').append(FileUtil.getFileExtension(realOldFilename).orElse("pdf"));
-    Optional<File> expandedOldFile=FileUtil.expandFilename(realOldFilename,databaseContext.getFileDirectory());
+    Optional<File> expandedOldFile=FileUtil.expandFilename(realOldFilename,databaseContext.getFileDirectory(fileDirectoryPreferences));
     if ((!expandedOldFile.isPresent()) || (expandedOldFile.get().getParent() == null)) {
       newFileList.add(flEntry);
       continue;
@@ -30,7 +30,7 @@
       String type=flEntry.getFileType();
       File parent=(new File(realOldFilename)).getParentFile();
       String newFileEntryFileName;
-      if ((parent == null) || databaseContext.getFileDirectory().contains(parent.getAbsolutePath())) {
+      if ((parent == null) || databaseContext.getFileDirectory(fileDirectoryPreferences).contains(parent.getAbsolutePath())) {
         newFileEntryFileName=newFilename.toString();
       }
  else {

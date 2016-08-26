@@ -1,0 +1,17 @@
+{
+  Optional<String> extension=getFileExtension(name);
+  List<String> directories=databaseContext.getFileDirectory(extension.orElse(null),fileDirectoryPreferences);
+  List<String> fileDir=databaseContext.getFileDirectory(fileDirectoryPreferences);
+  List<String> al=new ArrayList<>();
+  for (  String dir : directories) {
+    if (!al.contains(dir)) {
+      al.add(dir);
+    }
+  }
+  for (  String aFileDir : fileDir) {
+    if (!al.contains(aFileDir)) {
+      al.add(aFileDir);
+    }
+  }
+  return expandFilename(name,al);
+}

@@ -4,7 +4,7 @@
   ParsedFileField fileField=new ParsedFileField("","Toot.pdf","PDF");
   entry.setField("file",FileField.getStringRepresentation(fileField));
   entry.setField("title","test title");
-  RenamePdfCleanup cleanup=new RenamePdfCleanup(false,context,fileNamePattern,LayoutFormatterPreferences.fromPreferences(Globals.prefs,mock(JournalAbbreviationLoader.class)));
+  RenamePdfCleanup cleanup=new RenamePdfCleanup(false,context,fileNamePattern,LayoutFormatterPreferences.fromPreferences(prefs,mock(JournalAbbreviationLoader.class)),prefs.getFileDirectoryPreferences());
   cleanup.cleanup(entry);
   ParsedFileField newFileField=new ParsedFileField("","Toot - test title.pdf","PDF");
   assertEquals(Optional.of(FileField.getStringRepresentation(newFileField)),entry.getFieldOptional("file"));
