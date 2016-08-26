@@ -2,14 +2,14 @@
   success=false;
   canceled=false;
   fileLockedError=false;
-  if (panel.getBibDatabaseContext().getDatabaseFile() == null) {
-    saveAs();
-  }
- else {
+  if (panel.getBibDatabaseContext().getDatabaseFile().isPresent()) {
     if (checkExternalModification()) {
       return;
     }
     panel.frame().output(Localization.lang("Saving database") + "...");
     panel.setSaving(true);
+  }
+ else {
+    saveAs();
   }
 }

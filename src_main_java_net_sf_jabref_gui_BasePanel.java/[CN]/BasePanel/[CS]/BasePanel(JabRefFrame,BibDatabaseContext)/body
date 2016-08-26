@@ -8,19 +8,19 @@
   searchBar=new SearchBar(this);
   setupMainPanel();
   setupActions();
-  File file=bibDatabaseContext.getDatabaseFile();
+  Optional<File> file=bibDatabaseContext.getDatabaseFile();
   this.bibDatabaseContext.getDatabase().registerListener(new GroupTreeListener());
-  if (file == null) {
+  if (file.isPresent()) {
     if (bibDatabaseContext.getDatabase().hasEntries()) {
-      this.baseChanged=true;
+      try {
+        fileMonitorHandle=Globals.getFileUpdateMonitor().addUpdateListener(this,file.get());
+      }
+ catch (      IOException ex) {
+        LOGGER.warn("Could not register FileUpdateMonitor",ex);
+      }
     }
   }
  else {
-    try {
-      fileMonitorHandle=Globals.getFileUpdateMonitor().addUpdateListener(this,file);
-    }
- catch (    IOException ex) {
-      LOGGER.warn("Could not register FileUpdateMonitor",ex);
-    }
+    this.baseChanged=true;
   }
 }

@@ -2,15 +2,15 @@
   StringBuilder title=new StringBuilder();
   DatabaseLocation databaseLocation=this.bibDatabaseContext.getLocation();
   if (databaseLocation == DatabaseLocation.LOCAL) {
-    if (this.bibDatabaseContext.getDatabaseFile() == null) {
+    if (this.bibDatabaseContext.getDatabaseFile().isPresent()) {
+      String changeFlag=isModified() ? "*" : "";
+      title.append(this.bibDatabaseContext.getDatabaseFile().get().getName()).append(changeFlag);
+    }
+ else {
       title.append(GUIGlobals.UNTITLED_TITLE);
       if (getDatabase().hasEntries()) {
         title.append('*');
       }
-    }
- else {
-      String changeFlag=isModified() ? "*" : "";
-      title.append(this.bibDatabaseContext.getDatabaseFile().getName()).append(changeFlag);
     }
   }
  else   if (databaseLocation == DatabaseLocation.SHARED) {
