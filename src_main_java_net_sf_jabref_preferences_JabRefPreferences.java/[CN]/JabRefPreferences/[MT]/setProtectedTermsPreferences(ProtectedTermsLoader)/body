@@ -1,0 +1,28 @@
+{
+  List<String> enabledExternalList=new ArrayList<>();
+  List<String> disabledExternalList=new ArrayList<>();
+  List<String> enabledInternalList=new ArrayList<>();
+  List<String> disabledInternalList=new ArrayList<>();
+  for (  ProtectedTermsList list : loader.getProtectedTermsLists()) {
+    if (list.isInternalList()) {
+      if (list.isEnabled()) {
+        enabledInternalList.add(list.getLocation());
+      }
+ else {
+        disabledInternalList.add(list.getLocation());
+      }
+    }
+ else {
+      if (list.isEnabled()) {
+        enabledExternalList.add(list.getLocation());
+      }
+ else {
+        disabledExternalList.add(list.getLocation());
+      }
+    }
+  }
+  putStringList(PROTECTED_TERMS_ENABLED_EXTERNAL,enabledExternalList);
+  putStringList(PROTECTED_TERMS_DISABLED_EXTERNAL,disabledExternalList);
+  putStringList(PROTECTED_TERMS_ENABLED_INTERNAL,enabledInternalList);
+  putStringList(PROTECTED_TERMS_DISABLED_INTERNAL,disabledInternalList);
+}

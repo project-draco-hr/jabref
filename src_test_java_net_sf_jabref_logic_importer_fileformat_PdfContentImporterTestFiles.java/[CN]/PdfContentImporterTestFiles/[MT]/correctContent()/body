@@ -1,7 +1,7 @@
 {
   String pdfFileName=fileName + ".pdf";
   String bibFileName=fileName + ".bib";
-  PdfContentImporter importer=new PdfContentImporter(ImportFormatPreferences.fromPreferences(JabRefPreferences.getInstance()));
+  PdfContentImporter importer=new PdfContentImporter(JabRefPreferences.getInstance().getImportFormatPreferences());
   Path pdfFile=Paths.get(PdfContentImporter.class.getResource(pdfFileName).toURI());
   List<BibEntry> result=importer.importDatabase(pdfFile,StandardCharsets.UTF_8).getDatabase().getEntries();
   BibEntryAssert.assertEquals(PdfContentImporterTest.class,bibFileName,result);

@@ -2,8 +2,8 @@
   if (Globals.prefs == null) {
     Globals.prefs=JabRefPreferences.getInstance();
   }
-  XMPPreferences xmpPreferences=XMPPreferences.fromPreferences(Globals.prefs);
-  ImportFormatPreferences importFormatPreferences=ImportFormatPreferences.fromPreferences(Globals.prefs);
+  XMPPreferences xmpPreferences=Globals.prefs.getXMPPreferences();
+  ImportFormatPreferences importFormatPreferences=Globals.prefs.getImportFormatPreferences();
 switch (args.length) {
 case 0:
     usage();
@@ -11,7 +11,7 @@ case 0:
 case 1:
 if (args[0].endsWith(".pdf")) {
   List<BibEntry> l=XMPUtil.readXMP(new File(args[0]),xmpPreferences);
-  BibEntryWriter bibtexEntryWriter=new BibEntryWriter(new LatexFieldFormatter(LatexFieldFormatterPreferences.fromPreferences(Globals.prefs)),false);
+  BibEntryWriter bibtexEntryWriter=new BibEntryWriter(new LatexFieldFormatter(Globals.prefs.getLatexFieldFormatterPreferences()),false);
   for (  BibEntry entry : l) {
     StringWriter sw=new StringWriter();
     bibtexEntryWriter.write(entry,sw,BibDatabaseMode.BIBTEX);
