@@ -1,9 +1,9 @@
 {
   Objects.requireNonNull(pr);
-  if (pr.getMetaData().getGroups() == null) {
+  if (!pr.getMetaData().getGroups().isPresent()) {
     return;
   }
-  for (  ExplicitGroup group : getExplicitGroupsWithLegacyKeys(pr.getMetaData().getGroups())) {
+  for (  ExplicitGroup group : getExplicitGroupsWithLegacyKeys(pr.getMetaData().getGroups().get())) {
     for (    String entryKey : group.getLegacyEntryKeys()) {
       for (      BibEntry entry : pr.getDatabase().getEntriesByKey(entryKey)) {
         group.add(entry);

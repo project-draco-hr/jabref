@@ -1,27 +1,2 @@
 {
-  Map<String,String> serializedMetaData=new TreeMap<>();
-  for (  Map.Entry<String,List<String>> metaItem : metaData.entrySet()) {
-    StringBuilder stringBuilder=new StringBuilder();
-    for (    String dataItem : metaItem.getValue()) {
-      stringBuilder.append(StringUtil.quote(dataItem,";",'\\')).append(";");
-      if (metaItem.getKey().equals(SAVE_ACTIONS) && ("enabled".equals(dataItem) || "disabled".equals(dataItem))) {
-        stringBuilder.append(OS.NEWLINE);
-      }
-    }
-    String serializedItem=stringBuilder.toString();
-    if (!serializedItem.isEmpty() && !";".equals(serializedItem)) {
-      serializedMetaData.put(metaItem.getKey(),serializedItem);
-    }
-  }
-  if ((groupsRoot != null) && (groupsRoot.getNumberOfChildren() > 0)) {
-    StringBuilder stringBuilder=new StringBuilder();
-    stringBuilder.append(OS.NEWLINE);
-    for (    String groupNode : groupsRoot.getTreeAsString()) {
-      stringBuilder.append(StringUtil.quote(groupNode,";",'\\'));
-      stringBuilder.append(";");
-      stringBuilder.append(OS.NEWLINE);
-    }
-    serializedMetaData.put(GROUPSTREE,stringBuilder.toString());
-  }
-  return serializedMetaData;
 }
