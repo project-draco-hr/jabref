@@ -1,0 +1,29 @@
+{
+  GroupTreeNode cursor=null;
+  GroupTreeNode root=null;
+  for (  String string : orderedData) {
+    string=string.trim();
+    if (string.isEmpty()) {
+      continue;
+    }
+    int spaceIndex=string.indexOf(' ');
+    if (spaceIndex <= 0) {
+      throw new ParseException(Localization.lang("Expected \"%0\" to contain whitespace",string));
+    }
+    int level=Integer.parseInt(string.substring(0,spaceIndex));
+    AbstractGroup group=AbstractGroup.fromString(string.substring(spaceIndex + 1),keywordSeparator);
+    GroupTreeNode newNode=GroupTreeNode.fromGroup(group);
+    if (cursor == null) {
+      cursor=newNode;
+      root=cursor;
+    }
+ else {
+      while (level <= cursor.getLevel()) {
+        cursor=cursor.getParent().get();
+      }
+      cursor.addChild(newNode);
+      cursor=newNode;
+    }
+  }
+  return root;
+}
