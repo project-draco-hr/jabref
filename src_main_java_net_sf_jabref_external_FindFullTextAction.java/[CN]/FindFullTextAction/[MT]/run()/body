@@ -1,11 +1,14 @@
 {
-  if (basePanel.getSelectedEntries().size() != 1) {
-    basePanel.output(Localization.lang("This operation requires exactly one item to be selected."));
-    result=Optional.empty();
+  if (basePanel.getSelectedEntries().size() >= warningLimit) {
+    String[] options=new String[]{Localization.lang("Look up full text documents"),Localization.lang("Cancel")};
+    int answer=JOptionPane.showOptionDialog(basePanel.frame(),Localization.lang("You are about to look up full text documents for %0 entries.",String.valueOf(basePanel.getSelectedEntries().size())) + "\n" + Localization.lang("Do you still want to continue?"),Localization.lang("Look up full text documents"),JOptionPane.OK_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,options[0]);
+    if (answer != JOptionPane.OK_OPTION) {
+      basePanel.output(Localization.lang("Operation canceled."));
+      return;
+    }
   }
- else {
-    entry=basePanel.getSelectedEntries().get(0);
+  for (  BibEntry entry : basePanel.getSelectedEntries()) {
     FulltextFetchers fft=new FulltextFetchers();
-    result=fft.findFullTextPDF(entry);
+    downloads.put(fft.findFullTextPDF(entry),entry);
   }
 }
