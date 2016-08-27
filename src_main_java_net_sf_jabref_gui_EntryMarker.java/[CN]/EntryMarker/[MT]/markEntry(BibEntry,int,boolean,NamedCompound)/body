@@ -2,7 +2,7 @@
   int prevMarkLevel;
   String newValue=null;
   if (be.hasField(FieldName.MARKED_INTERNAL)) {
-    String markerString=be.getFieldOptional(FieldName.MARKED_INTERNAL).get();
+    String markerString=be.getField(FieldName.MARKED_INTERNAL).get();
     int index=markerString.indexOf(Globals.prefs.getWrappedUsername());
     if (index >= 0) {
       prevMarkLevel=1;
@@ -23,6 +23,6 @@
   if (newValue == null) {
     newValue=Globals.prefs.getWrappedUsername().substring(0,Globals.prefs.getWrappedUsername().length() - 1) + ":" + markIncrement+ "]";
   }
-  ce.addEdit(new UndoableFieldChange(be,FieldName.MARKED_INTERNAL,be.getFieldOptional(FieldName.MARKED_INTERNAL).orElse(null),newValue));
+  ce.addEdit(new UndoableFieldChange(be,FieldName.MARKED_INTERNAL,be.getField(FieldName.MARKED_INTERNAL).orElse(null),newValue));
   be.setField(FieldName.MARKED_INTERNAL,newValue);
 }

@@ -7,11 +7,11 @@
       XMPUtil.writeXMP(pdfFile,result.getDatabase().getEntryByKey("Patterson06").get(),result.getDatabase(),xmpPreferences);
       BibEntry b=XMPUtil.readXMP(pdfFile,xmpPreferences).get(0);
       Assert.assertNotNull(b);
-      Assert.assertEquals(originalAuthors,AuthorList.parse(b.getFieldOptional("author").get()));
+      Assert.assertEquals(originalAuthors,AuthorList.parse(b.getField("author").get()));
       try (PDDocument document=PDDocument.load(pdfFile.getAbsoluteFile())){
         Assert.assertEquals(originalAuthors,AuthorList.parse(document.getDocumentInformation().getAuthor()));
         b=XMPUtil.getBibtexEntryFromDocumentInformation(document.getDocumentInformation()).get();
-        Assert.assertEquals(originalAuthors,AuthorList.parse(b.getFieldOptional("author").get()));
+        Assert.assertEquals(originalAuthors,AuthorList.parse(b.getField("author").get()));
         PDDocumentCatalog catalog=document.getDocumentCatalog();
         PDMetadata metaRaw=catalog.getMetadata();
         if (metaRaw == null) {
@@ -28,7 +28,7 @@
         Assert.assertEquals("Krste Asanov\\'\\i{}c",dcSchema.getCreators().get(2));
         b=XMPUtil.getBibtexEntryFromDublinCore(dcSchema,xmpPreferences).get();
         Assert.assertNotNull(b);
-        Assert.assertEquals(originalAuthors,AuthorList.parse(b.getFieldOptional("author").get()));
+        Assert.assertEquals(originalAuthors,AuthorList.parse(b.getField("author").get()));
       }
      }
   finally {
