@@ -11,16 +11,16 @@
   Optional<File> file=bibDatabaseContext.getDatabaseFile();
   this.bibDatabaseContext.getDatabase().registerListener(new GroupTreeListener());
   if (file.isPresent()) {
-    if (bibDatabaseContext.getDatabase().hasEntries()) {
-      try {
-        fileMonitorHandle=Globals.getFileUpdateMonitor().addUpdateListener(this,file.get());
-      }
- catch (      IOException ex) {
-        LOGGER.warn("Could not register FileUpdateMonitor",ex);
-      }
+    try {
+      fileMonitorHandle=Globals.getFileUpdateMonitor().addUpdateListener(this,file.get());
+    }
+ catch (    IOException ex) {
+      LOGGER.warn("Could not register FileUpdateMonitor",ex);
     }
   }
  else {
-    this.baseChanged=true;
+    if (bibDatabaseContext.getDatabase().hasEntries()) {
+      this.baseChanged=true;
+    }
   }
 }
