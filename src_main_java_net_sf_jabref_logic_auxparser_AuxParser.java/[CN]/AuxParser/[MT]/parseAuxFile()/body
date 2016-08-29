@@ -8,27 +8,8 @@
     try (BufferedReader br=new BufferedReader(new FileReader(file))){
       String line;
       while ((line=br.readLine()) != null) {
-        Matcher citeMatch=CITE_PATTERN.matcher(line);
-        while (citeMatch.find()) {
-          String keyString=citeMatch.group(2);
-          String[] keys=keyString.split(",");
-          for (          String key : keys) {
-            result.getUniqueKeys().add(key.trim());
-          }
-        }
-        Matcher inputMatch=INPUT_PATTERN.matcher(line);
-        while (inputMatch.find()) {
-          String inputString=inputMatch.group(1);
-          String inputFile=inputString;
-          Path rootPath=new File(auxFile).toPath().getParent();
-          if (rootPath != null) {
-            inputFile=rootPath.resolve(inputString).toString();
-          }
-          if (!fileList.contains(inputFile)) {
-            fileList.add(inputFile);
-            result.increaseNestedAuxFilesCounter();
-          }
-        }
+        matchCitation(result,line);
+        matchNestedAux(result,fileList,line);
       }
     }
  catch (    FileNotFoundException e) {

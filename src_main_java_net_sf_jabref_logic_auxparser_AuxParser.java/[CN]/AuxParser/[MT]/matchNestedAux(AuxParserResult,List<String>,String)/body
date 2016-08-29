@@ -1,0 +1,15 @@
+{
+  Matcher inputMatch=INPUT_PATTERN.matcher(line);
+  while (inputMatch.find()) {
+    String inputString=inputMatch.group(1);
+    String inputFile=inputString;
+    Path rootPath=new File(auxFile).toPath().getParent();
+    if (rootPath != null) {
+      inputFile=rootPath.resolve(inputString).toString();
+    }
+    if (!fileList.contains(inputFile)) {
+      fileList.add(inputFile);
+      result.increaseNestedAuxFilesCounter();
+    }
+  }
+}
