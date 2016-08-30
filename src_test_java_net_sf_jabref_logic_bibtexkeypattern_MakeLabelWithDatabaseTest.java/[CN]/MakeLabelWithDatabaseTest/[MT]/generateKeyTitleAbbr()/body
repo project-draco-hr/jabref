@@ -1,0 +1,10 @@
+{
+  preferences=new BibtexKeyPatternPreferences("","",false,true,false,pattern);
+  DatabaseBibtexKeyPattern bibtexKeyPattern=new DatabaseBibtexKeyPattern(pattern);
+  bibtexKeyPattern.setDefaultValue("[title:abbr]");
+  metadata.setBibtexKeyPattern(bibtexKeyPattern);
+  BibEntry entry=new BibEntry();
+  entry.setField("title","An awesome paper on JabRef");
+  BibtexKeyPatternUtil.makeLabel(metadata,database,entry,preferences);
+  assertEquals(Optional.of("AapoJ"),entry.getCiteKeyOptional());
+}
