@@ -1,0 +1,11 @@
+{
+  preferences=new BibtexKeyPatternPreferences("","",false,true,true,pattern);
+  DatabaseBibtexKeyPattern bibtexKeyPattern=new DatabaseBibtexKeyPattern(pattern);
+  bibtexKeyPattern.setDefaultValue("[auth:upper][year]");
+  metadata.setBibtexKeyPattern(bibtexKeyPattern);
+  BibEntry entry=new BibEntry();
+  entry.setField("author","John Doe");
+  entry.setField("year","2016");
+  BibtexKeyPatternUtil.makeLabel(metadata,database,entry,preferences);
+  assertEquals(Optional.of("DOE2016"),entry.getCiteKeyOptional());
+}
