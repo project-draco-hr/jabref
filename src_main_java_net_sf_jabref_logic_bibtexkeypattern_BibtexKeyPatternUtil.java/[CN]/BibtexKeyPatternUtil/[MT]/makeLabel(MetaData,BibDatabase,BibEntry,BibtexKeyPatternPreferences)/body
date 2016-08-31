@@ -2,8 +2,6 @@
   database=dBase;
   String key;
   StringBuilder stringBuilder=new StringBuilder();
-  boolean forceUpper=false;
-  boolean forceLower=false;
   try {
     String entryType=entry.getType();
     List<String> typeList=new ArrayList<>(metaData.getBibtexKeyPattern(bibtexKeyPatternPreferences.getKeyPattern()).getValue(entryType));
@@ -39,12 +37,6 @@
   if ((regex != null) && !regex.trim().isEmpty()) {
     String replacement=bibtexKeyPatternPreferences.getKeyPatternReplacement();
     key=key.replaceAll(regex,replacement);
-  }
-  if (forceUpper) {
-    key=key.toUpperCase(Locale.ENGLISH);
-  }
-  if (forceLower) {
-    key=key.toLowerCase(Locale.ENGLISH);
   }
   String oldKey=entry.getCiteKeyOptional().orElse(null);
   int occurrences=database.getNumberOfKeyOccurrences(key);
