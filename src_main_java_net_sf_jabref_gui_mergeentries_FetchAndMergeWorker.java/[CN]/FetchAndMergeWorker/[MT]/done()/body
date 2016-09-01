@@ -1,0 +1,18 @@
+{
+  if (isCancelled()) {
+    return;
+  }
+  try {
+    Optional<BibEntry> fetchedEntry=get();
+    if (fetchedEntry.isPresent()) {
+      MergeFetchedEntryDialog dialog=new MergeFetchedEntryDialog(panel,entry,fetchedEntry.get(),type);
+      dialog.setVisible(true);
+    }
+ else {
+      panel.frame().setStatus(Localization.lang("Cannot get info based on given %0: %1",type,fieldContent.get()));
+    }
+  }
+ catch (  InterruptedException|ExecutionException e) {
+    LOGGER.error("Error while fetching Entry",e);
+  }
+}
