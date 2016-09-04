@@ -1,13 +1,13 @@
 {
   Optional<String> field;
   if (type == LayoutHelper.IS_GROUP_START) {
-    field=BibDatabase.getResolvedField(text,bibtex,database);
+    field=bibtex.getResolvedFieldOrAlias(text,database);
   }
  else   if (text.matches(".*(;|(\\&+)).*")) {
     String[] parts=text.split("\\s*(;|(\\&+))\\s*");
     field=Optional.empty();
     for (    String part : parts) {
-      field=BibDatabase.getResolvedField(part,bibtex,database);
+      field=bibtex.getResolvedFieldOrAlias(part,database);
       if (!field.isPresent()) {
         break;
       }
@@ -17,7 +17,7 @@
     String[] parts=text.split("\\s*(\\|+)\\s*");
     field=Optional.empty();
     for (    String part : parts) {
-      field=BibDatabase.getResolvedField(part,bibtex,database);
+      field=bibtex.getResolvedFieldOrAlias(part,database);
       if (field.isPresent()) {
         break;
       }

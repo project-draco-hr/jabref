@@ -11,9 +11,9 @@
   thirdEntry.setType(BibtexEntryTypes.ARTICLE);
   thirdEntry.setField("author","A");
   thirdEntry.setField("year","2000");
-  database.insertEntry(firstEntry);
-  database.insertEntry(secondEntry);
-  database.insertEntry(thirdEntry);
+  database.insertEntryWithDuplicationCheck(firstEntry);
+  database.insertEntryWithDuplicationCheck(secondEntry);
+  database.insertEntryWithDuplicationCheck(thirdEntry);
   SavePreferences preferences=new SavePreferences().withSaveInOriginalOrder(false);
   StringSaveSession session=databaseWriter.savePartOfDatabase(bibtexContext,database.getEntries(),preferences);
   assertEquals(OS.NEWLINE + "@Article{," + OS.NEWLINE+ "  author = {A},"+ OS.NEWLINE+ "  year   = {2010},"+ OS.NEWLINE+ "}"+ OS.NEWLINE+ OS.NEWLINE+ "@Article{,"+ OS.NEWLINE+ "  author = {B},"+ OS.NEWLINE+ "  year   = {2000},"+ OS.NEWLINE+ "}"+ OS.NEWLINE+ OS.NEWLINE+ "@Article{,"+ OS.NEWLINE+ "  author = {A},"+ OS.NEWLINE+ "  year   = {2000},"+ OS.NEWLINE+ "}"+ OS.NEWLINE+ OS.NEWLINE+ "@Comment{jabref-meta: databaseType:bibtex;}"+ OS.NEWLINE,session.getStringValue());
