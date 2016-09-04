@@ -21,12 +21,14 @@
   String country=getXmlElementTextContent("CountryRegion",entry);
   StringBuilder addressBuffer=new StringBuilder();
   if (city != null) {
-    addressBuffer.append(city).append(", ");
+    addressBuffer.append(city);
   }
-  if (state != null) {
-    addressBuffer.append(state).append(' ');
+  if (((state != null) && !state.isEmpty()) && ((city != null) && !city.isEmpty())) {
+    addressBuffer.append(",").append(' ');
+    addressBuffer.append(state);
   }
-  if (country != null) {
+  if ((country != null) && !country.isEmpty()) {
+    addressBuffer.append(",").append(' ');
     addressBuffer.append(country);
   }
   address=addressBuffer.toString().trim();
