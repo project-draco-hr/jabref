@@ -1,0 +1,19 @@
+{
+  prefs.setType(((DBMSType)dbmsTypeDropDown.getSelectedItem()).toString());
+  prefs.setHost(hostField.getText());
+  prefs.setPort(portField.getText());
+  prefs.setName(databaseField.getText());
+  prefs.setUser(userField.getText());
+  if (rememberPassword.isSelected()) {
+    try {
+      prefs.setPassword(new Password(passwordField.getPassword(),userField.getText()).encrypt());
+    }
+ catch (    GeneralSecurityException|UnsupportedEncodingException e) {
+      LOGGER.error("Could not store the password due to encryption problems.",e);
+    }
+  }
+ else {
+    prefs.clearPassword();
+  }
+  prefs.setRememberPassword(rememberPassword.isSelected());
+}
