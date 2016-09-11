@@ -1,0 +1,15 @@
+{
+  if (isCancelled()) {
+    return;
+  }
+  try {
+    for (    Map.Entry<BasePanel,List<BibEntry>> match : get().entrySet()) {
+      dialog.addEntries(match.getValue(),match.getKey());
+    }
+    dialog.selectFirstEntry();
+    dialog.setVisible(true);
+  }
+ catch (  InterruptedException|ExecutionException e) {
+    LOGGER.error("something went wrong during the search",e);
+  }
+}

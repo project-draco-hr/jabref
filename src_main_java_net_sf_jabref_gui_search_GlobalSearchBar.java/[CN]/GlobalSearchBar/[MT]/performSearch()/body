@@ -1,0 +1,20 @@
+{
+  BasePanel currentBasePanel=frame.getCurrentBasePanel();
+  if (currentBasePanel == null) {
+    return;
+  }
+  if (searchWorker != null) {
+    searchWorker.cancel(true);
+  }
+  if (searchField.getText().isEmpty()) {
+    clearSearch(currentBasePanel);
+    return;
+  }
+  SearchQuery searchQuery=getSearchQuery();
+  if (!searchQuery.isValid()) {
+    informUserAboutInvalidSearchQuery();
+    return;
+  }
+  searchWorker=new SearchWorker(currentBasePanel,searchQuery,searchDisplayMode);
+  searchWorker.execute();
+}

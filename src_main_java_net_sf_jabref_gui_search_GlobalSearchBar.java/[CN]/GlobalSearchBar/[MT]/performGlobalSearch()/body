@@ -1,0 +1,15 @@
+{
+  BasePanel currentBasePanel=frame.getCurrentBasePanel();
+  if (currentBasePanel == null || validateSearchResultFrame(true)) {
+    return;
+  }
+  if (globalSearchWorker != null) {
+    globalSearchWorker.cancel(true);
+  }
+  if (searchField.getText().isEmpty()) {
+    focus();
+    return;
+  }
+  globalSearchWorker=new GlobalSearchWorker(currentBasePanel.frame(),getSearchQuery());
+  globalSearchWorker.execute();
+}
