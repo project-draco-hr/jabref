@@ -66,8 +66,8 @@
         StringBuilder sb=new StringBuilder();
         normCitMarkers[i]=new String[keys.length];
         for (int j=0; j < keys.length; j++) {
-          normCitMarkers[i][j]=cEntries[j].getCiteKey();
-          sb.append(cEntries[j].getCiteKey());
+          normCitMarkers[i][j]=cEntries[j].getCiteKeyOptional().orElse(null);
+          sb.append(cEntries[j].getCiteKeyOptional().orElse(""));
           if (j < (keys.length - 1)) {
             sb.append(',');
           }
@@ -121,7 +121,7 @@
             Arrays.sort(cEntries,entryComparator);
           }
           for (int j=0; j < cEntries.length; j++) {
-            bibtexKeys[i][j]=cEntries[j].getCiteKey();
+            bibtexKeys[i][j]=cEntries[j].getCiteKeyOptional().orElse(null);
           }
         }
         citationMarker=style.getCitationMarker(Arrays.asList(cEntries),entries,type == OOBibBase.AUTHORYEAR_PAR,null,null);
