@@ -4,35 +4,36 @@
   boolean escaped=false;
   int inParenthesis=0;
   for (int i=0; i < arg.length(); i++) {
-    if ((arg.charAt(i) == ':') && !escaped && (inParenthesis == 0)) {
+    char currentChar=arg.charAt(i);
+    if ((currentChar == ':') && !escaped && (inParenthesis == 0)) {
       parts.add(current.toString());
       current=new StringBuilder();
     }
- else     if ((arg.charAt(i) == '(') && !escaped) {
+ else     if ((currentChar == '(') && !escaped) {
       inParenthesis++;
-      current.append(arg.charAt(i));
+      current.append(currentChar);
     }
- else     if ((arg.charAt(i) == ')') && !escaped && (inParenthesis > 0)) {
+ else     if ((currentChar == ')') && !escaped && (inParenthesis > 0)) {
       inParenthesis--;
-      current.append(arg.charAt(i));
+      current.append(currentChar);
     }
- else     if (arg.charAt(i) == '\\') {
+ else     if (currentChar == '\\') {
       if (escaped) {
         escaped=false;
-        current.append(arg.charAt(i));
+        current.append(currentChar);
       }
  else {
         escaped=true;
       }
     }
  else     if (escaped) {
-      current.append(arg.charAt(i));
+      current.append(currentChar);
       escaped=false;
     }
  else {
-      current.append(arg.charAt(i));
+      current.append(currentChar);
     }
   }
   parts.add(current.toString());
-  return parts.toArray(new String[parts.size()]);
+  return parts;
 }

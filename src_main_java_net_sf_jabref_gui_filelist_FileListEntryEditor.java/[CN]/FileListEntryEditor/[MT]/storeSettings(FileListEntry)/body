@@ -1,0 +1,35 @@
+{
+  String descriptionText=this.description.getText().trim();
+  String fileLink="";
+  try {
+    List<String> dirs=databaseContext.getFileDirectory(Globals.prefs.getFileDirectoryPreferences());
+    if (dirs.isEmpty()) {
+      fileLink=this.link.getText().trim();
+    }
+ else {
+      boolean found=false;
+      for (      String dir : dirs) {
+        String canPath=(new File(dir)).getCanonicalPath();
+        File fl=new File(this.link.getText().trim());
+        if (fl.isAbsolute()) {
+          String flPath=fl.getCanonicalPath();
+          if ((flPath.length() > canPath.length()) && (flPath.startsWith(canPath))) {
+            fileLink=fl.getCanonicalPath().substring(canPath.length() + 1);
+            found=true;
+            break;
+          }
+        }
+      }
+      if (!found) {
+        fileLink=this.link.getText().trim();
+      }
+    }
+  }
+ catch (  IOException ex) {
+    fileLink=this.link.getText().trim();
+  }
+  ExternalFileType type=(ExternalFileType)types.getSelectedItem();
+  listEntry.description=descriptionText;
+  listEntry.type=Optional.ofNullable(type);
+  listEntry.link=fileLink;
+}

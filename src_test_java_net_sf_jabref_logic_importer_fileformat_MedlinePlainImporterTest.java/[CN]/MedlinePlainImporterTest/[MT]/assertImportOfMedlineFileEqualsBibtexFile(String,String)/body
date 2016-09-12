@@ -1,7 +1,7 @@
 {
   Path file=Paths.get(MedlinePlainImporter.class.getResource(medlineFile).toURI());
   try (InputStream nis=MedlinePlainImporter.class.getResourceAsStream(bibtexFile)){
-    List<BibEntry> entries=importer.importDatabase(file,Charset.defaultCharset()).getDatabase().getEntries();
+    List<BibEntry> entries=importer.importDatabase(file,StandardCharsets.UTF_8).getDatabase().getEntries();
     Assert.assertNotNull(entries);
     assertEquals(1,entries.size());
     BibEntryAssert.assertEquals(nis,entries.get(0));

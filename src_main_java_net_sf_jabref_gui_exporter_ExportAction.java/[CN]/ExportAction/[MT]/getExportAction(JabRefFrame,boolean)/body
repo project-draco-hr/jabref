@@ -9,7 +9,7 @@ class InternalExportAction extends MnemonicAwareAction {
     }
     @Override public void actionPerformed(    ActionEvent e){
       Map<String,ExportFormat> customFormats=Globals.prefs.customExports.getCustomExportFormats(Globals.prefs,Globals.journalAbbreviationLoader);
-      LayoutFormatterPreferences layoutPreferences=LayoutFormatterPreferences.fromPreferences(Globals.prefs,Globals.journalAbbreviationLoader);
+      LayoutFormatterPreferences layoutPreferences=Globals.prefs.getLayoutFormatterPreferences(Globals.journalAbbreviationLoader);
       SavePreferences savePreferences=SavePreferences.loadForExportFromPreferences(Globals.prefs);
       ExportFormats.initAllExports(customFormats,layoutPreferences,savePreferences);
       JFileChooser fc=ExportAction.createExportFileChooser(Globals.prefs.get(JabRefPreferences.EXPORT_WORKING_DIRECTORY));
@@ -39,7 +39,7 @@ class InternalExportAction extends MnemonicAwareAction {
  else {
           entries=frame.getCurrentBasePanel().getDatabase().getEntries();
         }
-        Globals.prefs.fileDirForDatabase=frame.getCurrentBasePanel().getBibDatabaseContext().getFileDirectory();
+        Globals.prefs.fileDirForDatabase=frame.getCurrentBasePanel().getBibDatabaseContext().getFileDirectory(Globals.prefs.getFileDirectoryPreferences());
         Globals.prefs.put(JabRefPreferences.LAST_USED_EXPORT,format.getConsoleName());
         Globals.prefs.put(JabRefPreferences.EXPORT_WORKING_DIRECTORY,file.getParent());
         final File finFile=file;

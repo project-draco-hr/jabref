@@ -4,6 +4,9 @@
     if (node.getNodeType() == Node.ELEMENT_NODE) {
       String key=node.getLocalName();
       String value=node.getTextContent();
+      if ("SourceType".equals(key)) {
+        this.bibtexEntryType=value;
+      }
       fields.put(key,value);
     }
   }
@@ -18,33 +21,42 @@
   String country=getXmlElementTextContent("CountryRegion",entry);
   StringBuilder addressBuffer=new StringBuilder();
   if (city != null) {
-    addressBuffer.append(city).append(", ");
+    addressBuffer.append(city);
   }
-  if (state != null) {
-    addressBuffer.append(state).append(' ');
+  if (((state != null) && !state.isEmpty()) && ((city != null) && !city.isEmpty())) {
+    addressBuffer.append(",").append(' ');
+    addressBuffer.append(state);
   }
-  if (country != null) {
+  if ((country != null) && !country.isEmpty()) {
+    addressBuffer.append(",").append(' ');
     addressBuffer.append(country);
   }
   address=addressBuffer.toString().trim();
   if (address.isEmpty() || ",".equals(address)) {
     address=null;
   }
+  if ("Patent".equalsIgnoreCase(bibtexEntryType)) {
+    number=getXmlElementTextContent("PatentNumber",entry);
+  }
+  journalName=getXmlElementTextContent("JournalName",entry);
+  month=getXmlElementTextContent("Month",entry);
   internetSiteTitle=getXmlElementTextContent("InternetSiteTitle",entry);
-  String month=getXmlElementTextContent("MonthAccessed",entry);
-  String day=getXmlElementTextContent("DayAccessed",entry);
-  String year=getXmlElementTextContent("YearAccessed",entry);
-  dateAccessed="";
-  if (month != null) {
-    dateAccessed+=month + ' ';
+  String monthAccessed=getXmlElementTextContent("MonthAccessed",entry);
+  String dayAccessed=getXmlElementTextContent("DayAccessed",entry);
+  String yearAccessed=getXmlElementTextContent("YearAccessed",entry);
+  StringBuilder sbDateAccesed=new StringBuilder();
+  if (monthAccessed != null) {
+    sbDateAccesed.append(monthAccessed);
+    sbDateAccesed.append(' ');
   }
-  if (day != null) {
-    dateAccessed+=day + ", ";
+  if (dayAccessed != null) {
+    sbDateAccesed.append(dayAccessed);
+    sbDateAccesed.append(", ");
   }
-  if (year != null) {
-    dateAccessed+=year;
+  if (yearAccessed != null) {
+    sbDateAccesed.append(yearAccessed);
   }
-  dateAccessed=dateAccessed.trim();
+  dateAccessed=sbDateAccesed.toString().trim();
   if (dateAccessed.isEmpty() || ",".equals(dateAccessed)) {
     dateAccessed=null;
   }

@@ -1,0 +1,23 @@
+{
+  entries.getReadWriteLock().writeLock().lock();
+  try {
+    BibDatabase database;
+    MetaData localMetaData;
+    if (panel == null) {
+      database=new BibDatabase();
+      localMetaData=new MetaData();
+    }
+ else {
+      database=panel.getDatabase();
+      localMetaData=panel.getBibDatabaseContext().getMetaData();
+    }
+    entry.setId(IdGenerator.next());
+    database.insertEntryWithDuplicationCheck(entry);
+    BibtexKeyPatternUtil.makeLabel(localMetaData,database,entry,Globals.prefs.getBibtexKeyPatternPreferences());
+    database.removeEntry(entry);
+  }
+  finally {
+    entries.getReadWriteLock().writeLock().unlock();
+  }
+  glTable.repaint();
+}

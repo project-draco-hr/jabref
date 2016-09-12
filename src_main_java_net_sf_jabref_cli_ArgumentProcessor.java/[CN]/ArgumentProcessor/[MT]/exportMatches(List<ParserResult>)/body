@@ -4,7 +4,8 @@
   ParserResult pr=loaded.get(loaded.size() - 1);
   BibDatabaseContext databaseContext=pr.getDatabaseContext();
   BibDatabase dataBase=pr.getDatabase();
-  SearchQuery query=new SearchQuery(searchTerm,Globals.prefs.getBoolean(JabRefPreferences.SEARCH_CASE_SENSITIVE),Globals.prefs.getBoolean(JabRefPreferences.SEARCH_REG_EXP));
+  SearchPreferences searchPreferences=new SearchPreferences(Globals.prefs);
+  SearchQuery query=new SearchQuery(searchTerm,searchPreferences.isCaseSensitive(),searchPreferences.isRegularExpression());
   List<BibEntry> matches=new DatabaseSearcher(query,dataBase).getMatches();
   if (!matches.isEmpty()) {
     String formatName;

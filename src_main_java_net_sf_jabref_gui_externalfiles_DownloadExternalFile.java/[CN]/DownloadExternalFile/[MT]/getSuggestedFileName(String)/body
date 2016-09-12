@@ -1,0 +1,13 @@
+{
+  String plannedName=FileUtil.createFileNameFromPattern(databaseContext.getDatabase(),entry,Globals.prefs.get(JabRefPreferences.IMPORT_FILENAMEPATTERN),Globals.prefs.getLayoutFormatterPreferences(Globals.journalAbbreviationLoader));
+  if (!suffix.isEmpty()) {
+    plannedName+="." + suffix;
+  }
+  if (OS.WINDOWS) {
+    plannedName=plannedName.replaceAll("\\?|\\*|\\<|\\>|\\||\\\"|\\:|\\.$|\\[|\\]","");
+  }
+ else   if (OS.OS_X) {
+    plannedName=plannedName.replace(":","");
+  }
+  return plannedName;
+}

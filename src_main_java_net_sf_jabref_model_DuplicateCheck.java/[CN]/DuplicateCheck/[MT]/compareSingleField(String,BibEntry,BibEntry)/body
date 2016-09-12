@@ -1,6 +1,6 @@
 {
-  Optional<String> optionalStringOne=one.getFieldOptional(field);
-  Optional<String> optionalStringTwo=two.getFieldOptional(field);
+  Optional<String> optionalStringOne=one.getField(field);
+  Optional<String> optionalStringTwo=two.getField(field);
   if (!optionalStringOne.isPresent()) {
     if (!optionalStringTwo.isPresent()) {
       return EMPTY_IN_BOTH;
@@ -12,7 +12,7 @@
   }
   String stringOne=optionalStringOne.get();
   String stringTwo=optionalStringTwo.get();
-  if (InternalBibtexFields.getFieldExtras(field).contains(FieldProperties.PERSON_NAMES)) {
+  if (InternalBibtexFields.getFieldProperties(field).contains(FieldProperty.PERSON_NAMES)) {
     String authorOne=AuthorList.fixAuthorLastNameOnlyCommas(stringOne,false).replace(" and "," ").toLowerCase();
     String authorTwo=AuthorList.fixAuthorLastNameOnlyCommas(stringTwo,false).replace(" and "," ").toLowerCase();
     double similarity=DuplicateCheck.correlateByWords(authorOne,authorTwo);

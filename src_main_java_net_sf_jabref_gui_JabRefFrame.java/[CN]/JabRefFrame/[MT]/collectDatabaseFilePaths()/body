@@ -2,11 +2,11 @@
   List<String> dbPaths=new ArrayList<>(getBasePanelCount());
   for (  BasePanel basePanel : getBasePanelList()) {
     try {
-      if (basePanel.getBibDatabaseContext().getDatabaseFile() == null) {
-        dbPaths.add("");
+      if (basePanel.getBibDatabaseContext().getDatabaseFile().isPresent()) {
+        dbPaths.add(basePanel.getBibDatabaseContext().getDatabaseFile().get().getCanonicalPath());
       }
  else {
-        dbPaths.add(basePanel.getBibDatabaseContext().getDatabaseFile().getCanonicalPath());
+        dbPaths.add("");
       }
     }
  catch (    IOException ex) {

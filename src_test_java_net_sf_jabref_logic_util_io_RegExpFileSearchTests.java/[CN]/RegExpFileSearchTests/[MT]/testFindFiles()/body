@@ -1,0 +1,11 @@
+{
+  List<BibEntry> entries=new ArrayList<>();
+  BibEntry localEntry=new BibEntry("123",BibtexEntryTypes.ARTICLE.getName());
+  localEntry.setCiteKey("pdfInDatabase");
+  localEntry.setField("year","2001");
+  entries.add(localEntry);
+  List<String> extensions=Arrays.asList("pdf");
+  List<File> dirs=Arrays.asList(new File(filesDirectory));
+  Map<BibEntry,List<File>> result=RegExpFileSearch.findFilesForSet(entries,extensions,dirs,"**/[bibtexkey].*\\\\.[extension]");
+  assertEquals(1,result.keySet().size());
+}

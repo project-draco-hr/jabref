@@ -1,15 +1,15 @@
 {
-  if (canceled || (panel.getBibDatabaseContext().getDatabaseFile() == null)) {
+  if (canceled || !panel.getBibDatabaseContext().getDatabaseFile().isPresent()) {
     return;
   }
   try {
     panel.storeCurrentEdit();
     panel.autoGenerateKeysBeforeSaving();
-    if (FileBasedLock.waitForFileLock(panel.getBibDatabaseContext().getDatabaseFile().toPath())) {
+    if (FileBasedLock.waitForFileLock(panel.getBibDatabaseContext().getDatabaseFile().get().toPath())) {
       if (checkExternalModification()) {
         return;
       }
-      success=saveDatabase(panel.getBibDatabaseContext().getDatabaseFile(),false,panel.getBibDatabaseContext().getMetaData().getEncoding().orElse(Globals.prefs.getDefaultEncoding()));
+      success=saveDatabase(panel.getBibDatabaseContext().getDatabaseFile().get(),false,panel.getBibDatabaseContext().getMetaData().getEncoding().orElse(Globals.prefs.getDefaultEncoding()));
       Globals.getFileUpdateMonitor().updateTimeStamp(panel.getFileMonitorHandle());
     }
  else {

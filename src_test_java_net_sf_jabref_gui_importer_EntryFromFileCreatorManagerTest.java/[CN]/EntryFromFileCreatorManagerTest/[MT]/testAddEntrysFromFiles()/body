@@ -1,6 +1,6 @@
 {
   try (FileInputStream stream=new FileInputStream(ImportDataTest.UNLINKED_FILES_TEST_BIB);InputStreamReader reader=new InputStreamReader(stream,StandardCharsets.UTF_8)){
-    ParserResult result=BibtexParser.parse(reader,ImportFormatPreferences.fromPreferences(Globals.prefs));
+    ParserResult result=BibtexParser.parse(reader,Globals.prefs.getImportFormatPreferences());
     BibDatabase database=result.getDatabase();
     List<File> files=new ArrayList<>();
     files.add(ImportDataTest.FILE_NOT_IN_DATABASE);
@@ -11,7 +11,7 @@
     boolean file1Found=false;
     boolean file2Found=false;
     for (    BibEntry entry : database.getEntries()) {
-      String filesInfo=entry.getFieldOptional("file").get();
+      String filesInfo=entry.getField("file").get();
       if (filesInfo.contains(files.get(0).getName())) {
         file1Found=true;
       }

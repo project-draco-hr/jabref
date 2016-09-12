@@ -1,13 +1,14 @@
 {
   List<PersonName> result=new ArrayList<>();
-  if (authors.contains(" and ")) {
-    String[] names=authors.split(" and ");
+  String cleanAuthors=removeLaTeX(authors);
+  if (cleanAuthors.toUpperCase(Locale.ENGLISH).contains(" AND ")) {
+    String[] names=cleanAuthors.split(" (?i)and ");
     for (    String name : names) {
       result.add(new PersonName(name));
     }
   }
  else {
-    result.add(new PersonName(authors));
+    result.add(new PersonName(cleanAuthors));
   }
   return result;
 }

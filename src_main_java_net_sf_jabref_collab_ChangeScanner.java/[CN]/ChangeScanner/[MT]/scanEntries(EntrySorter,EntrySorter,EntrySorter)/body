@@ -1,25 +1,25 @@
 {
   int piv1;
   int piv2=0;
-  Set<String> used=new HashSet<>(disk.getEntryCount());
-  Set<Integer> notMatched=new HashSet<>(tmp.getEntryCount());
-  mainLoop:   for (piv1=0; piv1 < tmp.getEntryCount(); piv1++) {
+  Set<String> used=new HashSet<>(diskSorter.getEntryCount());
+  Set<Integer> notMatched=new HashSet<>(tmpSorter.getEntryCount());
+  mainLoop:   for (piv1=0; piv1 < tmpSorter.getEntryCount(); piv1++) {
     double comp=-1;
-    if (!used.contains(String.valueOf(piv2)) && (piv2 < disk.getEntryCount())) {
-      comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(piv2));
+    if (!used.contains(String.valueOf(piv2)) && (piv2 < diskSorter.getEntryCount())) {
+      comp=DuplicateCheck.compareEntriesStrictly(tmpSorter.getEntryAt(piv1),diskSorter.getEntryAt(piv2));
     }
     if (comp > 1) {
       used.add(String.valueOf(piv2));
       piv2++;
       continue;
     }
-    if (piv2 < (disk.getEntryCount() - 1)) {
-      for (int i=piv2 + 1; i < disk.getEntryCount(); i++) {
+    if (piv2 < (diskSorter.getEntryCount() - 1)) {
+      for (int i=piv2 + 1; i < diskSorter.getEntryCount(); i++) {
         if (used.contains(String.valueOf(i))) {
           comp=-1;
         }
  else {
-          comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
+          comp=DuplicateCheck.compareEntriesStrictly(tmpSorter.getEntryAt(piv1),diskSorter.getEntryAt(i));
         }
         if (comp > 1) {
           used.add(String.valueOf(i));
@@ -35,13 +35,13 @@
       int bestMatchI=-1;
       double bestMatch=0;
       double comp;
-      if (piv2 < (disk.getEntryCount() - 1)) {
-        for (int i=piv2; i < disk.getEntryCount(); i++) {
+      if (piv2 < (diskSorter.getEntryCount() - 1)) {
+        for (int i=piv2; i < diskSorter.getEntryCount(); i++) {
           if (used.contains(String.valueOf(i))) {
             comp=-1;
           }
  else {
-            comp=DuplicateCheck.compareEntriesStrictly(tmp.getEntryAt(piv1),disk.getEntryAt(i));
+            comp=DuplicateCheck.compareEntriesStrictly(tmpSorter.getEntryAt(piv1),diskSorter.getEntryAt(i));
           }
           if (comp > bestMatch) {
             bestMatch=comp;
@@ -52,28 +52,25 @@
       if (bestMatch > MATCH_THRESHOLD) {
         used.add(String.valueOf(bestMatchI));
         it.remove();
-        EntryChange ec=new EntryChange(bestFit(tmp,mem,piv1),tmp.getEntryAt(piv1),disk.getEntryAt(bestMatchI));
-        changes.add(ec);
+        changes.add(new EntryChange(bestFit(tmpSorter,memorySorter,piv1),tmpSorter.getEntryAt(piv1),diskSorter.getEntryAt(bestMatchI)));
       }
  else {
-        EntryDeleteChange ec=new EntryDeleteChange(bestFit(tmp,mem,piv1),tmp.getEntryAt(piv1));
-        changes.add(ec);
+        changes.add(new EntryDeleteChange(bestFit(tmpSorter,memorySorter,piv1),tmpSorter.getEntryAt(piv1)));
       }
     }
   }
-  if (used.size() < disk.getEntryCount()) {
-    for (int i=0; i < disk.getEntryCount(); i++) {
+  if (used.size() < diskSorter.getEntryCount()) {
+    for (int i=0; i < diskSorter.getEntryCount(); i++) {
       if (!used.contains(String.valueOf(i))) {
         boolean hasAlready=false;
-        for (int j=0; j < mem.getEntryCount(); j++) {
-          if (DuplicateCheck.compareEntriesStrictly(mem.getEntryAt(j),disk.getEntryAt(i)) >= 1) {
+        for (int j=0; j < memorySorter.getEntryCount(); j++) {
+          if (DuplicateCheck.compareEntriesStrictly(memorySorter.getEntryAt(j),diskSorter.getEntryAt(i)) >= 1) {
             hasAlready=true;
             break;
           }
         }
         if (!hasAlready) {
-          EntryAddChange ec=new EntryAddChange(disk.getEntryAt(i));
-          changes.add(ec);
+          changes.add(new EntryAddChange(diskSorter.getEntryAt(i)));
         }
       }
     }

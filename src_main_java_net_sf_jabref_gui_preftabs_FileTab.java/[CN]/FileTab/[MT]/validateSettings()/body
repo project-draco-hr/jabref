@@ -1,3 +1,9 @@
 {
-  return true;
+  Path path=Paths.get(fileDir.getText());
+  boolean valid=Files.exists(path) && Files.isDirectory(path);
+  if (!valid) {
+    String content=String.format("%s -> %s %n %n %s: %n %s",Localization.lang("File"),Localization.lang("Main file directory"),Localization.lang("Directory not found"),path);
+    JOptionPane.showMessageDialog(this.frame,content,Localization.lang("Error"),JOptionPane.ERROR_MESSAGE);
+  }
+  return valid;
 }

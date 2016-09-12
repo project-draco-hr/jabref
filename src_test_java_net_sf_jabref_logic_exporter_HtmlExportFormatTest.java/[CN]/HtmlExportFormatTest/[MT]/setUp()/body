@@ -1,9 +1,9 @@
 {
-  Globals.prefs=JabRefPreferences.getInstance();
+  JabRefPreferences prefs=JabRefPreferences.getInstance();
   JournalAbbreviationLoader journalAbbreviationLoader=new JournalAbbreviationLoader();
-  Map<String,ExportFormat> customFormats=Globals.prefs.customExports.getCustomExportFormats(Globals.prefs,journalAbbreviationLoader);
-  LayoutFormatterPreferences layoutPreferences=LayoutFormatterPreferences.fromPreferences(Globals.prefs,journalAbbreviationLoader);
-  SavePreferences savePreferences=SavePreferences.loadForExportFromPreferences(Globals.prefs);
+  Map<String,ExportFormat> customFormats=prefs.customExports.getCustomExportFormats(prefs,journalAbbreviationLoader);
+  LayoutFormatterPreferences layoutPreferences=prefs.getLayoutFormatterPreferences(journalAbbreviationLoader);
+  SavePreferences savePreferences=SavePreferences.loadForExportFromPreferences(prefs);
   ExportFormats.initAllExports(customFormats,layoutPreferences,savePreferences);
   exportFormat=ExportFormats.getExportFormat("html");
   databaseContext=new BibDatabaseContext();

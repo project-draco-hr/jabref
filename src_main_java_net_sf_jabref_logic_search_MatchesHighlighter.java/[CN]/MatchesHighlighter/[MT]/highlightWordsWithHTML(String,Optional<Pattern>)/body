@@ -1,10 +1,10 @@
 {
   Objects.requireNonNull(highlightPattern);
-  Objects.requireNonNull(text);
-  if (text.isEmpty() || !highlightPattern.isPresent()) {
-    return text;
+  String searchText=Objects.requireNonNull(text);
+  if (searchText.isEmpty() || !highlightPattern.isPresent()) {
+    return searchText;
   }
-  Matcher matcher=highlightPattern.get().matcher(text);
+  Matcher matcher=highlightPattern.get().matcher(searchText);
   StringBuffer sb=new StringBuffer();
   boolean foundSomething=false;
   while (matcher.find()) {
@@ -14,7 +14,7 @@
   }
   if (foundSomething) {
     matcher.appendTail(sb);
-    text=sb.toString();
+    searchText=sb.toString();
   }
-  return text;
+  return searchText;
 }

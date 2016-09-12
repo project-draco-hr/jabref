@@ -1,0 +1,31 @@
+{
+  if (isDisplayable(position)) {
+    return position;
+  }
+  GraphicsDevice mainScreen=GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+  int mainScreenHeight=mainScreen.getDisplayMode().getHeight();
+  int mainScreenWidth=mainScreen.getDisplayMode().getWidth();
+  int newPosX=position.posX;
+  int newPosY=position.posY;
+  int newSizeX=position.sizeX;
+  int newSizeY=position.sizeY;
+  if ((position.posX + position.sizeX) > mainScreenWidth) {
+    if (position.sizeX <= mainScreenWidth) {
+      newPosX=mainScreenWidth - position.sizeX;
+    }
+ else {
+      newPosX=Globals.prefs.getIntDefault(posXKey);
+      newSizeX=Globals.prefs.getIntDefault(sizeXKey);
+    }
+  }
+  if ((position.posY + position.sizeY) > mainScreenHeight) {
+    if (position.sizeY <= mainScreenHeight) {
+      newPosY=mainScreenHeight - position.sizeY;
+    }
+ else {
+      newPosY=Globals.prefs.getIntDefault(posYKey);
+      newSizeY=Globals.prefs.getIntDefault(sizeYKey);
+    }
+  }
+  return new WindowPosition(newPosX,newPosY,newSizeX,newSizeY);
+}

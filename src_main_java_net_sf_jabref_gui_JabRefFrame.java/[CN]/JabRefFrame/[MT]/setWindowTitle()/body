@@ -1,22 +1,2 @@
 {
-  BasePanel panel=getCurrentBasePanel();
-  if (panel == null) {
-    setTitle(FRAME_TITLE);
-    return;
-  }
-  String mode=panel.getBibDatabaseContext().getMode().getFormattedName();
-  String modeInfo=String.format(" (%s)",Localization.lang("%0 mode",mode));
-  String changeFlag=panel.isModified() ? "*" : "";
-  if (panel.getBibDatabaseContext().getLocation() == DatabaseLocation.LOCAL) {
-    if (panel.getBibDatabaseContext().getDatabaseFile() == null) {
-      setTitle(FRAME_TITLE + " - " + GUIGlobals.UNTITLED_TITLE+ changeFlag+ modeInfo);
-    }
- else {
-      String databaseFile=panel.getBibDatabaseContext().getDatabaseFile().getPath();
-      setTitle(FRAME_TITLE + " - " + databaseFile+ changeFlag+ modeInfo);
-    }
-  }
- else   if (panel.getBibDatabaseContext().getLocation() == DatabaseLocation.SHARED) {
-    setTitle(FRAME_TITLE + " - " + panel.getBibDatabaseContext().getDBSynchronizer().getDBName()+ " [shared]"+ modeInfo);
-  }
 }

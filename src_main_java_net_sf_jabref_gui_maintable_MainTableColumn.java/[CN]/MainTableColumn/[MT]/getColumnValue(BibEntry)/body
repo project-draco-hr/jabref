@@ -5,9 +5,9 @@
   boolean isNameColumn=false;
   Optional<String> content=Optional.empty();
   for (  String field : bibtexFields) {
-    content=BibDatabase.getResolvedField(field,entry,database.orElse(null));
+    content=entry.getResolvedFieldOrAlias(field,database.orElse(null));
     if (content.isPresent()) {
-      isNameColumn=InternalBibtexFields.getFieldExtras(field).contains(FieldProperties.PERSON_NAMES);
+      isNameColumn=InternalBibtexFields.getFieldProperties(field).contains(FieldProperty.PERSON_NAMES);
       break;
     }
   }

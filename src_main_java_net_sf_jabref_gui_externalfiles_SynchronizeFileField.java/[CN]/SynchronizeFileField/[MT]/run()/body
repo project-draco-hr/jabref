@@ -1,0 +1,116 @@
+{
+  if (!goOn) {
+    panel.output(Localization.lang("This operation requires one or more entries to be selected."));
+    return;
+  }
+  entriesChangedCount=0;
+  panel.frame().setProgressBarValue(0);
+  panel.frame().setProgressBarVisible(true);
+  int weightAutoSet=10;
+  int progressBarMax=(autoSet ? weightAutoSet * sel.size() : 0) + (checkExisting ? sel.size() : 0);
+  panel.frame().setProgressBarMaximum(progressBarMax);
+  int progress=0;
+  final NamedCompound ce=new NamedCompound(Localization.lang("Automatically set file links"));
+  Set<BibEntry> changedEntries=new HashSet<>();
+  if (autoSet) {
+    List<BibEntry> entries=new ArrayList<>(sel);
+    Runnable r=AutoSetLinks.autoSetLinks(entries,ce,changedEntries,null,panel.getBibDatabaseContext(),null,null);
+    JabRefExecutorService.INSTANCE.executeAndWait(r);
+  }
+  progress+=sel.size() * weightAutoSet;
+  panel.frame().setProgressBarValue(progress);
+  if (checkExisting) {
+    boolean removeAllBroken=false;
+    mainLoop:     for (    BibEntry aSel : sel) {
+      panel.frame().setProgressBarValue(progress++);
+      final Optional<String> old=aSel.getField(FieldName.FILE);
+      if (old.isPresent() && !(old.get().isEmpty())) {
+        FileListTableModel tableModel=new FileListTableModel();
+        tableModel.setContentDontGuessTypes(old.get());
+        List<String> dirsS=panel.getBibDatabaseContext().getFileDirectory(Globals.prefs.getFileDirectoryPreferences());
+        List<File> dirs=new ArrayList<>();
+        for (        String dirs1 : dirsS) {
+          dirs.add(new File(dirs1));
+        }
+        for (int j=0; j < tableModel.getRowCount(); j++) {
+          FileListEntry flEntry=tableModel.getEntry(j);
+          boolean httpLink=flEntry.link.toLowerCase(Locale.ENGLISH).startsWith("http");
+          if (httpLink) {
+            continue;
+          }
+          boolean deleted=false;
+          Optional<File> file=FileUtil.expandFilename(flEntry.link,dirsS);
+          if ((!file.isPresent()) || !file.get().exists()) {
+            int answer;
+            if (removeAllBroken) {
+              answer=2;
+            }
+ else {
+              answer=JOptionPane.showOptionDialog(panel.frame(),Localization.lang("<HTML>Could not find file '%0'<BR>linked from entry '%1'</HTML>",flEntry.link,aSel.getCiteKeyOptional().orElse(Localization.lang("undefined"))),Localization.lang("Broken link"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,brokenLinkOptions,brokenLinkOptions[0]);
+            }
+switch (answer) {
+case 1:
+              FileListEntryEditor flEditor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext());
+            flEditor.setVisible(true,true);
+          break;
+case 2:
+        tableModel.removeEntry(j);
+      deleted=true;
+    j--;
+  break;
+case 3:
+tableModel.removeEntry(j);
+deleted=true;
+j--;
+removeAllBroken=true;
+break;
+default :
+break mainLoop;
+}
+}
+if (!deleted && flEntry.type.isPresent() && (flEntry.type.get() instanceof UnknownExternalFileType)) {
+String[] options=new String[]{Localization.lang("Define '%0'",flEntry.type.get().getName()),Localization.lang("Change file type"),Localization.lang("Cancel")};
+String defOption=options[0];
+int answer=JOptionPane.showOptionDialog(panel.frame(),Localization.lang("One or more file links are of the type '%0', which is undefined. What do you want to do?",flEntry.type.get().getName()),Localization.lang("Undefined file type"),JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,defOption);
+if (answer == JOptionPane.CANCEL_OPTION) {
+}
+ else if (answer == JOptionPane.YES_OPTION) {
+ExternalFileType newType=new ExternalFileType(flEntry.type.get().getName(),"","","","new",IconTheme.JabRefIcon.FILE.getSmallIcon());
+ExternalFileTypeEntryEditor editor=new ExternalFileTypeEntryEditor(panel.frame(),newType);
+editor.setVisible(true);
+if (editor.okPressed()) {
+List<ExternalFileType> fileTypes=new ArrayList<>(ExternalFileTypes.getInstance().getExternalFileTypeSelection());
+fileTypes.add(newType);
+Collections.sort(fileTypes);
+ExternalFileTypes.getInstance().setExternalFileTypes(fileTypes);
+panel.getMainTable().repaint();
+}
+}
+ else {
+FileListEntryEditor editor=new FileListEntryEditor(panel.frame(),flEntry,false,true,panel.getBibDatabaseContext());
+editor.setVisible(true,false);
+}
+}
+}
+if (!tableModel.getStringRepresentation().equals(old.orElse(null))) {
+String toSet=tableModel.getStringRepresentation();
+if (toSet.isEmpty()) {
+ce.addEdit(new UndoableFieldChange(aSel,FieldName.FILE,old.orElse(null),null));
+aSel.clearField(FieldName.FILE);
+}
+ else {
+ce.addEdit(new UndoableFieldChange(aSel,FieldName.FILE,old.orElse(null),toSet));
+aSel.setField(FieldName.FILE,toSet);
+}
+changedEntries.add(aSel);
+}
+}
+}
+}
+if (!changedEntries.isEmpty()) {
+ce.end();
+panel.getUndoManager().addEdit(ce);
+panel.markBaseChanged();
+entriesChangedCount=changedEntries.size();
+}
+}

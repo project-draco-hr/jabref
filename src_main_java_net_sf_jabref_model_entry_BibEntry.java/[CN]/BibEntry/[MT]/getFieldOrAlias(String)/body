@@ -1,16 +1,16 @@
 {
-  Optional<String> fieldValue=getFieldOptional(toLowerCase(name));
+  Optional<String> fieldValue=getField(toLowerCase(name));
   if (fieldValue.isPresent() && !fieldValue.get().isEmpty()) {
     return fieldValue;
   }
   String aliasForField=EntryConverter.FIELD_ALIASES.get(name);
   if (aliasForField != null) {
-    return getFieldOptional(aliasForField);
+    return getField(aliasForField);
   }
   if (FieldName.DATE.equals(name)) {
-    Optional<String> year=getFieldOptional(FieldName.YEAR);
+    Optional<String> year=getField(FieldName.YEAR);
     if (year.isPresent()) {
-      MonthUtil.Month month=MonthUtil.getMonth(getFieldOptional(FieldName.MONTH).orElse(""));
+      MonthUtil.Month month=MonthUtil.getMonth(getField(FieldName.MONTH).orElse(""));
       if (month.isValid()) {
         return Optional.of(year.get() + '-' + month.twoDigitNumber);
       }
@@ -20,7 +20,7 @@
     }
   }
   if (FieldName.YEAR.equals(name) || FieldName.MONTH.equals(name)) {
-    Optional<String> date=getFieldOptional(FieldName.DATE);
+    Optional<String> date=getField(FieldName.DATE);
     if (!date.isPresent()) {
       return Optional.empty();
     }

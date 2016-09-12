@@ -5,13 +5,13 @@
     return;
   }
   MetaData metaData=panel.getBibDatabaseContext().getMetaData();
-  if (metaData.getGroups() == null) {
+  if (metaData.getGroups().isPresent()) {
+    setGroups(metaData.getGroups().get());
+  }
+ else {
     GroupTreeNode newGroupsRoot=GroupTreeNode.fromGroup(new AllEntriesGroup());
     metaData.setGroups(newGroupsRoot);
     setGroups(newGroupsRoot);
-  }
- else {
-    setGroups(metaData.getGroups());
   }
   metaData.registerListener(this);
 synchronized (getTreeLock()) {

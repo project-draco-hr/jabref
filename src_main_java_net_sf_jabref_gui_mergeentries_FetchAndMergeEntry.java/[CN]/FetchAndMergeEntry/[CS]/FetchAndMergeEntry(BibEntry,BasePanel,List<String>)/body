@@ -1,21 +1,28 @@
 {
   for (  String field : fields) {
-    Optional<String> fieldContent=entry.getFieldOptional(field);
+    Optional<String> fieldContent=entry.getField(field);
     String type=FieldName.getDisplayName(field);
     if (fieldContent.isPresent()) {
       Optional<BibEntry> fetchedEntry=Optional.empty();
       if (FieldName.DOI.equals(field)) {
-        fetchedEntry=new DOItoBibTeX().getEntryFromDOI(fieldContent.get(),ImportFormatPreferences.fromPreferences(Globals.prefs));
+        fetchedEntry=new DOItoBibTeX().getEntryFromDOI(fieldContent.get(),Globals.prefs.getImportFormatPreferences());
       }
  else       if (FieldName.ISBN.equals(field)) {
-        fetchedEntry=new ISBNtoBibTeXFetcher().getEntryFromISBN(fieldContent.get(),null);
+        try {
+          fetchedEntry=new IsbnFetcher(Globals.prefs.getImportFormatPreferences()).performSearchById(fieldContent.get());
+        }
+ catch (        FetcherException e) {
+          LOGGER.error("Info cannot be found",e);
+          panel.frame().setStatus(Localization.lang("Cannot get info based on given %0: %1",type,fieldContent.get()));
+        }
       }
  else       if (FieldName.EPRINT.equals(field)) {
         try {
           fetchedEntry=new ArXiv().performSearchById(fieldContent.get());
         }
  catch (        FetcherException e) {
-          panel.frame().setStatus(Localization.lang("Cannot get info based on given %0:_%1",type,fieldContent.get()));
+          LOGGER.error("Info cannot be found",e);
+          panel.frame().setStatus(Localization.lang("Cannot get info based on given %0: %1",type,fieldContent.get()));
         }
       }
       if (fetchedEntry.isPresent()) {
@@ -23,7 +30,7 @@
         dialog.setVisible(true);
       }
  else {
-        panel.frame().setStatus(Localization.lang("Cannot get info based on given %0:_%1",type,fieldContent.get()));
+        panel.frame().setStatus(Localization.lang("Cannot get info based on given %0: %1",type,fieldContent.get()));
       }
     }
  else {

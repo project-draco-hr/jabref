@@ -1,0 +1,77 @@
+{
+  searchResultFrame=new JFrame();
+  searchResultFrame.setTitle(title);
+  searchResultFrame.setIconImage(IconTheme.getImage("jabrefIcon48").getImage());
+  int activePreview=Globals.prefs.getInt(JabRefPreferences.ACTIVE_PREVIEW);
+  String layoutFile=activePreview == 0 ? Globals.prefs.get(JabRefPreferences.PREVIEW_0) : Globals.prefs.get(JabRefPreferences.PREVIEW_1);
+  preview=new PreviewPanel(null,null,layoutFile);
+  sortedEntries=new SortedList<>(entries,new EntryComparator(false,true,FieldName.AUTHOR));
+  model=(DefaultEventTableModel<BibEntry>)GlazedListsSwing.eventTableModelWithThreadProxyList(sortedEntries,new EntryTableFormat());
+  entryTable=new JTable(model);
+  GUIUtil.correctRowHeight(entryTable);
+  GeneralRenderer renderer=new GeneralRenderer(Color.white);
+  entryTable.setDefaultRenderer(JLabel.class,renderer);
+  entryTable.setDefaultRenderer(String.class,renderer);
+  setWidths();
+  TableComparatorChooser<BibEntry> tableSorter=TableComparatorChooser.install(entryTable,sortedEntries,AbstractTableComparatorChooser.MULTIPLE_COLUMN_KEYBOARD);
+  setupComparatorChooser(tableSorter);
+  JScrollPane sp=new JScrollPane(entryTable);
+  final DefaultEventSelectionModel<BibEntry> selectionModel=(DefaultEventSelectionModel<BibEntry>)GlazedListsSwing.eventSelectionModelWithThreadProxyList(sortedEntries);
+  entryTable.setSelectionModel(selectionModel);
+  selectionModel.getSelected().addListEventListener(new EntrySelectionListener());
+  entryTable.addMouseListener(new TableClickListener());
+  contentPane.setTopComponent(sp);
+  contentPane.setBottomComponent(preview);
+  AbstractAction closeAction=new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      dispose();
+    }
+  }
+;
+  ActionMap am=contentPane.getActionMap();
+  InputMap im=contentPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+  im.put(Globals.getKeyPrefs().getKey(KeyBinding.CLOSE_DIALOG),"close");
+  im.put(Globals.getKeyPrefs().getKey(KeyBinding.CLOSE_DATABASE),"close");
+  am.put("close",closeAction);
+  entryTable.getActionMap().put("copy",new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent e){
+      if (!selectionModel.getSelected().isEmpty()) {
+        List<BibEntry> bes=selectionModel.getSelected();
+        TransferableBibtexEntry trbe=new TransferableBibtexEntry(bes);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trbe,frame.getCurrentBasePanel());
+        frame.output(Localization.lang("Copied") + ' ' + (bes.size() > 1 ? bes.size() + " " + Localization.lang("entries") : "1 " + Localization.lang("entry") + '.'));
+      }
+    }
+  }
+);
+  entryTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0),"Enter");
+  entryTable.getActionMap().put("Enter",new AbstractAction(){
+    @Override public void actionPerformed(    ActionEvent ae){
+      BibEntry entry=sortedEntries.get(entryTable.getSelectedRow());
+      selectEntryInBasePanel(entry);
+    }
+  }
+);
+  searchResultFrame.addWindowListener(new WindowAdapter(){
+    @Override public void windowOpened(    WindowEvent e){
+      contentPane.setDividerLocation(0.5f);
+    }
+    @Override public void windowClosing(    WindowEvent event){
+      dispose();
+    }
+  }
+);
+  searchResultFrame.getContentPane().add(contentPane,BorderLayout.CENTER);
+  SearchPreferences searchPreferences=new SearchPreferences(Globals.prefs);
+  searchResultFrame.setSize(searchPreferences.getSeachDialogWidth(),searchPreferences.getSeachDialogHeight());
+  searchResultFrame.setLocation(searchPreferences.getSearchDialogPosX(),searchPreferences.getSearchDialogPosY());
+  searchResultFrame.addComponentListener(new ComponentAdapter(){
+    @Override public void componentResized(    ComponentEvent e){
+      new SearchPreferences(Globals.prefs).setSearchDialogWidth(searchResultFrame.getSize().width).setSearchDialogHeight(searchResultFrame.getSize().height);
+    }
+    @Override public void componentMoved(    ComponentEvent e){
+      new SearchPreferences(Globals.prefs).setSearchDialogPosX(searchResultFrame.getLocation().x).setSearchDialogPosY(searchResultFrame.getLocation().y);
+    }
+  }
+);
+}

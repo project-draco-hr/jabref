@@ -14,8 +14,8 @@
     List<Optional<String>> keys=new ArrayList<>(entries.size());
     for (    BibEntry entry : entries) {
       entry.setId(IdGenerator.next());
-      database.insertEntry(entry);
-      BibtexKeyPatternUtil.makeLabel(localMetaData,database,entry,BibtexKeyPatternPreferences.fromPreferences(Globals.prefs));
+      database.insertEntryWithDuplicationCheck(entry);
+      BibtexKeyPatternUtil.makeLabel(localMetaData,database,entry,Globals.prefs.getBibtexKeyPatternPreferences());
       keys.add(entry.getCiteKeyOptional());
     }
     preview.update();
