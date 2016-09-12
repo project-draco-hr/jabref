@@ -1,19 +1,13 @@
 {
-  IdBasedFetcher fetcher;
-  if (FieldName.DOI.equals(field)) {
-    fetcher=new DoiFetcher(Globals.prefs.getImportFormatPreferences());
-  }
- else   if (FieldName.ISBN.equals(field)) {
-    fetcher=new IsbnFetcher(Globals.prefs.getImportFormatPreferences());
-  }
- else   if (FieldName.EPRINT.equals(field)) {
-    fetcher=new ArXiv();
-  }
- else {
-    return Optional.empty();
-  }
+  Optional<IdBasedFetcher> fetcher=WebFetchers.getIdBasedFetcherForField(field,Globals.prefs.getImportFormatPreferences());
   try {
-    return fetcher.performSearchById(fieldContent.get());
+    Optional<String> fieldContentValue=fieldContent;
+    if (fieldContentValue.isPresent() && fetcher.isPresent()) {
+      return fetcher.get().performSearchById(fieldContentValue.get());
+    }
+ else {
+      return Optional.empty();
+    }
   }
  catch (  FetcherException e) {
     LOGGER.error("Info cannot be found",e);
