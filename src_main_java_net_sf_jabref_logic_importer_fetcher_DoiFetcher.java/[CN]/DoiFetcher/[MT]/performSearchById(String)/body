@@ -6,10 +6,11 @@
       URLDownload download=new URLDownload(doiURL);
       download.addParameters("Accept","application/x-bibtex");
       String bibtexString=download.downloadToString(StandardCharsets.UTF_8);
-      return BibtexParser.singleFromString(cleanupEncoding(bibtexString),preferences);
+      Optional<BibEntry> result=BibtexParser.singleFromString(cleanupEncoding(bibtexString),preferences);
+      return result;
     }
  else {
-      throw new FetcherException("Invalid DOI: " + identifier);
+      throw new FetcherException(String.format("Invalid DOI: %s",identifier));
     }
   }
  catch (  IOException e) {
