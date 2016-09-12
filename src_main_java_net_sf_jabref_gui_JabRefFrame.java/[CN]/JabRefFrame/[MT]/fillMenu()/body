@@ -9,7 +9,7 @@
   JMenu view=JabRefFrame.subMenu(Localization.menuTitle("View"));
   JMenu tools=JabRefFrame.subMenu(Localization.menuTitle("Tools"));
   JMenu options=JabRefFrame.subMenu(Localization.menuTitle("Options"));
-  JMenu newSpec=JabRefFrame.subMenu(Localization.menuTitle("New entry by type..."));
+  newSpec=JabRefFrame.subMenu(Localization.menuTitle("New entry by type..."));
   JMenu helpMenu=JabRefFrame.subMenu(Localization.menuTitle("Help"));
   file.add(newBibtexDatabaseAction);
   file.add(newBiblatexDatabaseAction);
@@ -51,7 +51,6 @@
   edit.add(sendAsEmail);
   edit.addSeparator();
   edit.add(mark);
-  JMenu markSpecific=JabRefFrame.subMenu(Localization.menuTitle("Mark specific color"));
   for (int i=0; i < EntryMarker.MAX_MARKING_LEVEL; i++) {
     markSpecific.add(new MarkEntriesAction(this,i).getMenuItem());
   }
@@ -60,11 +59,10 @@
   edit.add(unmarkAll);
   edit.addSeparator();
   if (Globals.prefs.getBoolean(JabRefPreferences.SPECIALFIELDSENABLED)) {
-    JMenu m;
     if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_RANKING)) {
-      m=new JMenu();
-      RightClickMenu.populateSpecialFieldMenu(m,Rank.getInstance(),this);
-      edit.add(m);
+      rankSubMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(rankSubMenu,Rank.getInstance(),this);
+      edit.add(rankSubMenu);
     }
     if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_RELEVANCE)) {
       edit.add(toggleRelevance);
@@ -73,17 +71,17 @@
       edit.add(toggleQualityAssured);
     }
     if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_PRIORITY)) {
-      m=new JMenu();
-      RightClickMenu.populateSpecialFieldMenu(m,Priority.getInstance(),this);
-      edit.add(m);
+      rankSubMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(rankSubMenu,Priority.getInstance(),this);
+      edit.add(rankSubMenu);
     }
     if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_PRINTED)) {
       edit.add(togglePrinted);
     }
     if (Globals.prefs.getBoolean(JabRefPreferences.SHOWCOLUMN_READ)) {
-      m=new JMenu();
-      RightClickMenu.populateSpecialFieldMenu(m,ReadStatus.getInstance(),this);
-      edit.add(m);
+      rankSubMenu=new JMenu();
+      RightClickMenu.populateSpecialFieldMenu(rankSubMenu,ReadStatus.getInstance(),this);
+      edit.add(rankSubMenu);
     }
     edit.addSeparator();
   }
@@ -176,7 +174,8 @@
   tools.add(writeXmpAction);
   OpenOfficePanel otp=OpenOfficePanel.getInstance();
   otp.init(this,sidePaneManager);
-  tools.add(otp.getMenuItem());
+  optMenuItem=otp.getMenuItem();
+  tools.add(optMenuItem);
   tools.add(pushExternalButton.getMenuAction());
   tools.addSeparator();
   tools.add(openFolder);

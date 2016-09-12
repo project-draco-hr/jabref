@@ -10,7 +10,7 @@
     String id=IdGenerator.next();
     final BibEntry be=new BibEntry(id,actualType.getName());
     try {
-      bibDatabaseContext.getDatabase().insertEntry(be);
+      bibDatabaseContext.getDatabase().insertEntryWithDuplicationCheck(be);
       List<BibEntry> list=new ArrayList<>();
       list.add(be);
       UpdateField.setAutomaticFields(list,true,true,Globals.prefs.getUpdateFieldPreferences());
@@ -19,13 +19,7 @@
       if (mode != BasePanelMode.SHOWING_EDITOR) {
         mode=BasePanelMode.WILL_SHOW_EDITOR;
       }
-      int row=mainTable.findEntry(be);
-      if (row >= 0) {
-        highlightEntry(be);
-      }
- else {
-        showEntry(be);
-      }
+      highlightEntry(be);
       markBaseChanged();
       new FocusRequester(getEntryEditor(be));
       return be;

@@ -1,9 +1,11 @@
 {
   Properties properties=new Properties();
-  try (InputStream stream=getClass().getResourceAsStream(path)){
+  try (InputStream stream=BuildInfo.class.getResourceAsStream(path)){
     if (stream != null) {
-      properties.load(stream);
-    }
+      try (InputStreamReader reader=new InputStreamReader(stream,StandardCharsets.UTF_8)){
+        properties.load(reader);
+      }
+     }
   }
  catch (  IOException ignored) {
   }

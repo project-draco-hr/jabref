@@ -15,14 +15,14 @@
   if (beforeColon.isEmpty()) {
     return "";
   }
-  String fieldValue=BibDatabase.getResolvedField(beforeColon,entry,database).orElse(BibtexKeyPatternUtil.makeLabel(entry,beforeColon));
+  String fieldValue=entry.getResolvedFieldOrAlias(beforeColon,database).orElse(BibtexKeyPatternUtil.makeLabel(entry,beforeColon));
   if (fieldValue == null) {
     return "";
   }
   if ((afterColon == null) || afterColon.isEmpty()) {
     return fieldValue;
   }
-  String[] parts=afterColon.split(":");
+  List<String> parts=Arrays.asList(afterColon.split(":"));
   fieldValue=BibtexKeyPatternUtil.applyModifiers(fieldValue,parts,0);
   return fieldValue;
 }

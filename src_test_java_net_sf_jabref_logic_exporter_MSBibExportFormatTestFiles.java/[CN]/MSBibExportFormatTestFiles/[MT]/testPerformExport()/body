@@ -4,9 +4,7 @@
   String tempFilename=tempFile.getCanonicalPath();
   List<BibEntry> entries=testImporter.importDatabase(importFile,StandardCharsets.UTF_8).getDatabase().getEntries();
   msBibExportFormat.performExport(databaseContext,tempFile.getPath(),charset,entries);
-  List<String> expected=Files.readAllLines(resourceDir.resolve(xmlFileName));
-  List<String> exported=Files.readAllLines(Paths.get(tempFilename));
-  Collections.sort(expected);
-  Collections.sort(exported);
-  assertEquals(expected,exported);
+  Builder control=Input.from(Files.newInputStream(resourceDir.resolve(xmlFileName)));
+  Builder test=Input.from(Files.newInputStream(Paths.get(tempFilename)));
+  assertThat(test,CompareMatcher.isSimilarTo(control).withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText)).throwComparisonFailure());
 }

@@ -1,0 +1,39 @@
+{
+  Optional<String> sharedDatabaseType=prefs.getType();
+  Optional<String> sharedDatabaseHost=prefs.getHost();
+  Optional<String> sharedDatabasePort=prefs.getPort();
+  Optional<String> sharedDatabaseName=prefs.getName();
+  Optional<String> sharedDatabaseUser=prefs.getUser();
+  Optional<String> sharedDatabasePassword=prefs.getPassword();
+  boolean sharedDatabaseRememberPassword=prefs.getRememberPassword();
+  if (sharedDatabaseType.isPresent()) {
+    Optional<DBMSType> dbmsType=DBMSType.fromString(sharedDatabaseType.get());
+    if (dbmsType.isPresent()) {
+      dbmsTypeDropDown.setSelectedItem(dbmsType.get());
+    }
+  }
+  if (sharedDatabaseHost.isPresent()) {
+    hostField.setText(sharedDatabaseHost.get());
+  }
+  if (sharedDatabasePort.isPresent()) {
+    portField.setText(sharedDatabasePort.get());
+  }
+ else {
+    portField.setText(Integer.toString(((DBMSType)dbmsTypeDropDown.getSelectedItem()).getDefaultPort()));
+  }
+  if (sharedDatabaseName.isPresent()) {
+    databaseField.setText(sharedDatabaseName.get());
+  }
+  if (sharedDatabaseUser.isPresent()) {
+    userField.setText(sharedDatabaseUser.get());
+  }
+  if (sharedDatabasePassword.isPresent() && sharedDatabaseUser.isPresent()) {
+    try {
+      passwordField.setText(new Password(sharedDatabasePassword.get().toCharArray(),sharedDatabaseUser.get()).decrypt());
+    }
+ catch (    GeneralSecurityException|UnsupportedEncodingException e) {
+      LOGGER.error("Could not read the password due to decryption problems.",e);
+    }
+  }
+  rememberPassword.setSelected(sharedDatabaseRememberPassword);
+}

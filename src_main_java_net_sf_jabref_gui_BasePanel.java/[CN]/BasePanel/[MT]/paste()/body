@@ -10,7 +10,7 @@
       }
       UpdateField.setAutomaticFields(be,Globals.prefs.getUpdateFieldPreferences());
       be.setId(IdGenerator.next());
-      bibDatabaseContext.getDatabase().insertEntry(be);
+      bibDatabaseContext.getDatabase().insertEntryWithDuplicationCheck(be);
       ce.addEdit(new UndoableInsertEntry(bibDatabaseContext.getDatabase(),be,BasePanel.this));
     }
     ce.end();
@@ -20,6 +20,6 @@
     if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_OPEN_FORM)) {
       selectionListener.editSignalled(firstBE);
     }
-    highlightLastEntry(firstBE);
+    highlightEntry(firstBE);
   }
 }
