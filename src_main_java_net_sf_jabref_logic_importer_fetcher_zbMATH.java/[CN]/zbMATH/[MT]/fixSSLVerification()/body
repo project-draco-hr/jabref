@@ -1,0 +1,21 @@
+{
+  LOGGER.warn("Fix SSL exception by accepting ALL certificates");
+  TrustManager[] trustAllCerts=new TrustManager[]{new X509TrustManager(){
+    @Override public void checkClientTrusted(    X509Certificate[] x509Certificates,    String s) throws CertificateException {
+    }
+    @Override public void checkServerTrusted(    X509Certificate[] x509Certificates,    String s) throws CertificateException {
+    }
+    @Override public X509Certificate[] getAcceptedIssuers(){
+      return new X509Certificate[0];
+    }
+  }
+};
+  try {
+    SSLContext sc=SSLContext.getInstance("TLS");
+    sc.init(null,trustAllCerts,new SecureRandom());
+    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+  }
+ catch (  Exception e) {
+    LOGGER.error("SSL problem",e);
+  }
+}

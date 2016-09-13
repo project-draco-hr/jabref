@@ -1,0 +1,13 @@
+{
+  try (InputStream is=GvkParserTest.class.getResourceAsStream(xmlName)){
+    GvkParser parser=new GvkParser();
+    List<BibEntry> entries=parser.parseEntries(is);
+    Assert.assertNotNull(entries);
+    Assert.assertEquals(expectedSize,entries.size());
+    int i=0;
+    for (    String resourceName : resourceNames) {
+      BibEntryAssert.assertEquals(GvkParserTest.class,resourceName,entries.get(i));
+      i++;
+    }
+  }
+ }
