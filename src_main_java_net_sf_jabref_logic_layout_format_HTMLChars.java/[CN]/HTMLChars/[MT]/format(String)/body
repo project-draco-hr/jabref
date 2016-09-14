@@ -29,14 +29,14 @@
     }
  else     if (!incommand && ((c == '{') || (c == '}'))) {
     }
- else     if (Character.isLetter(c) || (c == '%') || StringUtil.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c))) {
+ else     if (Character.isLetter(c) || (c == '%') || ModelStringUtil.SPECIAL_COMMAND_CHARS.contains(String.valueOf(c))) {
       escaped=false;
       if (!incommand) {
         sb.append(c);
       }
  else {
         currentCommand.append(c);
-        testCharCom:         if ((currentCommand.length() == 1) && StringUtil.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString())) {
+        testCharCom:         if ((currentCommand.length() == 1) && ModelStringUtil.SPECIAL_COMMAND_CHARS.contains(currentCommand.toString())) {
           if (i >= (field.length() - 1)) {
             break testCharCom;
           }
@@ -45,7 +45,7 @@
           c=field.charAt(i);
           String commandBody;
           if (c == '{') {
-            String part=StringUtil.getPart(field,i,false);
+            String part=ModelStringUtil.getPart(field,i,false);
             i+=part.length();
             commandBody=part;
           }
@@ -84,12 +84,12 @@
         String command=currentCommand.toString();
         String tag=getHTMLTag(command);
         if (!tag.isEmpty()) {
-          String part=StringUtil.getPart(field,i,true);
+          String part=ModelStringUtil.getPart(field,i,true);
           i+=part.length();
           sb.append('<').append(tag).append('>').append(part).append("</").append(tag).append('>');
         }
  else         if (c == '{') {
-          String argument=StringUtil.getPart(field,i,true);
+          String argument=ModelStringUtil.getPart(field,i,true);
           i+=argument.length();
           String result=HTML_CHARS.get(command + argument);
           if (result == null) {

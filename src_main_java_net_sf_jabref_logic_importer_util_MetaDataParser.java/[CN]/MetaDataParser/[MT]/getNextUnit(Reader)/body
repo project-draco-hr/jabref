@@ -1,0 +1,24 @@
+{
+  int c;
+  boolean escape=false;
+  StringBuilder res=new StringBuilder();
+  while ((c=reader.read()) != -1) {
+    if (escape) {
+      res.append((char)c);
+      escape=false;
+    }
+ else     if (c == MetaData.ESCAPE_CHARACTER) {
+      escape=true;
+    }
+ else     if (c == MetaData.SEPARATOR_CHARACTER) {
+      break;
+    }
+ else {
+      res.append((char)c);
+    }
+  }
+  if (res.length() > 0) {
+    return Optional.of(res.toString());
+  }
+  return Optional.empty();
+}

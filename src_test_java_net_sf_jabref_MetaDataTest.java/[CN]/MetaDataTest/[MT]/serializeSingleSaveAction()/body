@@ -1,7 +1,7 @@
 {
   FieldFormatterCleanups saveActions=new FieldFormatterCleanups(true,Collections.singletonList(new FieldFormatterCleanup("title",new LowerCaseFormatter())));
-  metaData.setSaveActions(saveActions);
+  metaData.setSaveActions(saveActions.getAsStringList());
   Map<String,String> expectedSerialization=new TreeMap<>();
   expectedSerialization.put("saveActions","enabled;" + OS.NEWLINE + "title[lower_case]"+ OS.NEWLINE+ ";");
-  assertEquals(expectedSerialization,metaData.getAsStringMap());
+  assertEquals(expectedSerialization,MetaDataSerializer.getSerializedStringMap(metaData));
 }
