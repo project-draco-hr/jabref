@@ -1,0 +1,12 @@
+{
+  Objects.requireNonNull(in);
+  pushbackReader=new PushbackReader(in,BibtexParser.LOOKAHEAD);
+  initializeParserResult();
+  skipWhitespace();
+  try {
+    return parseFileContent();
+  }
+ catch (  KeyCollisionException kce) {
+    throw new IOException("Duplicate ID in bibtex file: " + kce);
+  }
+}
