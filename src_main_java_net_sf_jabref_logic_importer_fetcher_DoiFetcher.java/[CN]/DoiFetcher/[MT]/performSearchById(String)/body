@@ -1,0 +1,18 @@
+{
+  Optional<DOI> doi=DOI.build(identifier);
+  try {
+    if (doi.isPresent()) {
+      URL doiURL=new URL(doi.get().getURIAsASCIIString());
+      URLDownload download=new URLDownload(doiURL);
+      download.addParameters("Accept","application/x-bibtex");
+      String bibtexString=download.downloadToString(StandardCharsets.UTF_8);
+      return BibtexParser.singleFromString(cleanupEncoding(bibtexString),preferences);
+    }
+ else {
+      throw new FetcherException(Localization.lang("Invalid_DOI:_'%0'.",identifier));
+    }
+  }
+ catch (  IOException e) {
+    throw new FetcherException(Localization.lang("Invalid URL"),e);
+  }
+}

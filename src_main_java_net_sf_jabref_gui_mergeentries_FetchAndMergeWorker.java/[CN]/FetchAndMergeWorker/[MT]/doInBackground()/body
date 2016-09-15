@@ -1,0 +1,16 @@
+{
+  Optional<IdBasedFetcher> fetcher=WebFetchers.getIdBasedFetcherForField(field,Globals.prefs.getImportFormatPreferences());
+  try {
+    Optional<String> fieldContentValue=fieldContent;
+    if (fieldContentValue.isPresent() && fetcher.isPresent()) {
+      return fetcher.get().performSearchById(fieldContentValue.get());
+    }
+ else {
+      return Optional.empty();
+    }
+  }
+ catch (  FetcherException e) {
+    LOGGER.error("Info cannot be found",e);
+    return Optional.empty();
+  }
+}
