@@ -9,7 +9,7 @@
     }
     return;
   }
-  EntryEditor form;
+  EntryEditor entryEditor;
   int divLoc=-1;
   String visName=null;
   if ((getShowing() != null) && isShowingEditor()) {
@@ -19,20 +19,20 @@
     divLoc=splitPane.getDividerLocation();
   }
   if (entryEditors.containsKey(be.getType())) {
-    form=entryEditors.get(be.getType());
-    form.switchTo(be);
+    entryEditor=entryEditors.get(be.getType());
+    entryEditor.switchTo(be);
     if (visName != null) {
-      form.setVisiblePanel(visName);
+      entryEditor.setVisiblePanel(visName);
     }
-    splitPane.setBottomComponent(form);
+    splitPane.setBottomComponent(entryEditor);
   }
  else {
-    form=new EntryEditor(frame,BasePanel.this,be);
+    entryEditor=new EntryEditor(frame,BasePanel.this,be);
     if (visName != null) {
-      form.setVisiblePanel(visName);
+      entryEditor.setVisiblePanel(visName);
     }
-    splitPane.setBottomComponent(form);
-    entryEditors.put(be.getType(),form);
+    splitPane.setBottomComponent(entryEditor);
+    entryEditors.put(be.getType(),entryEditor);
   }
   if (divLoc > 0) {
     splitPane.setDividerLocation(divLoc);
