@@ -1,0 +1,14 @@
+{
+  for (  JAXBElement<?> jaxbElement : topicOrGeographicOrTemporal) {
+    Object value=jaxbElement.getValue();
+    String elementName=jaxbElement.getName().getLocalPart();
+    if (value instanceof HierarchicalGeographicDefinition) {
+      HierarchicalGeographicDefinition hierarchichalGeographic=(HierarchicalGeographicDefinition)value;
+      parseGeographicInformation(fields,hierarchichalGeographic);
+    }
+ else     if ((value instanceof StringPlusLanguagePlusAuthority) && "topic".equals(elementName)) {
+      StringPlusLanguagePlusAuthority topic=(StringPlusLanguagePlusAuthority)value;
+      keywords.add(topic.getValue());
+    }
+  }
+}

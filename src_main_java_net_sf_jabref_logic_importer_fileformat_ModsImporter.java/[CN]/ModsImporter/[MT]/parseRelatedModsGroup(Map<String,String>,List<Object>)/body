@@ -1,0 +1,35 @@
+{
+  for (  Object groupElement : relatedModsGroup) {
+    if (groupElement instanceof PartDefinition) {
+      PartDefinition part=(PartDefinition)groupElement;
+      List<Object> detailOrExtentOrDate=part.getDetailOrExtentOrDate();
+      for (      Object object : detailOrExtentOrDate) {
+        if (object instanceof DetailDefinition) {
+          DetailDefinition detail=(DetailDefinition)object;
+          List<JAXBElement<StringPlusLanguage>> numberOrCaptionOrTitle=detail.getNumberOrCaptionOrTitle();
+          for (          JAXBElement<StringPlusLanguage> jaxbElement : numberOrCaptionOrTitle) {
+            StringPlusLanguage value=jaxbElement.getValue();
+            putIfValueNotNull(fields,detail.getType(),value.getValue());
+          }
+        }
+ else         if (object instanceof ExtentDefinition) {
+          ExtentDefinition extentDefinition=(ExtentDefinition)object;
+          putPageInformation(extentDefinition,fields);
+        }
+      }
+    }
+ else     if (groupElement instanceof TitleInfoDefinition) {
+      TitleInfoDefinition titleInfo=(TitleInfoDefinition)groupElement;
+      List<Object> titleOrSubTitleOrPartNumber=titleInfo.getTitleOrSubTitleOrPartNumber();
+      for (      Object object : titleOrSubTitleOrPartNumber) {
+        if (object instanceof JAXBElement) {
+          JAXBElement<StringPlusLanguage> element=(JAXBElement<StringPlusLanguage>)object;
+          if ("title".equals(element.getName().getLocalPart())) {
+            StringPlusLanguage journal=element.getValue();
+            fields.put(FieldName.JOURNAL,journal.getValue());
+          }
+        }
+      }
+    }
+  }
+}

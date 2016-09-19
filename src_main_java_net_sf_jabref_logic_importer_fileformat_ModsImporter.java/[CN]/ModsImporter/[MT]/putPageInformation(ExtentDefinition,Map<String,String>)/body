@@ -1,0 +1,15 @@
+{
+  if ("page".equals(extentDefinition.getUnit())) {
+    if (extentDefinition.getTotal() != null) {
+      putIfValueNotNull(fields,FieldName.PAGETOTAL,String.valueOf(extentDefinition.getTotal()));
+    }
+ else     if (extentDefinition.getStart() != null) {
+      putIfValueNotNull(fields,FieldName.PAGES,extentDefinition.getStart().getValue());
+      if (extentDefinition.getEnd() != null) {
+        String endPage=extentDefinition.getEnd().getValue();
+        String startPage=fields.get(FieldName.PAGES);
+        fields.put(FieldName.PAGES,startPage + "-" + endPage);
+      }
+    }
+  }
+}

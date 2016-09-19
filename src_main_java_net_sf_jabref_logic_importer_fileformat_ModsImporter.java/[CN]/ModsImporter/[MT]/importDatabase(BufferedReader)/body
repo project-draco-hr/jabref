@@ -1,0 +1,29 @@
+{
+  Objects.requireNonNull(input);
+  List<BibEntry> bibItems=new ArrayList<>();
+  try {
+    if (context == null) {
+      context=JAXBContext.newInstance("net.sf.jabref.logic.importer.fileformat.mods");
+    }
+    Unmarshaller unmarshaller=context.createUnmarshaller();
+    JAXBElement<?> unmarshalledObject=(JAXBElement<?>)unmarshaller.unmarshal(input);
+    Optional<ModsCollectionDefinition> collection=getElement(unmarshalledObject.getValue(),ModsCollectionDefinition.class);
+    Optional<ModsDefinition> mods=getElement(unmarshalledObject.getValue(),ModsDefinition.class);
+    if (collection.isPresent()) {
+      List<ModsDefinition> modsDefinitions=collection.get().getMods();
+      parseModsCollection(bibItems,modsDefinitions);
+    }
+ else     if (mods.isPresent()) {
+      ModsDefinition modsDefinition=mods.get();
+      parseMods(bibItems,modsDefinition);
+    }
+ else {
+      LOGGER.warn("Not expected root element found");
+    }
+  }
+ catch (  JAXBException e) {
+    LOGGER.debug("could not parse document",e);
+    return ParserResult.fromErrorMessage(e.getLocalizedMessage());
+  }
+  return new ParserResult(bibItems);
+}
