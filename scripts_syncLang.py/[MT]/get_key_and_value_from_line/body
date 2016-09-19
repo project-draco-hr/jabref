@@ -1,0 +1,9 @@
+def get_key_and_value_from_line(line):
+    '\n    Tries to extract the key and value from the line\n\n    :param line: string\n    :return: (string, string) or (None, None): (key, value)\n    '
+    if ((line.find('#') != 0) or (line.find('!') != 0)):
+        index_key_end = line.find('=')
+        while ((index_key_end > 0) and (line[(index_key_end - 1)] == '\\')):
+            index_key_end = line.find('=', (index_key_end + 1))
+        if (index_key_end > 0):
+            return (line[0:index_key_end].strip(), line[(index_key_end + 1):].strip())
+    return (None, None)

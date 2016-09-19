@@ -1,0 +1,22 @@
+def fix_duplicates(lines):
+    '\n    Fixes all unambiguous duplicates\n\n    :param lines: list of strings\n    :return: (list of strings, list of strings): not fixed ambiguous duplicates, fixed unambiguous duplicates\n    '
+    keys = {}
+    fixed = []
+    not_fixed = []
+    for line in lines:
+        (key, value) = get_key_and_value_from_line(line=line)
+        if key:
+            if (key in keys):
+                if (not keys[key]):
+                    fixed.append('{key}={value}'.format(key=key, value=keys[key]))
+                    keys[key] = value
+                elif (not value):
+                    fixed.append('{key}={value}'.format(key=key, value=value))
+                elif (keys[key] == value):
+                    fixed.append('{key}={value}'.format(key=key, value=value))
+                elif (keys[key] != value):
+                    not_fixed.append('{key}={value}'.format(key=key, value=value))
+                    not_fixed.append('{key}={value}'.format(key=key, value=keys[key]))
+            else:
+                keys[key] = value
+    return (keys, not_fixed, fixed)

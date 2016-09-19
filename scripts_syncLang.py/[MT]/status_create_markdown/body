@@ -1,0 +1,23 @@
+def status_create_markdown():
+    '\n    creates a markdown file of the current status and opens it\n    '
+
+    def write_properties(property_files):
+        markdown.append('\n| Property file | Keys | Keys translated | Keys not translated | % translated |\n')
+        markdown.append('| ------------- | ---- | --------------- | ------------------- | ------------ |\n')
+        for file in property_files:
+            lines = read_file(file)
+            keys = get_translations_as_dict(lines=lines)
+            keys_missing_value = get_empty_keys(lines=lines)
+            num_keys = len(keys)
+            num_keys_missing_value = len(keys_missing_value)
+            num_keys_translated = (num_keys - num_keys_missing_value)
+            percent_translated = (int(((num_keys_translated / float(num_keys)) * 100)) if (num_keys != 0) else 0)
+            markdown.append('| {file} | {num_keys} | {num_keys_translated} | {num_keys_missing} | {percent_translated} |\n'.format(file=get_filename(filepath=file), num_keys=num_keys, num_keys_translated=num_keys_translated, num_keys_missing=num_keys_missing_value, percent_translated=percent_translated))
+    markdown = []
+    date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+    markdown.append('### Localization files status ({date} - Branch `{branch}` `{hash}`)\n'.format(date=date, branch=get_current_branch(), hash=get_current_hash_short()))
+    write_properties(property_files=get_all_jabref_properties())
+    write_properties(property_files=get_all_menu_properties())
+    write_file(STATUS_FILE, markdown)
+    logger.ok('Current status written to {}'.format(STATUS_FILE))
+    open_file(STATUS_FILE)
