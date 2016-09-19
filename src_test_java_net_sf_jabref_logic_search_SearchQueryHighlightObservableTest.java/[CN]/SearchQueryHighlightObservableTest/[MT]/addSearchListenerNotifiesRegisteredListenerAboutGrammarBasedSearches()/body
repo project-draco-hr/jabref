@@ -1,0 +1,6 @@
+{
+  observable.addSearchListener(listener);
+  observable.fireSearchlistenerEvent(new SearchQuery("author=harrer",false,false));
+  verify(listener,atLeastOnce()).highlightPattern(captor.capture());
+  assertEquals("(\\Qauthor=harrer\\E)",captor.getValue().get().pattern());
+}

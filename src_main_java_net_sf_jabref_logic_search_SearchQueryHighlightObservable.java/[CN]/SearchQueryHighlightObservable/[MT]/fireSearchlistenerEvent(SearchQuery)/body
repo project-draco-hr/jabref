@@ -1,13 +1,5 @@
 {
   Objects.requireNonNull(searchQuery);
-  if (searchQuery.isGrammarBasedSearch()) {
-    pattern=Optional.empty();
-  }
- else   if (searchQuery.isRegularExpression()) {
-    pattern=getPatternForWords(Collections.singletonList(searchQuery.getQuery()),true,searchQuery.isCaseSensitive());
-  }
- else {
-    pattern=getPatternForWords(getSearchwords(searchQuery.getQuery()),searchQuery.isRegularExpression(),searchQuery.isCaseSensitive());
-  }
+  pattern=getPatternForWords(searchQuery.getSearchWords(),searchQuery.isRegularExpression(),searchQuery.isCaseSensitive());
   update();
 }
