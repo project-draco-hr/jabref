@@ -1,18 +1,15 @@
 {
   setLoadingConnectButtonText(true);
   try {
-    bibDatabaseContext.getDBSynchronizer().openSharedDatabase(connectionProperties);
+    bibDatabaseContext.getDBMSSynchronizer().openSharedDatabase(connectionProperties);
     frame.addTab(bibDatabaseContext,true);
     setPreferences();
-    bibDatabaseContext.getDBSynchronizer().registerListener(new SharedDatabaseUIManager(frame,Globals.prefs.get(JabRefPreferences.KEYWORD_SEPARATOR)));
+    bibDatabaseContext.getDBMSSynchronizer().registerListener(new SharedDatabaseUIManager(frame,Globals.prefs.get(JabRefPreferences.KEYWORD_SEPARATOR)));
     frame.output(Localization.lang("Connection_to_%0_server_established.",connectionProperties.getType().toString()));
     dispose();
     return;
   }
- catch (  ClassNotFoundException exception) {
-    JOptionPane.showMessageDialog(OpenSharedDatabaseDialog.this,exception.getMessage(),Localization.lang("Driver error"),JOptionPane.ERROR_MESSAGE);
-  }
-catch (  SQLException exception) {
+ catch (  SQLException exception) {
     JOptionPane.showMessageDialog(OpenSharedDatabaseDialog.this,exception.getMessage(),Localization.lang("Connection error"),JOptionPane.ERROR_MESSAGE);
   }
 catch (  DatabaseNotSupportedException exception) {

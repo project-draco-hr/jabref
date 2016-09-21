@@ -1,0 +1,11 @@
+{
+  this.properties=properties;
+  try {
+    DriverManager.setLoginTimeout(3);
+    this.connection=DriverManager.getConnection(properties.getType().getUrl(properties.getHost(),properties.getPort(),properties.getDatabase()),properties.getUser(),properties.getPassword());
+  }
+ catch (  SQLException e) {
+    LOGGER.error("Could not connect to database: " + e.getMessage() + " - Error code: "+ e.getErrorCode());
+    throw e;
+  }
+}

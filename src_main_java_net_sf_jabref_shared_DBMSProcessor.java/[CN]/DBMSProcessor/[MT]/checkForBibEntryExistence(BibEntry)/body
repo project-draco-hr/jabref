@@ -1,0 +1,20 @@
+{
+  try {
+    int sharedID=bibEntry.getSharedBibEntryData().getSharedID();
+    if (sharedID != -1) {
+      StringBuilder selectQuery=new StringBuilder().append("SELECT * FROM ").append(escape("ENTRY")).append(" WHERE ").append(escape("SHARED_ID")).append(" = ?");
+      try (PreparedStatement preparedSelectStatement=connection.prepareStatement(selectQuery.toString())){
+        preparedSelectStatement.setInt(1,sharedID);
+        try (ResultSet resultSet=preparedSelectStatement.executeQuery()){
+          if (resultSet.next()) {
+            return true;
+          }
+        }
+       }
+     }
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error: ",e);
+  }
+  return false;
+}

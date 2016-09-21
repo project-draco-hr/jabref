@@ -2,10 +2,17 @@
   if (panel == null) {
     return;
   }
-  if (panel.isModified() && (panel.getBibDatabaseContext().getLocation() == DatabaseLocation.LOCAL)) {
+  BibDatabaseContext context=panel.getBibDatabaseContext();
+  if (panel.isModified() && (context.getLocation() == DatabaseLocation.LOCAL)) {
     if (confirmClose(panel)) {
       removeTab(panel);
     }
+  }
+ else   if (context.getLocation() == DatabaseLocation.SHARED) {
+    context.convertToLocalDatabase();
+    context.getDBMSSynchronizer().closeSharedDatabase();
+    context.clearDBMSSynchronizer();
+    removeTab(panel);
   }
  else {
     removeTab(panel);

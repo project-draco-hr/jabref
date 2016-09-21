@@ -1,12 +1,12 @@
 {
   BibEntry bibEntry=getBibEntryExample(1);
   clientContextA.getDatabase().insertEntry(bibEntry);
-  clientContextB.getDBSynchronizer().pullChanges();
+  clientContextB.getDBMSSynchronizer().pullChanges();
   Assert.assertFalse(clientContextA.getDatabase().getEntries().isEmpty());
   Assert.assertFalse(clientContextB.getDatabase().getEntries().isEmpty());
   Assert.assertEquals(clientContextA.getDatabase().getEntries(),clientContextB.getDatabase().getEntries());
   clientContextA.getDatabase().removeEntry(bibEntry);
-  clientContextB.getDBSynchronizer().pullChanges();
+  clientContextB.getDBMSSynchronizer().pullChanges();
   Assert.assertTrue(clientContextA.getDatabase().getEntries().isEmpty());
   Assert.assertTrue(clientContextB.getDatabase().getEntries().isEmpty());
 }

@@ -1,0 +1,16 @@
+{
+  try {
+    for (    String fieldName : bibEntry.getFieldNames()) {
+      StringBuilder insertFieldQuery=new StringBuilder().append("INSERT INTO ").append(escape("FIELD")).append("(").append(escape("ENTRY_SHARED_ID")).append(", ").append(escape("NAME")).append(", ").append(escape("VALUE")).append(") VALUES(?, ?, ?)");
+      try (PreparedStatement preparedFieldStatement=connection.prepareStatement(insertFieldQuery.toString())){
+        preparedFieldStatement.setInt(1,bibEntry.getSharedBibEntryData().getSharedID());
+        preparedFieldStatement.setString(2,fieldName);
+        preparedFieldStatement.setString(3,bibEntry.getField(fieldName).get());
+        preparedFieldStatement.executeUpdate();
+      }
+     }
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error: ",e);
+  }
+}

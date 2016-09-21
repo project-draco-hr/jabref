@@ -1,0 +1,18 @@
+{
+  Logger.getLogger(ThreadedHousekeeper.class.getName()).setLevel(Level.SEVERE);
+  this.listener=new PostgresSQLNotificationListener(dbmsSynchronizer);
+  PGDataSource dataSource=new PGDataSource();
+  dataSource.setHost(connectionProperties.getHost());
+  dataSource.setPort(connectionProperties.getPort());
+  dataSource.setDatabase(connectionProperties.getDatabase());
+  dataSource.setUser(connectionProperties.getUser());
+  dataSource.setPassword(connectionProperties.getPassword());
+  try {
+    pgConnection=(PGConnection)dataSource.getConnection();
+    pgConnection.createStatement().execute("LISTEN jabrefLiveUpdate");
+    pgConnection.addNotificationListener(listener);
+  }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error: ",e);
+  }
+}

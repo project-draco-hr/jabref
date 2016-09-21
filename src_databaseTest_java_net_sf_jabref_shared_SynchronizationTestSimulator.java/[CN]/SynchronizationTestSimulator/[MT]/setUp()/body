@@ -1,11 +1,9 @@
 {
-  if (TestConnector.currentConnectionType != dbmsType) {
-    connection=TestConnector.getTestConnection(dbmsType);
-  }
+  this.dbmsConnection=TestConnector.getTestDBMSConnection(dbmsType);
   clientContextA=new BibDatabaseContext(new Defaults(BibDatabaseMode.BIBTEX),DatabaseLocation.SHARED,", ");
-  clientContextA.getDBSynchronizer().openSharedDatabase(connection,dbmsType,"A");
+  clientContextA.getDBMSSynchronizer().openSharedDatabase(dbmsConnection);
   clientContextB=new BibDatabaseContext(new Defaults(BibDatabaseMode.BIBTEX),DatabaseLocation.SHARED,", ");
-  clientContextB.getDBSynchronizer().openSharedDatabase(connection,dbmsType,"B");
+  clientContextB.getDBMSSynchronizer().openSharedDatabase(dbmsConnection);
   eventListenerB=new SynchronizationTestEventListener();
-  clientContextB.getDBSynchronizer().registerListener(eventListenerB);
+  clientContextB.getDBMSSynchronizer().registerListener(eventListenerB);
 }

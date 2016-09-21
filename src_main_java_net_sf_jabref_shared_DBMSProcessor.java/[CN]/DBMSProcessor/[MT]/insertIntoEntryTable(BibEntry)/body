@@ -1,0 +1,15 @@
+{
+  StringBuilder insertIntoEntryQuery=new StringBuilder().append("INSERT INTO ").append(escape("ENTRY")).append("(").append(escape("TYPE")).append(") VALUES(?)");
+  try (PreparedStatement preparedEntryStatement=connection.prepareStatement(insertIntoEntryQuery.toString(),new String[]{"SHARED_ID"})){
+    preparedEntryStatement.setString(1,bibEntry.getType());
+    preparedEntryStatement.executeUpdate();
+    try (ResultSet generatedKeys=preparedEntryStatement.getGeneratedKeys()){
+      if (generatedKeys.next()) {
+        bibEntry.getSharedBibEntryData().setSharedID(generatedKeys.getInt(1));
+      }
+    }
+   }
+ catch (  SQLException e) {
+    LOGGER.error("SQL Error: ",e);
+  }
+}
