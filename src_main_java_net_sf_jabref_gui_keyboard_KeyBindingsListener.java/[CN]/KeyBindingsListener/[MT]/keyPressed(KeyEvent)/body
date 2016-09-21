@@ -1,29 +1,43 @@
 {
+  boolean isFunctionKey=false;
+  boolean isEscapeKey=false;
+  boolean isDeleteKey=false;
   final int selRow=table.getSelectedRow();
   boolean isAnyRowSelected=selRow >= 0;
   if (!isAnyRowSelected) {
     return;
   }
-  final String modifier=KeyEvent.getKeyModifiersText(evt.getModifiers());
+  final String modifier=getModifierText(evt);
   if ("".equals(modifier)) {
     int kc=evt.getKeyCode();
-    boolean isFunctionKey=(kc >= KeyEvent.VK_F1) && (kc <= KeyEvent.VK_F12);
-    boolean isEscapeKey=kc == KeyEvent.VK_ESCAPE;
-    boolean isDeleteKey=kc == KeyEvent.VK_DELETE;
+    isFunctionKey=(kc >= KeyEvent.VK_F1) && (kc <= KeyEvent.VK_F12);
+    isEscapeKey=kc == KeyEvent.VK_ESCAPE;
+    isDeleteKey=kc == KeyEvent.VK_DELETE;
     if (!(isFunctionKey || isEscapeKey || isDeleteKey)) {
       return;
     }
   }
-  final String code=KeyEvent.getKeyText(evt.getKeyCode());
-  if ("Tab".equals(code) || "Backspace".equals(code) || "Enter".equals(code)|| "Space".equals(code)|| "Ctrl".equals(code)|| "Shift".equals(code)|| "Alt".equals(code)) {
+  int code=evt.getKeyCode();
+  String newKey;
+  if (code == KeyEvent.VK_ALT || code == KeyEvent.VK_TAB || code == KeyEvent.VK_BACK_SPACE || code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE || code == KeyEvent.VK_CONTROL || code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_META) {
     return;
   }
-  String newKey;
   if ("".equals(modifier)) {
-    newKey=code;
+    if (isFunctionKey) {
+      newKey=KeyEvent.getKeyText(code);
+    }
+ else     if (isEscapeKey) {
+      newKey="ESCAPE";
+    }
+ else     if (isDeleteKey) {
+      newKey="DELETE";
+    }
+ else {
+      return;
+    }
   }
  else {
-    newKey=modifier.toLowerCase().replace("+"," ") + " " + code;
+    newKey=modifier.toLowerCase(Locale.ENGLISH) + " " + KeyEvent.getKeyText(code);
   }
   table.setValueAt(newKey,selRow,1);
   table.revalidate();
