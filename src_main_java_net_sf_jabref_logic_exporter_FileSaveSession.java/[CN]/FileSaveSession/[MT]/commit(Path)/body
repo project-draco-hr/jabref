@@ -5,13 +5,7 @@
   if (backup && Files.exists(file)) {
     Path fileName=file.getFileName();
     Path backupFile=file.resolveSibling(fileName + BACKUP_EXTENSION);
-    try {
-      FileUtil.copyFile(file.toFile(),backupFile.toFile(),true);
-    }
- catch (    IOException ex) {
-      LOGGER.error("Problem copying file",ex);
-      throw SaveException.BACKUP_CREATION;
-    }
+    FileUtil.copyFile(file,backupFile,true);
   }
   try {
     try {
@@ -24,12 +18,9 @@
  catch (    IOException ex) {
       LOGGER.error("Error when creating lock file.",ex);
     }
-    FileUtil.copyFile(temporaryFile.toFile(),file.toFile(),true);
+    FileUtil.copyFile(temporaryFile,file,true);
   }
- catch (  IOException ex2) {
-    throw new SaveException("Save failed while committing changes: " + ex2.getMessage(),Localization.lang("Save failed while committing changes: %0",ex2.getMessage()));
-  }
- finally {
+  finally {
     FileBasedLock.deleteLockFile(file);
   }
   try {

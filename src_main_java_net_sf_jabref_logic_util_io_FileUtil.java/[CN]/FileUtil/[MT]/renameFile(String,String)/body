@@ -1,5 +1,10 @@
 {
-  File fromFile=new File(fileName);
-  File toFile=new File(destFilename);
-  return fromFile.renameTo(toFile);
+  try {
+    Path src=Paths.get(fromFile);
+    return Files.move(src,src.resolveSibling(toFile)) != null;
+  }
+ catch (  IOException e) {
+    LOGGER.error("Renaming Files failed",e);
+    return false;
+  }
 }

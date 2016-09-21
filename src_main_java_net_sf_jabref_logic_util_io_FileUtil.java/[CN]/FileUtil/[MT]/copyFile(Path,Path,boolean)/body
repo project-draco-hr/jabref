@@ -1,0 +1,17 @@
+{
+  if (!Files.exists(pathToSourceFile)) {
+    LOGGER.error("Path to the source file doesn't exist.");
+    return false;
+  }
+  if (Files.exists(pathToDestinationFile) && !replaceExisting) {
+    LOGGER.error("Path to the destination file is not exists and the file shouldn't be replace.");
+    return false;
+  }
+  try {
+    return Files.copy(pathToSourceFile,pathToDestinationFile,StandardCopyOption.REPLACE_EXISTING) != null;
+  }
+ catch (  IOException e) {
+    LOGGER.error("Copying Files failed.",e);
+    return false;
+  }
+}

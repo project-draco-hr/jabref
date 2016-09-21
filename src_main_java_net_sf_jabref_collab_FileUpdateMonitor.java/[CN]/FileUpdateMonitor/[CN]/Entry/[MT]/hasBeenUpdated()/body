@@ -1,8 +1,8 @@
 {
-  long modified=file.lastModified();
+  long modified=Files.getLastModifiedTime(file).toMillis();
   if (modified == 0L) {
     throw new IOException("File deleted");
   }
-  long fileSizeNow=file.length();
+  long fileSizeNow=Files.size(file);
   return (timeStamp != modified) || (fileSize != fileSizeNow);
 }
