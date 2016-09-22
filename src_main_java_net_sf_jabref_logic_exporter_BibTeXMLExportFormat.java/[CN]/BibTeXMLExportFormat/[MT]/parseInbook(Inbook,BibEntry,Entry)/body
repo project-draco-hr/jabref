@@ -1,0 +1,27 @@
+{
+  Map<String,String> fieldMap=bibEntry.getFieldMap();
+  for (  Map.Entry<String,String> entryField : fieldMap.entrySet()) {
+    String value=entryField.getValue();
+    String key=entryField.getKey();
+    if ("year".equals(key)) {
+      XMLGregorianCalendar calendar;
+      try {
+        calendar=DatatypeFactory.newInstance().newXMLGregorianCalendar(value);
+        JAXBElement<XMLGregorianCalendar> year=new JAXBElement<>(new QName(BIBTEXML_NAMESPACE_URI,"year"),XMLGregorianCalendar.class,calendar);
+        inbook.getContent().add(year);
+      }
+ catch (      DatatypeConfigurationException e) {
+        LOGGER.error("A configuration error occured");
+      }
+    }
+ else     if ("number".equals(key)) {
+      JAXBElement<BigInteger> number=new JAXBElement<>(new QName(BIBTEXML_NAMESPACE_URI,"number"),BigInteger.class,new BigInteger(value));
+      inbook.getContent().add(number);
+    }
+ else {
+      JAXBElement<String> element=new JAXBElement<>(new QName(BIBTEXML_NAMESPACE_URI,key),String.class,value);
+      inbook.getContent().add(element);
+    }
+  }
+  entry.setInbook(inbook);
+}
