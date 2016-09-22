@@ -1,0 +1,16 @@
+{
+  try {
+    DocumentBuilder db=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    InputSource is=new InputSource();
+    is.setCharacterStream(new StringReader(source));
+    Document doc=db.parse(is);
+    NodeList nodes=doc.getElementsByTagName("info");
+    NodeList titleNode=((Element)nodes.item(0)).getElementsByTagName("title");
+    String title=((CharacterData)titleNode.item(0).getFirstChild()).getData();
+    return new CitationStyle(filename,title,source);
+  }
+ catch (  ParserConfigurationException|SAXException|IOException e) {
+    LOGGER.error("Error while parsing source",e);
+  }
+  return null;
+}

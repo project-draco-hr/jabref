@@ -1,0 +1,23 @@
+{
+  try {
+    final List<CitationStyle> citationStyles=new ArrayList<>();
+    String path=CitationStyle.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+    try (JarFile file=new JarFile(path)){
+      Enumeration<JarEntry> entries=file.entries();
+      while (entries.hasMoreElements()) {
+        String filename=entries.nextElement().getName();
+        if (!filename.startsWith("dependent") && filename.endsWith("csl")) {
+          CitationStyle citationStyle=CitationStyle.createCitationStyleFromFile(filename);
+          if (citationStyle != null) {
+            citationStyles.add(citationStyle);
+          }
+        }
+      }
+    }
+     return citationStyles;
+  }
+ catch (  IOException|URISyntaxException ex) {
+    LOGGER.error("something went wrong while searching available CitationStyles. " + "Are you running directly from source code?",ex);
+  }
+  return Collections.emptyList();
+}

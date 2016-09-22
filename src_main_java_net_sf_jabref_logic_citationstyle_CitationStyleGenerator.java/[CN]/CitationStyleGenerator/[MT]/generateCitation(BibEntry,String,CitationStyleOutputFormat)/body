@@ -1,0 +1,21 @@
+{
+  try {
+    String citeKey=entry.getCiteKeyOptional().orElse("");
+    BibTeXEntry bibTeXEntry=new BibTeXEntry(new Key(entry.getType()),new Key(citeKey));
+    for (    Map.Entry<String,String> field : entry.getFieldMap().entrySet()) {
+      String value=UNICODE_TO_LATEX_FORMATTER.format(field.getValue());
+      bibTeXEntry.addField(new Key(field.getKey()),new DigitStringValue(value));
+    }
+    CSLItemData cslItemData=BIBTEX_CONVERTER.toItemData(bibTeXEntry);
+    Bibliography bibliography=CSL.makeAdhocBibliography(style,outputFormat.getFormat(),cslItemData);
+    return bibliography.getEntries()[0];
+  }
+ catch (  IOException|ArrayIndexOutOfBoundsException e) {
+    LOGGER.error("Could not generate BibEntry Citation",e);
+  }
+catch (  TokenMgrError e) {
+    LOGGER.error("Bad character inside BibEntry",e);
+    return new StringBuilder().append(Localization.lang("Bad character inside entry")).append(outputFormat == CitationStyleOutputFormat.HTML ? "<br>" : "\n").append(e.getLocalizedMessage()).toString();
+  }
+  return "";
+}

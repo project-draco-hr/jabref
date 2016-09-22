@@ -1,4 +1,18 @@
 {
-  prefs.put(JabRefPreferences.PREVIEW_0,layout1.getText().replace("\n","__NEWLINE__"));
-  prefs.put(JabRefPreferences.PREVIEW_1,layout2.getText().replace("\n","__NEWLINE__"));
+  List<String> styles=new ArrayList<>();
+  Enumeration<Object> elements=chosenModel.elements();
+  while (elements.hasMoreElements()) {
+    Object obj=elements.nextElement();
+    if (obj instanceof CitationStyle) {
+      styles.add(((CitationStyle)obj).getFilepath());
+    }
+ else     if (obj instanceof String) {
+      styles.add("Preview");
+    }
+  }
+  PreviewPreferences previewPreferences=Globals.prefs.getPreviewPreferences().getBuilder().withPreviewCycle(styles).withPreviewStyle(layout.getText().replace("\n","__NEWLINE__")).build();
+  Globals.prefs.storePreviewPreferences(previewPreferences);
+  for (  BasePanel basePanel : JabRefGUI.getMainFrame().getBasePanelList()) {
+    basePanel.getPreviewPanel().updateLayout();
+  }
 }

@@ -1,0 +1,14 @@
+{
+  super(new BorderLayout(),true);
+  this.databaseContext=Optional.ofNullable(databaseContext);
+  this.basePanel=Optional.ofNullable(panel);
+  createPreviewPane();
+  updateLayout();
+  if (this.basePanel.isPresent()) {
+    this.previewPane.setTransferHandler(new PreviewPanelTransferHandler(panel.frame(),this,this.previewPane.getTransferHandler()));
+  }
+  scrollPane=new JScrollPane(previewPane,ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+  scrollPane.setBorder(null);
+  add(scrollPane,BorderLayout.CENTER);
+  this.createKeyBindings();
+}
