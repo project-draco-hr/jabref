@@ -1,11 +1,8 @@
 {
   setLoadingConnectButtonText(true);
   try {
-    bibDatabaseContext.getDBMSSynchronizer().openSharedDatabase(connectionProperties);
-    frame.addTab(bibDatabaseContext,true);
+    new SharedDatabaseUIManager(frame,Globals.prefs.get(JabRefPreferences.KEYWORD_SEPARATOR)).openNewSharedDatabaseTab(connectionProperties);
     setPreferences();
-    bibDatabaseContext.getDBMSSynchronizer().registerListener(new SharedDatabaseUIManager(frame,Globals.prefs.get(JabRefPreferences.KEYWORD_SEPARATOR)));
-    frame.output(Localization.lang("Connection_to_%0_server_established.",connectionProperties.getType().toString()));
     dispose();
     return;
   }
