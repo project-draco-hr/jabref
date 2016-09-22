@@ -1,10 +1,13 @@
 {
-  String baseUrl="http://eutils.ncbi.nlm.nih.gov/entrez/eutils";
-  String medlineUrl=baseUrl + "/esearch.fcgi?db=pubmed&retmax=" + Integer.toString(pacing)+ "&retstart="+ Integer.toString(start)+ "&term=";
   boolean doCount=true;
   SearchResult result=new SearchResult();
   try {
-    URL ncbi=new URL(medlineUrl + term);
+    URIBuilder uriBuilder=new URIBuilder(API_MEDLINE_URL);
+    uriBuilder.addParameter("db","pubmed");
+    uriBuilder.addParameter("retmax",Integer.toString(pacing));
+    uriBuilder.addParameter("retstart",Integer.toString(start));
+    uriBuilder.addParameter("term",term);
+    URL ncbi=uriBuilder.build().toURL();
     BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
     String inLine;
     while ((inLine=in.readLine()) != null) {
@@ -27,11 +30,8 @@
       }
     }
   }
- catch (  MalformedURLException e) {
-    LOGGER.warn("Bad url",e);
-  }
-catch (  IOException e) {
-    LOGGER.warn("Connection failed",e);
+ catch (  IOException|URISyntaxException e) {
+    LOGGER.warn(e.getMessage(),e);
   }
   return result;
 }

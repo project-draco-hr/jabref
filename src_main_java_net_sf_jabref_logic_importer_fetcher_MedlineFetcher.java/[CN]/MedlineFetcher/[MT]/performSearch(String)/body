@@ -1,24 +1,20 @@
 {
-  shouldContinue=true;
+  List<BibEntry> entryList=new LinkedList<>();
   String cleanQuery=query.trim().replace(';',',');
   if (cleanQuery.matches("\\d+[,\\d+]*")) {
-    frameOP.setStatus(Localization.lang("Fetching Medline by id..."));
-    List<BibEntry> bibs=fetchMedline(cleanQuery,frameOP);
+    List<BibEntry> bibs=fetchMedline(cleanQuery);
     if (bibs.isEmpty()) {
-      frameOP.showMessage(Localization.lang("No references found"));
     }
     for (    BibEntry entry : bibs) {
-      iIDialog.addEntry(entry);
+      entryList.add(entry);
     }
-    return true;
+    return entryList;
   }
   if (!query.isEmpty()) {
-    frameOP.setStatus(Localization.lang("Fetching Medline by term..."));
     String searchTerm=toSearchTerm(query);
     SearchResult result=getIds(searchTerm,0,1);
     if (result.count == 0) {
-      frameOP.showMessage(Localization.lang("No references found"));
-      return false;
+      return Collections.emptyList();
     }
     int numberToFetch=result.count;
     if (numberToFetch > MedlineFetcher.PACING) {
