@@ -1,0 +1,55 @@
+def update(extended):
+    '\n    updates all the localization files\n    fixing unambiguous duplicates, removing obsolete keys, adding missing keys, and sorting them\n\n    :param extended: boolean: if the keys with problems should be printed\n    '
+
+    def update_properties(main_property_file, other_property_files):
+        main_lines = read_file(filename=main_property_file)
+        write_file(main_property_file, main_lines)
+        main_keys = get_keys_from_lines(lines=main_lines)
+        main_duplicates = get_duplicates(lines=main_lines)
+        num_main_duplicates = len(main_duplicates)
+        if (num_main_duplicates != 0):
+            logger.error('There are {num_duplicates} duplicates in {file}, please fix them manually'.format(num_duplicates=num_main_duplicates, file=get_filename(filepath=main_property_file)))
+            if extended:
+                logger.neutral('\t{}'.format(main_duplicates))
+            return
+        for other_property_file in other_property_files:
+            filename = get_filename(filepath=other_property_file)
+            lines = read_file(filename=other_property_file)
+            (keys, not_fixed, fixed) = fix_duplicates(lines=lines)
+            num_keys = len(keys)
+            num_not_fixed = len(not_fixed)
+            num_fixed = len(fixed)
+            if (num_not_fixed != 0):
+                logger.error('There are {num_not_fixed_duplicates} ambiguous duplicates in {file}, please fix them manually'.format(num_not_fixed_duplicates=num_not_fixed, file=filename))
+                if extended:
+                    logger.neutral('\t\t{}'.format(not_fixed))
+                continue
+            keys_missing = get_missing_keys(main_keys, keys)
+            keys_obsolete = get_missing_keys(keys, main_keys)
+            num_keys_missing = len(keys_missing)
+            num_keys_obsolete = len(keys_obsolete)
+            for missing_key in keys_missing:
+                keys[missing_key] = ''
+            for obsolete_key in keys_obsolete:
+                del keys[obsolete_key]
+            other_lines_to_write = []
+            for line in main_lines:
+                key = get_key_from_line(line)
+                if (key is not None):
+                    other_lines_to_write.append(u'{key}={value}\n'.format(key=key, value=keys[key]))
+                else:
+                    other_lines_to_write.append(line)
+            write_file(filename=other_property_file, content=other_lines_to_write)
+            logger.ok("Processing file '{file}' with {num_keys} Keys".format(file=filename, num_keys=num_keys))
+            logger.ok('\tfixed {} unambiguous duplicates'.format(num_fixed))
+            if (extended and (num_fixed != 0)):
+                logger.neutral('\t\t{}'.format(fixed))
+            logger.ok('\tadded {} missing keys'.format(num_keys_missing))
+            if (extended and (num_keys_missing != 0)):
+                logger.neutral('\t\t{}'.format(keys_missing))
+            logger.ok('\tdeleted {} obsolete keys'.format(num_keys_obsolete))
+            if (extended and (num_keys_obsolete != 0)):
+                logger.neutral('\t\t{}'.format(keys_obsolete))
+            logger.ok('\thas been sorted successfully')
+    update_properties(main_property_file=get_main_jabref_preferences(), other_property_files=get_other_jabref_properties())
+    update_properties(main_property_file=get_main_menu_properties(), other_property_files=get_other_menu_properties())

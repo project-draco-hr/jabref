@@ -1,0 +1,15 @@
+def get_duplicates(lines):
+    '\n    finds all the duplicates and returns them\n\n    :param lines: list of strings\n    :return: list of strings\n    '
+    duplicates = []
+    keys_checked = {}
+    for line in lines:
+        (key, value) = get_key_and_value_from_line(line=line)
+        if key:
+            if (key in keys_checked):
+                duplicates.append('{key}={value}'.format(key=key, value=value))
+                translation_in_list = '{key}={value}'.format(key=key, value=keys_checked[key])
+                if (translation_in_list not in duplicates):
+                    duplicates.append(translation_in_list)
+            else:
+                keys_checked[key] = value
+    return duplicates

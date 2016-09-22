@@ -1,0 +1,41 @@
+def status(extended):
+    '\n    prints the current status to the terminal\n\n    :param extended: boolean: if the keys with problems should be printed\n    '
+
+    def check_properties(main_property_file, property_files):
+        main_lines = read_file(filename=main_property_file)
+        main_keys = get_keys_from_lines(lines=main_lines)
+        for file in property_files:
+            filename = get_filename(filepath=file)
+            lines = read_file(file)
+            keys = get_keys_from_lines(lines=lines)
+            keys_missing = get_missing_keys(main_keys, keys)
+            keys_obsolete = get_missing_keys(keys, main_keys)
+            keys_duplicate = get_duplicates(lines=lines)
+            keys_not_translated = get_empty_keys(lines=lines)
+            num_keys = len(keys)
+            num_keys_missing = len(keys_missing)
+            num_keys_not_translated = len(keys_not_translated)
+            num_keys_obsolete = len(keys_obsolete)
+            num_keys_duplicate = len(keys_duplicate)
+            num_keys_translated = (num_keys - num_keys_not_translated)
+            log = (logger.error if ((num_keys_missing != 0) or (num_keys_not_translated != 0) or (num_keys_obsolete != 0) or (num_keys_duplicate != 0)) else logger.ok)
+            log("Status of file '{file}' with {num_keys} Keys".format(file=filename, num_keys=num_keys))
+            logger.ok('\t{} translated keys'.format(num_keys_translated))
+            log = (logger.error if (num_keys_not_translated != 0) else logger.ok)
+            log('\t{} not translated keys'.format(num_keys_not_translated))
+            if (extended and (num_keys_not_translated != 0)):
+                logger.neutral('\t\t{}'.format(', '.join(keys_not_translated)))
+            log = (logger.error if (num_keys_missing != 0) else logger.ok)
+            log('\t{} missing keys'.format(num_keys_missing))
+            if (extended and (num_keys_missing != 0)):
+                logger.neutral('\t\t{}'.format(', '.join(keys_missing)))
+            log = (logger.error if (num_keys_obsolete != 0) else logger.ok)
+            log('\t{} obsolete keys'.format(num_keys_obsolete))
+            if (extended and (num_keys_obsolete != 0)):
+                logger.neutral('\t\t{}'.format(', '.join(keys_obsolete)))
+            log = (logger.error if (num_keys_duplicate != 0) else logger.ok)
+            log('\t{} duplicates'.format(num_keys_duplicate))
+            if (extended and (num_keys_duplicate != 0)):
+                logger.neutral('\t\t{}'.format(', '.join(keys_duplicate)))
+    check_properties(main_property_file=get_main_jabref_preferences(), property_files=get_all_jabref_properties())
+    check_properties(main_property_file=get_main_menu_properties(), property_files=get_all_menu_properties())
