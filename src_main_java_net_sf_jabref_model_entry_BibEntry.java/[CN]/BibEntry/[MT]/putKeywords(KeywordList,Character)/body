@@ -1,0 +1,14 @@
+{
+  Objects.requireNonNull(keywords);
+  Optional<String> oldValue=this.getField(FieldName.KEYWORDS);
+  if (keywords.isEmpty()) {
+    if (oldValue.isPresent()) {
+      return this.clearField(FieldName.KEYWORDS);
+    }
+ else {
+      return Optional.empty();
+    }
+  }
+  String newValue=keywords.getAsString(delimiter);
+  return this.setField(FieldName.KEYWORDS,newValue);
+}
