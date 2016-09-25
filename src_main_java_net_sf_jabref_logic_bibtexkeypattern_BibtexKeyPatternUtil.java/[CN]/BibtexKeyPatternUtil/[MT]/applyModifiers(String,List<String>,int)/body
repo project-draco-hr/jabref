@@ -3,13 +3,7 @@
   if (parts.size() > offset) {
     for (int j=offset; j < parts.size(); j++) {
       String modifier=parts.get(j);
-      if ("lower".equals(modifier)) {
-        resultingLabel=resultingLabel.toLowerCase(Locale.ENGLISH);
-      }
- else       if ("upper".equals(modifier)) {
-        resultingLabel=resultingLabel.toUpperCase(Locale.ENGLISH);
-      }
- else       if ("abbr".equals(modifier)) {
+      if ("abbr".equals(modifier)) {
         StringBuilder abbreviateSB=new StringBuilder();
         String[] words=resultingLabel.replaceAll("[\\{\\}']","").split("[\\(\\) \r\n\"]");
         for (        String word : words) {
@@ -19,13 +13,23 @@
         }
         resultingLabel=abbreviateSB.toString();
       }
- else       if (!modifier.isEmpty() && (modifier.charAt(0) == '(') && modifier.endsWith(")")) {
-        if (resultingLabel.isEmpty() && (modifier.length() > 2)) {
-          return modifier.substring(1,modifier.length() - 1);
-        }
-      }
  else {
-        LOGGER.info("Key generator warning: unknown modifier '" + modifier + "'.");
+        Optional<Formatter> formatter=Formatters.getFormatterForModifier(modifier);
+        if (formatter.isPresent()) {
+          resultingLabel=formatter.get().format(label);
+        }
+ else         if (!modifier.isEmpty() && modifier.length() >= 2 && (modifier.charAt(0) == '(') && modifier.endsWith(")")) {
+          if (label.isEmpty() && (modifier.length() > 2)) {
+            resultingLabel=modifier.substring(1,modifier.length() - 1);
+          }
+ else {
+            resultingLabel=label;
+          }
+        }
+ else {
+          LOGGER.info("Key generator warning: unknown modifier '" + modifier + "'.");
+          resultingLabel=label;
+        }
       }
     }
   }
