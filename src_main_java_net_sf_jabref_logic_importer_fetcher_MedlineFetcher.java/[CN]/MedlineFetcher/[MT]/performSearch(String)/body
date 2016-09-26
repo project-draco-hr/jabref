@@ -2,10 +2,9 @@
   List<BibEntry> entryList=new LinkedList<>();
   String cleanQuery=query.trim().replace(';',',');
   if (cleanQuery.matches("\\d+[,\\d+]*")) {
-    System.out.println("Fetching Medline by id...");
     List<BibEntry> bibs=fetchMedline(cleanQuery);
     if (bibs.isEmpty()) {
-      System.out.println("No references found");
+      LOGGER.warn(Localization.lang("No references found"));
     }
     for (    BibEntry entry : bibs) {
       entryList.add(entry);
@@ -13,11 +12,10 @@
     return entryList;
   }
   if (!query.isEmpty()) {
-    System.out.println("Fetching Medline by term...");
     String searchTerm=toSearchTerm(query);
     SearchResult result=getIds(searchTerm,0,1);
     if (result.count == 0) {
-      System.out.println("No references found");
+      LOGGER.warn(Localization.lang("No references found"));
       return Collections.emptyList();
     }
     int numberToFetch=result.count;
@@ -34,7 +32,5 @@
     }
     return entryList;
   }
-  System.out.println("Please enter a comma separated list of Medline IDs (numbers) or search terms.");
-  System.out.println("Input error");
-  return Collections.emptyList();
+  throw new FetcherException("Input Error. Please enter a comma separated list of Medline IDs (numbers) or search terms.");
 }
