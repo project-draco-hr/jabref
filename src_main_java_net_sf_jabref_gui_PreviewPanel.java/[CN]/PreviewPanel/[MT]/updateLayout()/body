@@ -1,10 +1,25 @@
 {
-  StringReader sr=new StringReader(layoutFile.replace("__NEWLINE__","\n"));
-  try {
-    layout=Optional.of(new LayoutHelper(sr,Globals.prefs.getLayoutFormatterPreferences(Globals.journalAbbreviationLoader)).getLayoutFromText());
+  if (fixedLayout) {
+    LOGGER.debug("cannot change the layout because the layout is fixed");
+    return;
   }
- catch (  IOException e) {
-    layout=Optional.empty();
-    LOGGER.debug("no layout could be set",e);
+  PreviewPreferences previewPreferences=Globals.prefs.getPreviewPreferences();
+  String style=previewPreferences.getPreviewCycle().get(previewPreferences.getPreviewCyclePosition());
+  if (CitationStyle.isCitationStyleFile(style)) {
+    if (basePanel.isPresent()) {
+      layout=Optional.empty();
+      CitationStyle citationStyle=CitationStyle.createCitationStyleFromFile(style);
+      if (citationStyle != null) {
+        basePanel.get().getCitationStyleCache().setCitationStyle(citationStyle);
+        basePanel.get().output(Localization.lang("Preview style changed to: %0",citationStyle.getTitle()));
+      }
+    }
   }
+ else {
+    updatePreviewLayout(previewPreferences.getPreviewStyle());
+    if (basePanel.isPresent()) {
+      basePanel.get().output(Localization.lang("Preview style changed to: %0",Localization.lang("Preview")));
+    }
+  }
+  update();
 }

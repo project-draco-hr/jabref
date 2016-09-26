@@ -1,7 +1,4 @@
 {
-  PreferencesMigrations.upgradeSortOrder();
-  PreferencesMigrations.upgradeFaultyEncodingStrings();
-  PreferencesMigrations.upgradeLabelPatternToBibtexKeyPattern();
   if (OS.OS_X) {
     System.setProperty("apple.laf.useScreenMenuBar","true");
   }
@@ -71,5 +68,16 @@
   }
   if (!bibDatabases.isEmpty()) {
     JabRefGUI.getMainFrame().getCurrentBasePanel().getMainTable().requestFocus();
+  }
+  boolean isSharedDatabaseEdited=Globals.prefs.getBoolean(JabRefPreferences.SHARED_DATABASE_LAST_EDITED);
+  if (isSharedDatabaseEdited) {
+    boolean isFocused=Globals.prefs.getBoolean(JabRefPreferences.SHARED_DATABASE_LAST_FOCUSED);
+    try {
+      new SharedDatabaseUIManager(mainFrame).openLastSharedDatabaseTab(isFocused);
+    }
+ catch (    SQLException|DatabaseNotSupportedException e) {
+      LOGGER.info("Failed to restore shared database. Use connection dialog to connect.");
+      new OpenSharedDatabaseDialog(mainFrame).setVisible(true);
+    }
   }
 }

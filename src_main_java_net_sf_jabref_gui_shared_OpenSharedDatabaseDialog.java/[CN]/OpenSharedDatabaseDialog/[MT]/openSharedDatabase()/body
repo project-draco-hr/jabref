@@ -1,11 +1,12 @@
 {
+  if (isSharedDatabaseAlreadyPresent()) {
+    JOptionPane.showMessageDialog(OpenSharedDatabaseDialog.this,Localization.lang("You are already connected to a database using entered connection details."),Localization.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+    return;
+  }
   setLoadingConnectButtonText(true);
   try {
-    bibDatabaseContext.getDBMSSynchronizer().openSharedDatabase(connectionProperties);
-    frame.addTab(bibDatabaseContext,true);
+    new SharedDatabaseUIManager(frame).openNewSharedDatabaseTab(connectionProperties);
     setPreferences();
-    bibDatabaseContext.getDBMSSynchronizer().registerListener(new SharedDatabaseUIManager(frame,Globals.prefs.get(JabRefPreferences.KEYWORD_SEPARATOR)));
-    frame.output(Localization.lang("Connection_to_%0_server_established.",connectionProperties.getType().toString()));
     dispose();
     return;
   }

@@ -2,7 +2,12 @@
   this.table=table;
   this.panel=panel;
   this.tableRows=table.getTableModel().getTableRows();
-  previewPanel=new PreviewPanel[]{new PreviewPanel(panel.getBibDatabaseContext(),null,panel,Globals.prefs.get(JabRefPreferences.PREVIEW_0)),new PreviewPanel(panel.getBibDatabaseContext(),null,panel,Globals.prefs.get(JabRefPreferences.PREVIEW_1))};
-  panel.frame().getGlobalSearchBar().getSearchQueryHighlightObservable().addSearchListener(previewPanel[0]).addSearchListener(previewPanel[1]);
-  this.preview=previewPanel[activePreview];
+  PreviewPanel previewPanel=panel.getPreviewPanel();
+  if (previewPanel != null) {
+    preview=previewPanel;
+  }
+ else {
+    preview=new PreviewPanel(panel.getBibDatabaseContext(),null,panel);
+    panel.frame().getGlobalSearchBar().getSearchQueryHighlightObservable().addSearchListener(preview);
+  }
 }

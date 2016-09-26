@@ -1,0 +1,47 @@
+{
+  List<Method> declaredSetMethods=getListOfSetMethods(entryType);
+  Map<String,String> fieldMap=bibEntry.getFieldMap();
+  for (  Map.Entry<String,String> entryField : fieldMap.entrySet()) {
+    String value=entryField.getValue();
+    String key=entryField.getKey();
+    for (    Method method : declaredSetMethods) {
+      String methodNameWithoutSet=method.getName().replace("set","").toLowerCase(ENGLISH);
+      try {
+        if ("year".equals(key) && key.equals(methodNameWithoutSet)) {
+          try {
+            XMLGregorianCalendar calendar=DatatypeFactory.newInstance().newXMLGregorianCalendar(value);
+            method.invoke(entryType,calendar);
+          }
+ catch (          DatatypeConfigurationException e) {
+            LOGGER.error("A configuration error occured");
+          }
+          break;
+        }
+ else         if ("number".equals(key) && key.equals(methodNameWithoutSet)) {
+          method.invoke(entryType,new BigInteger(value));
+          break;
+        }
+ else         if (key.equals(methodNameWithoutSet)) {
+          method.invoke(entryType,value);
+          break;
+        }
+      }
+ catch (      IllegalAccessException|IllegalArgumentException|InvocationTargetException e) {
+        LOGGER.error("Could not invoke method",e);
+      }
+    }
+    List<Method> entryMethods=getListOfSetMethods(entry);
+    for (    Method method : entryMethods) {
+      String methodWithoutSet=method.getName().replace("set","");
+      String simpleClassName=entryType.getClass().getSimpleName();
+      if (methodWithoutSet.equals(simpleClassName)) {
+        try {
+          method.invoke(entry,entryType);
+        }
+ catch (        IllegalAccessException|IllegalArgumentException|InvocationTargetException e) {
+          LOGGER.warn("Could not set the type to the entry");
+        }
+      }
+    }
+  }
+}

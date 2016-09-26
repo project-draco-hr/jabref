@@ -1,0 +1,28 @@
+{
+  String strippedFieldAndFormat=StringUtil.stripBrackets(fieldAndFormat);
+  int colon=strippedFieldAndFormat.indexOf(':');
+  String beforeColon;
+  String afterColon;
+  if (colon == -1) {
+    beforeColon=strippedFieldAndFormat;
+    afterColon=null;
+  }
+ else {
+    beforeColon=strippedFieldAndFormat.substring(0,colon);
+    afterColon=strippedFieldAndFormat.substring(colon + 1);
+  }
+  beforeColon=beforeColon.trim();
+  if (beforeColon.isEmpty()) {
+    return "";
+  }
+  String fieldValue=BibDatabase.getResolvedField(beforeColon,entry,database).orElse(BibtexKeyPatternUtil.makeLabel(entry,beforeColon,keywordDelimiter));
+  if (fieldValue == null) {
+    return "";
+  }
+  if ((afterColon == null) || afterColon.isEmpty()) {
+    return fieldValue;
+  }
+  List<String> parts=Arrays.asList(afterColon.split(":"));
+  fieldValue=BibtexKeyPatternUtil.applyModifiers(fieldValue,parts,0);
+  return fieldValue;
+}

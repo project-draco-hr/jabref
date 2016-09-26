@@ -1,10 +1,8 @@
 {
-  try {
-    BibEntry entry=getBibEntry(row);
-    TypedBibEntry typedEntry=new TypedBibEntry(entry,panel.getBibDatabaseContext());
+  Optional<BibEntry> bibEntry=getBibEntry(row);
+  if (bibEntry.isPresent()) {
+    TypedBibEntry typedEntry=new TypedBibEntry(bibEntry.get(),panel.getBibDatabaseContext());
     return typedEntry.hasAllRequiredFields();
   }
- catch (  NullPointerException ex) {
-    return true;
-  }
+  return true;
 }

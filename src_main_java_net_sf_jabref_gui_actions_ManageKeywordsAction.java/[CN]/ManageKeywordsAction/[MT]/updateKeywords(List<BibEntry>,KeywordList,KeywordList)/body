@@ -1,0 +1,17 @@
+{
+  NamedCompound ce=new NamedCompound(Localization.lang("Update keywords"));
+  for (  BibEntry entry : entries) {
+    KeywordList keywords=entry.getKeywords(Globals.prefs.getKeywordDelimiter());
+    keywords.removeAll(keywordsToRemove);
+    keywords.addAll(keywordsToAdd);
+    Optional<FieldChange> change=entry.putKeywords(keywords,Globals.prefs.getKeywordDelimiter());
+    if (change.isPresent()) {
+      ce.addEdit(new UndoableFieldChange(change.get()));
+    }
+    if (Globals.prefs.isKeywordSyncEnabled()) {
+      SpecialFieldsUtils.syncSpecialFieldsFromKeywords(entry,ce);
+    }
+  }
+  ce.end();
+  return ce;
+}
