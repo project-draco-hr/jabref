@@ -2,7 +2,7 @@
   boolean doCount=true;
   SearchResult result=new SearchResult();
   try {
-    URIBuilder uriBuilder=new URIBuilder(API_MEDLINE_URL);
+    URIBuilder uriBuilder=new URIBuilder(API_MEDLINE_SEARCH);
     uriBuilder.addParameter("db","pubmed");
     uriBuilder.addParameter("retmax",Integer.toString(pacing));
     uriBuilder.addParameter("retstart",Integer.toString(start));
@@ -30,8 +30,11 @@
       }
     }
   }
- catch (  IOException|URISyntaxException e) {
-    LOGGER.warn(e.getMessage(),e);
+ catch (  URISyntaxException|MalformedURLException e) {
+    LOGGER.warn("Bad url",e);
+  }
+catch (  IOException e) {
+    LOGGER.warn("Connection failed",e);
   }
   return result;
 }

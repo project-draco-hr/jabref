@@ -2,8 +2,10 @@
   List<BibEntry> entryList=new LinkedList<>();
   String cleanQuery=query.trim().replace(';',',');
   if (cleanQuery.matches("\\d+[,\\d+]*")) {
+    System.out.println("Fetching Medline by id...");
     List<BibEntry> bibs=fetchMedline(cleanQuery);
     if (bibs.isEmpty()) {
+      System.out.println("No references found");
     }
     for (    BibEntry entry : bibs) {
       entryList.add(entry);
@@ -11,42 +13,28 @@
     return entryList;
   }
   if (!query.isEmpty()) {
+    System.out.println("Fetching Medline by term...");
     String searchTerm=toSearchTerm(query);
     SearchResult result=getIds(searchTerm,0,1);
     if (result.count == 0) {
+      System.out.println("No references found");
       return Collections.emptyList();
     }
     int numberToFetch=result.count;
     if (numberToFetch > MedlineFetcher.PACING) {
-      while (true) {
-        String strCount=JOptionPane.showInputDialog(Localization.lang("References found") + ": " + numberToFetch+ "  "+ Localization.lang("Number of references to fetch?"),Integer.toString(numberToFetch));
-        if (strCount == null) {
-          frameOP.setStatus(Localization.lang("%0 import canceled","Medline"));
-          return false;
-        }
-        try {
-          numberToFetch=Integer.parseInt(strCount.trim());
-          break;
-        }
- catch (        NumberFormatException ex) {
-          frameOP.showMessage(Localization.lang("Please enter a valid number"));
-        }
-      }
+      numberToFetch=20;
     }
     for (int i=0; i < numberToFetch; i+=MedlineFetcher.PACING) {
-      if (!shouldContinue) {
-        break;
-      }
       int noToFetch=Math.min(MedlineFetcher.PACING,numberToFetch - i);
       result=getIds(searchTerm,i,noToFetch);
-      List<BibEntry> bibs=fetchMedline(result.ids,frameOP);
+      List<BibEntry> bibs=fetchMedline(result.ids);
       for (      BibEntry entry : bibs) {
-        iIDialog.addEntry(entry);
+        entryList.add(entry);
       }
-      iIDialog.setProgress(i + noToFetch,numberToFetch);
     }
-    return true;
+    return entryList;
   }
-  frameOP.showMessage(Localization.lang("Please enter a comma separated list of Medline IDs (numbers) or search terms."),Localization.lang("Input error"),JOptionPane.ERROR_MESSAGE);
-  return false;
+  System.out.println("Please enter a comma separated list of Medline IDs (numbers) or search terms.");
+  System.out.println("Input error");
+  return Collections.emptyList();
 }
