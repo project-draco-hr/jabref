@@ -1,16 +1,5 @@
 {
   List<BibEntry> entryList=new LinkedList<>();
-  String cleanQuery=query.trim().replace(';',',');
-  if (cleanQuery.matches("\\d+[,\\d+]*")) {
-    List<BibEntry> bibs=fetchMedline(cleanQuery);
-    if (bibs.isEmpty()) {
-      LOGGER.warn(Localization.lang("No references found"));
-    }
-    for (    BibEntry entry : bibs) {
-      entryList.add(entry);
-    }
-    return entryList;
-  }
   if (!query.isEmpty()) {
     String searchTerm=toSearchTerm(query);
     SearchResult result=getIds(searchTerm,0,1);
@@ -19,9 +8,6 @@
       return Collections.emptyList();
     }
     int numberToFetch=result.count;
-    if (numberToFetch > MedlineFetcher.PACING) {
-      numberToFetch=20;
-    }
     for (int i=0; i < numberToFetch; i+=MedlineFetcher.PACING) {
       int noToFetch=Math.min(MedlineFetcher.PACING,numberToFetch - i);
       result=getIds(searchTerm,i,noToFetch);

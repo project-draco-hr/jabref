@@ -1,0 +1,11 @@
+{
+  String cleanQuery=identifier.trim().replace(';',',');
+  if (cleanQuery.matches("\\d+[,\\d+]*")) {
+    List<BibEntry> bibs=fetchMedline(cleanQuery);
+    if (bibs.isEmpty()) {
+      LOGGER.warn(Localization.lang("No references found"));
+    }
+    return Optional.of(bibs.get(0));
+  }
+  return Optional.empty();
+}
