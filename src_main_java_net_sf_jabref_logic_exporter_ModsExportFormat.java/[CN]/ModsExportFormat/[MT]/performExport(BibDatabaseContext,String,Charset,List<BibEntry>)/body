@@ -1,25 +1,2 @@
 {
-  Objects.requireNonNull(databaseContext);
-  Objects.requireNonNull(entries);
-  if (entries.isEmpty()) {
-    return;
-  }
-  SaveSession ss=new FileSaveSession(StandardCharsets.UTF_8,false);
-  try (VerifyingWriter ps=ss.getWriter()){
-    MODSDatabase md=new MODSDatabase(databaseContext.getDatabase(),entries);
-    try {
-      DOMSource source=new DOMSource(md.getDOMrepresentation());
-      StreamResult result=new StreamResult(ps);
-      Transformer trans=TransformerFactory.newInstance().newTransformer();
-      trans.setOutputProperty(OutputKeys.INDENT,"yes");
-      trans.transform(source,result);
-    }
- catch (    TransformerException|IllegalArgumentException|TransformerFactoryConfigurationError e) {
-      throw new Error(e);
-    }
-    finalizeSaveSession(ss,Paths.get(file));
-  }
- catch (  IOException ex) {
-    throw new SaveException(ex);
-  }
 }

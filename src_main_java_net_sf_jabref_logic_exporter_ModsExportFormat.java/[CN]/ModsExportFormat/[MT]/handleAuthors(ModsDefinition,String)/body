@@ -1,0 +1,35 @@
+{
+  String[] authors=value.split("and");
+  for (  String author : authors) {
+    NameDefinition name=new NameDefinition();
+    name.setAtType("personal");
+    NamePartDefinition namePart=new NamePartDefinition();
+    if (author.contains(",")) {
+      int commaIndex=author.indexOf(',');
+      String familyName=author.substring(0,commaIndex);
+      namePart.setAtType("family");
+      namePart.setValue(familyName);
+      JAXBElement<NamePartDefinition> element=new JAXBElement<>(new QName(MODS_NAMESPACE_URI,"namePart"),NamePartDefinition.class,namePart);
+      name.getNamePartOrDisplayFormOrAffiliation().add(element);
+      String forename=author.substring(commaIndex + 1,author.length());
+      String[] forenames=forename.split(" ");
+      for (      String given : forenames) {
+        if (!given.isEmpty()) {
+          NamePartDefinition namePartDefinition=new NamePartDefinition();
+          namePartDefinition.setAtType("given");
+          namePartDefinition.setValue(given);
+          element=new JAXBElement<>(new QName(MODS_NAMESPACE_URI,"namePart"),NamePartDefinition.class,namePartDefinition);
+          name.getNamePartOrDisplayFormOrAffiliation().add(element);
+        }
+      }
+      mods.getModsGroup().add(name);
+    }
+ else {
+      namePart.setAtType("family");
+      namePart.setValue(author);
+      JAXBElement<NamePartDefinition> element=new JAXBElement<>(new QName(MODS_NAMESPACE_URI,"namePart"),NamePartDefinition.class,namePart);
+      name.getNamePartOrDisplayFormOrAffiliation().add(element);
+      mods.getModsGroup().add(name);
+    }
+  }
+}
