@@ -1,12 +1,12 @@
 {
   String cleanQuery=identifier.trim().replace(';',',');
-  if (cleanQuery.matches("\\d+[,\\d+]*")) {
-    List<BibEntry> bibs=fetchMedline(cleanQuery);
-    if (bibs.isEmpty()) {
+  if (cleanQuery.matches(CLEAN_ID_QUERY)) {
+    List<BibEntry> entry=fetchMedline(cleanQuery);
+    if (entry.isEmpty()) {
       LOGGER.warn(Localization.lang("No references found"));
     }
     LOGGER.info("Fetcher " + getName() + "found more than one result for identifier "+ identifier+ ". We will use the first entry.");
-    return Optional.of(bibs.get(0));
+    return Optional.of(entry.get(0));
   }
   return Optional.empty();
 }

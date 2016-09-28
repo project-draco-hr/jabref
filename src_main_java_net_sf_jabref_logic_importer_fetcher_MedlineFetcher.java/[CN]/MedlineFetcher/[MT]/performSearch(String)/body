@@ -1,16 +1,15 @@
 {
-  int numberToFetch=50;
+  final int numberToFetch=50;
   List<BibEntry> entryList=new LinkedList<>();
   if (!query.isEmpty()) {
-    String searchTerm=toSearchTerm(query);
+    String searchTerm=replaceCommaWithAND(query);
     SearchResult result=getIds(searchTerm,0,1);
     if (result.count == 0) {
       LOGGER.warn(Localization.lang("No references found"));
       return Collections.emptyList();
     }
-    for (int i=0; i < numberToFetch; i+=MedlineFetcher.PACING) {
-      int noToFetch=Math.min(MedlineFetcher.PACING,numberToFetch - i);
-      result=getIds(searchTerm,i,noToFetch);
+    for (int i=0; i < numberToFetch; i++) {
+      result=getIds(searchTerm,i,numberToFetch - i);
       List<BibEntry> bibs=fetchMedline(result.ids);
       entryList.addAll(bibs);
     }
