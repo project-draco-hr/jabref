@@ -1,6 +1,5 @@
 {
   boolean doCount=true;
-  SearchResult result=new SearchResult();
   try {
     URL ncbi=createSearchUrl(term,start,pacing);
     BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
@@ -8,19 +7,19 @@
     while ((inLine=in.readLine()) != null) {
       Matcher idMatcher=ID_PATTERN.matcher(inLine);
       if (idMatcher.find()) {
-        result.addID(idMatcher.group(1));
+        addID(idMatcher.group(1));
       }
       Matcher retMaxMatcher=RET_MAX_PATTERN.matcher(inLine);
       if (retMaxMatcher.find()) {
-        result.retmax=Integer.parseInt(retMaxMatcher.group(1));
+        retmax=Integer.parseInt(retMaxMatcher.group(1));
       }
       Matcher retStartMatcher=RET_START_PATTERN.matcher(inLine);
       if (retStartMatcher.find()) {
-        result.retstart=Integer.parseInt(retStartMatcher.group(1));
+        retstart=Integer.parseInt(retStartMatcher.group(1));
       }
       Matcher countMatcher=COUNT_PATTERN.matcher(inLine);
       if (doCount && countMatcher.find()) {
-        result.count=Integer.parseInt(countMatcher.group(1));
+        count=Integer.parseInt(countMatcher.group(1));
         doCount=false;
       }
     }
@@ -31,5 +30,4 @@
 catch (  IOException e) {
     LOGGER.warn("Connection failed",e);
   }
-  return result;
 }
