@@ -2,12 +2,7 @@
   boolean doCount=true;
   SearchResult result=new SearchResult();
   try {
-    URIBuilder uriBuilder=new URIBuilder(API_MEDLINE_SEARCH);
-    uriBuilder.addParameter("db","pubmed");
-    uriBuilder.addParameter("retmax",Integer.toString(pacing));
-    uriBuilder.addParameter("retstart",Integer.toString(start));
-    uriBuilder.addParameter("term",term);
-    URL ncbi=uriBuilder.build().toURL();
+    URL ncbi=createSearchUrl(term,start,pacing);
     BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
     String inLine;
     while ((inLine=in.readLine()) != null) {

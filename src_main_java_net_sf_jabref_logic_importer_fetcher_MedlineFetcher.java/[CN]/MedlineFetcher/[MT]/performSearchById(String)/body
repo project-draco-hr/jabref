@@ -1,12 +1,11 @@
 {
   String cleanQuery=identifier.trim().replace(';',',');
-  if (cleanQuery.matches(CLEAN_ID_QUERY)) {
-    List<BibEntry> entry=fetchMedline(cleanQuery);
-    if (entry.isEmpty()) {
-      LOGGER.warn(Localization.lang("No references found"));
-    }
-    LOGGER.info("Fetcher " + getName() + "found more than one result for identifier "+ identifier+ ". We will use the first entry.");
-    return Optional.of(entry.get(0));
+  List<BibEntry> entry=fetchMedline(cleanQuery);
+  if (entry.isEmpty()) {
+    LOGGER.warn(Localization.lang("No references found"));
   }
-  return Optional.empty();
+ else   if (entry.size() > 1) {
+    LOGGER.info("Fetcher " + getName() + " "+ "found more than one result for identifier "+ identifier+ ". We will use the first entry.");
+  }
+  return Optional.of(entry.get(0));
 }
