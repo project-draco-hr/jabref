@@ -1,3 +1,4 @@
+from __future__ import print_function
 import codecs
 import datetime
 import os
@@ -10,8 +11,8 @@ STATUS_FILE = 'status.md'
 if ((len(sys.argv) == 2) and (sys.argv[1] == 'markdown')):
     status_create_markdown()
 elif (((len(sys.argv) == 2) or (len(sys.argv) == 3)) and (sys.argv[1] == 'update')):
-    update(extended=((len(sys.argv) == 3) and (sys.argv[2] == '--extended')))
+    update(extended=((len(sys.argv) == 3) and ((sys.argv[2] == '-e') or (sys.argv[2] == '--extended'))))
 elif (((len(sys.argv) == 2) or (len(sys.argv) == 3)) and (sys.argv[1] == 'status')):
-    status(extended=((len(sys.argv) == 3) and (sys.argv[2] == '--extended')))
+    status(extended=((len(sys.argv) == 3) and ((sys.argv[2] == '-e') or (sys.argv[2] == '--extended'))))
 else:
-    logger.neutral('This program must be run from the jabref base directory.\n\nUsage: syncLang.py {markdown, status [--extended], update [--extended]}\nOption can be one of the following:\n\n    status [--extended]:\n        prints the current status to the terminal\n        [--extended]:\n            if the translations keys which create problems should be printed\n\n    markdown:\n        Creates a markdown file of the current status and opens it\n\n    update [--extended]:\n        compares all the localization files against the English one and fixes unambiguous duplicates,\n        removes obsolete keys, adds missing keys, and sorts them\n        [--extended]:\n            if the translations keys which create problems should be printed\n')
+    logger.neutral('This program must be run from the JabRef base directory.\n\nUsage: syncLang.py {markdown, status [-e | --extended], update [-e | --extended]}\nOption can be one of the following:\n\n    status [-e | --extended]:\n        prints the current status to the terminal\n        [-e | --extended]:\n            if the translations keys which create problems should be printed\n\n    markdown:\n        Creates a markdown file of the current status and opens it\n\n    update [-e | --extended]:\n        compares all the localization files against the English one and fixes unambiguous duplicates,\n        removes obsolete keys, adds missing keys, and sorts them\n        [-e | --extended]:\n            if the translations keys which create problems should be printed\n')

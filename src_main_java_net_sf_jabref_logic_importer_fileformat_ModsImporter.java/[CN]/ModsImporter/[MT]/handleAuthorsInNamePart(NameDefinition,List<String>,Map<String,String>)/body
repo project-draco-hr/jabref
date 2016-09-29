@@ -2,6 +2,7 @@
   List<JAXBElement<?>> namePartOrDisplayFormOrAffiliation=name.getNamePartOrDisplayFormOrAffiliation();
   List<String> foreName=new ArrayList<>();
   String familyName="";
+  String author="";
   for (  JAXBElement<?> element : namePartOrDisplayFormOrAffiliation) {
     Object value=element.getValue();
     String elementName=element.getName().getLocalPart();
@@ -11,11 +12,19 @@
       if ((type == null) && (namePart.getValue() != null)) {
         authors.add(namePart.getValue());
       }
-      if ("given".equals(type) && (namePart.getValue() != null)) {
-        foreName.add(namePart.getValue());
-      }
  else       if ("family".equals(type) && (namePart.getValue() != null)) {
+        if (!foreName.isEmpty() && !familyName.isEmpty()) {
+          author=familyName + ", " + Joiner.on(" ").join(foreName);
+          authors.add(author);
+          foreName.clear();
+        }
+ else         if (foreName.isEmpty() && !familyName.isEmpty()) {
+          authors.add(familyName);
+        }
         familyName=namePart.getValue();
+      }
+ else       if ("given".equals(type) && (namePart.getValue() != null)) {
+        foreName.add(namePart.getValue());
       }
     }
  else     if ((value instanceof StringPlusLanguage) && "affiliation".equals(elementName)) {
@@ -24,10 +33,11 @@
     }
   }
   if (!foreName.isEmpty() && !familyName.isEmpty()) {
-    String author=familyName + ", " + Joiner.on(" ").join(foreName);
-    authors.add(author);
+    author=familyName + ", " + Joiner.on(" ").join(foreName);
+    authors.add(author.trim());
+    foreName.clear();
   }
  else   if (foreName.isEmpty() && !familyName.isEmpty()) {
-    authors.add(familyName);
+    authors.add(familyName.trim());
   }
 }

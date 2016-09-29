@@ -1,10 +1,14 @@
 {
-  String cont=new URLDownload(urlQuery).downloadToString(StandardCharsets.UTF_8);
-  Matcher m=GoogleScholarFetcher.BIBTEX_LINK_PATTERN.matcher(cont);
+  String cont=URLDownload.createURLDownloadWithBrowserUserAgent(urlQuery).downloadToString(StandardCharsets.UTF_8);
+  Matcher m=GoogleScholarFetcher.SCHOLAR_ID_PATTERN.matcher(cont);
   int lastRegionStart=0;
   while (m.find()) {
-    String link=m.group(1).replace("&amp;","&");
-    link=link + "&oe=utf-8";
+    String citationsPageURL=CITATIONS_PAGE_URL_BASE + m.group(1) + CITATIONS_PAGE_URL_SUFFIX;
+    String citationsPage=URLDownload.createURLDownloadWithBrowserUserAgent(citationsPageURL).downloadToString(StandardCharsets.UTF_8);
+    Matcher citationPageMatcher=GoogleScholarFetcher.BIBTEX_LINK_PATTERN.matcher(citationsPage);
+    citationPageMatcher.find();
+    String link=citationPageMatcher.group(1).replace("&amp;","&");
+    ;
     String pText;
     String part=cont.substring(lastRegionStart,m.start());
     Matcher titleS=GoogleScholarFetcher.TITLE_START_PATTERN.matcher(part);
@@ -23,6 +27,7 @@
       pText=link;
     }
     pText=pText.replace("[PDF]","");
+    pText=pText.replace("[HTML]","");
     JLabel preview=new JLabel("<html>" + pText + "</html>");
     ids.put(link,preview);
     Matcher linkMatcher=GoogleScholarFetcher.LINK_PATTERN.matcher(pText);

@@ -1,0 +1,10 @@
+{
+  String xmlFileName=filename.replace(".bib",".xml");
+  String tempFilename=tempFile.getCanonicalPath();
+  List<BibEntry> entries=bibtexImporter.importDatabase(importFile,charset).getDatabase().getEntries();
+  Path xmlFile=Paths.get(ModsExportFormatTestFiles.class.getResource(xmlFileName).toURI());
+  modsExportFormat.performExport(databaseContext,tempFile.getPath(),charset,entries);
+  Builder control=Input.from(Files.newInputStream(xmlFile));
+  Builder test=Input.from(Files.newInputStream(Paths.get(tempFilename)));
+  Assert.assertThat(test,CompareMatcher.isSimilarTo(control).withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndText)).throwComparisonFailure());
+}
