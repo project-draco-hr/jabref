@@ -28,16 +28,9 @@
     }
     return true;
   }
- catch (  MalformedURLException e) {
-    LOGGER.warn("Problem with ACM fetcher URL",e);
+ catch (  IOException e) {
+    LOGGER.error("Error while fetching from " + getTitle(),e);
+    preview.showErrorMessage(this.getTitle(),e.getLocalizedMessage());
+    return false;
   }
-catch (  ConnectException e) {
-    status.showMessage(Localization.lang("Could not connect to %0",getTitle()),Localization.lang("Search %0",getTitle()),JOptionPane.ERROR_MESSAGE);
-    LOGGER.warn("Problem with ACM connection",e);
-  }
-catch (  IOException e) {
-    status.showMessage(e.getMessage(),Localization.lang("Search %0",getTitle()),JOptionPane.ERROR_MESSAGE);
-    LOGGER.warn("Problem with ACM Portal",e);
-  }
-  return false;
 }

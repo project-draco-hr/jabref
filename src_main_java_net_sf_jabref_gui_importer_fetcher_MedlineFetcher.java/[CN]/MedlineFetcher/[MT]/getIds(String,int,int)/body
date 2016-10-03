@@ -3,35 +3,27 @@
   String medlineUrl=baseUrl + "/esearch.fcgi?db=pubmed&retmax=" + Integer.toString(pacing)+ "&retstart="+ Integer.toString(start)+ "&term=";
   boolean doCount=true;
   SearchResult result=new SearchResult();
-  try {
-    URL ncbi=new URL(medlineUrl + term);
-    BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
-    String inLine;
-    while ((inLine=in.readLine()) != null) {
-      Matcher idMatcher=ID_PATTERN.matcher(inLine);
-      if (idMatcher.find()) {
-        result.addID(idMatcher.group(1));
-      }
-      Matcher retMaxMatcher=RET_MAX_PATTERN.matcher(inLine);
-      if (retMaxMatcher.find()) {
-        result.retmax=Integer.parseInt(retMaxMatcher.group(1));
-      }
-      Matcher retStartMatcher=RET_START_PATTERN.matcher(inLine);
-      if (retStartMatcher.find()) {
-        result.retstart=Integer.parseInt(retStartMatcher.group(1));
-      }
-      Matcher countMatcher=COUNT_PATTERN.matcher(inLine);
-      if (doCount && countMatcher.find()) {
-        result.count=Integer.parseInt(countMatcher.group(1));
-        doCount=false;
-      }
+  URL ncbi=new URL(medlineUrl + term);
+  BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
+  String inLine;
+  while ((inLine=in.readLine()) != null) {
+    Matcher idMatcher=ID_PATTERN.matcher(inLine);
+    if (idMatcher.find()) {
+      result.addID(idMatcher.group(1));
     }
-  }
- catch (  MalformedURLException e) {
-    LOGGER.warn("Bad url",e);
-  }
-catch (  IOException e) {
-    LOGGER.warn("Connection failed",e);
+    Matcher retMaxMatcher=RET_MAX_PATTERN.matcher(inLine);
+    if (retMaxMatcher.find()) {
+      result.retmax=Integer.parseInt(retMaxMatcher.group(1));
+    }
+    Matcher retStartMatcher=RET_START_PATTERN.matcher(inLine);
+    if (retStartMatcher.find()) {
+      result.retstart=Integer.parseInt(retStartMatcher.group(1));
+    }
+    Matcher countMatcher=COUNT_PATTERN.matcher(inLine);
+    if (doCount && countMatcher.find()) {
+      result.count=Integer.parseInt(countMatcher.group(1));
+      doCount=false;
+    }
   }
   return result;
 }

@@ -26,10 +26,6 @@
     String bibtexPage=new URLDownload(createBibtexQueryURL(searchResultsJson)).downloadToString(Globals.prefs.getDefaultEncoding());
     bibtexPage=preprocessBibtexResultsPage(bibtexPage);
     Collection<BibEntry> parsedBibtexCollection=BibtexParser.fromString(bibtexPage,Globals.prefs.getImportFormatPreferences());
-    if (parsedBibtexCollection == null) {
-      status.showMessage(Localization.lang("Error while fetching from %0",getTitle()),DIALOG_TITLE,JOptionPane.INFORMATION_MESSAGE);
-      return false;
-    }
     int nEntries=parsedBibtexCollection.size();
     Iterator<BibEntry> parsedBibtexCollectionIterator=parsedBibtexCollection.iterator();
     while (parsedBibtexCollectionIterator.hasNext() && shouldContinue) {
@@ -39,15 +35,9 @@
     }
     return true;
   }
- catch (  MalformedURLException e) {
-    LOGGER.warn("Bad URL",e);
-  }
-catch (  ConnectException|UnknownHostException e) {
-    status.showMessage(Localization.lang("Could not connect to %0",getTitle()),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
-  }
-catch (  IOException|JSONException e) {
-    status.showMessage(e.getMessage(),DIALOG_TITLE,JOptionPane.ERROR_MESSAGE);
-    LOGGER.warn("Search IEEEXplore: " + e.getMessage(),e);
+ catch (  IOException|JSONException e) {
+    LOGGER.error("Error while fetching from " + getTitle(),e);
+    ((ImportInspectionDialog)dialog).showErrorMessage(this.getTitle(),e.getLocalizedMessage());
   }
   return false;
 }
