@@ -13,8 +13,8 @@
     throw new IllegalArgumentException("The field name '" + name + "' is reserved");
   }
   changed=true;
-  fields.put(fieldName,value);
-  fieldsAsWords.remove(fieldName);
+  fields.put(fieldName,value.intern());
+  invalidateFieldCache(fieldName);
   FieldChange change=new FieldChange(this,fieldName,oldValue,value);
   eventBus.post(new FieldChangedEvent(change,eventSource));
   return Optional.of(change);
