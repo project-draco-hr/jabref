@@ -1,0 +1,17 @@
+{
+  Map<String,String> serializedMetaData=new TreeMap<>();
+  for (  Map.Entry<String,List<String>> metaItem : stringyMetaData.entrySet()) {
+    StringBuilder stringBuilder=new StringBuilder();
+    for (    String dataItem : metaItem.getValue()) {
+      stringBuilder.append(StringUtil.quote(dataItem,MetaData.SEPARATOR_STRING,MetaData.ESCAPE_CHARACTER)).append(MetaData.SEPARATOR_STRING);
+      if (metaItem.getKey().equals(MetaData.SAVE_ACTIONS) && (FieldFormatterCleanups.ENABLED.equals(dataItem) || FieldFormatterCleanups.DISABLED.equals(dataItem))) {
+        stringBuilder.append(OS.NEWLINE);
+      }
+    }
+    String serializedItem=stringBuilder.toString();
+    if (!serializedItem.isEmpty() && !MetaData.SEPARATOR_STRING.equals(serializedItem)) {
+      serializedMetaData.put(metaItem.getKey(),serializedItem);
+    }
+  }
+  return serializedMetaData;
+}

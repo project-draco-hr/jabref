@@ -1,0 +1,15 @@
+{
+  StringReader valueReader=new StringReader(value);
+  List<String> orderedValue=new ArrayList<>();
+  try {
+    Optional<String> unit;
+    while ((unit=getNextUnit(valueReader)).isPresent()) {
+      orderedValue.add(unit.get());
+    }
+  }
+ catch (  IOException ex) {
+    LOGGER.error("Weird error while parsing meta data.",ex);
+    throw new ParseException("Weird error while parsing meta data.",ex);
+  }
+  return orderedValue;
+}

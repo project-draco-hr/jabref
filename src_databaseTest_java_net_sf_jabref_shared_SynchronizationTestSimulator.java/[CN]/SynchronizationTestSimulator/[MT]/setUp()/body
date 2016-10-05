@@ -1,8 +1,9 @@
 {
   this.dbmsConnection=TestConnector.getTestDBMSConnection(dbmsType);
-  clientContextA=new BibDatabaseContext(new Defaults(BibDatabaseMode.BIBTEX),DatabaseLocation.SHARED,',');
+  GlobalBibtexKeyPattern pattern=new GlobalBibtexKeyPattern(AbstractBibtexKeyPattern.split("[auth][year]"));
+  clientContextA=new BibDatabaseContext(new Defaults(BibDatabaseMode.BIBTEX),DatabaseLocation.SHARED,',',pattern);
   clientContextA.getDBMSSynchronizer().openSharedDatabase(dbmsConnection);
-  clientContextB=new BibDatabaseContext(new Defaults(BibDatabaseMode.BIBTEX),DatabaseLocation.SHARED,',');
+  clientContextB=new BibDatabaseContext(new Defaults(BibDatabaseMode.BIBTEX),DatabaseLocation.SHARED,',',pattern);
   clientContextB.getDBMSSynchronizer().openSharedDatabase(dbmsConnection);
   eventListenerB=new SynchronizationTestEventListener();
   clientContextB.getDBMSSynchronizer().registerListener(eventListenerB);

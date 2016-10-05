@@ -1,7 +1,7 @@
 {
   BibtexParser parser=new BibtexParser(importFormatPreferences);
   ParserResult parserResult=parser.parse(new StringReader("@comment{jabref-meta: saveActions:enabled;title[lower_case]}"));
-  FieldFormatterCleanups saveActions=FieldFormatterCleanups.fromMetaData(parserResult.getMetaData()).get();
+  FieldFormatterCleanups saveActions=parserResult.getMetaData().getSaveActions().get();
   assertTrue(saveActions.isEnabled());
   assertEquals(Collections.singletonList(new FieldFormatterCleanup("title",new LowerCaseFormatter())),saveActions.getConfiguredActions());
 }
