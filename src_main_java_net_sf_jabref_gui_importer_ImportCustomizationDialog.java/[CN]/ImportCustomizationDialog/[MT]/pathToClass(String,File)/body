@@ -1,0 +1,16 @@
+{
+  String className=null;
+  File actualPath=path;
+  while (!actualPath.equals(new File(basePath))) {
+    className=actualPath.getName() + (className == null ? "" : "." + className);
+    actualPath=actualPath.getParentFile();
+  }
+  if (className != null) {
+    int lastDot=className.lastIndexOf('.');
+    if (lastDot < 0) {
+      return className;
+    }
+    className=className.substring(0,lastDot);
+  }
+  return className;
+}
