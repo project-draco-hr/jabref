@@ -1,5 +1,6 @@
 {
   boolean doCount=true;
+  List<String> idList=new ArrayList<>();
   try {
     URL ncbi=createSearchUrl(query,start,pacing);
     BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
@@ -7,7 +8,7 @@
     while ((inLine=in.readLine()) != null) {
       Matcher idMatcher=ID_PATTERN.matcher(inLine);
       if (idMatcher.find()) {
-        addID(idMatcher.group(1));
+        idList.add(idMatcher.group(1));
       }
       Matcher retMaxMatcher=RET_MAX_PATTERN.matcher(inLine);
       if (retMaxMatcher.find()) {
@@ -23,6 +24,7 @@
         doCount=false;
       }
     }
+    return idList;
   }
  catch (  IOException|URISyntaxException e) {
     throw new FetcherException("Unable to get PubMed ID's.",e);
