@@ -1,7 +1,7 @@
 {
   boolean doCount=true;
   try {
-    URL ncbi=createSearchUrl(term,start,pacing);
+    URL ncbi=createSearchUrl(query,start,pacing);
     BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
     String inLine;
     while ((inLine=in.readLine()) != null) {
@@ -24,10 +24,7 @@
       }
     }
   }
- catch (  URISyntaxException e) {
-    LOGGER.warn("Bad url",e);
-  }
-catch (  IOException e) {
-    LOGGER.warn("Connection failed",e);
+ catch (  IOException|URISyntaxException e) {
+    throw new FetcherException(e.getLocalizedMessage(),e);
   }
 }
