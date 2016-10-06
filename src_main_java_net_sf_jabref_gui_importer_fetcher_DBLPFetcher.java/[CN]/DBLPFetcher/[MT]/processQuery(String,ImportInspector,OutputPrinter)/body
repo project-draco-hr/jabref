@@ -1,6 +1,5 @@
 {
   final HashMap<String,Boolean> bibentryKnown=new HashMap<>();
-  boolean res=false;
   this.query=newQuery;
   shouldContinue=true;
   double saveThreshold=DuplicateCheck.duplicateThreshold;
@@ -44,14 +43,14 @@
       inspector.setProgress(count,bibtexUrlList.size());
       count++;
     }
-    res=true;
+    return true;
   }
  catch (  IOException e) {
-    LOGGER.warn("Communcation problems",e);
-    status.showMessage(e.getMessage());
+    LOGGER.error("Error while fetching from " + getTitle(),e);
+    ((ImportInspectionDialog)inspector).showErrorMessage(this.getTitle(),e.getLocalizedMessage());
   }
  finally {
     DuplicateCheck.duplicateThreshold=saveThreshold;
   }
-  return res;
+  return false;
 }

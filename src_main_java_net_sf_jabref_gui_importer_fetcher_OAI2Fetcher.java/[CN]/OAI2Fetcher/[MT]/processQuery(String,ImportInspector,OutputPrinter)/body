@@ -1,5 +1,4 @@
 {
-  status=statusOP;
   try {
     shouldContinue=true;
     String[] keys=query.replace(" ",";").split(";");
@@ -17,7 +16,15 @@
       if (!shouldContinue) {
         break;
       }
-      BibEntry be=importOai2Entry(key);
+      BibEntry be=null;
+      try {
+        be=importOai2Entry(key);
+      }
+ catch (      SAXException e) {
+        String url=constructUrl(OAI2Fetcher.fixKey(key));
+        LOGGER.error("Error while fetching from " + getTitle(),e);
+        ((ImportInspectionDialog)dialog).showMessage(Localization.lang("Error while fetching from %0",getTitle()) + "\n" + Localization.lang("A SAX exception occurred while parsing '%0':",url),Localization.lang("Search %0",getTitle()),JOptionPane.ERROR_MESSAGE);
+      }
       if (shouldWait()) {
         lastCall=new Date();
       }
@@ -28,9 +35,9 @@
     }
     return true;
   }
- catch (  Exception e) {
-    status.setStatus(Localization.lang("Error while fetching from %0","OAI2"));
-    LOGGER.error("Error while fetching from OAI2",e);
+ catch (  IOException|InterruptedException e) {
+    LOGGER.error("Error while fetching from " + getTitle(),e);
+    ((ImportInspectionDialog)dialog).showErrorMessage(this.getTitle(),e.getLocalizedMessage());
   }
   return false;
 }

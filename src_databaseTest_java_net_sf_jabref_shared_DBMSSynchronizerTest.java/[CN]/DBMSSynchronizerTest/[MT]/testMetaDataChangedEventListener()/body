@@ -2,8 +2,8 @@
   MetaData testMetaData=new MetaData();
   testMetaData.registerListener(dbmsSynchronizer);
   dbmsSynchronizer.setMetaData(testMetaData);
-  testMetaData.putData("databaseType",Arrays.asList("bibtex"));
-  Map<String,String> expectedMap=MetaDataSerializer.getSerializedStringMap(testMetaData);
+  testMetaData.setMode(BibDatabaseMode.BIBTEX);
+  Map<String,String> expectedMap=MetaDataSerializer.getSerializedStringMap(testMetaData,pattern);
   Map<String,String> actualMap=dbmsProcessor.getSharedMetaData();
   Assert.assertEquals(expectedMap,actualMap);
 }

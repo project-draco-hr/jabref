@@ -2,7 +2,8 @@
   dbmsConnection=TestConnector.getTestDBMSConnection(dbmsType);
   bibDatabase=new BibDatabase();
   BibDatabaseContext context=new BibDatabaseContext(bibDatabase);
-  dbmsSynchronizer=new DBMSSynchronizer(context,',');
+  pattern=new GlobalBibtexKeyPattern(AbstractBibtexKeyPattern.split("[auth][year]"));
+  dbmsSynchronizer=new DBMSSynchronizer(context,',',pattern);
   dbmsProcessor=DBMSProcessor.getProcessorInstance(dbmsConnection);
   bibDatabase.registerListener(dbmsSynchronizer);
   dbmsSynchronizer.openSharedDatabase(dbmsConnection);

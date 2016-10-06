@@ -3,7 +3,10 @@
     return "";
   }
   int i;
-  String field=inField.replaceAll("&|\\\\&","&amp;").replaceAll("[\\n]{1,}","<p>").replace("\\$","&dollar;").replaceAll("\\$([^\\$]*)\\$","\\{$1\\}");
+  String field=AMP_LATEX.matcher(inField).replaceAll("&amp;");
+  field=P_LATEX.matcher(field).replaceAll("<p>");
+  field=DOLLAR_LATEX.matcher(field).replaceAll("&dollar;");
+  field=DOLLARS_LATEX.matcher(field).replaceAll("\\{$1\\}");
   StringBuilder sb=new StringBuilder();
   StringBuilder currentCommand=null;
   char c;
@@ -143,5 +146,9 @@
       escaped=false;
     }
   }
-  return sb.toString().replace("&amp;","&").replace("<p>","\n").replace("&dollar;","$").replace("~","\u00A0");
+  String result=AMP.matcher(sb.toString()).replaceAll("&");
+  result=P.matcher(result).replaceAll("\n");
+  result=DOLLAR.matcher(result).replaceAll("\\$");
+  result=TILDE.matcher(result).replaceAll("\u00A0");
+  return result;
 }

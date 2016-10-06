@@ -18,22 +18,11 @@
   if (getShowing() != null) {
     divLoc=splitPane.getDividerLocation();
   }
-  if (entryEditors.containsKey(be.getType())) {
-    entryEditor=entryEditors.get(be.getType());
-    entryEditor.switchTo(be);
-    if (visName != null) {
-      entryEditor.setVisiblePanel(visName);
-    }
-    splitPane.setBottomComponent(entryEditor);
+  entryEditor=new EntryEditor(frame,BasePanel.this,be);
+  if (visName != null) {
+    entryEditor.setVisiblePanel(visName);
   }
- else {
-    entryEditor=new EntryEditor(frame,BasePanel.this,be);
-    if (visName != null) {
-      entryEditor.setVisiblePanel(visName);
-    }
-    splitPane.setBottomComponent(entryEditor);
-    entryEditors.put(be.getType(),entryEditor);
-  }
+  splitPane.setBottomComponent(entryEditor);
   if (divLoc > 0) {
     splitPane.setDividerLocation(divLoc);
   }

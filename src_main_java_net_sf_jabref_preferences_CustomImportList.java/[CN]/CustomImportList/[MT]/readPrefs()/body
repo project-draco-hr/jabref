@@ -3,7 +3,12 @@
   List<String> s;
   while (!((s=prefs.getStringList(JabRefPreferences.CUSTOM_IMPORT_FORMAT + i)).isEmpty())) {
     try {
-      super.add(new CustomImporter(s));
+      if (s.size() == 2) {
+        super.add(new CustomImporter(s.get(0),s.get(1)));
+      }
+ else {
+        super.add(new CustomImporter(s.get(3),s.get(2)));
+      }
     }
  catch (    Exception e) {
       LOGGER.warn("Could not load " + s.get(0) + " from preferences. Will ignore.",e);

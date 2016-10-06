@@ -1,25 +1,12 @@
 {
-  MetaDataChange metadataChange=new MetaDataChange(inMem1,inTemp1);
-  List<String> handledOnDisk=new ArrayList<>();
-  for (  String key : inTemp1) {
-    List<String> vod=onDisk.getData(key);
-    if (vod == null) {
-      metadataChange.insertMetaDataRemoval(key);
+  if (!onTmp.isEmpty()) {
+    if (!inMemory.equals(onDisk)) {
+      changes.add(new MetaDataChange(inMemory,onDisk));
     }
+  }
  else {
-      List<String> vit=inTemp1.getData(key);
-      if (!vod.equals(vit)) {
-        metadataChange.insertMetaDataChange(key,vod);
-      }
-      handledOnDisk.add(key);
+    if (!onDisk.isEmpty() || !onTmp.equals(onDisk)) {
+      changes.add(new MetaDataChange(inMemory,onDisk));
     }
-  }
-  for (  String key : onDisk) {
-    if (!handledOnDisk.contains(key)) {
-      metadataChange.insertMetaDataAddition(key,onDisk.getData(key));
-    }
-  }
-  if (metadataChange.getChangeCount() > 0) {
-    changes.add(metadataChange);
   }
 }
