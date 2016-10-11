@@ -1,0 +1,18 @@
+{
+  Component[] preferenceTabs=main.getComponents();
+  for (  Component tab : preferenceTabs) {
+    if (!((PrefsTab)tab).validateSettings()) {
+      return;
+    }
+  }
+  for (  Component tab : preferenceTabs) {
+    ((PrefsTab)tab).storeSettings();
+  }
+  Globals.prefs.flush();
+  setVisible(false);
+  MainTable.updateRenderers();
+  GUIGlobals.updateEntryEditorColors();
+  frame.setupAllTables();
+  frame.getGroupSelector().revalidateGroups();
+  frame.output(Localization.lang("Preferences recorded."));
+}
