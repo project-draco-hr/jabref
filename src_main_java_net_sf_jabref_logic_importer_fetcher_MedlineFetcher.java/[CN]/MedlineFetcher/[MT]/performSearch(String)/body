@@ -1,17 +1,18 @@
 {
-  final int NUMBER_TO_FETCH=50;
   List<BibEntry> entryList=new LinkedList<>();
   if (query.isEmpty()) {
     return Collections.emptyList();
   }
  else {
     String searchTerm=replaceCommaWithAND(query);
-    List<String> idList=getPubMedIdsFromQuery(searchTerm,0,NUMBER_TO_FETCH);
-    if (count == 0) {
-      LOGGER.info("No references found");
+    List<String> idList=getPubMedIdsFromQuery(searchTerm);
+    if (idList.isEmpty()) {
+      LOGGER.info(Localization.lang("No results found."));
     }
-    List<BibEntry> bibs=fetchMedline(idList);
-    entryList.addAll(bibs);
+    if (numberOfResultsFound > 20) {
+      LOGGER.info(numberOfResultsFound + " results found. Only 20 relevant results will be fetched by default.");
+    }
+    entryList=fetchMedline(idList);
     return entryList;
   }
 }

@@ -1,0 +1,25 @@
+{
+  List<String> idList=new ArrayList<>();
+  try {
+    URL ncbi=createSearchUrl(query);
+    BufferedReader in=new BufferedReader(new InputStreamReader(ncbi.openStream()));
+    String inLine;
+    while ((inLine=in.readLine()) != null) {
+      if (inLine.contains("</IdList>")) {
+        break;
+      }
+      Matcher idMatcher=ID_PATTERN.matcher(inLine);
+      if (idMatcher.find()) {
+        idList.add(idMatcher.group(1));
+      }
+      Matcher countMatcher=COUNT_PATTERN.matcher(inLine);
+      if (countMatcher.find()) {
+        numberOfResultsFound=Integer.parseInt(countMatcher.group(1));
+      }
+    }
+    return idList;
+  }
+ catch (  IOException|URISyntaxException e) {
+    throw new FetcherException("Unable to get PubMed IDs",e);
+  }
+}
