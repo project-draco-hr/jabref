@@ -1,0 +1,17 @@
+{
+  super.paintComponent(graphics);
+  if (this.getText().isEmpty()) {
+    Font prev=graphics.getFont();
+    Color prevColor=graphics.getColor();
+    graphics.setColor(UIManager.getColor("textInactiveText"));
+    int textHeight=graphics.getFontMetrics().getHeight();
+    int x=this.getInsets().left;
+    Graphics2D g2d=(Graphics2D)graphics;
+    RenderingHints hints=g2d.getRenderingHints();
+    g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    g2d.drawString(textWhenNotFocused,x,textHeight + this.getInsets().top);
+    g2d.setRenderingHints(hints);
+    graphics.setFont(prev);
+    graphics.setColor(prevColor);
+  }
+}
