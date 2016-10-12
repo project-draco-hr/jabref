@@ -1,0 +1,19 @@
+{
+  try {
+    obtainAndModifyCookie();
+    List<BibEntry> foundEntries=new ArrayList<>(10);
+    URIBuilder uriBuilder=new URIBuilder(BASIC_SEARCH_URL);
+    uriBuilder.addParameter("hl","en");
+    uriBuilder.addParameter("btnG","Search");
+    uriBuilder.addParameter("q",query);
+    addHitsFromQuery(foundEntries,uriBuilder.toString());
+    if (foundEntries.size() == 10) {
+      uriBuilder.addParameter("start","10");
+      addHitsFromQuery(foundEntries,uriBuilder.toString());
+    }
+    return foundEntries;
+  }
+ catch (  IOException|URISyntaxException e) {
+    throw new FetcherException("Error while fetching from " + getName(),e);
+  }
+}

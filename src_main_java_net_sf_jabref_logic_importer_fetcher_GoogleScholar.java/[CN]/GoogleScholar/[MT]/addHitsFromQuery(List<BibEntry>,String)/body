@@ -1,0 +1,9 @@
+{
+  String content=URLDownload.createURLDownloadWithBrowserUserAgent(queryURL).downloadToString(StandardCharsets.UTF_8);
+  Matcher matcher=LINK_TO_BIB_PATTERN.matcher(content);
+  while (matcher.find()) {
+    String citationsPageURL=matcher.group().replace("&amp;","&");
+    BibEntry newEntry=downloadEntry(citationsPageURL);
+    entryList.add(newEntry);
+  }
+}
