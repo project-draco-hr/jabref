@@ -5,35 +5,35 @@
   try {
     URL ncbi=createSearchUrl(query);
     XMLInputFactory inputFactory=XMLInputFactory.newFactory();
-    XMLStreamReader eventReader=inputFactory.createXMLStreamReader(ncbi.openStream());
-    fetchLoop:     while (eventReader.hasNext()) {
-      int event=eventReader.getEventType();
+    XMLStreamReader streamReader=inputFactory.createXMLStreamReader(ncbi.openStream());
+    fetchLoop:     while (streamReader.hasNext()) {
+      int event=streamReader.getEventType();
 switch (event) {
 case XMLStreamConstants.START_ELEMENT:
-        if (eventReader.getName().toString().equals("Count")) {
+        if (streamReader.getName().toString().equals("Count")) {
           firstOccurrenceOfCount=true;
         }
-      if (eventReader.getName().toString().equals("IdList")) {
+      if (streamReader.getName().toString().equals("IdList")) {
         fetchIDs=true;
       }
     break;
 case XMLStreamConstants.CHARACTERS:
   if (firstOccurrenceOfCount) {
-    numberOfResultsFound=Integer.parseInt(eventReader.getText());
+    numberOfResultsFound=Integer.parseInt(streamReader.getText());
     firstOccurrenceOfCount=false;
   }
 if (fetchIDs) {
-  idList.add(eventReader.getText());
+  idList.add(streamReader.getText());
 }
 break;
 case XMLStreamConstants.END_ELEMENT:
-if (eventReader.getName().toString().equals("IdList")) {
+if (streamReader.getName().toString().equals("IdList")) {
 break fetchLoop;
 }
 }
-eventReader.next();
+streamReader.next();
 }
-eventReader.close();
+streamReader.close();
 return idList;
 }
  catch (IOException|URISyntaxException e) {
