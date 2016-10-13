@@ -1,0 +1,14 @@
+{
+  CookieManager cookieManager=new CookieManager();
+  CookieHandler.setDefault(cookieManager);
+  cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+  URLConnection con=openConnection();
+  con.getHeaderFields();
+  try {
+    return cookieManager.getCookieStore().get(source.toURI());
+  }
+ catch (  URISyntaxException e) {
+    LOGGER.error("Unable to convert download URL to URI",e);
+    return Collections.emptyList();
+  }
+}

@@ -1,13 +1,21 @@
 {
-  Map<String,Integer> preferredPositions=new HashMap<>();
+  Map<Class<? extends SidePaneComponent>,Integer> preferredPositions=new HashMap<>();
   List<String> componentNames=Globals.prefs.getStringList(JabRefPreferences.SIDE_PANE_COMPONENT_NAMES);
   List<String> componentPositions=Globals.prefs.getStringList(JabRefPreferences.SIDE_PANE_COMPONENT_PREFERRED_POSITIONS);
   for (int i=0; i < componentNames.size(); ++i) {
+    String componentName=componentNames.get(i);
     try {
-      preferredPositions.put(componentNames.get(i),Integer.parseInt(componentPositions.get(i)));
+      Class<? extends SidePaneComponent> componentClass=(Class<? extends SidePaneComponent>)Class.forName(componentName);
+      preferredPositions.put(componentClass,Integer.parseInt(componentPositions.get(i)));
     }
- catch (    NumberFormatException e) {
-      LOGGER.info("Invalid number format for side pane component '" + componentNames.get(i) + "'.",e);
+ catch (    ClassNotFoundException e) {
+      LOGGER.error("Following side pane could not be found: " + componentName,e);
+    }
+catch (    ClassCastException e) {
+      LOGGER.error("Following Class is no side pane: '" + componentName,e);
+    }
+catch (    NumberFormatException e) {
+      LOGGER.info("Invalid number format for side pane component '" + componentName + "'.",e);
     }
   }
   return preferredPositions;

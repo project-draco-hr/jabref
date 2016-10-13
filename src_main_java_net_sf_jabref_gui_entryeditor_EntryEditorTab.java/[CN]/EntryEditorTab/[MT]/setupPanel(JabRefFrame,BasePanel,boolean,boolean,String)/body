@@ -37,7 +37,11 @@
       defaultHeight=0;
     }
  else {
-      fieldEditor=new TextArea(field,null);
+      String prompt="";
+      if (field.equals(FieldName.AUTHOR) || field.equals(FieldName.EDITOR)) {
+        prompt=String.format("%1$s and %1$s and others",Localization.lang("Firstname Lastname"));
+      }
+      fieldEditor=new TextArea(field,null,prompt);
       bPanel.frame().getGlobalSearchBar().getSearchQueryHighlightObservable().addSearchListener((TextArea)fieldEditor);
       defaultHeight=fieldEditor.getPane().getPreferredSize().height;
     }

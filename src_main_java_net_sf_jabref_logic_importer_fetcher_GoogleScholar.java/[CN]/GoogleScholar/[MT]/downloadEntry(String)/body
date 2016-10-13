@@ -1,0 +1,19 @@
+{
+  String downloadedContent=URLDownload.createURLDownloadWithBrowserUserAgent(link).downloadToString(StandardCharsets.UTF_8);
+  BibtexParser parser=new BibtexParser(importFormatPreferences);
+  ParserResult result=parser.parse(new StringReader(downloadedContent));
+  if ((result == null) || (result.getDatabase() == null)) {
+    throw new FetcherException("Parsing entries from Google Scholar bib file failed.");
+  }
+ else {
+    Collection<BibEntry> entries=result.getDatabase().getEntries();
+    if (entries.size() != 1) {
+      LOGGER.debug(entries.size() + " entries found! (" + link+ ")");
+      throw new FetcherException("Parsing entries from Google Scholar bib file failed.");
+    }
+ else {
+      BibEntry entry=entries.iterator().next();
+      return entry;
+    }
+  }
+}

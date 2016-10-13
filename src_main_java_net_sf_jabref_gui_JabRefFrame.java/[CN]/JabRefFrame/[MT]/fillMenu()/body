@@ -103,13 +103,13 @@
   search.add(normalSearch);
   search.add(replaceAll);
   search.addSeparator();
-  search.add(new JCheckBoxMenuItem(generalFetcher.getAction()));
+  search.add(new JCheckBoxMenuItem(generalFetcher.getToggleAction()));
   if (prefs.getBoolean(JabRefPreferences.WEB_SEARCH_VISIBLE)) {
-    sidePaneManager.register(generalFetcher.getTitle(),generalFetcher);
-    sidePaneManager.show(generalFetcher.getTitle());
+    sidePaneManager.register(generalFetcher);
+    sidePaneManager.show(GeneralFetcher.class);
   }
   mb.add(search);
-  groups.add(new JCheckBoxMenuItem(toggleGroups));
+  groups.add(new JCheckBoxMenuItem(groupSelector.getToggleAction()));
   groups.addSeparator();
   groups.add(addToGroup);
   groups.add(removeFromGroup);
@@ -147,8 +147,8 @@
   view.add(decreseFontSize);
   view.addSeparator();
   view.add(new JCheckBoxMenuItem(toggleToolbar));
-  view.add(new JCheckBoxMenuItem(enableToggle(generalFetcher.getAction())));
-  view.add(new JCheckBoxMenuItem(toggleGroups));
+  view.add(new JCheckBoxMenuItem(enableToggle(generalFetcher.getToggleAction())));
+  view.add(new JCheckBoxMenuItem(groupSelector.getToggleAction()));
   view.add(new JCheckBoxMenuItem(togglePreview));
   view.add(getNextPreviewStyleAction());
   view.add(getPreviousPreviewStyleAction());
@@ -183,10 +183,7 @@
   mb.add(quality);
   tools.add(newSubDatabaseAction);
   tools.add(writeXmpAction);
-  OpenOfficePanel otp=OpenOfficePanel.getInstance();
-  otp.init(this,sidePaneManager);
-  optMenuItem=otp.getMenuItem();
-  tools.add(optMenuItem);
+  tools.add(new JCheckBoxMenuItem(openOfficePanel.getToggleAction()));
   tools.add(pushExternalButton.getMenuAction());
   tools.addSeparator();
   tools.add(openFolder);
