@@ -8,7 +8,10 @@
     if (isLoaded(dbFile) || !dbFile.exists()) {
       continue;
     }
-    ParserResult parsedDatabase=OpenDatabase.loadDatabaseOrAutoSave(fileName,false,Globals.prefs.getImportFormatPreferences());
+    if (BackupManager.checkForBackupFile(dbFile.toPath())) {
+      BackupUIManager.showRestoreBackupDialog(mainFrame,dbFile.toPath());
+    }
+    ParserResult parsedDatabase=OpenDatabase.loadDatabase(fileName,Globals.prefs.getImportFormatPreferences());
     if (parsedDatabase.isNullResult()) {
       LOGGER.error(Localization.lang("Error opening file") + " '" + dbFile.getPath()+ "'");
     }

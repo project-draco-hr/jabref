@@ -1,2 +1,28 @@
 {
+  JabRefExecutorService.INSTANCE.shutdownEverything();
+  dispose();
+  prefs.putBoolean(JabRefPreferences.WINDOW_MAXIMISED,getExtendedState() == Frame.MAXIMIZED_BOTH);
+  prefs.putBoolean(JabRefPreferences.TOOLBAR_VISIBLE,tlb.isVisible());
+  int width=splitPane.getDividerLocation();
+  if (width > 0) {
+    prefs.putInt(JabRefPreferences.SIDE_PANE_WIDTH,width);
+  }
+  if (prefs.getBoolean(JabRefPreferences.OPEN_LAST_EDITED)) {
+    if (filenames.isEmpty()) {
+      prefs.remove(JabRefPreferences.LAST_EDITED);
+    }
+ else {
+      prefs.putStringList(JabRefPreferences.LAST_EDITED,filenames);
+      File focusedDatabase=getCurrentBasePanel().getBibDatabaseContext().getDatabaseFile().orElse(null);
+      new LastFocusedTabPreferences(prefs).setLastFocusedTab(focusedDatabase);
+    }
+  }
+  fileHistory.storeHistory();
+  prefs.customExports.store(Globals.prefs);
+  prefs.customImports.store();
+  CustomEntryTypesManager.saveCustomEntryTypes(prefs);
+  prefs.flush();
+  for (  Window window : Window.getWindows()) {
+    window.dispose();
+  }
 }

@@ -1,8 +1,16 @@
 {
-  tabbedPane.add(bp.getTabTitle(),bp);
+  tabbedPane.add(basePanel.getTabTitle(),basePanel);
   updateAllTabTitles();
   if (raisePanel) {
-    tabbedPane.setSelectedComponent(bp);
+    tabbedPane.setSelectedComponent(basePanel);
   }
-  bp.getUndoManager().registerListener(new UndoRedoEventManager());
+  basePanel.getUndoManager().registerListener(new UndoRedoEventManager());
+  BibDatabaseContext context=basePanel.getBibDatabaseContext();
+  if (readyForAutosave(context)) {
+    AutosaveManager autosaver=AutosaveManager.start(context);
+    autosaver.registerListener(new AutosaveUIManager(basePanel));
+  }
+  if (readyForBackup(context)) {
+    BackupManager.start(context);
+  }
 }

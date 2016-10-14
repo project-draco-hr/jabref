@@ -1,3 +1,10 @@
 {
-  openNewSharedDatabaseTab(dbmsConnectionProperties,true);
+  JabRefFrame frame=JabRefGUI.getMainFrame();
+  BibDatabaseMode selectedMode=Globals.prefs.getDefaultBibDatabaseMode();
+  BibDatabaseContext bibDatabaseContext=new BibDatabaseContext(new Defaults(selectedMode),DatabaseLocation.SHARED,Globals.prefs.getKeywordDelimiter(),Globals.prefs.getKeyPattern());
+  dbmsSynchronizer=bibDatabaseContext.getDBMSSynchronizer();
+  dbmsSynchronizer.openSharedDatabase(dbmsConnectionProperties);
+  dbmsSynchronizer.registerListener(this);
+  frame.output(Localization.lang("Connection_to_%0_server_established.",dbmsConnectionProperties.getType().toString()));
+  frame.addTab(bibDatabaseContext,true);
 }

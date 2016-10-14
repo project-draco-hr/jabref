@@ -1,0 +1,14 @@
+{
+  assert(properties.isValid());
+  setType(properties.getType().toString());
+  setHost(properties.getHost());
+  setPort(String.valueOf(properties.getPort()));
+  setName(properties.getDatabase());
+  setUser(properties.getUser());
+  try {
+    setPassword(new Password(properties.getPassword().toCharArray(),properties.getUser()).encrypt());
+  }
+ catch (  GeneralSecurityException|UnsupportedEncodingException e) {
+    LOGGER.error("Could not store the password due to encryption problems.",e);
+  }
+}
