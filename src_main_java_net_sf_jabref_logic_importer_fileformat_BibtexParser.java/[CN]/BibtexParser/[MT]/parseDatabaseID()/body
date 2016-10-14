@@ -1,0 +1,18 @@
+{
+  while (!eof) {
+    skipWhitespace();
+    char c=(char)read();
+    if (c == '%') {
+      skipWhitespace();
+      String label=parseTextToken().trim();
+      if (label.equals(BibtexDatabaseWriter.DATABASE_ID_PREFIX)) {
+        skipWhitespace();
+        database.setDatabaseID(parseTextToken().trim());
+      }
+    }
+ else     if (c == '@') {
+      unread(c);
+      break;
+    }
+  }
+}

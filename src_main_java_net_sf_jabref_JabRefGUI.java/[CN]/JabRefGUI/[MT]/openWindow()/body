@@ -22,27 +22,30 @@
         failed.add(pr);
         parserResultIterator.remove();
       }
- else       if (!pr.isPostponedAutosaveFound()) {
-        if (pr.toOpenTab()) {
-          toOpenTab.add(pr);
+ else       if (Objects.nonNull(pr.getDatabase().getDatabaseID())) {
+        try {
+          new SharedDatabaseUIManager(mainFrame).openSharedDatabaseFromParserResult(pr);
         }
- else {
-          JabRefGUI.getMainFrame().addParserResult(pr,first);
-          first=false;
+ catch (        SQLException|DatabaseNotSupportedException|InvalidDBMSConnectionPropertiesException e) {
+          pr.getDatabaseContext().setDatabaseFile(null);
+          pr.getDatabase().setDatabaseID(null);
+          LOGGER.error("Connection error",e);
+          JOptionPane.showMessageDialog(mainFrame,e.getMessage() + "\n\n" + Localization.lang("A local copy will be opened."),Localization.lang("Connection error"),JOptionPane.WARNING_MESSAGE);
         }
+        toOpenTab.add(pr);
+      }
+ else       if (pr.toOpenTab()) {
+        toOpenTab.add(pr);
       }
  else {
-        parserResultIterator.remove();
-        postponed.add(pr.getFile().get());
+        JabRefGUI.getMainFrame().addParserResult(pr,first);
+        first=false;
       }
     }
   }
   for (  ParserResult pr : toOpenTab) {
     JabRefGUI.getMainFrame().addParserResult(pr,first);
     first=false;
-  }
-  if (Globals.prefs.getBoolean(JabRefPreferences.AUTO_SAVE)) {
-    Globals.startAutoSaveManager(JabRefGUI.getMainFrame());
   }
   if (Globals.prefs.getBoolean(JabRefPreferences.WINDOW_MAXIMISED)) {
     JabRefGUI.getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -62,22 +65,7 @@
     OpenDatabaseAction.performPostOpenActions(panel,pr,true);
   }
   LOGGER.debug("Finished adding panels");
-  if (!postponed.isEmpty()) {
-    AutosaveStartupPrompter asp=new AutosaveStartupPrompter(JabRefGUI.getMainFrame(),postponed);
-    SwingUtilities.invokeLater(asp);
-  }
   if (!bibDatabases.isEmpty()) {
     JabRefGUI.getMainFrame().getCurrentBasePanel().getMainTable().requestFocus();
-  }
-  boolean isSharedDatabaseEdited=Globals.prefs.getBoolean(JabRefPreferences.SHARED_DATABASE_LAST_EDITED);
-  if (isSharedDatabaseEdited) {
-    boolean isFocused=Globals.prefs.getBoolean(JabRefPreferences.SHARED_DATABASE_LAST_FOCUSED);
-    try {
-      new SharedDatabaseUIManager(mainFrame).openLastSharedDatabaseTab(isFocused);
-    }
- catch (    SQLException|DatabaseNotSupportedException e) {
-      LOGGER.info("Failed to restore shared database. Use connection dialog to connect.");
-      new OpenSharedDatabaseDialog(mainFrame).setVisible(true);
-    }
   }
 }

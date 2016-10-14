@@ -1,0 +1,14 @@
+{
+  String databaseID=parserResult.getDatabase().getDatabaseID();
+  DBMSConnectionProperties dbmsConnectionProperties=new DBMSConnectionProperties(new SharedDatabasePreferences(databaseID));
+  JabRefFrame frame=JabRefGUI.getMainFrame();
+  BibDatabaseMode selectedMode=Globals.prefs.getDefaultBibDatabaseMode();
+  BibDatabaseContext bibDatabaseContext=new BibDatabaseContext(new Defaults(selectedMode),DatabaseLocation.SHARED,Globals.prefs.getKeywordDelimiter(),Globals.prefs.getKeyPattern());
+  bibDatabaseContext.getDatabase().setDatabaseID(databaseID);
+  bibDatabaseContext.setDatabaseFile(parserResult.getDatabaseContext().getDatabaseFile().orElse(null));
+  dbmsSynchronizer=bibDatabaseContext.getDBMSSynchronizer();
+  dbmsSynchronizer.openSharedDatabase(dbmsConnectionProperties);
+  dbmsSynchronizer.registerListener(this);
+  parserResult.setDatabaseContext(bibDatabaseContext);
+  frame.output(Localization.lang("Connection_to_%0_server_established.",dbmsConnectionProperties.getType().toString()));
+}
