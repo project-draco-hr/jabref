@@ -46,7 +46,8 @@ System.err.println("The given pdf does not contain any XMP-metadata.");
 break;
 }
 if (args[0].endsWith(".bib") && args[1].endsWith(".pdf")) {
-ParserResult result=BibtexParser.parse(new FileReader(args[0]),importFormatPreferences);
+BufferedReader reader=new BufferedReader(new InputStreamReader(new FileInputStream(args[0]),StandardCharsets.UTF_8));
+ParserResult result=new BibtexParser(importFormatPreferences).parse(reader);
 Collection<BibEntry> entries=result.getDatabase().getEntries();
 if (entries.isEmpty()) {
 System.err.println("Could not find BibEntry in " + args[0]);
