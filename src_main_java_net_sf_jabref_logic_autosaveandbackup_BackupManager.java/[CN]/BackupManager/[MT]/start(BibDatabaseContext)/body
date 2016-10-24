@@ -3,7 +3,7 @@
   Optional<File> originalFile=bibDatabaseContext.getDatabaseFile();
   if (originalFile.isPresent()) {
     backupManager.originalPath=originalFile.get().toPath();
-    backupManager.backupPath=Paths.get(backupManager.originalPath.toString() + BACKUP_FILENAME_ENDING);
+    backupManager.backupPath=getBackupPath(backupManager.originalPath);
     bibDatabaseContext.getDatabase().registerListener(backupManager);
     bibDatabaseContext.getMetaData().registerListener(backupManager);
     runningInstances.add(backupManager);
