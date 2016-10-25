@@ -13,7 +13,15 @@
     }
     return foundEntries;
   }
- catch (  IOException|URISyntaxException e) {
+ catch (  URISyntaxException e) {
     throw new FetcherException("Error while fetching from " + getName(),e);
+  }
+catch (  IOException e) {
+    if (e.getMessage().contains("Server returned HTTP response code: 503 for URL")) {
+      throw new FetcherException("Fetching from Google Scholar failed.",Localization.lang("This might be caused by reaching the traffic limitation of Google Scholar (see 'Help' for details)."),e);
+    }
+ else {
+      throw new FetcherException("Error while fetching from " + getName(),e);
+    }
   }
 }
