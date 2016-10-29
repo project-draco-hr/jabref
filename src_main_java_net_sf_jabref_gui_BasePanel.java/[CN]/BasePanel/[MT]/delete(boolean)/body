@@ -13,11 +13,11 @@
     selectPreviousEntry();
   }
   NamedCompound compound;
-  if (!cut) {
-    compound=new NamedCompound((entries.size() > 1 ? Localization.lang("delete entries") : Localization.lang("delete entry")));
+  if (cut) {
+    compound=new NamedCompound((entries.size() > 1 ? Localization.lang("cut entries") : Localization.lang("cut entry")));
   }
  else {
-    compound=new NamedCompound((entries.size() > 1 ? Localization.lang("cut entries") : Localization.lang("cut entry")));
+    compound=new NamedCompound((entries.size() > 1 ? Localization.lang("delete entries") : Localization.lang("delete entry")));
   }
   for (  BibEntry entry : entries) {
     compound.addEdit(new UndoableRemoveEntry(bibDatabaseContext.getDatabase(),entry,BasePanel.this));
@@ -27,6 +27,6 @@
   compound.end();
   getUndoManager().addEdit(compound);
   markBaseChanged();
-  frame.output(formatOutputMessage(!cut ? Localization.lang("Deleted") : Localization.lang("Cut"),entries.size()));
+  frame.output(formatOutputMessage(cut ? Localization.lang("Cut") : Localization.lang("Deleted"),entries.size()));
   mainTable.requestFocus();
 }
