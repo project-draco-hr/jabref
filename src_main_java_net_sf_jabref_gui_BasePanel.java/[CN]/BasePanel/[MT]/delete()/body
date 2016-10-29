@@ -6,6 +6,12 @@
   if (!showDeleteConfirmationDialog(entries.size())) {
     return;
   }
+  if (mainTable.getSelectedRow() != mainTable.getRowCount() - 1) {
+    selectNextEntry();
+  }
+ else {
+    selectPreviousEntry();
+  }
   NamedCompound compound=new NamedCompound((entries.size() > 1 ? Localization.lang("delete entries") : Localization.lang("delete entry")));
   for (  BibEntry entry : entries) {
     compound.addEdit(new UndoableRemoveEntry(bibDatabaseContext.getDatabase(),entry,BasePanel.this));
@@ -16,4 +22,5 @@
   getUndoManager().addEdit(compound);
   markBaseChanged();
   frame.output(formatOutputMessage(Localization.lang("Deleted"),entries.size()));
+  mainTable.requestFocus();
 }
