@@ -1,0 +1,13 @@
+{
+  Optional<Version> newerVersion=installedVersion.shouldBeUpdatedTo(availableVersions);
+  if (!newerVersion.isPresent() || (newerVersion.get().equals(toBeIgnored) && !manualExecution)) {
+    String upToDate=Localization.lang("JabRef is up-to-date.");
+    if (manualExecution) {
+      JOptionPane.showMessageDialog(this.mainFrame,upToDate,upToDate,JOptionPane.INFORMATION_MESSAGE);
+    }
+    this.mainFrame.output(upToDate);
+  }
+ else {
+    new NewVersionDialog(this.mainFrame,installedVersion,newerVersion.get());
+  }
+}
