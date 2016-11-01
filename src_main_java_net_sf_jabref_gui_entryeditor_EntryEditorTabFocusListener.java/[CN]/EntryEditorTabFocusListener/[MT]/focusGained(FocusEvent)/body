@@ -8,7 +8,7 @@ synchronized (this) {
     if (event.getSource() instanceof JTextComponent) {
       textComponent=(JTextComponent)event.getSource();
       documentListener=new DocumentListener(){
-        void fire(){
+        private void fire(){
           if (textComponent.isFocusOwner()) {
             entryEditorTab.markIfModified((FieldEditor)textComponent);
           }
@@ -25,13 +25,13 @@ synchronized (this) {
       }
 ;
       textComponent.getDocument().addDocumentListener(documentListener);
-      Component scrollPane=textComponent.getParent().getParent();
-      if (scrollPane instanceof JScrollPane) {
-        JScrollPane componentPane=(JScrollPane)scrollPane;
-        Component cPane=componentPane.getParent();
-        if (cPane instanceof JPanel) {
-          JPanel panel=(JPanel)cPane;
-          Rectangle bounds=componentPane.getBounds();
+      Component component=textComponent.getParent().getParent();
+      if (component instanceof JScrollPane) {
+        JScrollPane scrollPane=(JScrollPane)component;
+        Component scrollPaneParent=scrollPane.getParent();
+        if (scrollPaneParent instanceof JPanel) {
+          JPanel panel=(JPanel)scrollPaneParent;
+          Rectangle bounds=scrollPane.getBounds();
           panel.scrollRectToVisible(bounds);
         }
       }
