@@ -1,0 +1,11 @@
+{
+  List<FieldChange> fieldChanges=new ArrayList<>();
+  if (!entry.hasField(FieldName.KEYWORDS)) {
+    return fieldChanges;
+  }
+  KeywordList keywordList=entry.getKeywords(keywordDelimiter);
+  for (  SpecialField field : SpecialField.values()) {
+    fieldChanges.addAll(SpecialFieldsUtils.importKeywordsForField(keywordList,field,entry));
+  }
+  return fieldChanges;
+}

@@ -1,0 +1,34 @@
+{
+  try {
+    List<BibEntry> bes=frame.getCurrentBasePanel().getSelectedEntries();
+    if ((bes == null) || bes.isEmpty()) {
+      return;
+    }
+    NamedCompound ce=new NamedCompound(undoText);
+    for (    BibEntry be : bes) {
+      List<FieldChange> changes=SpecialFieldsUtils.updateField(specialField,value,be,nullFieldIfValueIsTheSame,Globals.prefs.isKeywordSyncEnabled(),Globals.prefs.getKeywordDelimiter());
+      for (      FieldChange change : changes) {
+        ce.addEdit(new UndoableFieldChange(change));
+      }
+    }
+    ce.end();
+    if (ce.hasEdits()) {
+      frame.getCurrentBasePanel().getUndoManager().addEdit(ce);
+      frame.getCurrentBasePanel().markBaseChanged();
+      frame.getCurrentBasePanel().updateEntryEditorIfShowing();
+      String outText;
+      if (nullFieldIfValueIsTheSame || value == null) {
+        outText=getTextDone(specialField,Integer.toString(bes.size()));
+      }
+ else {
+        outText=getTextDone(specialField,value,Integer.toString(bes.size()));
+      }
+      frame.output(outText);
+    }
+ else {
+    }
+  }
+ catch (  Throwable ex) {
+    LOGGER.error("Problem setting special fields",ex);
+  }
+}
