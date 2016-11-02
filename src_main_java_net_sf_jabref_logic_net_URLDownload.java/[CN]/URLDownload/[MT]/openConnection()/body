@@ -1,5 +1,5 @@
 {
-  URLConnection connection=source.openConnection();
+  HttpURLConnection connection=(HttpURLConnection)source.openConnection();
   for (  Map.Entry<String,String> entry : parameters.entrySet()) {
     connection.setRequestProperty(entry.getKey(),entry.getValue());
   }
@@ -9,6 +9,13 @@
       wr.writeBytes(postData);
     }
    }
+  int status=connection.getResponseCode();
+  if (status != HttpURLConnection.HTTP_OK) {
+    if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER) {
+      String newUrl=connection.getHeaderField("Location");
+      connection=(HttpURLConnection)new URLDownload(newUrl).openConnection();
+    }
+  }
   connection.connect();
   return connection;
 }
