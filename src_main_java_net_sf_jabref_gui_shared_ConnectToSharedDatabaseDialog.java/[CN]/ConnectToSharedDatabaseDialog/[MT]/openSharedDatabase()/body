@@ -1,0 +1,36 @@
+{
+  if (isSharedDatabaseAlreadyPresent()) {
+    JOptionPane.showMessageDialog(ConnectToSharedDatabaseDialog.this,Localization.lang("You are already connected to a database using entered connection details."),Localization.lang("Warning"),JOptionPane.WARNING_MESSAGE);
+    return;
+  }
+  if (autosaveFile.isSelected()) {
+    Path localFilePath=Paths.get(fileLocationField.getText());
+    if (Files.exists(localFilePath) && !Files.isDirectory(localFilePath)) {
+      int answer=JOptionPane.showConfirmDialog(this,Localization.lang("'%0' exists. Overwrite file?",localFilePath.getFileName().toString()),Localization.lang("Existing file"),JOptionPane.YES_NO_OPTION);
+      if (answer == JOptionPane.NO_OPTION) {
+        fileLocationField.requestFocus();
+        return;
+      }
+    }
+  }
+  setLoadingConnectButtonText(true);
+  try {
+    BasePanel panel=new SharedDatabaseUIManager(frame).openNewSharedDatabaseTab(connectionProperties);
+    setPreferences();
+    dispose();
+    try {
+      new SaveDatabaseAction(panel,Paths.get(fileLocationField.getText())).runCommand();
+    }
+ catch (    Throwable e) {
+      LOGGER.error("Error while saving the database",e);
+    }
+    return;
+  }
+ catch (  SQLException|InvalidDBMSConnectionPropertiesException exception) {
+    JOptionPane.showMessageDialog(ConnectToSharedDatabaseDialog.this,exception.getMessage(),Localization.lang("Connection error"),JOptionPane.ERROR_MESSAGE);
+  }
+catch (  DatabaseNotSupportedException exception) {
+    new MigrationHelpDialog(this).setVisible(true);
+  }
+  setLoadingConnectButtonText(false);
+}
