@@ -1,0 +1,71 @@
+{
+  Optional<String> fieldValue=getFieldInterface.getValueForField(toLowerCase(name));
+  if (fieldValue.isPresent() && !fieldValue.get().isEmpty()) {
+    return fieldValue;
+  }
+  String aliasForField=EntryConverter.FIELD_ALIASES.get(name);
+  if (aliasForField != null) {
+    return getFieldInterface.getValueForField(aliasForField);
+  }
+  if (FieldName.DATE.equals(name)) {
+    Optional<String> year=getFieldInterface.getValueForField(FieldName.YEAR);
+    if (year.isPresent()) {
+      MonthUtil.Month month=MonthUtil.getMonth(getFieldInterface.getValueForField(FieldName.MONTH).orElse(""));
+      if (month.isValid()) {
+        return Optional.of(year.get() + '-' + month.twoDigitNumber);
+      }
+ else {
+        return year;
+      }
+    }
+  }
+  if (FieldName.YEAR.equals(name) || FieldName.MONTH.equals(name)) {
+    Optional<String> date=getFieldInterface.getValueForField(FieldName.DATE);
+    if (!date.isPresent()) {
+      return Optional.empty();
+    }
+    DateFormat df=new DateFormat(){
+      static final String FORMAT1="yyyy-MM-dd";
+      static final String FORMAT2="yyyy-MM";
+      final SimpleDateFormat sdf1=new SimpleDateFormat(FORMAT1);
+      final SimpleDateFormat sdf2=new SimpleDateFormat(FORMAT2);
+      @Override public StringBuffer format(      Date dDate,      StringBuffer toAppendTo,      FieldPosition fieldPosition){
+        throw new UnsupportedOperationException();
+      }
+      @Override public Date parse(      String source,      ParsePosition pos){
+        if ((source.length() - pos.getIndex()) == FORMAT1.length()) {
+          return sdf1.parse(source,pos);
+        }
+        return sdf2.parse(source,pos);
+      }
+    }
+;
+    try {
+      Date parsedDate=df.parse(date.get());
+      Calendar calendar=Calendar.getInstance();
+      calendar.setTime(parsedDate);
+      if (FieldName.YEAR.equals(name)) {
+        return Optional.of(Integer.toString(calendar.get(Calendar.YEAR)));
+      }
+      if (FieldName.MONTH.equals(name)) {
+        return Optional.of(Integer.toString(calendar.get(Calendar.MONTH) + 1));
+      }
+    }
+ catch (    ParseException e) {
+      df=new SimpleDateFormat("yyyy");
+      try {
+        Date parsedDate=df.parse(date.get());
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(parsedDate);
+        if (FieldName.YEAR.equals(name)) {
+          return Optional.of(Integer.toString(calendar.get(Calendar.YEAR)));
+        }
+      }
+ catch (      ParseException e2) {
+        LOGGER.warn("Could not parse entry " + name,e2);
+        return Optional.empty();
+      }
+    }
+  }
+  return Optional.empty();
+}
