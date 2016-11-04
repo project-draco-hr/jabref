@@ -1,2 +1,91 @@
 {
+  BibtexParser bibtexParser=new BibtexParser(Globals.prefs.getImportFormatPreferences());
+  try {
+    ParserResult parserResult=bibtexParser.parse(new StringReader(source.getText()));
+    BibDatabase database=parserResult.getDatabase();
+    if (database.getEntryCount() > 1) {
+      throw new IllegalStateException("More than one entry found.");
+    }
+    if (!database.hasEntries()) {
+      if (parserResult.hasWarnings()) {
+        throw new IllegalStateException(parserResult.warnings().get(0));
+      }
+ else {
+        throw new IllegalStateException("No entries found.");
+      }
+    }
+    NamedCompound compound=new NamedCompound(Localization.lang("source edit"));
+    BibEntry newEntry=database.getEntries().get(0);
+    String newKey=newEntry.getCiteKeyOptional().orElse(null);
+    boolean entryChanged=false;
+    boolean emptyWarning=(newKey == null) || newKey.isEmpty();
+    if (newKey != null) {
+      entry.setCiteKey(newKey);
+    }
+ else {
+      entry.clearCiteKey();
+    }
+    for (    Entry<String,String> field : entry.getFieldMap().entrySet()) {
+      String fieldName=field.getKey();
+      String fieldValue=field.getValue();
+      if (InternalBibtexFields.isDisplayableField(fieldName) && !newEntry.hasField(fieldName)) {
+        compound.addEdit(new UndoableFieldChange(entry,fieldName,fieldValue,null));
+        entry.clearField(fieldName);
+        entryChanged=true;
+      }
+    }
+    for (    Entry<String,String> field : newEntry.getFieldMap().entrySet()) {
+      String fieldName=field.getKey();
+      String oldValue=entry.getField(fieldName).orElse(null);
+      String newValue=field.getValue();
+      if (!Objects.equals(oldValue,newValue)) {
+        new LatexFieldFormatter(Globals.prefs.getLatexFieldFormatterPreferences()).format(newValue,fieldName);
+        compound.addEdit(new UndoableFieldChange(entry,fieldName,oldValue,newValue));
+        entry.setField(fieldName,newValue);
+        entryChanged=true;
+      }
+    }
+    if (!Objects.equals(newEntry.getType(),entry.getType())) {
+      compound.addEdit(new UndoableChangeType(entry,entry.getType(),newEntry.getType()));
+      entry.setType(newEntry.getType());
+      entryChanged=true;
+    }
+    compound.end();
+    if (!entryChanged) {
+      return true;
+    }
+    panel.getUndoManager().addEdit(compound);
+    if (panel.getDatabase().getDuplicationChecker().isDuplicateCiteKeyExisting(entry)) {
+      warnDuplicateBibtexkey();
+    }
+ else     if (emptyWarning) {
+      warnEmptyBibtexkey();
+    }
+ else {
+      panel.output(Localization.lang("Stored entry") + '.');
+    }
+    lastSourceStringAccepted=source.getText();
+    panel.updateEntryEditorIfShowing();
+    lastSourceAccepted=true;
+    updateSource=true;
+    panel.markBaseChanged();
+    panel.highlightEntry(entry);
+    return true;
+  }
+ catch (  IllegalStateException|IOException ex) {
+    updateSource=false;
+    lastSourceAccepted=false;
+    tabbed.setSelectedComponent(srcPanel);
+    Object[] options={Localization.lang("Edit"),Localization.lang("Revert to original source")};
+    if (!SwingUtilities.isEventDispatchThread()) {
+      int answer=JOptionPane.showOptionDialog(frame,Localization.lang("Error") + ": " + ex.getMessage(),Localization.lang("Problem with parsing entry"),JOptionPane.YES_NO_OPTION,JOptionPane.ERROR_MESSAGE,null,options,options[0]);
+      if (answer != 0) {
+        updateSource=true;
+        lastSourceAccepted=true;
+        updateSource();
+      }
+    }
+    LOGGER.debug("Incorrect source",ex);
+    return false;
+  }
 }

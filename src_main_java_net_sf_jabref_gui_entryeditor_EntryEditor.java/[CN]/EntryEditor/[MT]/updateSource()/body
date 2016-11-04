@@ -1,2 +1,15 @@
 {
+  if (updateSource) {
+    try {
+      String srcString=getSourceString(entry,panel.getBibDatabaseContext().getMode());
+      source.setText(srcString);
+      lastSourceStringAccepted=srcString;
+      panel.highlightEntry(entry);
+    }
+ catch (    IOException ex) {
+      source.setText(ex.getMessage() + "\n\n" + Localization.lang("Correct the entry, and reopen editor to display/edit source."));
+      source.setEditable(false);
+      LOGGER.debug("Incorrect entry",ex);
+    }
+  }
 }

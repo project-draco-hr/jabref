@@ -9,26 +9,15 @@
     }
     return;
   }
-  EntryEditor entryEditor;
-  int divLoc=-1;
   String visName=null;
   if ((getShowing() != null) && isShowingEditor()) {
     visName=((EntryEditor)splitPane.getBottomComponent()).getVisiblePanelName();
   }
-  if (getShowing() != null) {
-    divLoc=splitPane.getDividerLocation();
-  }
-  entryEditor=new EntryEditor(frame,BasePanel.this,be);
+  EntryEditor entryEditor=new EntryEditor(frame,BasePanel.this,be);
   if (visName != null) {
     entryEditor.setVisiblePanel(visName);
   }
-  splitPane.setBottomComponent(entryEditor);
-  if (divLoc > 0) {
-    splitPane.setDividerLocation(divLoc);
-  }
- else {
-    splitPane.setDividerLocation(splitPane.getHeight() - Globals.prefs.getInt(JabRefPreferences.ENTRY_EDITOR_HEIGHT));
-  }
+  showEntryEditor(entryEditor);
   newEntryShowing(be);
   setEntryEditorEnabled(true);
 }
