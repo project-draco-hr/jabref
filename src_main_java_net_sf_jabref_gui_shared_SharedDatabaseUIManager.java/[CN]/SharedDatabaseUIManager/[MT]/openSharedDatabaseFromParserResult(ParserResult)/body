@@ -1,10 +1,14 @@
 {
-  String databaseID=parserResult.getDatabase().getDatabaseID();
-  DBMSConnectionProperties dbmsConnectionProperties=new DBMSConnectionProperties(new SharedDatabasePreferences(databaseID));
+  Optional<String> sharedDatabaseIDOptional=parserResult.getDatabase().getSharedDatabaseID();
+  if (!sharedDatabaseIDOptional.isPresent()) {
+    throw new NotASharedDatabaseException();
+  }
+  String sharedDatabaseID=sharedDatabaseIDOptional.get();
+  DBMSConnectionProperties dbmsConnectionProperties=new DBMSConnectionProperties(new SharedDatabasePreferences(sharedDatabaseID));
   JabRefFrame frame=JabRefGUI.getMainFrame();
   BibDatabaseMode selectedMode=Globals.prefs.getDefaultBibDatabaseMode();
   BibDatabaseContext bibDatabaseContext=new BibDatabaseContext(new Defaults(selectedMode),DatabaseLocation.SHARED,Globals.prefs.getKeywordDelimiter(),Globals.prefs.getKeyPattern());
-  bibDatabaseContext.getDatabase().setDatabaseID(databaseID);
+  bibDatabaseContext.getDatabase().setSharedDatabaseID(sharedDatabaseID);
   bibDatabaseContext.setDatabaseFile(parserResult.getDatabaseContext().getDatabaseFile().orElse(null));
   dbmsSynchronizer=bibDatabaseContext.getDBMSSynchronizer();
   dbmsSynchronizer.openSharedDatabase(dbmsConnectionProperties);

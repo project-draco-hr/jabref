@@ -22,13 +22,13 @@
         failed.add(pr);
         parserResultIterator.remove();
       }
- else       if (Objects.nonNull(pr.getDatabase().getDatabaseID())) {
+ else       if (pr.getDatabase().isShared()) {
         try {
           new SharedDatabaseUIManager(mainFrame).openSharedDatabaseFromParserResult(pr);
         }
- catch (        SQLException|DatabaseNotSupportedException|InvalidDBMSConnectionPropertiesException e) {
-          pr.getDatabaseContext().setDatabaseFile(null);
-          pr.getDatabase().setDatabaseID(null);
+ catch (        SQLException|DatabaseNotSupportedException|InvalidDBMSConnectionPropertiesException|NotASharedDatabaseException e) {
+          pr.getDatabaseContext().clearDatabaseFile();
+          pr.getDatabase().clearSharedDatabaseID();
           LOGGER.error("Connection error",e);
           JOptionPane.showMessageDialog(mainFrame,e.getMessage() + "\n\n" + Localization.lang("A local copy will be opened."),Localization.lang("Connection error"),JOptionPane.WARNING_MESSAGE);
         }

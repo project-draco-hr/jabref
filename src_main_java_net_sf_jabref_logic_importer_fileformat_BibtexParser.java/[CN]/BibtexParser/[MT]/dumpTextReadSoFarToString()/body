@@ -4,21 +4,11 @@
   if (indexOfAt == -1) {
     return purgeEOFCharacters(result);
   }
+ else   if (result.contains(BibtexDatabaseWriter.DATABASE_ID_PREFIX)) {
+    return purge(result,BibtexDatabaseWriter.DATABASE_ID_PREFIX);
+  }
  else   if (result.contains(SavePreferences.ENCODING_PREFIX)) {
-    int runningIndex=result.indexOf(SavePreferences.ENCODING_PREFIX);
-    while (runningIndex < indexOfAt) {
-      if (result.charAt(runningIndex) == '\n') {
-        break;
-      }
- else       if (result.charAt(runningIndex) == '\r') {
-        if (result.charAt(runningIndex + 1) == '\n') {
-          runningIndex++;
-        }
-        break;
-      }
-      runningIndex++;
-    }
-    return result.substring(runningIndex + 1);
+    return purge(result,SavePreferences.ENCODING_PREFIX);
   }
  else {
     return result;
