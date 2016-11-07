@@ -1,0 +1,65 @@
+{
+  Optional<String> field;
+  if (type == LayoutHelper.IS_GROUP_START) {
+    field=BibDatabase.getResolvedField(text,bibtex,database);
+  }
+ else   if (text.matches(".*(;|(\\&+)).*")) {
+    String[] parts=text.split("\\s*(;|(\\&+))\\s*");
+    field=Optional.empty();
+    for (    String part : parts) {
+      field=BibDatabase.getResolvedField(part,bibtex,database);
+      if (!field.isPresent()) {
+        break;
+      }
+    }
+  }
+ else {
+    String[] parts=text.split("\\s*(\\|+)\\s*");
+    field=Optional.empty();
+    for (    String part : parts) {
+      field=BibDatabase.getResolvedField(part,bibtex,database);
+      if (field.isPresent()) {
+        break;
+      }
+    }
+  }
+  if ((!field.isPresent()) || ((type == LayoutHelper.IS_GROUP_START) && field.get().equalsIgnoreCase(LayoutHelper.getCurrentGroup()))) {
+    return null;
+  }
+ else {
+    if (type == LayoutHelper.IS_GROUP_START) {
+      LayoutHelper.setCurrentGroup(field.get());
+    }
+    StringBuilder sb=new StringBuilder(100);
+    String fieldText;
+    boolean previousSkipped=false;
+    for (int i=0; i < layoutEntries.size(); i++) {
+      fieldText=layoutEntries.get(i).doLayout(bibtex,database);
+      if (fieldText == null) {
+        if ((i + 1) < layoutEntries.size()) {
+          if (layoutEntries.get(i + 1).doLayout(bibtex,database).trim().isEmpty()) {
+            i++;
+            previousSkipped=true;
+            continue;
+          }
+        }
+      }
+ else {
+        if (previousSkipped) {
+          int eol=0;
+          while ((eol < fieldText.length()) && ((fieldText.charAt(eol) == '\n') || (fieldText.charAt(eol) == '\r'))) {
+            eol++;
+          }
+          if (eol < fieldText.length()) {
+            sb.append(fieldText.substring(eol));
+          }
+        }
+ else {
+          sb.append(fieldText);
+        }
+      }
+      previousSkipped=false;
+    }
+    return sb.toString();
+  }
+}

@@ -3,12 +3,17 @@
     return;
   }
   String text;
+  Boolean success=true;
   try {
     text=this.get();
   }
  catch (  InterruptedException|ExecutionException e) {
     LOGGER.error("Error while generating citation style",e);
     text=Localization.lang("Error while generating citation style");
+    success=false;
   }
   previewPanel.setPreviewLabel(text);
+  if (success) {
+    previewPanel.markHighlights();
+  }
 }

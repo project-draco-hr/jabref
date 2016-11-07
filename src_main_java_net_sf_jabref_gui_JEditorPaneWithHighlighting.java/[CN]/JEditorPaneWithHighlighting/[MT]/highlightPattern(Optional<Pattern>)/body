@@ -1,0 +1,18 @@
+{
+  Highlighter highlighter=getHighlighter();
+  highlighter.removeAllHighlights();
+  if ((highlightPattern == null) || !highlightPattern.isPresent()) {
+    return;
+  }
+  String text=getDocumentText();
+  Matcher matcher=highlightPattern.get().matcher(text);
+  LayerPainter painter=DefaultHighlighter.DefaultPainter;
+  while (matcher.find()) {
+    try {
+      highlighter.addHighlight(matcher.start(),matcher.end(),painter);
+    }
+ catch (    BadLocationException ble) {
+      LOGGER.warn("Highlighting not possible, bad location",ble);
+    }
+  }
+}
